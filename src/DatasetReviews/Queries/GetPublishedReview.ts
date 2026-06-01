@@ -1,9 +1,8 @@
-import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
+import { Array, Either, MutableHashMap, MutableHashSet, Option, pipe, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
-import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import { Temporal, type Doi, type NonEmptyString, type OrcidId, type Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface PublishedReview {
@@ -74,17 +73,25 @@ export type Error =
 export type Result = Either.Either<PublishedReview, Error>
 
 export const createFilter = (datasetReviewId: Input) =>
-  Events.EventFilter({
-    types: Events.DatasetReviewEventTypes,
-    predicates: { datasetReviewId },
-  })
+  Events.EventFilter([
+    {
+      types: Events.DatasetReviewEventTypes,
+      predicates: { datasetReviewId },
+    },
+    {
+      types: ['AuthorInviteAccepted', 'PersonaForAReviewChosen', 'AuthorChoicesForAReviewConfirmed'],
+      predicates: { reviewId: datasetReviewId },
+    },
+  ])
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   const filter = createFilter(input)
 
   const filteredEvents = Array.filter(events, Events.matches(filter))
 
-  if (!hasEvent(filteredEvents, 'DatasetReviewWasStarted')) {
+  const started = Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted'))
+
+  if (Option.isNone(started)) {
     return Either.left(new Errors.UnknownDatasetReview({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
@@ -163,34 +170,65 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
     Struct.get('competingInterests'),
   )
 
-  const anonymousAuthors = Option.match(
-    Array.findLast(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')),
-    {
-      onNone: () => undefined,
-      onSome: ({ answer }) => {
-        if (answer === 'no') {
-          return 0
-        }
+  const includeOtherAuthors = Array.some(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview'))
 
-        const addedInvitations = Array.filter(
-          filteredEvents,
-          hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'),
-        )
-
-        const removedInvitations = HashSet.fromIterable(
-          Array.filterMap(filteredEvents, event =>
-            event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-              ? Option.some(event.invitationId)
-              : Option.none(),
-          ),
-        )
-
-        return Array.length(
-          Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
-        )
-      },
-    },
+  const invitations = MutableHashSet.fromIterable(
+    Array.filterMap(filteredEvents, event =>
+      event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList'
+        ? Option.some(event.invitationId)
+        : Option.none(),
+    ),
   )
+
+  Array.forEach(filteredEvents, event => {
+    if (event._tag !== 'InvitationToAppearOnADatasetReviewRemovedFromTheList') {
+      return
+    }
+
+    MutableHashSet.remove(invitations, event.invitationId)
+  })
+
+  const namedAuthors = MutableHashMap.empty<
+    OrcidId.OrcidId,
+    { persona?: 'public' | 'pseudonym'; confirmedAt?: Temporal.Instant }
+  >()
+
+  Array.forEach(filteredEvents, event => {
+    if (event._tag === 'AuthorInviteAccepted') {
+      MutableHashSet.remove(invitations, event.invitationId)
+
+      if (event.orcidId === started.value.authorId || MutableHashMap.has(namedAuthors, event.orcidId)) {
+        return
+      }
+
+      return MutableHashMap.set(namedAuthors, event.orcidId, {})
+    }
+
+    if (event._tag === 'PersonaForAReviewChosen') {
+      return MutableHashMap.modify(namedAuthors, event.orcidId, details => ({ ...details, persona: event.persona }))
+    }
+
+    if (event._tag === 'AuthorChoicesForAReviewConfirmed') {
+      return MutableHashMap.modify(namedAuthors, event.orcidId, details => ({
+        ...details,
+        confirmedAt: event.confirmedAt,
+      }))
+    }
+  })
+
+  const confirmedAuthors = Array.filterMap([...namedAuthors], ([orcidId, { persona, confirmedAt }]) =>
+    typeof persona === 'string' && typeof confirmedAt !== 'undefined'
+      ? Option.some({ orcidId, persona, confirmedAt })
+      : Option.none(),
+  )
+
+  const otherAuthors = pipe(
+    Array.sortWith(confirmedAuthors, Struct.get('confirmedAt'), Temporal.OrderInstant),
+    Array.map(Struct.pick('orcidId', 'persona')),
+  )
+
+  const anonymousAuthors =
+    MutableHashSet.size(invitations) + (MutableHashMap.size(namedAuthors) - Array.length(otherAuthors))
 
   return Option.match(data, {
     onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
@@ -200,8 +238,8 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
           orcidId: data.datasetReviewWasStarted.authorId,
           persona: Option.match(author, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
-        otherAuthors: typeof anonymousAuthors === 'number' ? [] : undefined,
-        anonymousAuthors,
+        otherAuthors: includeOtherAuthors ? otherAuthors : undefined,
+        anonymousAuthors: includeOtherAuthors ? anonymousAuthors : undefined,
         dataset: data.datasetReviewWasStarted.datasetId,
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
@@ -238,10 +276,7 @@ export const GetPublishedReview = Queries.OnDemandQuery({
   query,
 })
 
-function hasEvent(
-  events: ReadonlyArray<Events.DatasetReviewEvent>,
-  tag: Types.Tags<Events.DatasetReviewEvent>,
-): boolean {
+function hasEvent(events: ReadonlyArray<Events.Event>, tag: Types.Tags<Events.Event>): boolean {
   return Array.some(events, hasTag(tag))
 }
 

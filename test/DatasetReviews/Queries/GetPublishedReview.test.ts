@@ -4,6 +4,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Events from '../../../src/Events.ts'
 import * as Queries from '../../../src/Queries.ts'
 import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
@@ -183,9 +184,68 @@ const invited3 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
   invitationId: Uuid.Uuid('bf962433-30c0-415f-ae8f-faeca117b9e1'),
   contactDetails: Option.none(),
 })
-const removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+const invited4 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
-  invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
+  invitationId: Uuid.Uuid('9314efeb-0295-4aa7-a073-fe7129de5c1b'),
+  contactDetails: Option.none(),
+})
+const invited5 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('4cb6872f-12e3-4c6f-a85a-c59dacb908f4'),
+  contactDetails: Option.none(),
+})
+const invited6 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('d9f79761-3212-4640-8965-7d4b1ea9bb72'),
+  contactDetails: Option.none(),
+})
+const invited1Removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+  datasetReviewId,
+  invitationId: invited1.invitationId,
+})
+const invited2AcceptedByAuthor = new Events.AuthorInviteAccepted({
+  invitationId: invited2.invitationId,
+  reviewId: datasetReviewId,
+  orcidId: authorId,
+  acceptedAt: Temporal.Now.instant(),
+})
+const invited3Accepted = new Events.AuthorInviteAccepted({
+  invitationId: invited3.invitationId,
+  reviewId: datasetReviewId,
+  orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  acceptedAt: Temporal.Now.instant(),
+})
+const invited3Persona = new Events.PersonaForAReviewChosen({
+  reviewId: datasetReviewId,
+  orcidId: invited3Accepted.orcidId,
+  persona: 'pseudonym',
+})
+const invited3Persona2 = new Events.PersonaForAReviewChosen({
+  reviewId: datasetReviewId,
+  orcidId: invited3Accepted.orcidId,
+  persona: 'public',
+})
+const invited3Confirmed = new Events.AuthorChoicesForAReviewConfirmed({
+  reviewId: datasetReviewId,
+  orcidId: invited3Accepted.orcidId,
+  confirmedAt: Temporal.Now.instant(),
+})
+const invited4Accepted = new Events.AuthorInviteAccepted({
+  invitationId: invited4.invitationId,
+  reviewId: datasetReviewId,
+  orcidId: invited3Accepted.orcidId,
+  acceptedAt: Temporal.Now.instant(),
+})
+const invited5Accepted = new Events.AuthorInviteAccepted({
+  invitationId: invited5.invitationId,
+  reviewId: datasetReviewId,
+  orcidId: OrcidId.OrcidId('0000-0003-4921-6155'),
+  acceptedAt: Temporal.Now.instant(),
+})
+const invited5Persona = new Events.PersonaForAReviewChosen({
+  reviewId: datasetReviewId,
+  orcidId: invited5Accepted.orcidId,
+  persona: 'public',
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
@@ -222,7 +282,7 @@ describe('GetPublishedReview', () => {
               fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
             )
             .map(events =>
-              Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
+              Tuple.make<[Array.NonEmptyReadonlyArray<Events.Event>, _.PublishedReview]>(events, {
                 author: { orcidId: events[0].authorId, persona: events[2].persona },
                 dataset: events[0].datasetId,
                 doi: events[3].doi,
@@ -520,13 +580,24 @@ describe('GetPublishedReview', () => {
                     invited1,
                     invited2,
                     invited3,
-                    removed,
+                    invited4,
+                    invited5,
+                    invited6,
+                    invited1Removed,
+                    invited2AcceptedByAuthor,
+                    invited3Accepted,
+                    invited3Persona,
+                    invited3Persona2,
+                    invited3Confirmed,
+                    invited4Accepted,
+                    invited5Accepted,
+                    invited5Persona,
                     datasetReviewWasAssignedADoi1,
                     datasetReviewWasPublished1,
                   ],
                   {
                     author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
-                    otherAuthors: [],
+                    otherAuthors: [{ orcidId: invited3Accepted.orcidId, persona: invited3Persona2.persona }],
                     anonymousAuthors: 2,
                     dataset: datasetReviewWasStarted.datasetId,
                     doi: datasetReviewWasAssignedADoi1.doi,
