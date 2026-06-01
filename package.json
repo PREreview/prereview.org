@@ -47,7 +47,7 @@
     "logging-ts": "^0.3.4",
     "markdown-it": "^14.2.0",
     "mjml": "^5.2.2",
-    "nodemailer": "^8.0.7",
+    "nodemailer": "^8.0.10",
     "normalize-url": "^9.0.1",
     "orcid-id-ts": "^0.1.3",
     "rtl-detect": "^1.1.2",
