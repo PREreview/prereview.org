@@ -2,7 +2,9 @@ import { expect, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/ChoosePersona.ts'
+import { DryadDatasetId } from '../../src/Datasets/index.ts'
 import * as Events from '../../src/Events.ts'
+import { Doi } from '../../src/types/Doi.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 
@@ -54,6 +56,18 @@ const confirmed = new Events.AuthorChoicesForAReviewConfirmed({
   confirmedAt: Temporal.Now.instant(),
 })
 
+const started = new Events.DatasetReviewWasStarted({
+  datasetReviewId: input.reviewId,
+  authorId: input.orcidId,
+  datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
+})
+
+const startedDifferentOrcidId = new Events.DatasetReviewWasStarted({
+  datasetReviewId: input.reviewId,
+  authorId: inputWithDifferentOrcidId.orcidId,
+  datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
+})
+
 test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
   [
@@ -98,6 +112,13 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     [authorAdded, inviteAccepted, confirmed],
     input,
     Either.left(new _.PersonaCannotBeChanged()),
+  ],
+  ['started the review', [started, authorAdded, inviteAccepted], input, Either.left(new _.PersonaCannotBeChanged())],
+  [
+    'someone else started the review',
+    [startedDifferentOrcidId, authorAdded, inviteAccepted],
+    input,
+    Either.right(Option.some(new Events.PersonaForAReviewChosen(input))),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ChoosePersona
