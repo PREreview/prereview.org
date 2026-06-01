@@ -2557,9 +2557,19 @@ export const authorInviteAccepted = (): fc.Arbitrary<Events.AuthorInviteAccepted
     })
     .map(args => new Events.AuthorInviteAccepted(args))
 
+export const AuthorChoicesForAReviewConfirmed = (): fc.Arbitrary<Events.AuthorChoicesForAReviewConfirmed> =>
+  fc
+    .record({
+      reviewId: uuid(),
+      orcidId: orcidId(),
+      confirmedAt: instant(),
+    })
+    .map(args => new Events.AuthorChoicesForAReviewConfirmed(args))
+
 export const event = (): fc.Arbitrary<Events.Event> =>
   fc.oneof(
     authorInviteAccepted(),
+    AuthorChoicesForAReviewConfirmed(),
     commentEvent(),
     datasetReviewEvent(),
     reviewRequestEvent(),
