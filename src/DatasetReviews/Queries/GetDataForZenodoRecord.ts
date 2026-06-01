@@ -1,8 +1,13 @@
 import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
-import type { OrcidId } from '../../types/index.ts'
+import * as Events from '../../Events.ts'
+import * as Queries from '../../Queries.ts'
+import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
-import type * as Events from '../Events.ts'
+
+export type Input = Uuid.Uuid
+
+export type Result = Either.Either<DataForZenodoRecord, Error>
 
 export interface DataForZenodoRecord {
   readonly author: { orcidId: OrcidId.OrcidId; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
@@ -45,95 +50,123 @@ export interface DataForZenodoRecord {
   readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
 }
 
-export const GetDataForZenodoRecord = (
-  events: ReadonlyArray<Events.DatasetReviewEvent>,
-): Either.Either<
-  DataForZenodoRecord,
-  Errors.DatasetReviewIsInProgress | Errors.DatasetReviewHasBeenPublished | Errors.UnexpectedSequenceOfEvents
-> => {
-  const started = Option.getOrUndefined(Array.findLast(events, hasTag('DatasetReviewWasStarted')))
+export type Error =
+  | Errors.DatasetReviewIsInProgress
+  | Errors.DatasetReviewHasBeenPublished
+  | Errors.UnknownDatasetReview
+  | Queries.UnexpectedSequenceOfEvents
+
+export const createFilter = (datasetReviewId: Input) =>
+  Events.EventFilter({
+    types: Events.DatasetReviewEventTypes,
+    predicates: { datasetReviewId },
+  })
+
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
+  const filter = createFilter(input)
+
+  const filteredEvents = Array.filter(events, Events.matches(filter))
+
+  const started = Option.getOrUndefined(Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')))
 
   if (!started) {
-    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Either.left(new Errors.UnknownDatasetReview({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
-  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
-    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
-  }
-
-  if (hasEvent(events, 'DatasetReviewWasPublished')) {
+  if (hasEvent(filteredEvents, 'DatasetReviewWasPublished')) {
     return Either.left(new Errors.DatasetReviewHasBeenPublished())
   }
 
-  if (!hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
+  if (!hasEvent(filteredEvents, 'PublicationOfDatasetReviewWasRequested')) {
     return Either.left(new Errors.DatasetReviewIsInProgress())
   }
 
-  const chosenPersona = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
+  const chosenPersona = Array.findLast(filteredEvents, hasTag('PersonaForDatasetReviewWasChosen'))
 
-  const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
+  const qualityRating = Array.findLast(filteredEvents, hasTag('RatedTheQualityOfTheDataset'))
 
   const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
-    events,
+    filteredEvents,
     hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
   )
 
-  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata'))
+  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetHasEnoughMetadata'),
+  )
 
-  const answerToIfTheDatasetHasTrackedChanges = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges'))
+  const answerToIfTheDatasetHasTrackedChanges = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetHasTrackedChanges'),
+  )
 
   const answerToIfTheDatasetHasDataCensoredOrDeleted = Array.findLast(
-    events,
+    filteredEvents,
     hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted'),
   )
 
   const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Array.findLast(
-    events,
+    filteredEvents,
     hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'),
   )
 
   const answerToIfTheDatasetSupportsRelatedConclusions = Array.findLast(
-    events,
+    filteredEvents,
     hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions'),
   )
 
-  const answerToIfTheDatasetIsDetailedEnough = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsDetailedEnough'))
+  const answerToIfTheDatasetIsDetailedEnough = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsDetailedEnough'),
+  )
 
-  const answerToIfTheDatasetIsErrorFree = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsErrorFree'))
+  const answerToIfTheDatasetIsErrorFree = Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsErrorFree'))
 
   const answerToIfTheDatasetMattersToItsAudience = Array.findLast(
-    events,
+    filteredEvents,
     hasTag('AnsweredIfTheDatasetMattersToItsAudience'),
   )
 
-  const answerToIfTheDatasetIsReadyToBeShared = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared'))
+  const answerToIfTheDatasetIsReadyToBeShared = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsReadyToBeShared'),
+  )
 
-  const answerToIfTheDatasetIsMissingAnything = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything'))
+  const answerToIfTheDatasetIsMissingAnything = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsMissingAnything'),
+  )
 
-  const competingInterests = Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
+  const competingInterests = Array.findLast(filteredEvents, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
 
-  const anonymousAuthors = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
-    onNone: () => undefined,
-    onSome: ({ answer }) => {
-      if (answer === 'no') {
-        return 0
-      }
+  const anonymousAuthors = Option.match(
+    Array.findLast(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')),
+    {
+      onNone: () => undefined,
+      onSome: ({ answer }) => {
+        if (answer === 'no') {
+          return 0
+        }
 
-      const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
+        const addedInvitations = Array.filter(
+          filteredEvents,
+          hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'),
+        )
 
-      const removedInvitations = HashSet.fromIterable(
-        Array.filterMap(events, event =>
-          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-            ? Option.some(event.invitationId)
-            : Option.none(),
-        ),
-      )
+        const removedInvitations = HashSet.fromIterable(
+          Array.filterMap(filteredEvents, event =>
+            event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+              ? Option.some(event.invitationId)
+              : Option.none(),
+          ),
+        )
 
-      return Array.length(
-        Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
-      )
+        return Array.length(
+          Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
+        )
+      },
     },
-  })
+  )
 
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
@@ -193,6 +226,12 @@ export const GetDataForZenodoRecord = (
       }),
   })
 }
+
+export const GetDataForZenodoRecord = Queries.OnDemandQuery({
+  name: 'DatasetReviewQueries.getDataForZenodoRecord',
+  createFilter,
+  query,
+})
 
 function hasEvent(
   events: ReadonlyArray<Events.DatasetReviewEvent>,

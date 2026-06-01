@@ -189,39 +189,36 @@ describe('GetDataForZenodoRecord', () => {
       'returns the preview',
       [
         fc
-          .uuid()
-          .chain(datasetReviewId =>
-            fc.tuple(
-              fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.ratedTheQualityOfTheDataset({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({
-                datasetReviewId: fc.constant(datasetReviewId),
-              }),
-              fc.answeredIfTheDatasetHasEnoughMetadata({
-                datasetReviewId: fc.constant(datasetReviewId),
-              }),
-              fc.answeredIfTheDatasetHasTrackedChanges({
-                datasetReviewId: fc.constant(datasetReviewId),
-              }),
-              fc.answeredIfTheDatasetHasDataCensoredOrDeleted({
-                datasetReviewId: fc.constant(datasetReviewId),
-              }),
-              fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch({
-                datasetReviewId: fc.constant(datasetReviewId),
-              }),
-              fc.answeredIfTheDatasetSupportsRelatedConclusions({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.answeredIfTheDatasetIsDetailedEnough({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.answeredIfTheDatasetIsErrorFree({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.answeredIfTheDatasetMattersToItsAudience({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.competingInterestsForADatasetReviewWereDeclared({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
-            ),
+          .tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.ratedTheQualityOfTheDataset({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+            fc.answeredIfTheDatasetHasEnoughMetadata({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+            fc.answeredIfTheDatasetHasTrackedChanges({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+            fc.answeredIfTheDatasetHasDataCensoredOrDeleted({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+            fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+            fc.answeredIfTheDatasetSupportsRelatedConclusions({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetIsDetailedEnough({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetIsErrorFree({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetMattersToItsAudience({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.competingInterestsForADatasetReviewWereDeclared({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
           )
           .map(events =>
-            Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DataForZenodoRecord]>(events, {
+            Tuple.make<[ReadonlyArray<Events.Event>, _.DataForZenodoRecord]>(events, {
               author: { orcidId: events[0].authorId, persona: events[13].persona },
               dataset: events[0].datasetId,
               competingInterests: events[14].competingInterests,
@@ -268,7 +265,9 @@ describe('GetDataForZenodoRecord', () => {
           ),
       ],
       ([[events, expected]]) => {
-        const actual = _.GetDataForZenodoRecord(events)
+        const { query } = _.GetDataForZenodoRecord
+
+        const actual = query(events, datasetReviewId)
 
         expect(actual).toStrictEqual(Either.right(expected))
       },
@@ -562,11 +561,16 @@ describe('GetDataForZenodoRecord', () => {
       'returns an error',
       [
         fc
-          .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
+          .tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
+          )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
       ],
       ([events]) => {
-        const actual = _.GetDataForZenodoRecord(events)
+        const { query } = _.GetDataForZenodoRecord
+
+        const actual = query(events, datasetReviewId)
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
       },
@@ -581,9 +585,11 @@ describe('GetDataForZenodoRecord', () => {
   describe('when it is in progress', () => {
     it.prop(
       'returns an error',
-      [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+      [fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }).map(Array.of<Events.Event>)],
       ([events]) => {
-        const actual = _.GetDataForZenodoRecord(events)
+        const { query } = _.GetDataForZenodoRecord
+
+        const actual = query(events, datasetReviewId)
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsInProgress()))
       },
@@ -603,11 +609,16 @@ describe('GetDataForZenodoRecord', () => {
       'returns an error',
       [
         fc
-          .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
-          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+          .tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
+          )
+          .map(identity<Array.NonEmptyReadonlyArray<Events.Event>>),
       ],
       ([events]) => {
-        const actual = _.GetDataForZenodoRecord(events)
+        const { query } = _.GetDataForZenodoRecord
+
+        const actual = query(events, datasetReviewId)
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
       },
@@ -628,9 +639,11 @@ describe('GetDataForZenodoRecord', () => {
       'returns an error',
       [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
       ([events]) => {
-        const actual = _.GetDataForZenodoRecord(events)
+        const { query } = _.GetDataForZenodoRecord
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
+        const actual = query(events, datasetReviewId)
+
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnknownDatasetReview({})))
       },
       {
         fastCheck: {

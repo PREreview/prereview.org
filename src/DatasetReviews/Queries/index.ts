@@ -136,10 +136,7 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedReviewDetails>,
       Errors.UnknownDatasetReview
     >
-    getDataForZenodoRecord: Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetDataForZenodoRecord>,
-      Errors.UnknownDatasetReview
-    >
+    getDataForZenodoRecord: Queries.FromOnDemandQuery<typeof GetDataForZenodoRecord>
     getZenodoRecordId: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetZenodoRecordId>,
       Errors.UnknownDatasetReview
@@ -407,21 +404,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),
-    getDataForZenodoRecord: Effect.fn(
-      function* (datasetReviewId) {
-        const { events } = yield* Effect.flatten(
-          EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          }),
-        )
-
-        return yield* GetDataForZenodoRecord(events)
-      },
-      Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
-      Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new Queries.UnableToQuery({ cause })),
-      Effect.provide(context),
-    ),
+    getDataForZenodoRecord: yield* Queries.makeOnDemandQuery(GetDataForZenodoRecord),
     getZenodoRecordId: Effect.fn(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatten(
