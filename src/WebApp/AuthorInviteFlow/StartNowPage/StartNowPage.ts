@@ -30,7 +30,15 @@ export type ViewModel = Omit<
   }
 }
 
-export const renderStartNowPage = ({ locale, viewModel }: { locale: SupportedLocale; viewModel: ViewModel }) => {
+export const renderStartNowPage = ({
+  locale,
+  isLoggedIn,
+  viewModel,
+}: {
+  locale: SupportedLocale
+  isLoggedIn: boolean
+  viewModel: ViewModel
+}) => {
   const t = translate(locale, 'dataset-review-page')
 
   return PageResponse({
@@ -85,6 +93,28 @@ export const renderStartNowPage = ({ locale, viewModel }: { locale: SupportedLoc
           </dl>
         </header>
       </article>
+
+      <p>You’ve been invited to appear as an author on this PREreview.</p>
+
+      ${!isLoggedIn
+        ? html`
+            <h2>Before you start</h2>
+
+            <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+
+            <details>
+              <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+
+              <div>
+                <p>
+                  An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
+                  you from everyone with the same or similar name.
+                </p>
+              </div>
+            </details>
+          `
+        : ''}
+
       <a
         href="${Routes.AuthorInviteAcceptInvite.href({ invitationId: viewModel.invitationId })}"
         role="button"
