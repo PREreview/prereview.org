@@ -9,7 +9,7 @@ import { GetAuthorChoicesToConfirm, PrereviewerIsNotListedOnTheReview } from './
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
-import type { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
+import { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
 
 export class AuthorInvites extends Context.Tag('AuthorInvites')<
   AuthorInvites,
@@ -67,6 +67,9 @@ export const layer = Layer.effect(
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
     const getPersonaChoice = yield* Queries.makeOnDemandQuery(GetPersonaChoice)
     const getAuthorChoicesToConfirm = yield* Queries.makeOnDemandQuery(GetAuthorChoicesToConfirm)
+    const hasAPrereviewerConfirmedTheirAuthorChoices = yield* Queries.makeOnDemandQuery(
+      HasAPrereviewerConfirmedTheirAuthorChoices,
+    )
     const getNextExpectedCommandForAPrereviewerOnAReview = yield* Queries.makeOnDemandQuery(
       GetNextExpectedCommandForAPrereviewerOnAReview,
     )
@@ -108,7 +111,12 @@ export const layer = Layer.effect(
         Effect.andThen(getAuthorChoicesToConfirm),
         Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
       ),
-      hasAPrereviewerConfirmedTheirAuthorChoices: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      hasAPrereviewerConfirmedTheirAuthorChoices: flow(
+        Effect.succeed,
+        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
+        Effect.andThen(hasAPrereviewerConfirmedTheirAuthorChoices),
+        Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
+      ),
       getNextExpectedCommandForAPrereviewerOnAReview: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
