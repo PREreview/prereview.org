@@ -17,7 +17,7 @@ const added = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   contactDetails: Option.none(),
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.InvitationNotFound())],
   ['added', input, [added], Either.right(reviewId)],
   ['added, different invitation ID', inputDifferentInvitationId, [added], Either.left(new _.InvitationNotFound())],
