@@ -68,7 +68,7 @@ const startedDifferentOrcidId = new Events.DatasetReviewWasStarted({
   datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
   [
     'no matching review id',
