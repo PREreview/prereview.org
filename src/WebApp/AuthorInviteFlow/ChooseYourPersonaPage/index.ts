@@ -6,7 +6,8 @@ import * as Personas from '../../../Personas/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
-import type { Response } from '../../Response/index.ts'
+import { RedirectResponse, type Response } from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 import { renderChooseYourPersonaPage } from './ChooseYourPersonaPage.ts'
 
@@ -44,12 +45,22 @@ export const ChooseYourPersonaSubmission = ({
           const authorInvites = yield* AuthorInvites
           yield* authorInvites.choosePersona({ invitationId, persona: form.chooseYourPersona })
 
-          return yield* HavingProblemsPage
+          const nextExpectedCommand = yield* Effect.flatten(
+            authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
+              invitationId,
+              orcidId: user.orcid,
+            }),
+          )
+
+          return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ invitationId }) })
         },
         Effect.catchTags({
+          NoSuchElementException: () => HavingProblemsPage,
           PersonaDoesNotNeedToBeChosen: () => HavingProblemsPage,
           PersonaCannotBeChanged: () => HavingProblemsPage,
+          PrereviewerIsNotListedOnTheReview: () => HavingProblemsPage,
           UnableToHandleCommand: () => HavingProblemsPage,
+          UnableToQuery: () => HavingProblemsPage,
         }),
       ),
       InvalidForm: Effect.fnUntraced(

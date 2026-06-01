@@ -1,7 +1,6 @@
 import { Effect } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import type { Locale } from '../../../Context.ts'
-import * as Routes from '../../../routes.ts'
 import { Temporal } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'
@@ -9,6 +8,7 @@ import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { NoPermissionPage } from '../../NoPermissionPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import { type Response, RedirectResponse } from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 
 export const AcceptInvite = ({
   invitationId,
@@ -22,11 +22,21 @@ export const AcceptInvite = ({
 
     yield* authorInvites.acceptInvite({ invitationId, orcidId: user.orcid, acceptedAt })
 
-    return RedirectResponse({ location: Routes.AuthorInviteChooseYourPersona.href({ invitationId }) })
+    const nextExpectedCommand = yield* Effect.flatten(
+      authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
+        invitationId,
+        orcidId: user.orcid,
+      }),
+    )
+
+    return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ invitationId }) })
   }).pipe(
     Effect.catchTags({
       InvitationNotFound: () => PageNotFound,
       InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer: () => NoPermissionPage,
+      NoSuchElementException: () => HavingProblemsPage,
+      PrereviewerIsNotListedOnTheReview: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
     }),
   )
