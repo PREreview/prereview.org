@@ -45,6 +45,7 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
         invitationId: Uuid
       },
     ) => ReturnType<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>
+    getReviewIdForInvitation: Queries.FromOnDemandQuery<typeof GetReviewIdForInvitation>
     getNextExpectedCommandForAPrereviewerOnAReview: (
       args: Omit<
         Parameters<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>[0],
@@ -117,6 +118,7 @@ export const layer = Layer.effect(
         Effect.andThen(hasAPrereviewerConfirmedTheirAuthorChoices),
         Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
       ),
+      getReviewIdForInvitation,
       getNextExpectedCommandForAPrereviewerOnAReview: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
