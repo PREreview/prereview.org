@@ -57,6 +57,12 @@ const persona = new Events.PersonaForAReviewChosen({
   persona: 'public',
 })
 
+const confirmed = new Events.AuthorChoicesForAReviewConfirmed({
+  reviewId: input.reviewId,
+  orcidId: input.orcidId,
+  confirmedAt: Temporal.Now.instant(),
+})
+
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
   ['not accepted an invite', input, [added], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
@@ -80,7 +86,8 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     [startedDifferentOrcidId, added, accepted],
     Either.right(Option.some('ChoosePersona')),
   ],
-  ['persona chosen', input, [added, accepted, persona], Either.right(Option.none())],
+  ['persona chosen', input, [added, accepted, persona], Either.right(Option.some('ConfirmAuthorChoices'))],
+  ['details confirmed', input, [added, accepted, persona, confirmed], Either.right(Option.none())],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetNextExpectedCommandForAPrereviewerOnAReview
 

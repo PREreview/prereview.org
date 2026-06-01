@@ -7,4 +7,5 @@ export const RouteForCommand = (command: AuthorInvites.NextExpectedCommand): Rou
 
 const commandRoutes = {
   ChoosePersona: Routes.AuthorInviteChooseYourPersona,
+  ConfirmAuthorChoices: Routes.AuthorInviteConfirmAuthorChoices,
 } satisfies Record<AuthorInvites.NextExpectedCommand, Routes.Route<{ invitationId: Uuid }>>

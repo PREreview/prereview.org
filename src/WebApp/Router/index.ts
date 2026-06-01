@@ -358,6 +358,8 @@ const AuthorInviteFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(AuthorInviteFlow.ChooseYourPersonaSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesPage),
+  MakeRoute('POST', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesSubmission),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsOneThatAcceptedTheInvite),
   HttpRouter.append(MakeRoute('GET', Routes.AuthorInviteAcceptInvite, AuthorInviteFlow.AcceptInvite)),

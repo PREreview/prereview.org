@@ -1,3 +1,4 @@
 export * from './AcceptInvite/index.ts'
 export * from './ChooseYourPersonaPage/index.ts'
+export * from './ConfirmAuthorChoicesPage/index.ts'
 export * from './StartNowPage/index.ts'

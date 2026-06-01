@@ -375,6 +375,12 @@ export const AuthorInviteChooseYourPersona = Route({
   schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
 })
 
+export const AuthorInviteConfirmAuthorChoices = Route({
+  path: '/dataset-review-author-invite/:invitationId/check-your-prereview',
+  href: params => `/dataset-review-author-invite/${params.invitationId}/check-your-prereview`,
+  schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
+})
+
 export const WriteComment = Route({
   path: '/reviews/:id/write-a-comment',
   href: params => `/reviews/${params.id}/write-a-comment`,

@@ -11,7 +11,7 @@ export interface Input {
 
 export type Result = Either.Either<Option.Option<NextExpectedCommand>, Error>
 
-export type NextExpectedCommand = 'ChoosePersona'
+export type NextExpectedCommand = 'ChoosePersona' | 'ConfirmAuthorChoices'
 
 export type Error = PrereviewerIsNotListedOnTheReview
 
@@ -20,7 +20,7 @@ export class PrereviewerIsNotListedOnTheReview extends Data.TaggedError('Prerevi
 const createFilter = (input: Input) =>
   Events.EventFilter([
     {
-      types: ['AuthorInviteAccepted', 'PersonaForAReviewChosen'],
+      types: ['AuthorInviteAccepted', 'PersonaForAReviewChosen', 'AuthorChoicesForAReviewConfirmed'],
       predicates: { reviewId: input.reviewId, orcidId: input.orcidId },
     },
     {
@@ -43,11 +43,15 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
       return Option.none()
     }
 
+    if (Array.some(filteredEvents, hasTag('AuthorChoicesForAReviewConfirmed'))) {
+      return Option.none()
+    }
+
     if (!Array.some(filteredEvents, hasTag('PersonaForAReviewChosen'))) {
       return Option.some('ChoosePersona')
     }
 
-    return Option.none()
+    return Option.some('ConfirmAuthorChoices')
   })
 
 export const GetNextExpectedCommandForAPrereviewerOnAReview = Queries.OnDemandQuery({
