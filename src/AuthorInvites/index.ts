@@ -24,11 +24,7 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
     ) => ReturnType<Commands.FromCommand<typeof ChoosePersona>>
     confirmAuthorChoices: Commands.FromCommand<typeof ConfirmAuthorChoices>
     getPersonaChoice: Queries.FromOnDemandQuery<typeof GetPersonaChoice>
-    getAuthorChoicesToConfirm: (
-      args: Omit<Parameters<Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>>[0], 'reviewId'> & {
-        invitationId: Uuid
-      },
-    ) => ReturnType<Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>>
+    getAuthorChoicesToConfirm: Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>
     hasAPrereviewerConfirmedTheirAuthorChoices: (
       args: Omit<
         Parameters<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>[0],
@@ -52,7 +48,6 @@ export const layer = Layer.effect(
     const acceptInvite = yield* Commands.makeCommand(AcceptInvite)
     const choosePersona = yield* Commands.makeCommand(ChoosePersona)
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
-    const getAuthorChoicesToConfirm = yield* Queries.makeOnDemandQuery(GetAuthorChoicesToConfirm)
     const hasAPrereviewerConfirmedTheirAuthorChoices = yield* Queries.makeOnDemandQuery(
       HasAPrereviewerConfirmedTheirAuthorChoices,
     )
@@ -75,12 +70,7 @@ export const layer = Layer.effect(
       ),
       confirmAuthorChoices: yield* Commands.makeCommand(ConfirmAuthorChoices),
       getPersonaChoice: yield* Queries.makeOnDemandQuery(GetPersonaChoice),
-      getAuthorChoicesToConfirm: flow(
-        Effect.succeed,
-        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
-        Effect.andThen(getAuthorChoicesToConfirm),
-        Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
-      ),
+      getAuthorChoicesToConfirm: yield* Queries.makeOnDemandQuery(GetAuthorChoicesToConfirm),
       hasAPrereviewerConfirmedTheirAuthorChoices: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),

@@ -20,7 +20,9 @@ export const ConfirmAuthorChoicesPage = ({
     const authorInvites = yield* AuthorInvites
     const user = yield* LoggedInUser
 
-    const choices = yield* authorInvites.getAuthorChoicesToConfirm({ invitationId, orcidId: user.orcid })
+    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
+    const choices = yield* authorInvites.getAuthorChoicesToConfirm({ reviewId, orcidId: user.orcid })
 
     const persona = yield* Personas.getPersona({ orcidId: user.orcid, persona: choices.persona })
 
@@ -29,6 +31,7 @@ export const ConfirmAuthorChoicesPage = ({
     Effect.catchTags({
       ChoicesHaveBeenConfirmed: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
+      InvitationNotFound: () => PageNotFound,
       PersonaHasNotBeenChosen: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInviteChooseYourPersona.href({ invitationId }) })),
       PrereviewerIsNotListedOnTheReview: () => PageNotFound,
