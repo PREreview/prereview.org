@@ -1,0 +1,62 @@
+import { Either } from 'effect'
+import * as Personas from '../../../src/Personas/index.ts'
+import * as ChooseYourPersonaForm from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
+import * as _ from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.ts'
+import { expect, test } from '../../base.ts'
+
+test('content looks right', async ({ showPage }) => {
+  const response = _.renderChooseYourPersonaPage({
+    reviewId,
+    form: new ChooseYourPersonaForm.EmptyForm(),
+    publicPersona,
+    pseudonymPersona,
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when there is a choice', async ({ showPage }) => {
+  const response = _.renderChooseYourPersonaPage({
+    reviewId,
+    form: new ChooseYourPersonaForm.CompletedForm({ chooseYourPersona: 'public' }),
+    publicPersona,
+    pseudonymPersona,
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when the choice is missing', async ({ showPage }) => {
+  const response = _.renderChooseYourPersonaPage({
+    reviewId,
+    form: new ChooseYourPersonaForm.InvalidForm({
+      chooseYourPersona: Either.left(new ChooseYourPersonaForm.Missing()),
+    }),
+    publicPersona,
+    pseudonymPersona,
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+const reviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
+
+const publicPersona = new Personas.PublicPersona({
+  orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+})
+
+const pseudonymPersona = new Personas.PseudonymPersona({
+  pseudonym: Pseudonym.Pseudonym('Orange Panda'),
+})
