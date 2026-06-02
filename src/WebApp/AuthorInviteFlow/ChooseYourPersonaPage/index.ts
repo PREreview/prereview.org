@@ -61,9 +61,10 @@ export const ChooseYourPersonaSubmission = ({
       CompletedForm: Effect.fnUntraced(
         function* (form: ChooseYourPersonaForm.CompletedForm) {
           const authorInvites = yield* AuthorInvites
-          yield* authorInvites.choosePersona({ orcidId: user.orcid, invitationId, persona: form.chooseYourPersona })
 
           const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
+          yield* authorInvites.choosePersona({ orcidId: user.orcid, reviewId, persona: form.chooseYourPersona })
 
           const nextExpectedCommand = yield* authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
             reviewId,
