@@ -23,7 +23,9 @@ export const ChooseYourPersonaPage = ({
     const locale = yield* Locale
     const user = yield* LoggedInUser
 
-    const currentPersona = yield* authorInvites.getPersonaChoice({ invitationId, orcidId: user.orcid })
+    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
+    const currentPersona = yield* authorInvites.getPersonaChoice({ reviewId, orcidId: user.orcid })
 
     const form = ChooseYourPersonaForm.fromPersona(currentPersona)
 
@@ -33,6 +35,7 @@ export const ChooseYourPersonaPage = ({
     return renderChooseYourPersonaPage({ invitationId, form, publicPersona, pseudonymPersona, locale })
   }).pipe(
     Effect.catchTags({
+      InvitationNotFound: () => PageNotFound,
       PersonaCannotBeChanged: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
       PrereviewerIsNotListedOnTheReview: () => PageNotFound,
