@@ -23,8 +23,10 @@ export const AcceptInvite = ({
 
     yield* authorInvites.acceptInvite({ invitationId, orcidId: user.orcid, acceptedAt })
 
+    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
     const nextExpectedCommand = yield* authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
-      invitationId,
+      reviewId,
       orcidId: user.orcid,
     })
 

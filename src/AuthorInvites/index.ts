@@ -46,14 +46,9 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
       },
     ) => ReturnType<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>
     getReviewIdForInvitation: Queries.FromOnDemandQuery<typeof GetReviewIdForInvitation>
-    getNextExpectedCommandForAPrereviewerOnAReview: (
-      args: Omit<
-        Parameters<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>[0],
-        'reviewId'
-      > & {
-        invitationId: Uuid
-      },
-    ) => ReturnType<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>
+    getNextExpectedCommandForAPrereviewerOnAReview: Queries.FromOnDemandQuery<
+      typeof GetNextExpectedCommandForAPrereviewerOnAReview
+    >
   }
 >() {}
 
@@ -70,9 +65,6 @@ export const layer = Layer.effect(
     const getAuthorChoicesToConfirm = yield* Queries.makeOnDemandQuery(GetAuthorChoicesToConfirm)
     const hasAPrereviewerConfirmedTheirAuthorChoices = yield* Queries.makeOnDemandQuery(
       HasAPrereviewerConfirmedTheirAuthorChoices,
-    )
-    const getNextExpectedCommandForAPrereviewerOnAReview = yield* Queries.makeOnDemandQuery(
-      GetNextExpectedCommandForAPrereviewerOnAReview,
     )
 
     return {
@@ -119,11 +111,8 @@ export const layer = Layer.effect(
         Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
       ),
       getReviewIdForInvitation,
-      getNextExpectedCommandForAPrereviewerOnAReview: flow(
-        Effect.succeed,
-        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
-        Effect.andThen(getNextExpectedCommandForAPrereviewerOnAReview),
-        Effect.catchTag('InvitationNotFound', error => new Queries.UnableToQuery({ cause: error })),
+      getNextExpectedCommandForAPrereviewerOnAReview: yield* Queries.makeOnDemandQuery(
+        GetNextExpectedCommandForAPrereviewerOnAReview,
       ),
     }
   }),

@@ -60,14 +60,17 @@ export const ChooseYourPersonaSubmission = ({
           const authorInvites = yield* AuthorInvites
           yield* authorInvites.choosePersona({ orcidId: user.orcid, invitationId, persona: form.chooseYourPersona })
 
+          const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
           const nextExpectedCommand = yield* authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
-            invitationId,
+            reviewId,
             orcidId: user.orcid,
           })
 
           return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ invitationId }) })
         },
         Effect.catchTags({
+          InvitationNotFound: () => HavingProblemsPage,
           NothingToDo: () => HavingProblemsPage,
           PersonaDoesNotNeedToBeChosen: () => HavingProblemsPage,
           PersonaCannotBeChanged: () => HavingProblemsPage,
