@@ -1,9 +1,8 @@
 import { Boolean, HashMap, HashSet, Option, pipe, Tuple } from 'effect'
 import {
-  getLanguageForLocale,
   getLocaleForLanguage,
   isUserSelectableLocale,
-  UserSelectableLocales,
+  UserSelectableLanguages,
   type SupportedLocale,
   type UserSelectableLanguage,
   type UserSelectableLocale,
@@ -20,6 +19,7 @@ export const constructPageUrls = (
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse,
   appOrigin: string,
   locale: SupportedLocale,
+  enabledLocales: HashSet.HashSet<UserSelectableLocale>,
 ): Option.Option<PageUrls> =>
   pipe(
     Option.fromNullable(response.canonical),
@@ -29,7 +29,7 @@ export const constructPageUrls = (
         onFalse: () => new URL(`${appOrigin}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),
       }),
       localeUrls: pipe(
-        UserSelectableLocales,
+        enabledLocales,
         HashSet.map(locale =>
           Tuple.make(
             locale,
@@ -37,21 +37,19 @@ export const constructPageUrls = (
           ),
         ),
         HashMap.fromIterable,
-        HashMap.flatMap(
-          (url, locale) =>
-            Option.match(getLanguageForLocale(locale), {
-              onNone: () => HashMap.make([locale, url]),
-              onSome: language =>
-                HashMap.make(
-                  [locale, url],
-                  [
-                    language,
-                    new URL(
-                      `${appOrigin}/${getLocaleForLanguage(language).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
-                    ),
-                  ],
+        HashMap.union(
+          pipe(
+            UserSelectableLanguages,
+            HashSet.map(language =>
+              Tuple.make(
+                language,
+                new URL(
+                  `${appOrigin}/${getLocaleForLanguage(language).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
                 ),
-            }) as never,
+              ),
+            ),
+            HashMap.fromIterable,
+          ),
         ),
       ),
       xDefault: new URL(`${appOrigin}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),

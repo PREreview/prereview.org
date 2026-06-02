@@ -34,7 +34,12 @@ describe('constructPageUrls', () => {
             fc.string(),
           ],
           ([[locale, origin, canonical, expected]]) => {
-            const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale)
+            const pageUrls = constructPageUrls(
+              { canonical } as unknown as PageResponse,
+              origin,
+              locale,
+              UserSelectableLocales,
+            )
 
             expect(Option.getOrThrow(pageUrls).canonical.href).toStrictEqual(expected)
           },
@@ -78,7 +83,12 @@ describe('constructPageUrls', () => {
             fc.string(),
           ],
           ([[locale, origin, canonical, expected]]) => {
-            const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale)
+            const pageUrls = constructPageUrls(
+              { canonical } as unknown as PageResponse,
+              origin,
+              locale,
+              UserSelectableLocales,
+            )
 
             expect(Option.getOrThrow(pageUrls).canonical.href).toStrictEqual(expected)
           },
@@ -101,7 +111,12 @@ describe('constructPageUrls', () => {
         'constructs a url for each selectable locale and language',
         [fc.url().map(url => Tuple.make(url.origin, `${url.pathname}${url.search}`)), fc.userSelectableLocale()],
         ([[origin, canonical], locale]) => {
-          const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale)
+          const pageUrls = constructPageUrls(
+            { canonical } as unknown as PageResponse,
+            origin,
+            locale,
+            UserSelectableLocales,
+          )
 
           expect(HashMap.size(Option.getOrThrow(pageUrls).localeUrls)).toBe(
             HashSet.size(UserSelectableLocales) + HashSet.size(UserSelectableLanguages),
@@ -127,7 +142,12 @@ describe('constructPageUrls', () => {
             ),
         ],
         ([[locale, origin, canonical, expected]]) => {
-          const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, DefaultLocale)
+          const pageUrls = constructPageUrls(
+            { canonical } as unknown as PageResponse,
+            origin,
+            DefaultLocale,
+            UserSelectableLocales,
+          )
 
           expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, locale).href).toStrictEqual(expected)
         },
@@ -162,7 +182,12 @@ describe('constructPageUrls', () => {
             ),
         ],
         ([[language, origin, canonical, expected]]) => {
-          const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, DefaultLocale)
+          const pageUrls = constructPageUrls(
+            { canonical } as unknown as PageResponse,
+            origin,
+            DefaultLocale,
+            UserSelectableLocales,
+          )
 
           expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, language).href).toStrictEqual(expected)
         },
@@ -197,7 +222,12 @@ describe('constructPageUrls', () => {
             ),
         ],
         ([locale, [origin, canonical, expected]]) => {
-          const pageUrls = constructPageUrls({ canonical } as unknown as PageResponse, origin, locale)
+          const pageUrls = constructPageUrls(
+            { canonical } as unknown as PageResponse,
+            origin,
+            locale,
+            UserSelectableLocales,
+          )
 
           expect(Option.getOrThrow(pageUrls).xDefault.href).toStrictEqual(expected)
         },
@@ -217,7 +247,7 @@ describe('constructPageUrls', () => {
 
   describe("when there isn't a canonical url", () => {
     it.prop('returns a none', [fc.url(), fc.supportedLocale()], ([origin, locale]) => {
-      const pageUrls = constructPageUrls({} as unknown as PageResponse, origin.href, locale)
+      const pageUrls = constructPageUrls({} as unknown as PageResponse, origin.href, locale, UserSelectableLocales)
 
       expect(pageUrls).toStrictEqual(Option.none())
     })

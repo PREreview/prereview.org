@@ -3,6 +3,7 @@ import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema,
 import { FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
+import { UserSelectableLocales } from '../../locales/index.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -67,7 +68,8 @@ export const toHttpServerResponse = (
     const message = yield* Effect.serviceOption(FlashMessage)
     const allowRobots = response._tag !== 'TwoUpPageResponse' ? response.allowRobots !== false : true
 
-    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale)
+    const enabledLocales = UserSelectableLocales
+    const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale, enabledLocales)
 
     const links = Option.match(pageUrls, {
       onNone: Array.empty,
