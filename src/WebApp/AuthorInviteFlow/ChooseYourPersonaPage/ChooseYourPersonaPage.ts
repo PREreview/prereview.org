@@ -12,13 +12,13 @@ import type * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 const definition = (text: string) => `<dfn>${text}</dfn>`
 
 export const renderChooseYourPersonaPage = ({
-  invitationId,
+  reviewId,
   form,
   publicPersona,
   pseudonymPersona,
   locale,
 }: {
-  invitationId: Uuid.Uuid
+  reviewId: Uuid.Uuid
   form: ChooseYourPersonaForm.ChooseYourPersonaForm
   publicPersona: Personas.PublicPersona
   pseudonymPersona: Personas.PseudonymPersona
@@ -31,7 +31,7 @@ export const renderChooseYourPersonaPage = ({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, hasAnError), plainText),
     main: html`
-      <form method="post" action="${Routes.AuthorInviteChooseYourPersona.href({ invitationId })}" novalidate>
+      <form method="post" action="${Routes.AuthorInviteChooseYourPersona.href({ reviewId })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
@@ -129,7 +129,7 @@ export const renderChooseYourPersonaPage = ({
         ${saveAndContinueButton(locale)}
       </form>
     `,
-    canonical: Routes.AuthorInviteChooseYourPersona.href({ invitationId }),
+    canonical: Routes.AuthorInviteChooseYourPersona.href({ reviewId }),
     js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
     skipToLabel: 'form',
   })

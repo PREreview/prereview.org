@@ -14,16 +14,14 @@ import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 import { renderChooseYourPersonaPage } from './ChooseYourPersonaPage.ts'
 
 export const ChooseYourPersonaPage = ({
-  invitationId,
+  reviewId,
 }: {
-  invitationId: Uuid
+  reviewId: Uuid
 }): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
     const user = yield* LoggedInUser
-
-    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
 
     const currentPersona = yield* authorInvites.getPersonaChoice({ reviewId, orcidId: user.orcid })
 
@@ -32,12 +30,11 @@ export const ChooseYourPersonaPage = ({
     const publicPersona = yield* Personas.getPublicPersona(user.orcid)
     const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
-    return renderChooseYourPersonaPage({ invitationId, form, publicPersona, pseudonymPersona, locale })
+    return renderChooseYourPersonaPage({ reviewId, form, publicPersona, pseudonymPersona, locale })
   }).pipe(
     Effect.catchTags({
-      InvitationNotFound: () => PageNotFound,
       PersonaCannotBeChanged: () =>
-        Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
+        Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })),
       PrereviewerIsNotListedOnTheReview: () => PageNotFound,
       UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
@@ -46,10 +43,10 @@ export const ChooseYourPersonaPage = ({
 
 export const ChooseYourPersonaSubmission = ({
   body,
-  invitationId,
+  reviewId,
 }: {
   body: UrlParams.UrlParams
-  invitationId: Uuid
+  reviewId: Uuid
 }): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -62,8 +59,6 @@ export const ChooseYourPersonaSubmission = ({
         function* (form: ChooseYourPersonaForm.CompletedForm) {
           const authorInvites = yield* AuthorInvites
 
-          const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
-
           yield* authorInvites.choosePersona({ orcidId: user.orcid, reviewId, persona: form.chooseYourPersona })
 
           const nextExpectedCommand = yield* authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
@@ -71,10 +66,9 @@ export const ChooseYourPersonaSubmission = ({
             orcidId: user.orcid,
           })
 
-          return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ invitationId }) })
+          return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ reviewId }) })
         },
         Effect.catchTags({
-          InvitationNotFound: () => HavingProblemsPage,
           NothingToDo: () => HavingProblemsPage,
           PersonaDoesNotNeedToBeChosen: () => HavingProblemsPage,
           PersonaCannotBeChanged: () => HavingProblemsPage,
@@ -88,7 +82,7 @@ export const ChooseYourPersonaSubmission = ({
           const publicPersona = yield* Personas.getPublicPersona(user.orcid)
           const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
-          return renderChooseYourPersonaPage({ invitationId, form, publicPersona, pseudonymPersona, locale })
+          return renderChooseYourPersonaPage({ reviewId, form, publicPersona, pseudonymPersona, locale })
         },
         Effect.catchTag('UnableToGetPersona', () => HavingProblemsPage),
       ),

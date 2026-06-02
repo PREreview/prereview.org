@@ -30,13 +30,19 @@ export const AcceptInvite = ({
       orcidId: user.orcid,
     })
 
-    return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ invitationId }) })
+    return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ reviewId }) })
   }).pipe(
     Effect.catchTags({
       InvitationNotFound: () => PageNotFound,
       InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer: () => NoPermissionPage,
       NothingToDo: () =>
-        Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
+        Effect.gen(function* () {
+          const authorInvites = yield* AuthorInvites
+
+          const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
+          return RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })
+        }).pipe(Effect.catchAll(() => HavingProblemsPage)),
       PrereviewerIsNotListedOnTheReview: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,

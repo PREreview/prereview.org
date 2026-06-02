@@ -10,15 +10,13 @@ import { RedirectResponse, type Response } from '../../Response/index.ts'
 import { renderPublishedPage } from './PublishedPage.ts'
 
 export const PublishedPage = ({
-  invitationId,
+  reviewId,
 }: {
-  invitationId: Uuid
+  reviewId: Uuid
 }): Effect.Effect<Response, never, Locale | LoggedInUser | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
     const user = yield* LoggedInUser
-
-    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
 
     const hasConfirmedChoices = yield* authorInvites.hasAPrereviewerConfirmedTheirAuthorChoices({
       reviewId,
@@ -26,13 +24,12 @@ export const PublishedPage = ({
     })
 
     if (!hasConfirmedChoices) {
-      return RedirectResponse({ location: Routes.AuthorInviteConfirmAuthorChoices.href({ invitationId }) })
+      return RedirectResponse({ location: Routes.AuthorInviteConfirmAuthorChoices.href({ reviewId }) })
     }
 
-    return renderPublishedPage({ invitationId, reviewId })
+    return renderPublishedPage({ reviewId })
   }).pipe(
     Effect.catchTags({
-      InvitationNotFound: () => PageNotFound,
       PrereviewerIsNotListedOnTheReview: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),

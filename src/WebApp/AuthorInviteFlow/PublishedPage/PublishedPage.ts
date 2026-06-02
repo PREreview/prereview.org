@@ -3,7 +3,7 @@ import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export const renderPublishedPage = ({ invitationId, reviewId }: { invitationId: Uuid.Uuid; reviewId: Uuid.Uuid }) => {
+export const renderPublishedPage = ({ reviewId }: { reviewId: Uuid.Uuid }) => {
   return StreamlinePageResponse({
     title: plainText('Name added'),
     main: html`
@@ -20,6 +20,6 @@ export const renderPublishedPage = ({ invitationId, reviewId }: { invitationId: 
         <a href="${Routes.DatasetReview.href({ datasetReviewId: reviewId })}">see the PREreview</a>.
       </p>
     `,
-    canonical: Routes.AuthorInvitePublished.href({ invitationId }),
+    canonical: Routes.AuthorInvitePublished.href({ reviewId }),
   })
 }

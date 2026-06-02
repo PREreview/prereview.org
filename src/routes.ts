@@ -370,21 +370,21 @@ export const AuthorInviteAcceptInvite = Route({
 })
 
 export const AuthorInviteChooseYourPersona = Route({
-  path: '/dataset-review-author-invite/:invitationId/choose-name',
-  href: params => `/dataset-review-author-invite/${params.invitationId}/choose-name`,
-  schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
+  path: '/dataset-review-author-invite/:reviewId/choose-name',
+  href: params => `/dataset-review-author-invite/${params.reviewId}/choose-name`,
+  schema: Schema.Struct({ reviewId: Uuid.UuidSchema }),
 })
 
 export const AuthorInviteConfirmAuthorChoices = Route({
-  path: '/dataset-review-author-invite/:invitationId/check-your-prereview',
-  href: params => `/dataset-review-author-invite/${params.invitationId}/check-your-prereview`,
-  schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
+  path: '/dataset-review-author-invite/:reviewId/check-your-prereview',
+  href: params => `/dataset-review-author-invite/${params.reviewId}/check-your-prereview`,
+  schema: Schema.Struct({ reviewId: Uuid.UuidSchema }),
 })
 
 export const AuthorInvitePublished = Route({
-  path: '/dataset-review-author-invite/:invitationId/name-published',
-  href: params => `/dataset-review-author-invite/${params.invitationId}/name-published`,
-  schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
+  path: '/dataset-review-author-invite/:reviewId/name-published',
+  href: params => `/dataset-review-author-invite/${params.reviewId}/name-published`,
+  schema: Schema.Struct({ reviewId: Uuid.UuidSchema }),
 })
 
 export const WriteComment = Route({

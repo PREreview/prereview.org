@@ -6,16 +6,16 @@ import { ProfileId, type Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const renderConfirmAuthorChoicesPage = ({
-  invitationId,
+  reviewId,
   persona,
 }: {
-  invitationId: Uuid.Uuid
+  reviewId: Uuid.Uuid
   persona: Personas.Persona
 }) => {
   return StreamlinePageResponse({
     title: plainText('Check your details'),
     main: html`
-      <form method="post" action="${Routes.AuthorInviteConfirmAuthorChoices.href({ invitationId })}" novalidate>
+      <form method="post" action="${Routes.AuthorInviteConfirmAuthorChoices.href({ reviewId })}" novalidate>
         <h1>Check your details</h1>
 
         <div class="summary-card">
@@ -28,7 +28,7 @@ export const renderConfirmAuthorChoicesPage = ({
               <dt><span>Published name</span></dt>
               <dd>${displayAuthor(persona)}</dd>
               <dd>
-                <a href="${Routes.AuthorInviteChooseYourPersona.href({ invitationId })}"
+                <a href="${Routes.AuthorInviteChooseYourPersona.href({ reviewId })}"
                   >Change <span class="visually-hidden">name</span></a
                 >
               </dd>
@@ -43,7 +43,7 @@ export const renderConfirmAuthorChoicesPage = ({
         <button>Update PREreview</button>
       </form>
     `,
-    canonical: Routes.AuthorInviteConfirmAuthorChoices.href({ invitationId }),
+    canonical: Routes.AuthorInviteConfirmAuthorChoices.href({ reviewId }),
     skipToLabel: 'form',
   })
 }
