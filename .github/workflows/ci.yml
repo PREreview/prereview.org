@@ -126,7 +126,7 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: .
           outputs: type=docker,dest=/tmp/image.tar
