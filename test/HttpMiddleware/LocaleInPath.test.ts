@@ -1,7 +1,8 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Option } from 'effect'
+import { Effect, Option } from 'effect'
+import { EnabledLocales } from '../../src/Context.ts'
 import * as _ from '../../src/HttpMiddleware/LocaleInPath.ts'
-import type { SupportedLocale } from '../../src/locales/index.ts'
+import { UserSelectableLocales, type SupportedLocale } from '../../src/locales/index.ts'
 
 const localeInPathCases = [
   ['/', '/', Option.none()],
@@ -22,13 +23,21 @@ const localeInPathCases = [
 ] satisfies ReadonlyArray<[string, string, Option.Option<SupportedLocale>]>
 
 describe('removeLocaleFromPath', () => {
-  it.each(localeInPathCases)('returns the expected path without a locale for %s', (input, expectedPath) => {
-    expect(_.removeLocaleFromPath(input)).toBe(expectedPath)
-  })
+  it.effect.each(localeInPathCases)('returns the expected path without a locale for %s', ([input, expectedPath]) =>
+    Effect.gen(function* () {
+      const actual = yield* _.removeLocaleFromPath(input)
+
+      expect(actual).toBe(expectedPath)
+    }).pipe(Effect.provideService(EnabledLocales, UserSelectableLocales)),
+  )
 })
 
 describe('getLocaleFromPath', () => {
-  it.each(localeInPathCases)('returns the expected locale for %s', (input, _expectedPath, expectedLocale) => {
-    expect(_.getLocaleFromPath(input)).toStrictEqual(expectedLocale)
-  })
+  it.effect.each(localeInPathCases)('returns the expected locale for %s', ([input, _expectedPath, expectedLocale]) =>
+    Effect.gen(function* () {
+      const actual = yield* _.getLocaleFromPath(input)
+
+      expect(actual).toStrictEqual(expectedLocale)
+    }).pipe(Effect.provideService(EnabledLocales, UserSelectableLocales)),
+  )
 })
