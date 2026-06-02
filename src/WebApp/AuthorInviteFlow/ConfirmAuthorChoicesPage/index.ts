@@ -47,7 +47,9 @@ export const ConfirmAuthorChoicesSubmission = ({
     const user = yield* LoggedInUser
     const confirmedAt = yield* Temporal.currentInstant
 
-    yield* authorInvites.confirmAuthorChoices({ orcidId: user.orcid, invitationId, confirmedAt })
+    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
+    yield* authorInvites.confirmAuthorChoices({ orcidId: user.orcid, reviewId, confirmedAt })
 
     return RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })
   }).pipe(
@@ -55,6 +57,8 @@ export const ConfirmAuthorChoicesSubmission = ({
       ChoicesCannotBeChanged: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
       ChoicesDoNotNeedToBeConfirmed: () => HavingProblemsPage,
+      InvitationNotFound: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
     }),
   )
