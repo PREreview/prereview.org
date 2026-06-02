@@ -30,7 +30,7 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LoggerEnv } from 'logger-fp-ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
-import { Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
+import { type EnabledLocales, Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
 import { Cloudinary, Slack, Zenodo } from '../../../ExternalApis/index.ts'
 import {
@@ -221,6 +221,7 @@ export interface Env {
     | Zenodo.ZenodoApi
     | FeatureFlags.FeatureFlags
     | Locale
+    | EnabledLocales
     | Email.Email
   >
   logger: LoggerEnv

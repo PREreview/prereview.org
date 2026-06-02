@@ -1,9 +1,8 @@
 import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
-import { FlashMessage, Locale, SessionStore } from '../../Context.ts'
+import { EnabledLocales, FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
-import { UserSelectableLocales } from '../../locales/index.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -28,6 +27,7 @@ export const toHttpServerResponse = (
   | PublicUrl.PublicUrl
   | FeatureFlags.FeatureFlags
   | HttpServerRequest.HttpServerRequest
+  | EnabledLocales
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -68,7 +68,7 @@ export const toHttpServerResponse = (
     const message = yield* Effect.serviceOption(FlashMessage)
     const allowRobots = response._tag !== 'TwoUpPageResponse' ? response.allowRobots !== false : true
 
-    const enabledLocales = UserSelectableLocales
+    const enabledLocales = yield* EnabledLocales
     const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale, enabledLocales)
 
     const links = Option.match(pageUrls, {

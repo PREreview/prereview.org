@@ -1,7 +1,7 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Redacted } from 'effect'
-import { Locale } from '../../../src/Context.ts'
+import { Effect, HashSet, Redacted } from 'effect'
+import { EnabledLocales, Locale } from '../../../src/Context.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -64,6 +64,7 @@ describe('LegacyRouter', () => {
     }).pipe(
       Effect.provideService(TemplatePage, shouldNotBeCalled),
       Effect.provideService(Locale, DefaultLocale),
+      Effect.provideService(EnabledLocales, HashSet.empty()),
       Effect.provide(
         OrcidOauth.layer({ url: new URL('http://orcid.test'), clientId: 'id', clientSecret: Redacted.make('secret') }),
       ),
@@ -105,6 +106,7 @@ describe('LegacyRouter', () => {
     }).pipe(
       Effect.provideService(TemplatePage, () => rawHtml('page-content')),
       Effect.provideService(Locale, DefaultLocale),
+      Effect.provideService(EnabledLocales, HashSet.empty()),
       Effect.provide(
         OrcidOauth.layer({
           url: new URL('http://orcid.test'),
@@ -135,6 +137,7 @@ describe('LegacyRouter', () => {
     }).pipe(
       Effect.provideService(TemplatePage, () => rawHtml('page-content')),
       Effect.provideService(Locale, DefaultLocale),
+      Effect.provideService(EnabledLocales, HashSet.empty()),
       Effect.provide(
         OrcidOauth.layer({
           url: new URL('http://orcid.test'),

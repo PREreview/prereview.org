@@ -205,10 +205,13 @@ export const ensureUserIsLoggedIn = HttpMiddleware.make(app =>
 
 export const ensureUserIsOneThatAcceptedTheInvite = HttpMiddleware.make(app => app)
 
-export const removeLocaleFromPathForRouting = HttpMiddleware.make(
-  Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
-    request.modify({ url: LocaleInPath.removeLocaleFromPath(request.url) }),
-  ),
+export const removeLocaleFromPathForRouting = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const request = yield* HttpServerRequest.HttpServerRequest
+    const url = yield* LocaleInPath.removeLocaleFromPath(request.url)
+
+    return yield* Effect.provideService(app, HttpServerRequest.HttpServerRequest, request.modify({ url }))
+  }),
 )
 
 export const getLocale = HttpMiddleware.make(app =>
@@ -223,6 +226,7 @@ export const getLocale = HttpMiddleware.make(app =>
       HttpServerRequest.HttpServerRequest,
       Effect.andThen(request => request.url),
       Effect.andThen(LocaleInPath.getLocaleFromPath),
+      Effect.flatten,
       Effect.orElseSucceed(() => undefined),
     )
 
@@ -239,10 +243,11 @@ export const getLocale = HttpMiddleware.make(app =>
 
     const request = yield* HttpServerRequest.HttpServerRequest
 
-    const detectedLocale = pipe(
+    const detectedLocale = yield* pipe(
       Headers.get(request.headers, 'Accept-Language'),
-      Option.andThen(detectLocale),
-      Option.getOrElse(() => DefaultLocale),
+      Effect.andThen(detectLocale),
+      Effect.flatten,
+      Effect.orElseSucceed(() => DefaultLocale),
     )
 
     const response = yield* Effect.provideService(app, Locale, detectedLocale)

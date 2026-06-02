@@ -1,24 +1,22 @@
-import { Array, Boolean, Option, pipe } from 'effect'
+import { Array, Boolean, Effect, HashSet, Option, pipe } from 'effect'
 import { parseAcceptLanguage } from 'intl-parse-accept-language'
-import {
-  DefaultLocale,
-  isUserSelectableLocale,
-  UserSelectableLocales,
-  type UserSelectableLocale,
-} from '../locales/index.ts'
+import { EnabledLocales } from '../Context.ts'
+import { DefaultLocale, type UserSelectableLocale } from '../locales/index.ts'
 
-export const detectLocale = (acceptLanguageHeader: string): Option.Option<UserSelectableLocale> => {
+export const detectLocale = Effect.fnUntraced(function* (
+  acceptLanguageHeader: string,
+): Effect.fn.Return<Option.Option<UserSelectableLocale>, never, EnabledLocales> {
+  const enabledLocales = yield* EnabledLocales
+
   const parsed = parseAcceptLanguage(acceptLanguageHeader, { ignoreWildcard: false })
 
   return pipe(
     Array.findFirst(parsed, candidate => {
-      if (isUserSelectableLocale(candidate)) {
-        return Option.some(candidate)
+      if (HashSet.has(enabledLocales, candidate)) {
+        return Option.some(candidate as UserSelectableLocale)
       }
 
-      return Array.findFirst(UserSelectableLocales, locale =>
-        locale.startsWith(candidate.split('-', 1)[0] ?? candidate),
-      )
+      return Array.findFirst(enabledLocales, locale => locale.startsWith(candidate.split('-', 1)[0] ?? candidate))
     }),
     Option.orElse(() =>
       Boolean.match(Array.contains(parsed, '*'), {
@@ -27,4 +25,4 @@ export const detectLocale = (acceptLanguageHeader: string): Option.Option<UserSe
       }),
     ),
   )
-}
+})
