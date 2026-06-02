@@ -1,8 +1,8 @@
 import { Boolean, HashMap, HashSet, Option, pipe, Tuple } from 'effect'
 import {
+  getLanguageForLocale,
   getLocaleForLanguage,
   isUserSelectableLocale,
-  UserSelectableLanguages,
   UserSelectableLocales,
   type SupportedLocale,
   type UserSelectableLanguage,
@@ -37,19 +37,21 @@ export const constructPageUrls = (
           ),
         ),
         HashMap.fromIterable,
-        HashMap.union(
-          pipe(
-            UserSelectableLanguages,
-            HashSet.map(language =>
-              Tuple.make(
-                language,
-                new URL(
-                  `${appOrigin}/${getLocaleForLanguage(language).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
+        HashMap.flatMap(
+          (url, locale) =>
+            Option.match(getLanguageForLocale(locale), {
+              onNone: () => HashMap.make([locale, url]),
+              onSome: language =>
+                HashMap.make(
+                  [locale, url],
+                  [
+                    language,
+                    new URL(
+                      `${appOrigin}/${getLocaleForLanguage(language).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            HashMap.fromIterable,
-          ),
+            }) as never,
         ),
       ),
       xDefault: new URL(`${appOrigin}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),

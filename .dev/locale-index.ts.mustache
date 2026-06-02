@@ -1,4 +1,4 @@
-import { HashSet } from 'effect'
+import { HashSet, type Option, Record } from 'effect'
 {{#moduleNames}}
 import * as {{@key}} from './{{.}}.ts'
 {{/moduleNames}}
@@ -30,6 +30,12 @@ export const getLocaleForLanguage = (language: UserSelectableLanguage): Supporte
   '{{@key}}': '{{.}}',
 {{/languages}}
 } as const)[language]
+
+export const getLanguageForLocale = (locale: UserSelectableLocale): Option.Option<UserSelectableLanguage> => Record.get({
+{{#languages}}
+  '{{.}}': '{{@key}}',
+{{/languages}}
+}, locale as never)
 
 type Module = keyof Translations
 type Key<M extends Module> = keyof Translations[M]
