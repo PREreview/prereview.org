@@ -1,8 +1,8 @@
 import { type Locator, test as baseTest } from '@playwright/test'
-import { Match, String, pipe } from 'effect'
+import { HashSet, Match, String, pipe } from 'effect'
 import path from 'path'
 import type { Html } from '../src/html.ts'
-import { DefaultLocale } from '../src/locales/index.ts'
+import { DefaultLocale, type UserSelectableLocale } from '../src/locales/index.ts'
 import { type Page, page as templatePage } from '../src/WebApp/page.ts'
 import {
   PageResponse,
@@ -96,6 +96,13 @@ export const test = baseTest.extend<ShowPage>({
     })
   },
   templatePage: async ({ baseURL }, use) => {
-    await use(page => templatePage({ page, publicUrl: new URL(baseURL ?? ''), useCrowdinInContext: false }))
+    await use(page =>
+      templatePage({
+        page,
+        publicUrl: new URL(baseURL ?? ''),
+        useCrowdinInContext: false,
+        enabledLocales: HashSet.make<ReadonlyArray<UserSelectableLocale>>('en-US', 'es-419', 'pt-BR'),
+      }),
+    )
   },
 })

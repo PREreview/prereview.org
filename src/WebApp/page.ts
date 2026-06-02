@@ -1,8 +1,8 @@
-import { Array, Boolean, HashMap, String, Tuple, pipe } from 'effect'
+import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { type Html, type PlainText, html, rawHtml } from '../html.ts'
-import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from '../locales/index.ts'
+import { DefaultLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as Routes from '../routes.ts'
 import type { UserOnboarding } from '../user-onboarding.ts'
@@ -62,6 +62,7 @@ export const page = ({
   publicUrl,
   canLogInAsDemoUser = false,
   useCrowdinInContext,
+  enabledLocales,
 }: {
   page: Page
   environmentLabel?: 'dev' | 'sandbox'
@@ -69,6 +70,7 @@ export const page = ({
   publicUrl: URL
   canLogInAsDemoUser?: boolean
   useCrowdinInContext: boolean
+  enabledLocales: HashSet.HashSet<UserSelectableLocale>
 }): Html => {
   const t = translate(locale)
 
@@ -340,15 +342,15 @@ export const page = ({
                             <h3>${t('header', 'chooseLanguage')()}</h3>
                             <ul>
                               ${pipe(
-                                Array.fromIterable(UserSelectableLocales),
-                                Array.map(supportedLocale =>
+                                Array.fromIterable(enabledLocales),
+                                Array.map(enabledLocale =>
                                   Tuple.make(
-                                    supportedLocale,
-                                    new Intl.DisplayNames(supportedLocale, {
+                                    enabledLocale,
+                                    new Intl.DisplayNames(enabledLocale, {
                                       type: 'language',
                                       languageDisplay: 'standard',
                                       style: 'short',
-                                    }).of(supportedLocale) ?? supportedLocale,
+                                    }).of(enabledLocale) ?? enabledLocale,
                                   ),
                                 ),
                                 Array.sortWith(
@@ -396,15 +398,15 @@ export const page = ({
 
                         <ul>
                           ${pipe(
-                            Array.fromIterable(UserSelectableLocales),
-                            Array.map(supportedLocale =>
+                            Array.fromIterable(enabledLocales),
+                            Array.map(enabledLocale =>
                               Tuple.make(
-                                supportedLocale,
-                                new Intl.DisplayNames(supportedLocale, {
+                                enabledLocale,
+                                new Intl.DisplayNames(enabledLocale, {
                                   type: 'language',
                                   languageDisplay: 'standard',
                                   style: 'short',
-                                }).of(supportedLocale) ?? supportedLocale,
+                                }).of(enabledLocale) ?? enabledLocale,
                               ),
                             ),
                             Array.sortWith(

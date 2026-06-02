@@ -1,6 +1,7 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import type { Html } from '../html.ts'
+import { UserSelectableLocales } from '../locales/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { type Page, page as templatePage } from './page.ts'
 
@@ -21,6 +22,7 @@ export const make = Effect.gen(function* () {
   const canLogInAsDemoUser = yield* FeatureFlags.canLogInAsDemoUser
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
+  const enabledLocales = UserSelectableLocales
 
   return (page: Page) =>
     templatePage({
@@ -30,6 +32,7 @@ export const make = Effect.gen(function* () {
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),
       publicUrl,
+      enabledLocales,
     })
 })
 

@@ -1,10 +1,16 @@
-import { Array, pipe, String, Tuple } from 'effect'
+import { Array, type HashSet, pipe, String, Tuple } from 'effect'
 import { html, plainText } from '../../html.ts'
-import { DefaultLocale, type SupportedLocale, translate, UserSelectableLocales } from '../../locales/index.ts'
+import { DefaultLocale, type SupportedLocale, translate, type UserSelectableLocale } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export const createChooseLocalePage = ({ locale }: { locale: SupportedLocale }) => {
+export const createChooseLocalePage = ({
+  locale,
+  enabledLocales,
+}: {
+  locale: SupportedLocale
+  enabledLocales: HashSet.HashSet<UserSelectableLocale>
+}) => {
   const t = translate(locale, 'header')
 
   return PageResponse({
@@ -17,15 +23,15 @@ export const createChooseLocalePage = ({ locale }: { locale: SupportedLocale }) 
           <h3>${t('chooseLanguage')()}</h3>
           <ul>
             ${pipe(
-              Array.fromIterable(UserSelectableLocales),
-              Array.map(supportedLocale =>
+              Array.fromIterable(enabledLocales),
+              Array.map(enabledLocale =>
                 Tuple.make(
-                  supportedLocale,
-                  new Intl.DisplayNames(supportedLocale, {
+                  enabledLocale,
+                  new Intl.DisplayNames(enabledLocale, {
                     type: 'language',
                     languageDisplay: 'standard',
                     style: 'short',
-                  }).of(supportedLocale) ?? supportedLocale,
+                  }).of(enabledLocale) ?? enabledLocale,
                 ),
               ),
               Array.sortWith(
