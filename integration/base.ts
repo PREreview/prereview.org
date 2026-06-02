@@ -39,7 +39,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
-import { AllowSiteCrawlers, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
+import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -57,7 +57,7 @@ import {
   type ResearchInterestsStoreEnv,
   type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
-import { DefaultLocale } from '../src/locales/index.ts'
+import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
@@ -2438,6 +2438,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             userOnboardingStore,
           }),
           Layer.succeed(AllowSiteCrawlers, true),
+          Layer.succeed(EnabledLocales, UserSelectableLocales),
           Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
           CachingHttpClient.layerInMemory(),
           CommunitySlack.layerChannelIds({

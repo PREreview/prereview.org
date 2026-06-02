@@ -23,11 +23,12 @@ import {
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './Clubs/index.ts'
-import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from './Context.ts'
+import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as Keyv from './keyv.ts'
+import { UserSelectableLocales } from './locales/index.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
@@ -137,6 +138,13 @@ pipe(
       Config.all({
         apiToken: Config.redacted('SLACK_API_TOKEN'),
       }),
+    ),
+    Layer.effect(
+      EnabledLocales,
+      Config.withDefault(
+        Config.hashSet(Config.literal(...UserSelectableLocales)('ENABLED_LOCALES')),
+        UserSelectableLocales,
+      ),
     ),
     Layer.effect(
       Cloudinary.CloudinaryApi,

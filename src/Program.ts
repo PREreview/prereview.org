@@ -5,7 +5,7 @@ import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
-import { EnabledLocales, SessionStore } from './Context.ts'
+import { SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
@@ -39,7 +39,7 @@ import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
-import { DefaultLocale, translate, UserSelectableLocales } from './locales/index.ts'
+import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
@@ -362,6 +362,5 @@ export const Program = pipe(
     Uuid.layer,
     CachingHttpClient.layerRevalidationQueue,
     CookieSignature.layer,
-    Layer.succeed(EnabledLocales, UserSelectableLocales),
   ]),
 )
