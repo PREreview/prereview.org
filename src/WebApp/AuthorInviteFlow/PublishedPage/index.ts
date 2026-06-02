@@ -18,16 +18,16 @@ export const PublishedPage = ({
     const authorInvites = yield* AuthorInvites
     const user = yield* LoggedInUser
 
+    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
+
     const hasConfirmedChoices = yield* authorInvites.hasAPrereviewerConfirmedTheirAuthorChoices({
-      invitationId,
+      reviewId,
       orcidId: user.orcid,
     })
 
     if (!hasConfirmedChoices) {
       return RedirectResponse({ location: Routes.AuthorInviteConfirmAuthorChoices.href({ invitationId }) })
     }
-
-    const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
 
     return renderPublishedPage({ invitationId, reviewId })
   }).pipe(

@@ -1,11 +1,10 @@
 import { Context, Effect, flow, Layer } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Queries from '../Queries.ts'
-import type { Uuid } from '../types/Uuid.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
 import { ChoosePersona } from './ChoosePersona.ts'
 import { ConfirmAuthorChoices } from './ConfirmAuthorChoices.ts'
-import { GetAuthorChoicesToConfirm, PrereviewerIsNotListedOnTheReview } from './GetAuthorChoicesToConfirm.ts'
+import { GetAuthorChoicesToConfirm } from './GetAuthorChoicesToConfirm.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
@@ -21,14 +20,9 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
     confirmAuthorChoices: Commands.FromCommand<typeof ConfirmAuthorChoices>
     getPersonaChoice: Queries.FromOnDemandQuery<typeof GetPersonaChoice>
     getAuthorChoicesToConfirm: Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>
-    hasAPrereviewerConfirmedTheirAuthorChoices: (
-      args: Omit<
-        Parameters<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>[0],
-        'reviewId'
-      > & {
-        invitationId: Uuid
-      },
-    ) => ReturnType<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>
+    hasAPrereviewerConfirmedTheirAuthorChoices: Queries.FromOnDemandQuery<
+      typeof HasAPrereviewerConfirmedTheirAuthorChoices
+    >
     getReviewIdForInvitation: Queries.FromOnDemandQuery<typeof GetReviewIdForInvitation>
     getNextExpectedCommandForAPrereviewerOnAReview: Queries.FromOnDemandQuery<
       typeof GetNextExpectedCommandForAPrereviewerOnAReview
@@ -43,9 +37,6 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const acceptInvite = yield* Commands.makeCommand(AcceptInvite)
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
-    const hasAPrereviewerConfirmedTheirAuthorChoices = yield* Queries.makeOnDemandQuery(
-      HasAPrereviewerConfirmedTheirAuthorChoices,
-    )
 
     return {
       acceptInvite: flow(
@@ -58,11 +49,8 @@ export const layer = Layer.effect(
       confirmAuthorChoices: yield* Commands.makeCommand(ConfirmAuthorChoices),
       getPersonaChoice: yield* Queries.makeOnDemandQuery(GetPersonaChoice),
       getAuthorChoicesToConfirm: yield* Queries.makeOnDemandQuery(GetAuthorChoicesToConfirm),
-      hasAPrereviewerConfirmedTheirAuthorChoices: flow(
-        Effect.succeed,
-        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
-        Effect.andThen(hasAPrereviewerConfirmedTheirAuthorChoices),
-        Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
+      hasAPrereviewerConfirmedTheirAuthorChoices: yield* Queries.makeOnDemandQuery(
+        HasAPrereviewerConfirmedTheirAuthorChoices,
       ),
       getReviewIdForInvitation,
       getNextExpectedCommandForAPrereviewerOnAReview: yield* Queries.makeOnDemandQuery(
