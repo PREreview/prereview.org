@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
-import * as _ from '../../../src/DatasetReviews/Reactions/PublishRecordOnZenodo.ts'
+import * as _ from '../../../src/DatasetReviews/Workflows/PublishRecordOnZenodo.ts'
 import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as fc from '../../fc.ts'

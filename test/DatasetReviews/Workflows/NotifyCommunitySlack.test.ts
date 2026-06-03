@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
-import * as _ from '../../../src/DatasetReviews/Reactions/NotifyCommunitySlack.ts'
+import * as _ from '../../../src/DatasetReviews/Workflows/NotifyCommunitySlack.ts'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'

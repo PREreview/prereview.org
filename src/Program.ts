@@ -296,6 +296,7 @@ export const Program = pipe(
     ReviewRequests.layer,
     verifyContactEmailAddressForComment,
   ]),
+  Layer.provide(DatasetReviews.layer),
   Layer.provide(Personas.layer),
   Layer.provide(Prereviewers.layer),
   Layer.provide([
@@ -314,7 +315,6 @@ export const Program = pipe(
       Comments.makeGetNextExpectedCommandForUserOnAComment,
     ),
     Layer.effect(Comments.GetComment, Comments.makeGetComment),
-    DatasetReviews.layer,
     GhostPage.layer,
     CommunitySlack.layer,
     ZenodoRecords.layer,
