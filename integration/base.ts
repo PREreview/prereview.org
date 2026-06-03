@@ -5,6 +5,7 @@ import type { SqlClient } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
 import { WorkflowEngine } from '@effect/workflow'
+import { Temporal } from '@js-temporal/polyfill'
 import {
   test as baseTest,
   expect,
@@ -40,6 +41,7 @@ import {
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
 import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
+import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -3470,6 +3472,129 @@ export const invitedToBeAnAuthor: Fixtures<
     await page.setContent(String(emails[0]?.html))
 
     await use(page)
+  },
+}
+
+export const invitedToBeADatasetReviewAuthor: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'seedEvents'>
+> = {
+  seedEvents: async ({ seedEvents }, use) => {
+    const datasetReviewId = Uuid.Uuid('bb02312f-3857-486a-9b59-3c6173d02a4b')
+
+    await use([
+      ...seedEvents,
+      new Events.PrereviewerRegistered({
+        orcidId: OrcidId('0000-0002-6109-0367'),
+        pseudonym: Pseudonym('Red Wolf'),
+        registeredAt: Temporal.Now.instant(),
+      }),
+      new Events.DatasetReviewWasStarted({
+        datasetReviewId,
+        datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),
+        authorId: OrcidId('0000-0002-6109-0367'),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'unsure',
+        detail: Option.none(),
+      }),
+      new Events.PersonaForDatasetReviewWasChosen({
+        datasetReviewId,
+        persona: 'pseudonym',
+      }),
+      new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
+        datasetReviewId,
+        answer: 'yes',
+      }),
+      new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+        datasetReviewId,
+        invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
+        contactDetails: Option.some({
+          name: NonEmptyString('Josiah Carberry'),
+          emailAddress: EmailAddress('jcarberry@example.com'),
+        }),
+      }),
+      new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+        datasetReviewId,
+        invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
+        contactDetails: Option.some({
+          name: NonEmptyString('Arne Saknussemm'),
+          emailAddress: EmailAddress('asaknussemm@example.com'),
+        }),
+      }),
+      new Events.DatasetReviewWasAssignedADoi({
+        doi: Doi('10.1000/12345'),
+        datasetReviewId,
+      }),
+      new Events.PublicationOfDatasetReviewWasRequested({
+        datasetReviewId,
+      }),
+      new Events.DatasetReviewWasPublished({
+        datasetReviewId,
+        publicationDate: Temporal.Now.plainDateISO(),
+      }),
+    ])
+  },
+}
+
+export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'seedEvents'>
+> = {
+  seedEvents: async ({ seedEvents }, use) => {
+    const datasetReviewId = Uuid.Uuid('bb02312f-3857-486a-9b59-3c6173d02a4b')
+
+    await use([
+      ...seedEvents,
+      new Events.DatasetReviewWasStarted({
+        datasetReviewId,
+        datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),
+        authorId: OrcidId('0000-0002-1825-0097'),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'unsure',
+        detail: Option.none(),
+      }),
+      new Events.PersonaForDatasetReviewWasChosen({
+        datasetReviewId,
+        persona: 'public',
+      }),
+      new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
+        datasetReviewId,
+        answer: 'yes',
+      }),
+      new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+        datasetReviewId,
+        invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
+        contactDetails: Option.some({
+          name: NonEmptyString('Josiah Carberry'),
+          emailAddress: EmailAddress('jcarberry@example.com'),
+        }),
+      }),
+      new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+        datasetReviewId,
+        invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
+        contactDetails: Option.some({
+          name: NonEmptyString('Arne Saknussemm'),
+          emailAddress: EmailAddress('asaknussemm@example.com'),
+        }),
+      }),
+      new Events.DatasetReviewWasAssignedADoi({
+        doi: Doi('10.1000/12345'),
+        datasetReviewId,
+      }),
+      new Events.PublicationOfDatasetReviewWasRequested({
+        datasetReviewId,
+      }),
+      new Events.DatasetReviewWasPublished({
+        datasetReviewId,
+        publicationDate: Temporal.Now.plainDateISO(),
+      }),
+    ])
   },
 }
 
