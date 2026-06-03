@@ -305,7 +305,10 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
                 competingInterests: Option.none(),
-                published: events[4].publicationDate as Temporal.PlainDate,
+                published:
+                  events[4].publicationDate instanceof Temporal.Instant
+                    ? events[4].publicationDate.toZonedDateTimeISO('UTC').toPlainDate()
+                    : events[4].publicationDate,
               }),
             ),
         ],
