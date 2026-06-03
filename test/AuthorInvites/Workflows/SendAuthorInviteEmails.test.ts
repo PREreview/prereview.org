@@ -52,6 +52,7 @@ describe('SendAuthorInviteEmails', () => {
 
             expect(actual).toStrictEqual(Either.void)
             expect(inviteAuthorToReview).toHaveBeenCalledTimes(Array.length(invitations))
+            expect(hasAnEmailToInviteAuthorBeenSent).toHaveBeenCalledTimes(Array.length(invitations))
             expect(recordEmailSentToInviteAuthor).toHaveBeenCalledTimes(Array.length(invitations))
           }).pipe(
             Effect.provide([
