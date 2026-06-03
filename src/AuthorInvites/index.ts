@@ -8,6 +8,7 @@ import { GetAuthorChoicesToConfirm } from './GetAuthorChoicesToConfirm.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
+import { HasAnEmailToInviteAuthorBeenSent } from './HasAnEmailToInviteAuthorBeenSent.ts'
 import { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
 import { RecordEmailSentToInviteAuthor } from './RecordEmailSentToInviteAuthor.ts'
 
@@ -28,6 +29,7 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
     getNextExpectedCommandForAPrereviewerOnAReview: Queries.FromOnDemandQuery<
       typeof GetNextExpectedCommandForAPrereviewerOnAReview
     >
+    hasAnEmailToInviteAuthorBeenSent: Queries.FromOnDemandQuery<typeof HasAnEmailToInviteAuthorBeenSent>
     recordEmailSentToInviteAuthor: Commands.FromStatelessCommand<typeof RecordEmailSentToInviteAuthor>
   }
 >() {}
@@ -58,6 +60,7 @@ export const layer = Layer.effect(
       getNextExpectedCommandForAPrereviewerOnAReview: yield* Queries.makeOnDemandQuery(
         GetNextExpectedCommandForAPrereviewerOnAReview,
       ),
+      hasAnEmailToInviteAuthorBeenSent: yield* Queries.makeOnDemandQuery(HasAnEmailToInviteAuthorBeenSent),
       recordEmailSentToInviteAuthor: yield* Commands.makeStatelessCommand(RecordEmailSentToInviteAuthor),
     }
   }),
