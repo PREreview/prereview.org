@@ -1,6 +1,11 @@
 import { Schema } from 'effect'
 import { OrcidId, Temporal, Uuid } from '../types/index.ts'
 
+export class EmailToInviteAuthorSent extends Schema.TaggedClass<EmailToInviteAuthorSent>()('EmailToInviteAuthorSent', {
+  invitationId: Uuid.UuidSchema,
+  sentAt: Temporal.InstantSchema,
+}) {}
+
 export class AuthorInviteAccepted extends Schema.TaggedClass<AuthorInviteAccepted>()('AuthorInviteAccepted', {
   invitationId: Uuid.UuidSchema,
   reviewId: Uuid.UuidSchema,
@@ -24,6 +29,7 @@ export class AuthorChoicesForAReviewConfirmed extends Schema.TaggedClass<AuthorC
 ) {}
 
 export const AuthorInviteEvent = Schema.Union(
+  EmailToInviteAuthorSent,
   AuthorInviteAccepted,
   PersonaForAReviewChosen,
   AuthorChoicesForAReviewConfirmed,
