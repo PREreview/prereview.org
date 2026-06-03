@@ -305,7 +305,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
                 competingInterests: Option.none(),
-                published: events[4].publicationDate,
+                published: events[4].publicationDate as Temporal.PlainDate,
               }),
             ),
         ],
@@ -396,7 +396,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything1.answer,
                     },
                     competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                    published: datasetReviewWasPublished1.publicationDate,
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // with one set of events
@@ -493,7 +493,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
                     },
                     competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
-                    published: datasetReviewWasPublished2.publicationDate,
+                    published: datasetReviewWasPublished2.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // with multiple set of events
@@ -528,7 +528,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
-                    published: datasetReviewWasPublished1.publicationDate,
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // different order
@@ -567,7 +567,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
-                    published: datasetReviewWasPublished1.publicationDate,
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // invited author
@@ -620,7 +620,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
-                    published: datasetReviewWasPublished1.publicationDate,
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // multiple invited authors
@@ -658,7 +658,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
-                    published: datasetReviewWasPublished1.publicationDate,
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // no other authors

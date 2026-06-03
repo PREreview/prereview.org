@@ -9,6 +9,7 @@ import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
+const datasetReviewId3 = Uuid.Uuid('3712e0eb-e435-40e0-800a-64be139dc5bb')
 const otherDatasetReviewId = Uuid.Uuid('0b4aef08-494c-41dd-9a13-d6aaafea0733')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
@@ -19,6 +20,11 @@ const datasetReviewWasStarted2 = new DatasetReviews.DatasetReviewWasStarted({
   authorId,
   datasetId,
   datasetReviewId: datasetReviewId2,
+})
+const datasetReviewWasStarted3 = new DatasetReviews.DatasetReviewWasStarted({
+  authorId,
+  datasetId,
+  datasetReviewId: datasetReviewId3,
 })
 const otherDatasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({
   authorId,
@@ -31,7 +37,11 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 const datasetReviewWasPublished2 = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId: datasetReviewId2,
-  publicationDate: Temporal.PlainDate.from('2025-02-01'),
+  publicationDate: Temporal.PlainDate.from('2025-01-02'),
+})
+const datasetReviewWasPublished3 = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId: datasetReviewId3,
+  publicationDate: Temporal.Instant.from('2025-01-02T06:00:00Z'),
 })
 const otherDatasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId: otherDatasetReviewId,
@@ -71,22 +81,26 @@ describe('FindPublishedReviewsForADataset', () => {
                 [
                   datasetReviewWasStarted,
                   datasetReviewWasStarted2,
+                  datasetReviewWasStarted3,
                   datasetReviewWasPublished,
                   datasetReviewWasPublished2,
+                  datasetReviewWasPublished3,
                 ],
-                [datasetReviewId2, datasetReviewId],
+                [datasetReviewId3, datasetReviewId2, datasetReviewId],
               ],
-            ], // two published
+            ], // three published
             [
               [
                 datasetId,
                 [
+                  datasetReviewWasPublished3,
                   datasetReviewWasPublished2,
                   datasetReviewWasPublished,
                   datasetReviewWasStarted,
+                  datasetReviewWasStarted3,
                   datasetReviewWasStarted2,
                 ],
-                [datasetReviewId2, datasetReviewId],
+                [datasetReviewId3, datasetReviewId2, datasetReviewId],
               ],
             ], // different order,
           ],

@@ -1,7 +1,6 @@
 import { Array, Equal, Order, pipe, Tuple, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
-import type { Uuid } from '../../types/index.ts'
-import { OrderPlainDate } from '../../types/Temporal.ts'
+import { Temporal, type Uuid } from '../../types/index.ts'
 import type * as Events from '../Events.ts'
 
 export const FindPublishedReviewsForADataset =
@@ -19,7 +18,16 @@ export const FindPublishedReviewsForADataset =
         ),
       ),
       Array.map(published => Tuple.make(published.datasetReviewId, published.publicationDate)),
-      Array.sortWith(Tuple.getSecond, Order.reverse(OrderPlainDate)),
+      Array.sortWith(
+        Tuple.getSecond,
+        Order.reverse(
+          Order.mapInput(Temporal.OrderInstant, publicationDate =>
+            publicationDate instanceof Temporal.PlainDate
+              ? publicationDate.toZonedDateTime('UTC').toInstant()
+              : publicationDate,
+          ),
+        ),
+      ),
       Array.map(Tuple.getFirst),
     )
 

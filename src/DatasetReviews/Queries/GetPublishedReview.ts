@@ -265,7 +265,10 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
           answerToIfTheDatasetIsMissingAnything,
         },
         competingInterests,
-        published: data.datasetReviewWasPublished.publicationDate,
+        published:
+          data.datasetReviewWasPublished.publicationDate instanceof Temporal.Instant
+            ? data.datasetReviewWasPublished.publicationDate.toZonedDateTimeISO('UTC').toPlainDate()
+            : data.datasetReviewWasPublished.publicationDate,
       }),
   })
 }

@@ -148,13 +148,13 @@ describe('foldState', () => {
 })
 
 describe('decide', () => {
-  it.prop('has not been started', [fc.plainDate()], ([publicationDate]) => {
+  it.prop('has not been started', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.NotStarted(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  it.prop('has not been requested', [fc.plainDate()], ([publicationDate]) => {
+  it.prop('has not been requested', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.NotRequested(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.PublicationOfDatasetReviewWasNotRequested()))
@@ -162,7 +162,7 @@ describe('decide', () => {
 
   it.prop(
     'is not ready',
-    [fc.plainDate(), fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))],
+    [fc.instant(), fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))],
     ([publicationDate, missing]) => {
       const result = _.decide(new _.NotReady({ missing }), { datasetReviewId, publicationDate })
 
@@ -172,7 +172,7 @@ describe('decide', () => {
     },
   )
 
-  it.prop('is ready', [fc.plainDate()], ([publicationDate]) => {
+  it.prop('is ready', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.IsReady(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(
@@ -180,7 +180,7 @@ describe('decide', () => {
     )
   })
 
-  it.prop('already marked as published', [fc.plainDate()], ([publicationDate]) => {
+  it.prop('already marked as published', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.AlreadyMarkedAsPublished(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(Either.right(Option.none()))

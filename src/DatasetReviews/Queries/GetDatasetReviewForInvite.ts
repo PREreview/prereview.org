@@ -2,7 +2,7 @@ import { Array, Either, HashMap, Match, MutableHashSet, Option, pipe } from 'eff
 import type { DatasetId } from '../../Datasets/index.ts'
 import type * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
-import type { Doi, OrcidId, Temporal, Uuid } from '../../types/index.ts'
+import { type Doi, type OrcidId, Temporal, type Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export type Input = Uuid.Uuid
@@ -92,7 +92,10 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
       Match.tag('DatasetReviewWasPublished', event => {
         HashMap.modify(datasetReviews, event.datasetReviewId, datasetReview => ({
           ...datasetReview,
-          published: event.publicationDate,
+          published:
+            event.publicationDate instanceof Temporal.Instant
+              ? event.publicationDate.toZonedDateTimeISO('UTC').toPlainDate()
+              : event.publicationDate,
         }))
       }),
       Match.orElse(() => {

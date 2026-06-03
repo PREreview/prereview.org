@@ -192,7 +192,7 @@ export class DatasetReviewWasAssignedADoi extends Schema.TaggedClass<DatasetRevi
 
 export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewWasPublished>()(
   'DatasetReviewWasPublished',
-  { datasetReviewId: Uuid.UuidSchema, publicationDate: Temporal.PlainDateSchema },
+  { datasetReviewId: Uuid.UuidSchema, publicationDate: Schema.Union(Temporal.InstantSchema, Temporal.PlainDateSchema) },
 ) {}
 
 export class ZenodoRecordForDatasetReviewWasPublished extends Schema.TaggedClass<ZenodoRecordForDatasetReviewWasPublished>()(

@@ -5,7 +5,7 @@ import * as Errors from '../Errors.ts'
 
 export const MarkDatasetReviewAsPublished = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid) {
-    const publicationDate = yield* Temporal.currentPlainDate
+    const publicationDate = yield* Temporal.currentInstant
 
     yield* Commands.markDatasetReviewAsPublished({ datasetReviewId, publicationDate })
   },

@@ -6,7 +6,7 @@ import * as Events from '../Events.ts'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
-  readonly publicationDate: Temporal.PlainDate
+  readonly publicationDate: Temporal.Instant
 }
 
 export type Error =
