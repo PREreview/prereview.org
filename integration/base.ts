@@ -48,7 +48,7 @@ import * as EventStore from '../src/EventStore.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
-import { rawHtml } from '../src/html.ts'
+import { html, rawHtml } from '../src/html.ts'
 import {
   KeyvStores,
   type AuthorInviteStoreEnv,
@@ -3478,7 +3478,7 @@ export const invitedToBeAnAuthor: Fixtures<
 export const invitedToBeADatasetReviewAuthor: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'seedEvents'>
+  Pick<AppFixtures, 'baseURL' | 'emails' | 'nodemailer' | 'seedEvents'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
     const datasetReviewId = Uuid.Uuid('bb02312f-3857-486a-9b59-3c6173d02a4b')
@@ -3537,12 +3537,54 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
       }),
     ])
   },
+  page: async ({ baseURL, emails, nodemailer, page }, use) => {
+    await Effect.runPromise(
+      Effect.provide(
+        Effect.all([
+          Email.inviteAuthorToReview({
+            invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
+            inviter: Pseudonym('Red Wolf'),
+            invitee: {
+              name: NonEmptyString('Josiah Carberry'),
+              emailAddress: EmailAddress('jcarberry@example.com'),
+            },
+            subject: {
+              language: 'en',
+              title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+            },
+          }),
+          Email.inviteAuthorToReview({
+            invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
+            inviter: Pseudonym('Red Wolf'),
+            invitee: {
+              name: NonEmptyString('Arne Saknussemm'),
+              emailAddress: EmailAddress('asaknussemm@example.com'),
+            },
+            subject: {
+              language: 'en',
+              title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+            },
+          }),
+        ]),
+        [
+          Layer.provide(Email.layer, [
+            Layer.succeed(PublicUrl, new URL(baseURL)),
+            Layer.provide(Nodemailer.layer, Nodemailer.layerTransporter(nodemailer)),
+          ]),
+        ],
+      ),
+    )
+
+    await page.setContent(String(emails[0]?.html))
+
+    await use(page)
+  },
 }
 
 export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'seedEvents'>
+  Pick<AppFixtures, 'baseURL' | 'emails' | 'nodemailer' | 'seedEvents'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
     const datasetReviewId = Uuid.Uuid('bb02312f-3857-486a-9b59-3c6173d02a4b')
@@ -3595,6 +3637,48 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
         publicationDate: Temporal.Now.plainDateISO(),
       }),
     ])
+  },
+  page: async ({ baseURL, emails, nodemailer, page }, use) => {
+    await Effect.runPromise(
+      Effect.provide(
+        Effect.all([
+          Email.inviteAuthorToReview({
+            invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
+            inviter: Pseudonym('Red Wolf'),
+            invitee: {
+              name: NonEmptyString('Josiah Carberry'),
+              emailAddress: EmailAddress('jcarberry@example.com'),
+            },
+            subject: {
+              language: 'en',
+              title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+            },
+          }),
+          Email.inviteAuthorToReview({
+            invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
+            inviter: Pseudonym('Red Wolf'),
+            invitee: {
+              name: NonEmptyString('Arne Saknussemm'),
+              emailAddress: EmailAddress('asaknussemm@example.com'),
+            },
+            subject: {
+              language: 'en',
+              title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+            },
+          }),
+        ]),
+        [
+          Layer.provide(Email.layer, [
+            Layer.succeed(PublicUrl, new URL(baseURL)),
+            Layer.provide(Nodemailer.layer, Nodemailer.layerTransporter(nodemailer)),
+          ]),
+        ],
+      ),
+    )
+
+    await page.setContent(String(emails[0]?.html))
+
+    await use(page)
   },
 }
 

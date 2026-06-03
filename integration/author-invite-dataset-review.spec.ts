@@ -8,9 +8,9 @@ import {
 } from './base.ts'
 
 test.extend(canLogIn).extend(invitedToBeADatasetReviewAuthor)('can accept an invite', async ({ page }) => {
-  await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-    waitUntil: 'commit',
-  })
+  const opener = page.waitForEvent('popup')
+  await page.getByRole('link', { name: 'Be listed as an author' }).click()
+  page = await opener
 
   await expect(page.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
 
@@ -31,9 +31,9 @@ test.extend(canLogIn).extend(invitedToBeADatasetReviewAuthor)('can accept an inv
 })
 
 test.extend(invitedToBeADatasetReviewAuthor)('can choose a locale before starting', async ({ page }, testInfo) => {
-  await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-    waitUntil: 'commit',
-  })
+  const opener = page.waitForEvent('popup')
+  await page.getByRole('link', { name: 'Be listed as an author' }).click()
+  page = await opener
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
@@ -45,9 +45,9 @@ test.extend(invitedToBeADatasetReviewAuthor)('can choose a locale before startin
 test.extend(canLogIn).extend(areLoggedIn).extend(invitedToBeADatasetReviewAuthor)(
   'can accept an invite using a pseudonym',
   async ({ page }) => {
-    await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-      waitUntil: 'commit',
-    })
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
 
     await expect(page.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
 
@@ -70,33 +70,33 @@ test.extend(canLogIn).extend(areLoggedIn).extend(invitedToBeADatasetReviewAuthor
 
 test.extend(canLogIn).extend(areLoggedIn).extend(invitedToBeADatasetReviewAuthor)(
   'are returned to the next step if you have already started the flow',
-  async ({ page }) => {
-    await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-      waitUntil: 'commit',
-    })
+  async ({ page: emailPage }) => {
+    const opener1 = emailPage.waitForEvent('popup')
+    await emailPage.getByRole('link', { name: 'Be listed as an author' }).click()
+    const page1 = await opener1
 
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page1.getByRole('button', { name: 'Start now' }).click()
+    await page1.getByLabel('Josiah Carberry').check()
+    await page1.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-      waitUntil: 'commit',
-    })
+    const opener2 = emailPage.waitForEvent('popup')
+    await emailPage.getByRole('link', { name: 'Be listed as an author' }).click()
+    const page2 = await opener2
 
-    await expect(page.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
+    await expect(page2.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
 
-    await page.getByRole('button', { name: 'Start now' }).click()
+    await page2.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
+    await expect(page2.getByRole('heading', { level: 1 })).toHaveText('Check your details')
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(invitedMyselfToBeADatasetReviewAuthor)(
   "don't appear twice if you invited yourself",
   async ({ page }) => {
-    await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-      waitUntil: 'commit',
-    })
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
 
     await expect(page.getByRole('main')).toContainText('Authored by Josiah Carberry and 2 other authors')
 
@@ -112,37 +112,39 @@ test.extend(canLogIn).extend(areLoggedIn).extend(invitedMyselfToBeADatasetReview
 
 test.extend(canLogIn).extend(areLoggedIn).extend(invitedToBeADatasetReviewAuthor)(
   "don't appear twice if you accept multiple invites",
-  async ({ page }) => {
-    await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-      waitUntil: 'commit',
-    })
+  async ({ page: emailPage, emails }) => {
+    const opener1 = emailPage.waitForEvent('popup')
+    await emailPage.getByRole('link', { name: 'Be listed as an author' }).click()
+    const page1 = await opener1
 
-    await expect(page.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
+    await expect(page1.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
 
-    await page.getByRole('button', { name: 'Start now' }).click()
+    await page1.getByRole('button', { name: 'Start now' }).click()
 
-    await page.goto('/dataset-review-author-invite/ac3bff19-c369-4009-801d-c67d63518d52/start-now', {
-      waitUntil: 'commit',
-    })
+    await emailPage.setContent(String(emails[1]?.html))
+    const opener2 = emailPage.waitForEvent('popup')
+    await emailPage.getByRole('link', { name: 'Be listed as an author' }).click()
+    const page2 = await opener2
 
-    await expect(page.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
+    await expect(page2.getByRole('main')).toContainText('Authored by Red Wolf and 2 other authors')
 
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('button', { name: 'Update PREreview' }).click()
-    await page.getByRole('link', { name: 'see the PREreview' }).click()
+    await page2.getByRole('button', { name: 'Start now' }).click()
+    await page2.getByLabel('Josiah Carberry').check()
+    await page2.getByRole('button', { name: 'Save and continue' }).click()
+    await page2.getByRole('button', { name: 'Update PREreview' }).click()
+    await page2.getByRole('link', { name: 'see the PREreview' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Authored by Red Wolf and Josiah Carberry')
+    await expect(page2.getByRole('main')).toContainText('Authored by Red Wolf and Josiah Carberry')
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(invitedToBeADatasetReviewAuthor)(
   'can change the name after previewing',
   async ({ page }) => {
-    await page.goto('/dataset-review-author-invite/ccc27378-d568-42a5-b8e6-a7830478165d/start-now', {
-      waitUntil: 'commit',
-    })
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
+
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()

@@ -281,6 +281,7 @@ const setUpFetch = Layer.effect(
 export const Program = pipe(
   Layer.mergeAll(
     WebApp.layer,
+    AuthorInvites.reactionsWorker,
     DatasetReviews.reactionsWorker,
     ReviewRequests.reactionsWorker,
     Comments.ReactToCommentEvents,
