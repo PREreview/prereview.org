@@ -6,7 +6,7 @@ import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
-import type { AreThereMultipleAuthorsOnAReview } from './AreThereMultipleAuthorsOnAReview.ts'
+import { AreThereMultipleAuthorsOnAReview } from './AreThereMultipleAuthorsOnAReview.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
 import { CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList } from './CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList.ts'
 import { CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview } from './CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
@@ -309,7 +309,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       CheckIfUserCanDeclareFollowingCodeOfConduct.createFilter,
       CheckIfUserCanDeclareFollowingCodeOfConduct.query,
     ),
-    areThereMultipleAuthorsOnAReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+    areThereMultipleAuthorsOnAReview: yield* Queries.makeOnDemandQuery(AreThereMultipleAuthorsOnAReview),
     findInProgressReviewForADataset: Effect.fn(
       function* (...args) {
         const { events } = yield* Effect.flatten(

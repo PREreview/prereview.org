@@ -17,7 +17,7 @@ const answeredNo = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   datasetReviewId: input,
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
   ['no events', [], input, false],
   ['answered yes', [answeredYes], input, true],
   ['answered yes, different dataset review ID', [answeredYes], inputDifferentDatasetReviewId, false],
