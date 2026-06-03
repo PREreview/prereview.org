@@ -315,7 +315,13 @@ export const createDatasetReviewPage = ({
 
       <h2>${t('competingInterests')()}</h2>
 
-      <p>${Option.getOrElse(datasetReview.competingInterests, () => t('noCompetingInterestsStatement')())}</p>
+      <p>
+        ${Option.getOrElse(datasetReview.competingInterests, () =>
+          datasetReview.anonymousAuthors + datasetReview.otherAuthors.length > 0
+            ? 'The authors declare that they have no competing interests.'
+            : t('noCompetingInterestsStatement')(),
+        )}
+      </p>
     `,
     skipToLabel: 'prereview',
     canonical: Routes.DatasetReview.href({ datasetReviewId: datasetReview.id }),

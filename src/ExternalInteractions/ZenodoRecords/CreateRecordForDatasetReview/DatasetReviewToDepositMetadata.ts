@@ -260,7 +260,13 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
 
       <h2>${t('competingInterests')()}</h2>
 
-      <p>${Option.getOrElse(review.competingInterests, () => t('noCompetingInterestsStatement')())}</p>
+      <p>
+        ${Option.getOrElse(review.competingInterests, () =>
+          review.anonymousAuthors + review.otherAuthors.length > 0
+            ? 'The authors declare that they have no competing interests.'
+            : t('noCompetingInterestsStatement')(),
+        )}
+      </p>
     `,
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${review.dataset.title}”`.toString() })),
     communities: [{ identifier: 'prereview-reviews' }],

@@ -138,7 +138,9 @@ const cases = [
 
       <h2>Competing interests</h2>
 
-      <p>Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.</p>
+      <p>
+        Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
+      </p>
     `),
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
@@ -318,7 +320,9 @@ const cases = [
 
       <h2>Competing interests</h2>
 
-      <p>Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.</p>
+      <p>
+        Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
+      </p>
     `),
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
@@ -392,7 +396,9 @@ const cases = [
 
       <h2>Competing interests</h2>
 
-      <p>The author declares that they have no competing interests.</p>
+      <p>
+        The author declares that they have no competing interests.
+      </p>
     `),
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
