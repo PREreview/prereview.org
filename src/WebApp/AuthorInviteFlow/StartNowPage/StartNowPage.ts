@@ -122,6 +122,8 @@ export const renderStartNowPage = ({
         >Start now</a
       >
     `,
+    canonical: Routes.AuthorInviteStartNow.href({ invitationId: viewModel.invitationId }),
+    allowRobots: false,
   })
 }
 
