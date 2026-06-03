@@ -4,7 +4,7 @@ import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
-import type { Uuid } from '../../../types/index.ts'
+import { Temporal, type Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
@@ -80,8 +80,10 @@ export const CheckYourReviewSubmission = ({
       return yield* PageNotFound
     }
 
+    const requestedAt = yield* Temporal.currentInstant
+
     return yield* pipe(
-      DatasetReviews.publishDatasetReview({ datasetReviewId }),
+      DatasetReviews.publishDatasetReview({ datasetReviewId, requestedAt }),
       Effect.andThen(
         Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
       ),

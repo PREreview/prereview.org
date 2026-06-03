@@ -2212,7 +2212,10 @@ export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId?: fc.Arbitrary<Events.PublicationOfDatasetReviewWasRequested['datasetReviewId']>
 } = {}): fc.Arbitrary<Events.PublicationOfDatasetReviewWasRequested> =>
   fc
-    .record({ datasetReviewId: datasetReviewId ?? uuid() })
+    .record(
+      { datasetReviewId: datasetReviewId ?? uuid(), requestedAt: instant() },
+      { requiredKeys: ['datasetReviewId'] },
+    )
     .map(data => new Events.PublicationOfDatasetReviewWasRequested(data))
 
 export const zenodoRecordForDatasetReviewWasCreated = ({

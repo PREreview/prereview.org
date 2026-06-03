@@ -171,7 +171,7 @@ export class CompetingInterestsForADatasetReviewWereDeclared extends Schema.Tagg
 
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
-  { datasetReviewId: Uuid.UuidSchema },
+  { datasetReviewId: Uuid.UuidSchema, requestedAt: Schema.optional(Temporal.InstantSchema) },
 ) {}
 
 export class ZenodoRecordForDatasetReviewWasCreated extends Schema.TaggedClass<ZenodoRecordForDatasetReviewWasCreated>()(

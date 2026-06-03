@@ -8,6 +8,7 @@ import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
+const requestedAt = Temporal.Now.instant()
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
@@ -354,7 +355,7 @@ describe('foldState', () => {
 
 describe('decide', () => {
   test('has not been started', () => {
-    const result = _.decide(new _.NotStarted(), { datasetReviewId })
+    const result = _.decide(new _.NotStarted(), { datasetReviewId, requestedAt })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
@@ -363,28 +364,30 @@ describe('decide', () => {
     'is not ready',
     [fc.nonEmptyArray(fc.constant('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))],
     ([missing]) => {
-      const result = _.decide(new _.NotReady({ missing }), { datasetReviewId })
+      const result = _.decide(new _.NotReady({ missing }), { datasetReviewId, requestedAt })
 
       expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewNotReadyToBePublished({ missing })))
     },
   )
 
   test('is ready', () => {
-    const result = _.decide(new _.IsReady(), { datasetReviewId })
+    const result = _.decide(new _.IsReady(), { datasetReviewId, requestedAt })
 
     expect(result).toStrictEqual(
-      Either.right(Option.some(new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId }))),
+      Either.right(
+        Option.some(new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId, requestedAt })),
+      ),
     )
   })
 
   test('is being published', () => {
-    const result = _.decide(new _.IsBeingPublished(), { datasetReviewId })
+    const result = _.decide(new _.IsBeingPublished(), { datasetReviewId, requestedAt })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
   test('has been published', () => {
-    const result = _.decide(new _.HasBeenPublished(), { datasetReviewId })
+    const result = _.decide(new _.HasBeenPublished(), { datasetReviewId, requestedAt })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
   })

@@ -1,10 +1,11 @@
 import { Array, Data, Either, Function, Match, Option, pipe, type Types } from 'effect'
-import type { Uuid } from '../../types/index.ts'
+import type { Temporal, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
+  readonly requestedAt: Temporal.Instant
 }
 
 export type Error =
@@ -99,7 +100,12 @@ export const decide: {
       HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
       IsReady: () =>
         Either.right(
-          Option.some(new Events.PublicationOfDatasetReviewWasRequested({ datasetReviewId: command.datasetReviewId })),
+          Option.some(
+            new Events.PublicationOfDatasetReviewWasRequested({
+              datasetReviewId: command.datasetReviewId,
+              requestedAt: command.requestedAt,
+            }),
+          ),
         ),
     }),
 )
