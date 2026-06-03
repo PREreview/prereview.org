@@ -10,6 +10,20 @@ test('content looks right', async ({ showPage }) => {
     datasetReviewId,
     form: new DeclareCompetingInterestsForm.EmptyForm(),
     locale: DefaultLocale,
+    otherAuthors: false,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when there are other authors', async ({ showPage }) => {
+  const response = _.DeclareCompetingInterestsPage({
+    datasetReviewId,
+    form: new DeclareCompetingInterestsForm.EmptyForm(),
+    locale: DefaultLocale,
+    otherAuthors: true,
   })
 
   const content = await showPage(response)
@@ -25,6 +39,7 @@ test('content looks right when there is a choice', async ({ showPage }) => {
       competingInterestsDetails: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     }),
     locale: DefaultLocale,
+    otherAuthors: false,
   })
 
   const content = await showPage(response)
@@ -40,6 +55,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
       competingInterestsDetails: Either.left(new DeclareCompetingInterestsForm.Missing()),
     }),
     locale: DefaultLocale,
+    otherAuthors: false,
   })
 
   const content = await showPage(response)

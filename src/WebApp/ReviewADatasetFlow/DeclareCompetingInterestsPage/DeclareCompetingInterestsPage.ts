@@ -12,17 +12,25 @@ export const DeclareCompetingInterestsPage = ({
   datasetReviewId,
   form,
   locale,
+  otherAuthors,
 }: {
   datasetReviewId: Uuid.Uuid
   form: DeclareCompetingInterestsForm.DeclareCompetingInterestsForm
   locale: SupportedLocale
+  otherAuthors: boolean
 }) => {
   const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale, 'review-a-dataset-flow')
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(t('haveCompetingInterests')(), errorPrefix(locale, hasAnError), plainText),
+    title: pipe(
+      otherAuthors
+        ? 'Do you, or any of the other authors, have any competing interests?'
+        : t('haveCompetingInterests')(),
+      errorPrefix(locale, hasAnError),
+      plainText,
+    ),
     nav: html`
       <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -48,7 +56,11 @@ export const DeclareCompetingInterestsPage = ({
               )}
             >
               <legend>
-                <h1>${t('haveCompetingInterests')()}</h1>
+                <h1>
+                  ${otherAuthors
+                    ? 'Do you, or any of the other authors, have any competing interests?'
+                    : t('haveCompetingInterests')()}
+                </h1>
               </legend>
 
               <div id="declare-competing-interests-tip" role="note">

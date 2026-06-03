@@ -26,9 +26,11 @@ export const DeclareCompetingInterestsPage = ({
       userId: user.orcid,
     })
 
+    const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
+
     const form = DeclareCompetingInterestsForm.fromCompetingInterests(currentCompetingInterests)
 
-    return MakeResponse({ datasetReviewId, form, locale })
+    return MakeResponse({ datasetReviewId, form, locale, otherAuthors })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
@@ -82,6 +84,13 @@ export const DeclareCompetingInterestsSubmission = ({
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
+      InvalidForm: Effect.fnUntraced(
+        function* (form: DeclareCompetingInterestsForm.InvalidForm) {
+          const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
+
+          return MakeResponse({ datasetReviewId, form, locale, otherAuthors })
+        },
+        Effect.catchTag('UnableToQuery', () => HavingProblemsPage),
+      ),
     })
   })

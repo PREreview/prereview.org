@@ -15,8 +15,8 @@ describe('DeclareCompetingInterestsPage', () => {
   describe('when the dataset review is by the user', () => {
     it.effect.prop(
       'when the dataset review is in progress',
-      [fc.uuid(), fc.supportedLocale(), fc.user(), fc.maybe(fc.maybe(fc.nonEmptyString()))],
-      ([datasetReviewId, locale, user, competingInterests]) =>
+      [fc.uuid(), fc.supportedLocale(), fc.user(), fc.maybe(fc.maybe(fc.nonEmptyString())), fc.boolean()],
+      ([datasetReviewId, locale, user, competingInterests, multipleAuthors]) =>
         Effect.gen(function* () {
           const actual = yield* _.DeclareCompetingInterestsPage({ datasetReviewId })
 
@@ -34,6 +34,7 @@ describe('DeclareCompetingInterestsPage', () => {
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanDeclareCompetingInterests: () => Effect.succeed(competingInterests),
+              areThereMultipleAuthorsOnAReview: () => Effect.succeed(multipleAuthors),
             }),
           ),
           Effect.provideService(Locale, locale),
@@ -339,8 +340,9 @@ describe('DeclareCompetingInterestsSubmission', () => {
       ),
       fc.supportedLocale(),
       fc.user(),
+      fc.boolean(),
     ],
-    ([datasetReviewId, body, locale, user]) =>
+    ([datasetReviewId, body, locale, user, multipleAuthors]) =>
       Effect.gen(function* () {
         const actual = yield* _.DeclareCompetingInterestsSubmission({ body, datasetReviewId })
 
@@ -356,7 +358,11 @@ describe('DeclareCompetingInterestsSubmission', () => {
         })
       }).pipe(
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            areThereMultipleAuthorsOnAReview: () => Effect.succeed(multipleAuthors),
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),
