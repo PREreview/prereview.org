@@ -6,6 +6,7 @@ import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
+import type { AreThereMultipleAuthorsOnAReview } from './AreThereMultipleAuthorsOnAReview.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
 import { CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList } from './CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList.ts'
 import { CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview } from './CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
@@ -117,6 +118,7 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfUserCanDeclareFollowingCodeOfConduct: Query<
       (input: CheckIfUserCanDeclareFollowingCodeOfConduct.Input) => CheckIfUserCanDeclareFollowingCodeOfConduct.Result
     >
+    areThereMultipleAuthorsOnAReview: Queries.FromOnDemandQuery<typeof AreThereMultipleAuthorsOnAReview>
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -173,6 +175,7 @@ export const {
   checkIfUserCanDeclareFollowingCodeOfConduct,
   getPublishedReview,
   getPublishedReviewDetails,
+  areThereMultipleAuthorsOnAReview,
   findInProgressReviewForADataset,
   findPublishedReviewsForADataset,
   getAuthor,
@@ -306,6 +309,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       CheckIfUserCanDeclareFollowingCodeOfConduct.createFilter,
       CheckIfUserCanDeclareFollowingCodeOfConduct.query,
     ),
+    areThereMultipleAuthorsOnAReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
     findInProgressReviewForADataset: Effect.fn(
       function* (...args) {
         const { events } = yield* Effect.flatten(
