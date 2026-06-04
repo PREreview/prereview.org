@@ -50,6 +50,23 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                 <h1>${t('followFairAndCare')()}</h1>
               </legend>
 
+              <p>A dataset follows FAIR principles if it is:</p>
+              <ol>
+                <li>Findable</li>
+                <li>Accessible</li>
+                <li>Interoperable</li>
+                <li>Reusable</li<>
+              </ol>
+
+              <p>A dataset follows CARE principles if it maintains sovereignty and rights for its indigenous creators through:</p>
+               <ol>
+                <li>Collective benefit</li>
+                <li>Authority to control</li>
+                <li>Responsibility</li>
+                <li>Ethics</li<>
+              </ol>
+              
+
               ${hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
                 ? html`
                     <div class="error-message" id="findings-next-steps-error">
