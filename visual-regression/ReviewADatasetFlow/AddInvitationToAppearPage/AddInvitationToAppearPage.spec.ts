@@ -12,6 +12,20 @@ test('content looks right', async ({ showPage }) => {
     datasetReviewId,
     form: new AddInvitationToAppearForm.EmptyForm(),
     locale: DefaultLocale,
+    otherAuthors: false,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when there are other authors', async ({ showPage }) => {
+  const response = _.AddInvitationToAppearPage({
+    datasetReviewId,
+    form: new AddInvitationToAppearForm.EmptyForm(),
+    locale: DefaultLocale,
+    otherAuthors: true,
   })
 
   const content = await showPage(response)
@@ -27,6 +41,7 @@ test('content looks right when completed', async ({ showPage }) => {
       emailAddress: EmailAddress('jcarberry@example.com'),
     }),
     locale: DefaultLocale,
+    otherAuthors: false,
   })
 
   const content = await showPage(response)
@@ -42,6 +57,7 @@ test('content looks right when missing', async ({ showPage }) => {
       emailAddress: Either.left(new AddInvitationToAppearForm.Missing()),
     }),
     locale: DefaultLocale,
+    otherAuthors: false,
   })
 
   const content = await showPage(response)
@@ -59,6 +75,7 @@ test('content looks right when invalid', async ({ showPage }) => {
       ),
     }),
     locale: DefaultLocale,
+    otherAuthors: false,
   })
 
   const content = await showPage(response)

@@ -12,22 +12,24 @@ export const AddInvitationToAppearPage = ({
   datasetReviewId,
   form,
   locale,
+  otherAuthors,
 }: {
   datasetReviewId: Uuid.Uuid
   form: AddInvitationToAppearForm.AddInvitationToAppearForm
   locale: SupportedLocale
+  otherAuthors: boolean
 }) => {
   const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale, 'review-a-dataset-flow')
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Add an author', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(otherAuthors ? 'Add another author' : 'Add an author', errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.ReviewADatasetAddInvitationToAppear.href({ datasetReviewId })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <h1>Add author</h1>
+        <h1>${otherAuthors ? 'Add another author' : 'Add an author'}</h1>
 
         <div ${rawHtml(form._tag === 'InvalidForm' && Either.isLeft(form.name) ? 'class="error"' : '')}>
           <h2><label for="name">Name</label></h2>

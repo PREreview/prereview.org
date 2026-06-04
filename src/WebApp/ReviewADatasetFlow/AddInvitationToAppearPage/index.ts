@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match } from 'effect'
+import { Array, Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -25,7 +25,17 @@ export const AddInvitationToAppearPage = ({
       authorId: user.orcid,
     })
 
-    return createAddInvitationToAppearPage({ datasetReviewId, form: new AddInvitationToAppearForm.EmptyForm(), locale })
+    const otherAuthors = yield* Effect.andThen(
+      DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId }),
+      Array.isNonEmptyReadonlyArray,
+    )
+
+    return createAddInvitationToAppearPage({
+      datasetReviewId,
+      form: new AddInvitationToAppearForm.EmptyForm(),
+      locale,
+      otherAuthors,
+    })
   }).pipe(
     Effect.catchTags({
       DatasetReviewDoesNotNeedInvitationsToAppear: () =>
@@ -57,7 +67,7 @@ export const AddInvitationToAppearSubmission = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | Locale | LoggedInUser | Uuid.GenerateUuid
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Uuid.GenerateUuid
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -82,6 +92,16 @@ export const AddInvitationToAppearSubmission = ({
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
-      InvalidForm: form => Effect.succeed(createAddInvitationToAppearPage({ datasetReviewId, form, locale })),
+      InvalidForm: Effect.fnUntraced(
+        function* (form: AddInvitationToAppearForm.InvalidForm) {
+          const otherAuthors = yield* Effect.andThen(
+            DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId }),
+            Array.isNonEmptyReadonlyArray,
+          )
+
+          return createAddInvitationToAppearPage({ datasetReviewId, form, locale, otherAuthors })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
     })
   })
