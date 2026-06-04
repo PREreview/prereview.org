@@ -17,6 +17,14 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples =
     detail: Option.none(),
     datasetReviewId,
   })
+const answeredNo = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  datasetReviewId,
+  answer: 'no',
+})
+const answeredYes = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  datasetReviewId,
+  answer: 'yes',
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -111,6 +119,40 @@ describe('GetPublishedReviewDetails', () => {
                   },
                 ],
               ], // different order
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                    answeredNo,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished,
+                  ],
+                  {
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewWasStarted.datasetReviewId,
+                    otherAuthors: false,
+                    persona: 'public',
+                  },
+                ],
+              ], // without other authors
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                    answeredYes,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished,
+                  ],
+                  {
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewWasStarted.datasetReviewId,
+                    otherAuthors: true,
+                    persona: 'public',
+                  },
+                ],
+              ], // with other authors
             ],
           },
         },

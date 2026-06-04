@@ -23,6 +23,8 @@ export const GetPublishedReviewDetails = (
   if (hasEvent(events, 'DatasetReviewWasPublished')) {
     const persona = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
+    const inviteAuthors = Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview'))
+
     return Option.match(Array.findLast(events, hasTag('DatasetReviewWasAssignedADoi')), {
       onNone: () =>
         Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasAssignedADoi event found' })),
@@ -31,6 +33,10 @@ export const GetPublishedReviewDetails = (
           doi: datasetReviewWasAssignedADoi.doi,
           id: datasetReviewWasAssignedADoi.datasetReviewId,
           persona: Option.match(persona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
+          otherAuthors: Option.match(inviteAuthors, {
+            onSome: ({ answer }) => answer === 'yes',
+            onNone: () => undefined,
+          }),
         }),
     })
   }
