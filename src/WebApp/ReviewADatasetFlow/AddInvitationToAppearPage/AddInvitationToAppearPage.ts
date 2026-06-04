@@ -69,7 +69,7 @@ export const AddInvitationToAppearPage = ({
               Match.tag('CompletedForm', ({ name }) => html`value="${name}"`),
               Match.when({ _tag: 'InvalidForm', name: Either.isRight }, ({ name }) => html`value="${name.right}"`),
               Match.orElse(() => ''),
-            )},
+            )}
             ${form._tag === 'InvalidForm' && Either.isLeft(form.name)
               ? html`aria-invalid="true" aria-errormessage="name-error"`
               : ''}
@@ -122,7 +122,7 @@ export const AddInvitationToAppearPage = ({
                   emailAddress.left._tag === 'Invalid' ? html`value="${emailAddress.left.actual}"` : '',
               ),
               Match.orElse(() => ''),
-            )},
+            )}
             ${form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
               ? html`aria-invalid="true" aria-errormessage="email-address-error"`
               : ''}
