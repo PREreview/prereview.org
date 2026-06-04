@@ -1635,6 +1635,108 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a persona', async ({ j
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+  'have to say if there are more authors',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Did you review this dataset with anyone else?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+
+    await page.getByRole('link', { name: 'Select yes if you reviewed the dataset with someone else' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+  "have to give the other author's details",
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
+    await page.getByLabel('Yes').click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Name')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByLabel('Email address')).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Enter their name' }).click()
+
+    await expect(page.getByLabel('Name')).toBeFocused()
+
+    await page.getByRole('link', { name: 'Enter their email address' }).click()
+
+    await expect(page.getByLabel('Email address')).toBeFocused()
+
+    await page.getByLabel('Name').fill('a name')
+    await page.getByLabel('Email address').fill('not an email address')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Name')).not.toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByLabel('Email address')).toHaveAttribute('aria-invalid', 'true')
+
+    await page
+      .getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' })
+      .click()
+
+    await expect(page.getByLabel('Email address')).toBeFocused()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+  'have to say if you want to remove an author',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
+    await page.getByLabel('Yes').click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Are you sure you want to remove Jean-Baptiste Botul?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select yes if you want to remove Jean-Baptiste Botul' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare competing interests',
   async ({ javaScriptEnabled, page }) => {
