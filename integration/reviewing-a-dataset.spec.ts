@@ -321,7 +321,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews
     await page.getByLabel('Yes', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    expect(page.getByRole('heading', { level: 1 })).toHaveText('Add an author')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add an author')
 
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
@@ -341,7 +341,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews
     await page.getByRole('link', { name: 'Change invited authors' }).click()
     await page.getByRole('link', { name: 'Add another author' }).click()
 
-    expect(page.getByRole('heading', { level: 1 })).toHaveText('Add another author')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add another author')
 
     await page.getByLabel('Name').fill('Arne Saknussemm')
     await page.getByLabel('Email address').fill('asaknussemm@example.com')
