@@ -75,6 +75,15 @@ export const OthersNeedToBeListedOnTheReviewSubmission = ({
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
           )
 
+          if (
+            form.othersNeedToBeListed === 'yes' &&
+            nextExpectedCommand !== 'AddInvitationToAppearOnADatasetReviewToTheList'
+          ) {
+            return Response.RedirectResponse({
+              location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
+            })
+          }
+
           return Response.RedirectResponse({
             location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
           })
