@@ -3,6 +3,7 @@ import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/index.ts'
@@ -39,6 +40,7 @@ describe('DeclareCompetingInterestsPage', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
+          Effect.provide(FeatureFlags.layerDefaults),
         ),
     )
 
@@ -62,6 +64,7 @@ describe('DeclareCompetingInterestsPage', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
+          Effect.provide(FeatureFlags.layerDefaults),
         ),
     )
 
@@ -85,6 +88,7 @@ describe('DeclareCompetingInterestsPage', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
+          Effect.provide(FeatureFlags.layerDefaults),
         ),
     )
   })
@@ -112,6 +116,7 @@ describe('DeclareCompetingInterestsPage', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
+        Effect.provide(FeatureFlags.layerDefaults),
       ),
   )
 
@@ -138,6 +143,7 @@ describe('DeclareCompetingInterestsPage', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
+        Effect.provide(FeatureFlags.layerDefaults),
       ),
   )
 
@@ -164,6 +170,7 @@ describe('DeclareCompetingInterestsPage', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
+        Effect.provide(FeatureFlags.layerDefaults),
       ),
   )
 })
@@ -213,6 +220,7 @@ describe('DeclareCompetingInterestsSubmission', () => {
             ),
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
+            Effect.provide(FeatureFlags.layerDefaults),
           ),
       )
 
@@ -265,6 +273,7 @@ describe('DeclareCompetingInterestsSubmission', () => {
             ),
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
+            Effect.provide(FeatureFlags.layerDefaults),
           ),
       )
     })
@@ -313,6 +322,7 @@ describe('DeclareCompetingInterestsSubmission', () => {
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
+          Effect.provide(FeatureFlags.layerDefaults),
         ),
     )
   })
@@ -365,6 +375,7 @@ describe('DeclareCompetingInterestsSubmission', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
+        Effect.provide(FeatureFlags.layerDefaults),
       ),
   )
 })
