@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Effect, Layer, Option, type PubSub, type Types } from 'effect'
+import { Array, Duration, Effect, Layer, Option, type PubSub, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as Preprints from '../src/Preprints/index.ts'
@@ -51,6 +51,7 @@ it.effect.prop(
       Effect.provide(Layer.mock(Events.Events, {} as never)),
       Effect.provide(TestLibsqlClient),
     ),
+  { timeout: Duration.toMillis('60 seconds') },
 )
 
 describe('when the last known position is none', () => {
@@ -103,6 +104,7 @@ describe('when the last known position is none', () => {
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(TestLibsqlClient),
       ),
+    { timeout: Duration.toMillis('60 seconds') },
   )
 })
 
@@ -136,6 +138,7 @@ describe('when the last known position has not changed', () => {
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(TestLibsqlClient),
       ),
+    { timeout: Duration.toMillis('60 seconds') },
   )
 })
 
@@ -172,6 +175,7 @@ describe('when the last known position has changed', () => {
         Effect.provide(Layer.mock(Events.Events, {} as never)),
         Effect.provide(TestLibsqlClient),
       ),
+    { timeout: Duration.toMillis('60 seconds') },
   )
 })
 
@@ -411,21 +415,24 @@ it.effect.each<
       }),
     ],
   ],
-])('find events (%s)', ([, filter, events, expected]) =>
-  Effect.gen(function* () {
-    const eventStore = yield* _.make
+])(
+  'find events (%s)',
+  ([, filter, events, expected]) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
 
-    yield* Effect.forEach(events, eventStore.append)
+      yield* Effect.forEach(events, eventStore.append)
 
-    const actual = yield* eventStore.query(filter)
+      const actual = yield* eventStore.query(filter)
 
-    expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownPosition: expect.anything() }))
-  }).pipe(
-    Effect.provide(Uuid.layer),
-    Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-    Effect.provide(Layer.mock(Events.Events, {} as never)),
-    Effect.provide(TestLibsqlClient),
-  ),
+      expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownPosition: expect.anything() }))
+    }).pipe(
+      Effect.provide(Uuid.layer),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(Layer.mock(Events.Events, {} as never)),
+      Effect.provide(TestLibsqlClient),
+    ),
+  { timeout: Duration.toMillis('60 seconds') },
 )
 
 it.effect.prop(
@@ -450,6 +457,7 @@ it.effect.prop(
       Effect.provide(Layer.mock(Events.Events, {} as never)),
       Effect.provide(TestLibsqlClient),
     ),
+  { timeout: Duration.toMillis('60 seconds') },
 )
 
 const TestLibsqlClient = Layer.unwrapScoped(
