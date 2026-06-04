@@ -1,6 +1,14 @@
 import { Duration } from 'effect'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { areLoggedIn, test as baseTest, canLogIn, expect, usePostgresDB, willPublishADatasetReview } from './base.ts'
+import {
+  areLoggedIn,
+  test as baseTest,
+  canInviteOthersToDatasetReviews,
+  canLogIn,
+  expect,
+  usePostgresDB,
+  willPublishADatasetReview,
+} from './base.ts'
 
 const test = baseTest.extend(usePostgresDB)
 
@@ -254,6 +262,135 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
       'PREreviews of Metadata collected from 500 articles in the field of ecology and evolution',
     )
     await expect(page.getByRole('article', { name: 'PREreview by Orange Panda' })).toBeVisible()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews).extend(willPublishADatasetReview)(
+  'can review a dataset with other authors',
+  async ({ emails, javaScriptEnabled, page }) => {
+    await page.goto('/', { waitUntil: 'commit' })
+    await page.getByRole('link', { name: 'Review a dataset' }).click()
+    await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/dryad.wstqjq2n3')
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('button', { name: 'Start now' }).click()
+
+    await page.getByLabel('Fair', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Somewhat consequential', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page
+      .getByLabel(
+        'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? (optional)',
+      )
+      .fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+    await expect(page.getByRole('main')).toContainText('Jean-Baptiste Botul')
+
+    await page.getByRole('link', { name: 'Change invited authors' }).click()
+    await page.getByRole('link', { name: 'Add another author' }).click()
+    await page.getByLabel('Name').fill('Arne Saknussemm')
+    await page.getByLabel('Email address').fill('asaknussemm@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Jean-Baptiste Botul and Arne Saknussemm')
+
+    await page.getByRole('link', { name: 'Change invited authors' }).click()
+    await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
+    await page.getByLabel('Yes, remove Jean-Baptiste Botul').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Arne Saknussemm')
+    await expect(page.getByRole('main')).not.toContainText('Jean-Baptiste Botul')
+
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('link', { name: 'Continue' })).toBeVisible()
+
+      await page.getByRole('link', { name: 'Continue' }).click()
+    } else {
+      await expect(async () => {
+        await page.getByRole('link', { name: 'Reload page' }).click()
+
+        await expect(page.getByRole('link', { name: 'Reload page' })).not.toBeVisible()
+      }).toPass()
+    }
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
+    await expect(page.getByRole('main')).not.toContainText('If you reviewed the dataset with others')
+
+    await page.getByRole('link', { name: 'See your review' }).click()
+
+    await expect(page.getByRole('main')).toContainText('by Josiah Carberry and 1 other author')
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The authors declare that they have no competing interests.',
+    )
+
+    await page.getByRole('link', { name: 'Back to all reviews' }).click()
+
+    await expect(page.getByRole('article', { name: 'PREreview by Josiah Carberry et al.' })).toBeVisible()
+
+    await expect(() => {
+      expect(emails[0]).toMatchObject({
+        to: { name: 'Arne Saknussemm', address: 'asaknussemm@example.com' },
+        subject: 'Be listed as a PREreview author',
+      })
+    }).toPass()
   },
 )
 
