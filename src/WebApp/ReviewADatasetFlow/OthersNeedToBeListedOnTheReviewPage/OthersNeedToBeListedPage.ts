@@ -23,6 +23,11 @@ export const OthersNeedToBeListedPage = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe('Did you review this dataset with anyone else?', errorPrefix(locale, hasAnError), plainText),
+    nav: html`
+      <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
+    `,
     main: html`
       <form
         method="post"
