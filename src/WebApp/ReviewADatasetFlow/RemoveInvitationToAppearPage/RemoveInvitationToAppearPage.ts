@@ -92,7 +92,7 @@ export const RemoveInvitationToAppearPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>Yes</span>
+                  <span>Yes, remove ${authorName}</span>
                 </label>
               </li>
             </ol>
