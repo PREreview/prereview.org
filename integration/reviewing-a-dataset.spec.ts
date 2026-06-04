@@ -10,7 +10,7 @@ import {
   willPublishADatasetReview,
 } from './base.ts'
 
-const test = baseTest.extend(usePostgresDB)
+const test = baseTest.extend(usePostgresDB).extend(canInviteOthersToDatasetReviews)
 
 test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', async ({ javaScriptEnabled, page }) => {
   await page.goto('/', { waitUntil: 'commit' })
@@ -63,6 +63,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.getByLabel('No').check()
@@ -195,6 +198,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -265,7 +271,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews).extend(willPublishADatasetReview)(
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishADatasetReview)(
   'can review a dataset with other authors',
   async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/', { waitUntil: 'commit' })
@@ -676,6 +682,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -985,6 +993,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1001,6 +1011,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await expect(page.getByLabel('Yes')).toBeChecked()
   await expect(page.getByLabel('What are they?')).toHaveValue('Maecenas sed dapibus massa.')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('No')).toBeChecked()
 
   await page.goBack()
 
@@ -1130,6 +1144,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1146,6 +1162,10 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await expect(page.getByLabel('Yes')).toBeChecked()
   await expect(page.getByLabel('What are they?')).toHaveValue('Maecenas sed dapibus massa.')
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('No')).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1224,7 +1244,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await expect(page.getByRole('link', { name: 'Back' })).not.toBeVisible()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when adding authors and going back a step',
   async ({ page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
@@ -1706,7 +1726,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a persona', async ({ j
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if there are more authors',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
@@ -1731,7 +1751,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+test.extend(canLogIn).extend(areLoggedIn)(
   "have to give the other author's details",
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
@@ -1778,7 +1798,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you want to remove an author',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
