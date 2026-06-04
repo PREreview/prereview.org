@@ -1224,6 +1224,72 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await expect(page.getByRole('link', { name: 'Back' })).not.toBeVisible()
 })
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canInviteOthersToDatasetReviews)(
+  'see existing values when adding authors and going back a step',
+  async ({ page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Fair', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Partly').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Somewhat consequential', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Yes')).toBeChecked()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Yes')).toBeChecked()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
+
+    await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('have to enter a DOI', async ({ javaScriptEnabled, page }) => {
   await page.goto('/review-a-dataset', { waitUntil: 'commit' })
 
