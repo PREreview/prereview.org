@@ -15,62 +15,122 @@ export const createPage = (locale: SupportedLocale) => {
       <ol class="logos">
         <li>
           <a href="https://africanrn.org/">
-            <img src="${assets['aren.png']}" width="600" height="199" alt="African Reproducibility Network" />
+            <img
+              src="${assets['aren.png'].path}"
+              width="${assets['aren.png'].width}"
+              height="${assets['aren.png'].height}"
+              alt="African Reproducibility Network"
+            />
           </a>
         </li>
         <li>
           <a href="https://info.africarxiv.org/">
-            <img src="${assets['africarxiv.svg']}" width="518" height="551" alt="AfricArXiv" />
+            <img
+              src="${assets['africarxiv.svg'].path}"
+              width="${assets['africarxiv.svg'].width}"
+              height="${assets['africarxiv.svg'].height}"
+              alt="AfricArXiv"
+            />
           </a>
         </li>
         <li>
           <a href="https://asapbio.org/">
-            <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" />
+            <img
+              src="${assets['asapbio.svg'].path}"
+              width="${assets['asapbio.svg'].width}"
+              height="${assets['asapbio.svg'].height}"
+              alt="ASAPbio"
+            />
           </a>
         </li>
         <li>
           <a href="https://www.coar-repositories.org/">
-            <img src="${assets['coar.svg']}" width="440" height="343" alt="COAR" />
+            <img
+              src="${assets['coar.svg'].path}"
+              width="${assets['coar.svg'].width}"
+              height="${assets['coar.svg'].height}"
+              alt="COAR"
+            />
           </a>
         </li>
         <li>
           <a href="https://www.cshl.edu/">
-            <img src="${assets['cshl.svg']}" width="280" height="134" alt="Cold Spring Harbor Laboratory" />
+            <img
+              src="${assets['cshl.svg'].path}"
+              width="${assets['cshl.svg'].width}"
+              height="${assets['cshl.svg'].height}"
+              alt="Cold Spring Harbor Laboratory"
+            />
           </a>
         </li>
         <li>
           <a href="https://eiderafricaltd.org/">
-            <img src="${assets['eider-africa.svg']}" width="895" height="927" alt="Eider Africa" />
+            <img
+              src="${assets['eider-africa.svg'].path}"
+              width="${assets['eider-africa.svg'].width}"
+              height="${assets['eider-africa.svg'].height}"
+              alt="Eider Africa"
+            />
           </a>
         </li>
         <li>
           <a href="https://elifesciences.org/">
-            <img src="${assets['elife.svg']}" width="129" height="44" alt="eLife" />
+            <img
+              src="${assets['elife.svg'].path}"
+              width="${assets['elife.svg'].width}"
+              height="${assets['elife.svg'].height}"
+              alt="eLife"
+            />
           </a>
         </li>
         <li>
           <a href="https://www.healthra.org/">
-            <img src="${assets['healthra.svg']}" width="564" height="224" alt="Health Research Alliance" />
+            <img
+              src="${assets['healthra.svg'].path}"
+              width="${assets['healthra.svg'].width}"
+              height="${assets['healthra.svg'].height}"
+              alt="Health Research Alliance"
+            />
           </a>
         </li>
         <li>
           <a href="https://www.orfg.org/">
-            <img src="${assets['ofrg.svg']}" width="268" height="201" alt="Open Research Funders Group" />
+            <img
+              src="${assets['ofrg.svg'].path}"
+              width="${assets['ofrg.svg'].width}"
+              height="${assets['ofrg.svg'].height}"
+              alt="Open Research Funders Group"
+            />
           </a>
         </li>
         <li>
           <a href="https://www.preprints.org/">
-            <img src="${assets['preprintsorg.png']}" width="774" height="140" alt="Preprints.org" />
+            <img
+              src="${assets['preprintsorg.png'].path}"
+              width="${assets['preprintsorg.png'].width}"
+              height="${assets['preprintsorg.png'].height}"
+              alt="Preprints.org"
+            />
           </a>
         </li>
         <li>
           <a href="https://scielo.org/">
-            <img src="${assets['scielo.svg']}" width="538" height="562" alt="SciELO" />
+            <img
+              src="${assets['scielo.svg'].path}"
+              width="${assets['scielo.svg'].width}"
+              height="${assets['scielo.svg'].height}"
+              alt="SciELO"
+            />
           </a>
         </li>
         <li>
           <a href="https://sciety.org/">
-            <img src="${assets['sciety.svg']}" width="119" height="36" alt="Sciety" />
+            <img
+              src="${assets['sciety.svg'].path}"
+              width="${assets['sciety.svg'].width}"
+              height="${assets['sciety.svg'].height}"
+              alt="Sciety"
+            />
           </a>
         </li>
       </ol>

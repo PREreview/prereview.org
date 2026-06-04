@@ -121,7 +121,10 @@ function prereviewManifestPlugin({
     apply: 'build',
     writeBundle(_, bundle) {
       const entryNames = new Set(Object.keys(entries))
-      const manifest: Record<string, { path: string; preload: Array<string> } | string> = {}
+      const manifest: Record<
+        string,
+        { path: string; preload: Array<string> } | { path: string; width: number; height: number } | string
+      > = {}
 
       const chunksByFile = new Map(
         Object.values(bundle)
@@ -139,13 +142,21 @@ function prereviewManifestPlugin({
         }
 
         if (item.type === 'asset' && typeof item.names[0] === 'string' && entryNames.has(item.names[0])) {
-          manifest[item.names[0]] = `/${item.fileName}`
+          const entryName = item.names[0]
+          const assetPath = `/${item.fileName}`
+
+          if (isImageEntry(entryName)) {
+            manifest[entryName] = { path: assetPath, ...getImageDimensions(entryName, item.source) }
+          } else {
+            manifest[entryName] = assetPath
+          }
+
           continue
         }
       }
 
       for (const [name, value] of Object.entries(manifest)) {
-        if (typeof value === 'object') {
+        if (typeof value === 'object' && 'preload' in value) {
           const chunkFile = value.path.replace('/assets/', '')
           const chunk = chunksByFile.get(chunkFile)
           if (typeof chunk?.viteMetadata?.importedCss.size === 'number') {
@@ -161,4 +172,67 @@ function prereviewManifestPlugin({
       writeFileSync(outputPath, JSON.stringify(orderedManifest, null, 2))
     },
   }
+}
+
+function isImageEntry(fileName: string): boolean {
+  return /\.(png|svg)$/i.test(fileName)
+}
+
+function getImageDimensions(fileName: string, source: string | Uint8Array): { width: number; height: number } {
+  const dimensions = /\.png$/i.test(fileName)
+    ? getPngDimensions(source)
+    : /\.svg$/i.test(fileName)
+      ? getSvgDimensions(source)
+      : undefined
+
+  if (!dimensions) {
+    throw new Error(`Unsupported image format for file: ${fileName}`)
+  }
+
+  return dimensions
+}
+
+function getPngDimensions(source: string | Uint8Array): { width: number; height: number } {
+  if (!(source instanceof Uint8Array) || source.length < 24) {
+    throw new Error('Invalid PNG file')
+  }
+
+  if (
+    source[0] !== 0x89 ||
+    source[1] !== 0x50 ||
+    source[2] !== 0x4e ||
+    source[3] !== 0x47 ||
+    source[4] !== 0x0d ||
+    source[5] !== 0x0a ||
+    source[6] !== 0x1a ||
+    source[7] !== 0x0a
+  ) {
+    throw new Error('Invalid PNG file')
+  }
+
+  const view = new DataView(source.buffer, source.byteOffset, source.byteLength)
+
+  return { width: view.getUint32(16), height: view.getUint32(20) }
+}
+
+function getSvgDimensions(source: string | Uint8Array): { width: number; height: number } {
+  const svg = typeof source === 'string' ? source : Buffer.from(source).toString('utf8')
+
+  const widthMatch = /\bwidth=["']\s*([0-9]*\.?[0-9]+)\s*(px)?\s*["']/i.exec(svg)
+  const heightMatch = /\bheight=["']\s*([0-9]*\.?[0-9]+)\s*(px)?\s*["']/i.exec(svg)
+
+  if (widthMatch && heightMatch) {
+    return { width: Math.round(Number(widthMatch[1])), height: Math.round(Number(heightMatch[1])) }
+  }
+
+  const viewBoxMatch =
+    /\bviewBox=["']\s*[-+]?[0-9]*\.?[0-9]+(?:\s+|,)\s*[-+]?[0-9]*\.?[0-9]+(?:\s+|,)\s*([-+]?[0-9]*\.?[0-9]+)(?:\s+|,)\s*([-+]?[0-9]*\.?[0-9]+)\s*["']/i.exec(
+      svg,
+    )
+
+  if (!viewBoxMatch) {
+    throw new Error('SVG is missing width/height attributes and viewBox attribute')
+  }
+
+  return { width: Math.round(Number(viewBoxMatch[1])), height: Math.round(Number(viewBoxMatch[2])) }
 }

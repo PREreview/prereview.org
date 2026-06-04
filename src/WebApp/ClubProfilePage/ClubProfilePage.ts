@@ -35,25 +35,49 @@ export function createPage({
         Match.when(
           String.startsWith('asapbio-'),
           () => html`
-            <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" class="club-logo" />
+            <img
+              src="${assets['asapbio.svg'].path}"
+              width="${assets['asapbio.svg'].width}"
+              height="${assets['asapbio.svg'].height}"
+              alt="ASAPbio"
+              class="club-logo"
+            />
           `,
         ),
         Match.when(
           'jmir-publications',
           () => html`
             <a href="https://jmirpublications.com/"
-              ><img src="${assets['jmir.svg']}" width="537" height="86" alt="JMIR Publications" class="club-logo"
+              ><img
+                src="${assets['jmir.svg'].path}"
+                width="${assets['jmir.svg'].width}"
+                height="${assets['jmir.svg'].height}"
+                alt="JMIR Publications"
+                class="club-logo"
             /></a>
           `,
         ),
         Match.when(
           'kone-consult',
-          () => html`<img src="${assets['kone-consult.svg']}" width="200" height="200" alt="" class="club-logo" />`,
+          () =>
+            html`<img
+              src="${assets['kone-consult.svg'].path}"
+              width="${assets['kone-consult.svg'].width}"
+              height="${assets['kone-consult.svg'].height}"
+              alt=""
+              class="club-logo"
+            />`,
         ),
         Match.when(
           'translate-science',
           () =>
-            html`<img src="${assets['translate-science.png']}" width="134" height="134" alt="" class="club-logo" />`,
+            html`<img
+              src="${assets['translate-science.png'].path}"
+              width="${assets['translate-science.png'].width}"
+              height="${assets['translate-science.png'].height}"
+              alt=""
+              class="club-logo"
+            />`,
         ),
         Match.orElse(() => ''),
       )}

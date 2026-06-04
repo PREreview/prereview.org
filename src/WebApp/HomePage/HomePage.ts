@@ -44,7 +44,12 @@ export const createPage = ({
             <a href="${Routes.ReviewADataset}">${translate(locale, 'home-page', 'reviewDatasetLink')()}</a>
           </div>
         </div>
-        <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
+        <img
+          src="${assets['stool.svg'].path}"
+          width="${assets['stool.svg'].width}"
+          height="${assets['stool.svg'].height}"
+          alt=""
+        />
       </div>
 
       <div class="sections">
@@ -402,9 +407,9 @@ export const createPage = ({
           <li>
             <a href="https://sloan.org/grant-detail/8729">
               <img
-                src="${assets['sloan.svg']}"
-                width="350"
-                height="190"
+                src="${assets['sloan.svg'].path}"
+                width="${assets['sloan.svg'].width}"
+                height="${assets['sloan.svg'].height}"
                 loading="lazy"
                 alt="Alfred P. Sloan Foundation"
               />
@@ -412,15 +417,21 @@ export const createPage = ({
           </li>
           <li>
             <a href="https://www.gatesfoundation.org/">
-              <img src="${assets['gates.svg']}" width="2000" height="221.65" loading="lazy" alt="Gates Foundation" />
+              <img
+                src="${assets['gates.svg'].path}"
+                width="${assets['gates.svg'].width}"
+                height="${assets['gates.svg'].height}"
+                loading="lazy"
+                alt="Gates Foundation"
+              />
             </a>
           </li>
           <li>
             <a href="https://chanzuckerberg.com/">
               <img
-                src="${assets['czi.svg']}"
-                width="192"
-                height="192"
+                src="${assets['czi.svg'].path}"
+                width="${assets['czi.svg'].width}"
+                height="${assets['czi.svg'].height}"
                 loading="lazy"
                 alt="Chan Zuckerberg Initiative"
               />
@@ -428,12 +439,24 @@ export const createPage = ({
           </li>
           <li>
             <a href="https://foundation.mozilla.org/">
-              <img src="${assets['mozilla.svg']}" width="280" height="80" loading="lazy" alt="Mozilla Foundation" />
+              <img
+                src="${assets['mozilla.svg'].path}"
+                width="${assets['mozilla.svg'].width}"
+                height="${assets['mozilla.svg'].height}"
+                loading="lazy"
+                alt="Mozilla Foundation"
+              />
             </a>
           </li>
           <li>
             <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
-              <img src="${assets['wellcome.svg']}" width="181" height="181" loading="lazy" alt="Wellcome Trust" />
+              <img
+                src="${assets['wellcome.svg'].path}"
+                width="${assets['wellcome.svg'].width}"
+                height="${assets['wellcome.svg'].height}"
+                loading="lazy"
+                alt="Wellcome Trust"
+              />
             </a>
           </li>
         </ol>

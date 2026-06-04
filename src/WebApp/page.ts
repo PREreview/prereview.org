@@ -127,13 +127,13 @@ export const page = ({
         ${description ? html` <meta property="og:description" content="${description}" />` : ''}
         ${current === 'home'
           ? html`
-              <meta property="og:image" content="${new URL(assets['prereview-og.png'], publicUrl).href}" />
-              <meta property="og:image:width" content="1200" />
-              <meta property="og:image:height" content="630" />
+              <meta property="og:image" content="${new URL(assets['prereview-og.png'].path, publicUrl).href}" />
+              <meta property="og:image:width" content="${assets['prereview-og.png'].width}" />
+              <meta property="og:image:height" content="${assets['prereview-og.png'].height}" />
             `
           : ''}
         <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
-        <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
+        <link rel="icon" href="${assets['favicon.svg'].path}" type="image/svg+xml" />
       </head>
       <body class="${type === 'two-up' ? type : ''}">
         ${skipLinks.length > 0
@@ -154,7 +154,12 @@ export const page = ({
             <div class="header">
               <div class="logo">
                 <a href="${Routes.HomePage}" ${current === 'home' ? html`aria-current="page"` : ''}>
-                  <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
+                  <img
+                    src="${assets['prereview.svg'].path}"
+                    width="${assets['prereview.svg'].width}"
+                    height="${assets['prereview.svg'].height}"
+                    alt="PREreview"
+                  />
                 </a>
               </div>
 
@@ -388,7 +393,12 @@ export const page = ({
           ${type !== 'streamline'
             ? html`
                 <div>
-                  <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
+                  <img
+                    src="${assets['prereview.svg'].path}"
+                    width="${assets['prereview.svg'].width}"
+                    height="${assets['prereview.svg'].height}"
+                    alt="PREreview"
+                  />
                 </div>
 
                 ${pageUrls
