@@ -22,6 +22,11 @@ export const CheckInvitationsToAppearPage = ({
   return StreamlinePageResponse({
     status: StatusCodes.OK,
     title: plainText`You have added ${authors.length} other author${authors.length > 1 ? 's' : ''}`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId })}" class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
+    `,
     main: html`
       <form
         method="post"
