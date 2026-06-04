@@ -25,6 +25,16 @@ export const AddInvitationToAppearPage = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(otherAuthors ? 'Add another author' : 'Add an author', errorPrefix(locale, hasAnError), plainText),
+    nav: html`
+      <a
+        href="${(otherAuthors
+          ? Routes.ReviewADatasetCheckInvitationsToAppear
+          : Routes.ReviewADatasetOthersNeedToBeListedOnTheReview
+        ).href({ datasetReviewId })}"
+        class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetAddInvitationToAppear.href({ datasetReviewId })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
