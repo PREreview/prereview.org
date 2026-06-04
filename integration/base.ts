@@ -2452,7 +2452,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             canAddMultipleAuthors,
             canInviteOthersToDatasetReviews,
             canLogInAsDemoUser,
-            canNotifyReviewsPublishedInResponseToRequests: true,
             showSpotlight,
           }),
           Nodemailer.layerTransporter(nodemailer),

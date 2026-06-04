@@ -129,20 +129,8 @@ export const layer = Layer.effect(
           error => new Queries.UnableToQuery({ cause: error }),
         ),
       ),
-      hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(
-        function* (orcidId) {
-          if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
-            return yield* new Queries.UnableToQuery({ cause: 'Feature flag is turned off' })
-          }
-
-          return yield* hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(orcidId)
-        },
-      ),
+      hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests,
       optInToNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(function* (orcidId) {
-        if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
-          return yield* new UnableToHandleCommand({ cause: 'Feature flag is turned off' })
-        }
-
         const input = {
           orcidId,
           optedInAt: yield* Temporal.currentInstant,
@@ -151,10 +139,6 @@ export const layer = Layer.effect(
         yield* optInToNotificationsForReviewsPublishedInResponseToRequests(input)
       }),
       optOutOfNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(function* (orcidId) {
-        if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
-          return yield* new UnableToHandleCommand({ cause: 'Feature flag is turned off' })
-        }
-
         const input = {
           orcidId,
           optedOutAt: yield* Temporal.currentInstant,

@@ -67,7 +67,7 @@ export function createPage({
   researchInterests: Option.Option<ResearchInterests>
   location: Option.Option<Location>
   languages: Option.Option<Languages>
-  requestedReviewNotifications?: boolean
+  requestedReviewNotifications: boolean
 }) {
   const t = translate(locale)
 
@@ -246,7 +246,6 @@ export function createPage({
         ${Option.isSome(contactEmailAddress) && contactEmailAddress.value._tag === 'VerifiedContactEmailAddress'
           ? pipe(
               Match.value(requestedReviewNotifications),
-              Match.when(undefined, () => ''),
               Match.when(
                 false,
                 () => html`

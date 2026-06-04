@@ -7,7 +7,6 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canAddMultipleAuthors: (user?: User) => boolean
     canInviteOthersToDatasetReviews: boolean
     canLogInAsDemoUser: boolean
-    canNotifyReviewsPublishedInResponseToRequests: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
     useCrowdinInContext: boolean
     showSpotlight: boolean
@@ -18,7 +17,6 @@ const defaults = {
   canAddMultipleAuthors: () => false,
   canInviteOthersToDatasetReviews: false,
   canLogInAsDemoUser: false,
-  canNotifyReviewsPublishedInResponseToRequests: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
   showSpotlight: false,
@@ -29,7 +27,6 @@ export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct
 export const {
   canInviteOthersToDatasetReviews,
   canLogInAsDemoUser,
-  canNotifyReviewsPublishedInResponseToRequests,
   sendCoarNotifyMessages,
   useCrowdinInContext,
   showSpotlight,

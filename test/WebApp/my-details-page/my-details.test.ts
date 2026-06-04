@@ -4,7 +4,11 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as FeatureFlags from '../../../src/FeatureFlags.ts'
+import {
+  HasNotOptedIn,
+  HasOptedIn,
+  HasOptedOut,
+} from '../../../src/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -51,7 +55,7 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+            const runtime = yield* Effect.runtime<Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
@@ -84,7 +88,14 @@ describe('myDetails', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(Prereviewers, {
+                hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                  Effect.succeed(new HasOptedIn()),
+              }),
+            ),
+          ),
       )
 
       it.effect.prop(
@@ -124,7 +135,7 @@ describe('myDetails', () => {
           Effect.gen(function* () {
             const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
-            const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+            const runtime = yield* Effect.runtime<Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
@@ -158,7 +169,14 @@ describe('myDetails', () => {
               js: [],
             })
             expect(saveUserOnboarding).toHaveBeenCalledWith(publicPersona.orcidId, { seenMyDetailsPage: true })
-          }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(Prereviewers, {
+                hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                  Effect.succeed(new HasOptedOut()),
+              }),
+            ),
+          ),
       )
 
       it.effect.prop(
@@ -196,7 +214,7 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+            const runtime = yield* Effect.runtime<Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
@@ -227,7 +245,14 @@ describe('myDetails', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(Prereviewers, {
+                hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                  Effect.succeed(new HasNotOptedIn()),
+              }),
+            ),
+          ),
       )
     })
 
@@ -264,7 +289,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -295,7 +320,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -331,7 +363,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -362,7 +394,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -398,7 +437,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -429,7 +468,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -465,7 +511,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -496,7 +542,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -532,7 +585,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -563,7 +616,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -599,7 +659,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -630,7 +690,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -666,7 +733,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -697,7 +764,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -733,7 +807,7 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -764,7 +838,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -800,7 +881,7 @@ describe('myDetails', () => {
         location,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
@@ -831,13 +912,20 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Prereviewers, {
+              hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+                Effect.succeed(new HasOptedIn()),
+            }),
+          ),
+        ),
     )
   })
 
   it.effect.prop('when the user is not logged in', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+      const runtime = yield* Effect.runtime<Prereviewers>()
 
       const actual = yield* Effect.promise(
         _.myDetails({ locale })({
@@ -864,6 +952,13 @@ describe('myDetails', () => {
         _tag: 'LogInResponse',
         location: format(myDetailsMatch.formatter, {}),
       })
-    }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
+    }).pipe(
+      Effect.provide(
+        Layer.mock(Prereviewers, {
+          hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+            Effect.succeed(new HasOptedIn()),
+        }),
+      ),
+    ),
   )
 })
