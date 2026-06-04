@@ -3,7 +3,6 @@ import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import { GetContactEmailAddress } from '../contact-email-address.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
-import { FeatureFlags } from '../FeatureFlags.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type EmailAddress, type NonEmptyString, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
@@ -53,7 +52,6 @@ export const {
 export const layer = Layer.effect(
   Prereviewers,
   Effect.gen(function* () {
-    const featureFlags = yield* FeatureFlags
     const orcidRecords = yield* OrcidRecords.OrcidRecords
     const getContactEmailAddress = yield* GetContactEmailAddress
 
