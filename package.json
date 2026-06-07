@@ -112,7 +112,7 @@
     "stylelint-plugin-logical-css": "^2.1.0",
     "ts-deepmerge": "^8.0.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.60.0",
+    "typescript-eslint": "^8.60.1",
     "vite": "^8.0.16",
     "vite-plugin-purgecss": "^0.2.13",
     "vitest": "^4.1.8"
