@@ -49,7 +49,7 @@ export const createDatasetReviewPage = ({
         <h1>
           ${rawHtml(
             t('structuredReviewTitle')({
-              dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}>
+              dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}
                 >${datasetReview.dataset.title}</cite
               >`.toString(),
             }),

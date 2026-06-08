@@ -41,8 +41,8 @@ export const declinePage = ({
                   'review-page',
                   review.structured ? 'structuredReviewTitle' : 'reviewTitle',
                 )({
-                  preprint: html`<cite ${languageAttributesFor(review.preprint.language)}>
-                    ${review.preprint.title}</cite
+                  preprint: html`<cite ${languageAttributesFor(review.preprint.language)}
+                    >${review.preprint.title}</cite
                   >`.toString(),
                 }),
               )}
