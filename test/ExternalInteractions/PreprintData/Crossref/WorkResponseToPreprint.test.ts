@@ -19,6 +19,7 @@ import {
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
+  JmirPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   NeurolibrePreprintId,
@@ -913,6 +914,33 @@ it.effect.each([
       url: new URL('https://archive.umsida.ac.id/index.php/archive/preprint/view/10182/version/10175'),
     }),
   },
+  {
+    response: 'jmir-preprint.json',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<h4>BACKGROUND</h4>\n\n<p>Emergency Medical Services (EMS) activations related to influenza-like illness (ILI) increased during the COVID-19 pandemic. Information about the characteristics of EMS activations related to ILI during the COVID-19 pandemic may inform prehospital planning for future pandemics.</p>\n\n<h4>OBJECTIVE</h4>\n\n<p>The objective of our study was to compare demographic, geographic, and other characteristics of EMS activations related to ILI using data from 2019 (before the pandemic) and 2020 (during the pandemic).</p>\n\n<h4>METHODS</h4>\n\n<p>We conducted a cross-sectional analysis of 2019 and 2020 EMS activation data from the National Emergency Medical Services Information System (NEMSIS). The outcome of interest was the number of EMS activations related to ILI. Rates (the number of EMS activations related to ILI divided by the total number of EMS activations initiated with a 9-1-1 call that resulted in patient contact multiplied by 1,000), confidence intervals, and P-values were calculated by year for age, sex, race / ethnicity, census region, census division, urbanicity, primary method of payment, patient disposition, barriers to patient care, and patient destination to assess whether there were significant differences in the rates between years. The percentage change per 1,000 EMS activations from 2019 to 2020 was calculated in addition to rates by quarter for each year to compare trends.</p>\n\n<h4>RESULTS</h4>\n\n<p>There were 21,278,998 total EMS activations in 2019 and 26,923,354 in 2020. The rate of EMS activations related to ILI was 153.4/1,000 (n=3,263,713) in 2019 and 174.6/1,000 (n=4,701,617) in 2020. Rates of EMS activations related to ILI in 2020 were statistically different (P&lt;.001) from 2019 for all demographic, geographic, and other characteristics. The overall rate of EMS activations related to ILI increased by 13.8% from 2019 to 2020. Some of the largest percentage increases in rates between years were for EMS activations that included Hispanic or Latino patients (33.1%), EMS activations in the Middle Atlantic census division (42.0%), and EMS activations with language barriers between the patient and the EMS clinician (39.6%). Quarterly rates of EMS activations related to ILI for EMS activations that included Hispanic or Latino patients and for EMS activations with language barriers between the patient and the EMS clinician were larger during 2020 than during 2019 for all quarters.</p>\n\n<h4>CONCLUSIONS</h4>\n\n<p>Compared to 2019, rates of EMS activations related to ILI during 2020 increased for EMS activations that included Hispanic or Latino patients, occurred in the Middle Atlantic census division, and demonstrated language barriers between the patient and the EMS clinician. Further studies are needed to investigate the health impacts of language barriers between the patient and EMS clinician during prehospital care. Prehospital planning efforts that include testing and implementing strategies to address potential language barriers between the patient and the EMS clinician during EMS activations are warranted.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Kim Gadsden-Knowles', orcid: OrcidId('0000-0002-9657-5110') },
+        { name: 'Ramal Moonesinghe', orcid: undefined },
+        { name: 'Benjamin Fisher', orcid: undefined },
+        { name: 'Angela Child', orcid: undefined },
+        { name: 'Umed A Ajani', orcid: undefined },
+      ],
+      id: new JmirPreprintId({ value: Doi('10.2196/preprints.96189') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 3, day: 26 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Comparison of Influenza-Like Illness Emergency Medical Services Activation Characteristics in the United States During 2019 and 2020: Cross Sectional Analysis (Preprint)',
+        ),
+      },
+      url: new URL('https://preprints.jmir.org/preprint/96189'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -929,6 +957,8 @@ it.effect.each([
 it.effect.each([
   ['csh-press-journal.json'],
   ['f1000.json'],
+  ['jmir-journal.json'],
+  ['jmir-journal-correction.json'],
   ['scielo-journal.json'],
   ['science-open-journal-article.json'],
   ['wellcome-open-research.json'],
