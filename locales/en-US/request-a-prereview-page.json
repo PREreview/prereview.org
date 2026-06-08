@@ -65,6 +65,10 @@
   "doiCouldBeEngrxiv": {
     "message": "We think the DOI {doi} could be an engrXiv preprint, but we can’t find any details."
   },
+  "doiCouldBeJmir": {
+    "message": "We think the DOI {doi} could be a JMIR preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
+  },
   "doiCouldBeJxiv": {
     "message": "We think the DOI {doi} could be a Jxiv preprint, but we can’t find any details."
   },

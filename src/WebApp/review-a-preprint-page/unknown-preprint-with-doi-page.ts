@@ -35,10 +35,7 @@ export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprint
             EcoevorxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEcoevorxiv'),
             EdarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEdarxiv'),
             EngrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEngrxiv'),
-            JmirPreprintId:
-              () =>
-              ({ doi }: { doi: string }) =>
-                `We think the DOI ${doi} could be a JMIR preprint, but we can’t find any details.`,
+            JmirPreprintId: () => t('review-a-preprint', 'doiCouldBeJmir'),
             JxivPreprintId: () => t('review-a-preprint', 'doiCouldBeJxiv'),
             LifecycleJournalPreprintId: () => t('review-a-preprint', 'doiCouldBeLifecycleJournal'),
             MedrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeMedrxiv'),
