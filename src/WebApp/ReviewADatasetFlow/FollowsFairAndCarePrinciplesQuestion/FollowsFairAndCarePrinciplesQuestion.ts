@@ -50,6 +50,41 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                 <h1>${t('followFairAndCare')()}</h1>
               </legend>
 
+              <details>
+                <summary><span>What are FAIR principles?</span></summary>
+
+                <div>
+                  <p>
+                    A dataset follows <a href="https://www.go-fair.org/fair-principles/">FAIR principles</a> if it is:
+                  </p>
+
+                  <ol>
+                    <li>Findable</li>
+                    <li>Accessible</li>
+                    <li>Interoperable</li>
+                    <li>Reusable</li>
+                  </ol>
+                </div>
+              </details>
+
+              <details>
+                <summary><span>What are CARE principles?</span></summary>
+
+                <div>
+                  <p>
+                    A dataset follows <a href="https://www.gida-global.org/careprinciples">CARE principles</a> if it
+                    maintains sovereignty and rights for its indigenous creators through:
+                  </p>
+
+                  <ol>
+                    <li>Collective benefit</li>
+                    <li>Authority to control</li>
+                    <li>Responsibility</li>
+                    <li>Ethics</li>
+                  </ol>
+                </div>
+              </details>
+
               ${hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
                 ? html`
                     <div class="error-message" id="findings-next-steps-error">
