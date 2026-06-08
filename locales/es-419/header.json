@@ -20,6 +20,9 @@
   "menuAboutUs": {
     "message": "Quiénes somos"
   },
+  "menuHowToUse": {
+    "message": "Cómo navegar"
+  },
   "menuDonate": {
     "message": "Donar"
   },

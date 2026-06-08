@@ -20,6 +20,9 @@
   "menuAboutUs": {
     "message": "Sobre nós"
   },
+  "menuHowToUse": {
+    "message": "Como usar"
+  },
   "menuDonate": {
     "message": "Doe"
   },
