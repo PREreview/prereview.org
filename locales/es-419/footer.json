@@ -41,6 +41,9 @@
   "menuBlog": {
     "message": "Blog"
   },
+  "menuPartners": {
+    "message": "Colaboradores"
+  },
   "contactHeading": {
     "message": "Contáctanos"
   },

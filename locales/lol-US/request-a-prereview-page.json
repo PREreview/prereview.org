@@ -65,6 +65,9 @@
   "doiCouldBeEngrxiv": {
     "message": "crwdns5313:0{doi}crwdne5313:0"
   },
+  "doiCouldBeJmir": {
+    "message": "crwdns6623:0{doi}crwdne6623:0"
+  },
   "doiCouldBeJxiv": {
     "message": "crwdns5315:0{doi}crwdne5315:0"
   },
@@ -147,7 +150,7 @@
     "message": "crwdns5357:0crwdne5357:0"
   },
   "supportPreprintsFrom": {
-    "message": "crwdns4528:0crwdne4528:0"
+    "message": "crwdns6619:0crwdne6619:0"
   },
   "isAPreprint": {
     "message": "crwdns5281:0crwdne5281:0"
