@@ -142,9 +142,6 @@ importers:
       orcid-id-ts:
         specifier: ^0.1.3
         version: 0.1.3(fp-ts@2.16.11)
-      rtl-detect:
-        specifier: ^1.1.2
-        version: 1.1.2
       sanitize-html:
         specifier: ^2.17.4
         version: 2.17.4
@@ -4998,9 +4995,6 @@ packages:
   router@2.2.0:
     resolution: {integrity: sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==}
     engines: {node: '>= 18'}
-
-  rtl-detect@1.1.2:
-    resolution: {integrity: sha512-PGMBq03+TTG/p/cRB7HCLKJ1MgDIi07+QU1faSjiYRfmY5UsAttV9Hs08jDAHVwcOwmVLcSJkpwyfXszVjWfIQ==}
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -10766,8 +10760,6 @@ snapshots:
       path-to-regexp: 8.4.0
     transitivePeerDependencies:
       - supports-color
-
-  rtl-detect@1.1.2: {}
 
   run-parallel@1.2.0:
     dependencies:

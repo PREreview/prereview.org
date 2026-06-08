@@ -261,6 +261,7 @@ export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().map(Uuid)
 
 export const locale = (): fc.Arbitrary<string> =>
   constantFrom(
+    'arb',
     'de',
     'de-AT',
     'de-DE-u-co-phonebk',
@@ -277,6 +278,8 @@ export const locale = (): fc.Arbitrary<string> =>
     'hi',
     'th',
     'th-TH-u-nu-thai',
+    'uz-Arab',
+    'uz-Latn',
     'zh',
     'zh-CN',
     'zh-Hans-CN',

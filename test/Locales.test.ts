@@ -5,8 +5,11 @@ import * as fc from './fc.ts'
 describe('languageAttributesFor', () => {
   it.each([
     ['ar', 'ar', 'rtl'],
+    ['arb', 'arb', 'rtl'],
     ['en', 'en', 'ltr'],
     ['es-419', 'es-419', 'ltr'],
+    ['uz-Arab', 'uz-Arab', 'rtl'],
+    ['uz-Latn', 'uz-Latn', 'ltr'],
   ])('%s', (locale, expectedLang, expectedDir) => {
     const actual = _.languageAttributesFor(locale)
 
