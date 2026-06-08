@@ -8,63 +8,64 @@ import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprintIdWithDoi, locale: SupportedLocale) {
-  const t = translate(locale)
+  const t = translate(locale, 'review-a-preprint')
 
   return PageResponse({
     status: StatusCodes.BadRequest,
-    title: plainText(t('review-a-preprint', 'doNotKnowPreprint')()),
+    title: plainText(t('doNotKnowPreprint')()),
     main: html`
-      <h1>${t('review-a-preprint', 'doNotKnowPreprint')()}</h1>
+      <h1>${t('doNotKnowPreprint')()}</h1>
 
       <p>
         ${rawHtml(
           Match.valueTags(preprint, {
-            AdvancePreprintId: () => t('review-a-preprint', 'doiCouldBeAdvance'),
-            AfricarxivFigsharePreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
-            AfricarxivOsfPreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
-            AfricarxivUbuntunetPreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
-            AfricarxivZenodoPreprintId: () => t('review-a-preprint', 'doiCouldBeAfricarxiv'),
-            ArcadiaSciencePreprintId: () => t('review-a-preprint', 'doiCouldBeArcadiaScience'),
-            ArxivPreprintId: () => t('review-a-preprint', 'doiCouldBeArxiv'),
-            AuthoreaPreprintId: () => t('review-a-preprint', 'doiCouldBeAuthorea'),
-            BiorxivPreprintId: () => t('review-a-preprint', 'doiCouldBeBiorxiv'),
-            BiorxivOrMedrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeBiorxivMedrxiv'),
-            ChemrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeChemrxiv'),
-            CurvenotePreprintId: () => t('review-a-preprint', 'doiCouldBeCurvenote'),
-            EartharxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEartharxiv'),
-            EcoevorxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEcoevorxiv'),
-            EdarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEdarxiv'),
-            EngrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeEngrxiv'),
-            JxivPreprintId: () => t('review-a-preprint', 'doiCouldBeJxiv'),
-            LifecycleJournalPreprintId: () => t('review-a-preprint', 'doiCouldBeLifecycleJournal'),
-            MedrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeMedrxiv'),
-            MetaarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeMetaarxiv'),
-            NeurolibrePreprintId: () => t('review-a-preprint', 'doiCouldBeNeurolibre'),
-            OsfPreprintId: () => t('review-a-preprint', 'doiCouldBeOsf'),
-            OsfPreprintsPreprintId: () => t('review-a-preprint', 'doiCouldBeOsf'),
-            OsfOrLifecycleJournalPreprintId: () => t('review-a-preprint', 'doiCouldBeOsfLifecycleJournal'),
-            PreprintsorgPreprintId: () => t('review-a-preprint', 'doiCouldBePreprintsorg'),
-            PsyarxivPreprintId: () => t('review-a-preprint', 'doiCouldBePsyarxiv'),
-            PsychArchivesPreprintId: () => t('review-a-preprint', 'doiCouldBePsycharchives'),
-            ResearchSquarePreprintId: () => t('review-a-preprint', 'doiCouldBeResearchSquare'),
-            ScieloPreprintId: () => t('review-a-preprint', 'doiCouldBeScielo'),
-            ScienceOpenPreprintId: () => t('review-a-preprint', 'doiCouldBeScienceOpen'),
-            SocarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeSocarxiv'),
-            SsrnPreprintId: () => t('review-a-preprint', 'doiCouldBeSsrn'),
-            TechrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeTechrxiv'),
-            UmsidaPreprintId: () => t('review-a-preprint', 'doiCouldBeUmsida'),
-            VerixivPreprintId: () => t('review-a-preprint', 'doiCouldBeVerixiv'),
-            ZenodoPreprintId: () => t('review-a-preprint', 'doiCouldBeZenodo'),
-            ZenodoOrAfricarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeZenodoAfricarxiv'),
+            AdvancePreprintId: () => t('doiCouldBeAdvance'),
+            AfricarxivFigsharePreprintId: () => t('doiCouldBeAfricarxiv'),
+            AfricarxivOsfPreprintId: () => t('doiCouldBeAfricarxiv'),
+            AfricarxivUbuntunetPreprintId: () => t('doiCouldBeAfricarxiv'),
+            AfricarxivZenodoPreprintId: () => t('doiCouldBeAfricarxiv'),
+            ArcadiaSciencePreprintId: () => t('doiCouldBeArcadiaScience'),
+            ArxivPreprintId: () => t('doiCouldBeArxiv'),
+            AuthoreaPreprintId: () => t('doiCouldBeAuthorea'),
+            BiorxivPreprintId: () => t('doiCouldBeBiorxiv'),
+            BiorxivOrMedrxivPreprintId: () => t('doiCouldBeBiorxivMedrxiv'),
+            ChemrxivPreprintId: () => t('doiCouldBeChemrxiv'),
+            CurvenotePreprintId: () => t('doiCouldBeCurvenote'),
+            EartharxivPreprintId: () => t('doiCouldBeEartharxiv'),
+            EcoevorxivPreprintId: () => t('doiCouldBeEcoevorxiv'),
+            EdarxivPreprintId: () => t('doiCouldBeEdarxiv'),
+            EngrxivPreprintId: () => t('doiCouldBeEngrxiv'),
+            JmirPreprintId: () => t('doiCouldBeJmir'),
+            JxivPreprintId: () => t('doiCouldBeJxiv'),
+            LifecycleJournalPreprintId: () => t('doiCouldBeLifecycleJournal'),
+            MedrxivPreprintId: () => t('doiCouldBeMedrxiv'),
+            MetaarxivPreprintId: () => t('doiCouldBeMetaarxiv'),
+            NeurolibrePreprintId: () => t('doiCouldBeNeurolibre'),
+            OsfPreprintId: () => t('doiCouldBeOsf'),
+            OsfPreprintsPreprintId: () => t('doiCouldBeOsf'),
+            OsfOrLifecycleJournalPreprintId: () => t('doiCouldBeOsfLifecycleJournal'),
+            PreprintsorgPreprintId: () => t('doiCouldBePreprintsorg'),
+            PsyarxivPreprintId: () => t('doiCouldBePsyarxiv'),
+            PsychArchivesPreprintId: () => t('doiCouldBePsycharchives'),
+            ResearchSquarePreprintId: () => t('doiCouldBeResearchSquare'),
+            ScieloPreprintId: () => t('doiCouldBeScielo'),
+            ScienceOpenPreprintId: () => t('doiCouldBeScienceOpen'),
+            SocarxivPreprintId: () => t('doiCouldBeSocarxiv'),
+            SsrnPreprintId: () => t('doiCouldBeSsrn'),
+            TechrxivPreprintId: () => t('doiCouldBeTechrxiv'),
+            UmsidaPreprintId: () => t('doiCouldBeUmsida'),
+            VerixivPreprintId: () => t('doiCouldBeVerixiv'),
+            ZenodoPreprintId: () => t('doiCouldBeZenodo'),
+            ZenodoOrAfricarxivPreprintId: () => t('doiCouldBeZenodoAfricarxiv'),
           })({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
         )}
       </p>
 
-      <p>${t('review-a-preprint', 'checkCorrectDoi')()}</p>
+      <p>${t('checkCorrectDoi')()}</p>
 
-      <p>${t('review-a-preprint', 'checkPastedDoi')()}</p>
+      <p>${t('checkPastedDoi')()}</p>
 
-      <p>${rawHtml(t('review-a-preprint', 'doiIsCorrect')({ contact: mailToHelp }))}</p>
+      <p>${rawHtml(t('doiIsCorrect')({ contact: mailToHelp }))}</p>
 
       <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${t('forms', 'backLink')()}</a>
     `,

@@ -5,7 +5,6 @@ import {
   areLoggedIn,
   canLogIn,
   canLogInAsDemoUser,
-  canNotifyReviewsPublishedInResponseToRequests,
   canRegisterAsNewUser,
   expect,
   hasAVerifiedEmailAddress,
@@ -247,11 +246,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test
-  .extend(canNotifyReviewsPublishedInResponseToRequests)
-  .extend(canLogIn)
-  .extend(areLoggedIn)
-  .extend(hasAVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can received notifications for requested PREreviews being published',
   async ({ page }) => {
     const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
@@ -282,11 +277,7 @@ test
   },
 )
 
-test
-  .extend(canNotifyReviewsPublishedInResponseToRequests)
-  .extend(canLogIn)
-  .extend(areLoggedIn)
-  .extend(hasAVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'have to say if you want to receive notifications for requested PREreviews being published',
   async ({ javaScriptEnabled, page }) => {
     const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))

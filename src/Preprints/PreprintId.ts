@@ -105,6 +105,10 @@ export class EngrxivPreprintId extends Schema.TaggedClass<EngrxivPreprintId>()('
   value: Doi.RegistrantDoiSchema('31224'),
 }) {}
 
+export class JmirPreprintId extends Schema.TaggedClass<JmirPreprintId>()('JmirPreprintId', {
+  value: Doi.RegistrantDoiSchema('2196'),
+}) {}
+
 export class JxivPreprintId extends Schema.TaggedClass<JxivPreprintId>()('JxivPreprintId', {
   value: Doi.RegistrantDoiSchema('51094'),
 }) {}
@@ -217,6 +221,7 @@ export const PreprintIdWithDoi = Schema.Union(
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
+  JmirPreprintId,
   JxivPreprintId,
   LifecycleJournalPreprintId,
   MedrxivPreprintId,
@@ -265,6 +270,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintI
   '1101',
   '1590',
   '2139',
+  '2196',
   '5281',
   '6084',
   '12688',
@@ -361,6 +367,7 @@ export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): I
     .when(Doi.hasRegistrant('1101'), doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('1590'), doi => new ScieloPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('2139'), doi => new SsrnPreprintId({ value: doi }))
+    .when(Doi.hasRegistrant('2196'), doi => new JmirPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('5281'), doi => new ZenodoOrAfricarxivPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('6084'), doi => new AfricarxivFigsharePreprintId({ value: doi }))
     .when(Doi.hasRegistrant('12688'), doi => new VerixivPreprintId({ value: doi }))
@@ -407,6 +414,7 @@ export function fromUrl(url: URL): ReadonlyArray<IndeterminatePreprintId> {
     .with([P.union('neurolibre.org', 'preprint.neurolibre.org'), P.select()], extractFromNeurolibrePath)
     .with(['osf.io', P.select()], extractFromOsfPath)
     .with(['philsci-archive.pitt.edu', P.select()], extractFromPhilsciPath)
+    .with(['preprints.jmir.org', P.select()], extractFromJmirPath)
     .with(['preprints.org', P.select()], extractFromPreprintsorgPath)
     .with(['psyarxiv.com', P.select()], extractFromPsyarxivPath)
     .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
@@ -492,6 +500,12 @@ const extractFromFigsharePath = (type: 'africarxiv'): ((path: string) => Readonl
     Option.andThen(doi => new AfricarxivFigsharePreprintId({ value: doi })),
     Array.fromOption,
   )
+
+const extractFromJmirPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
+  Option.liftNullable(s => /^preprint\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.2196/preprints.${id}`, parsePreprintDoi)),
+  Array.fromOption,
+)
 
 const extractFromJxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),

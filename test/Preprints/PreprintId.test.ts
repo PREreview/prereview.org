@@ -450,6 +450,35 @@ describe('fromUrl', () => {
   )
 
   it.prop(
+    'with a JMIR Preprints URL',
+    [fc.jmirPreprintUrl().map(([url, id]) => [url, id.value] as const)],
+    ([[url, doi]]) => {
+      expect(_.fromUrl(url)).toStrictEqual(Array.of(new _.JmirPreprintId({ value: doi })))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[new URL('https://preprints.jmir.org/preprint/103768'), Doi('10.2196/preprints.103768')]],
+          [[new URL('http://preprints.jmir.org/preprint/103768'), Doi('10.2196/preprints.103768')]], // http
+          [[new URL('https://preprints.jmir.org/preprint/103768/'), Doi('10.2196/preprints.103768')]], // trailing slash
+          [
+            [
+              new URL('https://preprints.jmir.org/preprint/103768/submitted'), // submitted manuscript
+              Doi('10.2196/preprints.103768'),
+            ],
+          ],
+          [
+            [
+              new URL('https://preprints.jmir.org/preprint/91115/accepted'), // accepted manuscript
+              Doi('10.2196/preprints.91115'),
+            ],
+          ],
+        ],
+      },
+    },
+  )
+
+  it.prop(
     'with a Jxiv URL',
     [fc.jxivPreprintUrl().map(([url, id]) => [url, id.value] as const)],
     ([[url, doi]]) => {

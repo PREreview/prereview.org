@@ -101,7 +101,6 @@ interface AppFixtures {
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canInviteOthersToDatasetReviews: (typeof FeatureFlags.FeatureFlags.Service)['canInviteOthersToDatasetReviews']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
-  canNotifyReviewsPublishedInResponseToRequests: (typeof FeatureFlags.FeatureFlags.Service)['canNotifyReviewsPublishedInResponseToRequests']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   showSpotlight: (typeof FeatureFlags.FeatureFlags.Service)['showSpotlight']
   emails: Array<nodemailer.SendMailOptions>
@@ -122,9 +121,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(false)
   },
   canLogInAsDemoUser: async ({}, use) => {
-    await use(false)
-  },
-  canNotifyReviewsPublishedInResponseToRequests: async ({}, use) => {
     await use(false)
   },
   careerStageStore: async ({}, use) => {
@@ -2417,7 +2413,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canAddMultipleAuthors,
         canInviteOthersToDatasetReviews,
         canLogInAsDemoUser,
-        canNotifyReviewsPublishedInResponseToRequests,
         showSpotlight,
         sqlClientLayer,
         seedEvents,
@@ -2457,7 +2452,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             canAddMultipleAuthors,
             canInviteOthersToDatasetReviews,
             canLogInAsDemoUser,
-            canNotifyReviewsPublishedInResponseToRequests,
             showSpotlight,
           }),
           Nodemailer.layerTransporter(nodemailer),
@@ -2641,16 +2635,6 @@ export const canInviteOthersToDatasetReviews: Fixtures<
   Pick<AppFixtures, 'canInviteOthersToDatasetReviews'>
 > = {
   canInviteOthersToDatasetReviews: async ({}, use) => {
-    await use(true)
-  },
-}
-
-export const canNotifyReviewsPublishedInResponseToRequests: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canNotifyReviewsPublishedInResponseToRequests'>
-> = {
-  canNotifyReviewsPublishedInResponseToRequests: async ({}, use) => {
     await use(true)
   },
 }

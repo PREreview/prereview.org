@@ -1,0 +1,83 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 3, 26]],
+      "date-time": "2026-03-26T13:56:40Z",
+      "timestamp": 1774533400902,
+      "version": "3.50.1"
+    },
+    "posted": { "date-parts": [[2026, 3, 26]] },
+    "group-title": "JMIR Preprints",
+    "reference-count": 0,
+    "publisher": "JMIR Publications Inc.",
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<sec>\n                  <title>BACKGROUND<\/title>\n                  <p>Emergency Medical Services (EMS) activations related to influenza-like illness (ILI) increased during the COVID-19 pandemic. Information about the characteristics of EMS activations related to ILI during the COVID-19 pandemic may inform prehospital planning for future pandemics.<\/p>\n                <\/sec>\n                <sec>\n                  <title>OBJECTIVE<\/title>\n                  <p>The objective of our study was to compare demographic, geographic, and other characteristics of EMS activations related to ILI using data from 2019 (before the pandemic) and 2020 (during the pandemic).<\/p>\n                <\/sec>\n                <sec>\n                  <title>METHODS<\/title>\n                  <p>We conducted a cross-sectional analysis of 2019 and 2020 EMS activation data from the National Emergency Medical Services Information System (NEMSIS). The outcome of interest was the number of EMS activations related to ILI. Rates (the number of EMS activations related to ILI divided by the total number of EMS activations initiated with a 9-1-1 call that resulted in patient contact multiplied by 1,000), confidence intervals, and P-values were calculated by year for age, sex, race \/ ethnicity, census region, census division, urbanicity, primary method of payment, patient disposition, barriers to patient care, and patient destination to assess whether there were significant differences in the rates between years. The percentage change per 1,000 EMS activations from 2019 to 2020 was calculated in addition to rates by quarter for each year to compare trends.<\/p>\n                <\/sec>\n                <sec>\n                  <title>RESULTS<\/title>\n                  <p>There were 21,278,998 total EMS activations in 2019 and 26,923,354 in 2020. The rate of EMS activations related to ILI was 153.4\/1,000 (n=3,263,713) in 2019 and 174.6\/1,000 (n=4,701,617) in 2020. Rates of EMS activations related to ILI in 2020 were statistically different (P&lt;.001) from 2019 for all demographic, geographic, and other characteristics. The overall rate of EMS activations related to ILI increased by 13.8% from 2019 to 2020. Some of the largest percentage increases in rates between years were for EMS activations that included Hispanic or Latino patients (33.1%), EMS activations in the Middle Atlantic census division (42.0%), and EMS activations with language barriers between the patient and the EMS clinician (39.6%). Quarterly rates of EMS activations related to ILI for EMS activations that included Hispanic or Latino patients and for EMS activations with language barriers between the patient and the EMS clinician were larger during 2020 than during 2019 for all quarters.<\/p>\n                <\/sec>\n                <sec>\n                  <title>CONCLUSIONS<\/title>\n                  <p>Compared to 2019, rates of EMS activations related to ILI during 2020 increased for EMS activations that included Hispanic or Latino patients, occurred in the Middle Atlantic census division, and demonstrated language barriers between the patient and the EMS clinician. Further studies are needed to investigate the health impacts of language barriers between the patient and EMS clinician during  prehospital care. Prehospital planning efforts that include testing and implementing strategies to address potential language barriers between the patient and the EMS clinician during EMS activations are warranted.<\/p>\n                <\/sec>",
+    "DOI": "10.2196\/preprints.96189",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 3, 26]], "date-time": "2026-03-26T12:55:12Z", "timestamp": 1774529712000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Comparison of Influenza-Like Illness Emergency Medical Services Activation Characteristics in the United States During 2019 and 2020: Cross Sectional Analysis (Preprint)"
+    ],
+    "prefix": "10.2196",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-9657-5110",
+        "authenticated-orcid": false,
+        "given": "Kim",
+        "family": "Gadsden-Knowles",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [{ "role": "author", "vocabulary": "crossref" }]
+      },
+      {
+        "given": "Ramal",
+        "family": "Moonesinghe",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [{ "role": "author", "vocabulary": "crossref" }]
+      },
+      {
+        "given": "Benjamin",
+        "family": "Fisher",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [{ "role": "author", "vocabulary": "crossref" }]
+      },
+      {
+        "given": "Angela",
+        "family": "Child",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [{ "role": "author", "vocabulary": "crossref" }]
+      },
+      {
+        "given": "Umed A",
+        "family": "Ajani",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [{ "role": "author", "vocabulary": "crossref" }]
+      }
+    ],
+    "member": "1010",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 3, 26]], "date-time": "2026-03-26T12:55:12Z", "timestamp": 1774529712000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "http:\/\/preprints.jmir.org\/preprint\/96189" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 3, 26]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.2196\/preprints.96189",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2026, 3, 26]] },
+    "subtype": "preprint"
+  }
+}

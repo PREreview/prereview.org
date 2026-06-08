@@ -1,6 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Cause, Effect, flow, Match, pipe, Record, Struct } from 'effect'
-import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import * as Routes from '../../routes.ts'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
@@ -478,17 +477,7 @@ const MyDetailsRouter = HttpRouter.fromIterable([
       Effect.andThen(MyDetails.RequestedReviewNotificationsSubmission),
     ),
   ),
-]).pipe(
-  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
-  HttpRouter.use(
-    HttpMiddleware.make(app =>
-      Effect.if(FeatureFlags.canNotifyReviewsPublishedInResponseToRequests, {
-        onTrue: () => app,
-        onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
-      }),
-    ),
-  ),
-)
+]).pipe(HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn))
 
 const AuthRouter = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.LogIn, Effect.succeed(logIn)),

@@ -6,7 +6,6 @@ import { match, P } from 'ts-pattern'
 import { maybeGetAvatar } from '../../avatar.ts'
 import { maybeGetCareerStage } from '../../career-stage.ts'
 import { maybeGetContactEmailAddress } from '../../contact-email-address.ts'
-import { FeatureFlags } from '../../FeatureFlags.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import { maybeIsOpenForRequests } from '../../is-open-for-requests.ts'
 import { maybeGetLanguages } from '../../languages.ts'
@@ -50,12 +49,7 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
           'requestedReviewNotifications',
           EffectToFpts.toReaderTaskEither(
             Effect.gen(function* () {
-              const featureFlags = yield* FeatureFlags
               const prereviewers = yield* Prereviewers
-
-              if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
-                return undefined
-              }
 
               return yield* Effect.andThen(
                 prereviewers.hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(user.orcid),

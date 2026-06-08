@@ -18,6 +18,7 @@ export const getServerName = Match.typeTags<PreprintId, string>()({
   EcoevorxivPreprintId: () => 'EcoEvoRxiv',
   EdarxivPreprintId: () => 'EdArXiv',
   EngrxivPreprintId: () => 'engrXiv',
+  JmirPreprintId: () => 'JMIR Preprints',
   JxivPreprintId: () => 'Jxiv',
   LifecycleJournalPreprintId: () => 'Lifecycle Journal',
   MedrxivPreprintId: () => 'medRxiv',

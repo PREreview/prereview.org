@@ -87,6 +87,7 @@ import {
   EngrxivPreprintId,
   type IndeterminatePreprintId,
   type IndeterminatePreprintIdWithDoi,
+  JmirPreprintId,
   JxivPreprintId,
   LifecycleJournalPreprintId,
   MedrxivPreprintId,
@@ -686,6 +687,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonl
         biorxivPreprintUrl(),
         edarxivPreprintUrl(),
         engrxivPreprintUrl(),
+        jmirPreprintUrl(),
         jxivPreprintUrl(),
         medrxivPreprintUrl(),
         metaarxivPreprintUrl(),
@@ -843,6 +845,17 @@ export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
     .map(id => [
       new URL(`https://engrxiv.org/preprint/view/${id}`),
       new EngrxivPreprintId({ value: Doi(`10.31224/${id}`) }),
+    ])
+
+export const jmirPreprintId = (): fc.Arbitrary<JmirPreprintId> =>
+  doi(constant('2196')).map(doi => new JmirPreprintId({ value: doi }))
+
+export const jmirPreprintUrl = (): fc.Arbitrary<[URL, JmirPreprintId]> =>
+  fc
+    .integer({ min: 1 })
+    .map(id => [
+      new URL(`https://preprints.jmir.org/preprint/${id}`),
+      new JmirPreprintId({ value: Doi(`10.2196/preprints.${id}`) }),
     ])
 
 export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
@@ -1084,6 +1097,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<PreprintIdWithDoi> =>
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
+    jmirPreprintId(),
     jxivPreprintId(),
     lifecycleJournalPreprintId(),
     medrxivPreprintId(),
@@ -1174,6 +1188,7 @@ export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintI
     arcadiaSciencePreprintId(),
     authoreaPreprintId(),
     curvenotePreprintId(),
+    jmirPreprintId(),
     jxivPreprintId(),
     philsciPreprintId(),
     psychArchivesPreprintId(),

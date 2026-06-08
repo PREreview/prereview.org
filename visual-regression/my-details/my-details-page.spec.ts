@@ -46,6 +46,7 @@ test('content looks right when publicly visible', async ({ showPage }) => {
       value: NonEmptyString('Ut lobortis turpis et dolor tincidunt suscipit.'),
       visibility: 'public',
     }),
+    requestedReviewNotifications: true,
   })
 
   const content = await showPage(response)
@@ -88,6 +89,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
       value: NonEmptyString('Ut lobortis turpis et dolor tincidunt suscipit.'),
       visibility: 'restricted',
     }),
+    requestedReviewNotifications: false,
   })
 
   const content = await showPage(response)
@@ -110,6 +112,7 @@ test('content looks right when empty', async ({ showPage }) => {
     researchInterests: Option.none(),
     location: Option.none(),
     languages: Option.none(),
+    requestedReviewNotifications: false,
   })
 
   const content = await showPage(response)
