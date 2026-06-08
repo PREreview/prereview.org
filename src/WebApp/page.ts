@@ -264,8 +264,8 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a href="${Routes.Partners}" ${current === 'partners' ? html`aria-current="page"` : ''}
-                            >${t('header', 'menuPartners')()}</a
+                          <a href="${Routes.HowToUse}" ${current === 'how-to-use' ? html`aria-current="page"` : ''}
+                            >${t('header', 'menuHowToUse')()}</a
                           >
                         </li>
                         <li>
@@ -492,8 +492,8 @@ export const page = ({
                   </li>
                   <li><a href="https://content.prereview.org/">${t('footer', 'menuBlog')()}</a></li>
                   <li>
-                    <a href="${Routes.HowToUse}" ${current === 'how-to-use' ? html`aria-current="page"` : ''}
-                      >${t('footer', 'menuHowToUse')()}</a
+                    <a href="${Routes.Partners}" ${current === 'partners' ? html`aria-current="page"` : ''}
+                      >${t('footer', 'menuPartners')()}</a
                     >
                   </li>
                 </ul>

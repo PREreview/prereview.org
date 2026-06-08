@@ -61,7 +61,7 @@ export const createMenuPage = ({
               <a href="${Routes.AboutUs}">${t('menuAboutUs')()}</a>
             </li>
             <li>
-              <a href="${Routes.Partners}">${t('menuPartners')()}</a>
+              <a href="${Routes.HowToUse}">${t('menuHowToUse')()}</a>
             </li>
             <li>
               <a href="https://donorbox.org/prereview">${t('menuDonate')()}</a>
