@@ -87,6 +87,7 @@ import {
   EngrxivPreprintId,
   type IndeterminatePreprintId,
   type IndeterminatePreprintIdWithDoi,
+  JmirPreprintId,
   JxivPreprintId,
   LifecycleJournalPreprintId,
   MedrxivPreprintId,
@@ -845,6 +846,9 @@ export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
       new EngrxivPreprintId({ value: Doi(`10.31224/${id}`) }),
     ])
 
+export const jmirPreprintId = (): fc.Arbitrary<JmirPreprintId> =>
+  doi(constant('2196')).map(doi => new JmirPreprintId({ value: doi }))
+
 export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
   doi(constant('51094')).map(doi => new JxivPreprintId({ value: doi }))
 
@@ -1084,6 +1088,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<PreprintIdWithDoi> =>
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
+    jmirPreprintId(),
     jxivPreprintId(),
     lifecycleJournalPreprintId(),
     medrxivPreprintId(),
@@ -1174,6 +1179,7 @@ export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintI
     arcadiaSciencePreprintId(),
     authoreaPreprintId(),
     curvenotePreprintId(),
+    jmirPreprintId(),
     jxivPreprintId(),
     philsciPreprintId(),
     psychArchivesPreprintId(),

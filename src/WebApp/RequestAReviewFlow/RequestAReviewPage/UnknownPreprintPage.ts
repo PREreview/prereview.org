@@ -60,6 +60,10 @@ export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   EcoevorxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEcoevorxiv'),
                   EdarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEdarxiv'),
                   EngrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeEngrxiv'),
+                  JmirPreprintId:
+                    () =>
+                    ({ doi }: { doi: string }) =>
+                      `We think the DOI ${doi} could be a JMIR preprint, but we can’t find any details.`,
                   JxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeJxiv'),
                   LifecycleJournalPreprintId: () =>
                     translate(locale, 'request-a-prereview-page', 'doiCouldBeLifecycleJournal'),
