@@ -414,6 +414,7 @@ export function fromUrl(url: URL): ReadonlyArray<IndeterminatePreprintId> {
     .with([P.union('neurolibre.org', 'preprint.neurolibre.org'), P.select()], extractFromNeurolibrePath)
     .with(['osf.io', P.select()], extractFromOsfPath)
     .with(['philsci-archive.pitt.edu', P.select()], extractFromPhilsciPath)
+    .with(['preprints.jmir.org', P.select()], extractFromJmirPath)
     .with(['preprints.org', P.select()], extractFromPreprintsorgPath)
     .with(['psyarxiv.com', P.select()], extractFromPsyarxivPath)
     .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
@@ -499,6 +500,12 @@ const extractFromFigsharePath = (type: 'africarxiv'): ((path: string) => Readonl
     Option.andThen(doi => new AfricarxivFigsharePreprintId({ value: doi })),
     Array.fromOption,
   )
+
+const extractFromJmirPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
+  Option.liftNullable(s => /^preprint\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.andThen(flow(id => `10.2196/preprints.${id}`, parsePreprintDoi)),
+  Array.fromOption,
+)
 
 const extractFromJxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),

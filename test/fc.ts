@@ -687,6 +687,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonl
         biorxivPreprintUrl(),
         edarxivPreprintUrl(),
         engrxivPreprintUrl(),
+        jmirPreprintUrl(),
         jxivPreprintUrl(),
         medrxivPreprintUrl(),
         metaarxivPreprintUrl(),
@@ -848,6 +849,14 @@ export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
 
 export const jmirPreprintId = (): fc.Arbitrary<JmirPreprintId> =>
   doi(constant('2196')).map(doi => new JmirPreprintId({ value: doi }))
+
+export const jmirPreprintUrl = (): fc.Arbitrary<[URL, JmirPreprintId]> =>
+  fc
+    .integer({ min: 1 })
+    .map(id => [
+      new URL(`https://preprints.jmir.org/preprint/${id}`),
+      new JmirPreprintId({ value: Doi(`10.2196/preprints.${id}`) }),
+    ])
 
 export const jxivPreprintId = (): fc.Arbitrary<JxivPreprintId> =>
   doi(constant('51094')).map(doi => new JxivPreprintId({ value: doi }))
