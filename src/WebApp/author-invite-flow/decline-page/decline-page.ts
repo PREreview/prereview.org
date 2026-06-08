@@ -1,9 +1,9 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { authorInviteDeclineMatch, profileMatch } from '../../../routes.ts'
@@ -41,10 +41,8 @@ export const declinePage = ({
                   'review-page',
                   review.structured ? 'structuredReviewTitle' : 'reviewTitle',
                 )({
-                  preprint: html`<cite
-                    lang="${review.preprint.language}"
-                    dir="${rtlDetect.getLangDir(review.preprint.language)}"
-                    >${review.preprint.title}</cite
+                  preprint: html`<cite ${languageAttributesFor(review.preprint.language)}>
+                    ${review.preprint.title}</cite
                   >`.toString(),
                 }),
               )}
@@ -148,7 +146,7 @@ export const declinePage = ({
             </dl>
           </header>
 
-          <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
+          <div ${review.language ? languageAttributesFor(review.language) : ''}>
             ${fixHeadingLevels(1, review.text)}
           </div>
 

@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, flow, Option, pipe, Record, Struct, Tuple } from 'effect'
 import { type Html, html } from '../html.ts'
+import { languageAttributesFor } from '../Locales.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { OrcidId, OrcidIdEquivalence } from '../types/OrcidId.ts'
 import type { ClubId } from './ClubId.ts'
@@ -315,7 +316,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   cibca: {
     name: 'Club Comunidad Iberoamericana de Ciencia Abierta (CIbCA)',
     description: html`
-      <div lang="es-419" dir="ltr">
+      <div ${languageAttributesFor('es-419')}>
         <p>
           La Fundación Openlab Ecuador es una organización sin fines de lucro con sede en Quito, creada en 2020, que
           actúa como un laboratorio ciudadano dedicado a la innovación social abierta.
@@ -427,7 +428,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   'iib-mar-del-plata': {
     name: 'IIB-Mar del Plata Argentina',
     description: html`
-      <div lang="es-AR" dir="ltr">
+      <div ${languageAttributesFor('es-AR')}>
         <p>
           Docentes, investigadores y estudiantes de doctorado especializados en bioquímica y biología molecular de
           plantas y microorganismos.

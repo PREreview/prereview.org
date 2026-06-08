@@ -1,8 +1,8 @@
 import { Effect } from 'effect'
-import rtlDetect from 'rtl-detect'
 import { Locale } from '../../Context.ts'
 import { GhostPage } from '../../ExternalInteractions/index.ts'
 import { fixHeadingLevels, html, plainText } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
@@ -25,9 +25,7 @@ function createPage({ content, locale }: { content: GhostPage.GhostPage; locale:
       <h1>${t('champions-program', 'title')()}</h1>
 
       ${content.locale !== locale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
-      <div lang="${content.locale}" dir="${rtlDetect.getLangDir(content.locale)}">
-        ${fixHeadingLevels(1, content.html)}
-      </div>
+      <div ${languageAttributesFor(content.locale)}>${fixHeadingLevels(1, content.html)}</div>
     `,
     canonical: Routes.ChampionsProgram,
     current: 'champions-program',

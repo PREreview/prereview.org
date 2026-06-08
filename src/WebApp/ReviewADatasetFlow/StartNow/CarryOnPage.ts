@@ -1,6 +1,6 @@
-import rtlDetect from 'rtl-detect'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
@@ -27,9 +27,7 @@ export const CarryOnPage = ({
       <p>
         ${rawHtml(
           t('asYouHaveAlreadyStarted')({
-            dataset: html`<cite lang="${dataset.language}" dir="${rtlDetect.getLangDir(dataset.language)}"
-              >${dataset.title}</cite
-            >`.toString(),
+            dataset: html`<cite ${languageAttributesFor(dataset.language)}>${dataset.title}</cite>`.toString(),
           }),
         )}
       </p>

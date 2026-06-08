@@ -1,8 +1,8 @@
 import { Effect } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import rtlDetect from 'rtl-detect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { type Html, html, mjmlToHtml, plainText } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
@@ -32,7 +32,7 @@ export const CreateEmail: (details: {
     to: { address: invitee.emailAddress, name: invitee.name },
     subject: 'Be listed as a PREreview author',
     html: yield* mjmlToHtml(html`
-      <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
+      <mjml ${languageAttributesFor(locale)}>
         <mj-head>
           <mj-attributes>
             <mj-button border="transparent solid"></mj-button>
@@ -43,9 +43,7 @@ export const CreateEmail: (details: {
             <mj-column>
               <mj-text>Hi ${invitee.name},</mj-text>
               <mj-text>
-                Thank you for contributing to a recent review of “<span
-                  lang="${subject.language}"
-                  dir="${rtlDetect.getLangDir(subject.language)}"
+                Thank you for contributing to a recent review of “<span ${languageAttributesFor(subject.language)}
                   >${subject.title}</span
                 >” published on <a href="${homePage.href}">PREreview</a>!
               </mj-text>

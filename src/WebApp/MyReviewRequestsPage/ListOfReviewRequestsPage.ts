@@ -1,6 +1,6 @@
 import { Array } from 'effect'
-import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
@@ -39,9 +39,7 @@ export const ListOfReviewRequestsPage = ({
                       'requests-list',
                       'requestTitle',
                     )({
-                      preprint: html`<cite
-                        dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                        lang="${request.preprint.language}"
+                      preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
                         >${request.preprint.title}</cite
                       >`.toString(),
                     }),
@@ -54,9 +52,7 @@ export const ListOfReviewRequestsPage = ({
                       'requests-list',
                       'requestText',
                     )({
-                      preprint: html`<cite
-                        dir="${rtlDetect.getLangDir(request.preprint.language)}"
-                        lang="${request.preprint.language}"
+                      preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
                         >${request.preprint.title}</cite
                       >`.toString(),
                     }),

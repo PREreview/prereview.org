@@ -1,7 +1,7 @@
 import { Boolean, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -19,7 +19,7 @@ export const RequestAReviewOfThisPreprintPage = ({
   isLoggedIn: boolean
 }) => {
   const t = translate(locale, 'request-review-flow')
-  const preprintTitle = `<cite dir="${rtlDetect.getLangDir(preprint.language)}" lang="${preprint.language}">${preprint.title.toString()}</cite>`
+  const preprintTitle = `<cite ${languageAttributesFor(preprint.language).toString()}>${preprint.title.toString()}</cite>`
 
   return PageResponse({
     title: pipe(t('requestAPrereview')(), plainText),

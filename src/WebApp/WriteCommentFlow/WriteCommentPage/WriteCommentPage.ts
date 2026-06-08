@@ -1,8 +1,8 @@
 import { Array, Boolean, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { getClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { Prereview } from '../../../Prereviews/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -38,9 +38,7 @@ export const WriteCommentPage = ({
                 'review-page',
                 prereview.structured ? 'structuredReviewTitle' : 'reviewTitle',
               )({
-                preprint: html`<cite
-                  lang="${prereview.preprint.language}"
-                  dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
                   >${prereview.preprint.title}</cite
                 >`.toString(),
               }),
@@ -125,11 +123,7 @@ export const WriteCommentPage = ({
           </dl>
         </header>
 
-        <div
-          ${prereview.language
-            ? html`lang="${prereview.language}" dir="${rtlDetect.getLangDir(prereview.language)}"`
-            : ''}
-        >
+        <div ${prereview.language ? languageAttributesFor(prereview.language) : ''}>
           ${fixHeadingLevels(2, prereview.text)}
         </div>
       </article>
@@ -140,9 +134,7 @@ export const WriteCommentPage = ({
             'write-comment-flow',
             'youCanWrite',
           )({
-            preprint: html`<cite
-              lang="${prereview.preprint.language}"
-              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
               >${prereview.preprint.title}</cite
             >`.toString(),
           }),

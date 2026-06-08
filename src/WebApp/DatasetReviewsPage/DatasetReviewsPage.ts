@@ -1,9 +1,9 @@
 import { Array, flow, identity, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
@@ -44,17 +44,13 @@ export const createDatasetReviewsPage = ({
       `,
     h1: rawHtml(
       t('title')({
-        dataset: html`<cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
-          >${dataset.title.text}</cite
-        >`.toString(),
+        dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`.toString(),
       }),
     ),
     aside: html`
       <article aria-labelledby="dataset-title">
         <header>
-          <h2 id="dataset-title" lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}">
-            ${dataset.title.text}
-          </h2>
+          <h2 id="dataset-title" ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</h2>
 
           <div class="byline">
             ${rawHtml(
@@ -86,7 +82,7 @@ export const createDatasetReviewsPage = ({
           ? html`
               <h3>${t('abstractHeading')()}</h3>
 
-              <div lang="${dataset.abstract.language}" dir="${rtlDetect.getLangDir(dataset.abstract.language)}">
+              <div ${languageAttributesFor(dataset.abstract.language)}>
                 ${fixHeadingLevels(3, dataset.abstract.text)}
               </div>
             `

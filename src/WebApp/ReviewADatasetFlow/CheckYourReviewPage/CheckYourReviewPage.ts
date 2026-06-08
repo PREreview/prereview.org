@@ -1,9 +1,9 @@
 import { Array, flow, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -49,9 +49,7 @@ export const CheckYourReviewPage = ({
               <div>
                 <dt><span>${t('title')()}</span></dt>
                 <dd>
-                  <cite lang="${review.dataset.language}" dir="${rtlDetect.getLangDir(review.dataset.language)}"
-                    >${review.dataset.title}</cite
-                  >
+                  <cite ${languageAttributesFor(review.dataset.language)}>${review.dataset.title}</cite>
                 </dd>
               </div>
               <div>

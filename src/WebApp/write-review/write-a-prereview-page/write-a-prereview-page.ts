@@ -1,9 +1,9 @@
 import { isDoi } from 'doi-ts'
 import { Array, Boolean, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { Preprint } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -24,13 +24,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
 
       <article class="preview" tabindex="0" aria-labelledby="preprint-title">
         <header>
-          <h2
-            lang="${preprint.title.language}"
-            dir="${rtlDetect.getLangDir(preprint.title.language)}"
-            id="preprint-title"
-          >
-            ${preprint.title.text}
-          </h2>
+          <h2 ${languageAttributesFor(preprint.title.language)} id="preprint-title">${preprint.title.text}</h2>
 
           <div class="byline">
             ${rawHtml(
@@ -83,7 +77,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
 
         ${preprint.abstract
           ? html`
-              <div lang="${preprint.abstract.language}" dir="${rtlDetect.getLangDir(preprint.abstract.language)}">
+              <div ${languageAttributesFor(preprint.abstract.language)}>
                 ${fixHeadingLevels(2, preprint.abstract.text)}
               </div>
             `
@@ -97,9 +91,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
             'write-review',
             'youCanWriteAPrereview',
           )({
-            preprintTitle: html`<cite
-              lang="${preprint.title.language}"
-              dir="${rtlDetect.getLangDir(preprint.title.language)}"
+            preprintTitle: html`<cite ${languageAttributesFor(preprint.title.language)}
               >${preprint.title.text}</cite
             >`.toString(),
           }),

@@ -1,7 +1,7 @@
 import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { type Html, type PlainText, html, rawHtml } from '../html.ts'
+import { languageAttributesFor } from '../Locales.ts'
 import { DefaultLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as Routes from '../routes.ts'
@@ -82,7 +82,7 @@ export const page = ({
 
   return html`
     <!doctype html>
-    <html lang="${locale}" dir="${rtlDetect.getLangDir(locale)}" prefix="og: https://ogp.me/ns#">
+    <html ${languageAttributesFor(locale)} prefix="og: https://ogp.me/ns#">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

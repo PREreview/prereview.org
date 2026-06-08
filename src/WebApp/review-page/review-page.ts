@@ -1,10 +1,10 @@
 import { toUrl } from 'doi-ts'
 import { Array, flow, identity, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { preprintReviewsMatch, profileMatch, reviewMatch } from '../../routes.ts'
@@ -95,9 +95,7 @@ export const createPage = ({
               'review-page',
               review.structured ? 'structuredReviewTitle' : 'reviewTitle',
             )({
-              preprint: html`<cite
-                lang="${review.preprint.language}"
-                dir="${rtlDetect.getLangDir(review.preprint.language)}"
+              preprint: html`<cite ${languageAttributesFor(review.preprint.language)}
                 >${review.preprint.title}</cite
               >`.toString(),
             }),
@@ -190,9 +188,7 @@ export const createPage = ({
         </dl>
       </header>
 
-      <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
-        ${fixHeadingLevels(1, review.text)}
-      </div>
+      <div ${review.language ? languageAttributesFor(review.language) : ''}>${fixHeadingLevels(1, review.text)}</div>
 
       ${review.addendum
         ? html`
@@ -281,11 +277,7 @@ export const createPage = ({
                           </dl>
                         </header>
 
-                        <div
-                          ${item.language
-                            ? html`lang="${item.language}" dir="${rtlDetect.getLangDir(item.language)}"`
-                            : ''}
-                        >
+                        <div ${item.language ? languageAttributesFor(item.language) : ''}>
                           ${fixHeadingLevels(3, item.text)}
                         </div>
                       </article>

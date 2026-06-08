@@ -2,10 +2,10 @@ import textClipper from '@arendjr/text-clipper'
 import { isDoi, toUrl } from 'doi-ts'
 import { Array, flow, identity, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { match, P, P as p } from 'ts-pattern'
 import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import type { RapidPrereview } from '../../PreprintReviews/index.ts'
@@ -55,7 +55,7 @@ export const createPage = ({
         'preprint-reviews',
         'prereviewsOf',
       )({
-        preprint: html`<cite lang="${preprint.title.language}" dir="${rtlDetect.getLangDir(preprint.title.language)}"
+        preprint: html`<cite ${languageAttributesFor(preprint.title.language)}
           >${preprint.title.text}</cite
         >`.toString(),
       }),
@@ -63,13 +63,7 @@ export const createPage = ({
     aside: html`
       <article aria-labelledby="preprint-title">
         <header>
-          <h2
-            lang="${preprint.title.language}"
-            dir="${rtlDetect.getLangDir(preprint.title.language)}"
-            id="preprint-title"
-          >
-            ${preprint.title.text}
-          </h2>
+          <h2 ${languageAttributesFor(preprint.title.language)} id="preprint-title">${preprint.title.text}</h2>
 
           <div class="byline">
             ${rawHtml(
@@ -120,7 +114,7 @@ export const createPage = ({
           ? html`
               <h3>${translate(locale, 'preprint-reviews', 'abstractHeading')()}</h3>
 
-              <div lang="${preprint.abstract.language}" dir="${rtlDetect.getLangDir(preprint.abstract.language)}">
+              <div ${languageAttributesFor(preprint.abstract.language)}>
                 ${fixHeadingLevels(3, preprint.abstract.text)}
               </div>
             `
@@ -202,7 +196,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
           </div>
         </header>
 
-        <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
+        <div ${review.language ? languageAttributesFor(review.language) : ''}>
           ${fixHeadingLevels(
             3,
             rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5, stripTags: ['a'] })),

@@ -1,9 +1,9 @@
 import { Effect } from 'effect'
-import rtlDetect from 'rtl-detect'
 import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate } from '../../../locales/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
@@ -33,7 +33,7 @@ export const CreateEmail: (details: {
     to: { address: emailAddress.value, name },
     subject: t('verifyEmailAddressTitle')(),
     html: yield* mjmlToHtml(html`
-      <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
+      <mjml ${languageAttributesFor(locale)}>
         <mj-head>
           <mj-attributes>
             <mj-button border="transparent solid"></mj-button>

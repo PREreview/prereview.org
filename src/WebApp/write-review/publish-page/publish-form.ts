@@ -1,8 +1,8 @@
 import { Array, flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
@@ -60,9 +60,7 @@ export function publishForm(
               <div>
                 <dt><span>${t('preprintTitle')()}</span></dt>
                 <dd>
-                  <cite lang="${preprint.language}" dir="${rtlDetect.getLangDir(preprint.language)}"
-                    >${preprint.title}</cite
-                  >
+                  <cite ${languageAttributesFor(preprint.language)}>${preprint.title}</cite>
                 </dd>
               </div>
               <div>

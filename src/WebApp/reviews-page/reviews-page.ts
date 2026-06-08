@@ -1,10 +1,10 @@
 import { Array, flow, Match, Number, Order, pipe, String, Struct, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
-import rtlDetect from 'rtl-detect'
 import { getClubName } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -61,9 +61,7 @@ export const createPage = (
                               ),
                               formatList(locale),
                             ).toString(),
-                            preprint: html`<cite
-                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
+                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
                               >${prereview.preprint.title}</cite
                             >`.toString(),
                           })
@@ -88,9 +86,7 @@ export const createPage = (
                               ),
                               formatList(locale),
                             ).toString(),
-                            preprint: html`<cite
-                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
+                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
                               >${prereview.preprint.title}</cite
                             >`.toString(),
                           }),
@@ -122,11 +118,7 @@ export const createPage = (
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
                     ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
                       ? html`${authorList(prereview, locale)} reviewed
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
-                            lang="${prereview.dataset.language}"
-                            >${prereview.dataset.title}</cite
-                          >`
+                          <cite ${languageAttributesFor(prereview.dataset.language)}>${prereview.dataset.title}</cite>`
                       : rawHtml(
                           translate(
                             locale,
@@ -134,9 +126,7 @@ export const createPage = (
                             'reviewText',
                           )({
                             reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
-                            dataset: html`<cite
-                              dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
-                              lang="${prereview.dataset.language}"
+                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
                               >${prereview.dataset.title}</cite
                             >`.toString(),
                           }),

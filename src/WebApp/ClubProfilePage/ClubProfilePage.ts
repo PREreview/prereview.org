@@ -1,8 +1,8 @@
 import { Array, flow, Match, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import type { Club, ClubId } from '../../Clubs/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
 import * as Preprints from '../../Preprints/index.ts'
@@ -154,9 +154,7 @@ export function createPage({
                             list => list.toString(),
                           ),
                           preprint: html`
-                            <cite
-                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
+                            <cite ${languageAttributesFor(prereview.preprint.language)}
                               >${prereview.preprint.title}</cite
                             >
                           `.toString(),

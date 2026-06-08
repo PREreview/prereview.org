@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
-import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { Prereview } from '../../../Prereviews/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -35,9 +35,7 @@ export const CarryOnPage = ({
             'write-comment-flow',
             'carryOnMessage',
           )({
-            preprint: html`<cite
-              lang="${prereview.preprint.language}"
-              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
               >${prereview.preprint.title}</cite
             >`.toString(),
           }),

@@ -3,11 +3,11 @@ import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
 import { getClubName } from '../../Clubs/index.ts'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { Prereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
@@ -111,10 +111,8 @@ function startPage({
                 'review-page',
                 review.structured ? 'structuredReviewTitle' : 'reviewTitle',
               )({
-                preprint: html`<cite
-                  lang="${review.preprint.language}"
-                  dir="${rtlDetect.getLangDir(review.preprint.language)}"
-                  >${review.preprint.title}</cite
+                preprint: html`<cite ${languageAttributesFor(review.preprint.language)}>
+                  ${review.preprint.title}</cite
                 >`.toString(),
               }),
             )}
@@ -218,9 +216,7 @@ function startPage({
           </dl>
         </header>
 
-        <div ${review.language ? html`lang="${review.language}" dir="${rtlDetect.getLangDir(review.language)}"` : ''}>
-          ${fixHeadingLevels(1, review.text)}
-        </div>
+        <div ${review.language ? languageAttributesFor(review.language) : ''}>${fixHeadingLevels(1, review.text)}</div>
 
         ${review.addendum
           ? html`

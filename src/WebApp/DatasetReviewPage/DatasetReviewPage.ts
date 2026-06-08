@@ -1,10 +1,10 @@
 import { Array, flow, identity, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
-import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
@@ -49,9 +49,7 @@ export const createDatasetReviewPage = ({
         <h1>
           ${rawHtml(
             t('structuredReviewTitle')({
-              dataset: html`<cite
-                lang="${datasetReview.dataset.language}"
-                dir="${rtlDetect.getLangDir(datasetReview.dataset.language)}"
+              dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}>
                 >${datasetReview.dataset.title}</cite
               >`.toString(),
             }),

@@ -1,7 +1,7 @@
 import { Array, Boolean, flow, pipe, Struct } from 'effect'
-import rtlDetect from 'rtl-detect'
 import * as Datasets from '../../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
@@ -30,9 +30,7 @@ export const ReviewThisDatasetPage = ({
 
       <article class="preview" tabindex="0" aria-labelledby="dataset-title">
         <header>
-          <h2 id="dataset-title" lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}">
-            ${dataset.title.text}
-          </h2>
+          <h2 id="dataset-title" ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</h2>
 
           <div class="byline">
             ${rawHtml(
@@ -61,7 +59,7 @@ export const ReviewThisDatasetPage = ({
 
         ${dataset.abstract
           ? html`
-              <div lang="${dataset.abstract.language}" dir="${rtlDetect.getLangDir(dataset.abstract.language)}">
+              <div ${languageAttributesFor(dataset.abstract.language)}>
                 ${fixHeadingLevels(2, dataset.abstract.text)}
               </div>
             `
@@ -71,7 +69,7 @@ export const ReviewThisDatasetPage = ({
       <p>
         ${rawHtml(
           t('youCanWriteAPrereview')({
-            dataset: html`<cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
+            dataset: html`<cite ${languageAttributesFor(dataset.title.language)}
               >${dataset.title.text}</cite
             >`.toString(),
           }),
