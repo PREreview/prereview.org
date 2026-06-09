@@ -130,6 +130,7 @@ export const RequestsData = pipe(
   Effect.andThen(
     HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema).annotations({ concurrency: 'inherit' })),
   ),
+  Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create requests data list'), { error })),
   Effect.catchTags({
     HttpBodyError: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
     UnableToQuery: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
