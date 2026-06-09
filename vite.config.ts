@@ -3,6 +3,7 @@ import { globSync, mkdirSync, writeFileSync } from 'fs'
 import path from 'path'
 import postcssFontDisplay from 'postcss-font-display'
 import postcssPresetEnv from 'postcss-preset-env'
+import postcssRtlCss from 'postcss-rtlcss'
 import { defineConfig, type Plugin } from 'vite'
 import purgeCssPlugin from 'vite-plugin-purgecss'
 
@@ -54,6 +55,11 @@ export default defineConfig(({ mode }) => ({
           preserve: false,
         }),
         postcssFontDisplay({ display: 'fallback', replace: true }),
+        postcssRtlCss({
+          ltrPrefix: ':where([dir="ltr"])',
+          rtlPrefix: ':where([dir="rtl"])',
+          runOnExit: true,
+        }),
       ],
     },
   },
@@ -81,7 +87,7 @@ export default defineConfig(({ mode }) => ({
     cssCharsetPlugin(),
     purgeCssPlugin({
       content: [...globSync('assets/**/*.ts'), ...globSync('src/**/*.ts')],
-      safelist: ['contenteditable', /^crowdin_/, /^:/],
+      safelist: ['contenteditable', /^crowdin_/, 'dir', /^:/],
       variables: true,
     }),
     prereviewManifestPlugin({

@@ -158,6 +158,12 @@ summary > span {
           background-color: LinkText;
         }
       }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
+        }
+      }
     }
 
     &.mastodon {
@@ -175,6 +181,12 @@ summary > span {
         @media (forced-colors: active) {
           forced-color-adjust: none;
           background-color: LinkText;
+        }
+      }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
         }
       }
     }
@@ -196,6 +208,12 @@ summary > span {
           background-color: LinkText;
         }
       }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
+        }
+      }
     }
 
     &.linked-in {
@@ -213,6 +231,12 @@ summary > span {
         @media (forced-colors: active) {
           forced-color-adjust: none;
           background-color: LinkText;
+        }
+      }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
         }
       }
     }
@@ -234,6 +258,12 @@ summary > span {
           background-color: LinkText;
         }
       }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
+        }
+      }
     }
 
     &.email {
@@ -251,6 +281,12 @@ summary > span {
         @media (forced-colors: active) {
           forced-color-adjust: none;
           background-color: LinkText;
+        }
+      }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
         }
       }
     }
@@ -272,6 +308,12 @@ summary > span {
           background-color: LinkText;
         }
       }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
+        }
+      }
     }
 
     @media screen {
@@ -290,6 +332,12 @@ summary > span {
           @media (forced-colors: active) {
             forced-color-adjust: none;
             background-color: LinkText;
+          }
+        }
+
+        &:dir(rtl) {
+          &::before {
+            mask-position: right 0% bottom 40%;
           }
         }
       }
@@ -1456,6 +1504,12 @@ expander-button {
       @media (forced-colors: active) {
         forced-color-adjust: none;
         background-color: ButtonText;
+      }
+    }
+
+    &:dir(rtl) {
+      &::before {
+        mask-position: right center;
       }
     }
 
