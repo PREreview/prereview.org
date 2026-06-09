@@ -1202,6 +1202,7 @@ label {
   border: var(--width-divider) solid var(--color-link);
   border-radius: var(--radius-divider);
   color: var(--color-link);
+  font: inherit;
   font-size: var(--step-1);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -1312,6 +1313,7 @@ label {
   border: var(--width-divider) solid currentcolor;
   background-color: var(--color-background);
   color: var(--color-text);
+  font: inherit;
   user-select: none;
   touch-action: manipulation;
 
@@ -1390,7 +1392,7 @@ expander-button {
   border: var(--width-divider) solid transparent;
   background-color: transparent;
   color: inherit;
-  font-size: inherit;
+  font: inherit;
   cursor: pointer;
   user-select: none;
   touch-action: manipulation;
