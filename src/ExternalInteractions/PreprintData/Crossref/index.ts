@@ -21,4 +21,7 @@ export const getPreprintFromCrossref = (
       WorkIsNotFound: error => new Preprints.PreprintIsNotFound({ cause: error }),
       WorkIsUnavailable: error => new Preprints.PreprintIsUnavailable({ cause: error }),
     }),
+    Effect.tapErrorTag('PreprintIsUnavailable', error =>
+      Effect.logError('Failed to get preprint from Crossref').pipe(Effect.annotateLogs({ error })),
+    ),
   )

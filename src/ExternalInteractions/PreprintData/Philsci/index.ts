@@ -27,4 +27,7 @@ export const getPreprintFromPhilsci = (
       'ResponseError',
       error => new Preprints.PreprintIsUnavailable({ cause: error }),
     ),
+    Effect.tapErrorTag('PreprintIsUnavailable', error =>
+      Effect.logError('Failed to get preprint from PhilSci-Archive').pipe(Effect.annotateLogs({ error })),
+    ),
   )
