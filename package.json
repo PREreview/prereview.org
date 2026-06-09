@@ -64,7 +64,8 @@
     "@effect/vitest": "^0.29.0",
     "@eslint/js": "^10.0.1",
     "@fast-check/vitest": "^0.4.1",
-    "@ibm/plex": "^6.4.1",
+    "@ibm/plex-mono": "^1.1.0",
+    "@ibm/plex-sans": "^1.1.0",
     "@playwright/test": "^1.58.2",
     "@prettier/plugin-xml": "^3.4.2",
     "@tiptap/core": "^3.26.0",
@@ -118,7 +119,8 @@
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
-      "@ibm/plex",
+      "@ibm/plex-mono",
+      "@ibm/plex-sans",
       "@parcel/watcher",
       "esbuild",
       "msgpackr-extract",

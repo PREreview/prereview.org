@@ -38,6 +38,9 @@ updates:
         patterns:
           - '@fast-check/*'
           - 'fast-check'
+      ibm-plex:
+        patterns:
+          - '@ibm/plex-*'
       keyv:
         patterns:
           - '@keyv/*'
