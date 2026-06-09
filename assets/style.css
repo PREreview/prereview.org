@@ -8,6 +8,7 @@
 @import url('@ibm/plex-sans/fonts/split/woff2/IBMPlexSans-MediumItalic.css');
 @import url('@ibm/plex-sans/fonts/split/woff2/IBMPlexSans-Bold.css');
 @import url('@ibm/plex-sans/fonts/split/woff2/IBMPlexSans-BoldItalic.css');
+@import url('@ibm/plex-sans-arabic/css/ibm-plex-sans-arabic-all.css');
 @import url('color.css');
 @import url('grid.css');
 @import url('space.css');
@@ -24,6 +25,7 @@
 @custom-selector :--textarea textarea, [contenteditable];
 @custom-selector :--toggle-button button[aria-pressed], [role='button'][aria-pressed];
 @custom-selector :--expander-button button[aria-expanded], [role='button'][aria-expanded];
+@custom-selector :--arabic-script :lang('ar', 'ara', 'arb', 'fa', 'ps', 'ur', '*-Arab');
 
 .visually-hidden:not(:focus, :active) {
   position: absolute;
@@ -80,6 +82,18 @@
   font-weight: 400;
   line-height: 1.5;
   overflow-wrap: break-word;
+}
+
+[translate='no'] {
+  font-family: var(--font-sans-serif);
+}
+
+[lang] {
+  font-family: var(--font-sans-serif);
+
+  &:is(:--arabic-script) {
+    font-family: 'IBM Plex Sans Arabic', var(--font-sans-serif);
+  }
 }
 
 ::selection {

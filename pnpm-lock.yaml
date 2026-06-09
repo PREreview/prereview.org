@@ -185,6 +185,9 @@ importers:
       '@ibm/plex-sans':
         specifier: ^1.1.0
         version: 1.1.0
+      '@ibm/plex-sans-arabic':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@playwright/test':
         specifier: ^1.58.2
         version: 1.58.2
@@ -1238,6 +1241,9 @@ packages:
 
   '@ibm/plex-mono@1.1.0':
     resolution: {integrity: sha512-hpsdRxR3BRJkC6wGM4MZcUFD6C8M+mmK76RtAy/hlsfPro9FzpXVdIWC+G3jeQOXof109dxlUvmeKxpeKUG68A==}
+
+  '@ibm/plex-sans-arabic@1.1.0':
+    resolution: {integrity: sha512-u8wIS6szLAOFvlBjCFZmtpKIqbhuIuniG2N0J+sio8vV6INH58hP0t0QNYrSl9SZtCv2Fwb4oQGuZJY3kJ4+QA==}
 
   '@ibm/plex-sans@1.1.0':
     resolution: {integrity: sha512-WPgvO6Yfj2w5YbhyAr1tv95RUz4LRJlqN+CmYvBglabXteufP1D1E9BABMde+ZIKdRbFJDoKF5eQzfhpnbgZcQ==}
@@ -6510,6 +6516,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@ibm/plex-mono@1.1.0':
+    dependencies:
+      '@ibm/telemetry-js': 1.11.0
+
+  '@ibm/plex-sans-arabic@1.1.0':
     dependencies:
       '@ibm/telemetry-js': 1.11.0
 

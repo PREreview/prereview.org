@@ -66,6 +66,7 @@
     "@fast-check/vitest": "^0.4.1",
     "@ibm/plex-mono": "^1.1.0",
     "@ibm/plex-sans": "^1.1.0",
+    "@ibm/plex-sans-arabic": "^1.1.0",
     "@playwright/test": "^1.58.2",
     "@prettier/plugin-xml": "^3.4.2",
     "@tiptap/core": "^3.26.0",
@@ -121,6 +122,7 @@
     "ignoredBuiltDependencies": [
       "@ibm/plex-mono",
       "@ibm/plex-sans",
+      "@ibm/plex-sans-arabic",
       "@parcel/watcher",
       "esbuild",
       "msgpackr-extract",
