@@ -34,12 +34,16 @@ test('content looks right when empty', async ({ showPage }) => {
 
 const club1 = {
   name: 'ASAPbio Cancer Biology Crowd',
-  description: html`
-    <p>
-      The ASAPbio Cancer Biology Crowd reviews preprints of biochemical, molecular and cellular studies concerning
-      cancer.
-    </p>
-  `,
+  description: {
+    language: 'en',
+    text: html`
+      <p>
+        The ASAPbio Cancer Biology Crowd reviews preprints of biochemical, molecular and cellular studies concerning
+        cancer.
+      </p>
+    `,
+  },
+
   added: Temporal.PlainDate.from('2024-01-02'),
   leads: [
     { name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') },
@@ -53,12 +57,15 @@ const club1 = {
 
 const club2 = {
   name: 'ASAPbio Cancer Biology Crowd',
-  description: html`
-    <p>
-      The ASAPbio Cancer Biology Crowd reviews preprints of biochemical, molecular and cellular studies concerning
-      cancer.
-    </p>
-  `,
+  description: {
+    language: 'en',
+    text: html`
+      <p>
+        The ASAPbio Cancer Biology Crowd reviews preprints of biochemical, molecular and cellular studies concerning
+        cancer.
+      </p>
+    `,
+  },
   added: Temporal.PlainDate.from('2025-02-03'),
   leads: [{ name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') }],
 } satisfies Club

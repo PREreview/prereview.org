@@ -81,7 +81,8 @@ export function createPage({
         ),
         Match.orElse(() => ''),
       )}
-      ${club.description}
+
+      <div ${languageAttributesFor(club.description.language)}>${club.description.text}</div>
 
       <dl>
         <dt>${translate(locale, 'club-profile-page', 'clubLeads')()}</dt>
