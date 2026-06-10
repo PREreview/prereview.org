@@ -53,7 +53,7 @@ export const WriteCommentPage = ({
                     'clubReviewAuthors',
                   )({
                     authors: pipe(
-                      Array.map(prereview.authors.named, author => author.name),
+                      Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
                       Array.appendAll(
                         prereview.authors.anonymous > 0
                           ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
@@ -69,7 +69,7 @@ export const WriteCommentPage = ({
                     'reviewAuthors',
                   )({
                     authors: pipe(
-                      Array.map(prereview.authors.named, author => author.name),
+                      Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
                       Array.appendAll(
                         prereview.authors.anonymous > 0
                           ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]

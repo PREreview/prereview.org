@@ -221,7 +221,7 @@ export const createPage = ({
                                   'dataset-reviews-list',
                                   'reviewText',
                                 )({
-                                  reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
+                                  reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`.toString(),
                                   dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
                                     >${prereview.dataset.title}</cite
                                   >`.toString(),
@@ -473,7 +473,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    Array.map(item => html`<b>${item}</b>`.toString()),
+    Array.map(item => html`<b dir="auto">${item}</b>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

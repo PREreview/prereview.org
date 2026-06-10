@@ -82,7 +82,7 @@ export const toResponse = (
                                 ]
                               : [],
                           ),
-                          Array.map(name => html`<b>${name}</b>`),
+                          Array.map(name => html`<b dir="auto">${name}</b>`),
                           formatList(locale),
                         ).toString(),
                         preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
@@ -124,7 +124,7 @@ export const toResponse = (
                             'dataset-reviews-list',
                             'reviewText',
                           )({
-                            reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
+                            reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`.toString(),
                             dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
                               >${prereview.dataset.title}</cite
                             >`.toString(),
@@ -158,7 +158,7 @@ const authorList = (datasetReview: RecentDatasetPrereview, locale: SupportedLoca
     )
   }
 
-  return formatList(locale)(Array.map(list, name => html`<b>${name}</b>`))
+  return formatList(locale)(Array.map(list, name => html`<b dir="auto">${name}</b>`))
 }
 
 const displayPersona = Personas.match({

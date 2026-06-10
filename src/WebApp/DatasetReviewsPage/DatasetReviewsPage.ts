@@ -1,4 +1,4 @@
-import { Array, flow, identity, pipe, Struct } from 'effect'
+import { Array, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
@@ -9,7 +9,6 @@ import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
-import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
@@ -113,7 +112,7 @@ export const createDatasetReviewsPage = ({
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
                         ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
                           ? html`PREreview by ${displayAuthor(datasetReview.author)} et al.`
-                          : t('prereviewTitle')({ author: displayAuthor(datasetReview.author) })}
+                          : rawHtml(t('prereviewTitle')({ author: displayAuthor(datasetReview.author).toString() }))}
                       </h3>
 
                       <div class="byline">
@@ -134,7 +133,7 @@ export const createDatasetReviewsPage = ({
                             >`
                         : rawHtml(
                             t('readPrereview')({
-                              author: displayAuthor(datasetReview.author),
+                              author: displayAuthor(datasetReview.author).toString(),
                               visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
                             }),
                           )}
@@ -156,27 +155,28 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
   const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
 
   if (datasetReview.anonymousAuthors > 0) {
-    list.push(
-      NonEmptyString(`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`),
-    )
+    list.push(html`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`)
   }
 
   return formatList(locale)(list)
 }
 
 const displayAuthor = Personas.match({
-  onPublic: Struct.get('name'),
-  onPseudonym: Struct.get('pseudonym'),
+  onPublic: ({ name }) => html`<bdi>${name}</bdi>`,
+  onPseudonym: ({ pseudonym }) => html`<bdi>${pseudonym}</bdi>`,
 })
 
 function displayDatasetAuthor({ name, orcid }: Datasets.Dataset['authors'][number]) {
   if (orcid) {
-    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(

@@ -181,7 +181,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
           <div class="byline">
             ${pipe(
               review.authors.named,
-              Array.map(Struct.get('name')),
+              Array.map(({ name }) => html`<bdi>${name}</bdi>`),
               Array.appendAll(
                 review.authors.anonymous > 0 ? [t('otherAuthors')({ number: review.authors.anonymous })] : [],
               ),
@@ -365,27 +365,35 @@ function showRapidPrereviews(
 
 const displayPersona = Personas.match({
   onPublic: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+    html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      class="orcid"
+      dir="auto"
       >${persona.name}</a
     >`,
   onPseudonym: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" dir="auto"
       >${persona.pseudonym}</a
     >`,
 })
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}" dir="auto"
+      >${name}</a
+    >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(

@@ -1,4 +1,4 @@
-import { Array, flow, pipe, Struct } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
@@ -102,7 +102,13 @@ export function publishForm(
                 ? html`
                     <div>
                       <dt><span>${t('invitedAuthors')({ number: review.otherAuthors.length })}</span></dt>
-                      <dd>${pipe(review.otherAuthors, Array.map(Struct.get('name')), formatList(locale))}</dd>
+                      <dd>
+                        ${pipe(
+                          review.otherAuthors,
+                          Array.map(({ name }) => html`<bdi>${name}</bdi>`),
+                          formatList(locale),
+                        )}
+                      </dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                           >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a

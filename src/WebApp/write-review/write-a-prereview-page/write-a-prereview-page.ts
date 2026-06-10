@@ -35,7 +35,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
               )({
                 authors: pipe(
                   preprint.authors,
-                  Array.map(author => author.name),
+                  Array.map(author => html`<bdi>${author.name}</bdi>`),
                   formatList(locale),
                 ).toString(),
                 ...visuallyHidden,

@@ -484,7 +484,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    Array.map(item => html`${item}`.toString()),
+    Array.map(item => html`<bdi>${item}</bdi>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

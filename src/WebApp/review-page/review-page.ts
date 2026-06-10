@@ -295,16 +295,21 @@ export const createPage = ({
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}" dir="auto"
+      >${name}</a
+    >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(

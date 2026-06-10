@@ -93,6 +93,7 @@ export function createPage({
                 html`<a
                   href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(lead.orcid) })}"
                   class="orcid"
+                  dir="auto"
                   >${lead.name}</a
                 >`,
             ),
@@ -149,7 +150,7 @@ export function createPage({
                                   ]
                                 : [],
                             ),
-                            Array.map(name => html`<b>${name}</b>`),
+                            Array.map(name => html`<b dir="auto">${name}</b>`),
                             formatList(locale),
                             list => list.toString(),
                           ),
