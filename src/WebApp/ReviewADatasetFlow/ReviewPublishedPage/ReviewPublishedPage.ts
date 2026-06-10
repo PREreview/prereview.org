@@ -36,7 +36,8 @@ export const ReviewPublishedPage = ({
               ${rawHtml(
                 t('inviteOthers')({
                   emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-                    >help@prereview.org<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
+                    ><bdi translate="no">help@prereview.org</bdi
+                    ><span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
                   >`.toString(),
                 }),
               )}

@@ -29,7 +29,7 @@ export const publishedPage = ({
       >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
     >`.toString()
   const mailtoHelp = html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-    >help@prereview.org<span class="visually-hidden"> (${opensInNewTab})</span></a
+    ><bdi translate="no">help@prereview.org</bdi><span class="visually-hidden"> (${opensInNewTab})</span></a
   >`.toString()
 
   return StreamlinePageResponse({

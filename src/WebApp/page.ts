@@ -504,7 +504,7 @@ export const page = ({
                       href="mailto:contact@prereview.org"
                       class="email"
                       aria-label="${t('footer', 'contactEmail')({ address: 'contact@prereview.org' })}"
-                      ><span translate="no">contact@prereview.org</span></a
+                      ><bdi translate="no">contact@prereview.org</bdi></a
                     >
                   </li>
                   <li>
@@ -512,7 +512,7 @@ export const page = ({
                       href="https://bsky.app/profile/prereview.bsky.social"
                       class="bluesky"
                       aria-label="${t('footer', 'contactBluesky')({ handle: '@prereview.bsky.social' })}"
-                      ><span translate="no">@prereview.bsky.social</span></a
+                      ><bdi translate="no">@prereview.bsky.social</bdi></a
                     >
                   </li>
                   <li>
@@ -520,7 +520,7 @@ export const page = ({
                       href="https://mas.to/@prereview"
                       class="mastodon"
                       aria-label="${t('footer', 'contactMastodon')({ handle: '@prereview@mas.to' })}"
-                      ><span translate="no">@prereview@mas.to</span></a
+                      ><bdi translate="no">@prereview@mas.to</bdi></a
                     >
                   </li>
                   <li>
@@ -528,7 +528,7 @@ export const page = ({
                       href="https://www.youtube.com/@Prereview"
                       class="youtube"
                       aria-label="${t('footer', 'contactYouTube')({ handle: '@Prereview' })}"
-                      ><span translate="no">@Prereview</span></a
+                      ><bdi translate="no">@Prereview</bdi></a
                     >
                   </li>
                   <li>
@@ -536,7 +536,7 @@ export const page = ({
                       href="https://www.linkedin.com/company/prereview/"
                       class="linked-in"
                       aria-label="${t('footer', 'contactLinkedIn')({ handle: 'PREreview' })}"
-                      ><span translate="no">PREreview</span></a
+                      ><bdi translate="no">PREreview</bdi></a
                     >
                   </li>
                   <li>
@@ -544,7 +544,7 @@ export const page = ({
                       href="https://github.com/PREreview"
                       class="github"
                       aria-label="${t('footer', 'contactGitHub')({ handle: 'PREreview' })}"
-                      ><span translate="no">PREreview</span></a
+                      ><bdi translate="no">PREreview</bdi></a
                     >
                   </li>
                 </ul>
