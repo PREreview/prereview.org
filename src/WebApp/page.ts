@@ -368,7 +368,7 @@ export const page = ({
                                     <li>
                                       <a
                                         href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                        lang="${code}"
+                                        ${languageAttributesFor(code)}
                                         hreflang="${code}"
                                         ${locale === code ? html`aria-current="true"` : ''}
                                         >${name}</a
@@ -428,7 +428,7 @@ export const page = ({
                                 <li>
                                   <a
                                     href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                    lang="${code}"
+                                    ${languageAttributesFor(code)}
                                     hreflang="${code}"
                                     ${locale === code ? html`aria-current="true"` : ''}
                                     >${name}</a
