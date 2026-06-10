@@ -72,7 +72,11 @@ export const createDatasetReviewPage = ({
           </div>
           <div>
             <dt>DOI</dt>
-            <dd><a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" dir="auto" translate="no">${datasetReview.doi}</a></dd>
+            <dd>
+              <a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" dir="auto" translate="no"
+                >${datasetReview.doi}</a
+              >
+            </dd>
           </div>
           <div>
             <dt>${t('license')()}</dt>
