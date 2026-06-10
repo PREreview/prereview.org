@@ -28,7 +28,7 @@ export function createPage({
   return PageResponse({
     title: plainText`${club.name}`,
     main: html`
-      <h1>${club.name}</h1>
+      <h1 dir="auto">${club.name}</h1>
 
       ${pipe(
         Match.value(id),
@@ -118,7 +118,11 @@ export function createPage({
       ${Array.match(prereviews, {
         onEmpty: () => html`
           <div class="inset">
-            <p>${translate(locale, 'club-profile-page', 'noResults')({ name: club.name })}</p>
+            <p>
+              ${rawHtml(
+                translate(locale, 'club-profile-page', 'noResults')({ name: html`<bdi>${club.name}</bdi>`.toString() }),
+              )}
+            </p>
 
             <p>${translate(locale, 'club-profile-page', 'appearHere')()}</p>
           </div>
