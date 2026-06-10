@@ -696,6 +696,10 @@ article {
   line-height: 1.2;
   text-wrap-style: pretty;
 
+  &:where(:--arabic-script) {
+    line-height: 1.4;
+  }
+
   :where(:not(caption, legend)) > & {
     margin-block-start: var(--space-s-m);
   }
@@ -2152,6 +2156,10 @@ single-use-form {
   text-align: center;
   row-gap: var(--space-xs);
 
+  &:where(:--arabic-script) {
+    line-height: 1.4;
+  }
+
   & > :first-child {
     margin-block-start: 0;
   }
@@ -2931,6 +2939,10 @@ spotlight-banner {
     font-weight: 500;
     line-height: 1.2;
     text-align: center;
+
+    &:where(:--arabic-script) {
+      line-height: 1.4;
+    }
 
     &:nth-child(3n - 2) {
       border-color: var(--color-yellow-40);
