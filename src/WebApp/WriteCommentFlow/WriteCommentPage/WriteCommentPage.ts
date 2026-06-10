@@ -89,7 +89,7 @@ export const WriteCommentPage = ({
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi" translate="no">${prereview.doi}</dd>
+              <dd class="doi" dir="auto" translate="no">${prereview.doi}</dd>
             </div>
             <div>
               <dt>${t('review-page', 'license')()}</dt>
@@ -101,7 +101,7 @@ export const WriteCommentPage = ({
                     () => html`
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
-                          ><span translate="no">CC0 1.0</span></abbr
+                          ><bdi translate="no">CC0 1.0</bdi></abbr
                         >
                       </dfn>
                     `,
@@ -110,9 +110,7 @@ export const WriteCommentPage = ({
                     'CC-BY-4.0',
                     () => html`
                       <dfn>
-                        <abbr title="${t('review-page', 'licenseCcBy40')()}"
-                          ><span translate="no">CC BY 4.0</span></abbr
-                        >
+                        <abbr title="${t('review-page', 'licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
                       </dfn>
                     `,
                   ),

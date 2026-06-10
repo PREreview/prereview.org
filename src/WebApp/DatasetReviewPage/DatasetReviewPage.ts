@@ -72,14 +72,14 @@ export const createDatasetReviewPage = ({
           </div>
           <div>
             <dt>DOI</dt>
-            <dd><a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" translate="no">${datasetReview.doi}</a></dd>
+            <dd><a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" dir="auto" translate="no">${datasetReview.doi}</a></dd>
           </div>
           <div>
             <dt>${t('license')()}</dt>
             <dd>
               <a href="https://creativecommons.org/licenses/by/4.0/">
                 <dfn>
-                  <abbr title="${t('licenseCcBy40')()}"><span translate="no">CC BY 4.0</span></abbr>
+                  <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
                 </dfn>
               </a>
             </dd>

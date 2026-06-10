@@ -52,7 +52,7 @@ export const ReviewThisDatasetPage = ({
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi" translate="no">${dataset.id.value}</dd>
+              <dd class="doi" dir="auto" translate="no">${dataset.id.value}</dd>
             </div>
           </dl>
         </header>

@@ -21,7 +21,7 @@ export const ReviewPublishedPage = ({
 
         <div>
           ${t('yourDoi')()}
-          <div><strong class="doi" translate="no">${datasetReview.doi}</strong></div>
+          <div><strong class="doi" dir="auto" translate="no">${datasetReview.doi}</strong></div>
         </div>
       </div>
 

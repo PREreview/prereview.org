@@ -72,7 +72,11 @@ export const createDatasetReviewsPage = ({
 
             <div>
               <dt>DOI</dt>
-              <dd><a href="${Doi.toUrl(dataset.id.value).href}" class="doi" translate="no">${dataset.id.value}</a></dd>
+              <dd>
+                <a href="${Doi.toUrl(dataset.id.value).href}" class="doi" dir="auto" translate="no"
+                  >${dataset.id.value}</a
+                >
+              </dd>
             </div>
           </dl>
         </header>

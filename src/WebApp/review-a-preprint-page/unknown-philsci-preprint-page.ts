@@ -20,7 +20,7 @@ export const createUnknownPhilsciPreprintPage = (preprint: PhilsciPreprintId, lo
             'review-a-preprint',
             'urlCouldBePhilsci',
           )({
-            url: html`<q class="select-all" translate="no"
+            url: html`<q class="select-all" dir="auto" translate="no"
               >https://philsci-archive.pitt.edu/${preprint.value}/</q
             >`.toString(),
           }),

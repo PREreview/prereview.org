@@ -57,7 +57,7 @@ export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprint
             VerixivPreprintId: () => t('doiCouldBeVerixiv'),
             ZenodoPreprintId: () => t('doiCouldBeZenodo'),
             ZenodoOrAfricarxivPreprintId: () => t('doiCouldBeZenodoAfricarxiv'),
-          })({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
+          })({ doi: html`<q class="select-all" dir="auto" translate="no">${preprint.value}</q>`.toString() }),
         )}
       </p>
 

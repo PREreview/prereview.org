@@ -50,8 +50,10 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
                     'whatIsDoiText',
                   )({
                     doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`.toString(),
-                    example: html`<q class="select-all" translate="no">10.1101/2022.10.06.511170</q>`.toString(),
-                    exampleUrl: html`<q class="select-all" translate="no"
+                    example: html`<q class="select-all" dir="auto" translate="no"
+                      >10.1101/2022.10.06.511170</q
+                    >`.toString(),
+                    exampleUrl: html`<q class="select-all" dir="auto" translate="no"
                       >https://doi.org/10.1101/2022.10.06.511170</q
                     >`.toString(),
                   }),

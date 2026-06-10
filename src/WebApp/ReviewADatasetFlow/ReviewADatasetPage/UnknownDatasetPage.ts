@@ -21,7 +21,7 @@ export const UnknownDatasetPage = ({ dataset, locale }: { dataset: Datasets.Data
             DryadDatasetId: () => t('doiCouldBeDryad'),
             ScieloDatasetId: () => t('doiCouldBeScielo'),
             ZenodoDatasetId: () => t('doiCouldBeZenodo'),
-          })({ doi: html`<q class="select-all" translate="no">${dataset.value}</q>`.toString() }),
+          })({ doi: html`<q class="select-all" dir="auto" translate="no">${dataset.value}</q>`.toString() }),
         )}
       </p>
 

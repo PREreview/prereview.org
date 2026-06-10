@@ -39,8 +39,10 @@ export const ReviewADatasetPage = ({
                 ${rawHtml(
                   t('whatIsDoiText')({
                     doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`.toString(),
-                    example: html`<q class="select-all" translate="no">10.5061/dryad.wstqjq2n3</q>`.toString(),
-                    exampleUrl: html`<q class="select-all" translate="no"
+                    example: html`<q class="select-all" dir="auto" translate="no"
+                      >10.5061/dryad.wstqjq2n3</q
+                    >`.toString(),
+                    exampleUrl: html`<q class="select-all" dir="auto" translate="no"
                       >https://doi.org/10.5061/dryad.wstqjq2n3</q
                     >`.toString(),
                   }),

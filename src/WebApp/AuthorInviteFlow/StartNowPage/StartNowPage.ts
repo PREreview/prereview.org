@@ -75,7 +75,7 @@ export const renderStartNowPage = ({
             <div>
               <dt>DOI</dt>
               <dd>
-                <a href="${Doi.toUrl(viewModel.doi).href}" class="doi" translate="no">${viewModel.doi}</a>
+                <a href="${Doi.toUrl(viewModel.doi).href}" class="doi" dir="auto" translate="no">${viewModel.doi}</a>
               </dd>
             </div>
             <div>
@@ -83,7 +83,7 @@ export const renderStartNowPage = ({
               <dd>
                 <a href="https://creativecommons.org/licenses/by/4.0/">
                   <dfn>
-                    <abbr title="${t('licenseCcBy40')()}"><span translate="no">CC BY 4.0</span></abbr>
+                    <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
                   </dfn>
                 </a>
               </dd>

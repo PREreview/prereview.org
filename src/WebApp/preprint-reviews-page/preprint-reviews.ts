@@ -102,7 +102,7 @@ export const createPage = ({
                 id => html`
                   <div>
                     <dt>DOI</dt>
-                    <dd><a href="${toUrl(id.value).href}" class="doi" translate="no">${id.value}</a></dd>
+                    <dd><a href="${toUrl(id.value).href}" class="doi" dir="auto" translate="no">${id.value}</a></dd>
                   </div>
                 `,
               )

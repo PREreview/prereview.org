@@ -40,7 +40,7 @@ export const publishedPage = ({
 
         <div>
           ${t('write-review', 'yourDoi')()} <br />
-          <strong class="doi" translate="no">${doi}</strong>
+          <strong class="doi" dir="auto" translate="no">${doi}</strong>
         </div>
       </div>
 

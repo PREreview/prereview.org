@@ -106,7 +106,7 @@ function publishedPage({
 
         <div>
           ${t('yourDoi')()} <br />
-          <strong class="doi" translate="no">${review.doi}</strong>
+          <strong class="doi" dir="auto" translate="no">${review.doi}</strong>
         </div>
       </div>
 

@@ -152,7 +152,7 @@ export const createPage = ({
           </div>
           <div>
             <dt>DOI</dt>
-            <dd><a href="${toUrl(review.doi).href}" class="doi" translate="no">${review.doi}</a></dd>
+            <dd><a href="${toUrl(review.doi).href}" class="doi" dir="auto" translate="no">${review.doi}</a></dd>
           </div>
           <div>
             <dt>${translate(locale, 'review-page', 'license')()}</dt>
@@ -164,7 +164,7 @@ export const createPage = ({
                     <a href="https://creativecommons.org/publicdomain/zero/1.0/">
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
-                          ><span translate="no">CC0 1.0</span></abbr
+                          ><bdi translate="no">CC0 1.0</span></abbr
                         >
                       </dfn>
                     </a>
@@ -176,7 +176,7 @@ export const createPage = ({
                     <a href="https://creativecommons.org/licenses/by/4.0/">
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                          ><span translate="no">CC BY 4.0</span></abbr
+                          ><bdi translate="no">CC BY 4.0</span></abbr
                         >
                       </dfn>
                     </a>
@@ -252,7 +252,7 @@ export const createPage = ({
                             <div>
                               <dt>DOI</dt>
                               <dd>
-                                <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
+                                <a href="${toUrl(item.doi).href}" class="doi" dir="auto" translate="no">${item.doi}</a>
                               </dd>
                             </div>
                             <div>
@@ -265,7 +265,7 @@ export const createPage = ({
                                       <a href="https://creativecommons.org/licenses/by/4.0/">
                                         <dfn>
                                           <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                                            ><span translate="no">CC BY 4.0</span></abbr
+                                            ><bdi translate="no">CC BY 4.0</span></abbr
                                           >
                                         </dfn>
                                       </a>

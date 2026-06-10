@@ -20,7 +20,7 @@ export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
             <p>
               ${rawHtml(
                 t('urlCouldBePhilsci')({
-                  url: html`<q class="select-all" translate="no"
+                  url: html`<q class="select-all" dir="auto" translate="no"
                     >https://philsci-archive.pitt.edu/${preprint.value}/</q
                   >`.toString(),
                 }),
@@ -75,7 +75,7 @@ export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   VerixivPreprintId: () => t('doiCouldBeVerixiv'),
                   ZenodoPreprintId: () => t('doiCouldBeZenodo'),
                   ZenodoOrAfricarxivPreprintId: () => t('doiCouldBeZenodoAfricarxiv'),
-                })({ doi: html`<q class="select-all" translate="no">${preprint.value}</q>`.toString() }),
+                })({ doi: html`<q class="select-all" dir="auto" translate="no">${preprint.value}</q>`.toString() }),
               )}
             </p>
 
