@@ -165,7 +165,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               .with([1, P.string], ([, club]) =>
                 t('prereviewByOneAuthorInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
-                  club: getClubName(club),
+                  club: html`<bdi>${getClubName(club)}</bdi>`.toString(),
                 }),
               )
               .with([1, undefined], () =>
@@ -174,7 +174,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               .with([P.number, P.string], ([, club]) =>
                 t('prereviewByMultipleAuthorsInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
-                  club: getClubName(club),
+                  club: html`<bdi>${getClubName(club)}</bdi>`.toString(),
                 }),
               )
               .with([P.number, undefined], () =>
@@ -196,7 +196,11 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               list => list.toString(),
               authors =>
                 review.club
-                  ? t('authoredByInClub')({ authors, club: getClubName(review.club), visuallyHidden })
+                  ? t('authoredByInClub')({
+                      authors,
+                      club: html`<bdi>${getClubName(review.club)}</bdi>`.toString(),
+                      visuallyHidden,
+                    })
                   : t('authoredBy')({ authors, visuallyHidden }),
               rawHtml,
             )}
@@ -216,7 +220,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               .with([1, P.string], ([, club]) =>
                 t('readPrereviewByOneAuthorInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
-                  club: getClubName(club),
+                  club: html`<bdi>${getClubName(club)}</bdi>`.toString(),
                   visuallyHidden,
                 }),
               )
@@ -229,7 +233,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               .with([P.number, P.string], ([, club]) =>
                 t('readPrereviewByMultipleAuthorsInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
-                  club: getClubName(club),
+                  club: html`<bdi>${getClubName(club)}</bdi>`.toString(),
                   visuallyHidden,
                 }),
               )

@@ -142,7 +142,7 @@ function startPage({
                       ),
                       formatList(locale),
                     ).toString(),
-                    club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}"
+                    club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
                       >${getClubName(review.club)}</a
                     >`.toString(),
                     hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),

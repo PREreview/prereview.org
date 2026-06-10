@@ -119,7 +119,8 @@ function renderContentForOrcidId(
                     ${pipe(
                       clubs,
                       Array.map(
-                        club => html`<a href="${Routes.ClubProfile.href({ id: club })}">${getClubName(club)}</a>`,
+                        club =>
+                          html`<a href="${Routes.ClubProfile.href({ id: club })}" dir="auto">${getClubName(club)}</a>`,
                       ),
                       formatList(locale),
                     )}
