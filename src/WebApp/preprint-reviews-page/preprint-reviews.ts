@@ -163,17 +163,24 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
             ${match([countAuthors(review), review.club])
               .with([1, P.string], ([, club]) =>
-                t('prereviewByOneAuthorInClub')({ author: review.authors.named[0].name, club: getClubName(club) }),
+                t('prereviewByOneAuthorInClub')({
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
+                  club: getClubName(club),
+                }),
               )
-              .with([1, undefined], () => t('prereviewByOneAuthor')({ author: review.authors.named[0].name }))
+              .with([1, undefined], () =>
+                t('prereviewByOneAuthor')({ author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString() }),
+              )
               .with([P.number, P.string], ([, club]) =>
                 t('prereviewByMultipleAuthorsInClub')({
-                  author: review.authors.named[0].name,
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
                   club: getClubName(club),
                 }),
               )
               .with([P.number, undefined], () =>
-                t('prereviewByMultipleAuthors')({ author: review.authors.named[0].name }),
+                t('prereviewByMultipleAuthors')({
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
+                }),
               )
               .exhaustive()}
           </h3>
@@ -208,23 +215,29 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
             match([countAuthors(review), review.club])
               .with([1, P.string], ([, club]) =>
                 t('readPrereviewByOneAuthorInClub')({
-                  author: review.authors.named[0].name,
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
                   club: getClubName(club),
                   visuallyHidden,
                 }),
               )
               .with([1, undefined], () =>
-                t('readPrereviewByOneAuthor')({ author: review.authors.named[0].name, visuallyHidden }),
+                t('readPrereviewByOneAuthor')({
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
+                  visuallyHidden,
+                }),
               )
               .with([P.number, P.string], ([, club]) =>
                 t('readPrereviewByMultipleAuthorsInClub')({
-                  author: review.authors.named[0].name,
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
                   club: getClubName(club),
                   visuallyHidden,
                 }),
               )
               .with([P.number, undefined], () =>
-                t('readPrereviewByMultipleAuthors')({ author: review.authors.named[0].name, visuallyHidden }),
+                t('readPrereviewByMultipleAuthors')({
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`.toString(),
+                  visuallyHidden,
+                }),
               )
               .exhaustive(),
           )}
