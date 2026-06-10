@@ -66,6 +66,7 @@ export const ReviewADatasetPage = ({
             id="which-dataset"
             type="text"
             size="60"
+            dir="ltr"
             spellcheck="false"
             aria-describedby="which-dataset-tip"
             ${hasAnError && Either.isLeft(form.whichDataset)

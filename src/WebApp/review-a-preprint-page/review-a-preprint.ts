@@ -91,6 +91,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
             name="preprint"
             type="text"
             size="60"
+            dir="ltr"
             spellcheck="false"
             aria-describedby="preprint-tip"
             ${match(whichPreprint)

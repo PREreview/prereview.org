@@ -74,6 +74,7 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
             name="whichPreprint"
             type="text"
             size="60"
+            dir="ltr"
             spellcheck="false"
             aria-describedby="which-preprint-tip"
             ${hasAnError && Either.isLeft(form.whichPreprint)

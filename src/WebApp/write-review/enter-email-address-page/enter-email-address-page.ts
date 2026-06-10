@@ -90,6 +90,7 @@ export const enterEmailAddressPage = (
             id="email-address"
             type="text"
             inputmode="email"
+            dir="ltr"
             spellcheck="false"
             autocomplete="email"
             ${match(form.emailAddress)

@@ -119,6 +119,7 @@ export function enterEmailAddressForm({
                         id="other-email-address"
                         type="text"
                         inputmode="email"
+                        dir="ltr"
                         spellcheck="false"
                         autocomplete="email"
                         ${match(form.otherEmailAddress)

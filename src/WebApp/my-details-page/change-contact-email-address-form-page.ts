@@ -71,6 +71,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
             id="email-address"
             type="text"
             inputmode="email"
+            dir="ltr"
             spellcheck="false"
             autocomplete="email"
             aria-describedby="email-address-tip"

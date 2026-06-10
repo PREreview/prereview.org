@@ -93,6 +93,7 @@ export const EnterEmailAddressPage = ({
             id="email-address"
             type="text"
             inputmode="email"
+            dir="ltr"
             spellcheck="false"
             autocomplete="email"
             ${pipe(
