@@ -1,20 +1,7 @@
-import { Command, type Error, FileSystem } from '@effect/platform'
+import { Command, FileSystem } from '@effect/platform'
 import { NodeContext, NodeRuntime } from '@effect/platform-node'
 import { pascalCase } from 'case-anything'
-import {
-  Array,
-  Boolean,
-  Console,
-  Effect,
-  Exit,
-  Function,
-  Layer,
-  Record,
-  type Scope,
-  Stream,
-  String,
-  Tuple,
-} from 'effect'
+import { Array, Boolean, Console, Effect, Exit, Layer, Record, String, Tuple } from 'effect'
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
@@ -56,27 +43,7 @@ class SrcModules extends Effect.Service<SrcModules>()('SrcModules', {
 }) {}
 
 const RunIntlc = ({ locale, module }: { locale: string; module: string }) =>
-  Command.make('intlc', 'compile', `locales/${locale}/${module}.json`, '-l', locale).pipe(Command.stream)
-
-const WriteToFile: {
-  <E, R>(
-    stream: Stream.Stream<Uint8Array, E, R>,
-    path: string,
-  ): Effect.Effect<void, Error.PlatformError | E, FileSystem.FileSystem | Exclude<R, Scope.Scope>>
-  (
-    path: string,
-  ): <E, R>(
-    stream: Stream.Stream<Uint8Array, E, R>,
-  ) => Effect.Effect<void, Error.PlatformError | E, FileSystem.FileSystem | Exclude<R, Scope.Scope>>
-} = Function.dual(2, <E, R>(stream: Stream.Stream<Uint8Array, E, R>, path: string) =>
-  Effect.gen(function* () {
-    const fileSystem = yield* FileSystem.FileSystem
-
-    const sink = fileSystem.sink(path)
-
-    yield* Stream.run(stream, sink)
-  }),
-)
+  Command.make('intlc', 'compile', `locales/${locale}/${module}.json`, '-l', locale).pipe(Command.string())
 
 const BuildAssetsTarget = Effect.fnUntraced(function* ({
   locale,
@@ -91,16 +58,16 @@ const BuildAssetsTarget = Effect.fnUntraced(function* ({
 
   yield* Effect.logDebug(`Compiling ${target}`)
 
-  const stream = yield* fileSystem.exists(`locales/${locale}/${module}.json`).pipe(
+  const rendered = yield* fileSystem.exists(`locales/${locale}/${module}.json`).pipe(
     Effect.andThen(
       Boolean.match({
         onTrue: () => RunIntlc({ locale, module }),
-        onFalse: () => Stream.succeed(new TextEncoder().encode('export {}')),
+        onFalse: () => Effect.succeed('export {}'),
       }),
     ),
   )
 
-  yield* WriteToFile(stream, target)
+  yield* fileSystem.writeFileString(target, rendered)
 })
 
 const BuildSrcTarget = Effect.fnUntraced(function* ({
@@ -116,16 +83,16 @@ const BuildSrcTarget = Effect.fnUntraced(function* ({
 
   yield* Effect.logDebug(`Compiling ${target}`)
 
-  const stream = yield* fileSystem.exists(`locales/${locale}/${module}.json`).pipe(
+  const rendered = yield* fileSystem.exists(`locales/${locale}/${module}.json`).pipe(
     Effect.andThen(
       Boolean.match({
         onTrue: () => RunIntlc({ locale, module }),
-        onFalse: () => Stream.succeed(new TextEncoder().encode('export {}')),
+        onFalse: () => Effect.succeed('export {}'),
       }),
     ),
   )
 
-  yield* WriteToFile(stream, target)
+  yield* fileSystem.writeFileString(target, rendered)
 })
 
 const BuildAssetsModule = Effect.fnUntraced(function* ({ module, target }: { module: string; target: string }) {
@@ -161,6 +128,7 @@ const BuildSrcModule = Effect.fnUntraced(function* ({ module, target }: { module
   const rendered = template({
     defaultLocale,
     locales,
+    html: true,
     realLocales: Array.filter(locales, locale => locale !== crowdinInContextLocale),
     moduleName: pascalCase(module),
   })
