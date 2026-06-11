@@ -21,6 +21,8 @@ export const createFormPage = (location: Option.Option<Location>, locale: Suppor
           name="location"
           id="location"
           type="text"
+          placeholder=" "
+          dir="auto"
           ${match(location)
             .with({ value: { value: P.select() } }, location => html`value="${location}"`)
             .when(Option.isNone, () => '')

@@ -109,6 +109,8 @@ export function dataPresentationForm(preprint: PreprintTitle, form: DataPresenta
                       <textarea
                         name="dataPresentationHighlyAppropriateClearDetails"
                         id="data-presentation-highly-appropriate-clear-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.dataPresentationHighlyAppropriateClearDetails)
@@ -144,6 +146,8 @@ ${match(form.dataPresentationHighlyAppropriateClearDetails)
                       <textarea
                         name="dataPresentationMostlyAppropriateClearDetails"
                         id="data-presentation-mostly-appropriate-clear-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.dataPresentationMostlyAppropriateClearDetails)
@@ -174,7 +178,13 @@ ${match(form.dataPresentationMostlyAppropriateClearDetails)
                         >${t('neitherAppropriateOrClearWhy')()}</label
                       >
 
-                      <textarea name="dataPresentationNeutralDetails" id="data-presentation-neutral-details" rows="5">
+                      <textarea
+                        name="dataPresentationNeutralDetails"
+                        id="data-presentation-neutral-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.dataPresentationNeutralDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -208,6 +218,8 @@ ${match(form.dataPresentationNeutralDetails)
                       <textarea
                         name="dataPresentationSomewhatInappropriateUnclearDetails"
                         id="data-presentation-somewhat-inappropriate-unclear-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
@@ -241,6 +253,8 @@ ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
                       <textarea
                         name="dataPresentationInappropriateUnclearDetails"
                         id="data-presentation-inappropriate-unclear-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.dataPresentationInappropriateUnclearDetails)

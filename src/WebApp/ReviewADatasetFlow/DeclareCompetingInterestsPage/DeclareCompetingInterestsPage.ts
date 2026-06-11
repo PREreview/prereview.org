@@ -176,6 +176,8 @@ export const DeclareCompetingInterestsPage = ({
                       <textarea
                         name="competingInterestsDetails"
                         id="competing-interests-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                         ${rawHtml(
                           hasAnError && Either.isLeft(form.competingInterestsDetails)

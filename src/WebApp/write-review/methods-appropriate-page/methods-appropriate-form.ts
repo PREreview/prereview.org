@@ -128,6 +128,8 @@ export function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsApp
                       <textarea
                         name="methodsAppropriateHighlyAppropriateDetails"
                         id="methods-appropriate-highly-appropriate-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.methodsAppropriateHighlyAppropriateDetails)
@@ -163,6 +165,8 @@ ${match(form.methodsAppropriateHighlyAppropriateDetails)
                       <textarea
                         name="methodsAppropriateMostlyAppropriateDetails"
                         id="methods-appropriate-mostly-appropriate-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.methodsAppropriateMostlyAppropriateDetails)
@@ -198,6 +202,8 @@ ${match(form.methodsAppropriateMostlyAppropriateDetails)
                       <textarea
                         name="methodsAppropriateAdequateDetails"
                         id="methods-appropriate-adequate-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.methodsAppropriateAdequateDetails)
@@ -233,6 +239,8 @@ ${match(form.methodsAppropriateAdequateDetails)
                       <textarea
                         name="methodsAppropriateSomewhatInappropriateDetails"
                         id="methods-appropriate-somewhat-inappropriate-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.methodsAppropriateSomewhatInappropriateDetails)
@@ -266,6 +274,8 @@ ${match(form.methodsAppropriateSomewhatInappropriateDetails)
                       <textarea
                         name="methodsAppropriateInappropriateDetails"
                         id="methods-appropriate-inappropriate-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.methodsAppropriateInappropriateDetails)

@@ -88,6 +88,8 @@ export const SupportsRelatedConclusionsQuestion = ({
                       <textarea
                         name="supportsRelatedConclusionsYesDetail"
                         id="supports-related-conclusions-yes-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -129,6 +131,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="supportsRelatedConclusionsPartlyDetail"
                         id="supports-related-conclusions-partly-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -170,6 +174,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="supportsRelatedConclusionsNoDetail"
                         id="supports-related-conclusions-no-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {

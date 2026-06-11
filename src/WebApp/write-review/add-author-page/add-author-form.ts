@@ -64,6 +64,8 @@ export function addAuthorForm({
             name="name"
             id="name"
             type="text"
+            placeholder=" "
+            dir="auto"
             spellcheck="false"
             aria-describedby="name-tip"
             ${match(form.name)

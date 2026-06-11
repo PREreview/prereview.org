@@ -104,7 +104,13 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
                         >${t('readyForAttentionYesWhy')()}</label
                       >
 
-                      <textarea name="readyFullReviewYesDetails" id="ready-full-review-yes-details" rows="5">
+                      <textarea
+                        name="readyFullReviewYesDetails"
+                        id="ready-full-review-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.readyFullReviewYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -134,6 +140,8 @@ ${match(form.readyFullReviewYesDetails)
                       <textarea
                         name="readyFullReviewYesChangesDetails"
                         id="ready-full-review-yes-changes-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.readyFullReviewYesChangesDetails)
@@ -162,7 +170,13 @@ ${match(form.readyFullReviewYesChangesDetails)
                         >${t('readyForAttentionNoWhy')()}</label
                       >
 
-                      <textarea name="readyFullReviewNoDetails" id="ready-full-review-no-details" rows="5">
+                      <textarea
+                        name="readyFullReviewNoDetails"
+                        id="ready-full-review-no-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.readyFullReviewNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

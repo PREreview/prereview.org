@@ -93,6 +93,8 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                       <textarea
                         name="isAppropriateForThisKindOfResearchYesDetail"
                         id="is-appropriate-for-this-kind-of-research-question-yes-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -139,6 +141,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="isAppropriateForThisKindOfResearchPartlyDetail"
                         id="is-appropriate-for-this-kind-of-research-question-partly-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -185,6 +189,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="isAppropriateForThisKindOfResearchNoDetail"
                         id="is-appropriate-for-this-kind-of-research-question-no-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {

@@ -116,7 +116,13 @@ export function introductionMatchesForm(
                         >${t('howIntroductionExplains')()}</label
                       >
 
-                      <textarea name="introductionMatchesYesDetails" id="introduction-matches-yes-details" rows="5">
+                      <textarea
+                        name="introductionMatchesYesDetails"
+                        id="introduction-matches-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.introductionMatchesYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -146,6 +152,8 @@ ${match(form.introductionMatchesYesDetails)
                       <textarea
                         name="introductionMatchesPartlyDetails"
                         id="introduction-matches-partly-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.introductionMatchesPartlyDetails)
@@ -174,7 +182,13 @@ ${match(form.introductionMatchesPartlyDetails)
                     <div>
                       <label for="introduction-matches-no-details" class="textarea">${t('doesNotExplainHow')()}</label>
 
-                      <textarea name="introductionMatchesNoDetails" id="introduction-matches-no-details" rows="5">
+                      <textarea
+                        name="introductionMatchesNoDetails"
+                        id="introduction-matches-no-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.introductionMatchesNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

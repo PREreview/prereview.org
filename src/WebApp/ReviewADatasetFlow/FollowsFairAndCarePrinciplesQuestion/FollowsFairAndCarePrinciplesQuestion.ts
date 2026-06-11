@@ -123,6 +123,8 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                       <textarea
                         name="followsFairAndCarePrinciplesYesDetail"
                         id="follows-fair-and-care-principles-yes-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -166,6 +168,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="followsFairAndCarePrinciplesPartlyDetail"
                         id="follows-fair-and-care-principles-partly-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -207,6 +211,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="followsFairAndCarePrinciplesNoDetail"
                         id="follows-fair-and-care-principles-no-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {

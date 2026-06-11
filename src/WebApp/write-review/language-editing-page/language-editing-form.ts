@@ -105,7 +105,13 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                         >${t('benefitFromEditingNoWhy')()}</label
                       >
 
-                      <textarea name="languageEditingNoDetails" id="language-editing-no-details" rows="5">
+                      <textarea
+                        name="languageEditingNoDetails"
+                        id="language-editing-no-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.languageEditingNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -134,7 +140,13 @@ ${match(form.languageEditingNoDetails)
                         >${t('benefitFromEditingYesWhy')()}</label
                       >
 
-                      <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
+                      <textarea
+                        name="languageEditingYesDetails"
+                        id="language-editing-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.languageEditingYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

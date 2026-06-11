@@ -84,7 +84,13 @@ export const IsErrorFreeQuestion = ({
                       <label for="is-error-free-yes-detail" class="textarea"
                         >${t('relativelyErrorFreeYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isErrorFreeYesDetail" id="is-error-free-yes-detail" rows="5">
+                      <textarea
+                        name="isErrorFreeYesDetail"
+                        id="is-error-free-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -120,7 +126,13 @@ ${Match.valueTags(form, {
                       <label for="is-error-free-partly-detail" class="textarea"
                         >${t('relativelyErrorFreePartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isErrorFreePartlyDetail" id="is-error-free-partly-detail" rows="5">
+                      <textarea
+                        name="isErrorFreePartlyDetail"
+                        id="is-error-free-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -156,7 +168,14 @@ ${Match.valueTags(form, {
                       <label for="is-error-free-no-detail" class="textarea"
                         >${t('relativelyErrorFreeNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isErrorFreeNoDetail" id="is-error-free-no-detail" rows="5">
+                      <textarea
+                        name="isErrorFreeNoDetail"
+                        id="is-error-free-no-detail"
+                        placeholder=" "
+                        =" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>

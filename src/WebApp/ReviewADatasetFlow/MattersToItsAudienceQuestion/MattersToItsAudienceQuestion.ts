@@ -87,6 +87,8 @@ export const MattersToItsAudienceQuestion = ({
                       <textarea
                         name="mattersToItsAudienceVeryConsequentialDetail"
                         id="matters-to-its-audience-very-consequential-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -133,6 +135,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="mattersToItsAudienceSomewhatConsequentialDetail"
                         id="matters-to-its-audience-somewhat-consequential-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -177,6 +181,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="mattersToItsAudienceNotConsequentialDetail"
                         id="matters-to-its-audience-not-consequential-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {

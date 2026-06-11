@@ -17,7 +17,7 @@ export const createFormPage = (researchInterests: Option.Option<ResearchInterest
       <form method="post" action="${format(changeResearchInterestsMatch.formatter, {})}" novalidate>
         <h1><label for="research-interests">${translate(locale, 'my-details', 'whatResearchInterests')()}</label></h1>
 
-        <textarea name="researchInterests" id="research-interests" rows="5">
+        <textarea name="researchInterests" id="research-interests" placeholder=" " dir="auto" rows="5">
 ${match(researchInterests)
             .with({ value: { value: P.select() } }, rawHtml)
             .when(Option.isNone, () => '')

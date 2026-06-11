@@ -233,7 +233,14 @@ const form = ({
     <input type="hidden" name="page" value="1" />
     <div>
       <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
-      <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
+      <input
+        type="text"
+        placeholder=" "
+        dir="auto"
+        name="query"
+        id="query"
+        ${query === undefined ? '' : html`value="${query}"`}
+      />
     </div>
     <div>
       <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>

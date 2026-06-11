@@ -21,6 +21,8 @@ export const createFormPage = (languages: Option.Option<Languages>, locale: Supp
           name="languages"
           id="languages"
           type="text"
+          placeholder=" "
+          dir="auto"
           ${match(languages)
             .with({ value: { value: P.select() } }, languages => html`value="${languages}"`)
             .when(Option.isNone, () => '')

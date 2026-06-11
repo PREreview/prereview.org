@@ -79,7 +79,13 @@ export const IsReadyToBeSharedQuestion = ({
                       <label for="is-ready-to-be-shared-yes-detail" class="textarea"
                         >${t('readyToBeSharedYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isReadyToBeSharedYesDetail" id="is-ready-to-be-shared-yes-detail" rows="5">
+                      <textarea
+                        name="isReadyToBeSharedYesDetail"
+                        id="is-ready-to-be-shared-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -113,7 +119,13 @@ ${Match.valueTags(form, {
                       <label for="is-ready-to-be-shared-no-detail" class="textarea"
                         >${t('readyToBeSharedNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isReadyToBeSharedNoDetail" id="is-ready-to-be-shared-no-detail" rows="5">
+                      <textarea
+                        name="isReadyToBeSharedNoDetail"
+                        id="is-ready-to-be-shared-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>

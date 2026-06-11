@@ -1763,6 +1763,10 @@ notification-banner {
   color: inherit;
   font: inherit;
 
+  &:placeholder-shown {
+    direction: inherit;
+  }
+
   &:not([hidden]) {
     display: block;
   }

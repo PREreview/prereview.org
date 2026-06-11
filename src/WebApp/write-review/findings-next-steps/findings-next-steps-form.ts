@@ -118,6 +118,8 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
                       <textarea
                         name="findingsNextStepsExceptionallyDetails"
                         id="findings-next-steps-exceptionally-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsExceptionallyDetails)
@@ -151,6 +153,8 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                       <textarea
                         name="findingsNextStepsClearlyInsightfullyDetails"
                         id="findings-next-steps-clearly-insightfully-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsClearlyInsightfullyDetails)
@@ -184,6 +188,8 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                       <textarea
                         name="findingsNextStepsAdequatelyDetails"
                         id="findings-next-steps-adequately-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsAdequatelyDetails)
@@ -217,6 +223,8 @@ ${match(form.findingsNextStepsAdequatelyDetails)
                       <textarea
                         name="findingsNextStepsInsufficientlyDetails"
                         id="findings-next-steps-insufficiently-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsInsufficientlyDetails)
@@ -250,6 +258,8 @@ ${match(form.findingsNextStepsInsufficientlyDetails)
                       <textarea
                         name="findingsNextStepsInadequatelyDetails"
                         id="findings-next-steps-inadequately-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsInadequatelyDetails)

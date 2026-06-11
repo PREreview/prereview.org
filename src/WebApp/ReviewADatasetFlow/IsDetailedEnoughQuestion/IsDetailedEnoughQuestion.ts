@@ -81,7 +81,13 @@ export const IsDetailedEnoughQuestion = ({
                       <label for="is-detailed-enough-yes-detail" class="textarea"
                         >${t('granularEnoughYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isDetailedEnoughYesDetail" id="is-detailed-enough-yes-detail" rows="5">
+                      <textarea
+                        name="isDetailedEnoughYesDetail"
+                        id="is-detailed-enough-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -117,7 +123,13 @@ ${Match.valueTags(form, {
                       <label for="is-detailed-enough-partly-detail" class="textarea"
                         >${t('granularEnoughPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isDetailedEnoughPartlyDetail" id="is-detailed-enough-partly-detail" rows="5">
+                      <textarea
+                        name="isDetailedEnoughPartlyDetail"
+                        id="is-detailed-enough-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -154,7 +166,13 @@ ${Match.valueTags(form, {
                       <label for="is-detailed-enough-no-detail" class="textarea"
                         >${t('granularEnoughNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isDetailedEnoughNoDetail" id="is-detailed-enough-no-detail" rows="5">
+                      <textarea
+                        name="isDetailedEnoughNoDetail"
+                        id="is-detailed-enough-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>

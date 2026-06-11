@@ -75,6 +75,8 @@ Minerva McGonagall mcgonagall@example.com
           <textarea
             name="authors"
             id="authors"
+            placeholder=" "
+            dir="auto"
             rows="10"
             spellcheck="false"
             aria-describedby="authors-tip"

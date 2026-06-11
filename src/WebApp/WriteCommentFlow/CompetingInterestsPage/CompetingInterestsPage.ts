@@ -189,6 +189,8 @@ export const CompetingInterestsPage = ({
                       <textarea
                         name="competingInterestsDetails"
                         id="competing-interests-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                         ${rawHtml(
                           form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)

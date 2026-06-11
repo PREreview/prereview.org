@@ -122,6 +122,8 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
                       <textarea
                         name="resultsSupportedStronglySupportedDetails"
                         id="results-supported-strongly-supported-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.resultsSupportedStronglySupportedDetails)
@@ -155,6 +157,8 @@ ${match(form.resultsSupportedStronglySupportedDetails)
                       <textarea
                         name="resultsSupportedWellSupportedDetails"
                         id="results-supported-well-supported-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.resultsSupportedWellSupportedDetails)
@@ -187,7 +191,13 @@ ${match(form.resultsSupportedWellSupportedDetails)
                         >${t('conclusionsNeitherSupportedNorUnsupportedWhy')()}</label
                       >
 
-                      <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
+                      <textarea
+                        name="resultsSupportedNeutralDetails"
+                        id="results-supported-neutral-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.resultsSupportedNeutralDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -221,6 +231,8 @@ ${match(form.resultsSupportedNeutralDetails)
                       <textarea
                         name="resultsSupportedPartiallySupportedDetails"
                         id="results-supported-partially-supported-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.resultsSupportedPartiallySupportedDetails)
@@ -254,6 +266,8 @@ ${match(form.resultsSupportedPartiallySupportedDetails)
                       <textarea
                         name="resultsSupportedNotSupportedDetails"
                         id="results-supported-not-supported-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.resultsSupportedNotSupportedDetails)

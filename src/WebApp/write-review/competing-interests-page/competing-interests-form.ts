@@ -153,6 +153,8 @@ export function competingInterestsForm(
                       <textarea
                         name="competingInterestsDetails"
                         id="competing-interests-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                         ${rawHtml(
                           E.isLeft(form.competingInterestsDetails)

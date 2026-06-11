@@ -62,6 +62,8 @@ export const AddInvitationToAppearPage = ({
             name="name"
             id="name"
             type="text"
+            placeholder=" "
+            dir="auto"
             spellcheck="false"
             aria-describedby="name-tip"
             ${pipe(

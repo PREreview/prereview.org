@@ -100,7 +100,13 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
                     <div>
                       <label for="should-read-yes-details" class="textarea">${t('wouldRecommendYesHow')()}</label>
 
-                      <textarea name="shouldReadYesDetails" id="should-read-yes-details" rows="5">
+                      <textarea
+                        name="shouldReadYesDetails"
+                        id="should-read-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.shouldReadYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -127,7 +133,13 @@ ${match(form.shouldReadYesDetails)
                         >${t('wouldRecommendYesImprovedWhy')()}</label
                       >
 
-                      <textarea name="shouldReadYesButDetails" id="should-read-yes-but-details" rows="5">
+                      <textarea
+                        name="shouldReadYesButDetails"
+                        id="should-read-yes-but-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.shouldReadYesButDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -152,7 +164,14 @@ ${match(form.shouldReadYesButDetails)
                     <div>
                       <label for="should-read-no-details" class="textarea">${t('wouldRecommendNoWhy')()}</label>
 
-                      <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">
+                      <textarea
+                        name="shouldReadNoDetails"
+                        id="should-read-no-details"
+                        placeholder=" "
+                        =" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.shouldReadNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

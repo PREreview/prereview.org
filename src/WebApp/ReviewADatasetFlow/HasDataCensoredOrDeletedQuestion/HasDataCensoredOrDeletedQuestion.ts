@@ -88,6 +88,8 @@ export const HasDataCensoredOrDeletedQuestion = ({
                       <textarea
                         name="hasDataCensoredOrDeletedYesDetail"
                         id="has-data-censored-or-deleted-yes-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -129,6 +131,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="hasDataCensoredOrDeletedPartlyDetail"
                         id="has-data-censored-or-deleted-partly-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -170,6 +174,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="hasDataCensoredOrDeletedNoDetail"
                         id="has-data-censored-or-deleted-no-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {

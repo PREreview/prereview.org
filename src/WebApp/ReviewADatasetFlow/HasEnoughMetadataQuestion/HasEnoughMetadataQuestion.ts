@@ -81,7 +81,13 @@ export const HasEnoughMetadataQuestion = ({
                       <label for="has-enough-metadata-yes-detail" class="textarea"
                         >${t('enoughMetadataYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasEnoughMetadataYesDetail" id="has-enough-metadata-yes-detail" rows="5">
+                      <textarea
+                        name="hasEnoughMetadataYesDetail"
+                        id="has-enough-metadata-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -117,7 +123,13 @@ ${Match.valueTags(form, {
                       <label for="has-enough-metadata-partly-detail" class="textarea"
                         >${t('enoughMetadataPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasEnoughMetadataPartlyDetail" id="has-enough-metadata-partly-detail" rows="5">
+                      <textarea
+                        name="hasEnoughMetadataPartlyDetail"
+                        id="has-enough-metadata-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -154,7 +166,13 @@ ${Match.valueTags(form, {
                       <label for="has-enough-metadata-no-detail" class="textarea"
                         >${t('enoughMetadataNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasEnoughMetadataNoDetail" id="has-enough-metadata-no-detail" rows="5">
+                      <textarea
+                        name="hasEnoughMetadataNoDetail"
+                        id="has-enough-metadata-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>

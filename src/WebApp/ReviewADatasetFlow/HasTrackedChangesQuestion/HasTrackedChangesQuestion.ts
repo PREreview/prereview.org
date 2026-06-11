@@ -81,7 +81,13 @@ export const HasTrackedChangesQuestion = ({
                       <label for="has-tracked-changes-yes-detail" class="textarea"
                         >${t('trackChangesYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasTrackedChangesYesDetail" id="has-tracked-changes-yes-detail" rows="5">
+                      <textarea
+                        name="hasTrackedChangesYesDetail"
+                        id="has-tracked-changes-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -117,7 +123,13 @@ ${Match.valueTags(form, {
                       <label for="has-tracked-changes-partly-detail" class="textarea"
                         >${t('trackChangesPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasTrackedChangesPartlyDetail" id="has-tracked-changes-partly-detail" rows="5">
+                      <textarea
+                        name="hasTrackedChangesPartlyDetail"
+                        id="has-tracked-changes-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -153,7 +165,13 @@ ${Match.valueTags(form, {
                       <label for="has-tracked-changes-no-detail" class="textarea"
                         >${t('trackChangesNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasTrackedChangesNoDetail" id="has-tracked-changes-no-detail" rows="5">
+                      <textarea
+                        name="hasTrackedChangesNoDetail"
+                        id="has-tracked-changes-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>

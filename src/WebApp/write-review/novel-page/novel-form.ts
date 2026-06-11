@@ -106,7 +106,7 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
                         >${t('advanceKnowledgeHighlyLikelyWhy')()}</label
                       >
 
-                      <textarea name="novelHighlyDetails" id="novel-highly-details" rows="5">
+                      <textarea name="novelHighlyDetails" id="novel-highly-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelHighlyDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -135,7 +135,13 @@ ${match(form.novelHighlyDetails)
                         >${t('advanceKnowledgeSomewhatLikelyWhy')()}</label
                       >
 
-                      <textarea name="novelSubstantialDetails" id="novel-substantial-details" rows="5">
+                      <textarea
+                        name="novelSubstantialDetails"
+                        id="novel-substantial-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.novelSubstantialDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -164,7 +170,7 @@ ${match(form.novelSubstantialDetails)
                         >${t('advanceKnowledgeModeratelyLikelyWhy')()}</label
                       >
 
-                      <textarea name="novelSomeDetails" id="novel-some-details" rows="5">
+                      <textarea name="novelSomeDetails" id="novel-some-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelSomeDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -191,7 +197,14 @@ ${match(form.novelSomeDetails)
                     <div>
                       <label for="novel-limited-details" class="textarea">${t('advanceKnowledgeNotLikelyWhy')()}</label>
 
-                      <textarea name="novelLimitedDetails" id="novel-limited-details" rows="5">
+                      <textarea
+                        name="novelLimitedDetails"
+                        id="novel-limited-details"
+                        placeholder=" "
+                        =" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.novelLimitedDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -218,7 +231,7 @@ ${match(form.novelLimitedDetails)
                     <div>
                       <label for="novel-no-details" class="textarea">${t('advanceKnowledgeNotAtAllLikelyWhy')()}</label>
 
-                      <textarea name="novelNoDetails" id="novel-no-details" rows="5">
+                      <textarea name="novelNoDetails" id="novel-no-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

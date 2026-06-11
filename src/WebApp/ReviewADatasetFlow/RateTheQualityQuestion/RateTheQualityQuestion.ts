@@ -76,7 +76,13 @@ export const RateTheQualityQuestion = ({
                       <label for="rate-the-quality-excellent-detail" class="textarea"
                         >${t('excellentWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="qualityRatingExcellentDetail" id="rate-the-quality-excellent-detail" rows="5">
+                      <textarea
+                        name="qualityRatingExcellentDetail"
+                        id="rate-the-quality-excellent-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -113,7 +119,13 @@ ${Match.valueTags(form, {
                       <label for="rate-the-quality-fair-detail" class="textarea"
                         >${t('fairWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="qualityRatingFairDetail" id="rate-the-quality-fair-detail" rows="5">
+                      <textarea
+                        name="qualityRatingFairDetail"
+                        id="rate-the-quality-fair-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -150,7 +162,13 @@ ${Match.valueTags(form, {
                       <label for="rate-the-quality-poor-detail" class="textarea"
                         >${t('poorWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="qualityRatingPoorDetail" id="rate-the-quality-poor-detail" rows="5">
+                      <textarea
+                        name="qualityRatingPoorDetail"
+                        id="rate-the-quality-poor-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>

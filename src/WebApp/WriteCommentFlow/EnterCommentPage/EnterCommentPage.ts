@@ -83,13 +83,18 @@ export const EnterCommentPage = ({
           <html-editor>
             ${pipe(
               Match.value(form),
-              Match.tag('EmptyForm', () => html`<textarea id="comment" name="comment" rows="20"></textarea>`),
+              Match.tag(
+                'EmptyForm',
+                () => html`<textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20"></textarea>`,
+              ),
               Match.tag('InvalidForm', form =>
                 Either.match(form.comment, {
                   onLeft: () => html`
                     <textarea
                       id="comment"
                       name="comment"
+                      placeholder=" "
+                      dir="auto"
                       rows="20"
                       aria-invalid="true"
                       aria-errormessage="comment-error"
@@ -101,7 +106,7 @@ export const EnterCommentPage = ({
               Match.tag(
                 'CompletedForm',
                 form => html`
-                  <textarea id="comment" name="comment" rows="20">
+                  <textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20">
 ${Turndown.turndown(form.comment.toString())}</textarea
                   >
                   <textarea hidden disabled>${form.comment}</textarea>
