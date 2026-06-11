@@ -1,4 +1,4 @@
-FROM node:24.15.0-trixie-slim AS node
+FROM node:24.16.0-trixie-slim AS node
 ENV NODE_OPTIONS="--unhandled-rejections=strict --enable-source-maps"
 WORKDIR /app
 
