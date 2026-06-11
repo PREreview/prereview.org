@@ -17,9 +17,9 @@ check: format lint-ts lint-css typecheck test-fast
 update-incontext-locale:
 	source .env && crowdin download --language=lol --token=$${CROWDIN_PERSONAL_TOKEN}
 
-src/locales: $(shell find locales -type f)
+src/locales: node_modules $(shell find locales -type f)
 	echo 'building locales'
-	scripts/intlc.sh
+	node scripts/intlc.ts
 	touch src/locales
 
 src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -v assets/locales)

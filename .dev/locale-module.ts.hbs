@@ -1,26 +1,28 @@
 import type { Types } from 'effect'
-{{#locales}}
-  import * as l{{@key}} from './{{module}}/{{.}}.ts'
-{{/locales}}
+{{#each locales}}
+  import * as l{{@key}} from './{{this}}.ts'
+{{/each}}
 
 const translations = {
-{{#locales}}
-  '{{.}}': l{{@key}},
-{{/locales}}
+{{#each locales}}
+  '{{this}}': l{{@key}},
+{{/each}}
 }
 
 type SupportedLocale = keyof typeof translations
 
 export type Translations = {[K in keyof typeof translations['{{defaultLocale}}']]: Types.UnionToIntersection<[]
-{{#realLocales}}
-  & (K extends keyof typeof translations['{{.}}'] ? Parameters<typeof translations['{{.}}'][K]> : [])
-{{/realLocales}}
+{{#each realLocales}}
+  & (K extends keyof typeof translations['{{this}}'] ? Parameters<typeof translations['{{this}}'][K]> : [])
+{{/each}}
 > extends [] ? () => string : (x: Types.Simplify<{}
-{{#realLocales}}
-  & (K extends keyof typeof translations['{{.}}'] ? Parameters<typeof translations['{{.}}'][K]> extends [] ? {} : Parameters<typeof translations['{{.}}'][K]>[0] : {})
-{{/realLocales}}
+{{#each realLocales}}
+  & (K extends keyof typeof translations['{{this}}'] ? Parameters<typeof translations['{{this}}'][K]> extends [] ? {} : Parameters<typeof translations['{{this}}'][K]>[0] : {})
+{{/each}}
 >) => string
 }
+
+
 
 export const translate{{moduleName}} =
   (locale: SupportedLocale) =>

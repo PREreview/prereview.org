@@ -15,7 +15,6 @@ The source code for [prereview.org].
 - [GNU Make]
 - [intlc]
 - [mkcert]
-- [Mo]
 - [Node.js]
 - [pnpm]
 - [Git LFS]
@@ -47,7 +46,6 @@ Once it passes CI, we deploy every commit on the `main` branch to [prereview.org
 [gnu make]: https://www.gnu.org/software/make/
 [intlc]: https://github.com/unsplash/intlc
 [mkcert]: https://github.com/FiloSottile/mkcert
-[mo]: https://github.com/tests-always-included/mo
 [node.js]: https://nodejs.org/
 [pnpm]: https://pnpm.io/
 [prereview.org]: https://prereview.org/

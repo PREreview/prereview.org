@@ -64,6 +64,7 @@ export default defineConfig([
           devDependencies: [
             'assets/**/*.ts',
             'integration/**/*.ts',
+            'scripts/**/*.ts',
             'test/**/*.ts',
             'visual-regression/**/*.ts',
             '*.ts',
