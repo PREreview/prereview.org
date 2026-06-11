@@ -1422,6 +1422,7 @@ label {
   }
 
   & svg {
+    display: block;
     block-size: 100%;
     fill: currentcolor;
   }
