@@ -195,7 +195,7 @@ const title = ({
   const details = Array.append(
     [
       query,
-      field ? getFieldName(field, locale) : undefined,
+      field ? plainText(getFieldName(field, locale)).toString() : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
     translate(locale, 'reviews-page', 'pageNumber')({ page: currentPage }),

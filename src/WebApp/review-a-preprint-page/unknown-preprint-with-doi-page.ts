@@ -1,6 +1,6 @@
 import { Match } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Html, html, plainText } from '../../html.ts'
+import { html, plainText, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { IndeterminatePreprintIdWithDoi } from '../../Preprints/index.ts'
 import { reviewAPreprintMatch } from '../../routes.ts'
