@@ -16,7 +16,7 @@ export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'au
   readonly dataset: Datasets.DatasetTitle
 }
 
-const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
+const visuallyHidden = (s: Html) => html`<span class="visually-hidden">${s}</span>`
 
 export const CheckYourReviewPage = ({
   datasetReviewId,
@@ -74,7 +74,7 @@ export const CheckYourReviewPage = ({
                       <dd>${displayAuthor(author)}</dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}">
-                          ${rawHtml(t('changePublishedName')({ visuallyHidden }))}
+                          ${t('changePublishedName')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -84,7 +84,7 @@ export const CheckYourReviewPage = ({
                       <dd>${Option.getOrElse(review.competingInterests, () => html`<i>${t('noneDeclared')()}</i>`)}</dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeCompetingInterests')({ visuallyHidden }))}
+                          ${t('changeCompetingInterests')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -145,7 +145,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeQualityRating')({ visuallyHidden }))}
+                          ${t('changeQualityRating')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -169,7 +169,7 @@ export const CheckYourReviewPage = ({
                   })}
                   <dd>
                     <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}">
-                      ${rawHtml(t('changeFairAndCare')({ visuallyHidden }))}
+                      ${t('changeFairAndCare')({ visuallyHidden })}
                     </a>
                   </dd>
                 </div>
@@ -194,7 +194,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeEnoughMetadata')({ visuallyHidden }))}
+                          ${t('changeEnoughMetadata')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -223,7 +223,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeTrackChanges')({ visuallyHidden }))}
+                          ${t('changeTrackChanges')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -252,7 +252,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeSignsOfAlteration')({ visuallyHidden }))}
+                          ${t('changeSignsOfAlteration')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -281,7 +281,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeSuitedForPurpose')({ visuallyHidden }))}
+                          ${t('changeSuitedForPurpose')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -310,7 +310,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeSupportsConclusion')({ visuallyHidden }))}
+                          ${t('changeSupportsConclusion')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -339,7 +339,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeGranularEnough')({ visuallyHidden }))}
+                          ${t('changeGranularEnough')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -368,7 +368,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeRelativelyErrorFree')({ visuallyHidden }))}
+                          ${t('changeRelativelyErrorFree')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -397,7 +397,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeHowConsequential')({ visuallyHidden }))}
+                          ${t('changeHowConsequential')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -425,7 +425,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeReadyToBeShared')({ visuallyHidden }))}
+                          ${t('changeReadyToBeShared')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>
@@ -446,7 +446,7 @@ export const CheckYourReviewPage = ({
                       </dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}">
-                          ${rawHtml(t('changeAnythingMissing')({ visuallyHidden }))}
+                          ${t('changeAnythingMissing')({ visuallyHidden })}
                         </a>
                       </dd>
                     </div>

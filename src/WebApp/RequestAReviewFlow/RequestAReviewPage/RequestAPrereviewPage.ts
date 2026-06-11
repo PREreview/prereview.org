@@ -44,20 +44,16 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
 
             <div>
               <p>
-                ${rawHtml(
-                  t(
-                    'request-a-prereview-page',
-                    'whatIsDoiText',
-                  )({
-                    doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`.toString(),
-                    example: html`<q class="select-all" dir="auto" translate="no"
-                      >10.1101/2022.10.06.511170</q
-                    >`.toString(),
-                    exampleUrl: html`<q class="select-all" dir="auto" translate="no"
-                      >https://doi.org/10.1101/2022.10.06.511170</q
-                    >`.toString(),
-                  }),
-                )}
+                ${t(
+                  'request-a-prereview-page',
+                  'whatIsDoiText',
+                )({
+                  doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`,
+                  example: html`<q class="select-all" dir="auto" translate="no">10.1101/2022.10.06.511170</q>`,
+                  exampleUrl: html`<q class="select-all" dir="auto" translate="no"
+                    >https://doi.org/10.1101/2022.10.06.511170</q
+                  >`,
+                })}
               </p>
             </div>
           </details>

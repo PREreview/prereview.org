@@ -33,12 +33,10 @@ export const ReviewThisDatasetPage = ({
           <h2 id="dataset-title" ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</h2>
 
           <div class="byline">
-            ${rawHtml(
-              t('authoredBy')({
-                authors: pipe(dataset.authors, Array.map(Struct.get('name')), formatList(locale)).toString(),
-                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-              }),
-            )}
+            ${t('authoredBy')({
+              authors: pipe(dataset.authors, Array.map(Struct.get('name')), formatList(locale)),
+              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+            })}
           </div>
 
           <dl>
@@ -67,13 +65,9 @@ export const ReviewThisDatasetPage = ({
       </article>
 
       <p>
-        ${rawHtml(
-          t('youCanWriteAPrereview')({
-            dataset: html`<cite ${languageAttributesFor(dataset.title.language)}
-              >${dataset.title.text}</cite
-            >`.toString(),
-          }),
-        )}
+        ${t('youCanWriteAPrereview')({
+          dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`,
+        })}
       </p>
 
       ${Boolean.match(isLoggedIn, {
@@ -88,11 +82,9 @@ export const ReviewThisDatasetPage = ({
 
             <div>
               <p>
-                ${rawHtml(
-                  t('whatIsOrcidId')({
-                    link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString(),
-                  }),
-                )}
+                ${t('whatIsOrcidId')({
+                  link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`,
+                })}
               </p>
             </div>
           </details>

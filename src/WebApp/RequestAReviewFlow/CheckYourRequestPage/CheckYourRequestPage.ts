@@ -1,6 +1,6 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
@@ -9,7 +9,7 @@ import { profileMatch } from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
+const visuallyHidden = (s: Html) => html`<span class="visually-hidden">${s}</span>`
 
 export function CheckYourRequestPage({
   preprint,
@@ -42,7 +42,7 @@ export function CheckYourRequestPage({
                 <dd>${displayAuthor(reviewRequest.persona)}</dd>
                 <dd>
                   <a href="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}"
-                    >${rawHtml(t('changeName')({ visuallyHidden }))}</a
+                    >${t('changeName')({ visuallyHidden })}</a
                   >
                 </dd>
               </div>

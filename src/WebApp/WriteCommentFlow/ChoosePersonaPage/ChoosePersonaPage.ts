@@ -80,16 +80,14 @@ export const ChoosePersonaPage = ({
 
               <div>
                 <p>
-                  ${rawHtml(
-                    translate(
-                      locale,
-                      'write-comment-flow',
-                      'whatIsPseudonymDefinition',
-                    )({
-                      pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
-                      term: text => html`<dfn>${text}</dfn>`.toString(),
-                    }),
-                  )}
+                  ${translate(
+                    locale,
+                    'write-comment-flow',
+                    'whatIsPseudonymDefinition',
+                  )({
+                    pseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
+                    term: text => html`<dfn>${text}</dfn>`,
+                  })}
                 </p>
 
                 <p>${translate(locale, 'write-comment-flow', 'whatIsPseudonymAccountability')()}</p>

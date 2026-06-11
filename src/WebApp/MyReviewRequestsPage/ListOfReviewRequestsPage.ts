@@ -1,5 +1,5 @@
 import { Array } from 'effect'
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -34,29 +34,25 @@ export const ListOfReviewRequestsPage = ({
             <li>
               <article aria-labelledby="request-${index}-title">
                 <h2 id="request-${index}-title" class="visually-hidden">
-                  ${rawHtml(
-                    t(
-                      'requests-list',
-                      'requestTitle',
-                    )({
-                      preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                        >${request.preprint.title}</cite
-                      >`.toString(),
-                    }),
-                  )}
+                  ${t(
+                    'requests-list',
+                    'requestTitle',
+                  )({
+                    preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                      >${request.preprint.title}</cite
+                    >`,
+                  })}
                 </h2>
 
                 <span>
-                  ${rawHtml(
-                    t(
-                      'requests-list',
-                      'requestText',
-                    )({
-                      preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                        >${request.preprint.title}</cite
-                      >`.toString(),
-                    }),
-                  )}</span
+                  ${t(
+                    'requests-list',
+                    'requestText',
+                  )({
+                    preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                      >${request.preprint.title}</cite
+                    >`,
+                  })}</span
                 >
 
                 ${Array.match(request.subfields, {

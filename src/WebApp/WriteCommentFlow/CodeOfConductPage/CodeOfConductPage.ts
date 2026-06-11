@@ -71,15 +71,13 @@ export const CodeOfConductPage = ({
             </legend>
 
             <p id="agree-tip" role="note">
-              ${rawHtml(
-                translate(
-                  locale,
-                  'write-comment-flow',
-                  'codeOfConductTip',
-                )({
-                  link: text => html`<a href="${Routes.CodeOfConduct}">${text}</a>`.toString(),
-                }),
-              )}
+              ${translate(
+                locale,
+                'write-comment-flow',
+                'codeOfConductTip',
+              )({
+                link: text => html`<a href="${Routes.CodeOfConduct}">${text}</a>`,
+              })}
             </p>
 
             <details>

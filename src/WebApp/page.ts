@@ -1,6 +1,6 @@
 import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { type Html, type PlainText, html, rawHtml } from '../html.ts'
+import { type Html, type PlainText, html } from '../html.ts'
 import { languageAttributesFor } from '../Locales.ts'
 import { DefaultLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
@@ -552,30 +552,25 @@ export const page = ({
                 </ul>
 
                 <div class="small">
-                  ${rawHtml(
-                    t(
-                      'footer',
-                      'zenodo',
-                    )({
-                      community: text =>
-                        html`<a href="https://zenodo.org/communities/prereview-reviews/records">${text}</a>`.toString(),
-                      api: text => html`<a href="https://developers.zenodo.org/">${text}</a>`.toString(),
-                    }),
-                  )}
+                  ${t(
+                    'footer',
+                    'zenodo',
+                  )({
+                    community: text =>
+                      html`<a href="https://zenodo.org/communities/prereview-reviews/records">${text}</a>`,
+                    api: text => html`<a href="https://developers.zenodo.org/">${text}</a>`,
+                  })}
                 </div>
               `
             : ''}
 
           <small>
-            ${rawHtml(
-              t(
-                'footer',
-                'copyright',
-              )({
-                link: text =>
-                  html`<a href="https://creativecommons.org/licenses/by/4.0/" rel="license">${text}</a>`.toString(),
-              }),
-            )}
+            ${t(
+              'footer',
+              'copyright',
+            )({
+              link: text => html`<a href="https://creativecommons.org/licenses/by/4.0/" rel="license">${text}</a>`,
+            })}
           </small>
         </footer>
       </body>

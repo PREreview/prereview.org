@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -13,10 +13,10 @@ export const NotAPreprintPage = (locale: SupportedLocale) =>
 
       <p>${translate(locale, 'request-a-prereview-page', 'supportPreprintsFrom')()}</p>
 
-      <p>${rawHtml(translate(locale, 'request-a-prereview-page', 'isAPreprint')({ contact: mailToHelp }))}</p>
+      <p>${translate(locale, 'request-a-prereview-page', 'isAPreprint')({ contact: mailToHelp })}</p>
 
       <a href="${Routes.RequestAReview}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
     `,
   })
 
-const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
+const mailToHelp = (text: Html) => html`<a href="mailto:help@prereview.org">${text}</a>`

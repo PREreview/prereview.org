@@ -1,7 +1,7 @@
 import { Command, FileSystem } from '@effect/platform'
 import { NodeContext, NodeRuntime } from '@effect/platform-node'
 import { pascalCase } from 'case-anything'
-import { Array, Boolean, Console, Effect, Exit, Layer, Record, String, Tuple } from 'effect'
+import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, String, Tuple } from 'effect'
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
@@ -86,7 +86,23 @@ const BuildSrcTarget = Effect.fnUntraced(function* ({
   const rendered = yield* fileSystem.exists(`locales/${locale}/${module}.json`).pipe(
     Effect.andThen(
       Boolean.match({
-        onTrue: () => RunIntlc({ locale, module }),
+        onTrue: () =>
+          RunIntlc({ locale, module }).pipe(
+            Effect.andThen(
+              flow(
+                String.concat(
+                  'import { html, type Html, type PlainText } from "../../html.ts"\nimport type { NonEmptyString } from "../../types/NonEmptyString.ts"\n\n',
+                ),
+                String.replaceAll('=> string', '=> Html'),
+                String.replaceAll('=> `', '=> html`'),
+                String.replaceAll('(`', '(html`'),
+                String.replaceAll('(x: string)', '(x: Html)'),
+                String.replaceAll('return `', 'return html`'),
+                String.replaceAll(': string;', ': Html | NonEmptyString | PlainText | string;'),
+                String.replaceAll(': string ', ': Html | NonEmptyString | PlainText | string '),
+              ),
+            ),
+          ),
         onFalse: () => Effect.succeed('export {}'),
       }),
     ),

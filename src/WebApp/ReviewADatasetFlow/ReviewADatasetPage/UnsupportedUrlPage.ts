@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -15,11 +15,7 @@ export const UnsupportedUrlPage = ({ locale }: { locale: SupportedLocale }) => {
 
       <p>${t('supportDatasetsFrom')()}</p>
 
-      <p>
-        ${rawHtml(
-          t('urlIsForDataset')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
-        )}
-      </p>
+      <p>${t('urlIsForDataset')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}</p>
 
       <p>${t('tryDoi')()}</p>
 

@@ -1,5 +1,5 @@
 import { Either, Match, pipe } from 'effect'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -9,7 +9,7 @@ import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 
-const definition = (text: string) => `<dfn>${text}</dfn>`
+const definition = (text: Html) => html`<dfn>${text}</dfn>`
 
 export const renderChooseYourPersonaPage = ({
   reviewId,
@@ -55,12 +55,10 @@ export const renderChooseYourPersonaPage = ({
 
               <div>
                 <p>
-                  ${rawHtml(
-                    t('prereviewPseudonymExplainer')({
-                      definition,
-                      pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
-                    }),
-                  )}
+                  ${t('prereviewPseudonymExplainer')({
+                    definition,
+                    pseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
+                  })}
                 </p>
 
                 <p>${t('whyUseAPseudonym')()}</p>

@@ -1,5 +1,5 @@
 import { Either, Match, pipe } from 'effect'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix, errorSummary } from '../../../shared-translation-elements.ts'
@@ -36,17 +36,13 @@ export const ReviewADatasetPage = ({
 
             <div>
               <p>
-                ${rawHtml(
-                  t('whatIsDoiText')({
-                    doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`.toString(),
-                    example: html`<q class="select-all" dir="auto" translate="no"
-                      >10.5061/dryad.wstqjq2n3</q
-                    >`.toString(),
-                    exampleUrl: html`<q class="select-all" dir="auto" translate="no"
-                      >https://doi.org/10.5061/dryad.wstqjq2n3</q
-                    >`.toString(),
-                  }),
-                )}
+                ${t('whatIsDoiText')({
+                  doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`,
+                  example: html`<q class="select-all" dir="auto" translate="no">10.5061/dryad.wstqjq2n3</q>`,
+                  exampleUrl: html`<q class="select-all" dir="auto" translate="no"
+                    >https://doi.org/10.5061/dryad.wstqjq2n3</q
+                  >`,
+                })}
               </p>
             </div>
           </details>

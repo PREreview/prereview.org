@@ -61,12 +61,10 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
           </h1>
 
           <p id="review-tip" role="note">
-            ${rawHtml(
-              t(
-                'write-review',
-                'writeReviewSupport',
-              )({ link: text => html`<a href="${Routes.Resources}">${text}</a>`.toString() }),
-            )}
+            ${t(
+              'write-review',
+              'writeReviewSupport',
+            )({ link: text => html`<a href="${Routes.Resources}">${text}</a>` })}
           </p>
 
           <details>

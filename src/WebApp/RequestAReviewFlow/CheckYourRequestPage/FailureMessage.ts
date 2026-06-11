@@ -1,10 +1,10 @@
 import { pipe } from 'effect'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-const mailtoHelp = (text: string) => `<a href="mailto:help@prereview.org">${text}</a>`
+const mailtoHelp = (text: Html) => html`<a href="mailto:help@prereview.org">${text}</a>`
 
 export const FailureMessage = (locale: SupportedLocale) => {
   const t = translate(locale, 'request-review-flow')
@@ -19,7 +19,7 @@ export const FailureMessage = (locale: SupportedLocale) => {
 
       <p>${t('pleaseTryAgainLater')()}</p>
 
-      <p>${rawHtml(t('ifProblemPersistsContactUs')({ mailtoHelp }))}</p>
+      <p>${t('ifProblemPersistsContactUs')({ mailtoHelp })}</p>
     `,
   })
 }

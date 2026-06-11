@@ -29,8 +29,8 @@ export const createDatasetReviewsPage = ({
   const t = translate(locale, 'dataset-reviews-page')
 
   return TwoUpPageResponse({
-    title: plainText(t('title')({ dataset: plainText`“${dataset.title.text}”`.toString() })),
-    description: plainText`${rawHtml(t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(), visuallyHidden: identity }))}
+    title: plainText(t('title')({ dataset: plainText`“${dataset.title.text}”` })),
+    description: plainText`${t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)), visuallyHidden: identity })}
     ${
       dataset.abstract
         ? plainText`
@@ -41,23 +41,19 @@ export const createDatasetReviewsPage = ({
         : ''
     }
       `,
-    h1: rawHtml(
-      t('title')({
-        dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`.toString(),
-      }),
-    ),
+    h1: t('title')({
+      dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`,
+    }),
     aside: html`
       <article aria-labelledby="dataset-title">
         <header>
           <h2 id="dataset-title" ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</h2>
 
           <div class="byline">
-            ${rawHtml(
-              t('authoredBy')({
-                authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(),
-                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-              }),
-            )}
+            ${t('authoredBy')({
+              authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)),
+              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+            })}
           </div>
 
           <dl>
@@ -116,16 +112,14 @@ export const createDatasetReviewsPage = ({
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
                         ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
                           ? html`PREreview by ${displayAuthor(datasetReview.author)} et al.`
-                          : rawHtml(t('prereviewTitle')({ author: displayAuthor(datasetReview.author).toString() }))}
+                          : t('prereviewTitle')({ author: displayAuthor(datasetReview.author) })}
                       </h3>
 
                       <div class="byline">
-                        ${rawHtml(
-                          t('prereviewAuthoredBy')({
-                            author: authorList(datasetReview, locale).toString(),
-                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                          }),
-                        )}
+                        ${t('prereviewAuthoredBy')({
+                          author: authorList(datasetReview, locale),
+                          visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                        })}
                       </div>
                     </header>
 
@@ -135,12 +129,10 @@ export const createDatasetReviewsPage = ({
                             <span class="visually-hidden"
                               >the PREreview by ${displayAuthor(datasetReview.author)} et al.</span
                             >`
-                        : rawHtml(
-                            t('readPrereview')({
-                              author: displayAuthor(datasetReview.author).toString(),
-                              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                            }),
-                          )}
+                        : t('readPrereview')({
+                            author: displayAuthor(datasetReview.author),
+                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                          })}
                     </a>
                   </article>
                 </li>

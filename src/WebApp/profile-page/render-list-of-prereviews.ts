@@ -40,62 +40,60 @@ export function renderListOfPrereviews(
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${rawHtml(
-                      prereview.club
-                        ? translate(
-                            locale,
-                            'reviews-list',
-                            'clubReviewText',
-                          )({
-                            club: html`<b dir="auto">${getClubName(prereview.club)}</b>`.toString(),
-                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                            reviewers: pipe(
-                              prereview.reviewers.named,
-                              Array.appendAll(
-                                prereview.reviewers.anonymous > 0
-                                  ? [
-                                      translate(
-                                        locale,
-                                        'reviews-list',
-                                        'otherAuthors',
-                                      )({ number: prereview.reviewers.anonymous }),
-                                    ]
-                                  : [],
-                              ),
-                              Array.map(name => html`<b dir="auto">${name}</b>`),
-                              formatList(locale),
-                            ).toString(),
-                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                              >${prereview.preprint.title}</cite
-                            >`.toString(),
-                          })
-                        : translate(
-                            locale,
-                            'reviews-list',
-                            'reviewText',
-                          )({
-                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                            reviewers: pipe(
-                              prereview.reviewers.named,
-                              Array.appendAll(
-                                prereview.reviewers.anonymous > 0
-                                  ? [
-                                      translate(
-                                        locale,
-                                        'reviews-list',
-                                        'otherAuthors',
-                                      )({ number: prereview.reviewers.anonymous }),
-                                    ]
-                                  : [],
-                              ),
-                              Array.map(name => html`<b dir="auto">${name}</b>`),
-                              formatList(locale),
-                            ).toString(),
-                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                              >${prereview.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                    )}
+                    ${prereview.club
+                      ? translate(
+                          locale,
+                          'reviews-list',
+                          'clubReviewText',
+                        )({
+                          club: html`<b dir="auto">${getClubName(prereview.club)}</b>`,
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            Array.map(name => html`<b dir="auto">${name}</b>`),
+                            formatList(locale),
+                          ),
+                          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                            >${prereview.preprint.title}</cite
+                          >`,
+                        })
+                      : translate(
+                          locale,
+                          'reviews-list',
+                          'reviewText',
+                        )({
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            Array.map(name => html`<b dir="auto">${name}</b>`),
+                            formatList(locale),
+                          ),
+                          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                            >${prereview.preprint.title}</cite
+                          >`,
+                        })}
                   </a>
 
                   ${prereview.subfields.length > 0
@@ -124,18 +122,16 @@ export function renderListOfPrereviews(
                     ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
                       ? html`${authorList(prereview, locale)} reviewed
                           <cite ${languageAttributesFor(prereview.dataset.language)}>${prereview.dataset.title}</cite>`
-                      : rawHtml(
-                          translate(
-                            locale,
-                            'dataset-reviews-list',
-                            'reviewText',
-                          )({
-                            reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`.toString(),
-                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                              >${prereview.dataset.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
+                      : translate(
+                          locale,
+                          'dataset-reviews-list',
+                          'reviewText',
+                        )({
+                          reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                          dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                            >${prereview.dataset.title}</cite
+                          >`,
+                        })}
                   </a>
 
                   <dl>

@@ -1,10 +1,10 @@
 import { pipe } from 'effect'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-const mailToHelpLink = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
+const mailToHelpLink = (text: Html) => html`<a href="mailto:help@prereview.org">${text}</a>`
 
 export const failureMessage = (locale: SupportedLocale) => {
   const t = translate(locale, 'author-invite-flow')
@@ -18,7 +18,7 @@ export const failureMessage = (locale: SupportedLocale) => {
 
       <p>${t('comeBackLater')()}</p>
 
-      <p>${pipe(t('getInTouch')({ link: mailToHelpLink }), rawHtml)}</p>
+      <p>${t('getInTouch')({ link: mailToHelpLink })}</p>
     `,
   })
 }

@@ -49,7 +49,7 @@ export const createFormPage = ({
               ? html`
                   <div class="error-message" id="career-stage-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${rawHtml(translate(locale, 'my-details', 'selectCareerStageError')())}
+                    ${translate(locale, 'my-details', 'selectCareerStageError')()}
                   </div>
                 `
               : ''}

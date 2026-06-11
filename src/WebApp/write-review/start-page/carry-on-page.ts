@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
@@ -7,8 +7,8 @@ import { preprintReviewsMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 import { nextFormMatch, type Form } from '../form.ts'
 
-const cite = (lang: PreprintTitle['language']) => (text: string) =>
-  `<cite ${languageAttributesFor(lang).toString()}>${text}</cite>`
+const cite = (lang: PreprintTitle['language']) => (text: Html) =>
+  html`<cite ${languageAttributesFor(lang)}>${text}</cite>`
 
 export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: SupportedLocale) => {
   const t = translate(locale)
@@ -23,12 +23,10 @@ export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: Support
       <h1>${t('write-review', 'writeAPrereview')()}</h1>
 
       <p>
-        ${rawHtml(
-          t(
-            'write-review',
-            'asYouHaveAlreadyStarted',
-          )({ preprintTitle: preprint.title.toString(), cite: cite(preprint.language) }),
-        )}
+        ${t(
+          'write-review',
+          'asYouHaveAlreadyStarted',
+        )({ preprintTitle: preprint.title, cite: cite(preprint.language) })}
       </p>
 
       <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"

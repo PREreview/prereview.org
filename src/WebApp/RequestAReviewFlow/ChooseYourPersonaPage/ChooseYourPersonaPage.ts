@@ -1,6 +1,6 @@
 import { Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
@@ -11,7 +11,7 @@ import * as StatusCodes from '../../../StatusCodes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { ChooseYourPersonaForm, InvalidForm } from './ChooseYourPersonaForm.ts'
 
-const definition = (text: string) => `<dfn>${text}</dfn>`
+const definition = (text: Html) => html`<dfn>${text}</dfn>`
 
 export function ChooseYourPersonaPage({
   form,
@@ -56,12 +56,10 @@ export function ChooseYourPersonaPage({
 
               <div>
                 <p>
-                  ${rawHtml(
-                    t('prereviewPseudonymExplainer')({
-                      definition,
-                      pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
-                    }),
-                  )}
+                  ${t('prereviewPseudonymExplainer')({
+                    definition,
+                    pseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
+                  })}
                 </p>
 
                 <p>${t('whyUseAPseudonym')()}</p>

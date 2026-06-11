@@ -119,11 +119,7 @@ export function createPage({
       ${Array.match(prereviews, {
         onEmpty: () => html`
           <div class="inset">
-            <p>
-              ${rawHtml(
-                translate(locale, 'club-profile-page', 'noResults')({ name: html`<bdi>${club.name}</bdi>`.toString() }),
-              )}
-            </p>
+            <p>${translate(locale, 'club-profile-page', 'noResults')({ name: html`<bdi>${club.name}</bdi>` })}</p>
 
             <p>${translate(locale, 'club-profile-page', 'appearHere')()}</p>
           </div>
@@ -135,37 +131,32 @@ export function createPage({
                 <li>
                   <article>
                     <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                      ${rawHtml(
-                        translate(
-                          locale,
-                          'reviews-list',
-                          'reviewText',
-                        )({
-                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                          reviewers: pipe(
-                            prereview.reviewers.named,
-                            Array.appendAll(
-                              prereview.reviewers.anonymous > 0
-                                ? [
-                                    translate(
-                                      locale,
-                                      'reviews-list',
-                                      'otherAuthors',
-                                    )({ number: prereview.reviewers.anonymous }),
-                                  ]
-                                : [],
-                            ),
-                            Array.map(name => html`<b dir="auto">${name}</b>`),
-                            formatList(locale),
-                            list => list.toString(),
+                      ${translate(
+                        locale,
+                        'reviews-list',
+                        'reviewText',
+                      )({
+                        numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                        reviewers: pipe(
+                          prereview.reviewers.named,
+                          Array.appendAll(
+                            prereview.reviewers.anonymous > 0
+                              ? [
+                                  translate(
+                                    locale,
+                                    'reviews-list',
+                                    'otherAuthors',
+                                  )({ number: prereview.reviewers.anonymous }),
+                                ]
+                              : [],
                           ),
-                          preprint: html`
-                            <cite ${languageAttributesFor(prereview.preprint.language)}
-                              >${prereview.preprint.title}</cite
-                            >
-                          `.toString(),
-                        }),
-                      )}
+                          Array.map(name => html`<b dir="auto">${name}</b>`),
+                          formatList(locale),
+                        ),
+                        preprint: html`
+                          <cite ${languageAttributesFor(prereview.preprint.language)}>${prereview.preprint.title}</cite>
+                        `,
+                      })}
                     </a>
 
                     ${prereview.subfields.length > 0

@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -11,13 +11,11 @@ export const createNoPermissionPage = (locale: SupportedLocale): PageResponse =>
       <h1>${translate(locale, 'no-permission-page', 'noPermissionTitle')()}</h1>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'no-permission-page',
-            'shouldHaveAccess',
-          )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
-        )}
+        ${translate(
+          locale,
+          'no-permission-page',
+          'shouldHaveAccess',
+        )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}
       </p>
     `,
   })

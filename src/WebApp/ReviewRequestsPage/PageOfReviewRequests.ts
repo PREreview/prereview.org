@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, rawHtml } from '../../html.ts'
+import { html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -35,32 +35,28 @@ export const PageOfReviewRequests = ({
             <li>
               <article aria-labelledby="request-${index}-title">
                 <h2 id="request-${index}-title" class="visually-hidden">
-                  ${rawHtml(
-                    t(
-                      'requests-list',
-                      'requestTitle',
-                    )({
-                      preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                        >${request.preprint.title}</cite
-                      >`.toString(),
-                    }),
-                  )}
+                  ${t(
+                    'requests-list',
+                    'requestTitle',
+                  )({
+                    preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                      >${request.preprint.title}</cite
+                    >`,
+                  })}
                 </h2>
 
                 <a
                   href="${format(writeReviewMatch.formatter, {
                     id: request.preprint.id,
                   })}"
-                  >${rawHtml(
-                    t(
-                      'requests-list',
-                      'requestText',
-                    )({
-                      preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                        >${request.preprint.title}</cite
-                      >`.toString(),
-                    }),
-                  )}
+                  >${t(
+                    'requests-list',
+                    'requestText',
+                  )({
+                    preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                      >${request.preprint.title}</cite
+                    >`,
+                  })}
                 </a>
 
                 ${request.subfields.length > 0

@@ -143,16 +143,13 @@ function renderContentForOrcidId(
               ? translate(locale, 'profile-page', 'openForRequests')({ name })
               : translate(locale, 'profile-page', 'openForRequestsAnonymous')()}
             ${slackUser
-              ? rawHtml(
-                  translate(
-                    locale,
-                    'profile-page',
-                    'contactSlack',
-                  )({
-                    link: text =>
-                      html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`.toString(),
-                  }),
-                )
+              ? translate(
+                  locale,
+                  'profile-page',
+                  'contactSlack',
+                )({
+                  link: text => html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`,
+                })
               : ''}
           </div>
         `

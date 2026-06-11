@@ -1,5 +1,5 @@
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -33,14 +33,12 @@ export const ReviewPublishedPage = ({
           : ''
         : html`
             <p>
-              ${rawHtml(
-                t('inviteOthers')({
-                  emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-                    ><bdi translate="no">help@prereview.org</bdi
-                    ><span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
-                  >`.toString(),
-                }),
-              )}
+              ${t('inviteOthers')({
+                emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
+                  ><bdi translate="no">help@prereview.org</bdi
+                  ><span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
+                >`,
+              })}
             </p>
           `}
       ${datasetReview.persona === 'public'
@@ -54,31 +52,27 @@ export const ReviewPublishedPage = ({
       <h2>${t('letUsKnowHowItWent')()}</h2>
 
       <p>
-        ${rawHtml(
-          t('scheduleInterview')({
-            link: text =>
-              html`<a
-                href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
-                target="_blank"
-                rel="noopener noreferrer"
-                >${text}<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
-              >`.toString(),
-          }),
-        )}
+        ${t('scheduleInterview')({
+          link: text =>
+            html`<a
+              href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+              target="_blank"
+              rel="noopener noreferrer"
+              >${text}<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
+            >`,
+        })}
       </p>
 
       <p>
-        ${rawHtml(
-          t('feedbackForm')({
-            link: text =>
-              html`<a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
-                >${text}<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
-              >`.toString(),
-          }),
-        )}
+        ${t('feedbackForm')({
+          link: text =>
+            html`<a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              >${text}<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
+            >`,
+        })}
       </p>
 
       <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="button"

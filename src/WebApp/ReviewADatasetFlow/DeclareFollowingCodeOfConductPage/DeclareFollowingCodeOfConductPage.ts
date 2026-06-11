@@ -51,9 +51,7 @@ export const DeclareFollowingCodeOfConductPage = ({
             </legend>
 
             <p id="following-code-of-conduct-tip" role="note">
-              ${rawHtml(
-                t('codeOfConductTip')({ link: text => html`<a href="${Routes.CodeOfConduct}">${text}</a>`.toString() }),
-              )}
+              ${t('codeOfConductTip')({ link: text => html`<a href="${Routes.CodeOfConduct}">${text}</a>` })}
             </p>
 
             <details>

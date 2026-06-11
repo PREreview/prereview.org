@@ -34,10 +34,8 @@ export const createDatasetReviewPage = ({
   const t = translate(locale, 'dataset-review-page')
 
   return PageResponse({
-    title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”`.toString() })),
-    description: plainText(
-      t('authoredBy')({ author: authorList(datasetReview, locale).toString(), visuallyHidden: identity }),
-    ),
+    title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”` })),
+    description: plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
         ><span>${t('backLink')()}</span></a
@@ -47,22 +45,18 @@ export const createDatasetReviewPage = ({
     main: html`
       <header>
         <h1>
-          ${rawHtml(
-            t('structuredReviewTitle')({
-              dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}
-                >${datasetReview.dataset.title}</cite
-              >`.toString(),
-            }),
-          )}
+          ${t('structuredReviewTitle')({
+            dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}
+              >${datasetReview.dataset.title}</cite
+            >`,
+          })}
         </h1>
 
         <div class="byline">
-          ${rawHtml(
-            t('authoredBy')({
-              author: authorList(datasetReview, locale).toString(),
-              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-            }),
-          )}
+          ${t('authoredBy')({
+            author: authorList(datasetReview, locale),
+            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+          })}
         </div>
 
         <dl>

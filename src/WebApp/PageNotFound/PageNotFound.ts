@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -15,13 +15,11 @@ export const createPageNotFound = (locale: SupportedLocale): PageResponse =>
       <p>${translate(locale, 'page-not-found', 'checkEntire')()}</p>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'page-not-found',
-            'contactUs',
-          )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
-        )}
+        ${translate(
+          locale,
+          'page-not-found',
+          'contactUs',
+        )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}
       </p>
     `,
   })

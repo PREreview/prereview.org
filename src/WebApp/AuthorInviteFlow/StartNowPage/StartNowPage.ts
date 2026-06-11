@@ -49,22 +49,18 @@ export const renderStartNowPage = ({
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
-            ${rawHtml(
-              t('structuredReviewTitle')({
-                dataset: html`<cite ${languageAttributesFor(viewModel.dataset.language)}
-                  >${viewModel.dataset.title}</cite
-                >`.toString(),
-              }),
-            )}
+            ${t('structuredReviewTitle')({
+              dataset: html`<cite ${languageAttributesFor(viewModel.dataset.language)}
+                >${viewModel.dataset.title}</cite
+              >`,
+            })}
           </h2>
 
           <div class="byline">
-            ${rawHtml(
-              t('authoredBy')({
-                author: authorList(viewModel, locale).toString(),
-                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-              }),
-            )}
+            ${t('authoredBy')({
+              author: authorList(viewModel, locale),
+              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+            })}
           </div>
 
           <dl>

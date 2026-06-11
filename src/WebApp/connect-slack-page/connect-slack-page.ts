@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import { connectSlackStartMatch } from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -17,13 +17,11 @@ export const connectSlackPage = (locale: SupportedLocale) =>
       <h2>${translate(locale, 'connect-slack-page', 'beforeYouStart')()}</h2>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'connect-slack-page',
-            'needSlackAccount',
-          )({ link: text => html`<a href="https://bit.ly/PREreview-Slack">${text}</a>`.toString() }),
-        )}
+        ${translate(
+          locale,
+          'connect-slack-page',
+          'needSlackAccount',
+        )({ link: text => html`<a href="https://bit.ly/PREreview-Slack">${text}</a>` })}
       </p>
 
       <p>${translate(locale, 'connect-slack-page', 'sendYouToSlack')()}</p>

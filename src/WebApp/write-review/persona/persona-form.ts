@@ -83,12 +83,10 @@ export const personaForm = (
 
               <div>
                 <p>
-                  ${rawHtml(
-                    t('pseudonymIsA')({
-                      term: text => html`<dfn>${text}</dfn>`.toString(),
-                      pseudonym: pseudonymPersona.pseudonym.replace(' ', ' '),
-                    }),
-                  )}
+                  ${t('pseudonymIsA')({
+                    term: text => html`<dfn>${text}</dfn>`,
+                    pseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', ' ')),
+                  })}
                 </p>
 
                 <p>${t('pseudonymAccountability')()}</p>

@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { PhilsciPreprintId } from '../../Preprints/index.ts'
 import { reviewAPreprintMatch } from '../../routes.ts'
@@ -14,24 +14,22 @@ export const createUnknownPhilsciPreprintPage = (preprint: PhilsciPreprintId, lo
       <h1>${translate(locale, 'review-a-preprint', 'doNotKnowPreprint')()}</h1>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'review-a-preprint',
-            'urlCouldBePhilsci',
-          )({
-            url: html`<q class="select-all" dir="auto" translate="no"
-              >https://philsci-archive.pitt.edu/${preprint.value}/</q
-            >`.toString(),
-          }),
-        )}
+        ${translate(
+          locale,
+          'review-a-preprint',
+          'urlCouldBePhilsci',
+        )({
+          url: html`<q class="select-all" dir="auto" translate="no"
+            >https://philsci-archive.pitt.edu/${preprint.value}/</q
+          >`,
+        })}
       </p>
 
       <p>${translate(locale, 'review-a-preprint', 'checkCorrectUrl')()}</p>
 
       <p>${translate(locale, 'review-a-preprint', 'checkPastedUrl')()}</p>
 
-      <p>${rawHtml(translate(locale, 'review-a-preprint', 'urlIsCorrect')({ contact: mailToHelp }))}</p>
+      <p>${translate(locale, 'review-a-preprint', 'urlIsCorrect')({ contact: mailToHelp })}</p>
 
       <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
         >${translate(locale, 'forms', 'backLink')()}</a
@@ -39,4 +37,4 @@ export const createUnknownPhilsciPreprintPage = (preprint: PhilsciPreprintId, lo
     `,
   })
 
-const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
+const mailToHelp = (text: Html) => html`<a href="mailto:help@prereview.org">${text}</a>`
