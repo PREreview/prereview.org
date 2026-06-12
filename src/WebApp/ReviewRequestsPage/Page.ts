@@ -16,7 +16,7 @@ export const title = ({
 
   const details = Array.append(
     [
-      field ? getFieldName(field, locale) : undefined,
+      field ? plainText(getFieldName(field, locale)).toString() : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
     t('pageNumber')({ page: currentPage }),
