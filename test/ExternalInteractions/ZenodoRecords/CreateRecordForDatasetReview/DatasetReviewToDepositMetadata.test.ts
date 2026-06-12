@@ -56,87 +56,87 @@ const cases = [
       description: rawHtml(`
       <dl>
         
-            <dt>How would you rate the quality of this data set?</dt>
+            <dt><span>How would you rate the quality of this data set?</span></dt>
             <dd>
-              Excellent
+              <span>Excellent</span>
             </dd>
             
           
-        <dt>Does this dataset follow FAIR and CARE principles?</dt>
+        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
         <dd>
-          Yes
+          <span>Yes</span>
         </dd>
         
         
-            <dt>Does the dataset have enough metadata?</dt>
+            <dt><span>Does the dataset have enough metadata?</span></dt>
             <dd>
-              Partly
+              <span>Partly</span>
             </dd>
             
           
         
-            <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
+            <dt><span>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</span></dt>
             <dd>
-              No
+              <span>No</span>
             </dd>
             
           
         
-            <dt>Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?</dt>
+            <dt><span>Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?</span></dt>
             <dd>
-              I don’t know
+              <span>I don’t know</span>
             </dd>
             
           
         
-            <dt>Is the dataset well-suited to support its stated research purpose?</dt>
+            <dt><span>Is the dataset well-suited to support its stated research purpose?</span></dt>
             <dd>
-              Yes
+              <span>Yes</span>
             </dd>
             
           
         
-            <dt>Does this dataset support the researcher’s stated conclusions?</dt>
+            <dt><span>Does this dataset support the researcher’s stated conclusions?</span></dt>
             <dd>
-              Partly
+              <span>Partly</span>
             </dd>
             
           
         
-            <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
+            <dt><span>Is the dataset granular enough to be a reliable standard of measurement?</span></dt>
             <dd>
-              No
+              <span>No</span>
             </dd>
             
           
         
-            <dt>Is the dataset relatively error-free?</dt>
+            <dt><span>Is the dataset relatively error-free?</span></dt>
             <dd>
-              I don’t know
+              <span>I don’t know</span>
             </dd>
             
           
         
-            <dt>Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?</dt>
+            <dt><span>Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?</span></dt>
             <dd>
-              Very consequential
+              <span>Very consequential</span>
             </dd>
             
           
         
-            <dt>Is this dataset ready to be shared?</dt>
+            <dt><span>Is this dataset ready to be shared?</span></dt>
             <dd>
-              Yes
+              <span>Yes</span>
             </dd>
             
           
         
-            <dt>What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?</dt>
+            <dt><span>What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?</span></dt>
             <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
           
       </dl>
 
-      <h2>Competing interests</h2>
+      <h2><span>Competing interests</span></h2>
 
       <p>
         Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
@@ -238,87 +238,87 @@ const cases = [
       description: rawHtml(`
       <dl>
         
-            <dt>How would you rate the quality of this data set?</dt>
+            <dt><span>How would you rate the quality of this data set?</span></dt>
             <dd>
-              Excellent
+              <span>Excellent</span>
             </dd>
             <dd>Some detail about the excellent rating.</dd>
           
-        <dt>Does this dataset follow FAIR and CARE principles?</dt>
+        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
         <dd>
-          Yes
+          <span>Yes</span>
         </dd>
         <dd>Some detail about the yes.</dd>
         
-            <dt>Does the dataset have enough metadata?</dt>
+            <dt><span>Does the dataset have enough metadata?</span></dt>
             <dd>
-              Partly
+              <span>Partly</span>
             </dd>
             <dd>Some detail about the partly.</dd>
           
         
-            <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
+            <dt><span>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</span></dt>
             <dd>
-              No
+              <span>No</span>
             </dd>
             <dd>Some detail about the no.</dd>
           
         
-            <dt>Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?</dt>
+            <dt><span>Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?</span></dt>
             <dd>
-              I don’t know
+              <span>I don’t know</span>
             </dd>
             <dd>Some detail about the unsure.</dd>
           
         
-            <dt>Is the dataset well-suited to support its stated research purpose?</dt>
+            <dt><span>Is the dataset well-suited to support its stated research purpose?</span></dt>
             <dd>
-              Yes
+              <span>Yes</span>
             </dd>
             <dd>Some detail about the yes.</dd>
           
         
-            <dt>Does this dataset support the researcher’s stated conclusions?</dt>
+            <dt><span>Does this dataset support the researcher’s stated conclusions?</span></dt>
             <dd>
-              Partly
+              <span>Partly</span>
             </dd>
             <dd>Some detail about the partly.</dd>
           
         
-            <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
+            <dt><span>Is the dataset granular enough to be a reliable standard of measurement?</span></dt>
             <dd>
-              No
+              <span>No</span>
             </dd>
             <dd>Some detail about the no.</dd>
           
         
-            <dt>Is the dataset relatively error-free?</dt>
+            <dt><span>Is the dataset relatively error-free?</span></dt>
             <dd>
-              I don’t know
+              <span>I don’t know</span>
             </dd>
             <dd>Some detail about the unsure.</dd>
           
         
-            <dt>Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?</dt>
+            <dt><span>Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?</span></dt>
             <dd>
-              Very consequential
+              <span>Very consequential</span>
             </dd>
             <dd>Some detail about the very-consequential.</dd>
           
         
-            <dt>Is this dataset ready to be shared?</dt>
+            <dt><span>Is this dataset ready to be shared?</span></dt>
             <dd>
-              Yes
+              <span>Yes</span>
             </dd>
             <dd>Some detail about the yes.</dd>
           
         
-            <dt>What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?</dt>
+            <dt><span>What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?</span></dt>
             <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
           
       </dl>
 
-      <h2>Competing interests</h2>
+      <h2><span>Competing interests</span></h2>
 
       <p>
         Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
@@ -377,9 +377,9 @@ const cases = [
       description: rawHtml(`
       <dl>
         
-        <dt>Does this dataset follow FAIR and CARE principles?</dt>
+        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
         <dd>
-          Yes
+          <span>Yes</span>
         </dd>
         
         
@@ -394,10 +394,10 @@ const cases = [
         
       </dl>
 
-      <h2>Competing interests</h2>
+      <h2><span>Competing interests</span></h2>
 
       <p>
-        The author declares that they have no competing interests.
+        <span>The author declares that they have no competing interests.</span>
       </p>
     `),
       title: plainText(
