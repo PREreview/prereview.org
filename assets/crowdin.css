@@ -10,6 +10,11 @@
 .crowdin_jipt_untranslated {
   position: relative;
   z-index: 1000;
+
+  .jipt-highlight & {
+    outline-offset: 1px !important;
+    outline-width: 2px !important;
+  }
 }
 
 .crowdin_phrase:only-child {

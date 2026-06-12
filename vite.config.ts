@@ -87,7 +87,7 @@ export default defineConfig(({ mode }) => ({
     cssCharsetPlugin(),
     purgeCssPlugin({
       content: [...globSync('assets/**/*.ts'), ...globSync('src/**/*.ts')],
-      safelist: ['contenteditable', /^crowdin_/, 'dir', /^:/],
+      safelist: ['contenteditable', /^crowdin_/, 'dir', /^jipt-/, /^:/],
       variables: true,
     }),
     prereviewManifestPlugin({
