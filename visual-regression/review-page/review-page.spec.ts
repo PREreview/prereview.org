@@ -309,7 +309,7 @@ const comment2 = {
   doi: Doi('10.5281/zenodo.10779312'),
   language: 'is',
   license: 'CC-BY-4.0',
-  id: 10779310,
+  id: 10779311,
   published: Temporal.PlainDate.from('2024-04-15'),
   text: html`<p>Þetta er athugasemd.</p>`,
 } satisfies Comment
