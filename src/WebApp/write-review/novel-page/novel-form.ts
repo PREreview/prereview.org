@@ -201,7 +201,6 @@ ${match(form.novelSomeDetails)
                         name="novelLimitedDetails"
                         id="novel-limited-details"
                         placeholder=" "
-                        =" "
                         dir="auto"
                         rows="5"
                       >

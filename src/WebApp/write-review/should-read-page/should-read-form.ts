@@ -168,7 +168,6 @@ ${match(form.shouldReadYesButDetails)
                         name="shouldReadNoDetails"
                         id="should-read-no-details"
                         placeholder=" "
-                        =" "
                         dir="auto"
                         rows="5"
                       >

@@ -91,7 +91,6 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
                     id="review"
                     name="review"
                     placeholder=" "
-                    =" "
                     dir="auto"
                     rows="20"
                     aria-describedby="review-tip"

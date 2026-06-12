@@ -172,7 +172,6 @@ ${Match.valueTags(form, {
                         name="isErrorFreeNoDetail"
                         id="is-error-free-no-detail"
                         placeholder=" "
-                        =" "
                         dir="auto"
                         rows="5"
                       >
