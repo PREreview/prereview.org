@@ -28,7 +28,7 @@ export const PublishedPage = ({
             locale,
             'write-comment-flow',
             'publishedYourDoi',
-          )({ doi: html`<div><strong class="doi" dir="auto" translate="no">${doi}</strong></div>` })}
+          )({ doi: html`<br /><strong class="doi" dir="auto" translate="no">${doi}</strong>` })}
         </div>
       </div>
 

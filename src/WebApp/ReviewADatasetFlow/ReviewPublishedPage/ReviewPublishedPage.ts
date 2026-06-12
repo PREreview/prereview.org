@@ -20,8 +20,8 @@ export const ReviewPublishedPage = ({
         <h1>${t('prereviewPublished')()}</h1>
 
         <div>
-          ${t('yourDoi')()}
-          <div><strong class="doi" dir="auto" translate="no">${datasetReview.doi}</strong></div>
+          ${t('yourDoi')()} <br />
+          <strong class="doi" dir="auto" translate="no">${datasetReview.doi}</strong>
         </div>
       </div>
 
