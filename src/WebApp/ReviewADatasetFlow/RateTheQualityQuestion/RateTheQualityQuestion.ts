@@ -144,7 +144,6 @@ ${Match.valueTags(form, {
                     <input
                       name="qualityRating"
                       type="radio"
-                      f
                       value="poor"
                       aria-describedby="rate-the-quality-tip-poor"
                       aria-controls="rate-the-quality-poor-control"
