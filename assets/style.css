@@ -496,7 +496,7 @@ body > footer {
   &:any-link {
     color: inherit;
 
-    :not(.byline) > & {
+    :not(.byline > span) > & {
       &:not(:hover) {
         text-decoration-line: none;
       }

@@ -33,7 +33,8 @@ export const translate{{moduleName}} =
   <K extends keyof Translations>(key: K): Translations[K] => {
     if (key in translations[locale]) {
       // @ts-ignore
-      return translations[locale][key]
+      {{#if html}}return args => html`<span>${(translations[locale][key](args))}</span>`
+      {{else}}return translations[locale][key]{{/if}}
     }
     // @ts-ignore
     {{#if html}}return args => html`<span ${languageAttributesFor('{{defaultLocale}}')}>${(translations['{{defaultLocale}}'][key](args))}</span>`
