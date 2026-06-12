@@ -24,7 +24,7 @@ export const WriteCommentPage = ({
     title: plainText(t('write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        ><span>${t('write-comment-flow', 'backToPrereview')()}</span></a
+        >${t('write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
@@ -141,7 +141,7 @@ export const WriteCommentPage = ({
           <p>${t('write-comment-flow', 'orcidLogIn')()}</p>
 
           <details>
-            <summary><span>${t('write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
+            <summary>${t('write-comment-flow', 'whatIsOrcidHeading')()}</summary>
 
             <div>
               <p>

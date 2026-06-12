@@ -25,7 +25,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
     title: pipe(t('followFairAndCare')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" class="back">
-        <span>${t('forms', 'backLink')()}</span>
+        ${t('forms', 'backLink')()}
       </a>
     `,
     main: html`
@@ -112,7 +112,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="follows-fair-and-care-principles-tip-yes" role="note">${t('followFairAndCareYesTip')()}</p>
                   <div class="conditional" id="follows-fair-and-care-principles-yes-control">
@@ -155,7 +155,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="follows-fair-and-care-principles-tip-partly" role="note">
                     ${t('followFairAndCarePartlyTip')()}
@@ -200,7 +200,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="follows-fair-and-care-principles-tip-no" role="note">${t('followFairAndCareNoTip')()}</p>
                   <div class="conditional" id="follows-fair-and-care-principles-no-control">
@@ -230,7 +230,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="followsFairAndCarePrinciples"
@@ -243,7 +243,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

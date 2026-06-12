@@ -253,7 +253,7 @@ function showRapidPrereviews(
     </div>
 
     <details>
-      <summary><span>${t('whereCanRapidPrereview')()}</span></summary>
+      <summary>${t('whereCanRapidPrereview')()}</summary>
 
       <div>
         <p>

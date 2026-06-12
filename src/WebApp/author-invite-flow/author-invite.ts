@@ -219,7 +219,7 @@ function startPage({
             <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAnOrcid')()}</span></summary>
+              <summary>${t('whatIsAnOrcid')()}</summary>
 
               <div>
                 <p>

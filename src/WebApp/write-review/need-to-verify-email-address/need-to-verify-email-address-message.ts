@@ -23,7 +23,7 @@ export const needToVerifyEmailAddressMessage = ({
     title: pipe(t('verifyEmailAddress')(), prereviewOfSuffix(locale, preprint.title), plainText),
     nav: html`
       <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`

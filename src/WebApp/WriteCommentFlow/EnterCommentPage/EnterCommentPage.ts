@@ -30,7 +30,7 @@ export const EnterCommentPage = ({
     ),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="back"
-        ><span>${translate(locale, 'write-comment-flow', 'backToPrereview')()}</span></a
+        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`

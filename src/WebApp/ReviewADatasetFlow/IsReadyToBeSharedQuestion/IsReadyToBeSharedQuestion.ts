@@ -25,7 +25,7 @@ export const IsReadyToBeSharedQuestion = ({
     title: pipe(t('readyToBeShared')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -72,7 +72,7 @@ export const IsReadyToBeSharedQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <div class="conditional" id="is-ready-to-be-shared-yes-control">
                     <div>
@@ -112,7 +112,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <div class="conditional" id="is-ready-to-be-shared-no-control">
                     <div>
@@ -140,7 +140,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="isReadyToBeShared"
@@ -153,7 +153,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

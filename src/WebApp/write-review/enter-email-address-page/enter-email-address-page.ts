@@ -34,7 +34,7 @@ export const enterEmailAddressPage = (
       plainText,
     ),
     nav: html`<a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form

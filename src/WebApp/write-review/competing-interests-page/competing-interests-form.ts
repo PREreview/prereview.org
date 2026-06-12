@@ -53,7 +53,7 @@ export function competingInterestsForm(
         <p>${t('write-review', 'whatIsCompetingInterest')()}</p>
 
         <details>
-          <summary><span>${t('write-review', 'examples')()}</span></summary>
+          <summary>${t('write-review', 'examples')()}</summary>
 
           <div>
             <ul>
@@ -114,7 +114,7 @@ export function competingInterestsForm(
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'no')()}</span>
+                    ${t('write-review', 'no')()}
                   </label>
                 </li>
                 <li>
@@ -128,7 +128,7 @@ export function competingInterestsForm(
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'yes')()}</span>
+                    ${t('write-review', 'yes')()}
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
                     <div ${rawHtml(E.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>

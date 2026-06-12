@@ -10,7 +10,7 @@ export const createFormPage = ({ languages, locale }: { languages: Languages; lo
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'seeLanguages')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeLanguagesVisibilityMatch.formatter, {})}" novalidate>
@@ -32,7 +32,7 @@ export const createFormPage = ({ languages, locale }: { languages: Languages; lo
                     .with('public', () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>${translate(locale, 'my-details', 'everyone')()}</span>
+                ${translate(locale, 'my-details', 'everyone')()}
               </label>
               <p id="languages-visibility-tip-public" role="note">
                 ${translate(locale, 'my-details', 'showThemOnPublic')()}
@@ -50,7 +50,7 @@ export const createFormPage = ({ languages, locale }: { languages: Languages; lo
                     .with('restricted', () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>${translate(locale, 'my-details', 'onlyPrereview')()}</span>
+                ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>
               <p id="languages-visibility-tip-restricted" role="note">
                 ${translate(locale, 'my-details', 'willNotShareThem')()}

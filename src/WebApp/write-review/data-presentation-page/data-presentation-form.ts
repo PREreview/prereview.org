@@ -45,7 +45,7 @@ export function dataPresentationForm(preprint: PreprintTitle, form: DataPresenta
     ),
     nav: html`
       <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -95,7 +95,7 @@ export function dataPresentationForm(preprint: PreprintTitle, form: DataPresenta
                         .with({ right: 'highly-appropriate-clear' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('highlyAppropriateAndClear')()}</span>
+                    ${t('highlyAppropriateAndClear')()}
                   </label>
                   <p id="data-presentation-tip-highly-appropriate-clear" role="note">
                     ${t('highlyAppropriateAndClearTip')()}
@@ -132,7 +132,7 @@ ${match(form.dataPresentationHighlyAppropriateClearDetails)
                         .with({ right: 'mostly-appropriate-clear' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('somewhatAppropriate')()}</span>
+                    ${t('somewhatAppropriate')()}
                   </label>
                   <p id="data-presentation-tip-mostly-appropriate-clear" role="note">
                     ${t('somewhatAppropriateTip')()}
@@ -169,7 +169,7 @@ ${match(form.dataPresentationMostlyAppropriateClearDetails)
                         .with({ right: 'neutral' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('neitherAppropriateOrClear')()}</span>
+                    ${t('neitherAppropriateOrClear')()}
                   </label>
                   <p id="data-presentation-tip-neutral" role="note">${t('neitherAppropriateOrClearTip')()}</p>
                   <div class="conditional" id="data-presentation-neutral-control">
@@ -204,7 +204,7 @@ ${match(form.dataPresentationNeutralDetails)
                         .with({ right: 'somewhat-inappropriate-unclear' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('somewhatInappropriate')()}</span>
+                    ${t('somewhatInappropriate')()}
                   </label>
                   <p id="data-presentation-tip-somewhat-inappropriate-unclear" role="note">
                     ${t('somewhatInappropriateTip')()}
@@ -241,7 +241,7 @@ ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
                         .with({ right: 'inappropriate-unclear' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('highlyInappropriate')()}</span>
+                    ${t('highlyInappropriate')()}
                   </label>
                   <p id="data-presentation-tip-inappropriate-unclear" role="note">${t('highlyInappropriateTip')()}</p>
                   <div class="conditional" id="data-presentation-inappropriate-unclear-control">
@@ -265,7 +265,7 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
                   </div>
                 </li>
                 <li>
-                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="dataPresentation"
@@ -275,7 +275,7 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
                         .with({ right: 'skip' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('iDoNotKnow')()}</span>
+                    ${t('iDoNotKnow')()}
                   </label>
                 </li>
               </ol>

@@ -39,7 +39,7 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
     ),
     nav: html`
       <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -108,7 +108,7 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
                         .with({ right: 'strongly-supported' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('conclusionsHighlySupported')()}</span>
+                    ${t('conclusionsHighlySupported')()}
                   </label>
                   <p id="results-supported-tip-strongly-supported" role="note">
                     ${t('conclusionsHighlySupportedTip')()}
@@ -145,7 +145,7 @@ ${match(form.resultsSupportedStronglySupportedDetails)
                         .with({ right: 'well-supported' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('conclusionsSomewhatSupported')()}</span>
+                    ${t('conclusionsSomewhatSupported')()}
                   </label>
                   <p id="results-supported-tip-well-supported" role="note">${t('conclusionsSomewhatSupportedTip')()}</p>
                   <div class="conditional" id="results-supported-well-supported-control">
@@ -180,7 +180,7 @@ ${match(form.resultsSupportedWellSupportedDetails)
                         .with({ right: 'neutral' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('conclusionsNeitherSupportedNorUnsupported')()}</span>
+                    ${t('conclusionsNeitherSupportedNorUnsupported')()}
                   </label>
                   <p id="results-supported-tip-neutral" role="note">
                     ${t('conclusionsNeitherSupportedNorUnsupportedTip')()}
@@ -217,7 +217,7 @@ ${match(form.resultsSupportedNeutralDetails)
                         .with({ right: 'partially-supported' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('conclusionsSomewhatUnsupported')()}</span>
+                    ${t('conclusionsSomewhatUnsupported')()}
                   </label>
                   <p id="results-supported-tip-partially-supported" role="note">
                     ${t('conclusionsSomewhatUnsupportedTip')()}
@@ -254,7 +254,7 @@ ${match(form.resultsSupportedPartiallySupportedDetails)
                         .with({ right: 'not-supported' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('conclusionsHighlyUnsupported')()}</span>
+                    ${t('conclusionsHighlyUnsupported')()}
                   </label>
                   <p id="results-supported-tip-not-supported" role="note">${t('conclusionsHighlyUnsupportedTip')()}</p>
                   <div class="conditional" id="results-supported-not-supported-control">
@@ -278,7 +278,7 @@ ${match(form.resultsSupportedNotSupportedDetails)
                   </div>
                 </li>
                 <li>
-                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="resultsSupported"
@@ -288,7 +288,7 @@ ${match(form.resultsSupportedNotSupportedDetails)
                         .with({ right: 'skip' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('iDoNotKnow')()}</span>
+                    ${t('iDoNotKnow')()}
                   </label>
                 </li>
               </ol>

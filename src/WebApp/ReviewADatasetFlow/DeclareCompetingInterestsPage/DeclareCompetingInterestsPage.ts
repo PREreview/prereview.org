@@ -42,7 +42,7 @@ export const DeclareCompetingInterestsPage = ({
           : Routes.ReviewADatasetChooseYourPersona
         ).href({ datasetReviewId })}"
         class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -79,7 +79,7 @@ export const DeclareCompetingInterestsPage = ({
               </div>
 
               <details>
-                <summary><span>${t('examples')()}</span></summary>
+                <summary>${t('examples')()}</summary>
 
                 <div>
                   <ul>
@@ -126,7 +126,7 @@ export const DeclareCompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                 </li>
                 <li>
@@ -152,7 +152,7 @@ export const DeclareCompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
                     <div ${rawHtml(hasAnError && Either.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>

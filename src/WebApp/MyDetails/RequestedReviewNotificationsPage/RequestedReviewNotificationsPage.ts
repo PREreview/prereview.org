@@ -25,9 +25,7 @@ export function RequestedReviewNotificationsPage({
       errorPrefix(locale, hasAnError),
       plainText,
     ),
-    nav: html`
-      <a href="${format(Routes.myDetailsMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>
-    `,
+    nav: html` <a href="${format(Routes.myDetailsMatch.formatter, {})}" class="back">${t('forms', 'backLink')()}</a> `,
     main: html`
       <form method="post" action="${Routes.ChangeRequestedReviewNotifications}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems, errorSummary(locale)) : ''}

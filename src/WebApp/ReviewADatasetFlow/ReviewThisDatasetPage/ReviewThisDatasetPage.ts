@@ -21,9 +21,7 @@ export const ReviewThisDatasetPage = ({
   return PageResponse({
     title: plainText(t('reviewADataset')()),
     nav: html`
-      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back"
-        ><span>${t('backToDataset')()}</span></a
-      >
+      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back">${t('backToDataset')()}</a>
     `,
     main: html`
       <h1>${t('reviewADataset')()}</h1>
@@ -78,7 +76,7 @@ export const ReviewThisDatasetPage = ({
           <p>${t('orcidIdLogIn')()}</p>
 
           <details>
-            <summary><span>${t('whatIsOrcidIdHeading')()}</span></summary>
+            <summary>${t('whatIsOrcidIdHeading')()}</summary>
 
             <div>
               <p>

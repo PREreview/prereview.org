@@ -78,7 +78,7 @@ export function removeAuthorForm({
                       .with({ right: 'no' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('write-review', 'no')()}</span>
+                  ${t('write-review', 'no')()}
                 </label>
               </li>
               <li>
@@ -92,7 +92,7 @@ export function removeAuthorForm({
                       .with({ right: 'yes' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('write-review', 'yesRemove')({ authorName: author.name })}</span>
+                  ${t('write-review', 'yesRemove')({ authorName: author.name })}
                 </label>
               </li>
             </ol>

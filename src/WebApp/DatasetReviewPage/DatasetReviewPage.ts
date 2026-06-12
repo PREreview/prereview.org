@@ -38,9 +38,9 @@ export const createDatasetReviewPage = ({
     description: plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
-        ><span>${t('backLink')()}</span></a
+        >${t('backLink')()}</a
       >
-      <a href="${datasetReview.dataset.url.href}" class="forward"><span>${t('seeDataset')()}</span></a>
+      <a href="${datasetReview.dataset.url.href}" class="forward">${t('seeDataset')()}</a>
     `,
     main: html`
       <header>

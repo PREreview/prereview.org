@@ -25,7 +25,7 @@ export const SupportsRelatedConclusionsQuestion = ({
     title: pipe(t('supportsConclusion')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -77,7 +77,7 @@ export const SupportsRelatedConclusionsQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="supports-related-conclusions-tip-yes" role="note">${t('supportsConclusionYesTip')()}</p>
                   <div class="conditional" id="supports-related-conclusions-yes-control">
@@ -120,7 +120,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="supports-related-conclusions-tip-partly" role="note">${t('supportsConclusionPartlyTip')()}</p>
                   <div class="conditional" id="supports-related-conclusions-partly-control">
@@ -163,7 +163,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="supports-related-conclusions-tip-no" role="note">${t('supportsConclusionNoTip')()}</p>
                   <div class="conditional" id="supports-related-conclusions-no-control">
@@ -193,7 +193,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="supportsRelatedConclusions"
@@ -206,7 +206,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

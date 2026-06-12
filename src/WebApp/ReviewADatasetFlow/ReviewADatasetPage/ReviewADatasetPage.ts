@@ -32,7 +32,7 @@ export const ReviewADatasetPage = ({
           <p id="which-dataset-tip" role="note">${t('useDoiUrl')()}</p>
 
           <details>
-            <summary><span>${t('whatIsDoi')()}</span></summary>
+            <summary>${t('whatIsDoi')()}</summary>
 
             <div>
               <p>

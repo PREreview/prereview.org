@@ -25,7 +25,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
     title: pipe(t('signsOfAlteration')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}" class="back">
-        <span>${t('forms', 'backLink')()}</span>
+        ${t('forms', 'backLink')()}
       </a>
     `,
     main: html`
@@ -77,7 +77,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="has-data-censored-or-deleted-tip-yes" role="note">${t('signsOfAlterationYesTip')()}</p>
                   <div class="conditional" id="has-data-censored-or-deleted-yes-control">
@@ -120,7 +120,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="has-data-censored-or-deleted-tip-partly" role="note">${t('signsOfAlterationPartlyTip')()}</p>
                   <div class="conditional" id="has-data-censored-or-deleted-partly-control">
@@ -163,7 +163,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="has-data-censored-or-deleted-tip-no" role="note">${t('signsOfAlterationNoTip')()}</p>
                   <div class="conditional" id="has-data-censored-or-deleted-no-control">
@@ -193,7 +193,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="hasDataCensoredOrDeleted"
@@ -206,7 +206,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

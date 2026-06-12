@@ -45,7 +45,7 @@ export function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsApp
     ),
     nav: html`
       <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -114,7 +114,7 @@ export function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsApp
                         .with({ right: 'highly-appropriate' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('methodsHighlyAppropriate')()}</span>
+                    ${t('methodsHighlyAppropriate')()}
                   </label>
                   <p id="methods-appropriate-tip-highly-appropriate" role="note">
                     ${t('methodsHighlyAppropriateTip')()}
@@ -151,7 +151,7 @@ ${match(form.methodsAppropriateHighlyAppropriateDetails)
                         .with({ right: 'mostly-appropriate' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('methodsSomewhatAppropriate')()}</span>
+                    ${t('methodsSomewhatAppropriate')()}
                   </label>
                   <p id="methods-appropriate-tip-mostly-appropriate" role="note">
                     ${t('methodsSomewhatAppropriateTip')()}
@@ -188,7 +188,7 @@ ${match(form.methodsAppropriateMostlyAppropriateDetails)
                         .with({ right: 'adequate' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('methodsNeitherAppropriateNorInappropriate')()}</span>
+                    ${t('methodsNeitherAppropriateNorInappropriate')()}
                   </label>
                   <p id="methods-appropriate-tip-adequate" role="note">
                     ${t('methodsNeitherAppropriateNorInappropriateTip')()}
@@ -225,7 +225,7 @@ ${match(form.methodsAppropriateAdequateDetails)
                         .with({ right: 'somewhat-inappropriate' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('methodsSomewhatInappropriate')()}</span>
+                    ${t('methodsSomewhatInappropriate')()}
                   </label>
                   <p id="methods-appropriate-tip-somewhat-inappropriate" role="note">
                     ${t('methodsSomewhatInappropriateTip')()}
@@ -262,7 +262,7 @@ ${match(form.methodsAppropriateSomewhatInappropriateDetails)
                         .with({ right: 'inappropriate' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('methodsHighlyInappropriate')()}</span>
+                    ${t('methodsHighlyInappropriate')()}
                   </label>
                   <p id="methods-appropriate-tip-inappropriate" role="note">${t('methodsHighlyInappropriateTip')()}</p>
                   <div class="conditional" id="methods-appropriate-inappropriate-control">
@@ -286,7 +286,7 @@ ${match(form.methodsAppropriateInappropriateDetails)
                   </div>
                 </li>
                 <li>
-                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="methodsAppropriate"
@@ -296,7 +296,7 @@ ${match(form.methodsAppropriateInappropriateDetails)
                         .with({ right: 'skip' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('iDoNotKnow')()}</span>
+                    ${t('iDoNotKnow')()}
                   </label>
                 </li>
               </ol>

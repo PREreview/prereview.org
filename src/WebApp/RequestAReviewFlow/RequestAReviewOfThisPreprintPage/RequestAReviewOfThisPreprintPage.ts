@@ -25,7 +25,7 @@ export const RequestAReviewOfThisPreprintPage = ({
     title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
       <a href="${format(Routes.preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('backToPreprint')()}</span></a
+        >${t('backToPreprint')()}</a
       >
     `,
     main: html`
@@ -41,7 +41,7 @@ export const RequestAReviewOfThisPreprintPage = ({
           <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
           <details>
-            <summary><span>${t('whatIsAnOrcid')()}</span></summary>
+            <summary>${t('whatIsAnOrcid')()}</summary>
 
             <div>
               <p>${t('orcidExplainer')({ orcidLinkAsDefinition })}</p>

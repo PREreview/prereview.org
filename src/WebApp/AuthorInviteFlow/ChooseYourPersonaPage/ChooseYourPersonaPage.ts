@@ -51,7 +51,7 @@ export const renderChooseYourPersonaPage = ({
             <p id="choose-your-persona-tip" role="note">${t('youCanChooseOrcidOrPseudonym')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
+              <summary>${t('whatIsAPrereviewPseudonym')()}</summary>
 
               <div>
                 <p>

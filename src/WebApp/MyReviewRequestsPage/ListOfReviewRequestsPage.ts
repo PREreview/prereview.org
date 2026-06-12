@@ -44,24 +44,18 @@ export const ListOfReviewRequestsPage = ({
                   })}
                 </h2>
 
-                <span>
-                  ${t(
-                    'requests-list',
-                    'requestText',
-                  )({
-                    preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                      >${request.preprint.title}</cite
-                    >`,
-                  })}</span
-                >
-
+                ${t(
+                  'requests-list',
+                  'requestText',
+                )({
+                  preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                    >${request.preprint.title}</cite
+                  >`,
+                })}
                 ${Array.match(request.subfields, {
                   onNonEmpty: subfields => html`
                     <ul class="categories">
-                      ${Array.map(
-                        subfields,
-                        subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                      )}
+                      ${Array.map(subfields, subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                     </ul>
                   `,
                   onEmpty: () => '',

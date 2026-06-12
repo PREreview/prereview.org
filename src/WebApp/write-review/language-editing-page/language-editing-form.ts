@@ -33,7 +33,7 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
     ),
     nav: html`
       <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -96,7 +96,7 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="language-editing-tip-no" role="note">${t('benefitFromEditingNoTip')()}</p>
                   <div class="conditional" id="language-editing-no-control">
@@ -131,7 +131,7 @@ ${match(form.languageEditingNoDetails)
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="language-editing-tip-yes" role="note">${t('benefitFromEditingYesTip')()}</p>
                   <div class="conditional" id="language-editing-yes-control">

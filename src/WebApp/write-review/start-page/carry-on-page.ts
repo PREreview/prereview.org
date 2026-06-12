@@ -16,7 +16,7 @@ export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: Support
     title: plainText`${t('write-review', 'writeAPrereview')()}`,
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('write-review', 'backToPreprint')()}</span></a
+        >${t('write-review', 'backToPreprint')()}</a
       >
     `,
     main: html`

@@ -26,7 +26,7 @@ export const CodeOfConductPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentCompetingInterests.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -81,7 +81,7 @@ export const CodeOfConductPage = ({
             </p>
 
             <details>
-              <summary><span>${translate(locale, 'write-comment-flow', 'examplesExpectedBehaviors')()}</span></summary>
+              <summary>${translate(locale, 'write-comment-flow', 'examplesExpectedBehaviors')()}</summary>
 
               <div>
                 <ul>
@@ -99,7 +99,7 @@ export const CodeOfConductPage = ({
               ${
                 // eslint-disable-next-line no-comments/disallowComments
                 // prettier-ignore
-                html`<summary><span>${translate(locale, 'write-comment-flow', 'examplesUnacceptableBehaviors')()}</span></summary>`
+                html`<summary>${translate(locale, 'write-comment-flow', 'examplesUnacceptableBehaviors')()}</summary>`
               }
 
               <div>
@@ -141,7 +141,7 @@ export const CodeOfConductPage = ({
                   Match.orElse(() => ''),
                 )}
               />
-              <span>${translate(locale, 'write-comment-flow', 'followingCodeOfConduct')()}</span>
+              ${translate(locale, 'write-comment-flow', 'followingCodeOfConduct')()}
             </label>
           </fieldset>
         </div>

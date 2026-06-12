@@ -173,7 +173,7 @@ export const createPage = ({
                           ? html`
                               <ul class="categories">
                                 ${prereview.subfields.map(
-                                  subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
+                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
                                 )}
                               </ul>
                             `
@@ -236,7 +236,7 @@ export const createPage = ({
 
             <nav>
               <a href="${format(reviewsMatch.formatter, {})}" class="forward"
-                ><span>${translate(locale, 'home-page', 'reviewsLink')()}</span></a
+                >${translate(locale, 'home-page', 'reviewsLink')()}</a
               >
             </nav>
           </section>
@@ -285,9 +285,7 @@ export const createPage = ({
                       ${request.subfields.length > 0
                         ? html`
                             <ul class="categories">
-                              ${request.subfields.map(
-                                subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                              )}
+                              ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                             </ul>
                           `
                         : ''}
@@ -306,7 +304,7 @@ export const createPage = ({
 
             <nav>
               <a href="${Routes.ReviewRequests.href({ page: 1 })}" class="forward"
-                ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
+                >${translate(locale, 'home-page', 'requestsLink')()}</a
               >
             </nav>
           </section>
@@ -359,7 +357,7 @@ export const createPage = ({
 
         <nav>
           <a href="https://stats.prereview.org/" class="forward"
-            ><span>${translate(locale, 'home-page', 'statisticsLink')()}</span></a
+            >${translate(locale, 'home-page', 'statisticsLink')()}</a
           >
         </nav>
       </section>

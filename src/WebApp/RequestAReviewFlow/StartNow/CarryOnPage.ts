@@ -17,9 +17,7 @@ export const CarryOnPage = (
   return PageResponse({
     title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
-        ><span>${t('backToPreprint')()}</span></a
-      >
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back">${t('backToPreprint')()}</a>
     `,
     main: html`
       <h1>${t('requestAPrereview')()}</h1>

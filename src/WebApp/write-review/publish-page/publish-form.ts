@@ -58,13 +58,13 @@ export function publishForm(
 
             <dl class="summary-list">
               <div>
-                <dt><span>${t('preprintTitle')()}</span></dt>
+                <dt>${t('preprintTitle')()}</dt>
                 <dd>
                   <cite ${languageAttributesFor(preprint.language)}>${preprint.title}</cite>
                 </dd>
               </div>
               <div>
-                <dt><span>${t('preprintServer')()}</span></dt>
+                <dt>${t('preprintServer')()}</dt>
                 <dd>${Preprints.getServerName(preprint.id)}</dd>
               </div>
             </dl>
@@ -101,7 +101,7 @@ export function publishForm(
               ${review.moreAuthors === 'yes' && Array.isNonEmptyReadonlyArray(review.otherAuthors)
                 ? html`
                     <div>
-                      <dt><span>${t('invitedAuthors')({ number: review.otherAuthors.length })}</span></dt>
+                      <dt>${t('invitedAuthors')({ number: review.otherAuthors.length })}</dt>
                       <dd>
                         ${pipe(
                           review.otherAuthors,
@@ -119,7 +119,7 @@ export function publishForm(
                 : ''}
 
               <div>
-                <dt><span>${t('useOfAiShort')()}</span></dt>
+                <dt>${t('useOfAiShort')()}</dt>
                 <dd>${getUseOfAi(review, locale)}</dd>
                 <dd>
                   <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
@@ -129,7 +129,7 @@ export function publishForm(
               </div>
 
               <div>
-                <dt><span>${t('competingInterests')()}</span></dt>
+                <dt>${t('competingInterests')()}</dt>
                 <dd>${getCompetingInterests(review, locale)}</dd>
                 <dd>
                   <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
@@ -163,7 +163,7 @@ export function publishForm(
                 : html`
                     <dl class="summary-list">
                       <div>
-                        <dt><span>${t('doesIntroductionExplain')()}</span></dt>
+                        <dt>${t('doesIntroductionExplain')()}</dt>
                         <dd>
                           ${match(review.introductionMatches)
                             .with('yes', () => t('yes')())
@@ -182,7 +182,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('methodsWellSuited')()}</span></dt>
+                        <dt>${t('methodsWellSuited')()}</dt>
                         <dd>
                           ${match(review.methodsAppropriate)
                             .with('inappropriate', () => t('methodsHighlyInappropriate')())
@@ -203,7 +203,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('conclusionsSupported')()}</span></dt>
+                        <dt>${t('conclusionsSupported')()}</dt>
                         <dd>
                           ${match(review.resultsSupported)
                             .with('not-supported', () => t('conclusionsHighlyUnsupported')())
@@ -224,7 +224,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('dataPresentationWellSuited')()}</span></dt>
+                        <dt>${t('dataPresentationWellSuited')()}</dt>
                         <dd>
                           ${match(review.dataPresentation)
                             .with('inappropriate-unclear', () => t('highlyInappropriate')())
@@ -245,7 +245,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('clearDiscussion')()}</span></dt>
+                        <dt>${t('clearDiscussion')()}</dt>
                         <dd>
                           ${match(review.findingsNextSteps)
                             .with('inadequately', () => t('veryUnclearly')())
@@ -266,7 +266,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('advanceKnowledge')()}</span></dt>
+                        <dt>${t('advanceKnowledge')()}</dt>
                         <dd>
                           ${match(review.novel)
                             .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
@@ -285,7 +285,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('benefitFromEditing')()}</span></dt>
+                        <dt>${t('benefitFromEditing')()}</dt>
                         <dd>
                           ${match(review.languageEditing)
                             .with('no', () => t('no')())
@@ -300,7 +300,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('wouldRecommend')()}</span></dt>
+                        <dt>${t('wouldRecommend')()}</dt>
                         <dd>
                           ${match(review.shouldRead)
                             .with('no', () => t('wouldRecommendNo')())
@@ -316,7 +316,7 @@ export function publishForm(
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('readyForAttention')()}</span></dt>
+                        <dt>${t('readyForAttention')()}</dt>
                         <dd>
                           ${match(review.readyFullReview)
                             .with('no', () => t('readyForAttentionNo')())

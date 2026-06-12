@@ -24,7 +24,7 @@ export function CheckYourRequestPage({
   return StreamlinePageResponse({
     title: pipe(t('checkYourRequest')(), plainText),
     nav: html`<a href="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <single-use-form>
@@ -38,7 +38,7 @@ export function CheckYourRequestPage({
 
             <dl class="summary-list">
               <div>
-                <dt><span>${t('publishedName')()}</span></dt>
+                <dt>${t('publishedName')()}</dt>
                 <dd>${displayAuthor(reviewRequest.persona)}</dd>
                 <dd>
                   <a href="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}"

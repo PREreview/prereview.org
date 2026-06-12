@@ -68,7 +68,7 @@ export const RateTheQualityQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('excellent')()}</span>
+                    ${t('excellent')()}
                   </label>
                   <p id="rate-the-quality-tip-excellent" role="note">${t('excellentTip')()}</p>
                   <div class="conditional" id="rate-the-quality-excellent-control">
@@ -111,7 +111,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('fair')()}</span>
+                    ${t('fair')()}
                   </label>
                   <p id="rate-the-quality-tip-fair" role="note">${t('fairTip')()}</p>
                   <div class="conditional" id="rate-the-quality-fair-control">
@@ -153,7 +153,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('poor')()}</span>
+                    ${t('poor')()}
                   </label>
                   <p id="rate-the-quality-tip-poor" role="note">${t('poorTip')()}</p>
                   <div class="conditional" id="rate-the-quality-poor-control">
@@ -182,7 +182,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="qualityRating"
@@ -196,7 +196,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

@@ -40,7 +40,7 @@ export const personaForm = (
           },
         )}"
         class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -79,7 +79,7 @@ export const personaForm = (
             <p id="persona-tip" role="note">${t('youCanChooseBetweenNames')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAPseudonym')()}</span></summary>
+              <summary>${t('whatIsAPseudonym')()}</summary>
 
               <div>
                 <p>

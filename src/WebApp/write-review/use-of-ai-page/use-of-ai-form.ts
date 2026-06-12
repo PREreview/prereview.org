@@ -97,7 +97,7 @@ export function useOfAiForm(
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'no')()}</span>
+                    ${t('write-review', 'no')()}
                   </label>
                 </li>
                 <li>
@@ -110,7 +110,7 @@ export function useOfAiForm(
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'yes')()}</span>
+                    ${t('write-review', 'yes')()}
                   </label>
                 </li>
               </ol>

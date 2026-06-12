@@ -22,7 +22,7 @@ export const IsMissingAnythingQuestion = ({
     title: plainText(t('anythingMissing')()),
     nav: html`
       <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`

@@ -53,7 +53,7 @@ export function personaForm({
             <p id="persona-tip" role="note">${t('youCanChooseBetweenOrcidNameAndPrereviewPseudonym')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
+              <summary>${t('whatIsAPrereviewPseudonym')()}</summary>
 
               <div>
                 <p>

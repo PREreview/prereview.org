@@ -14,7 +14,7 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
   return PageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, hasAnError), plainText),
-    nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
+    nav: html`<a href="${Routes.HomePage}" class="back">${t('forms', 'backLink')()}</a>`,
     main: html`
       <form method="post" action="${Routes.RequestAReview}" novalidate>
         ${hasAnError
@@ -40,7 +40,7 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
           <p id="which-preprint-tip" role="note">${t('request-a-prereview-page', 'useDoiUrl')()}</p>
 
           <details>
-            <summary><span>${t('request-a-prereview-page', 'whatIsDoi')()}</span></summary>
+            <summary>${t('request-a-prereview-page', 'whatIsDoi')()}</summary>
 
             <div>
               <p>

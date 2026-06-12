@@ -23,7 +23,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('whatEmailAddress')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeContactEmailAddressMatch.formatter, {})}" novalidate>

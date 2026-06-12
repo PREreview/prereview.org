@@ -10,7 +10,7 @@ export const createFormPage = ({ locale, location }: { locale: SupportedLocale; 
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'seeLocation')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeLocationVisibilityMatch.formatter, {})}" novalidate>
@@ -32,7 +32,7 @@ export const createFormPage = ({ locale, location }: { locale: SupportedLocale; 
                     .with('public', () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>${translate(locale, 'my-details', 'everyone')()}</span>
+                ${translate(locale, 'my-details', 'everyone')()}
               </label>
               <p id="location-visibility-tip-public" role="note">
                 ${translate(locale, 'my-details', 'showOnPublic')()}
@@ -50,7 +50,7 @@ export const createFormPage = ({ locale, location }: { locale: SupportedLocale; 
                     .with('restricted', () => 'checked')
                     .otherwise(() => '')}
                 />
-                <span>${translate(locale, 'my-details', 'onlyPrereview')()}</span>
+                ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>
               <p id="location-visibility-tip-restricted" role="note">
                 ${translate(locale, 'my-details', 'willNotShare')()}

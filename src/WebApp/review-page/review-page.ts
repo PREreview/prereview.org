@@ -75,10 +75,10 @@ export const createPage = ({
     ),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
-        ><span>${translate(locale, 'review-page', 'otherReviewsLink')()}</span></a
+        >${translate(locale, 'review-page', 'otherReviewsLink')()}</a
       >
       <a href="${review.preprint.url.href}" class="forward"
-        ><span>${translate(locale, 'review-page', 'readPreprintLink')()}</span></a
+        >${translate(locale, 'review-page', 'readPreprintLink')()}</a
       >
     `,
     main: html`

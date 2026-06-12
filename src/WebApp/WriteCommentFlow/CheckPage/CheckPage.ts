@@ -23,7 +23,7 @@ export const CheckPage = ({
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
     nav: html` <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <single-use-form>
@@ -37,7 +37,7 @@ export const CheckPage = ({
 
             <dl class="summary-list">
               <div>
-                <dt><span>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</span></dt>
+                <dt>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</dt>
                 <dd>
                   ${Personas.match(persona, {
                     onPublic: persona =>
@@ -64,7 +64,7 @@ export const CheckPage = ({
                 </dd>
               </div>
               <div>
-                <dt><span>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</span></dt>
+                <dt>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</dt>
                 <dd>
                   ${Option.getOrElse(competingInterests, () =>
                     translate(locale, 'write-comment-flow', 'noCompetingInterests')(),

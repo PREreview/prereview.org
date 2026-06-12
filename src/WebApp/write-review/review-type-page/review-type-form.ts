@@ -29,9 +29,7 @@ export function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, lo
       plainText,
     ),
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('backToPreprint')()}</span></a
-      >
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">${t('backToPreprint')()}</a>
     `,
     main: html`
       <form method="post" action="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" novalidate>
@@ -70,7 +68,7 @@ export function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, lo
                       .with({ right: 'questions' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('withPrompts')()}</span>
+                  ${t('withPrompts')()}
                 </label>
                 <p id="review-type-tip-questions" role="note">${t('weWillAskQuestions')()}</p>
               </li>
@@ -85,12 +83,12 @@ export function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, lo
                       .with({ right: 'freeform' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('withTemplate')()}</span>
+                  ${t('withTemplate')()}
                 </label>
                 <p id="review-type-tip-freeform" role="note">${t('weWillTemplate')()}</p>
               </li>
               <li>
-                <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                 <label>
                   <input
                     name="reviewType"
@@ -100,7 +98,7 @@ export function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, lo
                       .with({ right: 'already-written' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${t('alreadyWritten')()}</span>
+                  ${t('alreadyWritten')()}
                 </label>
               </li>
             </ol>

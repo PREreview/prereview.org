@@ -16,7 +16,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
     title: plainText(translate(locale, 'write-review', 'writeAPrereview')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'write-review', 'backToPreprint')()}</span></a
+        >${translate(locale, 'write-review', 'backToPreprint')()}</a
       >
     `,
     main: html`
@@ -100,7 +100,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
           <p>${translate(locale, 'write-review', 'orcidLogIn')()}</p>
 
           <details>
-            <summary><span>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</span></summary>
+            <summary>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</summary>
 
             <div>
               <p>

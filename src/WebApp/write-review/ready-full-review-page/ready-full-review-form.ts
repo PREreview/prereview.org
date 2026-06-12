@@ -34,7 +34,7 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
     ),
     nav: html`
       <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -96,7 +96,7 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('readyForAttentionYes')()}</span>
+                    ${t('readyForAttentionYes')()}
                   </label>
                   <div class="conditional" id="ready-full-review-yes-control">
                     <div>
@@ -129,7 +129,7 @@ ${match(form.readyFullReviewYesDetails)
                         .with({ right: 'yes-changes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('readyForAttentionMinorChanges')()}</span>
+                    ${t('readyForAttentionMinorChanges')()}
                   </label>
                   <div class="conditional" id="ready-full-review-yes-changes-control">
                     <div>
@@ -162,7 +162,7 @@ ${match(form.readyFullReviewYesChangesDetails)
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('readyForAttentionNo')()}</span>
+                    ${t('readyForAttentionNo')()}
                   </label>
                   <div class="conditional" id="ready-full-review-no-control">
                     <div>

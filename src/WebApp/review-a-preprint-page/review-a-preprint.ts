@@ -23,7 +23,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
   return PageResponse({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('review-a-preprint', 'whichPreprint')(), errorPrefix(locale, error), plainText),
-    nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
+    nav: html`<a href="${Routes.HomePage}" class="back">${t('forms', 'backLink')()}</a>`,
     main: html`
       <form method="post" action="${format(reviewAPreprintMatch.formatter, {})}" novalidate>
         ${error
@@ -55,7 +55,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
           <p id="preprint-tip" role="note">${t('review-a-preprint', 'useDoiUrl')()}</p>
 
           <details>
-            <summary><span>${t('review-a-preprint', 'whatIsDoi')()}</span></summary>
+            <summary>${t('review-a-preprint', 'whatIsDoi')()}</summary>
 
             <div>
               <p>

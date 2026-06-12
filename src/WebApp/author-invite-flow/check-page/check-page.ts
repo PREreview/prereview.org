@@ -30,7 +30,7 @@ export function checkPage({
 
             <dl class="summary-list">
               <div>
-                <dt><span>${translate(locale, 'author-invite-flow', 'publishedName')()}</span></dt>
+                <dt>${translate(locale, 'author-invite-flow', 'publishedName')()}</dt>
                 <dd>${displayAuthor(persona)}</dd>
                 <dd>
                   <a href="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}"

@@ -25,7 +25,7 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
     title: pipe(t('suitedForPurpose')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -80,7 +80,7 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="is-appropriate-for-this-kind-of-research-question-tip-yes" role="note">
                     ${t('suitedForPurposeYesTip')()}
@@ -128,7 +128,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="is-appropriate-for-this-kind-of-research-question-tip-partly" role="note">
                     ${t('suitedForPurposePartlyTip')()}
@@ -176,7 +176,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="is-appropriate-for-this-kind-of-research-question-tip-no" role="note">
                     ${t('suitedForPurposeNoTip')()}
@@ -208,7 +208,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="isAppropriateForThisKindOfResearch"
@@ -224,7 +224,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

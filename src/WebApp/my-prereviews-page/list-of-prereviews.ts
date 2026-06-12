@@ -44,13 +44,13 @@ export const toResponse = (
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(publicPersona) })}" class="forward"
-            ><span>${translate(locale, 'my-prereviews-page', 'viewPublicProfile')()}</span></a
+            >${translate(locale, 'my-prereviews-page', 'viewPublicProfile')()}</a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(pseudonymPersona) })}"
             class="forward"
-            ><span>${translate(locale, 'my-prereviews-page', 'viewPseudonymProfile')()}</span></a
+            >${translate(locale, 'my-prereviews-page', 'viewPseudonymProfile')()}</a
           >
         </div>
       </div>
@@ -93,9 +93,7 @@ export const toResponse = (
                   ${prereview.subfields.length > 0
                     ? html`
                         <ul class="categories">
-                          ${prereview.subfields.map(
-                            subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                          )}
+                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                         </ul>
                       `
                     : ''}

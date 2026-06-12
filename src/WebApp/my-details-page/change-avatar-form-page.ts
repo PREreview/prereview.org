@@ -21,7 +21,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('uploadAnAvatar')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <single-use-form>
@@ -60,7 +60,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
             <p id="avatar-tip" role="note">${t('youCanUploadAvatar')({ size: 5 })}</p>
 
             <details>
-              <summary><span>${t('whereWillItShow')()}</span></summary>
+              <summary>${t('whereWillItShow')()}</summary>
 
               <div>
                 <p>${t('showOnPublicProfile')()}</p>

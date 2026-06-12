@@ -147,7 +147,7 @@ export const page = ({
             ? html`
                 <div class="environment">
                   <strong class="tag">${t('environment', `${environmentLabel}Name`)()}</strong>
-                  <span>${t('environment', `${environmentLabel}Text`)()}</span>
+                  ${t('environment', `${environmentLabel}Text`)()}
                 </div>
               `
             : ''}
@@ -406,7 +406,7 @@ export const page = ({
                 ${pageUrls
                   ? html`
                       <div>
-                        <span>${t('footer', 'chooseLanguage')()}</span>
+                        ${t('footer', 'chooseLanguage')()}
 
                         <ul>
                           ${pipe(
@@ -447,15 +447,13 @@ export const page = ({
                 <div>
                   ${t('footer', 'newsletterText')()}
                   <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                    ><span>${t('footer', 'newsletterLink')()}</span></a
+                    >${t('footer', 'newsletterLink')()}</a
                   >
                 </div>
 
                 <div>
                   ${t('footer', 'slackText')()}
-                  <a href="https://bit.ly/PREreview-Slack" class="forward"
-                    ><span>${t('footer', 'slackLink')()}</span></a
-                  >
+                  <a href="https://bit.ly/PREreview-Slack" class="forward">${t('footer', 'slackLink')()}</a>
                 </div>
 
                 <div>

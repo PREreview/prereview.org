@@ -31,7 +31,7 @@ export const ChoosePersonaPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentEnterComment.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -76,7 +76,7 @@ export const ChoosePersonaPage = ({
             <p id="persona-tip" role="note">${translate(locale, 'write-comment-flow', 'whichNameTip')()}</p>
 
             <details>
-              <summary><span>${translate(locale, 'write-comment-flow', 'whatIsPseudonym')()}</span></summary>
+              <summary>${translate(locale, 'write-comment-flow', 'whatIsPseudonym')()}</summary>
 
               <div>
                 <p>

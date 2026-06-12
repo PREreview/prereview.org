@@ -32,7 +32,7 @@ export const CheckYourReviewPage = ({
     title: pipe(t('checkYourPrereview')(), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -47,13 +47,13 @@ export const CheckYourReviewPage = ({
 
             <dl class="summary-list">
               <div>
-                <dt><span>${t('title')()}</span></dt>
+                <dt>${t('title')()}</dt>
                 <dd>
                   <cite ${languageAttributesFor(review.dataset.language)}>${review.dataset.title}</cite>
                 </dd>
               </div>
               <div>
-                <dt><span>${t('repository')()}</span></dt>
+                <dt>${t('repository')()}</dt>
                 <dd>${Datasets.getRepositoryName(review.dataset.id)}</dd>
               </div>
             </dl>
@@ -70,7 +70,7 @@ export const CheckYourReviewPage = ({
                 <div aria-labelledby="details-label" role="region">
                   <dl class="summary-list">
                     <div>
-                      <dt><span>${t('publishedName')()}</span></dt>
+                      <dt>${t('publishedName')()}</dt>
                       <dd>${displayAuthor(author)}</dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}">
@@ -80,7 +80,7 @@ export const CheckYourReviewPage = ({
                     </div>
 
                     <div>
-                      <dt><span>${t('competingInterests')()}</span></dt>
+                      <dt>${t('competingInterests')()}</dt>
                       <dd>${Option.getOrElse(review.competingInterests, () => html`<i>${t('noneDeclared')()}</i>`)}</dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}">
@@ -128,7 +128,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ rating, detail }) => html`
                     <div>
-                      <dt><span>${t('rateQuality')()}</span></dt>
+                      <dt>${t('rateQuality')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(rating),
@@ -152,7 +152,7 @@ export const CheckYourReviewPage = ({
                   `,
                 })}
                 <div>
-                  <dt><span>${t('followFairAndCare')()}</span></dt>
+                  <dt>${t('followFairAndCare')()}</dt>
                   <dd>
                     ${pipe(
                       Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer),
@@ -177,7 +177,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt><span>${t('enoughMetadata')()}</span></dt>
+                      <dt>${t('enoughMetadata')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -204,9 +204,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('trackChanges')()}</span>
-                      </dt>
+                      <dt>${t('trackChanges')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -233,9 +231,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('signsOfAlteration')()}</span>
-                      </dt>
+                      <dt>${t('signsOfAlteration')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -262,9 +258,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('suitedForPurpose')()}</span>
-                      </dt>
+                      <dt>${t('suitedForPurpose')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -291,9 +285,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('supportsConclusion')()}</span>
-                      </dt>
+                      <dt>${t('supportsConclusion')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -320,9 +312,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('granularEnough')()}</span>
-                      </dt>
+                      <dt>${t('granularEnough')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -349,9 +339,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('relativelyErrorFree')()}</span>
-                      </dt>
+                      <dt>${t('relativelyErrorFree')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -378,9 +366,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('howConsequential')()}</span>
-                      </dt>
+                      <dt>${t('howConsequential')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -407,9 +393,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt>
-                        <span>${t('readyToBeShared')()}</span>
-                      </dt>
+                      <dt>${t('readyToBeShared')()}</dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
@@ -435,9 +419,7 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: answerToIfTheDatasetIsMissingAnything => html`
                     <div>
-                      <dt>
-                        <span>${t('anythingMissing')()}</span>
-                      </dt>
+                      <dt>${t('anythingMissing')()}</dt>
                       <dd>
                         ${Option.getOrElse(
                           answerToIfTheDatasetIsMissingAnything,

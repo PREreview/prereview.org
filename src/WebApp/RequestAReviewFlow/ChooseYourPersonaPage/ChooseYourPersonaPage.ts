@@ -33,7 +33,7 @@ export function ChooseYourPersonaPage({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`<a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
-      ><span>${t('backToPreprint')()}</span></a
+      >${t('backToPreprint')()}</a
     >`,
     main: html`
       <form method="post" action="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}" novalidate>
@@ -52,7 +52,7 @@ export function ChooseYourPersonaPage({
             <p id="choose-your-persona-tip" role="note">${t('chooseBetweenOrcidNameAndPseudonym')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
+              <summary>${t('whatIsAPrereviewPseudonym')()}</summary>
 
               <div>
                 <p>

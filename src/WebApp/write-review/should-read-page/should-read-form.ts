@@ -34,7 +34,7 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
     ),
     nav: html`
       <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -94,7 +94,7 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('wouldRecommendYes')()}</span>
+                    ${t('wouldRecommendYes')()}
                   </label>
                   <div class="conditional" id="should-read-yes-control">
                     <div>
@@ -125,7 +125,7 @@ ${match(form.shouldReadYesDetails)
                         .with({ right: 'yes-but' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('wouldRecommendYesImproved')()}</span>
+                    ${t('wouldRecommendYesImproved')()}
                   </label>
                   <div class="conditional" id="should-read-yes-but-control">
                     <div>
@@ -158,7 +158,7 @@ ${match(form.shouldReadYesButDetails)
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('wouldRecommendNo')()}</span>
+                    ${t('wouldRecommendNo')()}
                   </label>
                   <div class="conditional" id="should-read-no-control">
                     <div>

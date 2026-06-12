@@ -16,7 +16,7 @@ export const ownPreprintPage = (
     title: plainText(translate(locale, 'write-review', 'ownPreprint')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
-        ><span>${translate(locale, 'write-review', 'backToPreprint')()}</span></a
+        >${translate(locale, 'write-review', 'backToPreprint')()}</a
       >
     `,
     main: html`

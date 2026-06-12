@@ -70,7 +70,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'noIReviewedAlone')()}</span>
+                    ${t('write-review', 'noIReviewedAlone')()}
                   </label>
                 </li>
                 <li>
@@ -83,7 +83,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
                         .with({ right: 'yes-private' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'yesButDoNotWantToBeListed')()}</span>
+                    ${t('write-review', 'yesButDoNotWantToBeListed')()}
                   </label>
                 </li>
                 <li>
@@ -97,7 +97,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('write-review', 'yesAndWantToBeListed')()}</span>
+                    ${t('write-review', 'yesAndWantToBeListed')()}
                   </label>
                   <div class="conditional" id="more-authors-yes-control">
                     <div ${rawHtml(E.isLeft(form.moreAuthorsApproved) ? 'class="error"' : '')}>
@@ -127,7 +127,7 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
                             )
                             .exhaustive()}
                         />
-                        <span>${t('write-review', 'theyHaveReadAndApproved')()}</span>
+                        ${t('write-review', 'theyHaveReadAndApproved')()}
                       </label>
                     </div>
                   </div>

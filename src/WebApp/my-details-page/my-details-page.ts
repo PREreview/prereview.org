@@ -86,20 +86,20 @@ export function createPage({
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(publicPersona) })}" class="forward"
-            ><span>${t('my-details', 'viewPublicProfile')()}</span></a
+            >${t('my-details', 'viewPublicProfile')()}</a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(pseudonymPersona) })}"
             class="forward"
-            ><span>${t('my-details', 'viewPseudonymProfile')()}</span></a
+            >${t('my-details', 'viewPseudonymProfile')()}</a
           >
         </div>
       </div>
 
       <dl class="summary-list">
         <div>
-          <dt><span>${t('my-details', 'name')()}</span></dt>
+          <dt>${t('my-details', 'name')()}</dt>
           <dd>${publicPersona.name}</dd>
         </div>
 
@@ -109,7 +109,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'pseudonym')()}</span></dt>
+          <dt>${t('my-details', 'pseudonym')()}</dt>
           <dd>${pseudonymPersona.pseudonym}</dd>
         </div>
 
@@ -118,7 +118,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'orcidRecord')()}</span></dt>
+                <dt>${t('my-details', 'orcidRecord')()}</dt>
                 <dd>
                   <a href="${format(connectOrcidMatch.formatter, {})}">${t('my-details', 'connectOrcidRecord')()}</a>
                 </dd>
@@ -129,7 +129,7 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'orcidRecord')()}</span></dt>
+                <dt>${t('my-details', 'orcidRecord')()}</dt>
                 <dd>${t('my-details', 'connected')()}</dd>
                 <dd>
                   <a href="${format(disconnectOrcidMatch.formatter, {})}"
@@ -145,7 +145,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'avatar')()}</span></dt>
+                <dt>${t('my-details', 'avatar')()}</dt>
                 <dd>
                   <a href="${format(changeAvatarMatch.formatter, {})}">${t('my-details', 'uploadAvatar')()}</a>
                 </dd>
@@ -156,7 +156,7 @@ export function createPage({
             { value: P.select() },
             avatar => html`
               <div>
-                <dt><span>${t('my-details', 'avatar')()}</span></dt>
+                <dt>${t('my-details', 'avatar')()}</dt>
                 <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
                 <dd>
                   <ul>
@@ -181,7 +181,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'slackCommunityName')()}</span></dt>
+                <dt>${t('my-details', 'slackCommunityName')()}</dt>
                 <dd>
                   <a href="${format(connectSlackMatch.formatter, {})}">${t('my-details', 'connectSlack')()}</a>
                 </dd>
@@ -192,7 +192,7 @@ export function createPage({
             { value: P.select() },
             slackUser => html`
               <div>
-                <dt><span>${t('my-details', 'slackCommunityName')()}</span></dt>
+                <dt>${t('my-details', 'slackCommunityName')()}</dt>
                 <dd>
                   <span class="slack">
                     <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -213,7 +213,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
+                <dt>${t('my-details', 'emailAddress')()}</dt>
                 <dd>
                   <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
                     >${t('my-details', 'enterEmailAddress')()}</a
@@ -226,7 +226,7 @@ export function createPage({
             { value: P.select() },
             contactEmailAddress => html`
               <div>
-                <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
+                <dt>${t('my-details', 'emailAddress')()}</dt>
                 <dd>
                   ${contactEmailAddress.value}
                   ${Match.valueTags(contactEmailAddress, {
@@ -283,7 +283,7 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'openReviewRequests')()}</span></dt>
+                <dt>${t('my-details', 'openReviewRequests')()}</dt>
                 ${match(openForRequests)
                   .when(
                     Option.isNone,
@@ -352,7 +352,7 @@ export function createPage({
           .exhaustive()}
 
         <div>
-          <dt><span>${t('my-details', 'careerStage')()}</span></dt>
+          <dt>${t('my-details', 'careerStage')()}</dt>
           ${match(careerStage)
             .when(
               Option.isNone,
@@ -394,7 +394,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'researchInterests')()}</span></dt>
+          <dt>${t('my-details', 'researchInterests')()}</dt>
           ${match(researchInterests)
             .when(
               Option.isNone,
@@ -438,7 +438,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'location')()}</span></dt>
+          <dt>${t('my-details', 'location')()}</dt>
           ${match(location)
             .when(
               Option.isNone,
@@ -480,7 +480,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'languages')()}</span></dt>
+          <dt>${t('my-details', 'languages')()}</dt>
           ${match(languages)
             .when(
               Option.isNone,

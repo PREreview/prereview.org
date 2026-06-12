@@ -49,7 +49,7 @@ export function addMultipleAuthorsForm({
           <p id="authors-tip" role="note">${t('enterNamesAndEmailAddressTip')()}</p>
 
           <details>
-            <summary><span>${t('example')()}</span></summary>
+            <summary>${t('example')()}</summary>
 
             <div>
               <pre>

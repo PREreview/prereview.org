@@ -25,7 +25,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
     title: pipe(t('write-review', 'pasteYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`

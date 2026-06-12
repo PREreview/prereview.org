@@ -49,7 +49,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
             </p>
 
             <details>
-              <summary><span>${t('write-review', 'examplesOfExpectedBehavior')()}</span></summary>
+              <summary>${t('write-review', 'examplesOfExpectedBehavior')()}</summary>
 
               <div>
                 <ul>
@@ -64,7 +64,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
             </details>
 
             <details>
-              <summary><span>${t('write-review', 'examplesOfUnacceptableBehavior')()}</span></summary>
+              <summary>${t('write-review', 'examplesOfUnacceptableBehavior')()}</summary>
 
               <div>
                 <ul>
@@ -100,7 +100,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
                   .with({ right: 'yes' }, () => 'checked')
                   .otherwise(() => '')}
               />
-              <span>${t('write-review', 'iAmFollowingCodeOfConduct')()}</span>
+              ${t('write-review', 'iAmFollowingCodeOfConduct')()}
             </label>
           </fieldset>
         </div>

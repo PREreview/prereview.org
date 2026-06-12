@@ -32,7 +32,7 @@ export const ChooseYourPersonaPage = ({
     title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -56,7 +56,7 @@ export const ChooseYourPersonaPage = ({
             <p id="choose-your-persona-tip" role="note">${t('youCanChooseOrcidOrPseudonym')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
+              <summary>${t('whatIsAPrereviewPseudonym')()}</summary>
 
               <div>
                 <p>

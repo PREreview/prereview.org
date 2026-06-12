@@ -25,7 +25,7 @@ export const HasTrackedChangesQuestion = ({
     title: pipe(t('trackChanges')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" class="back">
-        <span>${t('forms', 'backLink')()}</span>
+        ${t('forms', 'backLink')()}
       </a>
     `,
     main: html`
@@ -73,7 +73,7 @@ export const HasTrackedChangesQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="has-tracked-changes-tip-yes" role="note">${t('trackChangesYesTip')()}</p>
                   <div class="conditional" id="has-tracked-changes-yes-control">
@@ -115,7 +115,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="has-tracked-changes-tip-partly" role="note">${t('trackChangesPartlyTip')()}</p>
                   <div class="conditional" id="has-tracked-changes-partly-control">
@@ -158,7 +158,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <div class="conditional" id="has-tracked-changes-no-control">
                     <div>
@@ -186,7 +186,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="hasTrackedChanges"
@@ -199,7 +199,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

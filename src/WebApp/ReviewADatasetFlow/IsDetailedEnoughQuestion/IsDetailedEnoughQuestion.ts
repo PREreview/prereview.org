@@ -25,7 +25,7 @@ export const IsDetailedEnoughQuestion = ({
     title: pipe(t('granularEnough')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -73,7 +73,7 @@ export const IsDetailedEnoughQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="is-detailed-enough-tip-yes" role="note">${t('granularEnoughYesTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-yes-control">
@@ -115,7 +115,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="is-detailed-enough-tip-partly" role="note">${t('granularEnoughPartlyTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-partly-control">
@@ -158,7 +158,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="is-detailed-enough-tip-no" role="note">${t('granularEnoughNoTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-no-control">
@@ -187,7 +187,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="isDetailedEnough"
@@ -200,7 +200,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

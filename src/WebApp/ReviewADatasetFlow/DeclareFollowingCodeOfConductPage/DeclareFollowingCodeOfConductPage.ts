@@ -25,7 +25,7 @@ export const DeclareFollowingCodeOfConductPage = ({
     title: pipe(t('codeOfConduct')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -55,7 +55,7 @@ export const DeclareFollowingCodeOfConductPage = ({
             </p>
 
             <details>
-              <summary><span>${t('examplesExpectedBehaviors')()}</span></summary>
+              <summary>${t('examplesExpectedBehaviors')()}</summary>
 
               <div>
                 <ul>
@@ -70,7 +70,7 @@ export const DeclareFollowingCodeOfConductPage = ({
             </details>
 
             <details>
-              <summary><span>${t('examplesUnacceptableBehaviors')()}</span></summary>
+              <summary>${t('examplesUnacceptableBehaviors')()}</summary>
 
               <div>
                 <ul>
@@ -108,7 +108,7 @@ export const DeclareFollowingCodeOfConductPage = ({
                   InvalidForm: () => '',
                 })}
               />
-              <span>${t('followingCodeOfConduct')()}</span>
+              ${t('followingCodeOfConduct')()}
             </label>
           </fieldset>
         </div>

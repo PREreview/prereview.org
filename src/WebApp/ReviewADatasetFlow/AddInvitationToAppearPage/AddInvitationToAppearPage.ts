@@ -32,7 +32,7 @@ export const AddInvitationToAppearPage = ({
           : Routes.ReviewADatasetOthersNeedToBeListedOnTheReview
         ).href({ datasetReviewId })}"
         class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
