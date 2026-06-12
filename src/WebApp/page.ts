@@ -106,6 +106,13 @@ export const page = ({
                       .replaceAll('</swoosh>', '</em>')
                   },
                 ])
+                window.setInterval(function () {
+                  if (!window.jipt?.target_language) {
+                    return
+                  }
+                  document.documentElement.lang = window.jipt.target_language
+                  document.documentElement.dir = window.jipt.target_language === 'arb' ? 'rtl' : 'ltr'
+                }, 1000)
               </script>
               <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
               <link href="${assets['crowdin.css']}" rel="stylesheet" />
