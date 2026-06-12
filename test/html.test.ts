@@ -17,6 +17,16 @@ test.each([
     _.html`<a href="/path?query1=${'param1'}&query2=${'param2'}">Link</a>`,
     '<a href="/path?query1=param1&query2=param2">Link</a>',
   ],
+  [
+    'textarea with HTML',
+    _.html`<textarea>${_.rawHtml('<p id="a">a</p>')}</textarea>`,
+    '<textarea>&lt;p id=&quot;a&quot;&gt;a&lt;/p&gt;</textarea>',
+  ],
+  [
+    'textarea with attributes and spaces',
+    _.html`<textarea id="review" name="review" rows="20" aria-describedby="review-tip">  ${_.rawHtml(' \t \n<p id="a">a</p> \t \n ')}  </textarea>`,
+    '<textarea id="review" name="review" rows="20" aria-describedby="review-tip">   \t \n&lt;p id=&quot;a&quot;&gt;a&lt;/p&gt; \t \n   </textarea>',
+  ],
 ])('html (%s)', (_name, actual, expected) => {
   expect(actual.toString()).toBe(expected)
 })

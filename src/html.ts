@@ -25,16 +25,28 @@ export class PlainText extends Data.TaggedClass('PlainText')<{
 
 type Placeholder = ReadonlyArray<Html | PlainText> | Html | PlainText | string | number
 
+const encodePlaceholder = (placeholder: Exclude<Placeholder, ReadonlyArray<unknown>>) =>
+  encode(placeholder.toString(), { mode: 'specialChars' })
+
 const handlePlaceholder = pipe(
   Match.type<Exclude<Placeholder, ReadonlyArray<unknown>>>(),
   Match.tag('Html', html => html.value),
   Match.tag('PlainText', plainText => plainText.value),
-  Match.orElse(value => encode(value.toString(), { mode: 'specialChars' })),
+  Match.orElse(encodePlaceholder),
 )
 
 export function html(literals: TemplateStringsArray, ...placeholders: ReadonlyArray<Placeholder>): Html {
   const value = literals.raw.reduce((string, literal, i) => {
     const placeholder = Array.unsafeGet(placeholders, i - 1)
+
+    if (isTextAreaString(string)) {
+      const value =
+        typeof placeholder === 'string' || typeof placeholder === 'number' || '_tag' in placeholder
+          ? encodePlaceholder(placeholder)
+          : placeholder.map(encodePlaceholder).join('')
+
+      return `${string}${value}${literal}`
+    }
 
     const value =
       typeof placeholder === 'string' || typeof placeholder === 'number' || '_tag' in placeholder
@@ -241,6 +253,10 @@ function mathmlToTex(input: string) {
     /<math[\s\S]*?(?:display="(block)")?>[\s\S]*?<annotation encoding="application\/x-tex">([\s\S]+?)<\/annotation>[\s\S]*?<\/math>/gi,
     (_, display: string, tex: string) => (display === 'block' ? `$$${tex}$$` : `$${tex}$`),
   )
+}
+
+function isTextAreaString(string: string): boolean {
+  return /<textarea\b[^>]*>\s*$/i.test(string)
 }
 
 function stringEndsWithUnescapedAttribute(string: string): boolean {
