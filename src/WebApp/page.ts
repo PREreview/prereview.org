@@ -147,7 +147,7 @@ export const page = ({
             ? html`
                 <div class="environment">
                   <strong class="tag">${t('environment', `${environmentLabel}Name`)()}</strong>
-                  ${t('environment', `${environmentLabel}Text`)()}
+                  <span>${t('environment', `${environmentLabel}Text`)()}</span>
                 </div>
               `
             : ''}
@@ -171,7 +171,9 @@ export const page = ({
                       <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}
                         >${t('header', 'menu')()}</a
                       >
-                      <button aria-controls="navigation" aria-expanded="false" hidden>${t('header', 'menu')()}</button>
+                      <button aria-controls="navigation" aria-expanded="false" hidden>
+                        <span>${t('header', 'menu')()}</span>
+                      </button>
                     </expander-button>
                     ${pageUrls
                       ? html`
@@ -404,7 +406,7 @@ export const page = ({
                 ${pageUrls
                   ? html`
                       <div>
-                        ${t('footer', 'chooseLanguage')()}
+                        <span>${t('footer', 'chooseLanguage')()}</span>
 
                         <ul>
                           ${pipe(
@@ -445,14 +447,14 @@ export const page = ({
                 <div>
                   ${t('footer', 'newsletterText')()}
                   <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                    >${t('footer', 'newsletterLink')()}</a
+                    ><span>${t('footer', 'newsletterLink')()}</span></a
                   >
                 </div>
 
                 <div>
                   ${t('footer', 'slackText')()}
                   <a href="https://bit.ly/PREreview-Slack" class="forward"
-                    >${t('footer', 'slackLink')()}</a
+                    ><span>${t('footer', 'slackLink')()}</span></a
                   >
                 </div>
 
