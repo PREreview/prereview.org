@@ -690,7 +690,6 @@ article {
 }
 
 :--heading {
-  inline-size: fit-content;
   max-inline-size: 100%;
   font-weight: 700;
   line-height: 1.2;
@@ -835,7 +834,6 @@ li {
   }
 
   &:where(:not(:has(:--list))) {
-    inline-size: fit-content;
     max-inline-size: 64ch;
   }
 }
@@ -1047,7 +1045,6 @@ math {
 
   & small {
     display: block;
-    inline-size: fit-content;
     font-size: var(--step--2);
   }
 }
@@ -1112,7 +1109,6 @@ td {
 }
 
 p {
-  inline-size: fit-content;
   max-inline-size: 64ch;
   margin-block-start: var(--space-xs);
   text-wrap-style: pretty;
@@ -1350,7 +1346,6 @@ label {
   flex-wrap: wrap;
   gap: var(--space-2xs);
   justify-content: flex-start;
-  inline-size: fit-content;
   margin-block-start: var(--space-s);
 
   & > [role='group'] {
@@ -2627,7 +2622,6 @@ skip-link {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-2xs-s);
-      inline-size: fit-content;
     }
 
     li {
@@ -2700,7 +2694,6 @@ skip-link {
 
   & a {
     display: block;
-    inline-size: fit-content;
     margin-inline: auto;
     padding: var(--space-2xs);
   }
@@ -2980,7 +2973,6 @@ spotlight-banner {
 
     & > span {
       display: inline-block;
-      inline-size: fit-content;
     }
   }
 
