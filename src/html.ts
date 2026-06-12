@@ -53,8 +53,12 @@ export function html(literals: TemplateStringsArray, ...placeholders: ReadonlyAr
         ? handlePlaceholder(placeholder)
         : placeholder.map(handlePlaceholder).join('')
 
+    if (stringEndsWithAttribute(string)) {
+      return `${string}${stripTags(value)}${literal}`
+    }
+
     if (stringEndsWithUnescapedAttribute(string)) {
-      return `${string}"${value}"${literal}`
+      return `${string}"${stripTags(value)}"${literal}`
     }
 
     return `${string}${value}${literal}`
@@ -261,4 +265,8 @@ function isTextAreaString(string: string): boolean {
 
 function stringEndsWithUnescapedAttribute(string: string): boolean {
   return string.endsWith('=') && !/(?:="|&)[^"]*=$/.test(string)
+}
+
+function stringEndsWithAttribute(string: string): boolean {
+  return string.endsWith('="')
 }

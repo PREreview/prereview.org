@@ -40,7 +40,7 @@ export const createDatasetReviewPage = ({
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
         ><span>${t('backLink')()}</span></a
       >
-      <a href="${plainText(datasetReview.dataset.url.href)}" class="forward"><span>${t('seeDataset')()}</span></a>
+      <a href="${datasetReview.dataset.url.href}" class="forward"><span>${t('seeDataset')()}</span></a>
     `,
     main: html`
       <header>
