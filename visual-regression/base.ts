@@ -1,5 +1,7 @@
-import { type Locator, test as baseTest } from '@playwright/test'
+import { type Locator, test as baseTest, expect } from '@playwright/test'
 import { HashSet, Match, String, pipe } from 'effect'
+import * as fs from 'fs/promises'
+import { HtmlValidate } from 'html-validate'
 import path from 'path'
 import type { Html } from '../src/html.ts'
 import { DefaultLocale, type UserSelectableLocale } from '../src/locales/index.ts'
@@ -81,8 +83,42 @@ export const test = baseTest.extend<ShowPage>({
       return [page.locator('.contents > main'), page.locator('.contents > aside')] as const
     })
   },
-  showHtml: async ({ page }, use) => {
+  showHtml: async ({ page }, use, testInfo) => {
     await use(async html => {
+      const htmlValidate = new HtmlValidate({
+        extends: ['html-validate:standard', 'html-validate:prettier'],
+      })
+
+      const report = await htmlValidate.validateString(html.toString())
+
+      if (!report.valid) {
+        const severity = ['', 'Warning', 'Error']
+
+        let message = `${report.errorCount} error(s), ${report.warningCount} warning(s)\n`
+        message += '─'.repeat(60)
+        for (const result of report.results) {
+          const lines = (result.source ?? '').split('\n')
+          for (const resultMessage of result.messages) {
+            const marker = resultMessage.size === 1 ? '▲' : '━'.repeat(resultMessage.size)
+            message += '\n'
+            message += `${severity[resultMessage.severity]} (${resultMessage.ruleId}): ${resultMessage.message}\n`
+            message += `${resultMessage.ruleUrl}\n`
+            message += `${lines[resultMessage.line - 1]}\n`
+            message += `${' '.repeat(resultMessage.column - 1)}${marker}`
+            message += '\n'
+            message += '─'.repeat(60)
+          }
+        }
+
+        message += `\n\nSource HTML:\n\n${html.toString()}`
+
+        await fs.writeFile(testInfo.outputPath('invalid-html-report.txt'), message)
+        await testInfo.attach('HTML validation report', { body: message, contentType: 'text/plain' })
+      }
+      await fs.writeFile(testInfo.outputPath('html-source.html'), html.toString())
+
+      expect.soft(report.valid, 'HTML is invalid').toBe(true)
+
       await page.setContent(html.toString())
 
       const viewportSize = page.viewportSize()
