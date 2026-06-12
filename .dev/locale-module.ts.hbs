@@ -3,7 +3,8 @@ import type { Types } from 'effect'
   import * as l{{@key}} from './{{this}}.ts'
 {{/each}}
 {{#if html}}
-import type { Html } from '../../html.ts'
+import { type Html, html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 {{/if}}
 
 const translations = {
@@ -34,5 +35,7 @@ export const translate{{moduleName}} =
       // @ts-ignore
       return translations[locale][key]
     }
-    return translations['{{defaultLocale}}'][key]
+    // @ts-ignore
+    {{#if html}}return args => html`<span ${languageAttributesFor('{{defaultLocale}}')}>${(translations['{{defaultLocale}}'][key](args))}</span>`
+    {{else}}return translations['{{defaultLocale}}'][key]{{/if}}
   }
