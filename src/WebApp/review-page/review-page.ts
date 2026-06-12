@@ -158,7 +158,7 @@ export const createPage = ({
                     <a href="https://creativecommons.org/publicdomain/zero/1.0/">
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
-                          ><bdi translate="no">CC0 1.0</span></abbr
+                          ><bdi translate="no">CC0 1.0</bdi></abbr
                         >
                       </dfn>
                     </a>
@@ -170,7 +170,7 @@ export const createPage = ({
                     <a href="https://creativecommons.org/licenses/by/4.0/">
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                          ><bdi translate="no">CC BY 4.0</span></abbr
+                          ><bdi translate="no">CC BY 4.0</bdi></abbr
                         >
                       </dfn>
                     </a>
@@ -253,7 +253,7 @@ export const createPage = ({
                                       <a href="https://creativecommons.org/licenses/by/4.0/">
                                         <dfn>
                                           <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                                            ><bdi translate="no">CC BY 4.0</span></abbr
+                                            ><bdi translate="no">CC BY 4.0</bdi></abbr
                                           >
                                         </dfn>
                                       </a>
