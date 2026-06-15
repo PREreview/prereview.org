@@ -18,7 +18,7 @@ export const NotAPreprintPage = (locale: SupportedLocale) =>
           locale,
           'request-a-prereview-page',
           'supportPreprintsFrom',
-        )({ servers: formatList('en')(ServerNames) })}
+        )({ servers: formatList(locale)(ServerNames) })}
       </p>
 
       <p>${translate(locale, 'request-a-prereview-page', 'isAPreprint')({ contact: mailToHelp })}</p>

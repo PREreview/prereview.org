@@ -15,7 +15,7 @@ export const notAPreprintPage = (locale: SupportedLocale) =>
       <h1>${translate(locale, 'review-a-preprint', 'notAPreprint')()}</h1>
 
       <p>
-        ${translate(locale, 'review-a-preprint', 'supportPreprintsFrom')({ servers: formatList('en')(ServerNames) })}
+        ${translate(locale, 'review-a-preprint', 'supportPreprintsFrom')({ servers: formatList(locale)(ServerNames) })}
       </p>
 
       <p>${translate(locale, 'review-a-preprint', 'isAPreprint')({ contact: mailToHelp })}</p>

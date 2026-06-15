@@ -18,7 +18,7 @@ export const UnsupportedDoiPage = (locale: SupportedLocale) =>
           locale,
           'request-a-prereview-page',
           'supportPreprintsFrom',
-        )({ servers: formatList('en')(ServerNames) })}
+        )({ servers: formatList(locale)(ServerNames) })}
       </p>
 
       <p>

@@ -15,7 +15,7 @@ export const NotADatasetPage = ({ locale }: { locale: SupportedLocale }) => {
     main: html`
       <h1>${t('notADataset')()}</h1>
 
-      <p>${t('supportDatasetsFrom')({ repositories: formatList('en')(RepositoryNames) })}</p>
+      <p>${t('supportDatasetsFrom')({ repositories: formatList(locale)(RepositoryNames) })}</p>
 
       <p>${t('isADataset')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}</p>
 

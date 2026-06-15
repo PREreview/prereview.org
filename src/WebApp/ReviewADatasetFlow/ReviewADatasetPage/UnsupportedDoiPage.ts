@@ -15,7 +15,7 @@ export const UnsupportedDoiPage = ({ locale }: { locale: SupportedLocale }) => {
     main: html`
       <h1>${t('unsupportedDoi')()}</h1>
 
-      <p>${t('supportDatasetsFrom')({ repositories: formatList('en')(RepositoryNames) })}</p>
+      <p>${t('supportDatasetsFrom')({ repositories: formatList(locale)(RepositoryNames) })}</p>
 
       <p>${t('doiIsForDataset')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}</p>
 
