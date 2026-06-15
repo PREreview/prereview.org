@@ -20,6 +20,7 @@ export const ClubIdSchema = Schema.Literal(
   'bloomington-biology',
   'cara',
   'cibca',
+  'devl-ecology-evolution',
   'elife-ambassadors',
   'emerge',
   'etymos-analytica',

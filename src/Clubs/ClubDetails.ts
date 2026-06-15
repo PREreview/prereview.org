@@ -394,6 +394,27 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     ],
     joinLink: new URL('https://openlab.ec/club-cibca'),
   },
+  'devl-ecology-evolution': {
+    name: 'DEVL Ecology & Evolution Club',
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          The Diversity and Evolution Lab at UFPR (Universidade Federal do Paraná, Brazil) develops research on Ecology
+          and Evolution of (mainly) Neotropical organisms.
+        </p>
+        <p>
+          We aim at advancing evolutionary biology and ecological research and training through iterative group reviews.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-06-15'),
+    leads: [
+      { name: 'Fabricius M.C.B. Domingos', orcid: OrcidId('0000-0003-2069-9317') },
+      { name: 'Matheus M. A. Salles', orcid: OrcidId('0000-0002-1177-9844') },
+      { name: 'Júnior Nadalne', orcid: OrcidId('0000-0002-2363-7106') },
+    ],
+  },
   'elife-ambassadors': {
     name: 'eLife Community Ambassadors',
     description: {
