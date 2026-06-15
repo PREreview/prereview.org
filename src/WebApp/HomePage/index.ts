@@ -1,5 +1,6 @@
 import { Effect, pipe } from 'effect'
 import { Locale } from '../../Context.ts'
+import { ServerNames } from '../../Preprints/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import type { PageResponse } from '../Response/index.ts'
@@ -19,6 +20,6 @@ export const HomePage: Effect.Effect<
     }),
     { concurrency: 'inherit' },
   ),
-  Effect.let('statistics', () => ({ prereviews: 2088, servers: 34, users: 4488 })),
+  Effect.let('statistics', () => ({ prereviews: 2088, servers: ServerNames.length, users: 4488 })),
   Effect.andThen(createPage),
 )
