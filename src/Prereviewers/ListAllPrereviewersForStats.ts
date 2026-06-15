@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, Struct, type Order } from 'effect'
+import { Array, Either, flow, HashMap, Match, Struct, type Order } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type OrcidId } from '../types/index.ts'
@@ -17,9 +17,17 @@ const filter = Events.EventFilter({ types: ['RegisteredPrereviewerImported', 'Pr
 type PertinentEvent = Events.EventsForFilter<typeof filter>
 
 const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
-  HashMap.set(state, event.orcidId, {
-    orcidId: event.orcidId,
-    registeredAt: event.registeredAt,
+  Match.valueTags(event, {
+    RegisteredPrereviewerImported: event =>
+      HashMap.set(state, event.orcidId, {
+        orcidId: event.orcidId,
+        registeredAt: event.registeredAt,
+      }),
+    PrereviewerRegistered: event =>
+      HashMap.set(state, event.orcidId, {
+        orcidId: event.orcidId,
+        registeredAt: event.registeredAt,
+      }),
   })
 
 const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State =>
