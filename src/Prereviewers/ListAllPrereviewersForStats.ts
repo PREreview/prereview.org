@@ -14,10 +14,9 @@ type State = HashMap.HashMap<OrcidId.OrcidId, PrereviewerForStats>
 
 const filter = Events.EventFilter({ types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'] })
 
-const updateStateWithPertinentEvent = (
-  state: State,
-  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered,
-): State =>
+type PertinentEvent = Events.EventsForFilter<typeof filter>
+
+const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
   HashMap.set(state, event.orcidId, {
     orcidId: event.orcidId,
     registeredAt: event.registeredAt,
