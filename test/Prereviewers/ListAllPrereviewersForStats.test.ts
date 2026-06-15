@@ -24,16 +24,73 @@ const imported3 = new Events.RegisteredPrereviewerImported({
   registeredAt: 'not available from import source',
 })
 
+const imported1OptedInToReviewNotifications =
+  new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
+    orcidId: imported1.orcidId,
+    optedInAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  })
+
+const imported1OptedInAgainToReviewNotifications =
+  new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
+    ...imported1OptedInToReviewNotifications,
+    optedInAt: Temporal.Now.instant().subtract({ minutes: 10 }),
+  })
+
+const imported1OptedOutOfReviewNotifications =
+  new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests({
+    orcidId: imported1.orcidId,
+    optedOutAt: Temporal.Now.instant().subtract({ minutes: 30 }),
+  })
+
+const registered2OptedInToReviewNotifications =
+  new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
+    orcidId: registered2.orcidId,
+    optedInAt: Temporal.Now.instant().subtract({ hours: 30 }),
+  })
+
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], []],
-  ['imported', [imported1], [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt }]],
+  [
+    'imported',
+    [imported1],
+    [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt, requestNotifications: 'not-opted-in' }],
+  ],
+  [
+    'imported, request notifications',
+    [imported1, imported1OptedInToReviewNotifications],
+    [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt, requestNotifications: 'opted-in' }],
+  ],
+  [
+    'imported, request notifications opted out',
+    [imported1, imported1OptedInToReviewNotifications, imported1OptedOutOfReviewNotifications],
+    [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt, requestNotifications: 'opted-out' }],
+  ],
+  [
+    'imported, request notifications opted in again',
+    [
+      imported1,
+      imported1OptedInToReviewNotifications,
+      imported1OptedOutOfReviewNotifications,
+      imported1OptedInAgainToReviewNotifications,
+    ],
+    [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt, requestNotifications: 'opted-in' }],
+  ],
   [
     'multiple registered',
     [imported1, registered2, imported3],
     [
-      { orcidId: imported3.orcidId, registeredAt: imported3.registeredAt },
-      { orcidId: imported1.orcidId, registeredAt: imported1.registeredAt },
-      { orcidId: registered2.orcidId, registeredAt: registered2.registeredAt },
+      { orcidId: imported3.orcidId, registeredAt: imported3.registeredAt, requestNotifications: 'not-opted-in' },
+      { orcidId: imported1.orcidId, registeredAt: imported1.registeredAt, requestNotifications: 'not-opted-in' },
+      { orcidId: registered2.orcidId, registeredAt: registered2.registeredAt, requestNotifications: 'not-opted-in' },
+    ],
+  ],
+  [
+    'multiple registered, request notifications',
+    [imported1, registered2, imported3, imported1OptedInToReviewNotifications, registered2OptedInToReviewNotifications],
+    [
+      { orcidId: imported3.orcidId, registeredAt: imported3.registeredAt, requestNotifications: 'not-opted-in' },
+      { orcidId: imported1.orcidId, registeredAt: imported1.registeredAt, requestNotifications: 'opted-in' },
+      { orcidId: registered2.orcidId, registeredAt: registered2.registeredAt, requestNotifications: 'opted-in' },
     ],
   ],
 ])('%s', (_name, events, expected) => {

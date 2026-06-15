@@ -6,13 +6,21 @@ import { Temporal, type OrcidId } from '../types/index.ts'
 export interface PrereviewerForStats {
   orcidId: OrcidId.OrcidId
   registeredAt: Temporal.Instant | 'not available from import source'
+  requestNotifications: 'not-opted-in' | 'opted-in' | 'opted-out'
 }
 
 export type Result = ReadonlyArray<PrereviewerForStats>
 
 type State = HashMap.HashMap<OrcidId.OrcidId, PrereviewerForStats>
 
-const filter = Events.EventFilter({ types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'] })
+const filter = Events.EventFilter({
+  types: [
+    'RegisteredPrereviewerImported',
+    'PrereviewerRegistered',
+    'PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests',
+    'PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests',
+  ],
+})
 
 type PertinentEvent = Events.EventsForFilter<typeof filter>
 
@@ -22,12 +30,18 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
       HashMap.set(state, event.orcidId, {
         orcidId: event.orcidId,
         registeredAt: event.registeredAt,
+        requestNotifications: 'not-opted-in' as const,
       }),
     PrereviewerRegistered: event =>
       HashMap.set(state, event.orcidId, {
         orcidId: event.orcidId,
         registeredAt: event.registeredAt,
+        requestNotifications: 'not-opted-in' as const,
       }),
+    PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests: event =>
+      HashMap.modify(state, event.orcidId, Struct.evolve({ requestNotifications: () => 'opted-in' as const })),
+    PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests: event =>
+      HashMap.modify(state, event.orcidId, Struct.evolve({ requestNotifications: () => 'opted-out' as const })),
   })
 
 const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State =>
