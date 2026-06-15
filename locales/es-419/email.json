@@ -53,6 +53,9 @@
   "allTheBest": {
     "message": "Atentamente,"
   },
+  "footerCommunity": {
+    "message": "Facilitamos modos realizar retroalimentación de preprints de manera abierta, rápida, constructiva y por una comunidad global de pares."
+  },
   "footerJoinHtml": {
     "message": "Únete a nosotros en <prereviewLink>prereview.org</prereviewLink> y <slackLink>regístrate en nuestra vibrante comunidad de Slack</slackLink>."
   },

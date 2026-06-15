@@ -155,6 +155,9 @@
   "listFlowConcerns": {
     "message": "Enumera las preocupaciones que de ser atendidas mejorarían el flujo de la información y/o claridad pero que no son críticas para la comprensión de la investigación y sus conclusiones."
   },
+  "addedAuthorCount": {
+    "message": "{authorCount, plural, one {Has agregado # otro autor} other {Has agregado # otros autores}}"
+  },
   "authorNumber": {
     "message": "Autor/a {number, number}"
   },
@@ -223,6 +226,9 @@
   },
   "shareOnBluesky": {
     "message": "Compártelo en Bluesky"
+  },
+  "shareOnBlueskyMessage": {
+    "message": "Acabo de publicar una revisión del #Preprint {preprintTitle} en {prereviewHandle}"
   },
   "shareOnLinkedin": {
     "message": "Compártelo en LinkedIn"
@@ -532,6 +538,51 @@
   },
   "expectYouToAbideByCodeOfConduct": {
     "message": "Como integrante de nuestra comunidad, esperamos que sigas el <link>Código de conducta de PREreview</link>."
+  },
+  "examplesOfExpectedBehavior": {
+    "message": "Ejemplos de conducta esperada"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "Usar un lenguaje cordial e inclusivo."
+  },
+  "expectedBehaviorFeedback": {
+    "message": "Ofrecer retroalimentación constructiva, es decir, útil para quien la reciba."
+  },
+  "expectedBehaviorRespect": {
+    "message": "Respetar diferentes puntos de vista y experiencias."
+  },
+  "expectedBehaviorGracefulAcceptance": {
+    "message": "Aceptar con gracia las críticas constructivas."
+  },
+  "expectedBehaviorBestOfCommunity": {
+    "message": "Centrarse en lo que es mejor para la comunidad."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "Mostrar empatía hacia otros integrantes de la comunidad."
+  },
+  "examplesOfUnacceptableBehavior": {
+    "message": "Ejemplos de conducta inaceptable"
+  },
+  "unacceptableBehaviorTrollingEtc": {
+    "message": "Comentarios provocativos, ofensivos o despectivos, y ataques personales o políticos."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "Proporcionar comentarios no constructivos o disruptivos en PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "Acoso público o privado."
+  },
+  "unacceptableBehaviorPublishingConfidentialInformation": {
+    "message": "Publicar datos confidenciales de otras personas, como una dirección física o de correo electrónico, sin permiso explícito."
+  },
+  "unacceptableBehaviorSexualizedLanguage": {
+    "message": "Uso de lenguaje o imágenes sexualizadas y atención o insinuaciones sexuales no deseados."
+  },
+  "unacceptableBehaviorReviewingOwnPreprint": {
+    "message": "Revisar tu propio preprint."
+  },
+  "unacceptableBehaviorInappropriate": {
+    "message": "Cualquier otra conducta que razonablemente podría considerarse inapropiada en un entorno profesional."
   },
   "iAmFollowingCodeOfConduct": {
     "message": "Me estoy adhiriendo al Código de conducta"

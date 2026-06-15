@@ -17,6 +17,9 @@
   "havingProblems": {
     "message": "Lo sentimos, estamos teniendo problemas"
   },
+  "doNotKnowPreprint": {
+    "message": "Lo sentimos, no encontramos este preprint"
+  },
   "notAPreprint": {
     "message": "Lo sentimos, solo aceptamos preprints"
   },
@@ -64,6 +67,9 @@
   },
   "doiCouldBeEngrxiv": {
     "message": "Creemos que el DOI {doi} podría ser un preprint de engrXiv, pero no podemos encontrar detalles."
+  },
+  "doiCouldBeJmir": {
+    "message": "Creemos que el DOI {doi} podría ser un preprint de JMIR, pero no podemos encontrar más detalles."
   },
   "doiCouldBeJxiv": {
     "message": "Creemos que el DOI {doi} podría ser un preprint de Jxiv, pero no podemos encontrar detalles."
@@ -113,6 +119,9 @@
   "doiCouldBeTechrxiv": {
     "message": "Creemos que el DOI {doi} podría ser un preprint de TechRxiv, pero no podemos encontrar detalles."
   },
+  "doiCouldBeUmsida": {
+    "message": "Creemos que el DOI {doi} podría ser un preprint de UMSIDA, pero no podemos encontrar más detalles."
+  },
   "doiCouldBeVerixiv": {
     "message": "Creemos que el DOI {doi} podría ser un preprint de VeriXiv, pero no podemos encontrar detalles."
   },
@@ -142,6 +151,9 @@
   },
   "urlIsCorrect": {
     "message": "Si la URL es correcta, favor de <contact>contactarnos</contact>."
+  },
+  "supportPreprintsFrom": {
+    "message": "Aceptamos preprints de Advance, AfricArXiv, Arcadia Science, arXiv, Authorea, bioRxiv, ChemRxiv, Curvenote, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, JMIR, Jxiv, Lifecycle Journal, medRxiv, MetaArXiv, NeuroLibre, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research Square, SciELO, ScienceOpen, SocArXiv, SSRN, TechRxiv, VeriXiv y Zenodo."
   },
   "isAPreprint": {
     "message": "Si esto es un preprint, favor de <contact>contactarnos</contact>."

@@ -1,4 +1,7 @@
 {
+  "structuredReviewTitle": {
+    "message": "PREreview estructurada de {dataset}"
+  },
   "authoredBy": {
     "message": "<visuallyHidden>Escrita</visuallyHidden> por {author}"
   },

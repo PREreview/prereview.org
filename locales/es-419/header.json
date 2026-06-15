@@ -35,6 +35,9 @@
   "menuMyPrereviews": {
     "message": "Mis PREreviews"
   },
+  "menuMyReviewRequests": {
+    "message": "Mis solicitudes de revisión"
+  },
   "menuLogOut": {
     "message": "Cerrar sesión"
   },

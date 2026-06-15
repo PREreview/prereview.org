@@ -2,6 +2,9 @@
   "reviewTitle": {
     "message": "PREreview del {dataset}"
   },
+  "reviewText": {
+    "message": "{reviewer} revisó {dataset}"
+  },
   "reviewPublished": {
     "message": "Revisión publicada"
   },
