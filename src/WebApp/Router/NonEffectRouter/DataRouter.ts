@@ -75,6 +75,7 @@ export const DataRouter = pipe(
                     Array.map(user => ({
                       orcid: user.orcidId,
                       timestamp: user.registeredAt,
+                      requestNotifications: user.requestNotifications,
                       careerStage: careerStages[user.orcidId]?.value,
                       location: locations[user.orcidId]?.value,
                     })),

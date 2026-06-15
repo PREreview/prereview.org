@@ -9,6 +9,7 @@ import type { ScietyListEnv } from '../sciety-list/index.ts'
 export interface User {
   orcid: OrcidId.OrcidId
   timestamp: Temporal.Instant | 'not available from import source'
+  requestNotifications: 'not-opted-in' | 'opted-in' | 'opted-out'
   careerStage?: CareerStage['value'] | undefined
   location?: Location['value'] | undefined
 }
@@ -23,6 +24,7 @@ const getUsers = (): RTE.ReaderTaskEither<GetUsersEnv, 'unavailable', ReadonlyAr
 const UserSchema = Schema.Struct({
   orcid: OrcidId.OrcidIdSchema,
   timestamp: Schema.Union(Temporal.InstantSchema, Schema.Literal('not available from import source')),
+  requestNotifications: Schema.Literal('not-opted-in', 'opted-in', 'opted-out'),
   careerStage: Schema.optional(Schema.Literal('early', 'mid', 'late')),
   location: Schema.optional(NonEmptyString.NonEmptyStringSchema),
 })
