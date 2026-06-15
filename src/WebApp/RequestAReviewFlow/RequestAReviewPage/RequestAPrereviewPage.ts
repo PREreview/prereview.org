@@ -14,7 +14,7 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
   return PageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, hasAnError), plainText),
-    nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
+    nav: html`<a href="${Routes.HomePage}" class="back">${t('forms', 'backLink')()}</a>`,
     main: html`
       <form method="post" action="${Routes.RequestAReview}" novalidate>
         ${hasAnError
@@ -40,22 +40,20 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
           <p id="which-preprint-tip" role="note">${t('request-a-prereview-page', 'useDoiUrl')()}</p>
 
           <details>
-            <summary><span>${t('request-a-prereview-page', 'whatIsDoi')()}</span></summary>
+            <summary>${t('request-a-prereview-page', 'whatIsDoi')()}</summary>
 
             <div>
               <p>
-                ${rawHtml(
-                  t(
-                    'request-a-prereview-page',
-                    'whatIsDoiText',
-                  )({
-                    doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`.toString(),
-                    example: html`<q class="select-all" translate="no">10.1101/2022.10.06.511170</q>`.toString(),
-                    exampleUrl: html`<q class="select-all" translate="no"
-                      >https://doi.org/10.1101/2022.10.06.511170</q
-                    >`.toString(),
-                  }),
-                )}
+                ${t(
+                  'request-a-prereview-page',
+                  'whatIsDoiText',
+                )({
+                  doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`,
+                  example: html`<q class="select-all" dir="auto" translate="no">10.1101/2022.10.06.511170</q>`,
+                  exampleUrl: html`<q class="select-all" dir="auto" translate="no"
+                    >https://doi.org/10.1101/2022.10.06.511170</q
+                  >`,
+                })}
               </p>
             </div>
           </details>
@@ -74,6 +72,7 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
             name="whichPreprint"
             type="text"
             size="60"
+            dir="ltr"
             spellcheck="false"
             aria-describedby="which-preprint-tip"
             ${hasAnError && Either.isLeft(form.whichPreprint)

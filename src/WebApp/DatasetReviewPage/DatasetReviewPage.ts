@@ -34,35 +34,29 @@ export const createDatasetReviewPage = ({
   const t = translate(locale, 'dataset-review-page')
 
   return PageResponse({
-    title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”`.toString() })),
-    description: plainText(
-      t('authoredBy')({ author: authorList(datasetReview, locale).toString(), visuallyHidden: identity }),
-    ),
+    title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”` })),
+    description: plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
-        ><span>${t('backLink')()}</span></a
+        >${t('backLink')()}</a
       >
-      <a href="${plainText(datasetReview.dataset.url.href)}" class="forward"><span>${t('seeDataset')()}</span></a>
+      <a href="${datasetReview.dataset.url.href}" class="forward">${t('seeDataset')()}</a>
     `,
     main: html`
       <header>
         <h1>
-          ${rawHtml(
-            t('structuredReviewTitle')({
-              dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}
-                >${datasetReview.dataset.title}</cite
-              >`.toString(),
-            }),
-          )}
+          ${t('structuredReviewTitle')({
+            dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}
+              >${datasetReview.dataset.title}</cite
+            >`,
+          })}
         </h1>
 
         <div class="byline">
-          ${rawHtml(
-            t('authoredBy')({
-              author: authorList(datasetReview, locale).toString(),
-              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-            }),
-          )}
+          ${t('authoredBy')({
+            author: authorList(datasetReview, locale),
+            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+          })}
         </div>
 
         <dl>
@@ -72,14 +66,18 @@ export const createDatasetReviewPage = ({
           </div>
           <div>
             <dt>DOI</dt>
-            <dd><a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" translate="no">${datasetReview.doi}</a></dd>
+            <dd>
+              <a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" dir="auto" translate="no"
+                >${datasetReview.doi}</a
+              >
+            </dd>
           </div>
           <div>
             <dt>${t('license')()}</dt>
             <dd>
               <a href="https://creativecommons.org/licenses/by/4.0/">
                 <dfn>
-                  <abbr title="${t('licenseCcBy40')()}"><span translate="no">CC BY 4.0</span></abbr>
+                  <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
                 </dfn>
               </a>
             </dd>
@@ -338,11 +336,14 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
 
 const displayAuthor = Personas.match({
   onPublic: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+    html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      class="orcid"
+      dir="auto"
       >${persona.name}</a
     >`,
   onPseudonym: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" dir="auto"
       >${persona.pseudonym}</a
     >`,
 })

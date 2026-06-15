@@ -25,7 +25,7 @@ export const HasTrackedChangesQuestion = ({
     title: pipe(t('trackChanges')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" class="back">
-        <span>${t('forms', 'backLink')()}</span>
+        ${t('forms', 'backLink')()}
       </a>
     `,
     main: html`
@@ -73,7 +73,7 @@ export const HasTrackedChangesQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="has-tracked-changes-tip-yes" role="note">${t('trackChangesYesTip')()}</p>
                   <div class="conditional" id="has-tracked-changes-yes-control">
@@ -81,7 +81,13 @@ export const HasTrackedChangesQuestion = ({
                       <label for="has-tracked-changes-yes-detail" class="textarea"
                         >${t('trackChangesYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasTrackedChangesYesDetail" id="has-tracked-changes-yes-detail" rows="5">
+                      <textarea
+                        name="hasTrackedChangesYesDetail"
+                        id="has-tracked-changes-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -109,7 +115,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="has-tracked-changes-tip-partly" role="note">${t('trackChangesPartlyTip')()}</p>
                   <div class="conditional" id="has-tracked-changes-partly-control">
@@ -117,7 +123,13 @@ ${Match.valueTags(form, {
                       <label for="has-tracked-changes-partly-detail" class="textarea"
                         >${t('trackChangesPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasTrackedChangesPartlyDetail" id="has-tracked-changes-partly-detail" rows="5">
+                      <textarea
+                        name="hasTrackedChangesPartlyDetail"
+                        id="has-tracked-changes-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -146,14 +158,20 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <div class="conditional" id="has-tracked-changes-no-control">
                     <div>
                       <label for="has-tracked-changes-no-detail" class="textarea"
                         >${t('trackChangesNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="hasTrackedChangesNoDetail" id="has-tracked-changes-no-detail" rows="5">
+                      <textarea
+                        name="hasTrackedChangesNoDetail"
+                        id="has-tracked-changes-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -168,7 +186,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="hasTrackedChanges"
@@ -181,7 +199,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

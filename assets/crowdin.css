@@ -1,5 +1,9 @@
 @charset "utf-8";
 
+.crowdin_jipt_untranslated {
+  unicode-bidi: plaintext;
+}
+
 .crowdin_jipt_approved,
 .crowdin_jipt_hidden,
 .crowdin_jipt_no_preview,
@@ -10,6 +14,11 @@
 .crowdin_jipt_untranslated {
   position: relative;
   z-index: 1000;
+
+  .jipt-highlight & {
+    outline-offset: 1px !important;
+    outline-width: 2px !important;
+  }
 }
 
 .crowdin_phrase:only-child {

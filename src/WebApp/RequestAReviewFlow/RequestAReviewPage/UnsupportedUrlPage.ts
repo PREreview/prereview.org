@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -14,13 +14,11 @@ export const UnsupportedUrlPage = (locale: SupportedLocale) =>
       <p>${translate(locale, 'request-a-prereview-page', 'supportPreprintsFrom')()}</p>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'request-a-prereview-page',
-            'urlContactUs',
-          )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
-        )}
+        ${translate(
+          locale,
+          'request-a-prereview-page',
+          'urlContactUs',
+        )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}
       </p>
 
       <p>${translate(locale, 'request-a-prereview-page', 'tryDoi')()}</p>

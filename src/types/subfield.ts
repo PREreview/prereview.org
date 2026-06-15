@@ -1,4 +1,5 @@
 import { ParseResult, pipe, Schema } from 'effect'
+import type { Html } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import subfields from './data/subfields.json' with { type: 'json' }
@@ -21,7 +22,7 @@ export const SubfieldIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URL
     ParseResult.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),
 })
 
-export function getSubfieldName(id: SubfieldId, locale: SupportedLocale): string {
+export function getSubfieldName(id: SubfieldId, locale: SupportedLocale): Html {
   return translate(locale, 'subfields', `subfield${id}`)()
 }
 

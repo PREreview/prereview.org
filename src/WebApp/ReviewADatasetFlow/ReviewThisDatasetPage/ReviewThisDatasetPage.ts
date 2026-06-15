@@ -21,9 +21,7 @@ export const ReviewThisDatasetPage = ({
   return PageResponse({
     title: plainText(t('reviewADataset')()),
     nav: html`
-      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back"
-        ><span>${t('backToDataset')()}</span></a
-      >
+      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back">${t('backToDataset')()}</a>
     `,
     main: html`
       <h1>${t('reviewADataset')()}</h1>
@@ -33,12 +31,10 @@ export const ReviewThisDatasetPage = ({
           <h2 id="dataset-title" ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</h2>
 
           <div class="byline">
-            ${rawHtml(
-              t('authoredBy')({
-                authors: pipe(dataset.authors, Array.map(Struct.get('name')), formatList(locale)).toString(),
-                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-              }),
-            )}
+            ${t('authoredBy')({
+              authors: pipe(dataset.authors, Array.map(Struct.get('name')), formatList(locale)),
+              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+            })}
           </div>
 
           <dl>
@@ -52,7 +48,7 @@ export const ReviewThisDatasetPage = ({
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi" translate="no">${dataset.id.value}</dd>
+              <dd class="doi" dir="auto" translate="no">${dataset.id.value}</dd>
             </div>
           </dl>
         </header>
@@ -67,13 +63,9 @@ export const ReviewThisDatasetPage = ({
       </article>
 
       <p>
-        ${rawHtml(
-          t('youCanWriteAPrereview')({
-            dataset: html`<cite ${languageAttributesFor(dataset.title.language)}
-              >${dataset.title.text}</cite
-            >`.toString(),
-          }),
-        )}
+        ${t('youCanWriteAPrereview')({
+          dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`,
+        })}
       </p>
 
       ${Boolean.match(isLoggedIn, {
@@ -84,15 +76,13 @@ export const ReviewThisDatasetPage = ({
           <p>${t('orcidIdLogIn')()}</p>
 
           <details>
-            <summary><span>${t('whatIsOrcidIdHeading')()}</span></summary>
+            <summary>${t('whatIsOrcidIdHeading')()}</summary>
 
             <div>
               <p>
-                ${rawHtml(
-                  t('whatIsOrcidId')({
-                    link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString(),
-                  }),
-                )}
+                ${t('whatIsOrcidId')({
+                  link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`,
+                })}
               </p>
             </div>
           </details>
@@ -113,7 +103,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    Array.map(item => html`${item}`.toString()),
+    Array.map(item => html`<bdi>${item}</bdi>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

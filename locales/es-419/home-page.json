@@ -17,6 +17,9 @@
   "trainingTitle": {
     "message": "Capacitación en revisión por pares"
   },
+  "trainingText": {
+    "message": "Talleres interactivos para organizaciones e instituciones que buscan ayudar a sus miembros a mejorar sus habilidades como revisores/as."
+  },
   "trainingLink": {
     "message": "Lee acerca de nuestros talleres de capacitación"
   },
@@ -24,7 +27,7 @@
     "message": "Revisiones en vivo"
   },
   "liveReviewsText": {
-    "message": "Celebramos sesiones colaborativas e interactivas de revisión de preprints como un enfoque alternativo a la revisión por pares tradicional."
+    "message": "Realizamos sesiones colaborativas e interactivas de revisión de preprints como un enfoque alternativo a la revisión por pares tradicional."
   },
   "liveReviewsLink": {
     "message": "Más detalles sobre Revisiones en vivo"

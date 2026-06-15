@@ -25,24 +25,40 @@ export class PlainText extends Data.TaggedClass('PlainText')<{
 
 type Placeholder = ReadonlyArray<Html | PlainText> | Html | PlainText | string | number
 
+const encodePlaceholder = (placeholder: Exclude<Placeholder, ReadonlyArray<unknown>>) =>
+  encode(placeholder.toString(), { mode: 'specialChars' })
+
 const handlePlaceholder = pipe(
   Match.type<Exclude<Placeholder, ReadonlyArray<unknown>>>(),
   Match.tag('Html', html => html.value),
   Match.tag('PlainText', plainText => plainText.value),
-  Match.orElse(value => encode(value.toString(), { mode: 'specialChars' })),
+  Match.orElse(encodePlaceholder),
 )
 
 export function html(literals: TemplateStringsArray, ...placeholders: ReadonlyArray<Placeholder>): Html {
   const value = literals.raw.reduce((string, literal, i) => {
     const placeholder = Array.unsafeGet(placeholders, i - 1)
 
+    if (isTextAreaString(string)) {
+      const value =
+        typeof placeholder === 'string' || typeof placeholder === 'number' || '_tag' in placeholder
+          ? encodePlaceholder(placeholder)
+          : placeholder.map(encodePlaceholder).join('')
+
+      return `${string}${value}${literal}`
+    }
+
     const value =
       typeof placeholder === 'string' || typeof placeholder === 'number' || '_tag' in placeholder
         ? handlePlaceholder(placeholder)
         : placeholder.map(handlePlaceholder).join('')
 
+    if (stringEndsWithAttribute(string)) {
+      return `${string}${stripTags(value)}${literal}`
+    }
+
     if (stringEndsWithUnescapedAttribute(string)) {
-      return `${string}"${value}"${literal}`
+      return `${string}"${stripTags(value)}"${literal}`
     }
 
     return `${string}${value}${literal}`
@@ -220,17 +236,20 @@ export const RawHtmlC = C.make(
 )
 
 function texToMathml(input: string) {
-  return input.replace(/(\${1,2}(?!\s*\d+[\s,.]))([\s\S]+?)\1/g, (original, mode: string, match: string) => {
-    try {
-      return sanitizeHtml(
-        katex
-          .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml', strict: false })
-          .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1'),
-      ).toString()
-    } catch {
-      return original
-    }
-  })
+  return input.replace(
+    /(\${1,2}(?!\s*(?:&nbsp;|&#160;|&#xA0;|\u00a0)*\d+[\s,.]))([\s\S]+?)\1/g,
+    (original, mode: string, match: string) => {
+      try {
+        return sanitizeHtml(
+          katex
+            .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml', strict: false })
+            .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1'),
+        ).toString()
+      } catch {
+        return original
+      }
+    },
+  )
 }
 
 function mathmlToTex(input: string) {
@@ -240,6 +259,14 @@ function mathmlToTex(input: string) {
   )
 }
 
+function isTextAreaString(string: string): boolean {
+  return /<textarea\b[^>]*>\s*$/i.test(string)
+}
+
 function stringEndsWithUnescapedAttribute(string: string): boolean {
   return string.endsWith('=') && !/(?:="|&)[^"]*=$/.test(string)
+}
+
+function stringEndsWithAttribute(string: string): boolean {
+  return string.endsWith('="')
 }

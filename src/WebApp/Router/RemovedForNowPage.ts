@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -13,13 +13,11 @@ export const removedForNowPage = (locale: SupportedLocale) =>
       <p>${translate(locale, 'legacy-routes', 'temporaryMessage')()}</p>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'legacy-routes',
-            'getInTouch',
-          )({ link: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
-        )}
+        ${translate(
+          locale,
+          'legacy-routes',
+          'getInTouch',
+        )({ link: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}
       </p>
     `,
   })

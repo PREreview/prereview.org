@@ -25,7 +25,7 @@ export const OthersNeedToBeListedPage = ({
     title: pipe('Did you review this dataset with anyone else?', errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`

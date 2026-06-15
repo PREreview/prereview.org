@@ -1,6 +1,6 @@
 import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
+import { fixHeadingLevels, type Html, html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -23,7 +23,7 @@ export const CheckPage = ({
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
     nav: html` <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <single-use-form>
@@ -37,7 +37,7 @@ export const CheckPage = ({
 
             <dl class="summary-list">
               <div>
-                <dt><span>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</span></dt>
+                <dt>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</dt>
                 <dd>
                   ${Personas.match(persona, {
                     onPublic: persona =>
@@ -55,18 +55,16 @@ export const CheckPage = ({
                 </dd>
                 <dd>
                   <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}"
-                    >${rawHtml(
-                      translate(
-                        locale,
-                        'write-comment-flow',
-                        'changeName',
-                      )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
-                    )}</a
+                    >${translate(
+                      locale,
+                      'write-comment-flow',
+                      'changeName',
+                    )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>` })}</a
                   >
                 </dd>
               </div>
               <div>
-                <dt><span>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</span></dt>
+                <dt>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</dt>
                 <dd>
                   ${Option.getOrElse(competingInterests, () =>
                     translate(locale, 'write-comment-flow', 'noCompetingInterests')(),
@@ -74,13 +72,11 @@ export const CheckPage = ({
                 </dd>
                 <dd>
                   <a href="${Routes.WriteCommentCompetingInterests.href({ commentId })}"
-                    >${rawHtml(
-                      translate(
-                        locale,
-                        'write-comment-flow',
-                        'changeCompetingInterests',
-                      )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
-                    )}</a
+                    >${translate(
+                      locale,
+                      'write-comment-flow',
+                      'changeCompetingInterests',
+                    )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>` })}</a
                   >
                 </dd>
               </div>
@@ -91,13 +87,11 @@ export const CheckPage = ({
               <h2 id="comment-label">${translate(locale, 'write-comment-flow', 'checkYourCommentHeading')()}</h2>
 
               <a href="${Routes.WriteCommentEnterComment.href({ commentId })}"
-                >${rawHtml(
-                  translate(
-                    locale,
-                    'write-comment-flow',
-                    'changeComment',
-                  )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString() }),
-                )}</a
+                >${translate(
+                  locale,
+                  'write-comment-flow',
+                  'changeComment',
+                )({ visuallyHidden: text => html`<span class="visually-hidden">${text}</span>` })}</a
               >
             </div>
 
@@ -107,15 +101,13 @@ export const CheckPage = ({
           <h2>${translate(locale, 'write-comment-flow', 'nowPublishHeading')()}</h2>
 
           <p>
-            ${rawHtml(
-              translate(
-                locale,
-                'write-comment-flow',
-                'nowPublishMessage',
-              )({
-                license: text => html`<a href="https://creativecommons.org/licenses/by/4.0/">${text}</a>`.toString(),
-              }),
-            )}
+            ${translate(
+              locale,
+              'write-comment-flow',
+              'nowPublishMessage',
+            )({
+              license: text => html`<a href="https://creativecommons.org/licenses/by/4.0/">${text}</a>`,
+            })}
           </p>
 
           <button>${translate(locale, 'write-comment-flow', 'publishButton')()}</button>

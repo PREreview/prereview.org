@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import { reviewAPreprintMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
@@ -14,7 +14,7 @@ export const unsupportedUrlPage = (locale: SupportedLocale) =>
 
       <p>${translate(locale, 'review-a-preprint', 'supportPreprintsFrom')()}</p>
 
-      <p>${rawHtml(translate(locale, 'review-a-preprint', 'urlIsForPreprint')({ contact: mailToHelp }))}</p>
+      <p>${translate(locale, 'review-a-preprint', 'urlIsForPreprint')({ contact: mailToHelp })}</p>
 
       <p>${translate(locale, 'review-a-preprint', 'otherwiseUseDoi')()}</p>
 
@@ -24,4 +24,4 @@ export const unsupportedUrlPage = (locale: SupportedLocale) =>
     `,
   })
 
-const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
+const mailToHelp = (text: Html) => html`<a href="mailto:help@prereview.org">${text}</a>`

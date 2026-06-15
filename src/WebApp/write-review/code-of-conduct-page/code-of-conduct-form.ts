@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -45,11 +45,11 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
             </legend>
 
             <p id="conduct-tip" role="note">
-              ${rawHtml(t('write-review', 'expectYouToAbideByCodeOfConduct')({ link: codeOfConductLink }))}
+              ${t('write-review', 'expectYouToAbideByCodeOfConduct')({ link: codeOfConductLink })}
             </p>
 
             <details>
-              <summary><span>${t('write-review', 'examplesOfExpectedBehavior')()}</span></summary>
+              <summary>${t('write-review', 'examplesOfExpectedBehavior')()}</summary>
 
               <div>
                 <ul>
@@ -64,7 +64,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
             </details>
 
             <details>
-              <summary><span>${t('write-review', 'examplesOfUnacceptableBehavior')()}</span></summary>
+              <summary>${t('write-review', 'examplesOfUnacceptableBehavior')()}</summary>
 
               <div>
                 <ul>
@@ -100,7 +100,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
                   .with({ right: 'yes' }, () => 'checked')
                   .otherwise(() => '')}
               />
-              <span>${t('write-review', 'iAmFollowingCodeOfConduct')()}</span>
+              ${t('write-review', 'iAmFollowingCodeOfConduct')()}
             </label>
           </fieldset>
         </div>
@@ -113,7 +113,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
   })
 }
 
-const codeOfConductLink = (text: string) => html`<a href="${Routes.CodeOfConduct}">${text}</a>`.toString()
+const codeOfConductLink = (text: Html) => html`<a href="${Routes.CodeOfConduct}">${text}</a>`
 
 const toErrorItems = (locale: SupportedLocale) => (form: CodeOfConductForm) => html`
   ${E.isLeft(form.conduct)

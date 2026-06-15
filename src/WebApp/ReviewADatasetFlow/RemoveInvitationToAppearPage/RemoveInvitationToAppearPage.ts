@@ -29,7 +29,7 @@ export const RemoveInvitationToAppearPage = ({
     title: pipe(`Are you sure you want to remove ${authorName}?`, errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`

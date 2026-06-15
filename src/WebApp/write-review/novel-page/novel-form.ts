@@ -36,7 +36,7 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
     ),
     nav: html`
       <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -97,7 +97,7 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
                         .with({ right: 'highly' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('advanceKnowledgeHighlyLikely')()}</span>
+                    ${t('advanceKnowledgeHighlyLikely')()}
                   </label>
                   <p id="novel-tip-highly" role="note">${t('advanceKnowledgeHighlyLikelyTip')()}</p>
                   <div class="conditional" id="novel-highly-control">
@@ -106,7 +106,7 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
                         >${t('advanceKnowledgeHighlyLikelyWhy')()}</label
                       >
 
-                      <textarea name="novelHighlyDetails" id="novel-highly-details" rows="5">
+                      <textarea name="novelHighlyDetails" id="novel-highly-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelHighlyDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -126,7 +126,7 @@ ${match(form.novelHighlyDetails)
                         .with({ right: 'substantial' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('advanceKnowledgeSomewhatLikely')()}</span>
+                    ${t('advanceKnowledgeSomewhatLikely')()}
                   </label>
                   <p id="novel-tip-substantial" role="note">${t('advanceKnowledgeSomewhatLikelyTip')()}</p>
                   <div class="conditional" id="novel-substantial-control">
@@ -135,7 +135,13 @@ ${match(form.novelHighlyDetails)
                         >${t('advanceKnowledgeSomewhatLikelyWhy')()}</label
                       >
 
-                      <textarea name="novelSubstantialDetails" id="novel-substantial-details" rows="5">
+                      <textarea
+                        name="novelSubstantialDetails"
+                        id="novel-substantial-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.novelSubstantialDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -155,7 +161,7 @@ ${match(form.novelSubstantialDetails)
                         .with({ right: 'some' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('advanceKnowledgeModeratelyLikely')()}</span>
+                    ${t('advanceKnowledgeModeratelyLikely')()}
                   </label>
                   <p id="novel-tip-some" role="note">${t('advanceKnowledgeModeratelyLikelyTip')()}</p>
                   <div class="conditional" id="novel-some-control">
@@ -164,7 +170,7 @@ ${match(form.novelSubstantialDetails)
                         >${t('advanceKnowledgeModeratelyLikelyWhy')()}</label
                       >
 
-                      <textarea name="novelSomeDetails" id="novel-some-details" rows="5">
+                      <textarea name="novelSomeDetails" id="novel-some-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelSomeDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -184,14 +190,20 @@ ${match(form.novelSomeDetails)
                         .with({ right: 'limited' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('advanceKnowledgeNotLikely')()}</span>
+                    ${t('advanceKnowledgeNotLikely')()}
                   </label>
                   <p id="novel-tip-limited" role="note">${t('advanceKnowledgeNotLikelyTip')()}</p>
                   <div class="conditional" id="novel-limited-control">
                     <div>
                       <label for="novel-limited-details" class="textarea">${t('advanceKnowledgeNotLikelyWhy')()}</label>
 
-                      <textarea name="novelLimitedDetails" id="novel-limited-details" rows="5">
+                      <textarea
+                        name="novelLimitedDetails"
+                        id="novel-limited-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.novelLimitedDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -211,14 +223,14 @@ ${match(form.novelLimitedDetails)
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('advanceKnowledgeNotAtAllLikely')()}</span>
+                    ${t('advanceKnowledgeNotAtAllLikely')()}
                   </label>
                   <p id="novel-tip-no" role="note">${t('advanceKnowledgeNotAtAllLikelyTip')()}</p>
                   <div class="conditional" id="novel-no-control">
                     <div>
                       <label for="novel-no-details" class="textarea">${t('advanceKnowledgeNotAtAllLikelyWhy')()}</label>
 
-                      <textarea name="novelNoDetails" id="novel-no-details" rows="5">
+                      <textarea name="novelNoDetails" id="novel-no-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -227,7 +239,7 @@ ${match(form.novelNoDetails)
                   </div>
                 </li>
                 <li>
-                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="novel"
@@ -237,7 +249,7 @@ ${match(form.novelNoDetails)
                         .with({ right: 'skip' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('iDoNotKnow')()}</span>
+                    ${t('iDoNotKnow')()}
                   </label>
                 </li>
               </ol>

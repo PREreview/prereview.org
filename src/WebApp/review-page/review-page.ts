@@ -33,7 +33,7 @@ export const createPage = ({
         locale,
         'review-page',
         review.structured ? 'structuredReviewTitle' : 'reviewTitle',
-      )({ preprint: plainText`“${review.preprint.title}”`.toString() }),
+      )({ preprint: review.preprint.title }),
     ),
     description: plainText(
       review.club
@@ -51,7 +51,7 @@ export const createPage = ({
                   : [],
               ),
               formatList(locale),
-            ).toString(),
+            ),
             club: getClubName(review.club),
             hide: identity,
           })
@@ -69,16 +69,16 @@ export const createPage = ({
                   : [],
               ),
               formatList(locale),
-            ).toString(),
+            ),
             hide: identity,
           }),
     ),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
-        ><span>${translate(locale, 'review-page', 'otherReviewsLink')()}</span></a
+        >${translate(locale, 'review-page', 'otherReviewsLink')()}</a
       >
       <a href="${review.preprint.url.href}" class="forward"
-        ><span>${translate(locale, 'review-page', 'readPreprintLink')()}</span></a
+        >${translate(locale, 'review-page', 'readPreprintLink')()}</a
       >
     `,
     main: html`
@@ -89,60 +89,54 @@ export const createPage = ({
         ${review.live ? html`<span class="tag">${translate(locale, 'review-page', 'liveReview')()}</span>` : ''}
 
         <h1>
-          ${rawHtml(
-            translate(
-              locale,
-              'review-page',
-              review.structured ? 'structuredReviewTitle' : 'reviewTitle',
-            )({
-              preprint: html`<cite ${languageAttributesFor(review.preprint.language)}
-                >${review.preprint.title}</cite
-              >`.toString(),
-            }),
-          )}
+          ${translate(
+            locale,
+            'review-page',
+            review.structured ? 'structuredReviewTitle' : 'reviewTitle',
+          )({
+            preprint: html`<cite ${languageAttributesFor(review.preprint.language)}>${review.preprint.title}</cite>`,
+          })}
         </h1>
 
         <div class="byline">
-          ${rawHtml(
-            review.club
-              ? translate(
-                  locale,
-                  'review-page',
-                  'clubReviewAuthors',
-                )({
-                  authors: pipe(
-                    review.authors.named,
-                    Array.map(displayAuthor),
-                    Array.appendAll(
-                      review.authors.anonymous > 0
-                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
-                        : [],
-                    ),
-                    formatList(locale),
-                  ).toString(),
-                  club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}"
-                    >${getClubName(review.club)}</a
-                  >`.toString(),
-                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                })
-              : translate(
-                  locale,
-                  'review-page',
-                  'reviewAuthors',
-                )({
-                  authors: pipe(
-                    review.authors.named,
-                    Array.map(displayAuthor),
-                    Array.appendAll(
-                      review.authors.anonymous > 0
-                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
-                        : [],
-                    ),
-                    formatList(locale),
-                  ).toString(),
-                  hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                }),
-          )}
+          ${review.club
+            ? translate(
+                locale,
+                'review-page',
+                'clubReviewAuthors',
+              )({
+                authors: pipe(
+                  review.authors.named,
+                  Array.map(displayAuthor),
+                  Array.appendAll(
+                    review.authors.anonymous > 0
+                      ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                      : [],
+                  ),
+                  formatList(locale),
+                ),
+                club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
+                  >${getClubName(review.club)}</a
+                >`,
+                hide: text => html`<span class="visually-hidden">${text}</span>`,
+              })
+            : translate(
+                locale,
+                'review-page',
+                'reviewAuthors',
+              )({
+                authors: pipe(
+                  review.authors.named,
+                  Array.map(displayAuthor),
+                  Array.appendAll(
+                    review.authors.anonymous > 0
+                      ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                      : [],
+                  ),
+                  formatList(locale),
+                ),
+                hide: text => html`<span class="visually-hidden">${text}</span>`,
+              })}
         </div>
 
         <dl>
@@ -152,7 +146,7 @@ export const createPage = ({
           </div>
           <div>
             <dt>DOI</dt>
-            <dd><a href="${toUrl(review.doi).href}" class="doi" translate="no">${review.doi}</a></dd>
+            <dd><a href="${toUrl(review.doi).href}" class="doi" dir="auto" translate="no">${review.doi}</a></dd>
           </div>
           <div>
             <dt>${translate(locale, 'review-page', 'license')()}</dt>
@@ -164,7 +158,7 @@ export const createPage = ({
                     <a href="https://creativecommons.org/publicdomain/zero/1.0/">
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
-                          ><span translate="no">CC0 1.0</span></abbr
+                          ><bdi translate="no">CC0 1.0</bdi></abbr
                         >
                       </dfn>
                     </a>
@@ -176,7 +170,7 @@ export const createPage = ({
                     <a href="https://creativecommons.org/licenses/by/4.0/">
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                          ><span translate="no">CC BY 4.0</span></abbr
+                          ><bdi translate="no">CC BY 4.0</bdi></abbr
                         >
                       </dfn>
                     </a>
@@ -228,20 +222,14 @@ export const createPage = ({
                           </h3>
 
                           <div class="byline">
-                            ${rawHtml(
-                              translate(
-                                locale,
-                                'review-page',
-                                'commentItemAuthors',
-                              )({
-                                authors: pipe(
-                                  item.authors.named,
-                                  Array.map(displayAuthor),
-                                  formatList(locale),
-                                ).toString(),
-                                hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                              }),
-                            )}
+                            ${translate(
+                              locale,
+                              'review-page',
+                              'commentItemAuthors',
+                            )({
+                              authors: pipe(item.authors.named, Array.map(displayAuthor), formatList(locale)),
+                              hide: text => html`<span class="visually-hidden">${text}</span>`,
+                            })}
                           </div>
 
                           <dl>
@@ -252,7 +240,7 @@ export const createPage = ({
                             <div>
                               <dt>DOI</dt>
                               <dd>
-                                <a href="${toUrl(item.doi).href}" class="doi" translate="no">${item.doi}</a>
+                                <a href="${toUrl(item.doi).href}" class="doi" dir="auto" translate="no">${item.doi}</a>
                               </dd>
                             </div>
                             <div>
@@ -265,7 +253,7 @@ export const createPage = ({
                                       <a href="https://creativecommons.org/licenses/by/4.0/">
                                         <dfn>
                                           <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                                            ><span translate="no">CC BY 4.0</span></abbr
+                                            ><bdi translate="no">CC BY 4.0</bdi></abbr
                                           >
                                         </dfn>
                                       </a>
@@ -295,16 +283,21 @@ export const createPage = ({
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}" dir="auto"
+      >${name}</a
+    >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(

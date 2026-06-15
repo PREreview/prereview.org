@@ -69,7 +69,7 @@ function renderContentForOrcidId(
           ${slackUser
             ? html`
                 <div>
-                  <dt><span>${translate(locale, 'profile-page', 'slackName')()}</span></dt>
+                  <dt>${translate(locale, 'profile-page', 'slackName')()}</dt>
                   <dd>
                     <span class="slack">
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -82,7 +82,7 @@ function renderContentForOrcidId(
           ${careerStage
             ? html`
                 <div>
-                  <dt><span>${translate(locale, 'profile-page', 'careerStage')()}</span></dt>
+                  <dt>${translate(locale, 'profile-page', 'careerStage')()}</dt>
                   <dd>${translate(locale, 'profile-page', `careerStage${capitalize(careerStage)}`)()}</dd>
                 </div>
               `
@@ -90,7 +90,7 @@ function renderContentForOrcidId(
           ${researchInterests
             ? html`
                 <div>
-                  <dt><span>${translate(locale, 'profile-page', 'researchInterests')()}</span></dt>
+                  <dt>${translate(locale, 'profile-page', 'researchInterests')()}</dt>
                   <dd>${researchInterests}</dd>
                 </div>
               `
@@ -98,7 +98,7 @@ function renderContentForOrcidId(
           ${location
             ? html`
                 <div>
-                  <dt><span>${translate(locale, 'profile-page', 'location')()}</span></dt>
+                  <dt>${translate(locale, 'profile-page', 'location')()}</dt>
                   <dd>${location}</dd>
                 </div>
               `
@@ -106,7 +106,7 @@ function renderContentForOrcidId(
           ${languages
             ? html`
                 <div>
-                  <dt><span>${translate(locale, 'profile-page', 'languages')()}</span></dt>
+                  <dt>${translate(locale, 'profile-page', 'languages')()}</dt>
                   <dd>${languages}</dd>
                 </div>
               `
@@ -114,12 +114,13 @@ function renderContentForOrcidId(
           ${Array.isNonEmptyReadonlyArray(clubs)
             ? html`
                 <div>
-                  <dt><span>${translate(locale, 'profile-page', 'clubs')()}</span></dt>
+                  <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>
                   <dd>
                     ${pipe(
                       clubs,
                       Array.map(
-                        club => html`<a href="${Routes.ClubProfile.href({ id: club })}">${getClubName(club)}</a>`,
+                        club =>
+                          html`<a href="${Routes.ClubProfile.href({ id: club })}" dir="auto">${getClubName(club)}</a>`,
                       ),
                       formatList(locale),
                     )}
@@ -142,16 +143,13 @@ function renderContentForOrcidId(
               ? translate(locale, 'profile-page', 'openForRequests')({ name })
               : translate(locale, 'profile-page', 'openForRequestsAnonymous')()}
             ${slackUser
-              ? rawHtml(
-                  translate(
-                    locale,
-                    'profile-page',
-                    'contactSlack',
-                  )({
-                    link: text =>
-                      html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`.toString(),
-                  }),
-                )
+              ? translate(
+                  locale,
+                  'profile-page',
+                  'contactSlack',
+                )({
+                  link: text => html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`,
+                })
               : ''}
           </div>
         `

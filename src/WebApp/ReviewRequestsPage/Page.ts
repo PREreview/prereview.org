@@ -16,13 +16,13 @@ export const title = ({
 
   const details = Array.append(
     [
-      field ? getFieldName(field, locale) : undefined,
+      field ? plainText(getFieldName(field, locale)).toString() : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
     t('pageNumber')({ page: currentPage }),
   )
 
-  return plainText(t('titleWithDetails')({ details: formatList(locale, { style: 'narrow' })(details).toString() }))
+  return plainText(t('titleWithDetails')({ details: formatList(locale, { style: 'narrow' })(details) }))
 }
 
 export const form = ({
@@ -64,7 +64,7 @@ export const form = ({
             ${pipe(
               fieldIds,
               Array.map(field => Tuple.make(field, getFieldName(field, locale))),
-              Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+              Array.sort<readonly [string, Html]>(Order.mapInput(StringOrder(locale), ([, name]) => name.toString())),
               Array.map(
                 ([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`,
               ),
@@ -85,8 +85,12 @@ function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Orde
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: Array.NonEmptyReadonlyArray<string>) => Html {
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
   const formatter = new Intl.ListFormat(...args)
 
-  return flow(list => formatter.format(list), rawHtml)
+  return flow(
+    Array.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }

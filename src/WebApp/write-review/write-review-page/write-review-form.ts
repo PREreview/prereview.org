@@ -28,7 +28,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
     title: pipe(t('write-review', 'writeYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -61,16 +61,14 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
           </h1>
 
           <p id="review-tip" role="note">
-            ${rawHtml(
-              t(
-                'write-review',
-                'writeReviewSupport',
-              )({ link: text => html`<a href="${Routes.Resources}">${text}</a>`.toString() }),
-            )}
+            ${t(
+              'write-review',
+              'writeReviewSupport',
+            )({ link: text => html`<a href="${Routes.Resources}">${text}</a>` })}
           </p>
 
           <details>
-            <summary><span>${t('write-review', 'goodBehaviorExamples')()}</span></summary>
+            <summary>${t('write-review', 'goodBehaviorExamples')()}</summary>
 
             <div>
               <ul>
@@ -82,7 +80,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
           </details>
 
           <details>
-            <summary><span>${t('write-review', 'reviewSectionsExamples')()}</span></summary>
+            <summary>${t('write-review', 'reviewSectionsExamples')()}</summary>
 
             <div>
               <ol>
@@ -110,7 +108,14 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
               .with(
                 { right: undefined },
                 () => html`
-                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+                  <textarea
+                    id="review"
+                    name="review"
+                    placeholder=" "
+                    dir="auto"
+                    rows="20"
+                    aria-describedby="review-tip"
+                  >
 ${template(locale)}</textarea
                   >
                   <textarea hidden disabled>${markdownIt().render(template(locale))}</textarea>
@@ -119,7 +124,14 @@ ${template(locale)}</textarea
               .with(
                 { right: P.select(P.not(undefined)) },
                 review => html`
-                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+                  <textarea
+                    id="review"
+                    name="review"
+                    placeholder=" "
+                    dir="auto"
+                    rows="20"
+                    aria-describedby="review-tip"
+                  >
 ${turndown.turndown(review.toString())}</textarea
                   >
                   <textarea hidden disabled>${review}</textarea>
@@ -131,6 +143,8 @@ ${turndown.turndown(review.toString())}</textarea
                   <textarea
                     id="review"
                     name="review"
+                    placeholder=" "
+                    dir="auto"
                     rows="20"
                     aria-describedby="review-tip"
                     aria-invalid="true"
@@ -144,6 +158,8 @@ ${turndown.turndown(review.toString())}</textarea
                   <textarea
                     id="review"
                     name="review"
+                    placeholder=" "
+                    dir="auto"
                     rows="20"
                     aria-describedby="review-tip"
                     aria-invalid="true"

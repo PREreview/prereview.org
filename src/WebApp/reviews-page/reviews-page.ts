@@ -37,68 +37,64 @@ export const createPage = (
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${rawHtml(
-                      prereview.club
-                        ? translate(
-                            locale,
-                            'reviews-list',
-                            'clubReviewText',
-                          )({
-                            club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
-                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                            reviewers: pipe(
-                              prereview.reviewers.named,
-                              Array.appendAll(
-                                prereview.reviewers.anonymous > 0
-                                  ? [
-                                      translate(
-                                        locale,
-                                        'reviews-list',
-                                        'otherAuthors',
-                                      )({ number: prereview.reviewers.anonymous }),
-                                    ]
-                                  : [],
-                              ),
-                              formatList(locale),
-                            ).toString(),
-                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                              >${prereview.preprint.title}</cite
-                            >`.toString(),
-                          })
-                        : translate(
-                            locale,
-                            'reviews-list',
-                            'reviewText',
-                          )({
-                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                            reviewers: pipe(
-                              prereview.reviewers.named,
-                              Array.appendAll(
-                                prereview.reviewers.anonymous > 0
-                                  ? [
-                                      translate(
-                                        locale,
-                                        'reviews-list',
-                                        'otherAuthors',
-                                      )({ number: prereview.reviewers.anonymous }),
-                                    ]
-                                  : [],
-                              ),
-                              formatList(locale),
-                            ).toString(),
-                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                              >${prereview.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                    )}
+                    ${prereview.club
+                      ? translate(
+                          locale,
+                          'reviews-list',
+                          'clubReviewText',
+                        )({
+                          club: html`<b dir="auto">${getClubName(prereview.club)}</b>`,
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            formatList(locale),
+                          ),
+                          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                            >${prereview.preprint.title}</cite
+                          >`,
+                        })
+                      : translate(
+                          locale,
+                          'reviews-list',
+                          'reviewText',
+                        )({
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            formatList(locale),
+                          ),
+                          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                            >${prereview.preprint.title}</cite
+                          >`,
+                        })}
                   </a>
 
                   ${prereview.subfields.length > 0
                     ? html`
                         <ul class="categories">
-                          ${prereview.subfields.map(
-                            subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                          )}
+                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                         </ul>
                       `
                     : ''}
@@ -119,18 +115,16 @@ export const createPage = (
                     ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
                       ? html`${authorList(prereview, locale)} reviewed
                           <cite ${languageAttributesFor(prereview.dataset.language)}>${prereview.dataset.title}</cite>`
-                      : rawHtml(
-                          translate(
-                            locale,
-                            'dataset-reviews-list',
-                            'reviewText',
-                          )({
-                            reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
-                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                              >${prereview.dataset.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
+                      : translate(
+                          locale,
+                          'dataset-reviews-list',
+                          'reviewText',
+                        )({
+                          reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                          dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                            >${prereview.dataset.title}</cite
+                          >`,
+                        })}
                   </a>
 
                   <dl>
@@ -199,7 +193,7 @@ const title = ({
   const details = Array.append(
     [
       query,
-      field ? getFieldName(field, locale) : undefined,
+      field ? plainText(getFieldName(field, locale)).toString() : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
     translate(locale, 'reviews-page', 'pageNumber')({ page: currentPage }),
@@ -210,7 +204,7 @@ const title = ({
       locale,
       'reviews-page',
       'titleWithDetails',
-    )({ details: formatList(locale, { style: 'narrow' })(details).toString() }),
+    )({ details: formatList(locale, { style: 'narrow' })(details) }),
   )
 }
 
@@ -233,7 +227,14 @@ const form = ({
     <input type="hidden" name="page" value="1" />
     <div>
       <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
-      <input type="text" name="query" id="query" ${query === undefined ? '' : html`value="${query}"`} />
+      <input
+        type="text"
+        placeholder=" "
+        dir="auto"
+        name="query"
+        id="query"
+        ${query === undefined ? '' : html`value="${query}"`}
+      />
     </div>
     <div>
       <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>
@@ -266,8 +267,8 @@ const form = ({
           </option>
           ${pipe(
             fieldIds,
-            Array.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, string]),
-            Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+            Array.map(field => [field, getFieldName(field, locale)] satisfies [FieldId, Html]),
+            Array.sort<readonly [string, Html]>(Order.mapInput(StringOrder(locale), ([, name]) => name.toString())),
             Array.map(
               ([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`,
             ),
@@ -308,7 +309,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    Array.map(item => html`<b>${item}</b>`.toString()),
+    Array.map(item => html`<b dir="auto">${item}</b>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

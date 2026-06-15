@@ -22,7 +22,7 @@ export const createFormPage = ({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(translate(locale, 'my-details', 'happyTakeRequests')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsMatch.formatter, {})}" novalidate>
@@ -71,7 +71,7 @@ export const createFormPage = ({
                       .with({ value: { value: true } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${translate(locale, 'my-details', 'yes')()}</span>
+                  ${translate(locale, 'my-details', 'yes')()}
                 </label>
               </li>
               <li>
@@ -84,7 +84,7 @@ export const createFormPage = ({
                       .with({ value: { value: false } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${translate(locale, 'my-details', 'no')()}</span>
+                  ${translate(locale, 'my-details', 'no')()}
                 </label>
               </li>
             </ol>

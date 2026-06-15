@@ -22,7 +22,7 @@ export const IsMissingAnythingQuestion = ({
     title: plainText(t('anythingMissing')()),
     nav: html`
       <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -35,9 +35,16 @@ export const IsMissingAnythingQuestion = ({
           </h1>
 
           ${Match.valueTags(form, {
-            EmptyForm: () => html`<textarea id="is-missing-anything" name="isMissingAnything" rows="5"></textarea>`,
+            EmptyForm: () =>
+              html`<textarea
+                id="is-missing-anything"
+                name="isMissingAnything"
+                placeholder=" "
+                dir="auto"
+                rows="5"
+              ></textarea>`,
             CompletedForm: form =>
-              html`<textarea id="is-missing-anything" name="isMissingAnything" rows="5">
+              html`<textarea id="is-missing-anything" name="isMissingAnything" placeholder=" " dir="auto" rows="5">
 ${Option.getOrElse(form.isMissingAnything, () => String.empty)}</textarea
               >`,
           })}

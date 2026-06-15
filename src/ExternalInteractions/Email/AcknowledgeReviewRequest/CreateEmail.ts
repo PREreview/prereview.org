@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
-import { html, mjmlToHtml, rawHtml } from '../../../html.ts'
+import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { DefaultLocale, translate } from '../../../locales/index.ts'
 import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
@@ -13,7 +13,7 @@ export const CreateEmail: (
   return {
     from: { name: 'PREreview', address: EmailAddress.EmailAddress('help@prereview.org') },
     to: { name: reviewRequest.requester.name, address: reviewRequest.requester.emailAddress },
-    subject: t('acknowledgeReviewRequestTitle')(),
+    subject: plainText(t('acknowledgeReviewRequestTitle')()).toString(),
     html: yield* mjmlToHtml(html`
       <mjml>
         <mj-body>
@@ -23,18 +23,14 @@ export const CreateEmail: (
               <mj-text>${t('thanksReviewRequest')()}</mj-text>
               <mj-text>${t('reviewRequestSharedWithCommunity')({ slackChannel: '#request-a-review' })}</mj-text>
               <mj-text>
-                ${rawHtml(
-                  t('reviewRequestSlackCommunity')({
-                    slackLink: html`<a href="https://bit.ly/PREreview-Slack">bit.ly/PREreview-Slack</a>`.toString(),
-                  }),
-                )}
+                ${t('reviewRequestSlackCommunity')({
+                  slackLink: html`<a href="https://bit.ly/PREreview-Slack">bit.ly/PREreview-Slack</a>`,
+                })}
               </mj-text>
               <mj-text>
-                ${rawHtml(
-                  t('haveAnyQuestions')({
-                    emailAddress: html`<a href="mailto:help@prereview.org">help@prereview.org</a>`.toString(),
-                  }),
-                )}
+                ${t('haveAnyQuestions')({
+                  emailAddress: html`<a href="mailto:help@prereview.org">help@prereview.org</a>`,
+                })}
               </mj-text>
               <mj-text>${t('allTheBest')()}<br />PREreview</mj-text>
             </mj-column>
@@ -51,19 +47,17 @@ export const CreateEmail: (
               <mj-text font-size="11px">${t('footerIntro')()}</mj-text>
               <mj-text font-size="11px">${t('footerCommunity')()}</mj-text>
               <mj-text font-size="11px"
-                >${rawHtml(
-                  t('footerJoinHtml')({
-                    prereviewLink: text => html`<a href="https://prereview.org">${text}</a>`.toString(),
-                    slackLink: text => html`<a href="https://bit.ly/PREreview-Slack">${text}</a>`.toString(),
-                  }),
-                )}</mj-text
+                >${t('footerJoinHtml')({
+                  prereviewLink: text => html`<a href="https://prereview.org">${text}</a>`,
+                  slackLink: text => html`<a href="https://bit.ly/PREreview-Slack">${text}</a>`,
+                })}</mj-text
               >
             </mj-column>
           </mj-section>
         </mj-body>
       </mjml>
     `),
-    text: `
+    text: plainText`
 ${t('hiName')({ name: reviewRequest.requester.name })}
 
 ${t('thanksReviewRequest')()}
@@ -82,6 +76,8 @@ PREreview
 ${t('footerIntro')()}
 ${t('footerCommunity')()}
 ${t('footerJoinText')({ prereviewLink: 'https://prereview.org', slackLink: 'https://bit.ly/PREreview-Slack' })}
-`.trim(),
+`
+      .toString()
+      .trim(),
   }
 })

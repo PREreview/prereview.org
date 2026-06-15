@@ -25,7 +25,7 @@ export const IsDetailedEnoughQuestion = ({
     title: pipe(t('granularEnough')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -73,7 +73,7 @@ export const IsDetailedEnoughQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="is-detailed-enough-tip-yes" role="note">${t('granularEnoughYesTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-yes-control">
@@ -81,7 +81,13 @@ export const IsDetailedEnoughQuestion = ({
                       <label for="is-detailed-enough-yes-detail" class="textarea"
                         >${t('granularEnoughYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isDetailedEnoughYesDetail" id="is-detailed-enough-yes-detail" rows="5">
+                      <textarea
+                        name="isDetailedEnoughYesDetail"
+                        id="is-detailed-enough-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -109,7 +115,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="is-detailed-enough-tip-partly" role="note">${t('granularEnoughPartlyTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-partly-control">
@@ -117,7 +123,13 @@ ${Match.valueTags(form, {
                       <label for="is-detailed-enough-partly-detail" class="textarea"
                         >${t('granularEnoughPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isDetailedEnoughPartlyDetail" id="is-detailed-enough-partly-detail" rows="5">
+                      <textarea
+                        name="isDetailedEnoughPartlyDetail"
+                        id="is-detailed-enough-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -146,7 +158,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="is-detailed-enough-tip-no" role="note">${t('granularEnoughNoTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-no-control">
@@ -154,7 +166,13 @@ ${Match.valueTags(form, {
                       <label for="is-detailed-enough-no-detail" class="textarea"
                         >${t('granularEnoughNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isDetailedEnoughNoDetail" id="is-detailed-enough-no-detail" rows="5">
+                      <textarea
+                        name="isDetailedEnoughNoDetail"
+                        id="is-detailed-enough-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -169,7 +187,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="isDetailedEnough"
@@ -182,7 +200,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

@@ -11,13 +11,13 @@ export const createFormPage = (researchInterests: Option.Option<ResearchInterest
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'whatResearchInterests')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeResearchInterestsMatch.formatter, {})}" novalidate>
         <h1><label for="research-interests">${translate(locale, 'my-details', 'whatResearchInterests')()}</label></h1>
 
-        <textarea name="researchInterests" id="research-interests" rows="5">
+        <textarea name="researchInterests" id="research-interests" placeholder=" " dir="auto" rows="5">
 ${match(researchInterests)
             .with({ value: { value: P.select() } }, rawHtml)
             .when(Option.isNone, () => '')

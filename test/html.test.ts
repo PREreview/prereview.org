@@ -17,6 +17,16 @@ test.each([
     _.html`<a href="/path?query1=${'param1'}&query2=${'param2'}">Link</a>`,
     '<a href="/path?query1=param1&query2=param2">Link</a>',
   ],
+  [
+    'textarea with HTML',
+    _.html`<textarea>${_.rawHtml('<p id="a">a</p>')}</textarea>`,
+    '<textarea>&lt;p id=&quot;a&quot;&gt;a&lt;/p&gt;</textarea>',
+  ],
+  [
+    'textarea with attributes and spaces',
+    _.html`<textarea id="review" name="review" rows="20" aria-describedby="review-tip">  ${_.rawHtml(' \t \n<p id="a">a</p> \t \n ')}  </textarea>`,
+    '<textarea id="review" name="review" rows="20" aria-describedby="review-tip">   \t \n&lt;p id=&quot;a&quot;&gt;a&lt;/p&gt; \t \n   </textarea>',
+  ],
 ])('html (%s)', (_name, actual, expected) => {
   expect(actual.toString()).toBe(expected)
 })
@@ -1167,6 +1177,7 @@ it.prop(
           ],
         ],
         [['$1 to $2', '$1 to $2']],
+        [['$&nbsp;1 to $&nbsp;2', '$&nbsp;1 to $&nbsp;2']],
         [['$100,000 to $200,000', '$100,000 to $200,000']],
         [['$1.5 to $2.1 million', '$1.5 to $2.1 million']],
       ],

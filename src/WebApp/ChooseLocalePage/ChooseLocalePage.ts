@@ -1,5 +1,6 @@
 import { Array, type HashSet, pipe, String, Tuple } from 'effect'
 import { html, plainText } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale, translate, type UserSelectableLocale } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -43,7 +44,7 @@ export const createChooseLocalePage = ({
                   <li>
                     <a
                       href="/${code.toLowerCase()}"
-                      lang="${code}"
+                      ${languageAttributesFor(code)}
                       hreflang="${code}"
                       ${locale === code ? html`aria-current="true"` : ''}
                       >${name}</a

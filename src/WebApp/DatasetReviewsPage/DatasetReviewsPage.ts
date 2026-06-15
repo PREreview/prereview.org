@@ -1,4 +1,4 @@
-import { Array, flow, identity, pipe, Struct } from 'effect'
+import { Array, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
@@ -9,7 +9,6 @@ import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
-import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
@@ -30,8 +29,8 @@ export const createDatasetReviewsPage = ({
   const t = translate(locale, 'dataset-reviews-page')
 
   return TwoUpPageResponse({
-    title: plainText(t('title')({ dataset: plainText`“${dataset.title.text}”`.toString() })),
-    description: plainText`${rawHtml(t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(), visuallyHidden: identity }))}
+    title: plainText(t('title')({ dataset: plainText`“${dataset.title.text}”` })),
+    description: plainText`${t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)), visuallyHidden: identity })}
     ${
       dataset.abstract
         ? plainText`
@@ -42,23 +41,19 @@ export const createDatasetReviewsPage = ({
         : ''
     }
       `,
-    h1: rawHtml(
-      t('title')({
-        dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`.toString(),
-      }),
-    ),
+    h1: t('title')({
+      dataset: html`<cite ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</cite>`,
+    }),
     aside: html`
       <article aria-labelledby="dataset-title">
         <header>
           <h2 id="dataset-title" ${languageAttributesFor(dataset.title.language)}>${dataset.title.text}</h2>
 
           <div class="byline">
-            ${rawHtml(
-              t('authoredBy')({
-                authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(),
-                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-              }),
-            )}
+            ${t('authoredBy')({
+              authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)),
+              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+            })}
           </div>
 
           <dl>
@@ -73,7 +68,11 @@ export const createDatasetReviewsPage = ({
 
             <div>
               <dt>DOI</dt>
-              <dd><a href="${Doi.toUrl(dataset.id.value).href}" class="doi" translate="no">${dataset.id.value}</a></dd>
+              <dd>
+                <a href="${Doi.toUrl(dataset.id.value).href}" class="doi" dir="auto" translate="no"
+                  >${dataset.id.value}</a
+                >
+              </dd>
             </div>
           </dl>
         </header>
@@ -117,12 +116,10 @@ export const createDatasetReviewsPage = ({
                       </h3>
 
                       <div class="byline">
-                        ${rawHtml(
-                          t('prereviewAuthoredBy')({
-                            author: authorList(datasetReview, locale).toString(),
-                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                          }),
-                        )}
+                        ${t('prereviewAuthoredBy')({
+                          author: authorList(datasetReview, locale),
+                          visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                        })}
                       </div>
                     </header>
 
@@ -132,12 +129,10 @@ export const createDatasetReviewsPage = ({
                             <span class="visually-hidden"
                               >the PREreview by ${displayAuthor(datasetReview.author)} et al.</span
                             >`
-                        : rawHtml(
-                            t('readPrereview')({
-                              author: displayAuthor(datasetReview.author),
-                              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                            }),
-                          )}
+                        : t('readPrereview')({
+                            author: displayAuthor(datasetReview.author),
+                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                          })}
                     </a>
                   </article>
                 </li>
@@ -156,27 +151,28 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
   const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
 
   if (datasetReview.anonymousAuthors > 0) {
-    list.push(
-      NonEmptyString(`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`),
-    )
+    list.push(html`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`)
   }
 
   return formatList(locale)(list)
 }
 
 const displayAuthor = Personas.match({
-  onPublic: Struct.get('name'),
-  onPseudonym: Struct.get('pseudonym'),
+  onPublic: ({ name }) => html`<bdi>${name}</bdi>`,
+  onPseudonym: ({ pseudonym }) => html`<bdi>${pseudonym}</bdi>`,
 })
 
 function displayDatasetAuthor({ name, orcid }: Datasets.Dataset['authors'][number]) {
   if (orcid) {
-    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(

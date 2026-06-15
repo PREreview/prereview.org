@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import { authorInvitePersonaMatch } from '../../../routes.ts'
@@ -31,7 +31,7 @@ export function personaForm({
 }) {
   const error = hasAnError(form)
   const t = translate(locale, 'author-invite-flow')
-  const definition = (text: string) => html`<dfn>${text}</dfn>`.toString()
+  const definition = (text: Html) => html`<dfn>${text}</dfn>`
 
   return StreamlinePageResponse({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
@@ -53,16 +53,14 @@ export function personaForm({
             <p id="persona-tip" role="note">${t('youCanChooseBetweenOrcidNameAndPrereviewPseudonym')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
+              <summary>${t('whatIsAPrereviewPseudonym')()}</summary>
 
               <div>
                 <p>
-                  ${rawHtml(
-                    t('pseudonymExplainer')({
-                      definition,
-                      userPseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
-                    }),
-                  )}
+                  ${t('pseudonymExplainer')({
+                    definition,
+                    userPseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
+                  })}
                 </p>
 
                 <p>${t('whyUseAPseudonym')()}</p>

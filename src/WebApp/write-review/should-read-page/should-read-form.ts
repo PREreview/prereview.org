@@ -34,7 +34,7 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
     ),
     nav: html`
       <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -94,13 +94,19 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('wouldRecommendYes')()}</span>
+                    ${t('wouldRecommendYes')()}
                   </label>
                   <div class="conditional" id="should-read-yes-control">
                     <div>
                       <label for="should-read-yes-details" class="textarea">${t('wouldRecommendYesHow')()}</label>
 
-                      <textarea name="shouldReadYesDetails" id="should-read-yes-details" rows="5">
+                      <textarea
+                        name="shouldReadYesDetails"
+                        id="should-read-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.shouldReadYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -119,7 +125,7 @@ ${match(form.shouldReadYesDetails)
                         .with({ right: 'yes-but' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('wouldRecommendYesImproved')()}</span>
+                    ${t('wouldRecommendYesImproved')()}
                   </label>
                   <div class="conditional" id="should-read-yes-but-control">
                     <div>
@@ -127,7 +133,13 @@ ${match(form.shouldReadYesDetails)
                         >${t('wouldRecommendYesImprovedWhy')()}</label
                       >
 
-                      <textarea name="shouldReadYesButDetails" id="should-read-yes-but-details" rows="5">
+                      <textarea
+                        name="shouldReadYesButDetails"
+                        id="should-read-yes-but-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.shouldReadYesButDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -146,13 +158,19 @@ ${match(form.shouldReadYesButDetails)
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('wouldRecommendNo')()}</span>
+                    ${t('wouldRecommendNo')()}
                   </label>
                   <div class="conditional" id="should-read-no-control">
                     <div>
                       <label for="should-read-no-details" class="textarea">${t('wouldRecommendNoWhy')()}</label>
 
-                      <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">
+                      <textarea
+                        name="shouldReadNoDetails"
+                        id="should-read-no-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.shouldReadNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

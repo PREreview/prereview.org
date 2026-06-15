@@ -38,7 +38,7 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
       plainText,
     ),
     nav: html` <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form
@@ -106,7 +106,7 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
                         .with({ right: 'exceptionally' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('veryClearly')()}</span>
+                    ${t('veryClearly')()}
                   </label>
                   <p id="findings-next-steps-tip-exceptionally" role="note">${t('veryClearlyTip')()}</p>
                   <div class="conditional" id="findings-next-steps-exceptionally-control">
@@ -118,6 +118,8 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
                       <textarea
                         name="findingsNextStepsExceptionallyDetails"
                         id="findings-next-steps-exceptionally-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsExceptionallyDetails)
@@ -139,7 +141,7 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                         .with({ right: 'clearly-insightfully' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('somewhatClearly')()}</span>
+                    ${t('somewhatClearly')()}
                   </label>
                   <p id="findings-next-steps-tip-clearly-insightfully" role="note">${t('somewhatClearlyTip')()}</p>
                   <div class="conditional" id="findings-next-steps-clearly-insightfully-control">
@@ -151,6 +153,8 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                       <textarea
                         name="findingsNextStepsClearlyInsightfullyDetails"
                         id="findings-next-steps-clearly-insightfully-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsClearlyInsightfullyDetails)
@@ -172,7 +176,7 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                         .with({ right: 'adequately' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('neitherClearlyNorUnclearly')()}</span>
+                    ${t('neitherClearlyNorUnclearly')()}
                   </label>
                   <p id="findings-next-steps-tip-adequately" role="note">${t('neitherClearlyNorUnclearlyTip')()}</p>
                   <div class="conditional" id="findings-next-steps-adequately-control">
@@ -184,6 +188,8 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                       <textarea
                         name="findingsNextStepsAdequatelyDetails"
                         id="findings-next-steps-adequately-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsAdequatelyDetails)
@@ -205,7 +211,7 @@ ${match(form.findingsNextStepsAdequatelyDetails)
                         .with({ right: 'insufficiently' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('somewhatUnclearly')()}</span>
+                    ${t('somewhatUnclearly')()}
                   </label>
                   <p id="findings-next-steps-tip-insufficiently" role="note">${t('somewhatUnclearlyTip')()}</p>
                   <div class="conditional" id="findings-next-steps-insufficiently-control">
@@ -217,6 +223,8 @@ ${match(form.findingsNextStepsAdequatelyDetails)
                       <textarea
                         name="findingsNextStepsInsufficientlyDetails"
                         id="findings-next-steps-insufficiently-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsInsufficientlyDetails)
@@ -238,7 +246,7 @@ ${match(form.findingsNextStepsInsufficientlyDetails)
                         .with({ right: 'inadequately' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('veryUnclearly')()}</span>
+                    ${t('veryUnclearly')()}
                   </label>
                   <p id="findings-next-steps-tip-inadequately" role="note">${t('veryUnclearlyTip')()}</p>
                   <div class="conditional" id="findings-next-steps-inadequately-control">
@@ -250,6 +258,8 @@ ${match(form.findingsNextStepsInsufficientlyDetails)
                       <textarea
                         name="findingsNextStepsInadequatelyDetails"
                         id="findings-next-steps-inadequately-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.findingsNextStepsInadequatelyDetails)
@@ -260,7 +270,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
                   </div>
                 </li>
                 <li>
-                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="findingsNextSteps"
@@ -270,7 +280,7 @@ ${match(form.findingsNextStepsInadequatelyDetails)
                         .with({ right: 'skip' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('iDoNotKnow')()}</span>
+                    ${t('iDoNotKnow')()}
                   </label>
                 </li>
               </ol>

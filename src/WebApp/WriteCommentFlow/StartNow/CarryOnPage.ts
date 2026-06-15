@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { Prereview } from '../../../Prereviews/index.ts'
@@ -22,24 +22,22 @@ export const CarryOnPage = ({
     title: plainText(translate(locale, 'write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        ><span>${translate(locale, 'write-comment-flow', 'backToPrereview')()}</span></a
+        >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
       <h1>${translate(locale, 'write-comment-flow', 'writeCommentTitle')()}</h1>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'write-comment-flow',
-            'carryOnMessage',
-          )({
-            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-              >${prereview.preprint.title}</cite
-            >`.toString(),
-          }),
-        )}
+        ${translate(
+          locale,
+          'write-comment-flow',
+          'carryOnMessage',
+        )({
+          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+            >${prereview.preprint.title}</cite
+          >`,
+        })}
       </p>
 
       <a href="${nextPage.href({ commentId })}" role="button" draggable="false"

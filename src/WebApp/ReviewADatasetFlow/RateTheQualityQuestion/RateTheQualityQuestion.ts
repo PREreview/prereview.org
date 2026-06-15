@@ -68,7 +68,7 @@ export const RateTheQualityQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('excellent')()}</span>
+                    ${t('excellent')()}
                   </label>
                   <p id="rate-the-quality-tip-excellent" role="note">${t('excellentTip')()}</p>
                   <div class="conditional" id="rate-the-quality-excellent-control">
@@ -76,7 +76,13 @@ export const RateTheQualityQuestion = ({
                       <label for="rate-the-quality-excellent-detail" class="textarea"
                         >${t('excellentWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="qualityRatingExcellentDetail" id="rate-the-quality-excellent-detail" rows="5">
+                      <textarea
+                        name="qualityRatingExcellentDetail"
+                        id="rate-the-quality-excellent-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -105,7 +111,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('fair')()}</span>
+                    ${t('fair')()}
                   </label>
                   <p id="rate-the-quality-tip-fair" role="note">${t('fairTip')()}</p>
                   <div class="conditional" id="rate-the-quality-fair-control">
@@ -113,7 +119,13 @@ ${Match.valueTags(form, {
                       <label for="rate-the-quality-fair-detail" class="textarea"
                         >${t('fairWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="qualityRatingFairDetail" id="rate-the-quality-fair-detail" rows="5">
+                      <textarea
+                        name="qualityRatingFairDetail"
+                        id="rate-the-quality-fair-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -132,7 +144,6 @@ ${Match.valueTags(form, {
                     <input
                       name="qualityRating"
                       type="radio"
-                      f
                       value="poor"
                       aria-describedby="rate-the-quality-tip-poor"
                       aria-controls="rate-the-quality-poor-control"
@@ -142,7 +153,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('poor')()}</span>
+                    ${t('poor')()}
                   </label>
                   <p id="rate-the-quality-tip-poor" role="note">${t('poorTip')()}</p>
                   <div class="conditional" id="rate-the-quality-poor-control">
@@ -150,7 +161,13 @@ ${Match.valueTags(form, {
                       <label for="rate-the-quality-poor-detail" class="textarea"
                         >${t('poorWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="qualityRatingPoorDetail" id="rate-the-quality-poor-detail" rows="5">
+                      <textarea
+                        name="qualityRatingPoorDetail"
+                        id="rate-the-quality-poor-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -165,7 +182,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="qualityRating"
@@ -179,7 +196,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

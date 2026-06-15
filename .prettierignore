@@ -1,4 +1,5 @@
 /.cache/
+/.dev/*.ts.hbs
 /.idea/
 /.vscode/
 /data/

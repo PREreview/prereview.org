@@ -33,7 +33,7 @@ export const createPage = ({
     main: html`
       <div class="hero">
         <div>
-          <h1>${rawHtml(translate(locale, 'home-page', 'slogan')({ swoosh: text => `<em>${text}</em>` }))}</h1>
+          <h1>${translate(locale, 'home-page', 'slogan')({ swoosh: text => html`<em>${text}</em>` })}</h1>
           <p>${translate(locale, 'home-page', 'heroText')()}</p>
 
           <div class="button-group">
@@ -103,81 +103,77 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="prereview-${prereview.id}-title">
                         <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
-                          ${rawHtml(
-                            translate(
-                              locale,
-                              'reviews-list',
-                              'reviewTitle',
-                            )({
-                              preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                                >${prereview.preprint.title}</cite
-                              >`.toString(),
-                            }),
-                          )}
+                          ${translate(
+                            locale,
+                            'reviews-list',
+                            'reviewTitle',
+                          )({
+                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                              >${prereview.preprint.title}</cite
+                            >`,
+                          })}
                         </h3>
 
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${rawHtml(
-                            prereview.club
-                              ? translate(
-                                  locale,
-                                  'reviews-list',
-                                  'clubReviewText',
-                                )({
-                                  club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
-                                  numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                                  reviewers: pipe(
-                                    prereview.reviewers.named,
-                                    Array.appendAll(
-                                      prereview.reviewers.anonymous > 0
-                                        ? [
-                                            translate(
-                                              locale,
-                                              'reviews-list',
-                                              'otherAuthors',
-                                            )({ number: prereview.reviewers.anonymous }),
-                                          ]
-                                        : [],
-                                    ),
-                                    formatList(locale),
-                                  ).toString(),
-                                  preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                                    >${prereview.preprint.title}</cite
-                                  >`.toString(),
-                                })
-                              : translate(
-                                  locale,
-                                  'reviews-list',
-                                  'reviewText',
-                                )({
-                                  numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                                  reviewers: pipe(
-                                    prereview.reviewers.named,
-                                    Array.appendAll(
-                                      prereview.reviewers.anonymous > 0
-                                        ? [
-                                            translate(
-                                              locale,
-                                              'reviews-list',
-                                              'otherAuthors',
-                                            )({ number: prereview.reviewers.anonymous }),
-                                          ]
-                                        : [],
-                                    ),
-                                    formatList(locale),
-                                  ).toString(),
-                                  preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                                    >${prereview.preprint.title}</cite
-                                  >`.toString(),
-                                }),
-                          )}
+                          ${prereview.club
+                            ? translate(
+                                locale,
+                                'reviews-list',
+                                'clubReviewText',
+                              )({
+                                club: html`<b dir="auto">${getClubName(prereview.club)}</b>`,
+                                numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                                reviewers: pipe(
+                                  prereview.reviewers.named,
+                                  Array.appendAll(
+                                    prereview.reviewers.anonymous > 0
+                                      ? [
+                                          translate(
+                                            locale,
+                                            'reviews-list',
+                                            'otherAuthors',
+                                          )({ number: prereview.reviewers.anonymous }),
+                                        ]
+                                      : [],
+                                  ),
+                                  formatList(locale),
+                                ),
+                                preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                                  >${prereview.preprint.title}</cite
+                                >`,
+                              })
+                            : translate(
+                                locale,
+                                'reviews-list',
+                                'reviewText',
+                              )({
+                                numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                                reviewers: pipe(
+                                  prereview.reviewers.named,
+                                  Array.appendAll(
+                                    prereview.reviewers.anonymous > 0
+                                      ? [
+                                          translate(
+                                            locale,
+                                            'reviews-list',
+                                            'otherAuthors',
+                                          )({ number: prereview.reviewers.anonymous }),
+                                        ]
+                                      : [],
+                                  ),
+                                  formatList(locale),
+                                ),
+                                preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                                  >${prereview.preprint.title}</cite
+                                >`,
+                              })}
                         </a>
 
                         ${prereview.subfields.length > 0
                           ? html`
                               <ul class="categories">
                                 ${prereview.subfields.map(
-                                  subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
+                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
                                 )}
                               </ul>
                             `
@@ -196,17 +192,15 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="prereview-${prereview.id}-title">
                         <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
-                          ${rawHtml(
-                            translate(
-                              locale,
-                              'dataset-reviews-list',
-                              'reviewTitle',
-                            )({
-                              dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                                >${prereview.dataset.title}</cite
-                              >`.toString(),
-                            }),
-                          )}
+                          ${translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewTitle',
+                          )({
+                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            >`,
+                          })}
                         </h3>
 
                         <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
@@ -215,18 +209,16 @@ export const createPage = ({
                                 <cite ${languageAttributesFor(prereview.dataset.language)}
                                   >${prereview.dataset.title}</cite
                                 >`
-                            : rawHtml(
-                                translate(
-                                  locale,
-                                  'dataset-reviews-list',
-                                  'reviewText',
-                                )({
-                                  reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
-                                  dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                                    >${prereview.dataset.title}</cite
-                                  >`.toString(),
-                                }),
-                              )}
+                            : translate(
+                                locale,
+                                'dataset-reviews-list',
+                                'reviewText',
+                              )({
+                                reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                                dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                                  >${prereview.dataset.title}</cite
+                                >`,
+                              })}
                         </a>
 
                         <dl>
@@ -244,7 +236,7 @@ export const createPage = ({
 
             <nav>
               <a href="${format(reviewsMatch.formatter, {})}" class="forward"
-                ><span>${translate(locale, 'home-page', 'reviewsLink')()}</span></a
+                >${translate(locale, 'home-page', 'reviewsLink')()}</a
               >
             </nav>
           </section>
@@ -263,17 +255,15 @@ export const createPage = ({
                   <li>
                     <article aria-labelledby="request-${index}-title">
                       <h3 id="request-${index}-title" class="visually-hidden">
-                        ${rawHtml(
-                          translate(
-                            locale,
-                            'requests-list',
-                            'requestTitle',
-                          )({
-                            preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                              >${request.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
+                        ${translate(
+                          locale,
+                          'requests-list',
+                          'requestTitle',
+                        )({
+                          preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                            >${request.preprint.title}</cite
+                          >`,
+                        })}
                       </h3>
 
                       <a
@@ -281,25 +271,21 @@ export const createPage = ({
                           id: request.preprint.id,
                         })}"
                       >
-                        ${rawHtml(
-                          translate(
-                            locale,
-                            'requests-list',
-                            'requestText',
-                          )({
-                            preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
-                              >${request.preprint.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
+                        ${translate(
+                          locale,
+                          'requests-list',
+                          'requestText',
+                        )({
+                          preprint: html`<cite ${languageAttributesFor(request.preprint.language)}
+                            >${request.preprint.title}</cite
+                          >`,
+                        })}
                       </a>
 
                       ${request.subfields.length > 0
                         ? html`
                             <ul class="categories">
-                              ${request.subfields.map(
-                                subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                              )}
+                              ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                             </ul>
                           `
                         : ''}
@@ -318,7 +304,7 @@ export const createPage = ({
 
             <nav>
               <a href="${Routes.ReviewRequests.href({ page: 1 })}" class="forward"
-                ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
+                >${translate(locale, 'home-page', 'requestsLink')()}</a
               >
             </nav>
           </section>
@@ -333,51 +319,45 @@ export const createPage = ({
         <ul class="statistics">
           <li>
             <span
-              >${rawHtml(
-                translate(
-                  locale,
-                  'home-page',
-                  'statisticsReviews',
-                )({
-                  number: statistics.prereviews,
-                  data: text => `<data value="${statistics.prereviews}">${text}</data>`,
-                }),
-              )}</span
+              >${translate(
+                locale,
+                'home-page',
+                'statisticsReviews',
+              )({
+                number: statistics.prereviews,
+                data: text => html`<data value="${statistics.prereviews}">${text}</data>`,
+              })}</span
             >
           </li>
           <li>
             <span
-              >${rawHtml(
-                translate(
-                  locale,
-                  'home-page',
-                  'statisticsServers',
-                )({
-                  number: statistics.servers,
-                  data: text => `<data value="${statistics.servers}">${text}</data>`,
-                }),
-              )}</span
+              >${translate(
+                locale,
+                'home-page',
+                'statisticsServers',
+              )({
+                number: statistics.servers,
+                data: text => html`<data value="${statistics.servers}">${text}</data>`,
+              })}</span
             >
           </li>
           <li>
             <span
-              >${rawHtml(
-                translate(
-                  locale,
-                  'home-page',
-                  'statisticsUsers',
-                )({
-                  number: statistics.users,
-                  data: text => `<data value="${statistics.users}">${text}</data>`,
-                }),
-              )}</span
+              >${translate(
+                locale,
+                'home-page',
+                'statisticsUsers',
+              )({
+                number: statistics.users,
+                data: text => html`<data value="${statistics.users}">${text}</data>`,
+              })}</span
             >
           </li>
         </ul>
 
         <nav>
           <a href="https://stats.prereview.org/" class="forward"
-            ><span>${translate(locale, 'home-page', 'statisticsLink')()}</span></a
+            >${translate(locale, 'home-page', 'statisticsLink')()}</a
           >
         </nav>
       </section>
@@ -473,7 +453,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    Array.map(item => html`<b>${item}</b>`.toString()),
+    Array.map(item => html`<b dir="auto">${item}</b>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

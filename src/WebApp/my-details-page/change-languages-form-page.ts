@@ -11,7 +11,7 @@ export const createFormPage = (languages: Option.Option<Languages>, locale: Supp
   PageResponse({
     title: plainText(translate(locale, 'my-details', 'whatLanguages')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeLanguagesMatch.formatter, {})}" novalidate>
@@ -21,6 +21,8 @@ export const createFormPage = (languages: Option.Option<Languages>, locale: Supp
           name="languages"
           id="languages"
           type="text"
+          placeholder=" "
+          dir="auto"
           ${match(languages)
             .with({ value: { value: P.select() } }, languages => html`value="${languages}"`)
             .when(Option.isNone, () => '')

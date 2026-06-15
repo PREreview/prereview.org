@@ -1,0 +1,42 @@
+import type { Types } from 'effect'
+{{#each locales}}
+  import * as l{{@key}} from './{{this}}.ts'
+{{/each}}
+{{#if html}}
+import { type Html, html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
+{{/if}}
+
+const translations = {
+{{#each locales}}
+  '{{this}}': l{{@key}},
+{{/each}}
+}
+
+type SupportedLocale = keyof typeof translations
+
+export type Translations = {[K in keyof typeof translations['{{defaultLocale}}']]: Types.UnionToIntersection<[]
+{{#each realLocales}}
+  & (K extends keyof typeof translations['{{this}}'] ? Parameters<typeof translations['{{this}}'][K]> : [])
+{{/each}}
+> extends [] ? () => {{#if html}}Html{{else}}string{{/if}} : (x: Types.Simplify<{}
+{{#each realLocales}}
+  & (K extends keyof typeof translations['{{this}}'] ? Parameters<typeof translations['{{this}}'][K]> extends [] ? {} : Parameters<typeof translations['{{this}}'][K]>[0] : {})
+{{/each}}
+>) => {{#if html}}Html{{else}}string{{/if}}
+}
+
+
+
+export const translate{{moduleName}} =
+  (locale: SupportedLocale) =>
+  <K extends keyof Translations>(key: K): Translations[K] => {
+    if (key in translations[locale]) {
+      // @ts-ignore
+      {{#if html}}return args => html`<span>${(translations[locale][key](args))}</span>`
+      {{else}}return translations[locale][key]{{/if}}
+    }
+    // @ts-ignore
+    {{#if html}}return args => html`<span ${languageAttributesFor('{{defaultLocale}}')}>${(translations['{{defaultLocale}}'][key](args))}</span>`
+    {{else}}return translations['{{defaultLocale}}'][key]{{/if}}
+  }

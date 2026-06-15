@@ -24,7 +24,7 @@ export const CheckInvitationsToAppearPage = ({
     title: plainText`You have added ${authors.length} other author${authors.length > 1 ? 's' : ''}`,
     nav: html`
       <a href="${Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`

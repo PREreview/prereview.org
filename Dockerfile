@@ -31,9 +31,6 @@ ADD https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linu
 RUN chmod +x /usr/local/bin/intlc
 
 FROM intlc-$BUILDARCH AS intlc
-WORKDIR /app
-
-COPY --from=ghcr.io/tests-always-included/mo:3.0.5 /usr/local/bin/mo /usr/local/bin/mo
 
 #
 # Stage: Development NPM install
@@ -55,13 +52,17 @@ RUN pnpm install --frozen-lockfile --prod \
 #
 # Stage: Intlc build
 #
-FROM intlc AS build-intlc
+FROM npm AS build-intlc
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
+COPY --from=intlc /usr/local/bin/intlc /usr/local/bin/intlc
+COPY --from=npm-dev /app/node_modules/ node_modules/
 COPY .dev/ .dev/
 COPY scripts/ scripts/
 COPY locales/ locales/
 
-RUN scripts/intlc.sh
+RUN node scripts/intlc.ts
 
 #
 # Stage: Production build

@@ -25,7 +25,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
     title: pipe(t('write-review', 'pasteYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -73,12 +73,28 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
             ${match(form.review)
               .with(
                 { right: undefined },
-                () => html` <textarea id="review" name="review" rows="20" aria-describedby="review-tip"></textarea> `,
+                () => html`
+                  <textarea
+                    id="review"
+                    name="review"
+                    placeholder=" "
+                    dir="auto"
+                    rows="20"
+                    aria-describedby="review-tip"
+                  ></textarea>
+                `,
               )
               .with(
                 { right: P.select(P.not(undefined)) },
                 review => html`
-                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+                  <textarea
+                    id="review"
+                    name="review"
+                    placeholder=" "
+                    dir="auto"
+                    rows="20"
+                    aria-describedby="review-tip"
+                  >
 ${turndown.turndown(review.toString())}</textarea
                   >
                   <textarea hidden disabled>${review}</textarea>
@@ -90,6 +106,8 @@ ${turndown.turndown(review.toString())}</textarea
                   <textarea
                     id="review"
                     name="review"
+                    placeholder=" "
+                    dir="auto"
                     rows="20"
                     aria-describedby="review-tip"
                     aria-invalid="true"

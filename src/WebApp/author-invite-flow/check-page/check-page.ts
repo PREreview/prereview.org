@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../../routes.ts'
@@ -30,17 +30,15 @@ export function checkPage({
 
             <dl class="summary-list">
               <div>
-                <dt><span>${translate(locale, 'author-invite-flow', 'publishedName')()}</span></dt>
+                <dt>${translate(locale, 'author-invite-flow', 'publishedName')()}</dt>
                 <dd>${displayAuthor(persona)}</dd>
                 <dd>
                   <a href="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}"
-                    >${rawHtml(
-                      translate(
-                        locale,
-                        'author-invite-flow',
-                        'changeName',
-                      )({ visuallyHidden: (s: string) => `<span class="visually-hidden">${s}</span>` }),
-                    )}
+                    >${translate(
+                      locale,
+                      'author-invite-flow',
+                      'changeName',
+                    )({ visuallyHidden: s => html`<span class="visually-hidden">${s}</span>` })}
                   </a>
                 </dd>
               </div>

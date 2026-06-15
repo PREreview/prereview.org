@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
-import { html, mjmlToHtml, plainText, rawHtml } from '../../../html.ts'
+import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate } from '../../../locales/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
@@ -28,7 +28,7 @@ export const CreateEmail: (details: {
   return {
     from: { address: EmailAddress.EmailAddress('help@prereview.org'), name: 'PREreview' },
     to: { address: person.emailAddress, name: person.name },
-    subject: t('beListedAsAuthor')(),
+    subject: plainText(t('beListedAsAuthor')()).toString(),
     html: yield* mjmlToHtml(html`
       <mjml ${languageAttributesFor(locale)}>
         <mj-head>
@@ -41,28 +41,22 @@ export const CreateEmail: (details: {
             <mj-column>
               <mj-text>${t('hiName')({ name: person.name })}</mj-text>
               <mj-text
-                >${rawHtml(
-                  t('thanksContributingReview')({
-                    preprint: newPrereview.preprint.title.toString(),
-                    prereview: html`<a href="https://prereview.org/">PREreview.org</a>`.toString(),
-                  }),
-                )}
+                >${t('thanksContributingReview')({
+                  preprint: newPrereview.preprint.title,
+                  prereview: html`<a href="https://prereview.org/">PREreview.org</a>`,
+                })}
               </mj-text>
               <mj-text>${t('authorHasInvitedYou')({ author: newPrereview.author })}</mj-text>
               <mj-button href="${inviteUrl.href}">${t('beListedAsAuthorButton')()}</mj-button>
               <mj-text
-                >${rawHtml(
-                  t('chooseNotToBeListedLink')({
-                    link: text => html`<a href="${declineUrl.href}">${text}</a>`.toString(),
-                  }),
-                )}
+                >${t('chooseNotToBeListedLink')({
+                  link: text => html`<a href="${declineUrl.href}">${text}</a>`,
+                })}
               </mj-text>
               <mj-text>
-                ${rawHtml(
-                  t('haveAnyQuestions')({
-                    emailAddress: html`<a href="mailto:help@prereview.org">help@prereview.org</a>`.toString(),
-                  }),
-                )}
+                ${t('haveAnyQuestions')({
+                  emailAddress: html`<a href="mailto:help@prereview.org">help@prereview.org</a>`,
+                })}
               </mj-text>
               <mj-text>${t('allTheBest')()}<br />PREreview</mj-text>
             </mj-column>
@@ -70,7 +64,7 @@ export const CreateEmail: (details: {
         </mj-body>
       </mjml>
     `),
-    text: `
+    text: plainText`
 ${t('hiName')({ name: person.name })}
 
 ${t('thanksContributingReview')({ preprint: plainText(newPrereview.preprint.title).toString(), prereview: 'PREreview.org' })}
@@ -89,6 +83,8 @@ ${t('haveAnyQuestions')({ emailAddress: 'help@prereview.org' })}
 
 ${t('allTheBest')()}
 PREreview
-`.trim(),
+`
+      .toString()
+      .trim(),
   }
 })

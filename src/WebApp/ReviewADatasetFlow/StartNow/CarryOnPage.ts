@@ -1,5 +1,5 @@
 import type * as Datasets from '../../../Datasets/index.ts'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -25,11 +25,9 @@ export const CarryOnPage = ({
       <h1>${t('reviewADataset')()}</h1>
 
       <p>
-        ${rawHtml(
-          t('asYouHaveAlreadyStarted')({
-            dataset: html`<cite ${languageAttributesFor(dataset.language)}>${dataset.title}</cite>`.toString(),
-          }),
-        )}
+        ${t('asYouHaveAlreadyStarted')({
+          dataset: html`<cite ${languageAttributesFor(dataset.language)}>${dataset.title}</cite>`,
+        })}
       </p>
 
       <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false"

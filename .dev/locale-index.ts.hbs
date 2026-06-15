@@ -1,55 +1,55 @@
 import { HashSet, type Option, Record } from 'effect'
-{{#moduleNames}}
-import * as {{@key}} from './{{.}}.ts'
-{{/moduleNames}}
+{{#each moduleNames}}
+import * as {{@key}} from './{{this}}/index.ts'
+{{/each}}
 
-export type SupportedLocale = {{#locales}}| '{{.}}'{{/locales}}
+export type SupportedLocale = {{#each locales}}| '{{this}}'{{/each}}
 
 export type UserSelectableLocale = Exclude<SupportedLocale, '{{crowdinInContextLocale}}'>
 
-export type UserSelectableLanguage = {{#languages}}| '{{@key}}'{{/languages}}
+export type UserSelectableLanguage = {{#each languages}}| '{{@key}}'{{/each}}
 
 export const DefaultLocale: UserSelectableLocale = '{{defaultLocale}}'
 
 export const CrowdinInContextLocale: SupportedLocale = '{{crowdinInContextLocale}}'
 
-export const SupportedLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}])
+export const SupportedLocales = HashSet.fromIterable<SupportedLocale>([{{#each locales}}'{{this}}', {{/each}}])
 
-export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#locales}}'{{.}}', {{/locales}}]).pipe(HashSet.remove<SupportedLocale>('{{crowdinInContextLocale}}')) as HashSet.HashSet<UserSelectableLocale>
+export const UserSelectableLocales = HashSet.fromIterable<SupportedLocale>([{{#each locales}}'{{this}}', {{/each}}]).pipe(HashSet.remove<SupportedLocale>('{{crowdinInContextLocale}}')) as HashSet.HashSet<UserSelectableLocale>
 
-export const UserSelectableLanguages = HashSet.fromIterable<UserSelectableLanguage>([{{#languages}}'{{@key}}', {{/languages}}])
+export const UserSelectableLanguages = HashSet.fromIterable<UserSelectableLanguage>([{{#each languages}}'{{@key}}', {{/each}}])
 
 export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
-  [{{#locales}}'{{.}}', {{/locales}}].includes(locale)
+  [{{#each locales}}'{{this}}', {{/each}}].includes(locale)
 
 export const isUserSelectableLocale = (locale: string): locale is UserSelectableLocale =>
   isSupportedLocale(locale) && locale !== '{{crowdinInContextLocale}}'
 
 export const getLocaleForLanguage = (language: UserSelectableLanguage): SupportedLocale => ({
-{{#languages}}
-  '{{@key}}': '{{.}}',
-{{/languages}}
+{{#each languages}}
+  '{{@key}}': '{{this}}',
+{{/each}}
 } as const)[language]
 
 export const getLanguageForLocale = (locale: UserSelectableLocale): Option.Option<UserSelectableLanguage> => Record.get({
-{{#languages}}
-  '{{.}}': '{{@key}}',
-{{/languages}}
+{{#each languages}}
+  '{{this}}': '{{@key}}',
+{{/each}}
 }, locale as never)
 
 type Module = keyof Translations
 type Key<M extends Module> = keyof Translations[M]
 
 const modules = {
-{{#moduleNames}}
-  '{{.}}': {{@key}}.translate{{@key}},
-{{/moduleNames}}
+{{#each moduleNames}}
+  '{{this}}': {{@key}}.translate{{@key}},
+{{/each}}
 }
 
 type Translations = {
-{{#moduleNames}}
-  '{{.}}': {{@key}}.Translations,
-{{/moduleNames}}
+{{#each moduleNames}}
+  '{{this}}': {{@key}}.Translations,
+{{/each}}
 }
 
 export const translate: {

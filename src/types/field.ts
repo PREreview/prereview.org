@@ -1,4 +1,5 @@
 import { ParseResult, pipe, Schema } from 'effect'
+import type { Html } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import fields from './data/fields.json' with { type: 'json' }
@@ -19,7 +20,7 @@ export const FieldIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URL, F
   encode: fieldId => ParseResult.succeed(new URL(`https://openalex.org/fields/${encodeURIComponent(fieldId)}`)),
 })
 
-export function getFieldName(id: FieldId, locale: SupportedLocale): string {
+export function getFieldName(id: FieldId, locale: SupportedLocale): Html {
   return translate(locale, 'fields', `field${id}`)()
 }
 

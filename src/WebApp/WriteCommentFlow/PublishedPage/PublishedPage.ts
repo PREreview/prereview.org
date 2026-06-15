@@ -1,6 +1,6 @@
 import type * as Doi from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
@@ -24,13 +24,11 @@ export const PublishedPage = ({
         <h1>${translate(locale, 'write-comment-flow', 'publishedTitle')()}</h1>
 
         <div>
-          ${rawHtml(
-            translate(
-              locale,
-              'write-comment-flow',
-              'publishedYourDoi',
-            )({ doi: html`<div><strong class="doi" translate="no">${doi}</strong></div>`.toString() }),
-          )}
+          ${translate(
+            locale,
+            'write-comment-flow',
+            'publishedYourDoi',
+          )({ doi: html`<br /><strong class="doi" dir="auto" translate="no">${doi}</strong>` })}
         </div>
       </div>
 

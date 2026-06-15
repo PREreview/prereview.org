@@ -1,4 +1,4 @@
-import { Array, flow, pipe, Struct } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
@@ -39,12 +39,12 @@ export function publishForm(
 ) {
   const t = translate(locale, 'write-review')
 
-  const visuallyHidden: { visuallyHidden: (x: string) => string } = {
-    visuallyHidden: s => `<span class="visually-hidden">${s}</span>`,
+  const visuallyHidden: { visuallyHidden: (x: Html) => Html } = {
+    visuallyHidden: s => html`<span class="visually-hidden">${s}</span>`,
   }
 
   return StreamlinePageResponse({
-    title: plainText(t('publishTitle')({ preprintTitle: preprint.title.toString() })),
+    title: plainText(t('publishTitle')({ preprintTitle: preprint.title })),
     nav: backNav(locale, format(writeReviewConductMatch.formatter, { id: preprint.id })),
     main: html`
       <single-use-form>
@@ -58,13 +58,13 @@ export function publishForm(
 
             <dl class="summary-list">
               <div>
-                <dt><span>${t('preprintTitle')()}</span></dt>
+                <dt>${t('preprintTitle')()}</dt>
                 <dd>
                   <cite ${languageAttributesFor(preprint.language)}>${preprint.title}</cite>
                 </dd>
               </div>
               <div>
-                <dt><span>${t('preprintServer')()}</span></dt>
+                <dt>${t('preprintServer')()}</dt>
                 <dd>${Preprints.getServerName(preprint.id)}</dd>
               </div>
             </dl>
@@ -93,7 +93,7 @@ export function publishForm(
                 <dd>${displayAuthor(persona)}</dd>
                 <dd>
                   <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}"
-                    >${rawHtml(t('changeName')(visuallyHidden))}</a
+                    >${t('changeName')(visuallyHidden)}</a
                   >
                 </dd>
               </div>
@@ -101,11 +101,17 @@ export function publishForm(
               ${review.moreAuthors === 'yes' && Array.isNonEmptyReadonlyArray(review.otherAuthors)
                 ? html`
                     <div>
-                      <dt><span>${t('invitedAuthors')({ number: review.otherAuthors.length })}</span></dt>
-                      <dd>${pipe(review.otherAuthors, Array.map(Struct.get('name')), formatList(locale))}</dd>
+                      <dt>${t('invitedAuthors')({ number: review.otherAuthors.length })}</dt>
+                      <dd>
+                        ${pipe(
+                          review.otherAuthors,
+                          Array.map(({ name }) => html`<bdi>${name}</bdi>`),
+                          formatList(locale),
+                        )}
+                      </dd>
                       <dd>
                         <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
-                          >${rawHtml(t('changeInvitedAuthors')(visuallyHidden))}</a
+                          >${t('changeInvitedAuthors')(visuallyHidden)}</a
                         >
                       </dd>
                     </div>
@@ -113,21 +119,21 @@ export function publishForm(
                 : ''}
 
               <div>
-                <dt><span>${t('useOfAiShort')()}</span></dt>
+                <dt>${t('useOfAiShort')()}</dt>
                 <dd>${getUseOfAi(review, locale)}</dd>
                 <dd>
                   <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
-                    >${rawHtml(t('changeUseOfAi')(visuallyHidden))}</a
+                    >${t('changeUseOfAi')(visuallyHidden)}</a
                   >
                 </dd>
               </div>
 
               <div>
-                <dt><span>${t('competingInterests')()}</span></dt>
+                <dt>${t('competingInterests')()}</dt>
                 <dd>${getCompetingInterests(review, locale)}</dd>
                 <dd>
                   <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
-                    >${rawHtml(t('changeCompetingInterests')(visuallyHidden))}</a
+                    >${t('changeCompetingInterests')(visuallyHidden)}</a
                   >
                 </dd>
               </div>
@@ -141,7 +147,7 @@ export function publishForm(
               ${review.reviewType === 'freeform'
                 ? html`
                     <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}"
-                      >${rawHtml(t('changePrereview')(visuallyHidden))}</a
+                      >${t('changePrereview')(visuallyHidden)}</a
                     >
                   `
                 : ''}
@@ -157,7 +163,7 @@ export function publishForm(
                 : html`
                     <dl class="summary-list">
                       <div>
-                        <dt><span>${t('doesIntroductionExplain')()}</span></dt>
+                        <dt>${t('doesIntroductionExplain')()}</dt>
                         <dd>
                           ${match(review.introductionMatches)
                             .with('yes', () => t('yes')())
@@ -171,12 +177,12 @@ export function publishForm(
                           : ''}
                         <dd>
                           <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeIfIntroExplains')(visuallyHidden))}
+                            >${t('changeIfIntroExplains')(visuallyHidden)}
                           </a>
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('methodsWellSuited')()}</span></dt>
+                        <dt>${t('methodsWellSuited')()}</dt>
                         <dd>
                           ${match(review.methodsAppropriate)
                             .with('inappropriate', () => t('methodsHighlyInappropriate')())
@@ -192,12 +198,12 @@ export function publishForm(
                           : ''}
                         <dd>
                           <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeMethodsWellSuited')(visuallyHidden))}
+                            >${t('changeMethodsWellSuited')(visuallyHidden)}
                           </a>
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('conclusionsSupported')()}</span></dt>
+                        <dt>${t('conclusionsSupported')()}</dt>
                         <dd>
                           ${match(review.resultsSupported)
                             .with('not-supported', () => t('conclusionsHighlyUnsupported')())
@@ -213,12 +219,12 @@ export function publishForm(
                           : ''}
                         <dd>
                           <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeConclusionsSupported')(visuallyHidden))}</a
+                            >${t('changeConclusionsSupported')(visuallyHidden)}</a
                           >
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('dataPresentationWellSuited')()}</span></dt>
+                        <dt>${t('dataPresentationWellSuited')()}</dt>
                         <dd>
                           ${match(review.dataPresentation)
                             .with('inappropriate-unclear', () => t('highlyInappropriate')())
@@ -234,12 +240,12 @@ export function publishForm(
                           : ''}
                         <dd>
                           <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeDataPresentationWellSuited')(visuallyHidden))}</a
+                            >${t('changeDataPresentationWellSuited')(visuallyHidden)}</a
                           >
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('clearDiscussion')()}</span></dt>
+                        <dt>${t('clearDiscussion')()}</dt>
                         <dd>
                           ${match(review.findingsNextSteps)
                             .with('inadequately', () => t('veryUnclearly')())
@@ -255,12 +261,12 @@ export function publishForm(
                           : ''}
                         <dd>
                           <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeClearDiscussion')(visuallyHidden))}
+                            >${t('changeClearDiscussion')(visuallyHidden)}
                           </a>
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('advanceKnowledge')()}</span></dt>
+                        <dt>${t('advanceKnowledge')()}</dt>
                         <dd>
                           ${match(review.novel)
                             .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
@@ -274,12 +280,12 @@ export function publishForm(
                         ${review.novel !== 'skip' && review.novelDetails ? html` <dd>${review.novelDetails}</dd>` : ''}
                         <dd>
                           <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeAdvanceKnowledge')(visuallyHidden))}</a
+                            >${t('changeAdvanceKnowledge')(visuallyHidden)}</a
                           >
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('benefitFromEditing')()}</span></dt>
+                        <dt>${t('benefitFromEditing')()}</dt>
                         <dd>
                           ${match(review.languageEditing)
                             .with('no', () => t('no')())
@@ -289,12 +295,12 @@ export function publishForm(
                         ${review.languageEditingDetails ? html` <dd>${review.languageEditingDetails}</dd>` : ''}
                         <dd>
                           <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeBenefitFromEditing')(visuallyHidden))}</a
+                            >${t('changeBenefitFromEditing')(visuallyHidden)}</a
                           >
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('wouldRecommend')()}</span></dt>
+                        <dt>${t('wouldRecommend')()}</dt>
                         <dd>
                           ${match(review.shouldRead)
                             .with('no', () => t('wouldRecommendNo')())
@@ -305,12 +311,12 @@ export function publishForm(
                         ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
                         <dd>
                           <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeWouldRecommend')(visuallyHidden))}
+                            >${t('changeWouldRecommend')(visuallyHidden)}
                           </a>
                         </dd>
                       </div>
                       <div>
-                        <dt><span>${t('readyForAttention')()}</span></dt>
+                        <dt>${t('readyForAttention')()}</dt>
                         <dd>
                           ${match(review.readyFullReview)
                             .with('no', () => t('readyForAttentionNo')())
@@ -321,7 +327,7 @@ export function publishForm(
                         ${review.readyFullReviewDetails ? html` <dd>${review.readyFullReviewDetails}</dd>` : ''}
                         <dd>
                           <a href="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
-                            >${rawHtml(t('changeReadyForAttention')(visuallyHidden))}</a
+                            >${t('changeReadyForAttention')(visuallyHidden)}</a
                           >
                         </dd>
                       </div>
@@ -333,14 +339,12 @@ export function publishForm(
           <h2>${t('nowPublish')()}</h2>
 
           <p>
-            ${rawHtml(
-              t('weWillAssignLicense')({
-                licenseLink: match(review.generativeAiIdeas)
-                  .with('yes', () => '<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0&nbsp;1.0</a>')
-                  .with('no', () => '<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>')
-                  .exhaustive(),
-              }),
-            )}
+            ${t('weWillAssignLicense')({
+              licenseLink: match(review.generativeAiIdeas)
+                .with('yes', () => html`<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0&nbsp;1.0</a>`)
+                .with('no', () => html`<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>`)
+                .exhaustive(),
+            })}
           </p>
 
           <button>${t('publishButton')()}</button>

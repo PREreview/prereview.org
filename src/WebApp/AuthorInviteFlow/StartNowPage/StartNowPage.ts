@@ -49,22 +49,18 @@ export const renderStartNowPage = ({
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
-            ${rawHtml(
-              t('structuredReviewTitle')({
-                dataset: html`<cite ${languageAttributesFor(viewModel.dataset.language)}
-                  >${viewModel.dataset.title}</cite
-                >`.toString(),
-              }),
-            )}
+            ${t('structuredReviewTitle')({
+              dataset: html`<cite ${languageAttributesFor(viewModel.dataset.language)}
+                >${viewModel.dataset.title}</cite
+              >`,
+            })}
           </h2>
 
           <div class="byline">
-            ${rawHtml(
-              t('authoredBy')({
-                author: authorList(viewModel, locale).toString(),
-                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-              }),
-            )}
+            ${t('authoredBy')({
+              author: authorList(viewModel, locale),
+              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+            })}
           </div>
 
           <dl>
@@ -75,7 +71,7 @@ export const renderStartNowPage = ({
             <div>
               <dt>DOI</dt>
               <dd>
-                <a href="${Doi.toUrl(viewModel.doi).href}" class="doi" translate="no">${viewModel.doi}</a>
+                <a href="${Doi.toUrl(viewModel.doi).href}" class="doi" dir="auto" translate="no">${viewModel.doi}</a>
               </dd>
             </div>
             <div>
@@ -83,7 +79,7 @@ export const renderStartNowPage = ({
               <dd>
                 <a href="https://creativecommons.org/licenses/by/4.0/">
                   <dfn>
-                    <abbr title="${t('licenseCcBy40')()}"><span translate="no">CC BY 4.0</span></abbr>
+                    <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
                   </dfn>
                 </a>
               </dd>
@@ -137,11 +133,14 @@ const authorList = (datasetReview: ViewModel, locale: SupportedLocale) => {
 
 const displayAuthor = Personas.match({
   onPublic: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+    html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      class="orcid"
+      dir="auto"
       >${persona.name}</a
     >`,
   onPseudonym: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" dir="auto"
       >${persona.pseudonym}</a
     >`,
 })

@@ -38,7 +38,7 @@ export function introductionMatchesForm(
     ),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -107,7 +107,7 @@ export function introductionMatchesForm(
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="introduction-matches-tip-yes" role="note">${t('clearlyExplainsTip')()}</p>
                   <div class="conditional" id="introduction-matches-yes-control">
@@ -116,7 +116,13 @@ export function introductionMatchesForm(
                         >${t('howIntroductionExplains')()}</label
                       >
 
-                      <textarea name="introductionMatchesYesDetails" id="introduction-matches-yes-details" rows="5">
+                      <textarea
+                        name="introductionMatchesYesDetails"
+                        id="introduction-matches-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.introductionMatchesYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -136,7 +142,7 @@ ${match(form.introductionMatchesYesDetails)
                         .with({ right: 'partly' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="introduction-matches-tip-partly" role="note">${t('partlyTip')()}</p>
                   <div class="conditional" id="introduction-matches-partly-control">
@@ -146,6 +152,8 @@ ${match(form.introductionMatchesYesDetails)
                       <textarea
                         name="introductionMatchesPartlyDetails"
                         id="introduction-matches-partly-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${match(form.introductionMatchesPartlyDetails)
@@ -167,14 +175,20 @@ ${match(form.introductionMatchesPartlyDetails)
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="introduction-matches-tip-no" role="note">${t('doesNotExplain')()}</p>
                   <div class="conditional" id="introduction-matches-no-control">
                     <div>
                       <label for="introduction-matches-no-details" class="textarea">${t('doesNotExplainHow')()}</label>
 
-                      <textarea name="introductionMatchesNoDetails" id="introduction-matches-no-details" rows="5">
+                      <textarea
+                        name="introductionMatchesNoDetails"
+                        id="introduction-matches-no-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.introductionMatchesNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -183,7 +197,7 @@ ${match(form.introductionMatchesNoDetails)
                   </div>
                 </li>
                 <li>
-                  <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                  ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="introductionMatches"
@@ -193,7 +207,7 @@ ${match(form.introductionMatchesNoDetails)
                         .with({ right: 'skip' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('iDoNotKnow')()}</span>
+                    ${t('iDoNotKnow')()}
                   </label>
                 </li>
               </ol>

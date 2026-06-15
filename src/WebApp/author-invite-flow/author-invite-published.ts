@@ -7,7 +7,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
-import { type Html, html, plainText, rawHtml } from '../../html.ts'
+import { type Html, html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import {
   authorInviteCheckMatch,
@@ -96,8 +96,7 @@ function publishedPage({
   locale: SupportedLocale
 }) {
   const t = translate(locale, 'author-invite-flow')
-  const prereviewLink = (text: string) =>
-    html`<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`.toString()
+  const prereviewLink = (text: Html) => html`<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`
   return StreamlinePageResponse({
     title: pipe(t('nameAdded')(), plainText),
     main: html`
@@ -106,7 +105,7 @@ function publishedPage({
 
         <div>
           ${t('yourDoi')()} <br />
-          <strong class="doi" translate="no">${review.doi}</strong>
+          <strong class="doi" dir="auto" translate="no">${review.doi}</strong>
         </div>
       </div>
 
@@ -114,7 +113,7 @@ function publishedPage({
 
       <p>${t('ableToSeePrereviewShortly')()}</p>
 
-      <p>${rawHtml(t('closeWindowOrSeePrereview')({ link: prereviewLink }))}</p>
+      <p>${t('closeWindowOrSeePrereview')({ link: prereviewLink })}</p>
     `,
     canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
   })

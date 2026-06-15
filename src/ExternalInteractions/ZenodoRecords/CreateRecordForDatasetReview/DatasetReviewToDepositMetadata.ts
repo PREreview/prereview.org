@@ -268,7 +268,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
         )}
       </p>
     `,
-    title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${review.dataset.title}”`.toString() })),
+    title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${review.dataset.title}”` })),
     communities: [{ identifier: 'prereview-reviews' }],
     relatedIdentifiers: [
       {

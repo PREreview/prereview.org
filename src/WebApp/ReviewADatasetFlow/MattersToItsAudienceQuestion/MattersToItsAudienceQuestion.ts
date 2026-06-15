@@ -25,7 +25,7 @@ export const MattersToItsAudienceQuestion = ({
     title: pipe(t('howConsequential')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -76,7 +76,7 @@ export const MattersToItsAudienceQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('veryConsequential')()}</span>
+                    ${t('veryConsequential')()}
                   </label>
                   <p id="matters-to-its-audience-tip-very-consequential" role="note">${t('veryConsequentialTip')()}</p>
                   <div class="conditional" id="matters-to-its-audience-very-consequential-control">
@@ -87,6 +87,8 @@ export const MattersToItsAudienceQuestion = ({
                       <textarea
                         name="mattersToItsAudienceVeryConsequentialDetail"
                         id="matters-to-its-audience-very-consequential-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -120,7 +122,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('somewhatConsequential')()}</span>
+                    ${t('somewhatConsequential')()}
                   </label>
                   <p id="matters-to-its-audience-tip-somewhat-consequential" role="note">
                     ${t('somewhatConsequentialTip')()}
@@ -133,6 +135,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="mattersToItsAudienceSomewhatConsequentialDetail"
                         id="matters-to-its-audience-somewhat-consequential-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -166,7 +170,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('notConsequential')()}</span>
+                    ${t('notConsequential')()}
                   </label>
                   <p id="matters-to-its-audience-tip-not-consequential" role="note">${t('notConsequentialTip')()}</p>
                   <div class="conditional" id="matters-to-its-audience-not-consequential-control">
@@ -177,6 +181,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="mattersToItsAudienceNotConsequentialDetail"
                         id="matters-to-its-audience-not-consequential-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -194,7 +200,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="mattersToItsAudience"
@@ -207,7 +213,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import { preprintReviewsMatch } from '../../../routes.ts'
@@ -20,17 +20,17 @@ export const publishedPage = ({
 }) => {
   const t = translate(locale)
   const opensInNewTab = t('write-review', 'opensInNewTab')()
-  const communitySlack = (text: string) =>
+  const communitySlack = (text: Html) =>
     html`<a href="https://bit.ly/PREreview-Slack" target="_blank" rel="noopener noreferrer"
       >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
-    >`.toString()
-  const sciety = (text: string) =>
+    >`
+  const sciety = (text: Html) =>
     html`<a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
       >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
-    >`.toString()
+    >`
   const mailtoHelp = html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-    >help@prereview.org<span class="visually-hidden"> (${opensInNewTab})</span></a
-  >`.toString()
+    ><bdi translate="no">help@prereview.org</bdi><span class="visually-hidden"> (${opensInNewTab})</span></a
+  >`
 
   return StreamlinePageResponse({
     title: plainText(t('write-review', 'prereviewPublishedTitle')()),
@@ -40,24 +40,22 @@ export const publishedPage = ({
 
         <div>
           ${t('write-review', 'yourDoi')()} <br />
-          <strong class="doi" translate="no">${doi}</strong>
+          <strong class="doi" dir="auto" translate="no">${doi}</strong>
         </div>
       </div>
 
       <h2>${t('write-review', 'whatHappensNext')()}</h2>
 
       <p>
-        ${rawHtml(
-          isScietyPreprint(preprint.id)
-            ? t('write-review', 'whereYouCanSeeYourPrereviewSciety')({ communitySlack, sciety })
-            : t('write-review', 'whereYouCanSeeYourPrereview')({ communitySlack }),
-        )}
+        ${isScietyPreprint(preprint.id)
+          ? t('write-review', 'whereYouCanSeeYourPrereviewSciety')({ communitySlack, sciety })
+          : t('write-review', 'whereYouCanSeeYourPrereview')({ communitySlack })}
       </p>
 
       ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
         ? html`
             <div class="inset">
-              <p>${rawHtml(t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp }))}</p>
+              <p>${t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
             </div>
           `
         : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
@@ -78,9 +76,9 @@ export const publishedPage = ({
                     'write-review',
                     'shareOnBlueskyMessage',
                   )({
-                    preprintTitle: plainText`“${preprint.title}”`.toString(),
+                    preprintTitle: plainText`“${preprint.title}”`,
                     prereviewHandle: '@prereview.bsky.social',
-                  })} ${url.href}`,
+                  }).toString()} ${url.href}`,
                 }).toString()}"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -112,39 +110,34 @@ export const publishedPage = ({
       <h2>${t('write-review', 'howItWent')()}</h2>
 
       <p>
-        ${rawHtml(
-          t(
-            'write-review',
-            'scheduleAnInterview',
-          )({
-            link: (s: string) =>
-              html`
-                <a
-                  href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >${s}<span class="visually-hidden"> (${opensInNewTab})</span></a
-                >
-              `.toString(),
-          }),
-        )}
+        ${t(
+          'write-review',
+          'scheduleAnInterview',
+        )({
+          link: s => html`
+            <a
+              href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+              target="_blank"
+              rel="noopener noreferrer"
+              >${s}<span class="visually-hidden"> (${opensInNewTab})</span></a
+            >
+          `,
+        })}
       </p>
 
       <p>
-        ${rawHtml(
-          t(
-            'write-review',
-            'feedbackSurvey',
-          )({
-            link: text =>
-              html`<a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
-                >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
-              >`.toString(),
-          }),
-        )}
+        ${t(
+          'write-review',
+          'feedbackSurvey',
+        )({
+          link: text =>
+            html`<a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              >${text}<span class="visually-hidden"> (${opensInNewTab})</span></a
+            >`,
+        })}
       </p>
 
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button"

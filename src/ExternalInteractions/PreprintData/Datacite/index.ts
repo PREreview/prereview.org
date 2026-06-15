@@ -21,4 +21,7 @@ export const getPreprintFromDatacite = (
       RecordIsNotFound: error => new Preprints.PreprintIsNotFound({ cause: error }),
       RecordIsUnavailable: error => new Preprints.PreprintIsUnavailable({ cause: error }),
     }),
+    Effect.tapErrorTag('PreprintIsUnavailable', error =>
+      Effect.logError('Failed to get preprint from DataCite').pipe(Effect.annotateLogs({ error })),
+    ),
   )

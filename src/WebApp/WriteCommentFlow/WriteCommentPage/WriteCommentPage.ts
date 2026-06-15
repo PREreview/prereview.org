@@ -24,7 +24,7 @@ export const WriteCommentPage = ({
     title: plainText(t('write-comment-flow', 'writeCommentTitle')()),
     nav: html`
       <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
-        ><span>${t('write-comment-flow', 'backToPrereview')()}</span></a
+        >${t('write-comment-flow', 'backToPrereview')()}</a
       >
     `,
     main: html`
@@ -33,53 +33,49 @@ export const WriteCommentPage = ({
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
-            ${rawHtml(
-              t(
-                'review-page',
-                prereview.structured ? 'structuredReviewTitle' : 'reviewTitle',
-              )({
-                preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                  >${prereview.preprint.title}</cite
-                >`.toString(),
-              }),
-            )}
+            ${t(
+              'review-page',
+              prereview.structured ? 'structuredReviewTitle' : 'reviewTitle',
+            )({
+              preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                >${prereview.preprint.title}</cite
+              >`,
+            })}
           </h2>
 
           <div class="byline">
-            ${rawHtml(
-              prereview.club
-                ? t(
-                    'review-page',
-                    'clubReviewAuthors',
-                  )({
-                    authors: pipe(
-                      Array.map(prereview.authors.named, author => author.name),
-                      Array.appendAll(
-                        prereview.authors.anonymous > 0
-                          ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
-                          : [],
-                      ),
-                      formatList(locale),
-                    ).toString(),
-                    club: getClubName(prereview.club),
-                    hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                  })
-                : t(
-                    'review-page',
-                    'reviewAuthors',
-                  )({
-                    authors: pipe(
-                      Array.map(prereview.authors.named, author => author.name),
-                      Array.appendAll(
-                        prereview.authors.anonymous > 0
-                          ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
-                          : [],
-                      ),
-                      formatList(locale),
-                    ).toString(),
-                    hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                  }),
-            )}
+            ${prereview.club
+              ? t(
+                  'review-page',
+                  'clubReviewAuthors',
+                )({
+                  authors: pipe(
+                    Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
+                    Array.appendAll(
+                      prereview.authors.anonymous > 0
+                        ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
+                        : [],
+                    ),
+                    formatList(locale),
+                  ),
+                  club: html`<bdi>${getClubName(prereview.club)}</bdi>`,
+                  hide: text => html`<span class="visually-hidden">${text}</span>`,
+                })
+              : t(
+                  'review-page',
+                  'reviewAuthors',
+                )({
+                  authors: pipe(
+                    Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
+                    Array.appendAll(
+                      prereview.authors.anonymous > 0
+                        ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
+                        : [],
+                    ),
+                    formatList(locale),
+                  ),
+                  hide: text => html`<span class="visually-hidden">${text}</span>`,
+                })}
           </div>
 
           <dl>
@@ -89,7 +85,7 @@ export const WriteCommentPage = ({
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi" translate="no">${prereview.doi}</dd>
+              <dd class="doi" dir="auto" translate="no">${prereview.doi}</dd>
             </div>
             <div>
               <dt>${t('review-page', 'license')()}</dt>
@@ -101,7 +97,7 @@ export const WriteCommentPage = ({
                     () => html`
                       <dfn>
                         <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
-                          ><span translate="no">CC0 1.0</span></abbr
+                          ><bdi translate="no">CC0 1.0</bdi></abbr
                         >
                       </dfn>
                     `,
@@ -110,9 +106,7 @@ export const WriteCommentPage = ({
                     'CC-BY-4.0',
                     () => html`
                       <dfn>
-                        <abbr title="${t('review-page', 'licenseCcBy40')()}"
-                          ><span translate="no">CC BY 4.0</span></abbr
-                        >
+                        <abbr title="${t('review-page', 'licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
                       </dfn>
                     `,
                   ),
@@ -129,16 +123,14 @@ export const WriteCommentPage = ({
       </article>
 
       <p>
-        ${rawHtml(
-          t(
-            'write-comment-flow',
-            'youCanWrite',
-          )({
-            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-              >${prereview.preprint.title}</cite
-            >`.toString(),
-          }),
-        )}
+        ${t(
+          'write-comment-flow',
+          'youCanWrite',
+        )({
+          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+            >${prereview.preprint.title}</cite
+          >`,
+        })}
       </p>
 
       ${Boolean.match(isLoggedIn, {
@@ -149,16 +141,14 @@ export const WriteCommentPage = ({
           <p>${t('write-comment-flow', 'orcidLogIn')()}</p>
 
           <details>
-            <summary><span>${t('write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
+            <summary>${t('write-comment-flow', 'whatIsOrcidHeading')()}</summary>
 
             <div>
               <p>
-                ${rawHtml(
-                  t(
-                    'write-comment-flow',
-                    'whatIsOrcid',
-                  )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
-                )}
+                ${t(
+                  'write-comment-flow',
+                  'whatIsOrcid',
+                )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>` })}
               </p>
             </div>
           </details>

@@ -25,7 +25,7 @@ export const IsErrorFreeQuestion = ({
     title: pipe(t('relativelyErrorFree')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -76,7 +76,7 @@ export const IsErrorFreeQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="is-error-free-tip-yes" role="note">${t('relativelyErrorFreeYesTip')()}</p>
                   <div class="conditional" id="is-error-free-yes-control">
@@ -84,7 +84,13 @@ export const IsErrorFreeQuestion = ({
                       <label for="is-error-free-yes-detail" class="textarea"
                         >${t('relativelyErrorFreeYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isErrorFreeYesDetail" id="is-error-free-yes-detail" rows="5">
+                      <textarea
+                        name="isErrorFreeYesDetail"
+                        id="is-error-free-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -112,7 +118,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="is-error-free-tip-partly" role="note">${t('relativelyErrorFreePartlyTip')()}</p>
                   <div class="conditional" id="is-error-free-partly-control">
@@ -120,7 +126,13 @@ ${Match.valueTags(form, {
                       <label for="is-error-free-partly-detail" class="textarea"
                         >${t('relativelyErrorFreePartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isErrorFreePartlyDetail" id="is-error-free-partly-detail" rows="5">
+                      <textarea
+                        name="isErrorFreePartlyDetail"
+                        id="is-error-free-partly-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -148,7 +160,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="is-error-free-tip-no" role="note">${t('relativelyErrorFreeNoTip')()}</p>
                   <div class="conditional" id="is-error-free-no-control">
@@ -156,7 +168,13 @@ ${Match.valueTags(form, {
                       <label for="is-error-free-no-detail" class="textarea"
                         >${t('relativelyErrorFreeNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isErrorFreeNoDetail" id="is-error-free-no-detail" rows="5">
+                      <textarea
+                        name="isErrorFreeNoDetail"
+                        id="is-error-free-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -171,7 +189,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="isErrorFree"
@@ -184,7 +202,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

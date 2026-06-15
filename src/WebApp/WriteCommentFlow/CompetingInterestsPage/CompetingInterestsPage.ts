@@ -26,7 +26,7 @@ export const CompetingInterestsPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -94,7 +94,7 @@ export const CompetingInterestsPage = ({
                 ${
                   // eslint-disable-next-line no-comments/disallowComments
                   // prettier-ignore
-                  html`<summary><span>${translate(locale, 'write-comment-flow', 'examplesCompetingInterests')()}</span></summary>`
+                  html`<summary>${translate(locale, 'write-comment-flow', 'examplesCompetingInterests')()}</summary>`
                 }
 
                 <div>
@@ -140,7 +140,7 @@ export const CompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${translate(locale, 'write-comment-flow', 'competingInterestsNo')()}</span>
+                    ${translate(locale, 'write-comment-flow', 'competingInterestsNo')()}
                   </label>
                 </li>
                 <li>
@@ -157,7 +157,7 @@ export const CompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${translate(locale, 'write-comment-flow', 'competingInterestsYes')()}</span>
+                    ${translate(locale, 'write-comment-flow', 'competingInterestsYes')()}
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
                     <div
@@ -189,6 +189,8 @@ export const CompetingInterestsPage = ({
                       <textarea
                         name="competingInterestsDetails"
                         id="competing-interests-details"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                         ${rawHtml(
                           form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)

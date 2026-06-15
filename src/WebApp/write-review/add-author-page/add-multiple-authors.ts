@@ -49,7 +49,7 @@ export function addMultipleAuthorsForm({
           <p id="authors-tip" role="note">${t('enterNamesAndEmailAddressTip')()}</p>
 
           <details>
-            <summary><span>${t('example')()}</span></summary>
+            <summary>${t('example')()}</summary>
 
             <div>
               <pre>
@@ -75,6 +75,8 @@ Minerva McGonagall mcgonagall@example.com
           <textarea
             name="authors"
             id="authors"
+            placeholder=" "
+            dir="auto"
             rows="10"
             spellcheck="false"
             aria-describedby="authors-tip"

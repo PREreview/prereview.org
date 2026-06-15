@@ -22,7 +22,7 @@ export const createFormPage = ({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(translate(locale, 'my-details', 'whatCareerStage')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
-      ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+      >${translate(locale, 'forms', 'backLink')()}</a
     >`,
     main: html`
       <form method="post" action="${format(changeCareerStageMatch.formatter, {})}" novalidate>
@@ -49,7 +49,7 @@ export const createFormPage = ({
               ? html`
                   <div class="error-message" id="career-stage-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${rawHtml(translate(locale, 'my-details', 'selectCareerStageError')())}
+                    ${translate(locale, 'my-details', 'selectCareerStageError')()}
                   </div>
                 `
               : ''}
@@ -66,7 +66,7 @@ export const createFormPage = ({
                       .with({ value: { value: 'early' } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${translate(locale, 'my-details', 'early')()}</span>
+                  ${translate(locale, 'my-details', 'early')()}
                 </label>
               </li>
               <li>
@@ -79,7 +79,7 @@ export const createFormPage = ({
                       .with({ value: { value: 'mid' } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${translate(locale, 'my-details', 'mid')()}</span>
+                  ${translate(locale, 'my-details', 'mid')()}
                 </label>
               </li>
               <li>
@@ -92,14 +92,14 @@ export const createFormPage = ({
                       .with({ value: { value: 'late' } }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${translate(locale, 'my-details', 'late')()}</span>
+                  ${translate(locale, 'my-details', 'late')()}
                 </label>
               </li>
               <li>
-                <span>${translate(locale, 'forms', 'radioSeparatorLabel')()}</span>
+                ${translate(locale, 'forms', 'radioSeparatorLabel')()}
                 <label>
                   <input name="careerStage" type="radio" value="skip" />
-                  <span>${translate(locale, 'my-details', 'preferNotToSay')()}</span>
+                  ${translate(locale, 'my-details', 'preferNotToSay')()}
                 </label>
               </li>
             </ol>

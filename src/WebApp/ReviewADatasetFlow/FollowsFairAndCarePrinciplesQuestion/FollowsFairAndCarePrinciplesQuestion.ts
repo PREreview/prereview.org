@@ -25,7 +25,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
     title: pipe(t('followFairAndCare')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" class="back">
-        <span>${t('forms', 'backLink')()}</span>
+        ${t('forms', 'backLink')()}
       </a>
     `,
     main: html`
@@ -112,7 +112,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="follows-fair-and-care-principles-tip-yes" role="note">${t('followFairAndCareYesTip')()}</p>
                   <div class="conditional" id="follows-fair-and-care-principles-yes-control">
@@ -123,6 +123,8 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                       <textarea
                         name="followsFairAndCarePrinciplesYesDetail"
                         id="follows-fair-and-care-principles-yes-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -153,7 +155,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('partly')()}</span>
+                    ${t('partly')()}
                   </label>
                   <p id="follows-fair-and-care-principles-tip-partly" role="note">
                     ${t('followFairAndCarePartlyTip')()}
@@ -166,6 +168,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="followsFairAndCarePrinciplesPartlyDetail"
                         id="follows-fair-and-care-principles-partly-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -196,7 +200,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="follows-fair-and-care-principles-tip-no" role="note">${t('followFairAndCareNoTip')()}</p>
                   <div class="conditional" id="follows-fair-and-care-principles-no-control">
@@ -207,6 +211,8 @@ ${Match.valueTags(form, {
                       <textarea
                         name="followsFairAndCarePrinciplesNoDetail"
                         id="follows-fair-and-care-principles-no-detail"
+                        placeholder=" "
+                        dir="auto"
                         rows="5"
                       >
 ${Match.valueTags(form, {
@@ -224,7 +230,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="followsFairAndCarePrinciples"
@@ -237,7 +243,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

@@ -26,7 +26,7 @@ export const EnterEmailAddressPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -93,6 +93,7 @@ export const EnterEmailAddressPage = ({
             id="email-address"
             type="text"
             inputmode="email"
+            dir="ltr"
             spellcheck="false"
             autocomplete="email"
             ${pipe(

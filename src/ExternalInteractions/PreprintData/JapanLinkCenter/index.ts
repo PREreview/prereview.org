@@ -20,4 +20,7 @@ export const getPreprintFromJapanLinkCenter: (
       RecordIsNotFound: error => new Preprints.PreprintIsNotFound({ cause: error }),
       RecordIsUnavailable: error => new Preprints.PreprintIsUnavailable({ cause: error }),
     }),
+    Effect.tapErrorTag('PreprintIsUnavailable', error =>
+      Effect.logError('Failed to get preprint from JapanLinkCenter').pipe(Effect.annotateLogs({ error })),
+    ),
   )

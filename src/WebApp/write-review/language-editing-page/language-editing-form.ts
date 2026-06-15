@@ -33,7 +33,7 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
     ),
     nav: html`
       <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -96,7 +96,7 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <p id="language-editing-tip-no" role="note">${t('benefitFromEditingNoTip')()}</p>
                   <div class="conditional" id="language-editing-no-control">
@@ -105,7 +105,13 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                         >${t('benefitFromEditingNoWhy')()}</label
                       >
 
-                      <textarea name="languageEditingNoDetails" id="language-editing-no-details" rows="5">
+                      <textarea
+                        name="languageEditingNoDetails"
+                        id="language-editing-no-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.languageEditingNoDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea
@@ -125,7 +131,7 @@ ${match(form.languageEditingNoDetails)
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <p id="language-editing-tip-yes" role="note">${t('benefitFromEditingYesTip')()}</p>
                   <div class="conditional" id="language-editing-yes-control">
@@ -134,7 +140,13 @@ ${match(form.languageEditingNoDetails)
                         >${t('benefitFromEditingYesWhy')()}</label
                       >
 
-                      <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
+                      <textarea
+                        name="languageEditingYesDetails"
+                        id="language-editing-yes-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${match(form.languageEditingYesDetails)
                           .with({ right: P.select(P.string) }, identity)
                           .otherwise(() => '')}</textarea

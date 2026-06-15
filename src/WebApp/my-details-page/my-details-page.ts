@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import type { CareerStage } from '../../career-stage.ts'
 import type { ContactEmailAddress } from '../../contact-email-address.ts'
-import { html, plainText, rawHtml } from '../../html.ts'
+import { html, plainText, type Html } from '../../html.ts'
 import type { IsOpenForRequests } from '../../is-open-for-requests.ts'
 import type { Languages } from '../../languages.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
@@ -86,20 +86,20 @@ export function createPage({
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(publicPersona) })}" class="forward"
-            ><span>${t('my-details', 'viewPublicProfile')()}</span></a
+            >${t('my-details', 'viewPublicProfile')()}</a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(pseudonymPersona) })}"
             class="forward"
-            ><span>${t('my-details', 'viewPseudonymProfile')()}</span></a
+            >${t('my-details', 'viewPseudonymProfile')()}</a
           >
         </div>
       </div>
 
       <dl class="summary-list">
         <div>
-          <dt><span>${t('my-details', 'name')()}</span></dt>
+          <dt>${t('my-details', 'name')()}</dt>
           <dd>${publicPersona.name}</dd>
         </div>
 
@@ -109,7 +109,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'pseudonym')()}</span></dt>
+          <dt>${t('my-details', 'pseudonym')()}</dt>
           <dd>${pseudonymPersona.pseudonym}</dd>
         </div>
 
@@ -118,7 +118,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'orcidRecord')()}</span></dt>
+                <dt>${t('my-details', 'orcidRecord')()}</dt>
                 <dd>
                   <a href="${format(connectOrcidMatch.formatter, {})}">${t('my-details', 'connectOrcidRecord')()}</a>
                 </dd>
@@ -129,11 +129,11 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'orcidRecord')()}</span></dt>
+                <dt>${t('my-details', 'orcidRecord')()}</dt>
                 <dd>${t('my-details', 'connected')()}</dd>
                 <dd>
                   <a href="${format(disconnectOrcidMatch.formatter, {})}"
-                    >${rawHtml(t('my-details', 'disconnectOrcidRecord')(visuallyHidden))}</a
+                    >${t('my-details', 'disconnectOrcidRecord')(visuallyHidden)}</a
                   >
                 </dd>
               </div>
@@ -145,7 +145,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'avatar')()}</span></dt>
+                <dt>${t('my-details', 'avatar')()}</dt>
                 <dd>
                   <a href="${format(changeAvatarMatch.formatter, {})}">${t('my-details', 'uploadAvatar')()}</a>
                 </dd>
@@ -156,18 +156,18 @@ export function createPage({
             { value: P.select() },
             avatar => html`
               <div>
-                <dt><span>${t('my-details', 'avatar')()}</span></dt>
+                <dt>${t('my-details', 'avatar')()}</dt>
                 <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
                 <dd>
                   <ul>
                     <li>
                       <a href="${format(changeAvatarMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'changeAvatar')(visuallyHidden))}</a
+                        >${t('my-details', 'changeAvatar')(visuallyHidden)}</a
                       >
                     </li>
                     <li>
                       <a href="${format(removeAvatarMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'removeAvatar')(visuallyHidden))}</a
+                        >${t('my-details', 'removeAvatar')(visuallyHidden)}</a
                       >
                     </li>
                   </ul>
@@ -181,7 +181,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'slackCommunityName')()}</span></dt>
+                <dt>${t('my-details', 'slackCommunityName')()}</dt>
                 <dd>
                   <a href="${format(connectSlackMatch.formatter, {})}">${t('my-details', 'connectSlack')()}</a>
                 </dd>
@@ -192,7 +192,7 @@ export function createPage({
             { value: P.select() },
             slackUser => html`
               <div>
-                <dt><span>${t('my-details', 'slackCommunityName')()}</span></dt>
+                <dt>${t('my-details', 'slackCommunityName')()}</dt>
                 <dd>
                   <span class="slack">
                     <img src="${slackUser.image.href}" alt="" width="48" height="48" />
@@ -201,7 +201,7 @@ export function createPage({
                 </dd>
                 <dd>
                   <a href="${format(disconnectSlackMatch.formatter, {})}"
-                    >${rawHtml(t('my-details', 'disconnectSlack')(visuallyHidden))}</a
+                    >${t('my-details', 'disconnectSlack')(visuallyHidden)}</a
                   >
                 </dd>
               </div>
@@ -213,7 +213,7 @@ export function createPage({
             Option.isNone,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
+                <dt>${t('my-details', 'emailAddress')()}</dt>
                 <dd>
                   <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
                     >${t('my-details', 'enterEmailAddress')()}</a
@@ -226,7 +226,7 @@ export function createPage({
             { value: P.select() },
             contactEmailAddress => html`
               <div>
-                <dt><span>${t('my-details', 'emailAddress')()}</span></dt>
+                <dt>${t('my-details', 'emailAddress')()}</dt>
                 <dd>
                   ${contactEmailAddress.value}
                   ${Match.valueTags(contactEmailAddress, {
@@ -236,7 +236,7 @@ export function createPage({
                 </dd>
                 <dd>
                   <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
-                    >${rawHtml(t('my-details', 'changeEmailAddress')(visuallyHidden))}</a
+                    >${t('my-details', 'changeEmailAddress')(visuallyHidden)}</a
                   >
                 </dd>
               </div>
@@ -283,7 +283,7 @@ export function createPage({
             Option.isSome,
             () => html`
               <div>
-                <dt><span>${t('my-details', 'openReviewRequests')()}</span></dt>
+                <dt>${t('my-details', 'openReviewRequests')()}</dt>
                 ${match(openForRequests)
                   .when(
                     Option.isNone,
@@ -322,14 +322,12 @@ export function createPage({
                               <ul>
                                 <li>
                                   <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                                    >${rawHtml(t('my-details', 'changePreferenceReviewRequests')(visuallyHidden))}</a
+                                    >${t('my-details', 'changePreferenceReviewRequests')(visuallyHidden)}</a
                                   >
                                 </li>
                                 <li>
                                   <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
-                                    >${rawHtml(
-                                      t('my-details', 'setPreferenceReviewRequestsVisibility')(visuallyHidden),
-                                    )}</a
+                                    >${t('my-details', 'setPreferenceReviewRequestsVisibility')(visuallyHidden)}</a
                                   >
                                 </li>
                               </ul>
@@ -339,7 +337,7 @@ export function createPage({
                             { value: false },
                             () => html`
                               <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                                >${rawHtml(t('my-details', 'changePreferenceReviewRequests')(visuallyHidden))}</a
+                                >${t('my-details', 'changePreferenceReviewRequests')(visuallyHidden)}</a
                               >
                             `,
                           )
@@ -354,7 +352,7 @@ export function createPage({
           .exhaustive()}
 
         <div>
-          <dt><span>${t('my-details', 'careerStage')()}</span></dt>
+          <dt>${t('my-details', 'careerStage')()}</dt>
           ${match(careerStage)
             .when(
               Option.isNone,
@@ -380,12 +378,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeCareerStageMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'changeCareerStage')(visuallyHidden))}</a
+                        >${t('my-details', 'changeCareerStage')(visuallyHidden)}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeCareerStageVisibilityMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'setCareerStageVisibility')(visuallyHidden))}</a
+                        >${t('my-details', 'setCareerStageVisibility')(visuallyHidden)}</a
                       >
                     </li>
                   </ul>
@@ -396,7 +394,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'researchInterests')()}</span></dt>
+          <dt>${t('my-details', 'researchInterests')()}</dt>
           ${match(researchInterests)
             .when(
               Option.isNone,
@@ -424,12 +422,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeResearchInterestsMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'changeResearchInterests')(visuallyHidden))}</a
+                        >${t('my-details', 'changeResearchInterests')(visuallyHidden)}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'setResearchInterestsVisibility')(visuallyHidden))}</a
+                        >${t('my-details', 'setResearchInterestsVisibility')(visuallyHidden)}</a
                       >
                     </li>
                   </ul>
@@ -440,7 +438,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'location')()}</span></dt>
+          <dt>${t('my-details', 'location')()}</dt>
           ${match(location)
             .when(
               Option.isNone,
@@ -466,12 +464,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeLocationMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'changeLocation')(visuallyHidden))}</a
+                        >${t('my-details', 'changeLocation')(visuallyHidden)}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'setLocationVisibility')(visuallyHidden))}</a
+                        >${t('my-details', 'setLocationVisibility')(visuallyHidden)}</a
                       >
                     </li>
                   </ul>
@@ -482,7 +480,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>${t('my-details', 'languages')()}</span></dt>
+          <dt>${t('my-details', 'languages')()}</dt>
           ${match(languages)
             .when(
               Option.isNone,
@@ -508,12 +506,12 @@ export function createPage({
                   <ul>
                     <li>
                       <a href="${format(changeLanguagesMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'changeLanguages')(visuallyHidden))}</a
+                        >${t('my-details', 'changeLanguages')(visuallyHidden)}</a
                       >
                     </li>
                     <li>
                       <a href="${format(changeLanguagesVisibilityMatch.formatter, {})}"
-                        >${rawHtml(t('my-details', 'setLanguagesVisibility')(visuallyHidden))}</a
+                        >${t('my-details', 'setLanguagesVisibility')(visuallyHidden)}</a
                       >
                     </li>
                   </ul>
@@ -530,5 +528,5 @@ export function createPage({
 }
 
 const visuallyHidden = {
-  visuallyHidden: (text: string) => html`<span class="visually-hidden">${text}</span>`.toString(),
+  visuallyHidden: (text: Html) => html`<span class="visually-hidden">${text}</span>`,
 }

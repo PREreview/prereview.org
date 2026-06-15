@@ -82,7 +82,7 @@ export function enterEmailAddressForm({
                         .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${invitedEmailAddress}</span>
+                    ${invitedEmailAddress}
                   </label>
                 </li>
                 <li>
@@ -96,7 +96,7 @@ export function enterEmailAddressForm({
                         .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${t('aDifferentOne')()}</span>
+                    ${t('aDifferentOne')()}
                   </label>
                   <div class="conditional" id="other-email-address-control">
                     <div ${rawHtml(E.isLeft(form.otherEmailAddress) ? 'class="error"' : '')}>
@@ -119,6 +119,7 @@ export function enterEmailAddressForm({
                         id="other-email-address"
                         type="text"
                         inputmode="email"
+                        dir="ltr"
                         spellcheck="false"
                         autocomplete="email"
                         ${match(form.otherEmailAddress)

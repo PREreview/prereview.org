@@ -1,6 +1,6 @@
 import { pipe, type Array } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import {
@@ -26,7 +26,7 @@ export function addAuthorsForm({
   locale: SupportedLocale
 }) {
   const t = translate(locale)
-  const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
+  const visuallyHidden = (s: Html) => html`<span class="visually-hidden">${s}</span>`
   const authorCount = authors.length
 
   return StreamlinePageResponse({
@@ -50,14 +50,12 @@ export function addAuthorsForm({
                 <ul>
                   <li>
                     <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                      >${rawHtml(
-                        t('write-review', 'changeAuthorDetailsLink')({ name: author.name, visuallyHidden }),
-                      )}</a
+                      >${t('write-review', 'changeAuthorDetailsLink')({ name: author.name, visuallyHidden })}</a
                     >
                   </li>
                   <li>
                     <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
-                      >${rawHtml(t('write-review', 'removeAuthor')({ name: author.name, visuallyHidden }))}</a
+                      >${t('write-review', 'removeAuthor')({ name: author.name, visuallyHidden })}</a
                     >
                   </li>
                 </ul>
@@ -65,11 +63,11 @@ export function addAuthorsForm({
 
               <dl class="summary-list">
                 <div>
-                  <dt><span>${t('write-review', 'name')()}</span></dt>
+                  <dt>${t('write-review', 'name')()}</dt>
                   <dd>${author.name}</dd>
                 </div>
                 <div>
-                  <dt><span>${t('write-review', 'emailAddress')()}</span></dt>
+                  <dt>${t('write-review', 'emailAddress')()}</dt>
                   <dd>${author.emailAddress}</dd>
                 </div>
               </dl>

@@ -31,14 +31,8 @@ export const createPage = ({
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) =>
   TwoUpPageResponse({
-    title: plainText(
-      translate(
-        locale,
-        'preprint-reviews',
-        'prereviewsOf',
-      )({ preprint: plainText`“${preprint.title.text}”`.toString() }),
-    ),
-    description: plainText`${rawHtml(translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, Array.map(displayAuthor), formatList(locale), list => list.toString()), visuallyHidden: identity }))}
+    title: plainText(translate(locale, 'preprint-reviews', 'prereviewsOf')({ preprint: preprint.title.text })),
+    description: plainText`${translate(locale, 'preprint-reviews', 'authoredBy')({ authors: pipe(preprint.authors, Array.map(displayAuthor), formatList(locale)), visuallyHidden: identity })}
     ${
       preprint.abstract
         ? plainText`
@@ -49,33 +43,27 @@ export const createPage = ({
         : ''
     }
     `,
-    h1: rawHtml(
-      translate(
-        locale,
-        'preprint-reviews',
-        'prereviewsOf',
-      )({
-        preprint: html`<cite ${languageAttributesFor(preprint.title.language)}
-          >${preprint.title.text}</cite
-        >`.toString(),
-      }),
-    ),
+    h1: translate(
+      locale,
+      'preprint-reviews',
+      'prereviewsOf',
+    )({
+      preprint: html`<cite ${languageAttributesFor(preprint.title.language)}>${preprint.title.text}</cite>`,
+    }),
     aside: html`
       <article aria-labelledby="preprint-title">
         <header>
           <h2 ${languageAttributesFor(preprint.title.language)} id="preprint-title">${preprint.title.text}</h2>
 
           <div class="byline">
-            ${rawHtml(
-              translate(
-                locale,
-                'preprint-reviews',
-                'authoredBy',
-              )({
-                authors: pipe(preprint.authors, Array.map(displayAuthor), formatList(locale), list => list.toString()),
-                visuallyHidden,
-              }),
-            )}
+            ${translate(
+              locale,
+              'preprint-reviews',
+              'authoredBy',
+            )({
+              authors: pipe(preprint.authors, Array.map(displayAuthor), formatList(locale)),
+              visuallyHidden,
+            })}
           </div>
 
           <dl>
@@ -102,7 +90,7 @@ export const createPage = ({
                 id => html`
                   <div>
                     <dt>DOI</dt>
-                    <dd><a href="${toUrl(id.value).href}" class="doi" translate="no">${id.value}</a></dd>
+                    <dd><a href="${toUrl(id.value).href}" class="doi" dir="auto" translate="no">${id.value}</a></dd>
                   </div>
                 `,
               )
@@ -163,17 +151,24 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
             ${match([countAuthors(review), review.club])
               .with([1, P.string], ([, club]) =>
-                t('prereviewByOneAuthorInClub')({ author: review.authors.named[0].name, club: getClubName(club) }),
+                t('prereviewByOneAuthorInClub')({
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                  club: html`<bdi>${getClubName(club)}</bdi>`,
+                }),
               )
-              .with([1, undefined], () => t('prereviewByOneAuthor')({ author: review.authors.named[0].name }))
+              .with([1, undefined], () =>
+                t('prereviewByOneAuthor')({ author: html`<bdi>${review.authors.named[0].name}</bdi>` }),
+              )
               .with([P.number, P.string], ([, club]) =>
                 t('prereviewByMultipleAuthorsInClub')({
-                  author: review.authors.named[0].name,
-                  club: getClubName(club),
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                  club: html`<bdi>${getClubName(club)}</bdi>`,
                 }),
               )
               .with([P.number, undefined], () =>
-                t('prereviewByMultipleAuthors')({ author: review.authors.named[0].name }),
+                t('prereviewByMultipleAuthors')({
+                  author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                }),
               )
               .exhaustive()}
           </h3>
@@ -181,17 +176,19 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
           <div class="byline">
             ${pipe(
               review.authors.named,
-              Array.map(Struct.get('name')),
+              Array.map(({ name }) => html`<bdi>${name}</bdi>`),
               Array.appendAll(
                 review.authors.anonymous > 0 ? [t('otherAuthors')({ number: review.authors.anonymous })] : [],
               ),
               formatList(locale),
-              list => list.toString(),
               authors =>
                 review.club
-                  ? t('authoredByInClub')({ authors, club: getClubName(review.club), visuallyHidden })
+                  ? t('authoredByInClub')({
+                      authors,
+                      club: html`<bdi>${getClubName(review.club)}</bdi>`,
+                      visuallyHidden,
+                    })
                   : t('authoredBy')({ authors, visuallyHidden }),
-              rawHtml,
             )}
           </div>
         </header>
@@ -204,30 +201,34 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
         </div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
-          ${rawHtml(
-            match([countAuthors(review), review.club])
-              .with([1, P.string], ([, club]) =>
-                t('readPrereviewByOneAuthorInClub')({
-                  author: review.authors.named[0].name,
-                  club: getClubName(club),
-                  visuallyHidden,
-                }),
-              )
-              .with([1, undefined], () =>
-                t('readPrereviewByOneAuthor')({ author: review.authors.named[0].name, visuallyHidden }),
-              )
-              .with([P.number, P.string], ([, club]) =>
-                t('readPrereviewByMultipleAuthorsInClub')({
-                  author: review.authors.named[0].name,
-                  club: getClubName(club),
-                  visuallyHidden,
-                }),
-              )
-              .with([P.number, undefined], () =>
-                t('readPrereviewByMultipleAuthors')({ author: review.authors.named[0].name, visuallyHidden }),
-              )
-              .exhaustive(),
-          )}
+          ${match([countAuthors(review), review.club])
+            .with([1, P.string], ([, club]) =>
+              t('readPrereviewByOneAuthorInClub')({
+                author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                club: html`<bdi>${getClubName(club)}</bdi>`,
+                visuallyHidden,
+              }),
+            )
+            .with([1, undefined], () =>
+              t('readPrereviewByOneAuthor')({
+                author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                visuallyHidden,
+              }),
+            )
+            .with([P.number, P.string], ([, club]) =>
+              t('readPrereviewByMultipleAuthorsInClub')({
+                author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                club: html`<bdi>${getClubName(club)}</bdi>`,
+                visuallyHidden,
+              }),
+            )
+            .with([P.number, undefined], () =>
+              t('readPrereviewByMultipleAuthors')({
+                author: html`<bdi>${review.authors.named[0].name}</bdi>`,
+                visuallyHidden,
+              }),
+            )
+            .exhaustive()}
         </a>
       </article>
     </li>
@@ -245,41 +246,29 @@ function showRapidPrereviews(
     <h2>${t('rapidPrereviews')({ number: rapidPrereviews.length })}</h2>
 
     <div class="byline">
-      ${rawHtml(
-        t('authoredBy')({
-          authors: pipe(
-            rapidPrereviews,
-            Array.map(flow(Struct.get('author'), displayPersona)),
-            formatList(locale),
-            list => list.toString(),
-          ),
-          visuallyHidden,
-        }),
-      )}
+      ${t('authoredBy')({
+        authors: pipe(rapidPrereviews, Array.map(flow(Struct.get('author'), displayPersona)), formatList(locale)),
+        visuallyHidden,
+      })}
     </div>
 
     <details>
-      <summary><span>${t('whereCanRapidPrereview')()}</span></summary>
+      <summary>${t('whereCanRapidPrereview')()}</summary>
 
       <div>
         <p>
-          ${rawHtml(
-            t('rapidReplacedWith')({
-              link: text =>
-                html`<a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
-                  >${text}</a
-                >`.toString(),
-            }),
-          )}
+          ${t('rapidReplacedWith')({
+            link: text =>
+              html`<a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
+                >${text}</a
+              >`,
+          })}
         </p>
 
         <p>
-          ${rawHtml(
-            t('writeStructuredPrereview')({
-              link: text =>
-                html`<a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">${text}</a>`.toString(),
-            }),
-          )}
+          ${t('writeStructuredPrereview')({
+            link: text => html`<a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">${text}</a>`,
+          })}
         </p>
 
         <p>${t('updatingRapidPrereviews')()}</p>
@@ -365,27 +354,35 @@ function showRapidPrereviews(
 
 const displayPersona = Personas.match({
   onPublic: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+    html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      class="orcid"
+      dir="auto"
       >${persona.name}</a
     >`,
   onPseudonym: persona =>
-    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" dir="auto"
       >${persona.pseudonym}</a
     >`,
 })
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}" dir="auto"
+      >${name}</a
+    >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(
@@ -413,4 +410,4 @@ function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions'
 
 const countAuthors = (prereview: PreprintPrereview) => prereview.authors.named.length + prereview.authors.anonymous
 
-const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()
+const visuallyHidden = (text: Html) => html`<span class="visually-hidden">${text}</span>`

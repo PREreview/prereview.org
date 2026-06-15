@@ -16,7 +16,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
     title: plainText(translate(locale, 'write-review', 'writeAPrereview')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${translate(locale, 'write-review', 'backToPreprint')()}</span></a
+        >${translate(locale, 'write-review', 'backToPreprint')()}</a
       >
     `,
     main: html`
@@ -27,20 +27,18 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
           <h2 ${languageAttributesFor(preprint.title.language)} id="preprint-title">${preprint.title.text}</h2>
 
           <div class="byline">
-            ${rawHtml(
-              translate(
-                locale,
-                'write-review',
-                'authoredBy',
-              )({
-                authors: pipe(
-                  preprint.authors,
-                  Array.map(author => author.name),
-                  formatList(locale),
-                ).toString(),
-                ...visuallyHidden,
-              }),
-            )}
+            ${translate(
+              locale,
+              'write-review',
+              'authoredBy',
+            )({
+              authors: pipe(
+                preprint.authors,
+                Array.map(author => html`<bdi>${author.name}</bdi>`),
+                formatList(locale),
+              ),
+              ...visuallyHidden,
+            })}
           </div>
 
           <dl>
@@ -67,7 +65,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
                 id => html`
                   <div>
                     <dt>DOI</dt>
-                    <dd class="doi" translate="no">${id.value}</dd>
+                    <dd class="doi" dir="auto" translate="no">${id.value}</dd>
                   </div>
                 `,
               )
@@ -85,17 +83,13 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
       </article>
 
       <p>
-        ${rawHtml(
-          translate(
-            locale,
-            'write-review',
-            'youCanWriteAPrereview',
-          )({
-            preprintTitle: html`<cite ${languageAttributesFor(preprint.title.language)}
-              >${preprint.title.text}</cite
-            >`.toString(),
-          }),
-        )}
+        ${translate(
+          locale,
+          'write-review',
+          'youCanWriteAPrereview',
+        )({
+          preprintTitle: html`<cite ${languageAttributesFor(preprint.title.language)}>${preprint.title.text}</cite>`,
+        })}
       </p>
 
       ${Boolean.match(isLoggedIn, {
@@ -106,17 +100,15 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
           <p>${translate(locale, 'write-review', 'orcidLogIn')()}</p>
 
           <details>
-            <summary><span>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</span></summary>
+            <summary>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</summary>
 
             <div>
               <p>
-                ${rawHtml(
-                  translate(
-                    locale,
-                    'write-review',
-                    'whatIsOrcid',
-                  )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
-                )}
+                ${translate(
+                  locale,
+                  'write-review',
+                  'whatIsOrcid',
+                )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>` })}
               </p>
             </div>
           </details>
@@ -142,6 +134,6 @@ function formatList(
   )
 }
 
-const visuallyHidden: { visuallyHidden: (x: string) => string } = {
-  visuallyHidden: s => html`<span class="visually-hidden">${s}</span>`.toString(),
+const visuallyHidden: { visuallyHidden: (x: Html) => Html } = {
+  visuallyHidden: s => html`<span class="visually-hidden">${s}</span>`,
 }

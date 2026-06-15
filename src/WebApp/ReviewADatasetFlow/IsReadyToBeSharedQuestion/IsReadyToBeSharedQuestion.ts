@@ -25,7 +25,7 @@ export const IsReadyToBeSharedQuestion = ({
     title: pipe(t('readyToBeShared')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}" class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -72,14 +72,20 @@ export const IsReadyToBeSharedQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('yes')()}</span>
+                    ${t('yes')()}
                   </label>
                   <div class="conditional" id="is-ready-to-be-shared-yes-control">
                     <div>
                       <label for="is-ready-to-be-shared-yes-detail" class="textarea"
                         >${t('readyToBeSharedYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isReadyToBeSharedYesDetail" id="is-ready-to-be-shared-yes-detail" rows="5">
+                      <textarea
+                        name="isReadyToBeSharedYesDetail"
+                        id="is-ready-to-be-shared-yes-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -106,14 +112,20 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('no')()}</span>
+                    ${t('no')()}
                   </label>
                   <div class="conditional" id="is-ready-to-be-shared-no-control">
                     <div>
                       <label for="is-ready-to-be-shared-no-detail" class="textarea"
                         >${t('readyToBeSharedNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
-                      <textarea name="isReadyToBeSharedNoDetail" id="is-ready-to-be-shared-no-detail" rows="5">
+                      <textarea
+                        name="isReadyToBeSharedNoDetail"
+                        id="is-ready-to-be-shared-no-detail"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
                           InvalidForm: form =>
@@ -128,7 +140,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
+                  ${t('forms', 'radioSeparatorLabel')()}
                   <label>
                     <input
                       name="isReadyToBeShared"
@@ -141,7 +153,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('doNotKnow')()}</span>
+                    ${t('doNotKnow')()}
                   </label>
                 </li>
               </ol>

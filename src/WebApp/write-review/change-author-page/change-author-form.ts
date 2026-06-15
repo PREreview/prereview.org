@@ -69,6 +69,8 @@ export function changeAuthorForm({
             name="name"
             id="name"
             type="text"
+            placeholder=" "
+            dir="auto"
             spellcheck="false"
             aria-describedby="name-tip"
             ${match(form.name)
@@ -101,6 +103,7 @@ export function changeAuthorForm({
             id="email-address"
             type="text"
             inputmode="email"
+            dir="ltr"
             spellcheck="false"
             autocomplete="email"
             aria-describedby="email-address-tip"

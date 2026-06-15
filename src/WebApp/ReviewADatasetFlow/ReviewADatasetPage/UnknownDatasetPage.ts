@@ -1,6 +1,6 @@
 import { Match } from 'effect'
 import type * as Datasets from '../../../Datasets/index.ts'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -16,24 +16,18 @@ export const UnknownDatasetPage = ({ dataset, locale }: { dataset: Datasets.Data
       <h1>${t('doNotKnowDataset')()}</h1>
 
       <p>
-        ${rawHtml(
-          Match.valueTags(dataset, {
-            DryadDatasetId: () => t('doiCouldBeDryad'),
-            ScieloDatasetId: () => t('doiCouldBeScielo'),
-            ZenodoDatasetId: () => t('doiCouldBeZenodo'),
-          })({ doi: html`<q class="select-all" translate="no">${dataset.value}</q>`.toString() }),
-        )}
+        ${Match.valueTags(dataset, {
+          DryadDatasetId: () => t('doiCouldBeDryad'),
+          ScieloDatasetId: () => t('doiCouldBeScielo'),
+          ZenodoDatasetId: () => t('doiCouldBeZenodo'),
+        })({ doi: html`<q class="select-all" dir="auto" translate="no">${dataset.value}</q>` })}
       </p>
 
       <p>${t('checkCorrectDoi')()}</p>
 
       <p>${t('checkPastedDoi')()}</p>
 
-      <p>
-        ${rawHtml(
-          t('doiIsCorrect')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
-        )}
-      </p>
+      <p>${t('doiIsCorrect')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}</p>
 
       <a href="${Routes.ReviewADataset}" class="button">${t('forms', 'backLink')()}</a>
     `,

@@ -31,7 +31,7 @@ export const ChoosePersonaPage = ({
     ),
     nav: html`
       <a href="${Routes.WriteCommentEnterComment.href({ commentId })}" class="back"
-        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
+        >${translate(locale, 'forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -76,20 +76,18 @@ export const ChoosePersonaPage = ({
             <p id="persona-tip" role="note">${translate(locale, 'write-comment-flow', 'whichNameTip')()}</p>
 
             <details>
-              <summary><span>${translate(locale, 'write-comment-flow', 'whatIsPseudonym')()}</span></summary>
+              <summary>${translate(locale, 'write-comment-flow', 'whatIsPseudonym')()}</summary>
 
               <div>
                 <p>
-                  ${rawHtml(
-                    translate(
-                      locale,
-                      'write-comment-flow',
-                      'whatIsPseudonymDefinition',
-                    )({
-                      pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
-                      term: text => html`<dfn>${text}</dfn>`.toString(),
-                    }),
-                  )}
+                  ${translate(
+                    locale,
+                    'write-comment-flow',
+                    'whatIsPseudonymDefinition',
+                  )({
+                    pseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
+                    term: text => html`<dfn>${text}</dfn>`,
+                  })}
                 </p>
 
                 <p>${translate(locale, 'write-comment-flow', 'whatIsPseudonymAccountability')()}</p>

@@ -1,3 +1,11 @@
+declare namespace Intl {
+  interface Locale {
+    getTextInfo(): {
+      direction: 'ltr' | 'rtl'
+    }
+  }
+}
+
 declare module 'postcss-font-display' {
   import type { PluginCreator } from 'postcss'
 

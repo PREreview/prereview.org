@@ -105,72 +105,54 @@ function startPage({
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
-            ${rawHtml(
-              translate(
-                locale,
-                'review-page',
-                review.structured ? 'structuredReviewTitle' : 'reviewTitle',
-              )({
-                preprint: html`<cite ${languageAttributesFor(review.preprint.language)}
-                  >${review.preprint.title}</cite
-                >`.toString(),
-              }),
-            )}
+            ${translate(
+              locale,
+              'review-page',
+              review.structured ? 'structuredReviewTitle' : 'reviewTitle',
+            )({
+              preprint: html`<cite ${languageAttributesFor(review.preprint.language)}>${review.preprint.title}</cite>`,
+            })}
           </h2>
 
           <div class="byline">
-            ${rawHtml(
-              review.club
-                ? translate(
-                    locale,
-                    'review-page',
-                    'clubReviewAuthors',
-                  )({
-                    authors: pipe(
-                      review.authors.named,
-                      Array.map(displayAuthor),
-                      Array.appendAll(
-                        review.authors.anonymous > 0
-                          ? [
-                              translate(
-                                locale,
-                                'review-page',
-                                'otherAuthors',
-                              )({ otherAuthors: review.authors.anonymous }),
-                            ]
-                          : [],
-                      ),
-                      formatList(locale),
-                    ).toString(),
-                    club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}"
-                      >${getClubName(review.club)}</a
-                    >`.toString(),
-                    hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                  })
-                : translate(
-                    locale,
-                    'review-page',
-                    'reviewAuthors',
-                  )({
-                    authors: pipe(
-                      review.authors.named,
-                      Array.map(displayAuthor),
-                      Array.appendAll(
-                        review.authors.anonymous > 0
-                          ? [
-                              translate(
-                                locale,
-                                'review-page',
-                                'otherAuthors',
-                              )({ otherAuthors: review.authors.anonymous }),
-                            ]
-                          : [],
-                      ),
-                      formatList(locale),
-                    ).toString(),
-                    hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                  }),
-            )}
+            ${review.club
+              ? translate(
+                  locale,
+                  'review-page',
+                  'clubReviewAuthors',
+                )({
+                  authors: pipe(
+                    review.authors.named,
+                    Array.map(displayAuthor),
+                    Array.appendAll(
+                      review.authors.anonymous > 0
+                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                        : [],
+                    ),
+                    formatList(locale),
+                  ),
+                  club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
+                    >${getClubName(review.club)}</a
+                  >`,
+                  hide: text => html`<span class="visually-hidden">${text}</span>`,
+                })
+              : translate(
+                  locale,
+                  'review-page',
+                  'reviewAuthors',
+                )({
+                  authors: pipe(
+                    review.authors.named,
+                    Array.map(displayAuthor),
+                    Array.appendAll(
+                      review.authors.anonymous > 0
+                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
+                        : [],
+                    ),
+                    formatList(locale),
+                  ),
+                  hide: text => html`<span class="visually-hidden">${text}</span>`,
+                })}
           </div>
 
           <dl>
@@ -180,7 +162,7 @@ function startPage({
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi" translate="no">${review.doi}</dd>
+              <dd class="doi" dir="auto" translate="no">${review.doi}</dd>
             </div>
             <div>
               <dt>${translate(locale, 'review-page', 'license')()}</dt>
@@ -192,7 +174,7 @@ function startPage({
                       <a href="https://creativecommons.org/publicdomain/zero/1.0/">
                         <dfn>
                           <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
-                            ><span translate="no">CC0 1.0</span></abbr
+                            ><bdi translate="no">CC0 1.0</bdi></abbr
                           >
                         </dfn>
                       </a>
@@ -204,7 +186,7 @@ function startPage({
                       <a href="https://creativecommons.org/licenses/by/4.0/">
                         <dfn>
                           <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
-                            ><span translate="no">CC BY 4.0</span></abbr
+                            ><bdi translate="no">CC BY 4.0</bdi></abbr
                           >
                         </dfn>
                       </a>
@@ -237,15 +219,13 @@ function startPage({
             <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
             <details>
-              <summary><span>${t('whatIsAnOrcid')()}</span></summary>
+              <summary>${t('whatIsAnOrcid')()}</summary>
 
               <div>
                 <p>
-                  ${rawHtml(
-                    t('orcidExplainer')({
-                      link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString(),
-                    }),
-                  )}
+                  ${t('orcidExplainer')({
+                    link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`,
+                  })}
                 </p>
               </div>
             </details>
@@ -262,16 +242,21 @@ function startPage({
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+    return html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
       >${name}</a
     >`
   }
 
   if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}" dir="auto"
+      >${name}</a
+    >`
   }
 
-  return name
+  return html`<bdi>${name}</bdi>`
 }
 
 function formatList(

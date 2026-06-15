@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
-import { html, mjmlToHtml } from '../../../html.ts'
+import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate } from '../../../locales/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
@@ -31,7 +31,7 @@ export const CreateEmail: (details: {
   return {
     from: { address: EmailAddress.EmailAddress('help@prereview.org'), name: 'PREreview' },
     to: { address: emailAddress.value, name },
-    subject: t('verifyEmailAddressTitle')(),
+    subject: plainText(t('verifyEmailAddressTitle')()).toString(),
     html: yield* mjmlToHtml(html`
       <mjml ${languageAttributesFor(locale)}>
         <mj-head>
@@ -50,6 +50,8 @@ export const CreateEmail: (details: {
         </mj-body>
       </mjml>
     `),
-    text: `${t('hiName')({ name })}\n\n${t('verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
+    text: plainText`${t('hiName')({ name })}
+
+${t('verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`.toString(),
   }
 })

@@ -1,6 +1,6 @@
 import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { type Html, type PlainText, html, rawHtml } from '../html.ts'
+import { type Html, type PlainText, html } from '../html.ts'
 import { languageAttributesFor } from '../Locales.ts'
 import { DefaultLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
@@ -106,6 +106,13 @@ export const page = ({
                       .replaceAll('</swoosh>', '</em>')
                   },
                 ])
+                window.setInterval(function () {
+                  if (!window.jipt?.target_language) {
+                    return
+                  }
+                  document.documentElement.lang = window.jipt.target_language
+                  document.documentElement.dir = window.jipt.target_language === 'arb' ? 'rtl' : 'ltr'
+                }, 1000)
               </script>
               <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
               <link href="${assets['crowdin.css']}" rel="stylesheet" />
@@ -145,7 +152,7 @@ export const page = ({
             ? html`
                 <div class="environment">
                   <strong class="tag">${t('environment', `${environmentLabel}Name`)()}</strong>
-                  <span>${t('environment', `${environmentLabel}Text`)()}</span>
+                  ${t('environment', `${environmentLabel}Text`)()}
                 </div>
               `
             : ''}
@@ -368,7 +375,7 @@ export const page = ({
                                     <li>
                                       <a
                                         href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                        lang="${code}"
+                                        ${languageAttributesFor(code)}
                                         hreflang="${code}"
                                         ${locale === code ? html`aria-current="true"` : ''}
                                         >${name}</a
@@ -404,7 +411,7 @@ export const page = ({
                 ${pageUrls
                   ? html`
                       <div>
-                        <span>${t('footer', 'chooseLanguage')()}</span>
+                        ${t('footer', 'chooseLanguage')()}
 
                         <ul>
                           ${pipe(
@@ -428,7 +435,7 @@ export const page = ({
                                 <li>
                                   <a
                                     href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                    lang="${code}"
+                                    ${languageAttributesFor(code)}
                                     hreflang="${code}"
                                     ${locale === code ? html`aria-current="true"` : ''}
                                     >${name}</a
@@ -445,15 +452,13 @@ export const page = ({
                 <div>
                   ${t('footer', 'newsletterText')()}
                   <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                    ><span>${t('footer', 'newsletterLink')()}</span></a
+                    >${t('footer', 'newsletterLink')()}</a
                   >
                 </div>
 
                 <div>
                   ${t('footer', 'slackText')()}
-                  <a href="https://bit.ly/PREreview-Slack" class="forward"
-                    ><span>${t('footer', 'slackLink')()}</span></a
-                  >
+                  <a href="https://bit.ly/PREreview-Slack" class="forward">${t('footer', 'slackLink')()}</a>
                 </div>
 
                 <div>
@@ -504,7 +509,7 @@ export const page = ({
                       href="mailto:contact@prereview.org"
                       class="email"
                       aria-label="${t('footer', 'contactEmail')({ address: 'contact@prereview.org' })}"
-                      ><span translate="no">contact@prereview.org</span></a
+                      ><bdi translate="no">contact@prereview.org</bdi></a
                     >
                   </li>
                   <li>
@@ -512,7 +517,7 @@ export const page = ({
                       href="https://bsky.app/profile/prereview.bsky.social"
                       class="bluesky"
                       aria-label="${t('footer', 'contactBluesky')({ handle: '@prereview.bsky.social' })}"
-                      ><span translate="no">@prereview.bsky.social</span></a
+                      ><bdi translate="no">@prereview.bsky.social</bdi></a
                     >
                   </li>
                   <li>
@@ -520,7 +525,7 @@ export const page = ({
                       href="https://mas.to/@prereview"
                       class="mastodon"
                       aria-label="${t('footer', 'contactMastodon')({ handle: '@prereview@mas.to' })}"
-                      ><span translate="no">@prereview@mas.to</span></a
+                      ><bdi translate="no">@prereview@mas.to</bdi></a
                     >
                   </li>
                   <li>
@@ -528,7 +533,7 @@ export const page = ({
                       href="https://www.youtube.com/@Prereview"
                       class="youtube"
                       aria-label="${t('footer', 'contactYouTube')({ handle: '@Prereview' })}"
-                      ><span translate="no">@Prereview</span></a
+                      ><bdi translate="no">@Prereview</bdi></a
                     >
                   </li>
                   <li>
@@ -536,7 +541,7 @@ export const page = ({
                       href="https://www.linkedin.com/company/prereview/"
                       class="linked-in"
                       aria-label="${t('footer', 'contactLinkedIn')({ handle: 'PREreview' })}"
-                      ><span translate="no">PREreview</span></a
+                      ><bdi translate="no">PREreview</bdi></a
                     >
                   </li>
                   <li>
@@ -544,36 +549,31 @@ export const page = ({
                       href="https://github.com/PREreview"
                       class="github"
                       aria-label="${t('footer', 'contactGitHub')({ handle: 'PREreview' })}"
-                      ><span translate="no">PREreview</span></a
+                      ><bdi translate="no">PREreview</bdi></a
                     >
                   </li>
                 </ul>
 
                 <div class="small">
-                  ${rawHtml(
-                    t(
-                      'footer',
-                      'zenodo',
-                    )({
-                      community: text =>
-                        html`<a href="https://zenodo.org/communities/prereview-reviews/records">${text}</a>`.toString(),
-                      api: text => html`<a href="https://developers.zenodo.org/">${text}</a>`.toString(),
-                    }),
-                  )}
+                  ${t(
+                    'footer',
+                    'zenodo',
+                  )({
+                    community: text =>
+                      html`<a href="https://zenodo.org/communities/prereview-reviews/records">${text}</a>`,
+                    api: text => html`<a href="https://developers.zenodo.org/">${text}</a>`,
+                  })}
                 </div>
               `
             : ''}
 
           <small>
-            ${rawHtml(
-              t(
-                'footer',
-                'copyright',
-              )({
-                link: text =>
-                  html`<a href="https://creativecommons.org/licenses/by/4.0/" rel="license">${text}</a>`.toString(),
-              }),
-            )}
+            ${t(
+              'footer',
+              'copyright',
+            )({
+              link: text => html`<a href="https://creativecommons.org/licenses/by/4.0/" rel="license">${text}</a>`,
+            })}
           </small>
         </footer>
       </body>

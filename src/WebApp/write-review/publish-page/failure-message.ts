@@ -1,4 +1,4 @@
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { type Html, html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -16,9 +16,9 @@ export const failureMessage = (locale: SupportedLocale) => {
 
       <p>${t('tryAgainLater')()}</p>
 
-      <p>${rawHtml(t('getInTouch')({ contact: mailToHelp }))}</p>
+      <p>${t('getInTouch')({ contact: mailToHelp })}</p>
     `,
   })
 }
 
-const mailToHelp = (text: string) => html`<a href="mailto:help@prereview.org">${text}</a>`.toString()
+const mailToHelp = (text: Html) => html`<a href="mailto:help@prereview.org">${text}</a>`

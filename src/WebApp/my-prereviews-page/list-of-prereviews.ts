@@ -44,13 +44,13 @@ export const toResponse = (
 
         <div class="forward-group">
           <a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(publicPersona) })}" class="forward"
-            ><span>${translate(locale, 'my-prereviews-page', 'viewPublicProfile')()}</span></a
+            >${translate(locale, 'my-prereviews-page', 'viewPublicProfile')()}</a
           >
 
           <a
             href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(pseudonymPersona) })}"
             class="forward"
-            ><span>${translate(locale, 'my-prereviews-page', 'viewPseudonymProfile')()}</span></a
+            >${translate(locale, 'my-prereviews-page', 'viewPseudonymProfile')()}</a
           >
         </div>
       </div>
@@ -62,42 +62,38 @@ export const toResponse = (
               <li>
                 <article>
                   <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${rawHtml(
-                      translate(
-                        locale,
-                        'reviews-list',
-                        'reviewText',
-                      )({
-                        numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                        reviewers: pipe(
-                          prereview.reviewers.named,
-                          Array.appendAll(
-                            prereview.reviewers.anonymous > 0
-                              ? [
-                                  translate(
-                                    locale,
-                                    'reviews-list',
-                                    'otherAuthors',
-                                  )({ number: prereview.reviewers.anonymous }),
-                                ]
-                              : [],
-                          ),
-                          Array.map(name => html`<b>${name}</b>`),
-                          formatList(locale),
-                        ).toString(),
-                        preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                          >${prereview.preprint.title}</cite
-                        >`.toString(),
-                      }),
-                    )}
+                    ${translate(
+                      locale,
+                      'reviews-list',
+                      'reviewText',
+                    )({
+                      numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                      reviewers: pipe(
+                        prereview.reviewers.named,
+                        Array.appendAll(
+                          prereview.reviewers.anonymous > 0
+                            ? [
+                                translate(
+                                  locale,
+                                  'reviews-list',
+                                  'otherAuthors',
+                                )({ number: prereview.reviewers.anonymous }),
+                              ]
+                            : [],
+                        ),
+                        Array.map(name => html`<b dir="auto">${name}</b>`),
+                        formatList(locale),
+                      ),
+                      preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                        >${prereview.preprint.title}</cite
+                      >`,
+                    })}
                   </a>
 
                   ${prereview.subfields.length > 0
                     ? html`
                         <ul class="categories">
-                          ${prereview.subfields.map(
-                            subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                          )}
+                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
                         </ul>
                       `
                     : ''}
@@ -118,18 +114,16 @@ export const toResponse = (
                     ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
                       ? html`${authorList(prereview, locale)} reviewed
                           <cite ${languageAttributesFor(prereview.dataset.language)}>${prereview.dataset.title}</cite>`
-                      : rawHtml(
-                          translate(
-                            locale,
-                            'dataset-reviews-list',
-                            'reviewText',
-                          )({
-                            reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
-                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                              >${prereview.dataset.title}</cite
-                            >`.toString(),
-                          }),
-                        )}
+                      : translate(
+                          locale,
+                          'dataset-reviews-list',
+                          'reviewText',
+                        )({
+                          reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                          dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                            >${prereview.dataset.title}</cite
+                          >`,
+                        })}
                   </a>
 
                   <dl>
@@ -158,7 +152,7 @@ const authorList = (datasetReview: RecentDatasetPrereview, locale: SupportedLoca
     )
   }
 
-  return formatList(locale)(Array.map(list, name => html`<b>${name}</b>`))
+  return formatList(locale)(Array.map(list, name => html`<b dir="auto">${name}</b>`))
 }
 
 const displayPersona = Personas.match({

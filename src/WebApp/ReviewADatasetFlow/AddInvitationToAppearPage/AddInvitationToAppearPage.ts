@@ -32,7 +32,7 @@ export const AddInvitationToAppearPage = ({
           : Routes.ReviewADatasetOthersNeedToBeListedOnTheReview
         ).href({ datasetReviewId })}"
         class="back"
-        ><span>${t('forms', 'backLink')()}</span></a
+        >${t('forms', 'backLink')()}</a
       >
     `,
     main: html`
@@ -62,6 +62,8 @@ export const AddInvitationToAppearPage = ({
             name="name"
             id="name"
             type="text"
+            placeholder=" "
+            dir="auto"
             spellcheck="false"
             aria-describedby="name-tip"
             ${pipe(
@@ -103,6 +105,7 @@ export const AddInvitationToAppearPage = ({
             id="email-address"
             type="text"
             inputmode="email"
+            dir="ltr"
             spellcheck="false"
             autocomplete="email"
             aria-describedby="email-address-tip"

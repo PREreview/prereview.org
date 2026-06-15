@@ -1,13 +1,13 @@
 import { Boolean, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-const orcidLinkAsDefinition = (text: string) => `<a href="https://orcid.org/"><dfn>${text}</dfn></a>`
+const orcidLinkAsDefinition = (text: Html) => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`
 
 export const RequestAReviewOfThisPreprintPage = ({
   preprint,
@@ -19,19 +19,19 @@ export const RequestAReviewOfThisPreprintPage = ({
   isLoggedIn: boolean
 }) => {
   const t = translate(locale, 'request-review-flow')
-  const preprintTitle = `<cite ${languageAttributesFor(preprint.language).toString()}>${preprint.title.toString()}</cite>`
+  const preprintTitle = html`<cite ${languageAttributesFor(preprint.language)}>${preprint.title}</cite>`
 
   return PageResponse({
     title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
       <a href="${format(Routes.preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
-        ><span>${t('backToPreprint')()}</span></a
+        >${t('backToPreprint')()}</a
       >
     `,
     main: html`
       <h1>${t('requestAPrereview')()}</h1>
 
-      <p>${rawHtml(t('youCanRequestAPrereview')({ preprintTitle }))}</p>
+      <p>${t('youCanRequestAPrereview')({ preprintTitle })}</p>
 
       ${Boolean.match(isLoggedIn, {
         onTrue: () => '',
@@ -41,10 +41,10 @@ export const RequestAReviewOfThisPreprintPage = ({
           <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
           <details>
-            <summary><span>${t('whatIsAnOrcid')()}</span></summary>
+            <summary>${t('whatIsAnOrcid')()}</summary>
 
             <div>
-              <p>${rawHtml(t('orcidExplainer')({ orcidLinkAsDefinition }))}</p>
+              <p>${t('orcidExplainer')({ orcidLinkAsDefinition })}</p>
             </div>
           </details>
         `,
