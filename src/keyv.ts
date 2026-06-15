@@ -341,6 +341,11 @@ export const getOrcidToken = flow(
   RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
 )
 
+export const getAllOrcidTokens = pipe(
+  getAll(OrcidC, OrcidTokenC),
+  RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
+)
+
 export const saveOrcidToken = flow(
   setKey(OrcidC, OrcidTokenC),
   RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),

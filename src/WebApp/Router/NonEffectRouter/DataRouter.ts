@@ -1,5 +1,5 @@
 import { HttpServerResponse } from '@effect/platform'
-import { Array, Effect, pipe, Redacted, type Runtime } from 'effect'
+import { Array, Effect, pipe, Record, Redacted, type Runtime } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -69,13 +69,15 @@ export const DataRouter = pipe(
                 ),
                 RTE.apSW('careerStages', Keyv.getAllCareerStages),
                 RTE.apSW('locations', Keyv.getAllLocations),
-                RTE.map(({ users, careerStages, locations }) =>
+                RTE.apSW('orcidTokens', Keyv.getAllOrcidTokens),
+                RTE.map(({ users, careerStages, locations, orcidTokens }) =>
                   pipe(
                     users,
                     Array.map(user => ({
                       orcid: user.orcidId,
                       timestamp: user.registeredAt,
                       requestNotifications: user.requestNotifications,
+                      orcidRecordConnected: Record.has(orcidTokens, user.orcidId),
                       careerStage: careerStages[user.orcidId]?.value,
                       location: locations[user.orcidId]?.value,
                     })),
@@ -85,6 +87,7 @@ export const DataRouter = pipe(
             {
               careerStageStore: env.users.careerStageStore,
               locationStore: env.users.locationStore,
+              orcidTokenStore: env.users.orcidTokenStore,
               runtime: env.runtime,
               ...env.logger,
             },
