@@ -17,11 +17,20 @@
   "errorEnterTheDataset": {
     "message": "Ingresa el DOI o la URL del conjunto de datos"
   },
+  "doNotKnowDataset": {
+    "message": "Lo sentimos, no encontramos este conjunto de datos"
+  },
   "doiCouldBeDryad": {
     "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de Dryad, pero no podemos encontrar más detalles."
   },
   "doiCouldBeScielo": {
     "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de SciELO, pero no podemos encontrar más detalles."
+  },
+  "doiCouldBeZenodo": {
+    "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de Zenodo, pero no podemos encontrar más detalles."
+  },
+  "checkCorrectDoi": {
+    "message": "Si escribiste el DOI, verifica que esté correcto."
   },
   "checkPastedDoi": {
     "message": "Si pegaste el DOI, verifica que hayas copiado la dirección completa."
@@ -34,6 +43,9 @@
   },
   "unsupportedUrl": {
     "message": "Lo sentimos, pero no admitimos esta URL"
+  },
+  "supportDatasetsFrom": {
+    "message": "Aceptamos conjuntos de datos de {repositories}."
   },
   "doiIsForDataset": {
     "message": "Si este DOI corresponde a un conjunto de datos de un repositorio que no admitimos, por favor <contact>contactáctanos</contact>."
@@ -101,6 +113,21 @@
   "changePublishedName": {
     "message": "Cambiar <visuallyHidden>tu nombre publicado</visuallyHidden>"
   },
+  "invitedAuthors": {
+    "message": "Autores/as invitados/as"
+  },
+  "changeInvitedAuthors": {
+    "message": "Cambiar <visuallyHidden>autores/as invitados/as</visuallyHidden>"
+  },
+  "invitedAuthorsNone": {
+    "message": "Ninguno/a"
+  },
+  "haveCompetingInterests": {
+    "message": "¿Tienes algún conflicto de intereses?"
+  },
+  "competingInterestsTip": {
+    "message": "Pedimos a todos los revisores que declaren cualquier conflicto de intereses que pudiera influir en su revisión del conjunto de datos."
+  },
   "competingInterestDefinition": {
     "message": "Un conflicto de intereses es cualquier cosa que pudiera interferir con la objetividad de una PREreview."
   },
@@ -122,20 +149,83 @@
   "examplePublished": {
     "message": "Has publicado con el/la autor/a en los últimos cinco años."
   },
+  "exampleGrant": {
+    "message": "Tienes una subvención/subsidio con el/la autor/a."
+  },
+  "selectCompetingInterests": {
+    "message": "Selecciona \"sí\" en caso de tener algún conflicto de intereses"
+  },
   "competingInterestsDetails": {
     "message": "¿Cuáles son?"
   },
   "enterCompetingInterestsDetails": {
     "message": "Ingresa los detalles de tu conflicto de intereses"
   },
+  "competingInterests": {
+    "message": "Conflicto de intereses"
+  },
   "noneDeclared": {
     "message": "Ninguno declarado"
+  },
+  "changeCompetingInterests": {
+    "message": "Modificar <visuallyHidden>tu conflicto de intereses</visuallyHidden>"
   },
   "codeOfConduct": {
     "message": "Código de conducta"
   },
+  "codeOfConductTip": {
+    "message": "Como integrante de nuestra comunidad, esperamos que sigas el <link>Código de conducta de PREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Ejemplos de conducta esperada"
+  },
+  "exampleLanguage": {
+    "message": "Utilizar un lenguaje cordial e inclusivo."
+  },
+  "exampleConstructive": {
+    "message": "Ofrecer retroalimentación constructiva, es decir, útil para quien la reciba."
+  },
+  "exampleRespect": {
+    "message": "Respetar diferentes puntos de vista y experiencias."
+  },
+  "exampleCriticism": {
+    "message": "Aceptar con gracia las críticas constructivas."
+  },
+  "exampleCommunity": {
+    "message": "Centrarse en lo que es mejor para la comunidad."
+  },
   "exampleEmpathy": {
     "message": "Mostrar empatía hacia otros integrantes de la comunidad."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Ejemplos de conducta inaceptable"
+  },
+  "exampleTrolling": {
+    "message": "Comentarios provocativos, ofensivos o despectivos, y ataques personales o políticos."
+  },
+  "exampleUnconstructiveFeedback": {
+    "message": "Proporcionar comentarios no constructivos o disruptivos en PREreview."
+  },
+  "exampleHarassment": {
+    "message": "Acoso público o privado."
+  },
+  "exampleConfidentialInformation": {
+    "message": "Publicar datos confidenciales de otras personas, como una dirección física o de correo electrónico, sin permiso explícito."
+  },
+  "exampleSexualizedLanguage": {
+    "message": "Uso de lenguaje o imágenes sexualizadas y atención o insinuaciones sexuales no deseados."
+  },
+  "exampleReviewingOwnDataset": {
+    "message": "Revisar tu propio conjunto de datos."
+  },
+  "exampleInappropriateConduct": {
+    "message": "Cualquier otra conducta que razonablemente podría considerarse inapropiada en un entorno profesional."
+  },
+  "confirmCodeOfConduct": {
+    "message": "Confirma que cumples con el Código de Conducta"
+  },
+  "followingCodeOfConduct": {
+    "message": "Estoy cumpliendo el Código de Conducta"
   },
   "yourReview": {
     "message": "Tu revisión"
@@ -173,6 +263,9 @@
   "poorWhy": {
     "message": "¿Por qué es de mala calidad?"
   },
+  "doNotKnow": {
+    "message": "No lo sé"
+  },
   "changeQualityRating": {
     "message": "Cambiar <visuallyHidden>cómo calificas la calidad</visuallyHidden>"
   },
@@ -181,6 +274,42 @@
   },
   "selectFollowFairAndCare": {
     "message": "Selecciona si el conjunto de datos cumple con los principios FAIR y CARE"
+  },
+  "whatAreFairPrinciples": {
+    "message": "¿Qué son los principios FAIR?"
+  },
+  "whatAreFairPrinciplesText": {
+    "message": "Un conjunto de datos sigue los <fairPrinciplesLink>principios FAIR</fairPrinciplesLink> si es:"
+  },
+  "fairPrinciplesFindable": {
+    "message": "Fácil de encontrar"
+  },
+  "fairPrinciplesAccessible": {
+    "message": "Accesible"
+  },
+  "fairPrinciplesInteroperable": {
+    "message": "Interoperable"
+  },
+  "fairPrinciplesReusable": {
+    "message": "Reutilizable"
+  },
+  "whatAreCarePrinciples": {
+    "message": "¿Qué son los principios CARE?"
+  },
+  "whatAreCarePrinciplesText": {
+    "message": "Un conjunto de datos sigue los <carePrinciplesLink>principios CARE</carePrinciplesLink> si mantiene la soberanía y los derechos de sus creadores indígenas mediante:"
+  },
+  "carePrinciplesCollectiveBenefit": {
+    "message": "Beneficio colectivo"
+  },
+  "carePrinciplesAuthorityToControl": {
+    "message": "Autoridad para controlar"
+  },
+  "carePrinciplesResponsibility": {
+    "message": "Responsabilidad"
+  },
+  "carePrinciplesEthics": {
+    "message": "Ética"
   },
   "followFairAndCareYesTip": {
     "message": "El conjunto de datos tiene suficientes metadatos y cumple con los principios FAIR y CARE."
@@ -215,6 +344,9 @@
   "enoughMetadata": {
     "message": "¿El conjunto de datos tiene suficientes metadatos?"
   },
+  "selectEnoughMetadata": {
+    "message": "Selecciona si el conjunto de datos cuenta con metadatos suficientes"
+  },
   "enoughMetadataYesTip": {
     "message": "El conjunto de datos incluye suficientes metadatos, como su tipo de datos, herramientas y métodos utilizados para recopilar y analizar la información, consideraciones éticas aplicadas durante la recolección y el análisis, y documentación de respaldo, como un glosario, un README o recomendaciones de software."
   },
@@ -226,6 +358,99 @@
   },
   "enoughMetadataPartlyWhy": {
     "message": "¿Qué metadatos tiene y cuáles faltan?"
+  },
+  "enoughMetadataNoTip": {
+    "message": "El conjunto de datos no incluye suficientes metadatos para ayudar a comprender cómo se recopilaron, analizaron y utilizaron los datos."
+  },
+  "enoughMetadataNoWhy": {
+    "message": "¿Qué metadatos faltan?"
+  },
+  "changeEnoughMetadata": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos tiene suficientes metadatos</visuallyHidden>"
+  },
+  "trackChanges": {
+    "message": "¿Este conjunto de datos incluye una forma de listar o rastrear cambios o versiones? Si es así, ¿parece correcto?"
+  },
+  "selectTrackChanges": {
+    "message": "Seleccione si el conjunto de datos cuenta con alguna forma de listar o rastrear cambios o versiones."
+  },
+  "trackChangesYesTip": {
+    "message": "El conjunto de datos cuenta con un historial de versiones claro que parece ser preciso y estar actualizado."
+  },
+  "trackChangesYesWhy": {
+    "message": "¿De qué manera comparte sus metadatos el conjunto de datos?"
+  },
+  "trackChangesPartlyTip": {
+    "message": "El conjunto de datos incluye una forma de listar o hacer seguimiento de cambios o versiones, pero no parece ser exacta ni estar actualizada."
+  },
+  "trackChangesPartlyWhy": {
+    "message": "¿De qué manera comparte sus metadatos el conjunto de datos? ¿Qué falta?"
+  },
+  "trackChangesNoWhy": {
+    "message": "¿Cómo debería presentar el conjunto de datos sus metadatos faltantes?"
+  },
+  "changeTrackChanges": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos incluye una forma de listar o rastrear cambios o versiones</visuallyHidden>"
+  },
+  "signsOfAlteration": {
+    "message": "¿Este conjunto de datos muestra indicios de alteración más allá de casos de probable error humano, como censura, eliminación u ocultamiento, que no se expliquen de otra manera?"
+  },
+  "selectSignsOfAlteration": {
+    "message": "Seleccione si el conjunto de datos muestra signos de alteración."
+  },
+  "signsOfAlterationYesTip": {
+    "message": "El conjunto de datos muestra claros signos de alteración que no están reflejados en su historial de versiones. Se evidencia algún tipo de censura, eliminación o redacción a lo largo del conjunto de datos."
+  },
+  "signsOfAlterationYesWhy": {
+    "message": "¿Cómo ha sido alterado?"
+  },
+  "signsOfAlterationPartlyTip": {
+    "message": "Algunas partes de este conjunto de datos muestran signos de alteraciones que no están reflejados en los registros de su versionado. Es evidente algún tipo de censura, eliminación u ocultamiento."
+  },
+  "signsOfAlterationPartlyWhy": {
+    "message": "¿Qué partes parecen intactas? ¿Qué partes parecen alteradas? ¿De qué manera parecen alteradas?"
+  },
+  "signsOfAlterationNoTip": {
+    "message": "El conjunto de datos no muestra signos obvios de alteración."
+  },
+  "signsOfAlterationNoWhy": {
+    "message": "¿Qué hace que este conjunto de datos parezca, en su mayoría, intacto? ¿Qué indicadores de confianza hacen pensar que no ha sido alterado?"
+  },
+  "changeSignsOfAlteration": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos muestra signos de alteración</visuallyHidden>"
+  },
+  "suitedForPurpose": {
+    "message": "¿El conjunto de datos es adecuado para respaldar su propósito de investigación declarado?"
+  },
+  "selectSuitedForPurpose": {
+    "message": "Seleccione si el conjunto de datos es adecuado."
+  },
+  "suitedForPurposeYesTip": {
+    "message": "La manera en que se recopilaron, analizaron y utilizaron estos datos es adecuada para respaldar su propósito de investigación declarado."
+  },
+  "suitedForPurposeYesWhy": {
+    "message": "¿De qué manera es adecuado?"
+  },
+  "suitedForPurposePartlyTip": {
+    "message": "La forma en que se recopilaron, analizaron y utilizaron estos datos respalda en parte su propósito de investigación declarado, pero habría sido mejor usar otras preguntas, métodos o herramientas."
+  },
+  "suitedForPurposePartlyWhy": {
+    "message": "¿En qué sentido es solo parcialmente adecuado? ¿Qué partes parecen adecuadas? ¿Cuáles no?"
+  },
+  "suitedForPurposeNoTip": {
+    "message": "La forma en que se recopilaron, analizaron y utilizaron estos datos no es adecuada para su propósito de investigación declarado."
+  },
+  "suitedForPurposeNoWhy": {
+    "message": "¿De qué manera no es adecuado para su propósito?"
+  },
+  "changeSuitedForPurpose": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos es adecuado</visuallyHidden>"
+  },
+  "supportsConclusion": {
+    "message": "¿Este conjunto de datos respalda las conclusiones planteadas por la persona investigadora?"
+  },
+  "selectSupportsConclusion": {
+    "message": "Selecciona si el conjunto de datos respalda las conclusiones."
   },
   "supportsConclusionYesTip": {
     "message": "Este conjunto de datos apoya claramente las conclusiones del investigador al respecto, o es probable que apoye conclusiones claras, y no requiere interpretación creativa ni sobreinterpretación."
@@ -239,11 +464,17 @@
   "supportsConclusionPartlyWhy": {
     "message": "¿Cómo respalda en parte las conclusiones?"
   },
+  "supportsConclusionNoTip": {
+    "message": "Este conjunto de datos no respalda las conclusiones planteadas por la persona investigadora, o es poco probable que apoye conclusiones claras, sin hacer un análisis erróneo o una sobreinterpretación."
+  },
   "supportsConclusionNoWhy": {
     "message": "¿Cómo no respalda las conclusiones?"
   },
   "changeSupportsConclusion": {
     "message": "Cambiar <visuallyHidden>si el conjunto de datos respalda las conclusiones</visuallyHidden>"
+  },
+  "granularEnough": {
+    "message": "¿Es el conjunto de datos lo suficientemente detallado como para ser un estándar de medición confiable?"
   },
   "selectGranularEnough": {
     "message": "Seleccione si el conjunto de datos es lo suficientemente detallado"
@@ -302,20 +533,53 @@
   "howConsequential": {
     "message": "¿Es probable que este conjunto de datos interese a los investigadores de su campo de estudio, a la mayoría de los investigadores o al público en general? ¿Qué tan relevante les parecerá a esas audiencias?"
   },
+  "selectHowConsequential": {
+    "message": "Selecciona cuán relevante es probable que parezca"
+  },
   "veryConsequential": {
     "message": "Muy relevante"
+  },
+  "veryConsequentialTip": {
+    "message": "Es probable que el conjunto de datos sea muy relevante para un público amplio."
+  },
+  "veryConsequentialWhy": {
+    "message": "¿De qué forma es muy relevante?"
   },
   "somewhatConsequential": {
     "message": "Algo relevante"
   },
+  "somewhatConsequentialTip": {
+    "message": "El conjunto de datos presenta varios errores menores o incluso un error grave."
+  },
+  "somewhatConsequentialWhy": {
+    "message": "¿En qué sentido es relativamente relevante?"
+  },
   "notConsequential": {
     "message": "No relevante"
+  },
+  "notConsequentialTip": {
+    "message": "No es probable que el conjunto de datos sea relevante para el público al que va dirigido."
+  },
+  "notConsequentialWhy": {
+    "message": "¿Por qué no es relevante?"
+  },
+  "changeHowConsequential": {
+    "message": "Cambiar <visuallyHidden>qué tan relevante podría resultar el conjunto de datos</visuallyHidden>"
   },
   "readyToBeShared": {
     "message": "¿Este conjunto de datos está listo para ser compartido?"
   },
+  "readyToBeSharedYesWhy": {
+    "message": "¿Por qué está listo para ser compartido?"
+  },
+  "readyToBeSharedNoWhy": {
+    "message": "¿Por qué no está listo para ser compartido?"
+  },
   "changeReadyToBeShared": {
     "message": "Cambiar <visuallyHidden>si el conjunto de datos está listo para ser compartido</visuallyHidden>"
+  },
+  "anythingMissing": {
+    "message": "¿Qué otro elemento, de haberlo, sería útil que la persona investigadora incluyera junto con este conjunto de datos para facilitar su búsqueda, comprensión y reutilización de forma ética y responsable?"
   },
   "noAnswer": {
     "message": "Sin respuesta"
@@ -323,16 +587,133 @@
   "changeAnythingMissing": {
     "message": "Cambiar <visuallyHidden>si al conjunto de datos le falta algo</visuallyHidden>"
   },
+  "nowPublish": {
+    "message": "Ahora publica tu PREreview"
+  },
+  "publishPrereview": {
+    "message": "Publicar PREreview"
+  },
+  "publishingPrereview": {
+    "message": "Estamos publicando tu PREreview"
+  },
+  "publishPrereviewText": {
+    "message": "Podrás ver tu PREreview en breve."
+  },
+  "prereviewPublished": {
+    "message": "PREreview publicada"
+  },
+  "yourDoi": {
+    "message": "Tu DOI"
+  },
+  "whatHappensNext": {
+    "message": "Qué sucede a continuación"
+  },
+  "invitedEmailsSent": {
+    "message": "Hemos enviado correos electrónicos a los/las otros/as autores/as, invitándolos/as a figurar en la PREreview."
+  },
+  "inviteOthers": {
+    "message": "Si revisaste el conjunto de datos con otras personas, por favor contáctanos para que podamos invitarlas a figurar en la revisión. Nuestra dirección de correo es {emailAddress}."
+  },
+  "opensNewTabSuffix": {
+    "message": "(se abre en una nueva pestaña)"
+  },
+  "shareYourReview": {
+    "message": "Comparte tu revisión"
+  },
+  "shareYourReviewText": {
+    "message": "Por favor, informa a los autores que publicaste tu revisión. Es posible que sus datos de contacto estén en el conjunto de datos."
+  },
+  "letUsKnowHowItWent": {
+    "message": "Compártenos tu experiencia"
+  },
+  "scheduleInterview": {
+    "message": "<link>Programa una entrevista</link> con nuestro equipo de producto para charlar de tu experiencia en PREreview. ¡Les ofrecemos a los entrevistados una compensación en agradecimiento por su ayuda!"
+  },
+  "feedbackForm": {
+    "message": "También puedes compartir tus comentarios sobre PREreview.org con nosotros completando una <link>breve encuesta anónima</link>."
+  },
+  "seeYourReview": {
+    "message": "Ver tu revisión"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "¿Revisaste este conjunto de datos con alguien más?"
+  },
+  "didYouReviewWithAnyoneElseTip": {
+    "message": "Esto puede incluir personas que contribuyeron al debate o redactaron la revisión."
+  },
+  "selectDidYouReviewWithAnyoneElse": {
+    "message": "Selecciona \"sí\" si revisaste el conjunto de datos con alguien más"
+  },
+  "addAnAuthor": {
+    "message": "Agregar un/a autor/a"
+  },
+  "addAnotherAuthor": {
+    "message": "Agregar otro/a autor/a"
+  },
+  "addAnAuthorName": {
+    "message": "Nombre"
+  },
+  "addAnAuthorNameTip": {
+    "message": "La persona podrá elegir el nombre con el que aparecerá en la publicación."
+  },
+  "addAnAuthorNameError": {
+    "message": "Ingresa su nombre"
+  },
+  "addAnAuthorEmailAddress": {
+    "message": "Dirección de correo electrónico"
+  },
+  "addAnAuthorEmailAddressTip": {
+    "message": "Solo usaremos esto para contactarles acerca de esta PREreview."
+  },
+  "addAnAuthorEmailAddressError": {
+    "message": "Ingresa su dirección de correo electrónico"
+  },
+  "addAnAuthorEmailAddressInvalidError": {
+    "message": "Ingresa una dirección de correo electrónico en el formato correcto, como {exampleEmailAddress}"
+  },
+  "addedAuthorCount": {
+    "message": "{authorCount, plural, one {Has agregado # otro/a autor/a} other {Has agregado # otros/as autores/as}}"
+  },
+  "authorNumber": {
+    "message": "Autor/a {number, number}"
+  },
+  "removeAuthor": {
+    "message": "Eliminar <visuallyHidden>{name}</visuallyHidden>"
+  },
+  "addAnotherAuthorButton": {
+    "message": "Agregar otro/a autor/a"
+  },
+  "wantToRemoveName": {
+    "message": "¿Estás seguro/a de que deseas eliminar a {name}?"
+  },
+  "wantToRemoveNameError": {
+    "message": "Selecciona \"sí\" si deseas eliminar a {name}"
+  },
+  "wantToRemoveNameYes": {
+    "message": "Sí, eliminar a {name}"
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "¿Qué nombre te gustaría usar?"
   },
   "selectNameYouWouldLikeToUse": {
     "message": "Selecciona el nombre que te gustaría usar"
   },
+  "youCanChooseOrcidOrPseudonym": {
+    "message": "Puedes elegir entre el nombre en tu historial de ORCID o tu seudónimo de PREreview."
+  },
   "whatIsAPrereviewPseudonym": {
     "message": "¿Qué es un seudónimo de PREreview?"
   },
+  "prereviewPseudonymExplainer": {
+    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes utilizar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "Al usar tu seudónimo, puedes contribuir a la revisión abierta de conjuntos de datos sin miedo a represalias o prejuicios que podrían ocurrir al usar tu nombre real. Sin embargo, el uso de un seudónimo mantiene cierto grado de responsabilidad."
+  },
   "weWillLinkToYourOrcid": {
     "message": "Vincularemos tu PREreview a tu ORCID iD."
+  },
+  "weWillOnlyLinkToYourPseudonym": {
+    "message": "Solo vincularemos tu PREreview a otras que también usen tu seudónimo."
   }
 }

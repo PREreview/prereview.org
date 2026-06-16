@@ -1,0 +1,17 @@
+{
+  "myReviewRequests": {
+    "message": "Mis solicitudes de revisión"
+  },
+  "onlyYouCanSee": {
+    "message": "Solo tú puedes ver esta página."
+  },
+  "notPublished": {
+    "message": "Aún no has solicitado una revisión."
+  },
+  "appearHere": {
+    "message": "Cuando lo hagas, aparecerá aquí."
+  },
+  "requestAReview": {
+    "message": "Solicitar una revisión"
+  }
+}

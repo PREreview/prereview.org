@@ -65,6 +65,18 @@
   "changeEmailAddress": {
     "message": "Cambiar <visuallyHidden>dirección de correo electrónico</visuallyHidden>"
   },
+  "requestedReviewNotifications": {
+    "message": "Notificaciones de revisiones solicitadas"
+  },
+  "requestedReviewNotificationsOff": {
+    "message": "Desactivadas"
+  },
+  "requestedReviewNotificationsOn": {
+    "message": "Activadas"
+  },
+  "changeRequestedReviewNotifications": {
+    "message": "Cambiar las <visuallyHidden>notificaciones de revisiones solicitadas</visuallyHidden>"
+  },
   "openReviewRequests": {
     "message": "Disponible para solicitudes de revisión"
   },
@@ -226,6 +238,12 @@
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "Solo usaremos esto para contactarte en relación a tu cuenta y PREreviews."
+  },
+  "receiveRequestedReviewNotifications": {
+    "message": "¿Quieres recibir una notificación cuando se publique una PREreview solicitada?"
+  },
+  "selectReceiveRequestedReviewNotificationsError": {
+    "message": "Selecciona \"sí\" para recibir notificaciones"
   },
   "whatLanguages": {
     "message": "¿En qué idiomas puedes revisar?"
