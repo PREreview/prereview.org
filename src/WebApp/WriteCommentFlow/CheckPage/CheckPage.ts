@@ -44,11 +44,13 @@ export const CheckPage = ({
                       html` <a
                         href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
                         class="orcid"
+                        dir="auto"
                         >${persona.name}</a
                       >`,
                     onPseudonym: persona =>
                       html` <a
                         href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+                        dir="auto"
                         >${persona.pseudonym}</a
                       >`,
                   })}

@@ -358,11 +358,14 @@ export function publishForm(
 
 const displayAuthor = Personas.match({
   onPublic: persona =>
-    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+    html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      class="orcid"
+      dir="auto"
       >${persona.name}</a
     >`,
   onPseudonym: persona =>
-    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" dir="auto"
       >${persona.pseudonym}</a
     >`,
 })
