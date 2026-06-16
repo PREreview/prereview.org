@@ -25,13 +25,17 @@ export const ReviewPublishedPage = ({
         </div>
       </div>
 
-      <h2>${t('whatHappensNext')()}</h2>
-
       ${typeof datasetReview.otherAuthors === 'boolean'
         ? datasetReview.otherAuthors
-          ? html` <p>We’ve sent emails to the other authors, inviting them to appear.</p> `
+          ? html`
+              <h2>${t('whatHappensNext')()}</h2>
+
+              <p>We’ve sent emails to the other authors, inviting them to appear.</p>
+            `
           : ''
         : html`
+            <h2>${t('whatHappensNext')()}</h2>
+
             <p>
               ${t('inviteOthers')({
                 emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
