@@ -21,7 +21,7 @@ export const CheckInvitationsToAppearPage = ({
 
   return StreamlinePageResponse({
     status: StatusCodes.OK,
-    title: plainText`You have added ${authors.length} other author${authors.length > 1 ? 's' : ''}`,
+    title: plainText(t('addedAuthorCount')({ authorCount: authors.length })),
     nav: html`
       <a href="${Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId })}" class="back"
         >${t('forms', 'backLink')()}</a
@@ -33,14 +33,14 @@ export const CheckInvitationsToAppearPage = ({
         action="${Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId })}"
         novalidate
       >
-        <h1>You have added ${authors.length} other author${authors.length > 1 ? 's' : ''}</h1>
+        <h1>${t('addedAuthorCount')({ authorCount: authors.length })}</h1>
 
         ${Array.map(
           authors,
           (author, index) => html`
             <div class="summary-card">
               <div>
-                <h2>Author ${index + 1}</h2>
+                <h2>${t('authorNumber')({ number: index + 1 })}</h2>
 
                 <ul>
                   <li>
@@ -49,7 +49,10 @@ export const CheckInvitationsToAppearPage = ({
                         datasetReviewId,
                         invitationId: author.invitationId,
                       })}"
-                      >Remove <span class="visually-hidden">${author.name}</span></a
+                      >${t('removeAuthor')({
+                        name: author.name,
+                        visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                      })}</a
                     >
                   </li>
                 </ul>
@@ -57,11 +60,11 @@ export const CheckInvitationsToAppearPage = ({
 
               <dl class="summary-list">
                 <div>
-                  <dt><span>Name</span></dt>
+                  <dt>${t('addAnAuthorName')()}</dt>
                   <dd>${author.name}</dd>
                 </div>
                 <div>
-                  <dt><span>Email address</span></dt>
+                  <dt>${t('addAnAuthorEmailAddress')()}</dt>
                   <dd>${author.emailAddress}</dd>
                 </div>
               </dl>
@@ -71,7 +74,9 @@ export const CheckInvitationsToAppearPage = ({
 
         <div class="button-group" role="group">
           <button>${t('forms', 'continueButton')()}</button>
-          <a href="${Routes.ReviewADatasetAddInvitationToAppear.href({ datasetReviewId })}">Add another author</a>
+          <a href="${Routes.ReviewADatasetAddInvitationToAppear.href({ datasetReviewId })}"
+            >${t('addAnotherAuthorButton')()}</a
+          >
         </div>
       </form>
     `,

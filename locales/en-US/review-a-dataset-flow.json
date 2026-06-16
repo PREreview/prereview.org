@@ -883,6 +883,22 @@
     "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
     "description": "Error message shown when the user tries to submit the form “Add an author“ with an invalid email address."
   },
+  "addedAuthorCount": {
+    "message": "{authorCount, plural, one {You have added # other author} other {You have added # other authors}}",
+    "description": "Title of the page where the user can check the other authors that have been added."
+  },
+  "authorNumber": {
+    "message": "Author {number, number}",
+    "description": "Label for the details of an author that has been added to the PREreview on the “You have added n other author(s)” page."
+  },
+  "removeAuthor": {
+    "message": "Remove <visuallyHidden>{name}</visuallyHidden>",
+    "description": "Link to remove an author that has been added to the PREreview on the “You have added n other author(s)” page."
+  },
+  "addAnotherAuthorButton": {
+    "message": "Add another author",
+    "description": "Button to add another author to the PREreview on the “You have added n other author(s)” page."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?",
     "description": "Label for the question about the name the user would like to use."
