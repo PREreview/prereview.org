@@ -99,7 +99,6 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
-  canInviteOthersToDatasetReviews: (typeof FeatureFlags.FeatureFlags.Service)['canInviteOthersToDatasetReviews']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   showSpotlight: (typeof FeatureFlags.FeatureFlags.Service)['showSpotlight']
@@ -116,9 +115,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => false)
-  },
-  canInviteOthersToDatasetReviews: async ({}, use) => {
-    await use(false)
   },
   canLogInAsDemoUser: async ({}, use) => {
     await use(false)
@@ -2411,7 +2407,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         authorInviteStore,
         nodemailer,
         canAddMultipleAuthors,
-        canInviteOthersToDatasetReviews,
         canLogInAsDemoUser,
         showSpotlight,
         sqlClientLayer,
@@ -2450,7 +2445,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           CommunitySlack.layerShouldUpdateCommunitySlack(true),
           FeatureFlags.layer({
             canAddMultipleAuthors,
-            canInviteOthersToDatasetReviews,
+            canInviteOthersToDatasetReviews: true,
             canLogInAsDemoUser,
             showSpotlight,
           }),
@@ -2625,16 +2620,6 @@ export const canLogInAsDemoUser: Fixtures<
   Pick<AppFixtures, 'canLogInAsDemoUser' | 'seedEvents'>
 > = {
   canLogInAsDemoUser: async ({}, use) => {
-    await use(true)
-  },
-}
-
-export const canInviteOthersToDatasetReviews: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canInviteOthersToDatasetReviews'>
-> = {
-  canInviteOthersToDatasetReviews: async ({}, use) => {
     await use(true)
   },
 }
