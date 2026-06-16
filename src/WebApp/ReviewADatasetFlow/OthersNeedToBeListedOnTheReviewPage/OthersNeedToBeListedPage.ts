@@ -22,7 +22,7 @@ export const OthersNeedToBeListedPage = ({
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Did you review this dataset with anyone else?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('didYouReviewWithAnyoneElse')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"
         >${t('forms', 'backLink')()}</a
@@ -47,12 +47,10 @@ export const OthersNeedToBeListedPage = ({
             )}
           >
             <legend>
-              <h1>Did you review this dataset with anyone else?</h1>
+              <h1>${t('didYouReviewWithAnyoneElse')()}</h1>
             </legend>
 
-            <p id="others-need-to-be-listed-tip" role="note">
-              This can include people who contributed to the discussion or wrote the review.
-            </p>
+            <p id="others-need-to-be-listed-tip" role="note">${t('didYouReviewWithAnyoneElseTip')()}</p>
 
             ${form._tag === 'InvalidForm' && Either.isLeft(form.othersNeedToBeListed)
               ? html`
@@ -60,7 +58,7 @@ export const OthersNeedToBeListedPage = ({
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${pipe(
                       Match.value(form.othersNeedToBeListed.left),
-                      Match.tag('Missing', () => 'Select yes if you reviewed the dataset with someone else'),
+                      Match.tag('Missing', () => t('selectDidYouReviewWithAnyoneElse')()),
                       Match.exhaustive,
                     )}
                   </div>
@@ -87,7 +85,7 @@ export const OthersNeedToBeListedPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>No</span>
+                  ${t('no')()}
                 </label>
               </li>
               <li>
@@ -108,7 +106,7 @@ export const OthersNeedToBeListedPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>Yes</span>
+                  ${t('yes')()}
                 </label>
               </li>
             </ol>
@@ -124,7 +122,6 @@ export const OthersNeedToBeListedPage = ({
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: OthersNeedToBeListedForm.InvalidForm) => html`
   ${Either.isLeft(form.othersNeedToBeListed)
     ? html`
@@ -132,7 +129,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: OthersNeedToBeListedFor
           <a href="#others-need-to-be-listed-no">
             ${pipe(
               Match.value(form.othersNeedToBeListed.left),
-              Match.tag('Missing', () => 'Select yes if you reviewed the dataset with someone else'),
+              Match.tag('Missing', () =>
+                translate(locale, 'review-a-dataset-flow', 'selectDidYouReviewWithAnyoneElse')(),
+              ),
               Match.exhaustive,
             )}
           </a>

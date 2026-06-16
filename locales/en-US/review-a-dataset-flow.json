@@ -835,6 +835,18 @@
     "message": "See your review",
     "description": "Button that takes the user to their published PREreview."
   },
+  "didYouReviewWithAnyoneElse": {
+    "message": "Did you review this dataset with anyone else?",
+    "description": "Label for the question about whether the user reviewed the dataset with anyone else."
+  },
+  "didYouReviewWithAnyoneElseTip": {
+    "message": "This can include people who contributed to the discussion or wrote the review.",
+    "description": "Text shown alongside the question “Did you review this dataset with anyone else?”."
+  },
+  "selectDidYouReviewWithAnyoneElse": {
+    "message": "Select yes if you reviewed the dataset with someone else",
+    "description": "Error message shown when the user tries to complete the form “Did you review this dataset with anyone else?” without selecting an option."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?",
     "description": "Label for the question about the name the user would like to use."
