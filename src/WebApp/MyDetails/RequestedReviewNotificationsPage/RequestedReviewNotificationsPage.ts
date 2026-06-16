@@ -20,15 +20,11 @@ export function RequestedReviewNotificationsPage({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Would you like to be notified when a requested PREreview is published?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('receiveRequestedReviewNotifications')(), errorPrefix(locale, hasAnError), plainText),
     nav: html` <a href="${format(Routes.myDetailsMatch.formatter, {})}" class="back">${t('forms', 'backLink')()}</a> `,
     main: html`
       <form method="post" action="${Routes.ChangeRequestedReviewNotifications}" novalidate>
-        ${hasAnError ? pipe(form, toErrorItems, errorSummary(locale)) : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <div ${rawHtml(hasAnError ? 'class="error"' : '')}>
           <fieldset
@@ -37,7 +33,7 @@ export function RequestedReviewNotificationsPage({
             ${rawHtml(hasAnError ? 'aria-invalid="true" aria-errormessage="requested-review-notifications-error"' : '')}
           >
             <legend>
-              <h1>Would you like to be notified when a requested PREreview is published?</h1>
+              <h1>${t('receiveRequestedReviewNotifications')()}</h1>
             </legend>
 
             ${hasAnError && Either.isLeft(form.requestedReviewNotifications)
@@ -45,7 +41,7 @@ export function RequestedReviewNotificationsPage({
                   <div class="error-message" id="requested-review-notifications-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.requestedReviewNotifications.left, {
-                      Missing: () => 'Select yes if you would like to be notified',
+                      Missing: () => t('selectReceiveRequestedReviewNotificationsError')(),
                     })}
                   </div>
                 `
@@ -71,7 +67,7 @@ export function RequestedReviewNotificationsPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>Yes</span>
+                  ${t('yes')()}
                 </label>
               </li>
               <li>
@@ -92,7 +88,7 @@ export function RequestedReviewNotificationsPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>No</span>
+                  ${t('no')()}
                 </label>
               </li>
             </ol>
@@ -108,13 +104,13 @@ export function RequestedReviewNotificationsPage({
   })
 }
 
-const toErrorItems = (form: InvalidForm) => html`
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
   ${Either.isLeft(form.requestedReviewNotifications)
     ? html`
         <li>
           <a href="#requested-review-notifications-yes">
             ${Match.valueTags(form.requestedReviewNotifications.left, {
-              Missing: () => 'Select yes if you would like to be notified',
+              Missing: () => translate(locale, 'my-details', 'selectReceiveRequestedReviewNotificationsError')(),
             })}
           </a>
         </li>

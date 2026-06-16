@@ -246,6 +246,14 @@
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "We’ll only use this to contact you about your account and PREreviews."
   },
+  "receiveRequestedReviewNotifications": {
+    "message": "Would you like to be notified when a requested PREreview is published?",
+    "description": "Label for the form if the user wants to receive notifications when a review they requested is published."
+  },
+  "selectReceiveRequestedReviewNotificationsError": {
+    "message": "Select yes if you would like to be notified",
+    "description": "Error message shown when the user tries to complete the form “Would you like to be notified when a requested PREreview is published?” without selecting a value."
+  },
   "whatLanguages": {
     "message": "What languages can you review in?"
   },
