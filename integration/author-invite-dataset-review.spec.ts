@@ -30,14 +30,12 @@ test.extend(canLogIn).extend(invitedToBeADatasetReviewAuthor)('can accept an inv
   await expect(page.getByRole('main')).toContainText('Authored by Red Wolf, Josiah Carberry, and 1 other author')
 })
 
-test.extend(invitedToBeADatasetReviewAuthor)('can choose a locale before starting', async ({ page }, testInfo) => {
+test.extend(invitedToBeADatasetReviewAuthor)('can choose a locale before starting', async ({ page }) => {
   const opener = page.waitForEvent('popup')
   await page.getByRole('link', { name: 'Be listed as an author' }).click()
   page = await opener
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
-
-  testInfo.fail()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Aparecer como autor')
 })
