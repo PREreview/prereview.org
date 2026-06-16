@@ -3,25 +3,32 @@
     "message": "Check your details"
   },
   "checkYourDetails": {
-    "message": "Check your details"
+    "message": "Check your details",
+    "description": "Title of the page where the user can check the details to be added to the PREreview."
   },
   "yourDetails": {
-    "message": "Your details"
+    "message": "Your details",
+    "description": "Heading for the section that contains the user’s details."
   },
   "publishedName": {
-    "message": "Published name"
+    "message": "Published name",
+    "description": "Label for the published name the user has chosen."
   },
   "changeName": {
-    "message": "Change <visuallyHidden>name</visuallyHidden>"
+    "message": "Change <visuallyHidden>name</visuallyHidden>",
+    "description": "Link that allows the user to change their published name."
   },
   "nowPublish": {
-    "message": "Now publish your updated PREreview"
+    "message": "Now publish your updated PREreview",
+    "description": "Heading for the section to update the published PREreview after checking their answers."
   },
   "weWillAddYourName": {
-    "message": "We will add your name to the author list."
+    "message": "We will add your name to the author list.",
+    "description": "Text that appears alongside the heading “Now publish your updated PREreview”."
   },
   "updatePrereview": {
-    "message": "Update PREreview"
+    "message": "Update PREreview",
+    "description": "Button to complete the process and update the published PREreview."
   },
   "nameAdded": {
     "message": "Name added"

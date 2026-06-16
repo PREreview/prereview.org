@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal } from '../../../types/index.ts'
@@ -18,13 +18,14 @@ export const ConfirmAuthorChoicesPage = ({
 }): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
+    const locale = yield* Locale
     const user = yield* LoggedInUser
 
     const choices = yield* authorInvites.getAuthorChoicesToConfirm({ reviewId, orcidId: user.orcid })
 
     const persona = yield* Personas.getPersona({ orcidId: user.orcid, persona: choices.persona })
 
-    return renderConfirmAuthorChoicesPage({ reviewId, persona })
+    return renderConfirmAuthorChoicesPage({ reviewId, persona, locale })
   }).pipe(
     Effect.catchTags({
       ChoicesHaveBeenConfirmed: () =>
