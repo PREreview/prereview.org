@@ -30,7 +30,7 @@ export const ReviewPublishedPage = ({
           ? html`
               <h2>${t('whatHappensNext')()}</h2>
 
-              <p>We’ve sent emails to the other authors, inviting them to appear.</p>
+              <p>${t('invitedEmailsSent')()}</p>
             `
           : ''
         : html`

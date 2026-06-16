@@ -815,6 +815,10 @@
     "message": "What happens next",
     "description": "Heading for the section that explains what happens after the PREreview is published."
   },
+  "invitedEmailsSent": {
+    "message": "We’ve sent emails to the other authors, inviting them to appear.",
+    "description": "Text that appears alongside the heading “What happens next”."
+  },
   "inviteOthers": {
     "message": "If you reviewed the dataset with others, please get in touch so we can invite them to appear on the review. Our email address is {emailAddress}.",
     "description": "Text that appears alongside the heading “What happens next”."
