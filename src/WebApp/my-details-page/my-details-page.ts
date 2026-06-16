@@ -242,11 +242,11 @@ export function createPage({
                 false,
                 () => html`
                   <div>
-                    <dt><span>Requested review notifications</span></dt>
-                    <dd>Off</dd>
+                    <dt>${t('requestedReviewNotifications')()}</dt>
+                    <dd>${t('requestedReviewNotificationsOff')()}</dd>
                     <dd>
                       <a href="${Routes.ChangeRequestedReviewNotifications}"
-                        >Change <span class="visually-hidden">requested review notifications</span></a
+                        >${t('changeRequestedReviewNotifications')(visuallyHidden)}</a
                       >
                     </dd>
                   </div>
@@ -256,11 +256,11 @@ export function createPage({
                 true,
                 () => html`
                   <div>
-                    <dt><span>Requested review notifications</span></dt>
-                    <dd>On</dd>
+                    <dt>${t('requestedReviewNotifications')()}</dt>
+                    <dd>${t('requestedReviewNotificationsOn')()}</dd>
                     <dd>
                       <a href="${Routes.ChangeRequestedReviewNotifications}"
-                        >Change <span class="visually-hidden">requested review notifications</span></a
+                        >${t('changeRequestedReviewNotifications')(visuallyHidden)}</a
                       >
                     </dd>
                   </div>

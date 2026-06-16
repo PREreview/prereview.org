@@ -66,6 +66,22 @@
   "changeEmailAddress": {
     "message": "Change <visuallyHidden>email address</visuallyHidden>"
   },
+  "requestedReviewNotifications": {
+    "message": "Requested review notifications",
+    "description": "Label for if the user wants to receive notifications when they request a review."
+  },
+  "requestedReviewNotificationsOff": {
+    "message": "Off",
+    "description": "Label for if the user has turned off notifications when they request a review."
+  },
+  "requestedReviewNotificationsOn": {
+    "message": "On",
+    "description": "Label for if the user has turned on notifications when they request a review."
+  },
+  "changeRequestedReviewNotifications": {
+    "message": "Change <visuallyHidden>requested review notifications</visuallyHidden>",
+    "description": "Link text to change the user’s preference for receiving notifications when they request a review."
+  },
   "openReviewRequests": {
     "message": "Open for review requests",
     "description": "Label for if the user is open to receiving review requests"
