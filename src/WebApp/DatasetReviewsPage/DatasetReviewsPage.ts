@@ -110,9 +110,11 @@ export const createDatasetReviewsPage = ({
                   <article aria-labelledby="prereview-${datasetReview.id}-title">
                     <header>
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
-                        ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
-                          ? html`PREreview by ${displayAuthor(datasetReview.author)} et al.`
-                          : t('prereviewTitle')({ author: displayAuthor(datasetReview.author) })}
+                        ${t(
+                          datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
+                            ? 'prereviewTitleMultipleAuthors'
+                            : 'prereviewTitle',
+                        )({ author: displayAuthor(datasetReview.author) })}
                       </h3>
 
                       <div class="byline">
@@ -124,15 +126,14 @@ export const createDatasetReviewsPage = ({
                     </header>
 
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
-                      ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
-                        ? html`Read
-                            <span class="visually-hidden"
-                              >the PREreview by ${displayAuthor(datasetReview.author)} et al.</span
-                            >`
-                        : t('readPrereview')({
-                            author: displayAuthor(datasetReview.author),
-                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
-                          })}
+                      ${t(
+                        datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
+                          ? 'readPrereviewMultipleAuthors'
+                          : 'readPrereview',
+                      )({
+                        author: displayAuthor(datasetReview.author),
+                        visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                      })}
                     </a>
                   </article>
                 </li>
@@ -151,7 +152,7 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
   const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
 
   if (datasetReview.anonymousAuthors > 0) {
-    list.push(html`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`)
+    list.push(translate(locale, 'dataset-reviews-page', 'otherAuthors')({ number: datasetReview.anonymousAuthors }))
   }
 
   return formatList(locale)(list)

@@ -37,7 +37,15 @@
   },
   "prereviewTitle": {
     "message": "PREreview by {author}",
-    "description": "Title for a dataset review"
+    "description": "Title for a dataset review by a single author."
+  },
+  "prereviewTitleMultipleAuthors": {
+    "message": "PREreview by {author} et al.",
+    "description": "Title for a dataset review by multiple authors."
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# other author} other {# other authors}}",
+    "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "prereviewAuthoredBy": {
     "message": "<visuallyHidden>Authored</visuallyHidden> by {author}",
@@ -45,6 +53,10 @@
   },
   "readPrereview": {
     "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>",
-    "description": "Text for the link that takes the user to a dataset review."
+    "description": "Text for the link that takes the user to a dataset review by a single author."
+  },
+  "readPrereviewMultipleAuthors": {
+    "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>",
+    "description": "Text for the link that takes the user to a dataset review by multiple authors."
   }
 }
