@@ -328,7 +328,9 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
   const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
 
   if (datasetReview.anonymousAuthors > 0) {
-    list.push(html`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`)
+    list.push(
+      translate(locale, 'dataset-review-page', 'otherAuthors')({ otherAuthors: datasetReview.anonymousAuthors }),
+    )
   }
 
   return formatList(locale)(list)
