@@ -91,7 +91,7 @@ export function personaForm({
                       .with({ right: 'public' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${publicPersona.name}</span>
+                  <bdi translate="no">${publicPersona.name}</bdi>
                 </label>
                 <p id="persona-tip-public" role="note">${t('weWillLinkYourPrereviewToYourOrcid')()}</p>
               </li>
@@ -106,7 +106,7 @@ export function personaForm({
                       .with({ right: 'pseudonym' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${pseudonymPersona.pseudonym}</span>
+                  <bdi translate="no">${pseudonymPersona.pseudonym}</bdi>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">${t('weWillOnlyLinkToOtherPseudonymPrereviews')()}</p>
               </li>

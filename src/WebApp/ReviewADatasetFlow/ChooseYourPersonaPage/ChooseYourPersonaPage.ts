@@ -101,7 +101,7 @@ export const ChooseYourPersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${publicPersona.name}</span>
+                  <bdi translate="no">${publicPersona.name}</bdi>
                 </label>
                 <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkToYourOrcid')()}</p>
               </li>
@@ -121,7 +121,7 @@ export const ChooseYourPersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${pseudonymPersona.pseudonym}</span>
+                  <bdi translate="no">${pseudonymPersona.pseudonym}</bdi>
                 </label>
                 <p id="choose-your-persona-tip-pseudonym" role="note">${t('weWillOnlyLinkToYourPseudonym')()}</p>
               </li>

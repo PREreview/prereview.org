@@ -95,7 +95,7 @@ export function ChooseYourPersonaPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${publicPersona.name}</span>
+                  <bdi translate="no">${publicPersona.name}</bdi>
                 </label>
                 <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkRequestToYourOrcid')()}</p>
               </li>
@@ -115,7 +115,7 @@ export function ChooseYourPersonaPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${pseudonymPersona.pseudonym}</span>
+                  <bdi translate="no">${pseudonymPersona.pseudonym}</bdi>
                 </label>
                 <p id="choose-your-persona-tip-pseudonym" role="note">
                   ${t('weWillLinkRequestToOthersThatUseYourPseudonym')()}

@@ -122,7 +122,7 @@ export const ChoosePersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${publicPersona.name}</span>
+                  <bdi translate="no">${publicPersona.name}</bdi>
                 </label>
                 <p id="persona-tip-public" role="note">${translate(locale, 'write-comment-flow', 'linkToOrcidId')()}</p>
               </li>
@@ -142,7 +142,7 @@ export const ChoosePersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${pseudonymPersona.pseudonym}</span>
+                  <bdi translate="no">${pseudonymPersona.pseudonym}</bdi>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">
                   ${translate(locale, 'write-comment-flow', 'linkToPseudonym')()}

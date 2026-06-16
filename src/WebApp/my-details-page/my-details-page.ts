@@ -196,7 +196,7 @@ export function createPage({
                 <dd>
                   <span class="slack">
                     <img src="${slackUser.image.href}" alt="" width="48" height="48" />
-                    <span>${slackUser.name}</span>
+                    <bdi translate="no">${slackUser.name}</bdi>
                   </span>
                 </dd>
                 <dd>

@@ -117,7 +117,7 @@ export const personaForm = (
                       .with({ right: 'public' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${publicPersona.name}</span>
+                  <bdi translate="no">${publicPersona.name}</bdi>
                 </label>
                 <p id="persona-tip-public" role="note">${t('linkToOrcidId')()}</p>
               </li>
@@ -132,7 +132,7 @@ export const personaForm = (
                       .with({ right: 'pseudonym' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${pseudonymPersona.pseudonym}</span>
+                  <bdi translate="no">${pseudonymPersona.pseudonym}</bdi>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">${t('linkToPseudonym')()}</p>
               </li>
