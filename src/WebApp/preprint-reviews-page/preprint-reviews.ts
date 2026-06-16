@@ -89,7 +89,7 @@ export const createPage = ({
                 { value: p.when(isDoi) },
                 id => html`
                   <div>
-                    <dt>DOI</dt>
+                    <dt translate="no">DOI</dt>
                     <dd><a href="${toUrl(id.value).href}" class="doi" dir="auto" translate="no">${id.value}</a></dd>
                   </div>
                 `,

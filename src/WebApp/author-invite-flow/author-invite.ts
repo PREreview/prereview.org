@@ -161,7 +161,7 @@ function startPage({
               <dd>${renderDate(locale)(review.published)}</dd>
             </div>
             <div>
-              <dt>DOI</dt>
+              <dt translate="no">DOI</dt>
               <dd class="doi" dir="auto" translate="no">${review.doi}</dd>
             </div>
             <div>

@@ -145,7 +145,7 @@ export const createPage = ({
             <dd>${renderDate(locale)(review.published)}</dd>
           </div>
           <div>
-            <dt>DOI</dt>
+            <dt translate="no">DOI</dt>
             <dd><a href="${toUrl(review.doi).href}" class="doi" dir="auto" translate="no">${review.doi}</a></dd>
           </div>
           <div>
@@ -238,7 +238,7 @@ export const createPage = ({
                               <dd>${renderDate(locale)(item.published)}</dd>
                             </div>
                             <div>
-                              <dt>DOI</dt>
+                              <dt translate="no">DOI</dt>
                               <dd>
                                 <a href="${toUrl(item.doi).href}" class="doi" dir="auto" translate="no">${item.doi}</a>
                               </dd>

@@ -84,7 +84,7 @@ export const WriteCommentPage = ({
               <dd>${renderDate(locale)(prereview.published)}</dd>
             </div>
             <div>
-              <dt>DOI</dt>
+              <dt translate="no">DOI</dt>
               <dd class="doi" dir="auto" translate="no">${prereview.doi}</dd>
             </div>
             <div>

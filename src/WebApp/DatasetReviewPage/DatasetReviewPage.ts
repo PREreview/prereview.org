@@ -65,7 +65,7 @@ export const createDatasetReviewPage = ({
             <dd>${renderDate(locale)(datasetReview.published)}</dd>
           </div>
           <div>
-            <dt>DOI</dt>
+            <dt translate="no">DOI</dt>
             <dd>
               <a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" dir="auto" translate="no"
                 >${datasetReview.doi}</a

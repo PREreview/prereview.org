@@ -104,7 +104,7 @@ export function createPage({
         </div>
 
         <div>
-          <dt><span>ORCID iD</span></dt>
+          <dt translate="no">ORCID iD</dt>
           <dd><span class="orcid-id">${publicPersona.orcidId}</span></dd>
         </div>
 

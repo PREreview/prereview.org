@@ -64,7 +64,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
                 { value: P.when(isDoi) },
                 id => html`
                   <div>
-                    <dt>DOI</dt>
+                    <dt translate="no">DOI</dt>
                     <dd class="doi" dir="auto" translate="no">${id.value}</dd>
                   </div>
                 `,

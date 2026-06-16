@@ -69,7 +69,7 @@ export const renderStartNowPage = ({
               <dd>${renderDate(locale)(viewModel.published)}</dd>
             </div>
             <div>
-              <dt>DOI</dt>
+              <dt translate="no">DOI</dt>
               <dd>
                 <a href="${Doi.toUrl(viewModel.doi).href}" class="doi" dir="auto" translate="no">${viewModel.doi}</a>
               </dd>

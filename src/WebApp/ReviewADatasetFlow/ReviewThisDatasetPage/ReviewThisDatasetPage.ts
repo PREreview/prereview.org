@@ -47,7 +47,7 @@ export const ReviewThisDatasetPage = ({
               <dd>${Datasets.getRepositoryName(dataset.id)}</dd>
             </div>
             <div>
-              <dt>DOI</dt>
+              <dt translate="no">DOI</dt>
               <dd class="doi" dir="auto" translate="no">${dataset.id.value}</dd>
             </div>
           </dl>
