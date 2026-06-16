@@ -11,7 +11,6 @@ strategy = "bluegreen"
 [env]
 ALLOW_SITE_CRAWLERS = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"
-CAN_INVITE_OTHERS_TO_DATASET_REVIEWS = "true"
 ENABLED_LOCALES = "en-US,es-419,pt-BR"
 FATHOM_SITE_ID = "FEAJEBBA"
 HTTP_CACHE_REDIS_URI_TEMPLATE = "redis://{region}.http-cache.internal?family=6"

@@ -115,10 +115,7 @@ pipe(
             canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
         ),
       ),
-      canInviteOthersToDatasetReviews: Config.withDefault(
-        Config.boolean('CAN_INVITE_OTHERS_TO_DATASET_REVIEWS'),
-        false,
-      ),
+      canInviteOthersToDatasetReviews: Config.succeed(true),
       canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
       sendCoarNotifyMessages: Config.withDefault(
         Config.literal(true, false, 'sandbox')('SEND_COAR_NOTIFY_MESSAGES'),

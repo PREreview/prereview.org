@@ -10,7 +10,6 @@ strategy = "bluegreen"
 
 [env]
 CAN_ADD_MULTIPLE_AUTHORS = "true"
-CAN_INVITE_OTHERS_TO_DATASET_REVIEWS = "true"
 CAN_LOG_IN_AS_DEMO_USER = "true"
 ENVIRONMENT_LABEL = "sandbox"
 FATHOM_SITE_ID = "BGNKWQNI"
