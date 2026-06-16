@@ -40,22 +40,28 @@
     "message": "You can close this window, or <link>see the PREreview</link>."
   },
   "beListed": {
-    "message": "Be listed as an author"
+    "message": "Be listed as an author",
+    "description": "Title of the page where the user has been invited to be listed as an author on a PREreview and can start the process."
   },
   "invitedToAppear": {
-    "message": "You’ve been invited to appear as an author on this PREreview."
+    "message": "You’ve been invited to appear as an author on this PREreview.",
+    "description": "Text that appears alongside the heading “Be listed as an author”."
   },
   "weWillAskYouToLogInWithYourOrcid": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsAnOrcid": {
-    "message": "What is an ORCID iD?"
+    "message": "What is an ORCID iD?",
+    "description": "Heading for the explanation of what an ORCID iD is."
   },
   "orcidExplainer": {
-    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "description": "Text following the heading “What is an ORCID iD?” explaining what an ORCID iD is."
   },
   "beforeYouStart": {
-    "message": "Before you start"
+    "message": "Before you start",
+    "description": "Heading for the section that contains information about what the user needs to know before starting the process."
   },
   "declineTheInvitation": {
     "message": "Decline the invitation"

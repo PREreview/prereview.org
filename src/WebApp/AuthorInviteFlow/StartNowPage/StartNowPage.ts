@@ -43,9 +43,9 @@ export const renderStartNowPage = ({
 
   return PageResponse({
     status: StatusCodes.OK,
-    title: plainText('Be listed as an author'),
+    title: plainText(t('author-invite-flow', 'beListed')()),
     main: html`
-      <h1>Be listed as an author</h1>
+      <h1>${t('author-invite-flow', 'beListed')()}</h1>
       <article class="preview" tabindex="0" aria-labelledby="prereview-title">
         <header>
           <h2 id="prereview-title">
@@ -88,21 +88,23 @@ export const renderStartNowPage = ({
         </header>
       </article>
 
-      <p>You’ve been invited to appear as an author on this PREreview.</p>
+      <p>${t('author-invite-flow', 'invitedToAppear')()}</p>
 
       ${!isLoggedIn
         ? html`
-            <h2>Before you start</h2>
+            <h2>${t('author-invite-flow', 'beforeYouStart')()}</h2>
 
-            <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+            <p>${t('author-invite-flow', 'weWillAskYouToLogInWithYourOrcid')()}</p>
 
             <details>
-              <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+              <summary>${t('author-invite-flow', 'whatIsAnOrcid')()}</summary>
 
               <div>
                 <p>
-                  An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
-                  you from everyone with the same or similar name.
+                  ${t(
+                    'author-invite-flow',
+                    'orcidExplainer',
+                  )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>` })}
                 </p>
               </div>
             </details>
@@ -113,7 +115,7 @@ export const renderStartNowPage = ({
         href="${Routes.AuthorInviteAcceptInvite.href({ invitationId: viewModel.invitationId })}"
         role="button"
         draggable="false"
-        >Start now</a
+        >${t('forms', 'startButton')()}</a
       >
     `,
     canonical: Routes.AuthorInviteStartNow.href({ invitationId: viewModel.invitationId }),
