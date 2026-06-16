@@ -847,6 +847,42 @@
     "message": "Select yes if you reviewed the dataset with someone else",
     "description": "Error message shown when the user tries to complete the form “Did you review this dataset with anyone else?” without selecting an option."
   },
+  "addAnAuthor": {
+    "message": "Add an author",
+    "description": "Heading for the form to add an author to the PREreview."
+  },
+  "addAnotherAuthor": {
+    "message": "Add another author",
+    "description": "Heading for the form to add another author to the PREreview."
+  },
+  "addAnAuthorName": {
+    "message": "Name",
+    "description": "Label for the author’s name field on the “Add an author” form."
+  },
+  "addAnAuthorNameTip": {
+    "message": "They will be able to choose their published name.",
+    "description": "Tip shown alongside the field “Name” on the “Add an author” form."
+  },
+  "addAnAuthorNameError": {
+    "message": "Enter their name",
+    "description": "Error message shown when the user tries to submit the form “Add an author“ without entering their name."
+  },
+  "addAnAuthorEmailAddress": {
+    "message": "Email address",
+    "description": "Label for the author’s email address field on the “Add an author” form."
+  },
+  "addAnAuthorEmailAddressTip": {
+    "message": "We’ll only use this to contact them about this PREreview.",
+    "description": "Tip shown alongside the field “Email address” on the “Add an author” form."
+  },
+  "addAnAuthorEmailAddressError": {
+    "message": "Enter their email address",
+    "description": "Error message shown when the user tries to submit the form “Add an author“ without entering their email address."
+  },
+  "addAnAuthorEmailAddressInvalidError": {
+    "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
+    "description": "Error message shown when the user tries to submit the form “Add an author“ with an invalid email address."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?",
     "description": "Label for the question about the name the user would like to use."
