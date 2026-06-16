@@ -899,6 +899,18 @@
     "message": "Add another author",
     "description": "Button to add another author to the PREreview on the “You have added n other author(s)” page."
   },
+  "wantToRemoveName": {
+    "message": "Are you sure you want to remove {name}?",
+    "description": "Label for the question about whether the user wants to remove an author from the PREreview."
+  },
+  "wantToRemoveNameError": {
+    "message": "Select yes if you want to remove {name}",
+    "description": "Error message shown when the user tries to submit the form “Are you sure you want to remove {name}?” without selecting an option."
+  },
+  "wantToRemoveNameYes": {
+    "message": "Yes, remove {name}",
+    "description": "Option for the question “Are you sure you want to remove {name}?”."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?",
     "description": "Label for the question about the name the user would like to use."

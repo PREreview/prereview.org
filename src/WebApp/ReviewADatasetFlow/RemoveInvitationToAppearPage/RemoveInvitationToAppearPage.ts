@@ -26,7 +26,7 @@ export const RemoveInvitationToAppearPage = ({
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(`Are you sure you want to remove ${authorName}?`, errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('wantToRemoveName')({ name: authorName }), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId })}" class="back"
         >${t('forms', 'backLink')()}</a
@@ -50,7 +50,7 @@ export const RemoveInvitationToAppearPage = ({
             )}
           >
             <legend>
-              <h1>Are you sure you want to remove ${authorName}?</h1>
+              <h1>${t('wantToRemoveName')({ name: authorName })}</h1>
             </legend>
 
             ${form._tag === 'InvalidForm' && Either.isLeft(form.removeAuthor)
@@ -59,7 +59,7 @@ export const RemoveInvitationToAppearPage = ({
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${pipe(
                       Match.value(form.removeAuthor.left),
-                      Match.tag('Missing', () => `Select yes if you want to remove ${authorName}`),
+                      Match.tag('Missing', () => t('wantToRemoveNameError')({ name: authorName })),
                       Match.exhaustive,
                     )}
                   </div>
@@ -81,7 +81,7 @@ export const RemoveInvitationToAppearPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>No</span>
+                  ${t('no')()}
                 </label>
               </li>
               <li>
@@ -97,7 +97,7 @@ export const RemoveInvitationToAppearPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>Yes, remove ${authorName}</span>
+                  ${t('wantToRemoveNameYes')({ name: authorName })}
                 </label>
               </li>
             </ol>
@@ -122,7 +122,9 @@ const toErrorItems =
             <a href="#remove-author-no">
               ${pipe(
                 Match.value(form.removeAuthor.left),
-                Match.tag('Missing', () => `Select yes if you want to remove ${authorName}`),
+                Match.tag('Missing', () =>
+                  translate(locale, 'review-a-dataset-flow', 'wantToRemoveNameError')({ name: authorName }),
+                ),
                 Match.exhaustive,
               )}
             </a>
