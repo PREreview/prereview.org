@@ -21,7 +21,7 @@ export function RequestedReviewNotificationsPage({
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
-      'Would you like to be notified a requested PREreview is published?',
+      'Would you like to be notified when a requested PREreview is published?',
       errorPrefix(locale, hasAnError),
       plainText,
     ),
@@ -37,7 +37,7 @@ export function RequestedReviewNotificationsPage({
             ${rawHtml(hasAnError ? 'aria-invalid="true" aria-errormessage="requested-review-notifications-error"' : '')}
           >
             <legend>
-              <h1>Would you like to be notified a requested PREreview is published?</h1>
+              <h1>Would you like to be notified when a requested PREreview is published?</h1>
             </legend>
 
             ${hasAnError && Either.isLeft(form.requestedReviewNotifications)
