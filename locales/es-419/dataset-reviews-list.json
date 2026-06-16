@@ -5,6 +5,9 @@
   "reviewText": {
     "message": "{reviewer} revisó {dataset}"
   },
+  "otherAuthors": {
+    "message": "{number, plural, one {# otro autor} other {# otros autores}}"
+  },
   "reviewPublished": {
     "message": "Revisión publicada"
   },

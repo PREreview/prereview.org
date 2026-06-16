@@ -65,6 +65,18 @@
   "changeEmailAddress": {
     "message": "crwdns4639:0crwdne4639:0"
   },
+  "requestedReviewNotifications": {
+    "message": "crwdns6641:0crwdne6641:0"
+  },
+  "requestedReviewNotificationsOff": {
+    "message": "crwdns6643:0crwdne6643:0"
+  },
+  "requestedReviewNotificationsOn": {
+    "message": "crwdns6645:0crwdne6645:0"
+  },
+  "changeRequestedReviewNotifications": {
+    "message": "crwdns6647:0crwdne6647:0"
+  },
   "openReviewRequests": {
     "message": "crwdns4641:0crwdne4641:0"
   },
@@ -226,6 +238,12 @@
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "crwdns5407:0crwdne5407:0"
+  },
+  "receiveRequestedReviewNotifications": {
+    "message": "crwdns6649:0crwdne6649:0"
+  },
+  "selectReceiveRequestedReviewNotificationsError": {
+    "message": "crwdns6651:0crwdne6651:0"
   },
   "whatLanguages": {
     "message": "crwdns5409:0crwdne5409:0"

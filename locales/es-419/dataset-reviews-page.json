@@ -23,6 +23,9 @@
   "prereviewTitle": {
     "message": "PREreview de {author}"
   },
+  "otherAuthors": {
+    "message": "{number, plural, one {# otro autor} other {# otros autores}}"
+  },
   "prereviewAuthoredBy": {
     "message": "<visuallyHidden>Escrita</visuallyHidden> por {author}"
   },

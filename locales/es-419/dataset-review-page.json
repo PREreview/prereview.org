@@ -5,6 +5,9 @@
   "authoredBy": {
     "message": "<visuallyHidden>Escrita</visuallyHidden> por {author}"
   },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# otro autor} other {# otros autores}}"
+  },
   "backLink": {
     "message": "Volver a todas las revisiones"
   },

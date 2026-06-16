@@ -29,10 +29,19 @@
   "prereviewTitle": {
     "message": "crwdns6490:0{author}crwdne6490:0"
   },
+  "prereviewTitleMultipleAuthors": {
+    "message": "crwdns6635:0{author}crwdne6635:0"
+  },
+  "otherAuthors": {
+    "message": "crwdns6637:0number={number}crwdne6637:0"
+  },
   "prereviewAuthoredBy": {
     "message": "crwdns6492:0{author}crwdne6492:0"
   },
   "readPrereview": {
     "message": "crwdns6494:0{author}crwdne6494:0"
+  },
+  "readPrereviewMultipleAuthors": {
+    "message": "crwdns6639:0{author}crwdne6639:0"
   }
 }
