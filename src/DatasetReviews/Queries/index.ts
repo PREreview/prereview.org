@@ -1,7 +1,6 @@
 import { Array, Context, Effect, type Either, Layer, Scope } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import * as EventStore from '../../EventStore.ts'
-import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -33,7 +32,6 @@ import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 import { GetDatasetReviewForInvite } from './GetDatasetReviewForInvite.ts'
 import { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
-import { GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview } from './GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview.ts'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.ts'
 import { GetPublishedReview } from './GetPublishedReview.ts'
 import { GetPublishedReviewDetails } from './GetPublishedReviewDetails.ts'
@@ -202,12 +200,9 @@ export type { InvitationToAppear } from './GetListOfInvitationsToAppearOnADatase
 const makeDatasetReviewQueries: Effect.Effect<
   typeof DatasetReviewQueries.Service,
   never,
-  EventStore.EventStore | FeatureFlags.FeatureFlags | EventDispatcher.EventDispatcher
+  EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(
-    Effect.context<EventStore.EventStore | FeatureFlags.FeatureFlags>(),
-    Context.omit(Scope.Scope),
-  )
+  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return {
     checkIfReviewIsBeingPublished: Effect.fn(
@@ -355,8 +350,6 @@ const makeDatasetReviewQueries: Effect.Effect<
     ),
     getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
       function* (datasetReviewId) {
-        const canInviteOthersToDatasetReviews = yield* FeatureFlags.canInviteOthersToDatasetReviews
-
         const { events } = yield* Effect.flatten(
           EventStore.query({
             types: DatasetReviewEventTypes,
@@ -364,11 +357,7 @@ const makeDatasetReviewQueries: Effect.Effect<
           }),
         )
 
-        if (canInviteOthersToDatasetReviews) {
-          return GetNextExpectedCommandForAUserOnADatasetReview(events)
-        }
-
-        return GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview(events)
+        return GetNextExpectedCommandForAUserOnADatasetReview(events)
       },
       Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),

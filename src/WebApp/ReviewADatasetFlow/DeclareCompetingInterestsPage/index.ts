@@ -2,7 +2,6 @@ import type { UrlParams } from '@effect/platform'
 import { Effect, Match, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
-import { FeatureFlags } from '../../../FeatureFlags.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
@@ -17,15 +16,10 @@ export const DeclareCompetingInterestsPage = ({
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
-  Response.Response,
-  never,
-  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | FeatureFlags
-> =>
+}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const locale = yield* Locale
-    const featureFlags = yield* FeatureFlags
 
     const currentCompetingInterests = yield* DatasetReviews.checkIfUserCanDeclareCompetingInterests({
       datasetReviewId,
@@ -41,7 +35,6 @@ export const DeclareCompetingInterestsPage = ({
       form,
       locale,
       otherAuthors,
-      canInviteOthersToDatasetReviews: featureFlags.canInviteOthersToDatasetReviews,
     })
   }).pipe(
     Effect.catchTags({
@@ -68,12 +61,11 @@ export const DeclareCompetingInterestsSubmission = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | FeatureFlags
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const locale = yield* Locale
-    const featureFlags = yield* FeatureFlags
 
     const form = yield* DeclareCompetingInterestsForm.fromBody(body)
 
@@ -106,7 +98,6 @@ export const DeclareCompetingInterestsSubmission = ({
             form,
             locale,
             otherAuthors,
-            canInviteOthersToDatasetReviews: featureFlags.canInviteOthersToDatasetReviews,
           })
         },
         Effect.catchTag('UnableToQuery', () => HavingProblemsPage),

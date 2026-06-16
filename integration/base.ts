@@ -2445,7 +2445,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           CommunitySlack.layerShouldUpdateCommunitySlack(true),
           FeatureFlags.layer({
             canAddMultipleAuthors,
-            canInviteOthersToDatasetReviews: true,
             canLogInAsDemoUser,
             showSpotlight,
           }),

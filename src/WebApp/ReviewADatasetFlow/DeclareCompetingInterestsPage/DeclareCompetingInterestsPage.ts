@@ -13,13 +13,11 @@ export const DeclareCompetingInterestsPage = ({
   form,
   locale,
   otherAuthors,
-  canInviteOthersToDatasetReviews = false,
 }: {
   datasetReviewId: Uuid.Uuid
   form: DeclareCompetingInterestsForm.DeclareCompetingInterestsForm
   locale: SupportedLocale
   otherAuthors: boolean
-  canInviteOthersToDatasetReviews?: boolean
 }) => {
   const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale, 'review-a-dataset-flow')
@@ -35,11 +33,9 @@ export const DeclareCompetingInterestsPage = ({
     ),
     nav: html`
       <a
-        href="${(canInviteOthersToDatasetReviews
-          ? otherAuthors
-            ? Routes.ReviewADatasetCheckInvitationsToAppear
-            : Routes.ReviewADatasetOthersNeedToBeListedOnTheReview
-          : Routes.ReviewADatasetChooseYourPersona
+        href="${(otherAuthors
+          ? Routes.ReviewADatasetCheckInvitationsToAppear
+          : Routes.ReviewADatasetOthersNeedToBeListedOnTheReview
         ).href({ datasetReviewId })}"
         class="back"
         >${t('forms', 'backLink')()}</a
