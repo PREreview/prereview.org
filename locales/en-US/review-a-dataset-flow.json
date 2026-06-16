@@ -151,6 +151,18 @@
     "message": "Change <visuallyHidden>your published name</visuallyHidden>",
     "description": "Link that allows the user to change their published name."
   },
+  "invitedAuthors": {
+    "message": "Invited authors",
+    "description": "Heading for the section that contains the invited authors‘ details."
+  },
+  "changeInvitedAuthors": {
+    "message": "Change <visuallyHidden>invited authors</visuallyHidden>",
+    "description": "Link that allows the user to change the invited authors."
+  },
+  "invitedAuthorsNone": {
+    "message": "None",
+    "description": "Text that indicates no authors are to be invited."
+  },
   "haveCompetingInterests": {
     "message": "Do you have any competing interests?",
     "description": "Label for the question about whether the PREreviewer has any competing interests."
