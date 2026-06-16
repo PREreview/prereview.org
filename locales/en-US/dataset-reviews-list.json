@@ -7,6 +7,10 @@
     "message": "{reviewer} reviewed {dataset}",
     "description": "Text of the review in a list."
   },
+  "otherAuthors": {
+    "message": "{number, plural, one {# other author} other {# other authors}}",
+    "description": "Text for the entry in the author list indicating the number of anonymous authors."
+  },
   "reviewPublished": {
     "message": "Review published",
     "description": "Label for the date that the review was published."

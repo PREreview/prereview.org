@@ -13,7 +13,7 @@ import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import { reviewAPreprintMatch, reviewMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
-import { NonEmptyString } from '../../types/NonEmptyString.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
@@ -431,12 +431,13 @@ export const createPage = ({
   })
 
 const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: SupportedLocale) => {
-  const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayPersona)
+  const list: Array.NonEmptyArray<Html | NonEmptyString> = Array.map(
+    Array.make(datasetReview.author, ...datasetReview.otherAuthors),
+    displayPersona,
+  )
 
   if (datasetReview.anonymousAuthors > 0) {
-    list.push(
-      NonEmptyString(`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`),
-    )
+    list.push(translate(locale, 'dataset-reviews-list', 'otherAuthors')({ number: datasetReview.anonymousAuthors }))
   }
 
   return formatList(locale)(list)
