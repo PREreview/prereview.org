@@ -113,6 +113,15 @@
   "changePublishedName": {
     "message": "crwdns6010:0crwdne6010:0"
   },
+  "invitedAuthors": {
+    "message": "crwdns6701:0crwdne6701:0"
+  },
+  "changeInvitedAuthors": {
+    "message": "crwdns6703:0crwdne6703:0"
+  },
+  "invitedAuthorsNone": {
+    "message": "crwdns6705:0crwdne6705:0"
+  },
   "haveCompetingInterests": {
     "message": "crwdns6322:0crwdne6322:0"
   },
@@ -265,6 +274,42 @@
   },
   "selectFollowFairAndCare": {
     "message": "crwdns6190:0crwdne6190:0"
+  },
+  "whatAreFairPrinciples": {
+    "message": "crwdns6653:0crwdne6653:0"
+  },
+  "whatAreFairPrinciplesText": {
+    "message": "crwdns6655:0crwdne6655:0"
+  },
+  "fairPrinciplesFindable": {
+    "message": "crwdns6657:0crwdne6657:0"
+  },
+  "fairPrinciplesAccessible": {
+    "message": "crwdns6659:0crwdne6659:0"
+  },
+  "fairPrinciplesInteroperable": {
+    "message": "crwdns6661:0crwdne6661:0"
+  },
+  "fairPrinciplesReusable": {
+    "message": "crwdns6663:0crwdne6663:0"
+  },
+  "whatAreCarePrinciples": {
+    "message": "crwdns6665:0crwdne6665:0"
+  },
+  "whatAreCarePrinciplesText": {
+    "message": "crwdns6667:0crwdne6667:0"
+  },
+  "carePrinciplesCollectiveBenefit": {
+    "message": "crwdns6669:0crwdne6669:0"
+  },
+  "carePrinciplesAuthorityToControl": {
+    "message": "crwdns6671:0crwdne6671:0"
+  },
+  "carePrinciplesResponsibility": {
+    "message": "crwdns6673:0crwdne6673:0"
+  },
+  "carePrinciplesEthics": {
+    "message": "crwdns6675:0crwdne6675:0"
   },
   "followFairAndCareYesTip": {
     "message": "crwdns6192:0crwdne6192:0"
@@ -566,6 +611,9 @@
   "whatHappensNext": {
     "message": "crwdns6414:0crwdne6414:0"
   },
+  "invitedEmailsSent": {
+    "message": "crwdns6721:0crwdne6721:0"
+  },
   "inviteOthers": {
     "message": "crwdns6416:0{emailAddress}crwdne6416:0"
   },
@@ -589,6 +637,63 @@
   },
   "seeYourReview": {
     "message": "crwdns6430:0crwdne6430:0"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "crwdns6677:0crwdne6677:0"
+  },
+  "didYouReviewWithAnyoneElseTip": {
+    "message": "crwdns6679:0crwdne6679:0"
+  },
+  "selectDidYouReviewWithAnyoneElse": {
+    "message": "crwdns6681:0crwdne6681:0"
+  },
+  "addAnAuthor": {
+    "message": "crwdns6683:0crwdne6683:0"
+  },
+  "addAnotherAuthor": {
+    "message": "crwdns6685:0crwdne6685:0"
+  },
+  "addAnAuthorName": {
+    "message": "crwdns6687:0crwdne6687:0"
+  },
+  "addAnAuthorNameTip": {
+    "message": "crwdns6689:0crwdne6689:0"
+  },
+  "addAnAuthorNameError": {
+    "message": "crwdns6691:0crwdne6691:0"
+  },
+  "addAnAuthorEmailAddress": {
+    "message": "crwdns6693:0crwdne6693:0"
+  },
+  "addAnAuthorEmailAddressTip": {
+    "message": "crwdns6695:0crwdne6695:0"
+  },
+  "addAnAuthorEmailAddressError": {
+    "message": "crwdns6697:0crwdne6697:0"
+  },
+  "addAnAuthorEmailAddressInvalidError": {
+    "message": "crwdns6699:0{exampleEmailAddress}crwdne6699:0"
+  },
+  "addedAuthorCount": {
+    "message": "crwdns6707:0authorCount={authorCount}crwdne6707:0"
+  },
+  "authorNumber": {
+    "message": "crwdns6709:0number={number}crwdne6709:0"
+  },
+  "removeAuthor": {
+    "message": "crwdns6711:0{name}crwdne6711:0"
+  },
+  "addAnotherAuthorButton": {
+    "message": "crwdns6713:0crwdne6713:0"
+  },
+  "wantToRemoveName": {
+    "message": "crwdns6715:0{name}crwdne6715:0"
+  },
+  "wantToRemoveNameError": {
+    "message": "crwdns6717:0{name}crwdne6717:0"
+  },
+  "wantToRemoveNameYes": {
+    "message": "crwdns6719:0{name}crwdne6719:0"
   },
   "whatNameWouldYouLikeToUse": {
     "message": "crwdns6094:0crwdne6094:0"
