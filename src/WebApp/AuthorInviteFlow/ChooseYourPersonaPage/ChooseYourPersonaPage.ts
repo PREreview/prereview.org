@@ -25,7 +25,7 @@ export const renderChooseYourPersonaPage = ({
   locale: SupportedLocale
 }) => {
   const hasAnError = form._tag === 'InvalidForm'
-  const t = translate(locale, 'review-a-dataset-flow')
+  const t = translate(locale, 'author-invite-flow')
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
@@ -48,16 +48,16 @@ export const renderChooseYourPersonaPage = ({
               <h1>${t('whatNameWouldYouLikeToUse')()}</h1>
             </legend>
 
-            <p id="choose-your-persona-tip" role="note">${t('youCanChooseOrcidOrPseudonym')()}</p>
+            <p id="choose-your-persona-tip" role="note">${t('youCanChooseBetweenOrcidNameAndPrereviewPseudonym')()}</p>
 
             <details>
               <summary>${t('whatIsAPrereviewPseudonym')()}</summary>
 
               <div>
                 <p>
-                  ${t('prereviewPseudonymExplainer')({
+                  ${t('pseudonymExplainer')({
                     definition,
-                    pseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
+                    userPseudonym: rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;')),
                   })}
                 </p>
 
@@ -71,7 +71,7 @@ export const renderChooseYourPersonaPage = ({
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${pipe(
                       Match.value(form.chooseYourPersona.left),
-                      Match.tag('Missing', t('selectNameYouWouldLikeToUse')),
+                      Match.tag('Missing', t('selectTheNameYouWouldLikeToUse')),
                       Match.exhaustive,
                     )}
                   </div>
@@ -98,7 +98,7 @@ export const renderChooseYourPersonaPage = ({
                   />
                   <bdi translate="no">${publicPersona.name}</bdi>
                 </label>
-                <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkToYourOrcid')()}</p>
+                <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkYourPrereviewToYourOrcid')()}</p>
               </li>
               <li>
                 <label>
@@ -118,7 +118,9 @@ export const renderChooseYourPersonaPage = ({
                   />
                   <bdi translate="no">${pseudonymPersona.pseudonym}</bdi>
                 </label>
-                <p id="choose-your-persona-tip-pseudonym" role="note">${t('weWillOnlyLinkToYourPseudonym')()}</p>
+                <p id="choose-your-persona-tip-pseudonym" role="note">
+                  ${t('weWillOnlyLinkToOtherPseudonymPrereviews')()}
+                </p>
               </li>
             </ol>
           </fieldset>
@@ -140,7 +142,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: ChooseYourPersonaForm.I
           <a href="#choose-your-persona-public">
             ${pipe(
               Match.value(form.chooseYourPersona.left),
-              Match.tag('Missing', translate(locale, 'review-a-dataset-flow', 'selectNameYouWouldLikeToUse')),
+              Match.tag('Missing', translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse')),
               Match.exhaustive,
             )}
           </a>
