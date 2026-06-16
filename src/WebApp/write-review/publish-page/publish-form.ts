@@ -341,8 +341,20 @@ export function publishForm(
           <p>
             ${t('weWillAssignLicense')({
               licenseLink: match(review.generativeAiIdeas)
-                .with('yes', () => html`<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0&nbsp;1.0</a>`)
-                .with('no', () => html`<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>`)
+                .with(
+                  'yes',
+                  () =>
+                    html`<a href="https://creativecommons.org/publicdomain/zero/1.0/"
+                      ><bdi translate="no">CC0&nbsp;1.0</bdi></a
+                    >`,
+                )
+                .with(
+                  'no',
+                  () =>
+                    html`<a href="https://creativecommons.org/licenses/by/4.0/"
+                      ><bdi translate="no">CC&nbsp;BY&nbsp;4.0</bdi></a
+                    >`,
+                )
                 .exhaustive(),
             })}
           </p>
