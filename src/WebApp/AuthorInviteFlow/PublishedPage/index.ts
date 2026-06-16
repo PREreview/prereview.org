@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'
@@ -16,6 +16,7 @@ export const PublishedPage = ({
 }): Effect.Effect<Response, never, Locale | LoggedInUser | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
+    const locale = yield* Locale
     const user = yield* LoggedInUser
 
     const hasConfirmedChoices = yield* authorInvites.hasAPrereviewerConfirmedTheirAuthorChoices({
@@ -27,7 +28,7 @@ export const PublishedPage = ({
       return RedirectResponse({ location: Routes.AuthorInviteConfirmAuthorChoices.href({ reviewId }) })
     }
 
-    return renderPublishedPage({ reviewId })
+    return renderPublishedPage({ reviewId, locale })
   }).pipe(
     Effect.catchTags({
       PrereviewerIsNotListedOnTheReview: () => PageNotFound,

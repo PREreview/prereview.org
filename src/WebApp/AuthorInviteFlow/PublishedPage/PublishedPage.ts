@@ -1,23 +1,27 @@
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export const renderPublishedPage = ({ reviewId }: { reviewId: Uuid.Uuid }) => {
+export const renderPublishedPage = ({ reviewId, locale }: { reviewId: Uuid.Uuid; locale: SupportedLocale }) => {
+  const t = translate(locale, 'author-invite-flow')
+
   return StreamlinePageResponse({
-    title: plainText('Name added'),
+    title: plainText(t('nameAdded')()),
     main: html`
       <div class="panel">
-        <h1>Name added</h1>
+        <h1>${t('nameAdded')()}</h1>
       </div>
 
-      <h2>What happens next</h2>
+      <h2>${t('whatHappensNext')()}</h2>
 
-      <p>You’ll be able to see your name on the PREreview shortly.</p>
+      <p>${t('ableToSeePrereviewShortly')()}</p>
 
       <p>
-        You can close this window, or
-        <a href="${Routes.DatasetReview.href({ datasetReviewId: reviewId })}">see the PREreview</a>.
+        ${t('closeWindowOrSeePrereview')({
+          link: text => html`<a href="${Routes.DatasetReview.href({ datasetReviewId: reviewId })}">${text}</a>`,
+        })}
       </p>
     `,
     canonical: Routes.AuthorInvitePublished.href({ reviewId }),

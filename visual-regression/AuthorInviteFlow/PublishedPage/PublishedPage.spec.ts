@@ -1,10 +1,12 @@
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/PublishedPage/PublishedPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.renderPublishedPage({
     reviewId,
+    locale,
   })
 
   const content = await showPage(response)
@@ -13,3 +15,5 @@ test('content looks right', async ({ showPage }) => {
 })
 
 const reviewId = Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0')
+
+const locale = DefaultLocale

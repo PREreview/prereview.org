@@ -31,20 +31,23 @@
     "description": "Button to complete the process and update the published PREreview."
   },
   "nameAdded": {
-    "message": "Name added"
+    "message": "Name added",
+    "description": "Title of the page shown once the PREreview has been updated."
   },
   "whatHappensNext": {
     "message": "What happens next",
     "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
   },
   "ableToSeePrereviewShortly": {
-    "message": "You’ll be able to see your name on the PREreview shortly."
+    "message": "You’ll be able to see your name on the PREreview shortly.",
+    "description": "Text that appears alongside the heading “What happens next”."
   },
   "yourDoi": {
     "message": "Your DOI"
   },
   "closeWindowOrSeePrereview": {
-    "message": "You can close this window, or <link>see the PREreview</link>."
+    "message": "You can close this window, or <link>see the PREreview</link>.",
+    "description": "Text that appears alongside the heading “What happens next”."
   },
   "beListed": {
     "message": "Be listed as an author",
