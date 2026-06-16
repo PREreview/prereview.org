@@ -51,36 +51,40 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
               </legend>
 
               <details>
-                <summary><span>What are FAIR principles?</span></summary>
+                <summary>${t('whatAreFairPrinciples')()}</summary>
 
                 <div>
                   <p>
-                    A dataset follows <a href="https://www.go-fair.org/fair-principles/">FAIR principles</a> if it is:
+                    ${t('whatAreFairPrinciplesText')({
+                      fairPrinciplesLink: text => html`<a href="https://www.go-fair.org/fair-principles/">${text}</a>`,
+                    })}
                   </p>
 
                   <ol>
-                    <li>Findable</li>
-                    <li>Accessible</li>
-                    <li>Interoperable</li>
-                    <li>Reusable</li>
+                    <li>${t('fairPrinciplesFindable')()}</li>
+                    <li>${t('fairPrinciplesAccessible')()}</li>
+                    <li>${t('fairPrinciplesInteroperable')()}</li>
+                    <li>${t('fairPrinciplesReusable')()}</li>
                   </ol>
                 </div>
               </details>
 
               <details>
-                <summary><span>What are CARE principles?</span></summary>
+                <summary><span>${t('whatAreCarePrinciples')()}</span></summary>
 
                 <div>
                   <p>
-                    A dataset follows <a href="https://www.gida-global.org/careprinciples">CARE principles</a> if it
-                    maintains sovereignty and rights for its indigenous creators through:
+                    ${t('whatAreCarePrinciplesText')({
+                      carePrinciplesLink: text =>
+                        html`<a href="https://www.gida-global.org/careprinciples">${text}</a>`,
+                    })}
                   </p>
 
                   <ol>
-                    <li>Collective benefit</li>
-                    <li>Authority to control</li>
-                    <li>Responsibility</li>
-                    <li>Ethics</li>
+                    <li>${t('carePrinciplesCollectiveBenefit')()}</li>
+                    <li>${t('carePrinciplesAuthorityToControl')()}</li>
+                    <li>${t('carePrinciplesResponsibility')()}</li>
+                    <li>${t('carePrinciplesEthics')()}</li>
                   </ol>
                 </div>
               </details>

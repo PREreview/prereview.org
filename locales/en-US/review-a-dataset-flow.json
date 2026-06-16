@@ -355,6 +355,54 @@
     "message": "Select if the dataset follows FAIR and CARE principles",
     "description": "Error message shown when the user tries to complete the form “Does this dataset follow FAIR and CARE principles?” without selecting an option."
   },
+  "whatAreFairPrinciples": {
+    "message": "What are FAIR principles?",
+    "description": "Heading for the explanation of what FAIR principles are."
+  },
+  "whatAreFairPrinciplesText": {
+    "message": "A dataset follows <fairPrinciplesLink>FAIR principles</fairPrinciplesLink> if it is:",
+    "description": "Text following the heading “What are FAIR principles?” that introduces what the FAIR principles are."
+  },
+  "fairPrinciplesFindable": {
+    "message": "Findable",
+    "description": "The first FAIR principle: Data and supplementary materials have sufficiently rich metadata and a unique and persistent identifier."
+  },
+  "fairPrinciplesAccessible": {
+    "message": "Accessible",
+    "description": "The second FAIR principle: Metadata and data are understandable to humans and machines. Data is deposited in a trusted repository."
+  },
+  "fairPrinciplesInteroperable": {
+    "message": "Interoperable",
+    "description": "The third FAIR principle: Metadata use a formal, accessible, shared, and broadly applicable language for knowledge representation."
+  },
+  "fairPrinciplesReusable": {
+    "message": "Reusable",
+    "description": "The fourth FAIR principle: Data and collections have a clear usage licenses and provide accurate information on provenance."
+  },
+  "whatAreCarePrinciples": {
+    "message": "What are CARE principles?",
+    "description": "Heading for the explanation of what CARE principles are."
+  },
+  "whatAreCarePrinciplesText": {
+    "message": "A dataset follows <carePrinciplesLink>CARE principles</carePrinciplesLink> if it maintains sovereignty and rights for its indigenous creators through:",
+    "description": "Text following the heading “What are CARE principles?” that introduces what the CARE principles are."
+  },
+  "carePrinciplesCollectiveBenefit": {
+    "message": "Collective benefit",
+    "description": "The first CARE principle: Data ecosystems shall be designed and function in ways that enable Indigenous Peoples to derive benefit from the data."
+  },
+  "carePrinciplesAuthorityToControl": {
+    "message": "Authority to control",
+    "description": "The second CARE principle: Indigenous Peoples’ rights and interests in Indigenous data must be recognized and their authority to control such data be empowered."
+  },
+  "carePrinciplesResponsibility": {
+    "message": "Responsibility",
+    "description": "The third CARE principle: Those working with Indigenous data have a responsibility to share how those data are used to support Indigenous Peoples’ self-determination and collective benefit."
+  },
+  "carePrinciplesEthics": {
+    "message": "Ethics",
+    "description": "The fourth CARE principle: Indigenous Peoples’ rights and wellbeing should be the primary concern at all stages of the data life cycle and across the data ecosystem."
+  },
   "followFairAndCareYesTip": {
     "message": "The dataset has enough metadata and follows the FAIR and CARE principles.",
     "description": "Tip shown alongside the “Yes” option for the question “Does this dataset follow FAIR and CARE principles?”."
