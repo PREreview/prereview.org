@@ -1,18 +1,23 @@
 {
   "chooseLanguage": {
-    "message": "Choose your language:"
+    "message": "Choose your language:",
+    "description": "Title of the list of languages for the user to select from."
   },
   "newsletterText": {
-    "message": "Learn about upcoming events and updates."
+    "message": "Learn about upcoming events and updates.",
+    "description": "Text that accompanies the “Subscribe to our newsletter” link."
   },
   "newsletterLink": {
-    "message": "Subscribe to our newsletter"
+    "message": "Subscribe to our newsletter",
+    "description": "Text of a link to subscribe to PREreview’s newsletter."
   },
   "slackText": {
-    "message": "Come join the conversation!"
+    "message": "Come join the conversation!",
+    "description": "Text that accompanies the “Join our Slack Community” link."
   },
   "slackLink": {
-    "message": "Join our Slack Community"
+    "message": "Join our Slack Community",
+    "description": "Text of a link to join PREreview’s Slack Community."
   },
   "feedbackLink": {
     "message": "Share your feedback with PREreview!",
@@ -23,55 +28,71 @@
     "description": "Heading for a list of links about PREreview, such as its Code of Conduct and Privacy Policy."
   },
   "menuDonate": {
-    "message": "Donate"
+    "message": "Donate",
+    "description": "Text of the link to the page where you can donate to PREreview."
   },
   "menuPeople": {
-    "message": "People"
+    "message": "People",
+    "description": "Text of the link to the page that lists the PREreview team."
   },
   "menuFunding": {
-    "message": "How we’re funded"
+    "message": "How we’re funded",
+    "description": "Text of the link to the page that describes how PREreview is funded."
   },
   "menuCodeOfConduct": {
-    "message": "Code of Conduct"
+    "message": "Code of Conduct",
+    "description": "Text of the link to the page for PREreview’s Code of Conduct."
   },
   "menuEdiaStatement": {
-    "message": "EDIA Statement"
+    "message": "EDIA Statement",
+    "description": "Text of the link to the page for PREreview’s Equity, Diversity, Inclusion, and Accessibility Statement."
   },
   "menuPrivacyPolicy": {
-    "message": "Privacy Policy"
+    "message": "Privacy Policy",
+    "description": "Text of the link to the page for PREreview’s Privacy Policy."
   },
   "menuBlog": {
-    "message": "Blog"
+    "message": "Blog",
+    "description": "Text of the link to PREreview’s Blog."
   },
   "menuPartners": {
-    "message": "Partners"
+    "message": "Partners",
+    "description": "Text of the link to the page that lists PREreview’s partners."
   },
   "contactHeading": {
     "message": "Contact us",
     "description": "Heading for a list of ways to contact PREreview."
   },
   "contactEmail": {
-    "message": "Email us at {address}"
+    "message": "Email us at {address}",
+    "description": "Text of the link to email PREreview."
   },
   "contactBluesky": {
-    "message": "{handle} on Bluesky"
+    "message": "{handle} on Bluesky",
+    "description": "Text of the link to PREreview’s Bluesky profile."
   },
   "contactMastodon": {
-    "message": "{handle} on Mastodon"
+    "message": "{handle} on Mastodon",
+    "description": "Text of the link to PREreview’s Mastodon profile."
   },
   "contactYouTube": {
-    "message": "{handle} on YouTube"
+    "message": "{handle} on YouTube",
+    "description": "Text of the link to PREreview’s YouTube channel."
   },
   "contactLinkedIn": {
-    "message": "{handle} on LinkedIn"
+    "message": "{handle} on LinkedIn",
+    "description": "Text of the link to PREreview’s LinkedIn profile."
   },
   "contactGitHub": {
-    "message": "{handle} on GitHub"
+    "message": "{handle} on GitHub",
+    "description": "Text of the link to PREreview’s GitHub profile."
   },
   "zenodo": {
-    "message": "PREreviews are available in our <community>Zenodo Community</community> and the <api>Zenodo API</api>."
+    "message": "PREreviews are available in our <community>Zenodo Community</community> and the <api>Zenodo API</api>.",
+    "description": "Text that describes where PREreviews are available on Zenodo."
   },
   "copyright": {
-    "message": "All content is available under a Creative Commons <link>Attribution 4.0 International license</link>, except where otherwise stated."
+    "message": "All content is available under a Creative Commons <link>Attribution 4.0 International license</link>, except where otherwise stated.",
+    "description": "Text that describes the copyright license for content on PREreview.org."
   }
 }
