@@ -4,13 +4,16 @@
     "description": "Tagline used on the homepage. 'Open preprint reviews' in the 'open to the community' sense."
   },
   "heroText": {
-    "message": "Provide and receive constructive feedback on preprints from an international community of your peers."
+    "message": "Provide and receive constructive feedback on preprints from an international community of your peers.",
+    "description": "Text that appears alongside the slogan, describing what PREreview does."
   },
   "reviewPreprintButton": {
-    "message": "Review a preprint"
+    "message": "Review a preprint",
+    "description": "Text of the button that takes the user to the flow for reviewing a preprint."
   },
   "requestReviewButton": {
-    "message": "Request a review"
+    "message": "Request a review",
+    "description": "Text of the button that takes the user to the flow for requesting a review."
   },
   "reviewDatasetLink": {
     "message": "Review a dataset",
@@ -65,13 +68,16 @@
     "description": "Text of a link to find out more about PREreview and its mission."
   },
   "requestsTitle": {
-    "message": "Recent review requests"
+    "message": "Recent review requests",
+    "description": "Title of the section that lists the most recent review requests that have been published."
   },
   "requestsLink": {
-    "message": "See all requests"
+    "message": "See all requests",
+    "description": "Text of a link to see all the review requests that have been published."
   },
   "statisticsTitle": {
-    "message": "Statistics"
+    "message": "Statistics",
+    "description": "Title of the section that shows statistics about PREreview, such as the number of PREreviews published."
   },
   "statisticsReviews": {
     "message": "{number, plural, one {<data>#</data> PREreview} other {<data>#</data> PREreviews}}",
@@ -90,12 +96,15 @@
     "description": "Text of a link to see more statistics about PREreview, e.g. the number of PREreviews per language published."
   },
   "reviewsTitle": {
-    "message": "Recent PREreviews"
+    "message": "Recent PREreviews",
+    "description": "Title of the section that lists the most recent PREreviews that have been published."
   },
   "reviewsLink": {
-    "message": "See all reviews"
+    "message": "See all reviews",
+    "description": "Text of a link to see all the PREreviews that have been published."
   },
   "fundersTitle": {
-    "message": "Funders"
+    "message": "Funders",
+    "description": "Title of the section that lists PREreview's funders."
   }
 }
