@@ -1,80 +1,106 @@
 {
   "field11": {
-    "message": "Agricultural and Biological Sciences"
+    "message": "Agricultural and Biological Sciences",
+    "description": "Study of plant and animal biology for food, fuel, fiber, and reclamation, including environmental and economic impacts. Part of the “Life Sciences” domain. Also known as “scientific agriculture” or “agrobiology”."
   },
   "field12": {
-    "message": "Arts and Humanities"
+    "message": "Arts and Humanities",
+    "description": "Examination of human culture, including art, literature, philosophy, history, and artifacts. Part of the “Social Sciences” domain. Also known as “humanities”."
   },
   "field13": {
-    "message": "Biochemistry, Genetics and Molecular Biology"
+    "message": "Biochemistry, Genetics and Molecular Biology",
+    "description": "Study of chemical processes in living organisms. Part of the “Life Sciences” domain. Also known as “biological chemistry”, “genomics”, or “molecular biology”."
   },
   "field14": {
-    "message": "Business, Management and Accounting"
+    "message": "Business, Management and Accounting",
+    "description": "Administration of a commercial enterprise. Part of the “Social Sciences” domain. Also known as “business management”, “business administration”, or “corporate studies”."
   },
   "field15": {
-    "message": "Chemical Engineering"
+    "message": "Chemical Engineering",
+    "description": "Branch of science that applies physical sciences and life sciences together with applied mathematics and economics to produce, transform, transport, and properly use chemicals, materials and energy. Part of the “Physical Sciences” domain. Also known as “process engineering” or “chemical process engineering”."
   },
   "field16": {
-    "message": "Chemistry"
+    "message": "Chemistry",
+    "description": "Branch of physical science concerned with the composition, structure and properties of matter. Part of the “Physical Sciences” domain. Also known as “chemical sciences”."
   },
   "field17": {
-    "message": "Computer Science"
+    "message": "Computer Science",
+    "description": "Study of computation. Part of the “Physical Sciences” domain. Also known as “CS”, “science of computing”, “information processing science”, “computing sciences”, “sciences of computing”, “computation science”, “computing”, “computer studies”, “comp sci”, “comp. sci”, “comp. sci.”, “compsci”, or “informatics”."
   },
   "field18": {
-    "message": "Decision Sciences"
+    "message": "Decision Sciences",
+    "description": "Branch of applied probability theory. Part of the “Social Sciences” domain. Also known as “decision theory”, “theory of choice”, or “operations research”."
   },
   "field19": {
-    "message": "Earth and Planetary Sciences"
+    "message": "Earth and Planetary Sciences",
+    "description": "All fields of natural science related to the planet Earth and other planets. Part of the “Physical Sciences” domain. Also known as “geosciences” or “planetary sciences”."
   },
   "field20": {
-    "message": "Economics, Econometrics and Finance"
+    "message": "Economics, Econometrics and Finance",
+    "description": "Social science that studies the production, distribution, and consumption of goods and services. Part of the “Social Sciences” domain. Also known as “applied economics” or “financial economics”."
   },
   "field21": {
-    "message": "Energy"
+    "message": "Energy",
+    "description": "Study of energy in physical systems, its sources, technology, management, and impact on sustainability. Part of the “Physical Sciences” domain. Also known as “energy studies” or “energy science and technology”."
   },
   "field22": {
-    "message": "Engineering"
+    "message": "Engineering",
+    "description": "Practice of using natural science, mathematics, and the engineering design process to solve technical problems. Part of the “Physical Sciences” domain. Also known as “engineering sciences”."
   },
   "field23": {
-    "message": "Environmental Science"
+    "message": "Environmental Science",
+    "description": "Interdisciplinary field that studies human interaction with the environment. Part of the “Physical Sciences” domain. Also known as “green science”, “environmental studies”, or “environmental and ecological sciences”."
   },
   "field24": {
-    "message": "Immunology and Microbiology"
+    "message": "Immunology and Microbiology",
+    "description": "Study of the immune system and microorganisms, including their roles in health and disease. Part of the “Life Sciences” domain. Also known as “allergy and immunology” or “microbial sciences”."
   },
   "field25": {
-    "message": "Materials Science"
+    "message": "Materials Science",
+    "description": "Research, discovery and design of physical materials (especially solids). Part of the “Physical Sciences” domain. Also known as “materials science and engineering”, “materials of engineering and construction”, or “material engineering”."
   },
   "field26": {
-    "message": "Mathematics"
+    "message": "Mathematics",
+    "description": "Area of knowledge that includes the topics of numbers, formulas and related structures, shapes and the spaces in which they are contained, and quantities and their changes. Part of the “Physical Sciences” domain."
   },
   "field27": {
-    "message": "Medicine"
+    "message": "Medicine",
+    "description": "Field of study for diagnosing, treating and preventing disease. Part of the “Health Sciences” domain. Also known as “healthcare sciences”."
   },
   "field28": {
-    "message": "Neuroscience"
+    "message": "Neuroscience",
+    "description": "Scientific study of the nervous system. Part of the “Life Sciences” domain. Also known as “neurobiology” or “cognitive neuroscience”."
   },
   "field29": {
-    "message": "Nursing"
+    "message": "Nursing",
+    "description": "Caring for people who are sick or injured. Part of the “Health Sciences” domain."
   },
   "field30": {
-    "message": "Pharmacology, Toxicology and Pharmaceutics"
+    "message": "Pharmacology, Toxicology and Pharmaceutics",
+    "description": "Branch of biology concerning drugs. Part of the “Life Sciences” domain. Also known as “therapeutics” or “pharmaceutical sciences”."
   },
   "field31": {
-    "message": "Physics and Astronomy"
+    "message": "Physics and Astronomy",
+    "description": "Study of matter and its motion, along with related concepts such as energy and force. Part of the “Physical Sciences” domain. Also known as “general physics”, “physical science”, or “astrophysics”."
   },
   "field32": {
-    "message": "Psychology"
+    "message": "Psychology",
+    "description": "Study of mental functions and behaviours. Part of the “Social Sciences” domain."
   },
   "field33": {
-    "message": "Social Sciences"
+    "message": "Social Sciences",
+    "description": "Academic disciplines concerned with society and the relationships between individuals in society. Part of the “Social Sciences” domain. Also known as “political sciences”, “sociology”, or “anthropology”."
   },
   "field34": {
-    "message": "Veterinary"
+    "message": "Veterinary",
+    "description": "Branch of medicine that deals with the prevention, management, diagnosis, and treatment of disease, disorder, and injury in non-human animals. Part of the “Health Sciences” domain. Also known as “veterinary science” or “veterinary medicine”."
   },
   "field35": {
-    "message": "Dentistry"
+    "message": "Dentistry",
+    "description": "Branch of medicine dealing with oral health and teeth. Part of the “Health Sciences” domain. Also known as “dental medicine”, “oral medicine”, or “oral health sciences”."
   },
   "field36": {
-    "message": "Health Professions"
+    "message": "Health Professions",
+    "description": "Field encompassing a wide range of disciplines focused on health care, treatment, and advice, including public health and occupational therapy. Part of the “Health Sciences” domain. Also known as “health sciences”."
   }
 }

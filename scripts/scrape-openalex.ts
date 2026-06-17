@@ -95,7 +95,9 @@ const DomainSchema = Schema.Struct({
 const FieldSchema = Schema.Struct({
   id: FieldIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
-  domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
+  display_name_alternatives: Schema.Array(Schema.NonEmptyTrimmedString),
+  description: Schema.NonEmptyTrimmedString,
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema, display_name: Schema.NonEmptyTrimmedString }),
 })
 
 const SubfieldSchema = Schema.Struct({
@@ -122,6 +124,7 @@ const LocaleFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
     message: Schema.NonEmptyTrimmedString,
+    description: Schema.optional(Schema.NonEmptyTrimmedString),
   }),
 })
 
@@ -283,10 +286,23 @@ const WriteToFile = (filePath: string) => (content: string) =>
     fileSystem.writeFileString(path.resolve(import.meta.dirname, '..', filePath), content),
   )
 
+const descriptionToSentence = (description: string) => `${description.charAt(0).toUpperCase()}${description.slice(1)}.`
+
 const FieldsToLocaleFile = flow(
   Chunk.reduce<typeof LocaleFileSchema.Type, typeof FieldSchema.Type>({}, (accumulator, field) => ({
     ...accumulator,
-    [`field${field.id}`]: { message: field.display_name },
+    [`field${field.id}`]: {
+      message: field.display_name,
+      description: [
+        descriptionToSentence(field.description),
+        `Part of the “${field.domain.display_name}” domain.`,
+        field.display_name_alternatives.length > 0
+          ? `Also known as ${new Intl.ListFormat('en-US', { type: 'disjunction' }).format(field.display_name_alternatives.map(name => `“${name}”`))}.`
+          : undefined,
+      ]
+        .join(' ')
+        .trim(),
+    },
   })),
   Schema.encode(Schema.parseJson(LocaleFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
