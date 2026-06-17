@@ -53,6 +53,9 @@
   "allTheBest": {
     "message": "Atentamente,"
   },
+  "footerIntro": {
+    "message": "PREreview es una plataforma, un centro de recursos y una entidad convocante."
+  },
   "footerCommunity": {
     "message": "Facilitamos modos realizar retroalimentación de preprints de manera abierta, rápida, constructiva y por una comunidad global de pares."
   },
