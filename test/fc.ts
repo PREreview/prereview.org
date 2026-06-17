@@ -2435,7 +2435,11 @@ export const reviewRequestForAPreprintWasWithdrawn = ({
     .record({
       withdrawnAt: instant(),
       reviewRequestId: reviewRequestId ?? uuid(),
-      reason: constantFrom('preprint-withdrawn-from-preprint-server', 'mistakenly-requested'),
+      reason: constantFrom(
+        'preprint-withdrawn-from-preprint-server',
+        'mistakenly-requested',
+        'requester-changed-their-mind',
+      ),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasWithdrawn(data))
 

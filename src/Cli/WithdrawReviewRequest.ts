@@ -9,6 +9,7 @@ const reason = Args.choice(
   [
     ['Preprint withdrawn from preprint server', 'preprint-withdrawn-from-preprint-server' as const],
     ['Mistakenly requested', 'mistakenly-requested' as const],
+    ['Requester changed their mind', 'requester-changed-their-mind' as const],
   ],
   { name: 'reason' },
 )
@@ -18,7 +19,7 @@ const program = Effect.fnUntraced(function* ({
   reason,
 }: {
   reviewRequestId: Uuid.Uuid
-  reason: 'preprint-withdrawn-from-preprint-server' | 'mistakenly-requested'
+  reason: 'preprint-withdrawn-from-preprint-server' | 'mistakenly-requested' | 'requester-changed-their-mind'
 }) {
   const withdrawnAt = yield* Temporal.currentInstant
 

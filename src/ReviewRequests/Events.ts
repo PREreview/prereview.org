@@ -74,7 +74,11 @@ export class ReviewRequestForAPreprintWasWithdrawn extends Schema.TaggedClass<Re
   {
     withdrawnAt: Temporal.InstantSchema,
     reviewRequestId: Uuid.UuidSchema,
-    reason: Schema.Literal('preprint-withdrawn-from-preprint-server', 'mistakenly-requested'),
+    reason: Schema.Literal(
+      'preprint-withdrawn-from-preprint-server',
+      'mistakenly-requested',
+      'requester-changed-their-mind',
+    ),
   },
 ) {}
 
