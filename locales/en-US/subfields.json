@@ -1,758 +1,1010 @@
 {
   "subfield1100": {
-    "message": "General Agricultural and Biological Sciences"
+    "message": "General Agricultural and Biological Sciences",
+    "description": "Cultivation of plants and animals to provide useful products. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “plant agriculture”."
   },
   "subfield1102": {
-    "message": "Agronomy and Crop Science"
+    "message": "Agronomy and Crop Science",
+    "description": "Science and technology of producing and using plants for food, fuel, fiber, and reclamation. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “agriculture”, “agriculture (general)”, or “scientific agriculture”."
   },
   "subfield1103": {
-    "message": "Animal Science and Zoology"
+    "message": "Animal Science and Zoology",
+    "description": "Scientific study of animals. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “animal biology”, “animal science”, or “zoological science”."
   },
   "subfield1104": {
-    "message": "Aquatic Science"
+    "message": "Aquatic Science",
+    "description": "Multidisciplinary study of freshwater and marine ecosystems. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “aquatic sciences” or “aquatics”."
   },
   "subfield1105": {
-    "message": "Ecology, Evolution, Behavior and Systematics"
+    "message": "Ecology, Evolution, Behavior and Systematics",
+    "description": "Scientific study of the relationships between living organisms. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “ecological science”."
   },
   "subfield1106": {
-    "message": "Food Science"
+    "message": "Food Science",
+    "description": "Applied science devoted to the study of food. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “bromatology”, “food science and technology”, or “culinary science”."
   },
   "subfield1107": {
-    "message": "Forestry"
+    "message": "Forestry",
+    "description": "Science and craft of creating, managing, using, conserving and repairing forests, woodlands, and associated resources for human and environmental benefits. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain."
   },
   "subfield1108": {
-    "message": "Horticulture"
+    "message": "Horticulture",
+    "description": "Agriculture of plants. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “greenhouse horticulture” or “plant culture”."
   },
   "subfield1109": {
-    "message": "Insect Science"
+    "message": "Insect Science",
+    "description": "Scientific study of insects. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “insect biology”."
   },
   "subfield1110": {
-    "message": "Plant Science"
+    "message": "Plant Science",
+    "description": "Science of plant life. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “plant sciences”, “plant biology”, “phytology”, “phytobiology”, or “botanical science”."
   },
   "subfield1111": {
-    "message": "Soil Science"
+    "message": "Soil Science",
+    "description": "Study of soil as a natural resource on the surface of the earth. Part of the “Agricultural and Biological Sciences” field in the “Life Sciences” domain. Also known as “pedology”."
   },
   "subfield1200": {
-    "message": "General Arts and Humanities"
+    "message": "General Arts and Humanities",
+    "description": "Study of the products of human culture such as art, historical artifacts etc. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “arts and humanities”."
   },
   "subfield1202": {
-    "message": "History"
+    "message": "History",
+    "description": "Past events and their tracks or records. Part of the “Arts and Humanities” field in the “Social Sciences” domain."
   },
   "subfield1203": {
-    "message": "Language and Linguistics"
+    "message": "Language and Linguistics",
+    "description": "Structured system of communication. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “speech”, “system of communication”, “linguistics”, or “ways to talk”."
   },
   "subfield1204": {
-    "message": "Archeology"
+    "message": "Archeology",
+    "description": "Study of the past via material culture. Part of the “Arts and Humanities” field in the “Social Sciences” domain."
   },
   "subfield1205": {
-    "message": "Classics"
+    "message": "Classics",
+    "description": "Study of classical antiquity such as ancient Greece and ancient Rome. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “classical studies”, “classical civilization”, or “Ancient Mediterranean Studies”."
   },
   "subfield1206": {
-    "message": "Conservation"
+    "message": "Conservation",
+    "description": "Practice of protecting the natural environment by individuals, organizations and governments. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “environmental preservation”, “environment protection”, or “environmental conservation”."
   },
   "subfield1207": {
-    "message": "History and Philosophy of Science"
+    "message": "History and Philosophy of Science",
+    "description": "Academic discipline. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “HPS”."
   },
   "subfield1208": {
-    "message": "Literature and Literary Theory"
+    "message": "Literature and Literary Theory",
+    "description": "Polysemous term referring to a written art form, and the set of all literary works. Part of the “Arts and Humanities” field in the “Social Sciences” domain."
   },
   "subfield1209": {
-    "message": "Museology"
+    "message": "Museology",
+    "description": "Study of museums. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “museum studies” or “museum science”."
   },
   "subfield1210": {
-    "message": "Music"
+    "message": "Music",
+    "description": "Art/activity of creating art using sound. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “creating music” or “musical art”."
   },
   "subfield1211": {
-    "message": "Philosophy"
+    "message": "Philosophy",
+    "description": "Study of the truths and principles of being, knowledge, or conduct. Part of the “Arts and Humanities” field in the “Social Sciences” domain."
   },
   "subfield1212": {
-    "message": "Religious studies"
+    "message": "Religious studies",
+    "description": "Objective study of religion. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “study of religion” or “ethnography of religion”."
   },
   "subfield1213": {
-    "message": "Visual Arts and Performing Arts"
+    "message": "Visual Arts and Performing Arts",
+    "description": "An expansive category encompassing creative disciplines that engage the senses and express human creativity and imagination. Part of the “Arts and Humanities” field in the “Social Sciences” domain. Also known as “visual art”, “fine arts”, or “fine art”."
   },
   "subfield1302": {
-    "message": "Aging"
+    "message": "Aging",
+    "description": "Biological processes in a human body coupled to increasing age. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “human aging”."
   },
   "subfield1303": {
-    "message": "Biochemistry"
+    "message": "Biochemistry",
+    "description": "Study of chemical processes in living organisms. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “biological chemistry”."
   },
   "subfield1304": {
-    "message": "Biophysics"
+    "message": "Biophysics",
+    "description": "Study of biological systems using methods from the physical sciences. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “biological physics”."
   },
   "subfield1305": {
-    "message": "Biotechnology"
+    "message": "Biotechnology",
+    "description": "Use of living systems and organisms to develop or make useful products. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “biotech” or “BT”."
   },
   "subfield1306": {
-    "message": "Cancer Research"
+    "message": "Cancer Research",
+    "description": "Research into cancer to identify causes and develop strategies for prevention, diagnosis, treatment, and cure. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain."
   },
   "subfield1307": {
-    "message": "Cell Biology"
+    "message": "Cell Biology",
+    "description": "Scientific discipline that studies cells. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “cellular biology” or “cytology”."
   },
   "subfield1308": {
-    "message": "Clinical Biochemistry"
+    "message": "Clinical Biochemistry",
+    "description": "Study of chemical processes in living organisms. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “biological chemistry”."
   },
   "subfield1309": {
-    "message": "Developmental Biology"
+    "message": "Developmental Biology",
+    "description": "Explores the processes by which individual organisms grow and develop (ontogeny). Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain."
   },
   "subfield1310": {
-    "message": "Endocrinology"
+    "message": "Endocrinology",
+    "description": "Medical specialty. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain."
   },
   "subfield1311": {
-    "message": "Genetics"
+    "message": "Genetics",
+    "description": "Science of genes, heredity, and variation in living organisms. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “genetic science”."
   },
   "subfield1312": {
-    "message": "Molecular Biology"
+    "message": "Molecular Biology",
+    "description": "Branch of biology that deals with the molecular basis of biological activity. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain. Also known as “molbio”."
   },
   "subfield1313": {
-    "message": "Molecular Medicine"
+    "message": "Molecular Medicine",
+    "description": "Medical specialty and academic discipline. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain."
   },
   "subfield1314": {
-    "message": "Physiology"
+    "message": "Physiology",
+    "description": "Science regarding function of organisms or living systems. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain."
   },
   "subfield1315": {
-    "message": "Structural Biology"
+    "message": "Structural Biology",
+    "description": "Study of molecular structures in biology. Part of the “Biochemistry, Genetics and Molecular Biology” field in the “Life Sciences” domain."
   },
   "subfield1402": {
-    "message": "Accounting"
+    "message": "Accounting",
+    "description": "Measurement, processing and communication of financial information about economic entities. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “accountancy”."
   },
   "subfield1403": {
-    "message": "Business and International Management"
+    "message": "Business and International Management",
+    "description": "Administration of a profit-oriented enterprise. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “business management”."
   },
   "subfield1404": {
-    "message": "Management Information Systems"
+    "message": "Management Information Systems",
+    "description": "Information system used for decision-making. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “MIS”."
   },
   "subfield1405": {
-    "message": "Management of Technology and Innovation"
+    "message": "Management of Technology and Innovation",
+    "description": "Set of management disciplines that allows organizations to manage their technological fundamentals to create competitive advantage. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “management of technology”."
   },
   "subfield1406": {
-    "message": "Marketing"
+    "message": "Marketing",
+    "description": "Study and process of promoting, distributing, and selling products or services to customers. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “mktg”, “PR”, “public relations”, “publicity”, “communications”, “promotion”, or “sales”."
   },
   "subfield1407": {
-    "message": "Organizational Behavior and Human Resource Management"
+    "message": "Organizational Behavior and Human Resource Management",
+    "description": "Study of human behavior in organizational settings. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “Human Behavior in Organization” or “organisational behaviour”."
   },
   "subfield1408": {
-    "message": "Strategy and Management"
+    "message": "Strategy and Management",
+    "description": "High-level plan to achieve objectives in uncertain conditions. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “strategies”."
   },
   "subfield1409": {
-    "message": "Tourism, Leisure and Hospitality Management"
+    "message": "Tourism, Leisure and Hospitality Management",
+    "description": "Study of the hospitality industry. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain."
   },
   "subfield1410": {
-    "message": "Industrial relations"
+    "message": "Industrial relations",
+    "description": "Study of the relationship between employers, employees and others. Part of the “Business, Management and Accounting” field in the “Social Sciences” domain. Also known as “employment relations” or “industry relations”."
   },
   "subfield1502": {
-    "message": "Bioengineering"
+    "message": "Bioengineering",
+    "description": "Application of biology and engineering to create useful products. Part of the “Chemical Engineering” field in the “Physical Sciences” domain. Also known as “biological engineering” or “Biological Engineering”."
   },
   "subfield1503": {
-    "message": "Catalysis"
+    "message": "Catalysis",
+    "description": "Process of increasing the rate of a chemical reaction. Part of the “Chemical Engineering” field in the “Physical Sciences” domain."
   },
   "subfield1504": {
-    "message": "Chemical Health and Safety"
+    "message": "Chemical Health and Safety",
+    "description": "Prevention of occupational hazards. Part of the “Chemical Engineering” field in the “Physical Sciences” domain."
   },
   "subfield1506": {
-    "message": "Filtration and Separation"
+    "message": "Filtration and Separation",
+    "description": "Separating components suspended in a fluid based on granularity properties relying on a filter device. Part of the “Chemical Engineering” field in the “Physical Sciences” domain."
   },
   "subfield1507": {
-    "message": "Fluid Flow and Transfer Processes"
+    "message": "Fluid Flow and Transfer Processes",
+    "description": "Movement of fluid matter. Part of the “Chemical Engineering” field in the “Physical Sciences” domain. Also known as “current”, “flow of fluid”, “flow”, or “stream”."
   },
   "subfield1508": {
-    "message": "Process Chemistry and Technology"
+    "message": "Process Chemistry and Technology",
+    "description": "Arm of pharmaceutical chemistry concerned with the development and optimization of a synthetic scheme and pilot plant procedure to manufacture compounds for the drug development phase. Part of the “Chemical Engineering” field in the “Physical Sciences” domain."
   },
   "subfield1602": {
-    "message": "Analytical Chemistry"
+    "message": "Analytical Chemistry",
+    "description": "Study of the separation, identification, and quantification of the chemical components of materials. Part of the “Chemistry” field in the “Physical Sciences” domain."
   },
   "subfield1603": {
-    "message": "Electrochemistry"
+    "message": "Electrochemistry",
+    "description": "Branch of chemistry. Part of the “Chemistry” field in the “Physical Sciences” domain."
   },
   "subfield1604": {
-    "message": "Inorganic Chemistry"
+    "message": "Inorganic Chemistry",
+    "description": "Study of the synthesis and behavior of inorganic and organometallic compounds. Part of the “Chemistry” field in the “Physical Sciences” domain."
   },
   "subfield1605": {
-    "message": "Organic Chemistry"
+    "message": "Organic Chemistry",
+    "description": "Subdiscipline within chemistry involving the scientific study of carbon-based compounds, hydrocarbons, and their derivatives. Part of the “Chemistry” field in the “Physical Sciences” domain."
   },
   "subfield1606": {
-    "message": "Physical and Theoretical Chemistry"
+    "message": "Physical and Theoretical Chemistry",
+    "description": "Academic field. Part of the “Chemistry” field in the “Physical Sciences” domain."
   },
   "subfield1607": {
-    "message": "Spectroscopy"
+    "message": "Spectroscopy",
+    "description": "Measurement and interpretation of interactions between matter and electromagnetic radiation of varying frequencies. Part of the “Chemistry” field in the “Physical Sciences” domain. Also known as “spectrum analysis” or “spectral analysis”."
   },
   "subfield1702": {
-    "message": "Artificial Intelligence"
+    "message": "Artificial Intelligence",
+    "description": "Field of computer science and engineering practices for intelligence demonstrated by machines and intelligent agents. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “AI”, “A.I.”, “Machine intelligence”, “Artificially intelligent”, “Artificial intelligence (AI)”, “Artificial Intelligence (AI)”, “Machine understanding”, “Simulated intelligence”, “Artificial Intelligence, a.i.”, “Computational Rationality”, “Intelligent machine”, “A I”, “Machine thought”, “Artificially intelligent beings”, “Machines that can think”, “AI software”, or “Artificial smartness”."
   },
   "subfield1703": {
-    "message": "Computational Theory and Mathematics"
+    "message": "Computational Theory and Mathematics",
+    "description": "Area of mathematics. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “computation”."
   },
   "subfield1704": {
-    "message": "Computer Graphics and Computer-Aided Design"
+    "message": "Computer Graphics and Computer-Aided Design",
+    "description": "Sub-field of computer science. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “CG”."
   },
   "subfield1705": {
-    "message": "Computer Networks and Communications"
+    "message": "Computer Networks and Communications",
+    "description": "Network that allows computers to share resources and communicate with each other. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “computer network technologies and services”, “network”, “computer networks”, “Computer Communication Networks”, or “Computer Communication Network”."
   },
   "subfield1706": {
-    "message": "Computer Science Applications"
+    "message": "Computer Science Applications",
+    "description": "Study of computation. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “computing science”, “CS”, “Computer Science”, “science of computing”, “information processing science”, “computer sciences”, “computing sciences”, “sciences of computing”, “computation science”, “computing”, “computer studies”, “comp sci”, “comp. sci”, “comp. sci.”, “compsci”, or “informatics”."
   },
   "subfield1707": {
-    "message": "Computer Vision and Pattern Recognition"
+    "message": "Computer Vision and Pattern Recognition",
+    "description": "Computerized information extraction from images. Part of the “Computer Science” field in the “Physical Sciences” domain."
   },
   "subfield1708": {
-    "message": "Hardware and Architecture"
+    "message": "Hardware and Architecture",
+    "description": "Physical components of a computer. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “hardware”, “device”, “computer component”, “computer part”, “PC component”, “PC part”, “PC hardware”, “computer accessory”, “PC accessory”, or “hw”."
   },
   "subfield1709": {
-    "message": "Human-Computer Interaction"
+    "message": "Human-Computer Interaction",
+    "description": "Academic discipline. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “HCI” or “computer-human Interaction”."
   },
   "subfield1710": {
-    "message": "Information Systems"
+    "message": "Information Systems",
+    "description": "Academic study of systems with a specific reference to information and the complementary networks of hardware and software that people and organizations use to collect, filter, process, create and also distribute data. Part of the “Computer Science” field in the “Physical Sciences” domain."
   },
   "subfield1711": {
-    "message": "Signal Processing"
+    "message": "Signal Processing",
+    "description": "Models and analyzes data representations of physical events. Part of the “Computer Science” field in the “Physical Sciences” domain."
   },
   "subfield1712": {
-    "message": "Software"
+    "message": "Software",
+    "description": "Non-tangible executable component of a computer. Part of the “Computer Science” field in the “Physical Sciences” domain. Also known as “computer software” or “computational tool”."
   },
   "subfield1800": {
-    "message": "General Decision Sciences"
+    "message": "General Decision Sciences",
+    "description": "Branch of applied probability theory. Part of the “Decision Sciences” field in the “Social Sciences” domain. Also known as “theory of choice”, “decision sciences”, or “decision science”."
   },
   "subfield1802": {
-    "message": "Information Systems and Management"
+    "message": "Information Systems and Management",
+    "description": "Book. Part of the “Decision Sciences” field in the “Social Sciences” domain."
   },
   "subfield1803": {
-    "message": "Management Science and Operations Research"
+    "message": "Management Science and Operations Research",
+    "description": "Study of problem-solving in human organizations. Part of the “Decision Sciences” field in the “Social Sciences” domain. Also known as “MS”."
   },
   "subfield1804": {
-    "message": "Statistics, Probability and Uncertainty"
+    "message": "Statistics, Probability and Uncertainty",
+    "description": "Study of the collection, analysis, interpretation, and presentation of data. Part of the “Decision Sciences” field in the “Social Sciences” domain. Also known as “Stats” or “Statistical Sciences”."
   },
   "subfield1902": {
-    "message": "Atmospheric Science"
+    "message": "Atmospheric Science",
+    "description": "Umbrella term for the study of the atmosphere. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain. Also known as “atmospherology”."
   },
   "subfield1904": {
-    "message": "Earth-Surface Processes"
+    "message": "Earth-Surface Processes",
+    "description": "Term for the surface of the Earth. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain. Also known as “ground”, “surface of the Earth”, “Earth surface”, or “surface of Earth”."
   },
   "subfield1906": {
-    "message": "Geochemistry and Petrology"
+    "message": "Geochemistry and Petrology",
+    "description": "Scientific study of the chemical composition of the Earth and other planets, focusing on the processes and conditions that influence the formation, structure, and composition of rocks and minerals. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain."
   },
   "subfield1907": {
-    "message": "Geology"
+    "message": "Geology",
+    "description": "Study of the composition, structure, physical properties, and history of Earth's components, and the processes by which they are shaped. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain."
   },
   "subfield1908": {
-    "message": "Geophysics"
+    "message": "Geophysics",
+    "description": "Study of physical processes and phenomena occurring in the earth and in its vicinity. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain."
   },
   "subfield1910": {
-    "message": "Oceanography"
+    "message": "Oceanography",
+    "description": "Branch of Earth science that studies the ocean. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain. Also known as “oceanology”, “ocean science”, or “ocean sciences”."
   },
   "subfield1911": {
-    "message": "Paleontology"
+    "message": "Paleontology",
+    "description": "Scientific study of the past of life on Earth through fossils. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain. Also known as “palaeontology” or “palæontology”."
   },
   "subfield1912": {
-    "message": "Space and Planetary Science"
+    "message": "Space and Planetary Science",
+    "description": "Science of astronomical objects apparently in orbit around one or more stellar objects within a few light years. Part of the “Earth and Planetary Sciences” field in the “Physical Sciences” domain. Also known as “planetology”, “planetary astronomy”, “planetary sciences”, or “exoscience”."
   },
   "subfield2000": {
-    "message": "General Economics, Econometrics and Finance"
+    "message": "General Economics, Econometrics and Finance",
+    "description": "Social science that studies the production, distribution, and consumption of goods and services. Part of the “Economics, Econometrics and Finance” field in the “Social Sciences” domain. Also known as “economics as a science”."
   },
   "subfield2002": {
-    "message": "Economics and Econometrics"
+    "message": "Economics and Econometrics",
+    "description": "Social science that studies the production, distribution, and consumption of goods and services. Part of the “Economics, Econometrics and Finance” field in the “Social Sciences” domain. Also known as “economics as a science”."
   },
   "subfield2003": {
-    "message": "Finance"
+    "message": "Finance",
+    "description": "Academic discipline studying businesses, financing, investments and protection of economic value. Part of the “Economics, Econometrics and Finance” field in the “Social Sciences” domain."
   },
   "subfield2100": {
-    "message": "General Energy"
+    "message": "General Energy",
+    "description": "Czech company. Part of the “Energy” field in the “Physical Sciences” domain."
   },
   "subfield2102": {
-    "message": "Energy Engineering and Power Technology"
+    "message": "Energy Engineering and Power Technology",
+    "description": "Broad field of engineering dealing with energy. Part of the “Energy” field in the “Physical Sciences” domain. Also known as “energy systems engineering”."
   },
   "subfield2103": {
-    "message": "Fuel Technology"
+    "message": "Fuel Technology",
+    "description": "Technology used in the extraction, processing and consumption of fuel resources. Part of the “Energy” field in the “Physical Sciences” domain."
   },
   "subfield2104": {
-    "message": "Nuclear Energy and Engineering"
+    "message": "Nuclear Energy and Engineering",
+    "description": "Power generated from nuclear reactions. Part of the “Energy” field in the “Physical Sciences” domain. Also known as “nuclear energy” or “atomic energy”."
   },
   "subfield2105": {
-    "message": "Renewable Energy, Sustainability and the Environment"
+    "message": "Renewable Energy, Sustainability and the Environment",
+    "description": "Energy collected from renewable resources. Part of the “Energy” field in the “Physical Sciences” domain."
   },
   "subfield2200": {
-    "message": "General Engineering"
+    "message": "General Engineering",
+    "description": "Applied science. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “basic engineering”, “Engineering (profession)”, “Engineering (practice)”, or “Engineering (skill)”."
   },
   "subfield2202": {
-    "message": "Aerospace Engineering"
+    "message": "Aerospace Engineering",
+    "description": "Branch of engineering. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “aeronautical engineering”."
   },
   "subfield2203": {
-    "message": "Automotive Engineering"
+    "message": "Automotive Engineering",
+    "description": "Discipline of engineering. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “vehicle engineering”."
   },
   "subfield2204": {
-    "message": "Biomedical Engineering"
+    "message": "Biomedical Engineering",
+    "description": "Application of engineering principles and design concepts to medicine and biology. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “medical electronics” or “medical engineering”."
   },
   "subfield2205": {
-    "message": "Civil and Structural Engineering"
+    "message": "Civil and Structural Engineering",
+    "description": "Engineering discipline specializing in design, construction and maintenance of the built environment. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “municipal engineering”."
   },
   "subfield2206": {
-    "message": "Computational Mechanics"
+    "message": "Computational Mechanics",
+    "description": "Discipline concerned with the use of computational methods to study mechanics. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2207": {
-    "message": "Control and Systems Engineering"
+    "message": "Control and Systems Engineering",
+    "description": "Engineering discipline that applies control theory to design systems with desired behaviors, focusing on the development and implementation of control systems in machinery, processes, and automation. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2208": {
-    "message": "Electrical and Electronic Engineering"
+    "message": "Electrical and Electronic Engineering",
+    "description": "Electrical engineering discipline which utilizes nonlinear and active electrical components to design electronic circuits, devices, and their systems. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “electronics engineering”, “electronics and communications engineering”, or “electronics”."
   },
   "subfield2209": {
-    "message": "Industrial and Manufacturing Engineering"
+    "message": "Industrial and Manufacturing Engineering",
+    "description": "Discipline of engineering dealing with various manufacturing sciences and practices including the research, design and development of systems, processes, machines, tools, and equipment. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2210": {
-    "message": "Mechanical Engineering"
+    "message": "Mechanical Engineering",
+    "description": "Engineering discipline. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “machine construction”."
   },
   "subfield2211": {
-    "message": "Mechanics of Materials"
+    "message": "Mechanics of Materials",
+    "description": "Behavior of solid objects subject to stresses and strains. Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “strength theory”."
   },
   "subfield2212": {
-    "message": "Ocean Engineering"
+    "message": "Ocean Engineering",
+    "description": "Engineering of devices within the ocean environment. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2213": {
-    "message": "Safety, Risk, Reliability and Quality"
+    "message": "Safety, Risk, Reliability and Quality",
+    "description": "State of being secure from harm, injury, danger, or other non-desirable outcomes. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2214": {
-    "message": "Media Technology"
+    "message": "Media Technology",
+    "description": "Field of study and practice that explores the development, application, and impact of digital and media technologies in communication, entertainment, and information dissemination. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2215": {
-    "message": "Building and Construction"
+    "message": "Building and Construction",
+    "description": "Former West German trade union (1949–1995). Part of the “Engineering” field in the “Physical Sciences” domain. Also known as “Industriegewerkschaft Bau, Steine, Erden”."
   },
   "subfield2216": {
-    "message": "Architecture"
+    "message": "Architecture",
+    "description": "Both the process and product of planning, designing and construction. Part of the “Engineering” field in the “Physical Sciences” domain."
   },
   "subfield2302": {
-    "message": "Ecological Modeling"
+    "message": "Ecological Modeling",
+    "description": "Computational or theoretical approach to ecology. Part of the “Environmental Science” field in the “Physical Sciences” domain. Also known as “ecological modelling”."
   },
   "subfield2303": {
-    "message": "Ecology"
+    "message": "Ecology",
+    "description": "Scientific study of the relationships between living organisms. Part of the “Environmental Science” field in the “Physical Sciences” domain. Also known as “ecological science”."
   },
   "subfield2304": {
-    "message": "Environmental Chemistry"
+    "message": "Environmental Chemistry",
+    "description": "Scientific study of the chemical and biochemical phenomena that occur in natural places. Part of the “Environmental Science” field in the “Physical Sciences” domain."
   },
   "subfield2305": {
-    "message": "Environmental Engineering"
+    "message": "Environmental Engineering",
+    "description": "Professional engineering discipline related to environmental science. Part of the “Environmental Science” field in the “Physical Sciences” domain."
   },
   "subfield2306": {
-    "message": "Global and Planetary Change"
+    "message": "Global and Planetary Change",
+    "description": "Planetary-scale changes in the Earth system. Part of the “Environmental Science” field in the “Physical Sciences” domain."
   },
   "subfield2307": {
-    "message": "Health, Toxicology and Mutagenesis"
+    "message": "Health, Toxicology and Mutagenesis",
+    "description": "Branch of biology, chemistry, and medicine. Part of the “Environmental Science” field in the “Physical Sciences” domain."
   },
   "subfield2308": {
-    "message": "Management, Monitoring, Policy and Law"
+    "message": "Management, Monitoring, Policy and Law",
+    "description": "System of rules and guidelines, generally backed by governmental authority. Part of the “Environmental Science” field in the “Physical Sciences” domain. Also known as “body of law”, “legal system”, or “legal regime”."
   },
   "subfield2309": {
-    "message": "Nature and Landscape Conservation"
+    "message": "Nature and Landscape Conservation",
+    "description": "Conservation of nature. Part of the “Environmental Science” field in the “Physical Sciences” domain. Also known as “conservation of nature”, “nature protection”, “protection of nature”, or “nature maintenance”."
   },
   "subfield2310": {
-    "message": "Pollution"
+    "message": "Pollution",
+    "description": "Introduction of contaminants into the natural environment that cause adverse change. Part of the “Environmental Science” field in the “Physical Sciences” domain. Also known as “environmental pollution”."
   },
   "subfield2311": {
-    "message": "Waste Management and Disposal"
+    "message": "Waste Management and Disposal",
+    "description": "Part of the “Environmental Science” field in the “Physical Sciences” domain."
   },
   "subfield2312": {
-    "message": "Water Science and Technology"
+    "message": "Water Science and Technology",
+    "description": "Emphasis of groundwater and surface water in the understanding of water resource systems. Part of the “Environmental Science” field in the “Physical Sciences” domain."
   },
   "subfield2402": {
-    "message": "Applied Microbiology and Biotechnology"
+    "message": "Applied Microbiology and Biotechnology",
+    "description": "Study of microscopic organisms. Part of the “Immunology and Microbiology” field in the “Life Sciences” domain."
   },
   "subfield2403": {
-    "message": "Immunology"
+    "message": "Immunology",
+    "description": "Branch of medicine studying the immune system. Part of the “Immunology and Microbiology” field in the “Life Sciences” domain. Also known as “allergy and immunology”."
   },
   "subfield2404": {
-    "message": "Microbiology"
+    "message": "Microbiology",
+    "description": "Study of microscopic organisms. Part of the “Immunology and Microbiology” field in the “Life Sciences” domain."
   },
   "subfield2405": {
-    "message": "Parasitology"
+    "message": "Parasitology",
+    "description": "Branch of biology that studies parasites, their hosts, and the relationship between them. Part of the “Immunology and Microbiology” field in the “Life Sciences” domain."
   },
   "subfield2406": {
-    "message": "Virology"
+    "message": "Virology",
+    "description": "Study of viruses. Part of the “Immunology and Microbiology” field in the “Life Sciences” domain."
   },
   "subfield2500": {
-    "message": "General Materials Science"
+    "message": "General Materials Science",
+    "description": "Research, discovery and design of physical materials (especially solids). Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “materials science and engineering”, “Materials Science”, “material science”, or “Materials of engineering and construction. Mechanics of materials”."
   },
   "subfield2502": {
-    "message": "Biomaterials"
+    "message": "Biomaterials",
+    "description": "Any substance that has been engineered to interact with biological systems for a medical purpose. Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “biocompatible material” or “biocompatible materials”."
   },
   "subfield2503": {
-    "message": "Ceramics and Composites"
+    "message": "Ceramics and Composites",
+    "description": "Inorganic, nonmetallic solid prepared by the action of heat. Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “ceramics”, “pottery”, or “ceramic material”."
   },
   "subfield2504": {
-    "message": "Electronic, Optical and Magnetic Materials"
+    "message": "Electronic, Optical and Magnetic Materials",
+    "description": "Substance that can occur in different amounts, all with some similar [mixture of some] characteristics, and with which objects can be made. Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “substance with uniform characteristics”, “substance with some constant properties”, “consistent substance of variable amount”, “substance”, “base material”, “materials”, “engineering material”, or “engineering materials”."
   },
   "subfield2505": {
-    "message": "Materials Chemistry"
+    "message": "Materials Chemistry",
+    "description": "Study of the synthesis, structure, and properties of solid phase materials. Part of the “Materials Science” field in the “Physical Sciences” domain."
   },
   "subfield2506": {
-    "message": "Metals and Alloys"
+    "message": "Metals and Alloys",
+    "description": "An alloy designation system widely accepted in North America. Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “alloy designation system”, “UNS”, “Metals and Alloys in the Unified Numbering System (UNS)”, “DS56L-EB”, or “HS-1086”."
   },
   "subfield2507": {
-    "message": "Polymers and Plastics"
+    "message": "Polymers and Plastics",
+    "description": "Substance composed of macromolecules with repeating structural units. Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “polymers”."
   },
   "subfield2508": {
-    "message": "Surfaces, Coatings and Films"
+    "message": "Surfaces, Coatings and Films",
+    "description": "Any adherent layer that covers a surface. Part of the “Materials Science” field in the “Physical Sciences” domain. Also known as “surface coating” or “coat”."
   },
   "subfield2602": {
-    "message": "Algebra and Number Theory"
+    "message": "Algebra and Number Theory",
+    "description": "Part of mathematics in which letters and other symbols are used to represent numbers and quantities in formulae and equation. Part of the “Mathematics” field in the “Physical Sciences” domain. Also known as “Aljebra”, “Algebra (mathematics)”, “ALGEBRA”, “Cossic art”, or “Rule of Coss”."
   },
   "subfield2604": {
-    "message": "Applied Mathematics"
+    "message": "Applied Mathematics",
+    "description": "Discipline of mathematics. Part of the “Mathematics” field in the “Physical Sciences” domain."
   },
   "subfield2605": {
-    "message": "Computational Mathematics"
+    "message": "Computational Mathematics",
+    "description": "Area of mathematics. Part of the “Mathematics” field in the “Physical Sciences” domain. Also known as “computation”."
   },
   "subfield2607": {
-    "message": "Discrete Mathematics and Combinatorics"
+    "message": "Discrete Mathematics and Combinatorics",
+    "description": "Study of discrete mathematical structures. Part of the “Mathematics” field in the “Physical Sciences” domain. Also known as “finite mathematics”."
   },
   "subfield2608": {
-    "message": "Geometry and Topology"
+    "message": "Geometry and Topology",
+    "description": "Branch of mathematics at the intersection between geometry and topology. Part of the “Mathematics” field in the “Physical Sciences” domain."
   },
   "subfield2610": {
-    "message": "Mathematical Physics"
+    "message": "Mathematical Physics",
+    "description": "Use of mathematics to solve physics problems. Part of the “Mathematics” field in the “Physical Sciences” domain."
   },
   "subfield2611": {
-    "message": "Modeling and Simulation"
+    "message": "Modeling and Simulation",
+    "description": "Use of models – physical, mathematical, or otherwise logical representation of a system, entity, phenomenon, or process – as a basis for simulations – methods for implementing a model (either statically or) over time. Part of the “Mathematics” field in the “Physical Sciences” domain."
   },
   "subfield2612": {
-    "message": "Numerical Analysis"
+    "message": "Numerical Analysis",
+    "description": "Study of algorithms that use numerical approximation for the problems of mathematical analysis. Part of the “Mathematics” field in the “Physical Sciences” domain. Also known as “numerical computation”, “numerical mathematics”, or “numerical modelling”."
   },
   "subfield2613": {
-    "message": "Statistics and Probability"
+    "message": "Statistics and Probability",
+    "description": "Study of the collection, analysis, interpretation, and presentation of data. Part of the “Mathematics” field in the “Physical Sciences” domain. Also known as “Stats” or “Statistical Sciences”."
   },
   "subfield2614": {
-    "message": "Theoretical Computer Science"
+    "message": "Theoretical Computer Science",
+    "description": "Subfield of computer science and mathematics. Part of the “Mathematics” field in the “Physical Sciences” domain. Also known as “theoretical CS”, “CS theory”, or “TCS”."
   },
   "subfield2702": {
-    "message": "Anatomy"
+    "message": "Anatomy",
+    "description": "Study of the structure and parts of organisms. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “general anatomy”."
   },
   "subfield2703": {
-    "message": "Anesthesiology and Pain Medicine"
+    "message": "Anesthesiology and Pain Medicine",
+    "description": "Medical specialty concerned with anesthesia and perioperative care. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “anaesthesia”, “anaesthetics”, or “anesthesiology”."
   },
   "subfield2704": {
-    "message": "Biochemistry"
+    "message": "Biochemistry",
+    "description": "Study of chemical processes in living organisms. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “biological chemistry”."
   },
   "subfield2705": {
-    "message": "Cardiology and Cardiovascular Medicine"
+    "message": "Cardiology and Cardiovascular Medicine",
+    "description": "Branch of medicine dealing with disorders of the heart as well as parts of the circulatory system. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “cardiovascular medicine”."
   },
   "subfield2706": {
-    "message": "Critical Care and Intensive Care Medicine"
+    "message": "Critical Care and Intensive Care Medicine",
+    "description": "Medical care subspecialty, treating critically ill. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “critical care medicine”, “intensive care”, “critical care”, or “ICM”."
   },
   "subfield2707": {
-    "message": "Complementary and alternative medicine"
+    "message": "Complementary and alternative medicine",
+    "description": "Form of non-scientific healing. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “complementary medicine”, “CAM”, “alt medicine”, “quack medicine”, or “natural health”."
   },
   "subfield2708": {
-    "message": "Dermatology"
+    "message": "Dermatology",
+    "description": "Field of medicine dealing with the hair, nails, skin, and its diseases. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “Hand foot and mouth”."
   },
   "subfield2711": {
-    "message": "Emergency Medicine"
+    "message": "Emergency Medicine",
+    "description": "Medical specialty concerned with care for patients who require immediate medical attention. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “accident and emergency medicine” or “emergency care”."
   },
   "subfield2712": {
-    "message": "Endocrinology, Diabetes and Metabolism"
+    "message": "Endocrinology, Diabetes and Metabolism",
+    "description": "Medical specialty focusing on the endocrine system, its diseases, and their treatment, including diabetes management and metabolic disorders affecting hormone balance and body function. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “Endocrinol Diabetes Metab J”."
   },
   "subfield2713": {
-    "message": "Epidemiology"
+    "message": "Epidemiology",
+    "description": "Study of the patterns, causes, and effects of health and disease conditions. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2714": {
-    "message": "Family Practice"
+    "message": "Family Practice",
+    "description": "Medical specialty. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “general medicine”."
   },
   "subfield2715": {
-    "message": "Gastroenterology"
+    "message": "Gastroenterology",
+    "description": "Branch of medicine focused on the digestive system and its disorders. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2716": {
-    "message": "Genetics"
+    "message": "Genetics",
+    "description": "Science of genes, heredity, and variation in living organisms. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “genetic science”."
   },
   "subfield2717": {
-    "message": "Geriatrics and Gerontology"
+    "message": "Geriatrics and Gerontology",
+    "description": "Specialty that focuses on health care of elderly people. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “geriatric medicine”, “medical gerontology”, “Geriatrics”, or “aged health care”."
   },
   "subfield2718": {
-    "message": "Health Informatics"
+    "message": "Health Informatics",
+    "description": "Discipline at the intersection of information science, computer science, and health care. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “medical informatics”, “healthcare informatics”, or “clinical informatics”."
   },
   "subfield2720": {
-    "message": "Hematology"
+    "message": "Hematology",
+    "description": "Study of blood, the blood-forming organs, and blood diseases. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “haematology”."
   },
   "subfield2721": {
-    "message": "Hepatology"
+    "message": "Hepatology",
+    "description": "Medical specialty. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2723": {
-    "message": "Immunology and Allergy"
+    "message": "Immunology and Allergy",
+    "description": "Branch of medicine studying the immune system. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “allergy and immunology”."
   },
   "subfield2724": {
-    "message": "Internal Medicine"
+    "message": "Internal Medicine",
+    "description": "Medical specialty dealing with the prevention, diagnosis, and treatment of  diseases of internal organs. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2725": {
-    "message": "Infectious Diseases"
+    "message": "Infectious Diseases",
+    "description": "Disease caused by infection of pathogenic biological agents in a host organism. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “pestilence”, “disease by infectious agent”, “Infectious”, “infection”, “ID”, “Clinical Infection”, “Infectious Diseases and Manifestations”, “Infectious Disorder”, “communicable disease”, “communicable diseases”, “zymotic disease”, or “zymotic diseases”."
   },
   "subfield2726": {
-    "message": "Microbiology"
+    "message": "Microbiology",
+    "description": "Study of microscopic organisms. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2727": {
-    "message": "Nephrology"
+    "message": "Nephrology",
+    "description": "Medical specialty that concerns itself with the kidneys. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2728": {
-    "message": "Neurology"
+    "message": "Neurology",
+    "description": "Medical specialty dealing with disorders of the nervous system. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “Neuro” or “neuromedicine”."
   },
   "subfield2729": {
-    "message": "Obstetrics and Gynecology"
+    "message": "Obstetrics and Gynecology",
+    "description": "Medical specialty. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “OB-GYN”, “OB/GYN”, or “OBG”."
   },
   "subfield2730": {
-    "message": "Oncology"
+    "message": "Oncology",
+    "description": "Branch of medicine dealing with cancer. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2731": {
-    "message": "Ophthalmology"
+    "message": "Ophthalmology",
+    "description": "Field of medicine treating eye disorders. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “eye care”, “eye medicine”, or “opthalmology”."
   },
   "subfield2732": {
-    "message": "Orthopedics and Sports Medicine"
+    "message": "Orthopedics and Sports Medicine",
+    "description": "Branch of medicine dealing with the correction of deformities of bones or muscles. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “orthopaedics”, “orthopedic surgery”, or “orthopaedic surgery”."
   },
   "subfield2733": {
-    "message": "Otorhinolaryngology"
+    "message": "Otorhinolaryngology",
+    "description": "Surgical subspeciality concerned with ear, nose, and throat conditions. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “ENT”, “otolaryngology-head and neck surgery”, “ear, nose, and throat diseases”, “ENT diseases”, or “oto-rhino-laryngology”."
   },
   "subfield2734": {
-    "message": "Pathology and Forensic Medicine"
+    "message": "Pathology and Forensic Medicine",
+    "description": "Study and diagnosis of disease. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2735": {
-    "message": "Pediatrics, Perinatology and Child Health"
+    "message": "Pediatrics, Perinatology and Child Health",
+    "description": "Field of medicine dealing with the care of children. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “pædiatrics”, “pediatric medicine”, “paediatrics”, or “paediatric medicine”."
   },
   "subfield2736": {
-    "message": "Pharmacology"
+    "message": "Pharmacology",
+    "description": "Branch of biology concerning drugs. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “therapeutics”."
   },
   "subfield2737": {
-    "message": "Physiology"
+    "message": "Physiology",
+    "description": "Science regarding function of organisms or living systems. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2738": {
-    "message": "Psychiatry and Mental health"
+    "message": "Psychiatry and Mental health",
+    "description": "Branch of medicine devoted to the study, diagnosis, treatment, and prevention of mental disorders. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2739": {
-    "message": "Public Health, Environmental and Occupational Health"
+    "message": "Public Health, Environmental and Occupational Health",
+    "description": "Science and art of preventing disease, prolonging life and promoting health through organized efforts and informed choices of society, organizations, public and private, communities and individuals. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “public aspects of medicine”, “community health”, “health service”, “public health service”, “public hygiene”, or “social hygiene”."
   },
   "subfield2740": {
-    "message": "Pulmonary and Respiratory Medicine"
+    "message": "Pulmonary and Respiratory Medicine",
+    "description": "Branch of medicine concerned with the diagnosis, treatment, and prevention of diseases affecting the lungs and respiratory system, including asthma, COPD, and pulmonary infections. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2741": {
-    "message": "Radiology, Nuclear Medicine and Imaging"
+    "message": "Radiology, Nuclear Medicine and Imaging",
+    "description": "Specialty that uses medical imaging to diagnose and treat diseases seen within the body. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2742": {
-    "message": "Rehabilitation"
+    "message": "Rehabilitation",
+    "description": "Process to return a person to their formerly existing mental and health condition. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “rehab”."
   },
   "subfield2743": {
-    "message": "Reproductive Medicine"
+    "message": "Reproductive Medicine",
+    "description": "Medicine dealing with prevention, diagnosis and management of reproductive problems. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2745": {
-    "message": "Rheumatology"
+    "message": "Rheumatology",
+    "description": "Medical specialty dealing with autoimmune diseases, especially those of joints and connective tissues, including arthritis. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2746": {
-    "message": "Surgery"
+    "message": "Surgery",
+    "description": "Medical specialty. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “surgical procedure” or “surgical specialty”."
   },
   "subfield2747": {
-    "message": "Transplantation"
+    "message": "Transplantation",
+    "description": "Moving of an organ or tissue from one body or body region to another. Part of the “Medicine” field in the “Health Sciences” domain. Also known as “transplant”, “transplant surgery”, “transplantation surgery”, “organ transplantation”, “allotransplantation”, or “allograft”."
   },
   "subfield2748": {
-    "message": "Urology"
+    "message": "Urology",
+    "description": "A medical and surgical specialty that focuses on diagnosing and treating disorders of the urinary tract and male reproductive organs. Part of the “Medicine” field in the “Health Sciences” domain."
   },
   "subfield2802": {
-    "message": "Behavioral Neuroscience"
+    "message": "Behavioral Neuroscience",
+    "description": "Field of scientific study. Part of the “Neuroscience” field in the “Life Sciences” domain. Also known as “biological psychology”, “biopsychology”, “psychobiology”, or “biopsych”."
   },
   "subfield2803": {
-    "message": "Biological Psychiatry"
+    "message": "Biological Psychiatry",
+    "description": "Approach to psychiatry that aims to understand mental disorder in terms of the biological function of the nervous system. Part of the “Neuroscience” field in the “Life Sciences” domain. Also known as “biopsychiatry”."
   },
   "subfield2804": {
-    "message": "Cellular and Molecular Neuroscience"
+    "message": "Cellular and Molecular Neuroscience",
+    "description": "Branch of neuroscience. Part of the “Neuroscience” field in the “Life Sciences” domain."
   },
   "subfield2805": {
-    "message": "Cognitive Neuroscience"
+    "message": "Cognitive Neuroscience",
+    "description": "Scientific field concerned with cognition. Part of the “Neuroscience” field in the “Life Sciences” domain."
   },
   "subfield2806": {
-    "message": "Developmental Neuroscience"
+    "message": "Developmental Neuroscience",
+    "description": "Scientific study of the nervous system. Part of the “Neuroscience” field in the “Life Sciences” domain. Also known as “neurobiology” or “neurosciences”."
   },
   "subfield2807": {
-    "message": "Endocrine and Autonomic Systems"
+    "message": "Endocrine and Autonomic Systems",
+    "description": "Medical specialty. Part of the “Neuroscience” field in the “Life Sciences” domain."
   },
   "subfield2808": {
-    "message": "Neurology"
+    "message": "Neurology",
+    "description": "Medical specialty dealing with disorders of the nervous system. Part of the “Neuroscience” field in the “Life Sciences” domain. Also known as “Neuro” or “neuromedicine”."
   },
   "subfield2809": {
-    "message": "Sensory Systems"
+    "message": "Sensory Systems",
+    "description": "Ability to interpret the surrounding environment using light in the visible spectrum. Part of the “Neuroscience” field in the “Life Sciences” domain. Also known as “sense of sight”, “vision”, “sensory visual perception”, “seeing”, or “sight”."
   },
   "subfield2910": {
-    "message": "Issues, ethics and legal aspects"
+    "message": "Issues, ethics and legal aspects",
+    "description": "Branch of philosophy that systematizes, defends, and recommends concepts of right and wrong conduct. Part of the “Nursing” field in the “Health Sciences” domain. Also known as “ethical theory”, “Ethics”, or “êthikê”."
   },
   "subfield2911": {
-    "message": "Leadership and Management"
+    "message": "Leadership and Management",
+    "description": "Academic degree. Part of the “Nursing” field in the “Health Sciences” domain."
   },
   "subfield2916": {
-    "message": "Nutrition and Dietetics"
+    "message": "Nutrition and Dietetics",
+    "description": "Field of research. Part of the “Nursing” field in the “Health Sciences” domain."
   },
   "subfield2922": {
-    "message": "Research and Theory"
+    "message": "Research and Theory",
+    "description": "Systematic study undertaken to increase knowledge. Part of the “Nursing” field in the “Health Sciences” domain. Also known as “systematic inquiry”."
   },
   "subfield3002": {
-    "message": "Drug Discovery"
+    "message": "Drug Discovery",
+    "description": "The process by which new candidate medications are discovered. Part of the “Pharmacology, Toxicology and Pharmaceutics” field in the “Life Sciences” domain."
   },
   "subfield3003": {
-    "message": "Pharmaceutical Science"
+    "message": "Pharmaceutical Science",
+    "description": "Area of study concerned with drugs at every stage, from design to disposition. Part of the “Pharmacology, Toxicology and Pharmaceutics” field in the “Life Sciences” domain. Also known as “branch of pharmacy”, “field of pharmacy”, “pharmacy discipline”, “pharmaceutical sciences”, “Technology, Pharmaceutical”, or “pharmaceutical technology”."
   },
   "subfield3004": {
-    "message": "Pharmacology"
+    "message": "Pharmacology",
+    "description": "Branch of biology concerning drugs. Part of the “Pharmacology, Toxicology and Pharmaceutics” field in the “Life Sciences” domain. Also known as “therapeutics”."
   },
   "subfield3005": {
-    "message": "Toxicology"
+    "message": "Toxicology",
+    "description": "Scientific study of the harmful effects that chemicals, substances, or situations can have on living organisms and the environment. Part of the “Pharmacology, Toxicology and Pharmaceutics” field in the “Life Sciences” domain."
   },
   "subfield3102": {
-    "message": "Acoustics and Ultrasonics"
+    "message": "Acoustics and Ultrasonics",
+    "description": "Science that deals with the study of all mechanical waves in gases, liquids, and solids including vibration, sound, ultrasound and infrasound. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain."
   },
   "subfield3103": {
-    "message": "Astronomy and Astrophysics"
+    "message": "Astronomy and Astrophysics",
+    "description": "Scientific study of celestial objects and phenomena. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain. Also known as “Astronomical”."
   },
   "subfield3104": {
-    "message": "Condensed Matter Physics"
+    "message": "Condensed Matter Physics",
+    "description": "Branch of physics dealing with a property of matter. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain. Also known as “Physics of Condensed Matter”."
   },
   "subfield3105": {
-    "message": "Instrumentation"
+    "message": "Instrumentation",
+    "description": "Measuring instruments which monitor and control a process. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain. Also known as “measuring technology”."
   },
   "subfield3106": {
-    "message": "Nuclear and High Energy Physics"
+    "message": "Nuclear and High Energy Physics",
+    "description": "Physics of elementary particles at high energies. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain. Also known as “HEP”."
   },
   "subfield3107": {
-    "message": "Atomic and Molecular Physics, and Optics"
+    "message": "Atomic and Molecular Physics, and Optics",
+    "description": "Branch of physics. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain."
   },
   "subfield3108": {
-    "message": "Radiation"
+    "message": "Radiation",
+    "description": "Waves or particles propagating through space or through a medium, carrying energy. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain."
   },
   "subfield3109": {
-    "message": "Statistical and Nonlinear Physics"
+    "message": "Statistical and Nonlinear Physics",
+    "description": "Branch of physics. Part of the “Physics and Astronomy” field in the “Physical Sciences” domain."
   },
   "subfield3200": {
-    "message": "General Psychology"
+    "message": "General Psychology",
+    "description": "Branch of psychology that studies the mental functions, behaviors, and processes of individuals, exploring concepts such as perception, cognition, emotion, and motivation. Part of the “Psychology” field in the “Social Sciences” domain."
   },
   "subfield3202": {
-    "message": "Applied Psychology"
+    "message": "Applied Psychology",
+    "description": "Application of psychological theories or findings. Part of the “Psychology” field in the “Social Sciences” domain. Also known as “Psychology, Applied”."
   },
   "subfield3203": {
-    "message": "Clinical Psychology"
+    "message": "Clinical Psychology",
+    "description": "Integration of science and clinical knowledge for the purpose of relieving psychologically based dysfunction. Part of the “Psychology” field in the “Social Sciences” domain."
   },
   "subfield3204": {
-    "message": "Developmental and Educational Psychology"
+    "message": "Developmental and Educational Psychology",
+    "description": "Scientific study of changes that occur in human beings over the course of their lives. Part of the “Psychology” field in the “Social Sciences” domain."
   },
   "subfield3205": {
-    "message": "Experimental and Cognitive Psychology"
+    "message": "Experimental and Cognitive Psychology",
+    "description": "Subdiscipline of psychology. Part of the “Psychology” field in the “Social Sciences” domain."
   },
   "subfield3206": {
-    "message": "Neuropsychology and Physiological Psychology"
+    "message": "Neuropsychology and Physiological Psychology",
+    "description": "Study of the brain related to specific psychological processes and behaviors. Part of the “Psychology” field in the “Social Sciences” domain."
   },
   "subfield3207": {
-    "message": "Social Psychology"
+    "message": "Social Psychology",
+    "description": "Scientific study of social effects on people's thoughts, feelings, and behaviors. Part of the “Psychology” field in the “Social Sciences” domain."
   },
   "subfield3300": {
-    "message": "General Social Sciences"
+    "message": "General Social Sciences",
+    "description": "Academic disciplines concerned with society and the relationships between individuals in society. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “social sciences”, “social sciences (general)”, or “political sciences”."
   },
   "subfield3302": {
-    "message": "Archeology"
+    "message": "Archeology",
+    "description": "Study of the past via material culture. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3303": {
-    "message": "Development"
+    "message": "Development",
+    "description": "Detailed developed land. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “planned city”, “planned communities”, “planned cities”, “planned town”, or “planned settlement”."
   },
   "subfield3304": {
-    "message": "Education"
+    "message": "Education",
+    "description": "Transmission of knowledge and skills. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3305": {
-    "message": "Geography, Planning and Development"
+    "message": "Geography, Planning and Development",
+    "description": "Science that studies the terrestrial surface, the societies that inhabit it and the territories, landscapes, places or regions that form it when interacting with each other. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “geographical science” or “geography (general)”."
   },
   "subfield3306": {
-    "message": "Health"
+    "message": "Health",
+    "description": "Desirable level of functional or metabolic efficiency of a living being. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3307": {
-    "message": "Human Factors and Ergonomics"
+    "message": "Human Factors and Ergonomics",
+    "description": "Study of designing equipment and devices that fit the human body and its cognitive abilities. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “human factors”."
   },
   "subfield3308": {
-    "message": "Law"
+    "message": "Law",
+    "description": "System of rules and guidelines, generally backed by governmental authority. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “body of law”, “legal system”, or “legal regime”."
   },
   "subfield3309": {
-    "message": "Library and Information Sciences"
+    "message": "Library and Information Sciences",
+    "description": "Professional training program merging of the two fields library science and information science. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “LIS”, “library and information studies”, or “Library and information science”."
   },
   "subfield3310": {
-    "message": "Linguistics and Language"
+    "message": "Linguistics and Language",
+    "description": "Book by Julia S. Falk. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3311": {
-    "message": "Safety Research"
+    "message": "Safety Research",
+    "description": "Research discipline. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3312": {
-    "message": "Sociology and Political Science"
+    "message": "Sociology and Political Science",
+    "description": "Academic disciplines concerned with society and the relationships between individuals in society. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “social sciences”, “social sciences (general)”, or “political sciences”."
   },
   "subfield3313": {
-    "message": "Transportation"
+    "message": "Transportation",
+    "description": "Human-directed movement of things or people between locations. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “delivery” or “transit”."
   },
   "subfield3314": {
-    "message": "Anthropology"
+    "message": "Anthropology",
+    "description": "Scientific study of humans, human behavior, and societies. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3315": {
-    "message": "Communication"
+    "message": "Communication",
+    "description": "Act of conveying intended meaning. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “expression”, “expressing”, or “to express”."
   },
   "subfield3316": {
-    "message": "Cultural Studies"
+    "message": "Cultural Studies",
+    "description": "Academic field of critical theory and literary criticism. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “Ethnic, Cultural Minority, Gender, and Group Studies”, “culturology”, or “cultural research”."
   },
   "subfield3317": {
-    "message": "Demography"
+    "message": "Demography",
+    "description": "Science that deals with populations and their structures statistically and theoretically. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “population research” or “demographic research”."
   },
   "subfield3318": {
-    "message": "Gender Studies"
+    "message": "Gender Studies",
+    "description": "Interdisciplinary academic field devoted to analysing gender identity and gendered representation. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “gender research”, “gender theory”, or “LGBT+ research”."
   },
   "subfield3319": {
-    "message": "Life-span and Life-course Studies"
+    "message": "Life-span and Life-course Studies",
+    "description": "Duration of life for an organism. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “life span” or “lifespan”."
   },
   "subfield3320": {
-    "message": "Political Science and International Relations"
+    "message": "Political Science and International Relations",
+    "description": "Academic discipline. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “international relations”."
   },
   "subfield3321": {
-    "message": "Public Administration"
+    "message": "Public Administration",
+    "description": "Generic term for the administrations that perform tasks of the state, including bodies governed by public law. Part of the “Social Sciences” field in the “Social Sciences” domain. Also known as “administrative organisation”, “bureau”, “administration”, or “Public Policy and Administration”."
   },
   "subfield3322": {
-    "message": "Urban Studies"
+    "message": "Urban Studies",
+    "description": "Interdisciplinary field that examines the development and dynamics of cities and urban spaces. Part of the “Social Sciences” field in the “Social Sciences” domain."
   },
   "subfield3402": {
-    "message": "Equine"
+    "message": "Equine",
+    "description": "Domesticated four-footed mammal from the equine family. Part of the “Veterinary” field in the “Health Sciences” domain."
   },
   "subfield3404": {
-    "message": "Small Animals"
+    "message": "Small Animals",
+    "description": "Kingdom of multicellular eukaryotic organisms. Part of the “Veterinary” field in the “Health Sciences” domain."
   },
   "subfield3500": {
-    "message": "General Dentistry"
+    "message": "General Dentistry",
+    "description": "Branch of medicine dealing with oral health and teeth. Part of the “Dentistry” field in the “Health Sciences” domain. Also known as “dental medicine”, “oral medicine”, “dentista”, or “Dental Medicine”."
   },
   "subfield3504": {
-    "message": "Oral Surgery"
+    "message": "Oral Surgery",
+    "description": "Medical specialty. Part of the “Dentistry” field in the “Health Sciences” domain. Also known as “surgery, oral”, “maxillofacial and oral surgery”, or “Oral & Maxillofacial Surgery”."
   },
   "subfield3505": {
-    "message": "Orthodontics"
+    "message": "Orthodontics",
+    "description": "Specialty of dentistry that deals with the diagnosis, prevention, and correction of malpositioned teeth and jaws, and misaligned bite patterns. Part of the “Dentistry” field in the “Health Sciences” domain. Also known as “orthodontia”."
   },
   "subfield3506": {
-    "message": "Periodontics"
+    "message": "Periodontics",
+    "description": "Field of dentistry. Part of the “Dentistry” field in the “Health Sciences” domain."
   },
   "subfield3600": {
-    "message": "General Health Professions"
+    "message": "General Health Professions",
+    "description": "Type of profession. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “health professions”, “health occupation”, “health occupations”, or “health care profession”."
   },
   "subfield3603": {
-    "message": "Complementary and Manual Therapy"
+    "message": "Complementary and Manual Therapy",
+    "description": "Therapeutic practice not currently considered an integral part of conventional allopathic medical practice. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “complementary therapies”, “alternative medicine therapy”, “complementary therapy (regime/therapy)”, or “complementary therapy, regime/therapy”."
   },
   "subfield3604": {
-    "message": "Emergency Medical Services"
+    "message": "Emergency Medical Services",
+    "description": "Type of emergency service dedicated to providing out-of-hospital acute medical care and transport to definitive care. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “EMS” or “🚑”."
   },
   "subfield3605": {
-    "message": "Health Information Management"
+    "message": "Health Information Management",
+    "description": "Academic discipline. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “health management science”."
   },
   "subfield3607": {
-    "message": "Medical Laboratory Technology"
+    "message": "Medical Laboratory Technology",
+    "description": "Equipment and software used in medical laboratories. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “clinical laboratory technology”."
   },
   "subfield3608": {
-    "message": "Medical Terminology"
+    "message": "Medical Terminology",
+    "description": "Language used in the field of medicine to precisely describe the human body including its components, processes, conditions affecting it, and procedures performed upon it. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “terminology of medicine”."
   },
   "subfield3609": {
-    "message": "Occupational Therapy"
+    "message": "Occupational Therapy",
+    "description": "Therapy to increase skills related to work or independent living. Part of the “Health Professions” field in the “Health Sciences” domain."
   },
   "subfield3611": {
-    "message": "Pharmacy"
+    "message": "Pharmacy",
+    "description": "Science that studies the chemical, pharmacological and pharmaceutical properties of drugs. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “pharmaceutics”."
   },
   "subfield3612": {
-    "message": "Physical Therapy, Sports Therapy and Rehabilitation"
+    "message": "Physical Therapy, Sports Therapy and Rehabilitation",
+    "description": "Health profession that aims to address the illnesses or injuries that limit a person's abilities to function in everyday lives. Part of the “Health Professions” field in the “Health Sciences” domain. Also known as “physical therapy”."
   },
   "subfield3614": {
-    "message": "Radiological and Ultrasound Technology"
+    "message": "Radiological and Ultrasound Technology",
+    "description": "Specialty that uses medical imaging to diagnose and treat diseases seen within the body. Part of the “Health Professions” field in the “Health Sciences” domain."
   },
   "subfield3616": {
-    "message": "Speech and Hearing"
+    "message": "Speech and Hearing",
+    "description": "Interdisciplinary field focused on the study of speech, language, and hearing processes and disorders, encompassing assessment, diagnosis, and treatment of communication and auditory impairments. Part of the “Health Professions” field in the “Health Sciences” domain."
   }
 }

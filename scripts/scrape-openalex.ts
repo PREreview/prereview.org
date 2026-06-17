@@ -103,8 +103,10 @@ const FieldSchema = Schema.Struct({
 const SubfieldSchema = Schema.Struct({
   id: SubfieldIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
-  domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
-  field: Schema.Struct({ id: FieldIdFromUrlSchema }),
+  display_name_alternatives: Schema.Array(Schema.NonEmptyTrimmedString),
+  description: Schema.optional(Schema.NonEmptyTrimmedString),
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema, display_name: Schema.NonEmptyTrimmedString }),
+  field: Schema.Struct({ id: FieldIdFromUrlSchema, display_name: Schema.NonEmptyTrimmedString }),
 })
 
 const TopicSchema = Schema.Struct({
@@ -233,7 +235,11 @@ const GetSubfields: Effect.Effect<
   Effect.andThen(
     Chunk.map(subfield =>
       subfield.id === 2311
-        ? ({ ...subfield, display_name: 'Waste Management and Disposal' } satisfies typeof SubfieldSchema.Type)
+        ? ({
+            ...subfield,
+            display_name: 'Waste Management and Disposal',
+            description: undefined,
+          } satisfies typeof SubfieldSchema.Type)
         : subfield,
     ),
   ),
@@ -286,7 +292,8 @@ const WriteToFile = (filePath: string) => (content: string) =>
     fileSystem.writeFileString(path.resolve(import.meta.dirname, '..', filePath), content),
   )
 
-const descriptionToSentence = (description: string) => `${description.charAt(0).toUpperCase()}${description.slice(1)}.`
+const descriptionToSentence = (description: string) =>
+  `${description.charAt(0).toUpperCase()}${description.slice(1)}${description.endsWith('.') ? '' : '.'}`
 
 const FieldsToLocaleFile = flow(
   Chunk.reduce<typeof LocaleFileSchema.Type, typeof FieldSchema.Type>({}, (accumulator, field) => ({
@@ -312,7 +319,18 @@ const FieldsToLocaleFile = flow(
 const SubfieldsToLocaleFile = flow(
   Chunk.reduce<typeof LocaleFileSchema.Type, typeof SubfieldSchema.Type>({}, (accumulator, subfield) => ({
     ...accumulator,
-    [`subfield${subfield.id}`]: { message: subfield.display_name },
+    [`subfield${subfield.id}`]: {
+      message: subfield.display_name,
+      description: [
+        typeof subfield.description === 'string' ? descriptionToSentence(subfield.description) : undefined,
+        `Part of the “${subfield.field.display_name}” field in the “${subfield.domain.display_name}” domain.`,
+        subfield.display_name_alternatives.length > 0
+          ? `Also known as ${new Intl.ListFormat('en-US', { type: 'disjunction' }).format(subfield.display_name_alternatives.map(name => `“${name}”`))}.`
+          : undefined,
+      ]
+        .join(' ')
+        .trim(),
+    },
   })),
   Schema.encode(Schema.parseJson(LocaleFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
