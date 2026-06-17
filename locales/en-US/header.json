@@ -1,71 +1,91 @@
 {
   "menu": {
-    "message": "Menu"
+    "message": "Menu",
+    "description": "Text of the button that opens the menu."
   },
   "getInvolved": {
-    "message": "Get involved"
+    "message": "Get involved",
+    "description": "Title of the list of links to perform actions on PREreview, such as reviewing a preprint or requesting a review."
   },
   "findOutMore": {
-    "message": "Find out more"
+    "message": "Find out more",
+    "description": "Title of the list of links with details about PREreview as an organization."
   },
   "chooseLanguage": {
-    "message": "Choose your language"
+    "message": "Choose your language",
+    "description": "Title of the list of languages for the user to select from."
   },
   "myAccount": {
-    "message": "My account"
+    "message": "My account",
+    "description": "Title of the list of links to manage your account."
   },
   "menuBlog": {
-    "message": "Blog"
+    "message": "Blog",
+    "description": "Text of the link to the PREreview blog."
   },
   "menuAboutUs": {
-    "message": "About"
+    "message": "About",
+    "description": "Text of the link to the page with details about PREreview as an organization."
   },
   "menuHowToUse": {
-    "message": "How to use"
+    "message": "How to use",
+    "description": "Text of the link to the page with instructions on how to use PREreview."
   },
   "menuDonate": {
-    "message": "Donate"
+    "message": "Donate",
+    "description": "Text of the link to the page where you can donate to PREreview."
   },
   "menuMyDetails": {
-    "message": "My details"
+    "message": "My details",
+    "description": "Text of the link to the page where you can view and edit your account details."
   },
   "menuNewNotification": {
-    "message": "New notification"
+    "message": "New notification",
+    "description": "Label that appears when there is something for the user to look at."
   },
   "menuMyPrereviews": {
-    "message": "My PREreviews"
+    "message": "My PREreviews",
+    "description": "Link in the menu to a list of PREreviews that you’ve written."
   },
   "menuMyReviewRequests": {
     "message": "My review requests",
     "description": "Link in the menu to a list of review requests that you’ve made."
   },
   "menuLogOut": {
-    "message": "Log out"
+    "message": "Log out",
+    "description": "Text of the link to log out of your account."
   },
   "menuLogIn": {
-    "message": "Log in"
+    "message": "Log in",
+    "description": "Text of the link to log in to your account."
   },
   "menuLogInDemoUser": {
     "message": "Log in as a demo user",
     "description": "Link that logs you in as a special user for demonstration purposes."
   },
   "menuReviews": {
-    "message": "Reviews"
+    "message": "Reviews",
+    "description": "Link in the menu to a list of PREreviews that have been published."
   },
   "menuReviewsHint": {
-    "message": "See preprints with a PREreview."
+    "message": "See preprints with a PREreview.",
+    "description": "Text that accompanies the “Reviews” link in the menu."
   },
   "menuRequests": {
-    "message": "Requests"
+    "message": "Requests",
+    "description": "Link in the menu to a list of review requests that have been published."
   },
   "menuRequestsHint": {
-    "message": "Help an author by reviewing their preprint."
+    "message": "Help an author by reviewing their preprint.",
+    "description": "Text that accompanies the “Requests” link in the menu."
   },
   "menuTrainings": {
-    "message": "Trainings"
+    "message": "Trainings",
+    "description": "Link in the menu to a list of peer review training workshops that PREreview offers."
   },
   "menuTrainingsHint": {
-    "message": "Learn about ethical and constructive peer review."
+    "message": "Learn about ethical and constructive peer review.",
+    "description": "Text that accompanies the “Trainings” link in the menu."
   },
   "menuChampions": {
     "message": "Champions Program",
@@ -76,22 +96,27 @@
     "description": "Text that accompanies the link in the menu to the Champions Program page."
   },
   "menuLiveReviews": {
-    "message": "Live Reviews"
+    "message": "Live Reviews",
+    "description": "Link in the menu to a list of Live Reviews that PREreview runs."
   },
   "menuResources": {
-    "message": "Resources"
+    "message": "Resources",
+    "description": "Link in the menu to a list of resources that PREreview has published."
   },
   "menuStatistics": {
     "message": "Statistics",
     "description": "Link in the menu to statistics pages, e.g. the number of PREreviews published."
   },
   "menuClubs": {
-    "message": "Clubs"
+    "message": "Clubs",
+    "description": "Link in the menu to a list of PREreview Clubs."
   },
   "menuClubsHint": {
-    "message": "Connect with like-minded peers."
+    "message": "Connect with like-minded peers.",
+    "description": "Text that accompanies the “Clubs” link in the menu."
   },
   "onlyEnglish": {
-    "message": "This page is only available in English."
+    "message": "This page is only available in English.",
+    "description": "Text that appears when a page is only available in English."
   }
 }
