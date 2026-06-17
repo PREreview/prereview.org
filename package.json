@@ -64,7 +64,7 @@
     "@effect/vitest": "^0.29.0",
     "@eslint/js": "^10.0.1",
     "@fast-check/vitest": "^0.4.1",
-    "@ibm/plex-mono": "^1.1.0",
+    "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
     "@ibm/plex-sans-arabic": "^1.1.0",
     "@playwright/test": "^1.58.2",

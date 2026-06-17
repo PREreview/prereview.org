@@ -180,8 +180,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1(vitest@4.1.8(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.0.16(@types/node@24.13.2)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       '@ibm/plex-mono':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^2.5.0
+        version: 2.5.0
       '@ibm/plex-sans':
         specifier: ^1.1.0
         version: 1.1.0
@@ -1252,8 +1252,8 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@ibm/plex-mono@1.1.0':
-    resolution: {integrity: sha512-hpsdRxR3BRJkC6wGM4MZcUFD6C8M+mmK76RtAy/hlsfPro9FzpXVdIWC+G3jeQOXof109dxlUvmeKxpeKUG68A==}
+  '@ibm/plex-mono@2.5.0':
+    resolution: {integrity: sha512-STBJIPxPomOYPmBMO7z5TKPJUotAF9u3gAUumTqVgwgrAO+K4FRNh0MlhsoJjKhJKsMbBJR10/bk4inkj/wc1w==}
 
   '@ibm/plex-sans-arabic@1.1.0':
     resolution: {integrity: sha512-u8wIS6szLAOFvlBjCFZmtpKIqbhuIuniG2N0J+sio8vV6INH58hP0t0QNYrSl9SZtCv2Fwb4oQGuZJY3kJ4+QA==}
@@ -6588,7 +6588,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@ibm/plex-mono@1.1.0':
+  '@ibm/plex-mono@2.5.0':
     dependencies:
       '@ibm/telemetry-js': 1.11.0
 
