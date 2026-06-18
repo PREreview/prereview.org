@@ -3,6 +3,7 @@ import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, pipe } from 'effect'
 import { Cli } from './Cli/index.ts'
 import { ContactEmailAddressIsUnavailable, GetContactEmailAddress } from './contact-email-address.ts'
+import { ContactEmailAddresses } from './ContactEmailAddresses/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
@@ -30,6 +31,7 @@ pipe(
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.succeed(GetContactEmailAddress, () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' })),
+        Layer.mock(ContactEmailAddresses, {}),
       ]),
       Layer.provide([
         Crossref.layer,

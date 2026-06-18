@@ -5,6 +5,7 @@ import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
+import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import { SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
@@ -308,6 +309,7 @@ export const Program = pipe(
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
     doesUserHaveAVerifiedEmailAddress,
     getContactEmailAddress,
+    ContactEmailAddresses.layer,
     saveContactEmailAddress,
     Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),
     Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser),

@@ -2,6 +2,7 @@ import { Context, Effect, Layer, Match, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import { GetContactEmailAddress } from '../contact-email-address.ts'
+import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type EmailAddress, type NonEmptyString, type OrcidId } from '../types/index.ts'
@@ -54,6 +55,7 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const orcidRecords = yield* OrcidRecords.OrcidRecords
     const getContactEmailAddress = yield* GetContactEmailAddress
+    yield* ContactEmailAddresses
 
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
 
