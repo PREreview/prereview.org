@@ -1,9 +1,12 @@
-import { Context, Layer, type Effect } from 'effect'
+import { Context, Effect, flow, Layer, Match } from 'effect'
 import {
+  ContactEmailAddressIsNotFound,
   ContactEmailAddressIsUnavailable,
   type ContactEmailAddress,
-  type ContactEmailAddressIsNotFound,
 } from '../contact-email-address.ts'
+import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import * as Keyv from '../keyv.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 
 export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
@@ -15,6 +18,30 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
   }
 >() {}
 
-export const layer = Layer.succeed(ContactEmailAddresses, {
-  getContactEmailAddress: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
-})
+export const layer = Layer.effect(
+  ContactEmailAddresses,
+  Effect.gen(function* () {
+    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
+
+    return {
+      getContactEmailAddress: Effect.fn('ContactEmailAddresses.getContactEmailAddress')(
+        function* (orcid) {
+          const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+          return yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
+            contactEmailAddressStore,
+            ...loggerEnv,
+          })
+        },
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('not-found', () => new ContactEmailAddressIsNotFound()),
+            Match.when('unavailable', () => new ContactEmailAddressIsUnavailable({})),
+            Match.exhaustive,
+          ),
+        ),
+      ),
+    }
+  }),
+)
