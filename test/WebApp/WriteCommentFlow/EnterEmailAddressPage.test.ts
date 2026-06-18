@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -57,8 +58,10 @@ describe('EnterEmailAddressPage', () => {
             }).pipe(
               Effect.provideService(Locale, locale),
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-              Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-                Effect.succeed(contactEmailAddress),
+              Effect.provide(
+                Layer.mock(ContactEmailAddresses, {
+                  getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
+                }),
               ),
               Effect.provideService(LoggedInUser, user),
             ),
@@ -93,8 +96,10 @@ describe('EnterEmailAddressPage', () => {
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
               Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
               Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-              Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-                Effect.succeed(contactEmailAddress),
+              Effect.provide(
+                Layer.mock(ContactEmailAddresses, {
+                  getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
+                }),
               ),
               Effect.provideService(LoggedInUser, user),
             ),
@@ -128,8 +133,10 @@ describe('EnterEmailAddressPage', () => {
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
               Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
               Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-              Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-                Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
+              Effect.provide(
+                Layer.mock(ContactEmailAddresses, {
+                  getContactEmailAddress: () => new ContactEmailAddress.ContactEmailAddressIsNotFound(),
+                }),
               ),
               Effect.provideService(LoggedInUser, user),
             ),
@@ -161,8 +168,10 @@ describe('EnterEmailAddressPage', () => {
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
               Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
               Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-              Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-                Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
+              Effect.provide(
+                Layer.mock(ContactEmailAddresses, {
+                  getContactEmailAddress: () => new ContactEmailAddress.ContactEmailAddressIsUnavailable({}),
+                }),
               ),
               Effect.provideService(LoggedInUser, user),
             ),
@@ -200,7 +209,7 @@ describe('EnterEmailAddressPage', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+            Effect.provide(Layer.mock(ContactEmailAddresses, {})),
             Effect.provideService(LoggedInUser, user),
           ),
       )
@@ -229,7 +238,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -257,7 +266,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -285,7 +294,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -310,7 +319,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -341,7 +350,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -366,7 +375,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -385,7 +394,7 @@ describe('EnterEmailAddressPage', () => {
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-      Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+      Effect.provide(Layer.mock(ContactEmailAddresses, {})),
     ),
   )
 })
