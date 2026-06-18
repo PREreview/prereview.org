@@ -1,9 +1,9 @@
 import postcssGlobalData from '@csstools/postcss-global-data'
+import postcssPurgecss from '@fullhuman/postcss-purgecss'
 import { globSync, mkdirSync, writeFileSync } from 'fs'
 import path from 'path'
 import postcssFontDisplay from 'postcss-font-display'
 import postcssPresetEnv from 'postcss-preset-env'
-import postcssPurgecss from 'postcss-purgecss'
 import postcssRtlCss from 'postcss-rtlcss'
 import { defineConfig, type Plugin } from 'vite'
 
