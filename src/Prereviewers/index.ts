@@ -1,7 +1,6 @@
 import { Context, Effect, Layer, Match, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
-import { GetContactEmailAddress } from '../contact-email-address.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Queries from '../Queries.ts'
@@ -54,8 +53,7 @@ export const layer = Layer.effect(
   Prereviewers,
   Effect.gen(function* () {
     const orcidRecords = yield* OrcidRecords.OrcidRecords
-    const getContactEmailAddress = yield* GetContactEmailAddress
-    yield* ContactEmailAddresses
+    const contactEmailAddresses = yield* ContactEmailAddresses
 
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
 
@@ -108,7 +106,7 @@ export const layer = Layer.effect(
       getContactDetails: Effect.fn('Prereviewers.getContactDetails')(
         function* (orcidId) {
           const { contactEmailAddress, name } = yield* Effect.all({
-            contactEmailAddress: getContactEmailAddress(orcidId),
+            contactEmailAddress: contactEmailAddresses.getContactEmailAddress(orcidId),
             name: orcidRecords.getName(orcidId),
           })
 
