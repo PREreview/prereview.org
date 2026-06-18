@@ -1,6 +1,7 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
-import * as ContactEmailAddress from '../../../contact-email-address.ts'
+import type * as ContactEmailAddress from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
@@ -21,7 +22,7 @@ export const NeedToVerifyEmailAddressPage = ({
   | Comments.GetComment
   | Comments.GetNextExpectedCommandForUserOnAComment
   | Comments.HandleCommentCommand
-  | ContactEmailAddress.GetContactEmailAddress
+  | ContactEmailAddresses
   | Locale
 > =>
   Effect.gen(function* () {
@@ -48,10 +49,10 @@ export const NeedToVerifyEmailAddressPage = ({
             return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
           }
 
-          const getContactEmailAddress = yield* ContactEmailAddress.GetContactEmailAddress
+          const contactEmailAddresses = yield* ContactEmailAddresses
 
           return yield* pipe(
-            getContactEmailAddress(comment.authorId),
+            contactEmailAddresses.getContactEmailAddress(comment.authorId),
             Effect.andThen(
               pipe(
                 Match.type<ContactEmailAddress.ContactEmailAddress>(),
