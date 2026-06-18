@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect, Either } from 'effect'
+import { Effect, Either, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -28,8 +29,8 @@ describe('VerifyEmailAddressPage', () => {
             const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
             >(_ => Effect.succeed(Either.right(nextCommand)))
-            const getContactEmailAddress = vi.fn<typeof ContactEmailAddress.GetContactEmailAddress.Service>(_ =>
-              Effect.succeed(contactEmailAddress),
+            const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses)['Service']['getContactEmailAddress']>(
+              _ => Effect.succeed(contactEmailAddress),
             )
             const saveContactEmailAddress = vi.fn<typeof ContactEmailAddress.SaveContactEmailAddress.Service>(
               _ => Effect.void,
@@ -43,7 +44,7 @@ describe('VerifyEmailAddressPage', () => {
                 Comments.GetNextExpectedCommandForUserOnAComment,
                 getNextExpectedCommandForUserOnAComment,
               ),
-              Effect.provideService(ContactEmailAddress.GetContactEmailAddress, getContactEmailAddress),
+              Effect.provide(Layer.mock(ContactEmailAddresses, { getContactEmailAddress })),
               Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, saveContactEmailAddress),
             )
 
@@ -91,8 +92,10 @@ describe('VerifyEmailAddressPage', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-              Effect.succeed(contactEmailAddress),
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
+              }),
             ),
             Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
           ),
@@ -124,8 +127,10 @@ describe('VerifyEmailAddressPage', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-              Effect.succeed(contactEmailAddress),
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
+              }),
             ),
           ),
       )
@@ -150,7 +155,11 @@ describe('VerifyEmailAddressPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () => Effect.succeed(contactEmailAddress)),
+          Effect.provide(
+            Layer.mock(ContactEmailAddresses, {
+              getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
+            }),
+          ),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
         ),
     )
@@ -161,8 +170,10 @@ describe('VerifyEmailAddressPage', () => {
       ([commentId, locale, user, token]) =>
         Effect.gen(function* () {
           const actual = yield* _.VerifyEmailAddress({ commentId, token }).pipe(
-            Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-              Effect.fail(new ContactEmailAddress.ContactEmailAddressIsNotFound()),
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => new ContactEmailAddress.ContactEmailAddressIsNotFound(),
+              }),
             ),
           )
 
@@ -197,7 +208,7 @@ describe('VerifyEmailAddressPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-        Effect.provideService(ContactEmailAddress.GetContactEmailAddress, shouldNotBeCalled),
+        Effect.provide(Layer.mock(ContactEmailAddresses, {})),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
       ),
   )

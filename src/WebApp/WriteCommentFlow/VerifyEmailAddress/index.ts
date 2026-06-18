@@ -1,6 +1,7 @@
 import { Effect } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
 import * as ContactEmailAddress from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
@@ -20,16 +21,16 @@ export const VerifyEmailAddress = ({
   Response.PageResponse | Response.FlashMessageResponse | Response.LogInResponse,
   never,
   | Comments.GetNextExpectedCommandForUserOnAComment
-  | ContactEmailAddress.GetContactEmailAddress
   | ContactEmailAddress.SaveContactEmailAddress
+  | ContactEmailAddresses
   | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
-    const getContactEmailAddress = yield* ContactEmailAddress.GetContactEmailAddress
+    const contactEmailAddresses = yield* ContactEmailAddresses
 
-    const contactEmailAddress = yield* getContactEmailAddress(user.orcid)
+    const contactEmailAddress = yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
 
     if (contactEmailAddress._tag === 'VerifiedContactEmailAddress' || contactEmailAddress.verificationToken !== token) {
       return yield* PageNotFound
