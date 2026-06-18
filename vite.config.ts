@@ -3,9 +3,9 @@ import { globSync, mkdirSync, writeFileSync } from 'fs'
 import path from 'path'
 import postcssFontDisplay from 'postcss-font-display'
 import postcssPresetEnv from 'postcss-preset-env'
+import postcssPurgecss from 'postcss-purgecss'
 import postcssRtlCss from 'postcss-rtlcss'
 import { defineConfig, type Plugin } from 'vite'
-import purgeCssPlugin from 'vite-plugin-purgecss'
 
 const imageEntries = globSync('assets/{illustrations,logos}/**/*.{png,svg}').reduce<Record<string, string>>(
   (files, file) => {
@@ -60,6 +60,13 @@ export default defineConfig(({ mode }) => ({
           rtlPrefix: ':where([dir="rtl"])',
           runOnExit: true,
         }),
+        // eslint-disable-next-line no-comments/disallowComments
+        // @ts-expect-error https://github.com/FullHuman/purgecss/issues/1263
+        postcssPurgecss({
+          content: [...globSync('assets/**/*.ts'), ...globSync('src/**/*.ts')],
+          safelist: ['contenteditable', /^crowdin_/, 'dir', /^jipt-/, /^:/],
+          variables: true,
+        }),
       ],
     },
   },
@@ -85,11 +92,6 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     cssCharsetPlugin(),
-    purgeCssPlugin({
-      content: [...globSync('assets/**/*.ts'), ...globSync('src/**/*.ts')],
-      safelist: ['contenteditable', /^crowdin_/, 'dir', /^jipt-/, /^:/],
-      variables: true,
-    }),
     prereviewManifestPlugin({
       outputPath: path.resolve('src', 'manifest.json'),
       entries,
