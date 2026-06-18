@@ -2,7 +2,6 @@ import { NodeContext, NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, pipe } from 'effect'
 import { Cli } from './Cli/index.ts'
-import { ContactEmailAddressIsUnavailable, GetContactEmailAddress } from './contact-email-address.ts'
 import { ContactEmailAddresses } from './ContactEmailAddresses/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
@@ -27,12 +26,7 @@ pipe(
         ReviewRequest.queriesLayer,
         ReviewRequest.commandsLayer,
       ),
-      Layer.provide([
-        LanguageDetection.layerCld,
-        OrcidRecords.layer,
-        Layer.succeed(GetContactEmailAddress, () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' })),
-        Layer.mock(ContactEmailAddresses, {}),
-      ]),
+      Layer.provide([LanguageDetection.layerCld, OrcidRecords.layer, Layer.mock(ContactEmailAddresses, {})]),
       Layer.provide([
         Crossref.layer,
         Datacite.layer,

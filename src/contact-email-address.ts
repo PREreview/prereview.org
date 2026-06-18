@@ -16,13 +16,6 @@ export class ContactEmailAddressIsUnavailable extends Data.TaggedError('ContactE
   cause?: unknown
 }> {}
 
-export class GetContactEmailAddress extends Context.Tag('GetContactEmailAddress')<
-  GetContactEmailAddress,
-  (
-    orcid: OrcidId,
-  ) => Effect.Effect<ContactEmailAddress, ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable>
->() {}
-
 export class SaveContactEmailAddress extends Context.Tag('SaveContactEmailAddress')<
   SaveContactEmailAddress,
   (orcid: OrcidId, ContactEmailAddress: ContactEmailAddress) => Effect.Effect<void, ContactEmailAddressIsUnavailable>

@@ -82,32 +82,6 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
   }),
 )
 
-const getContactEmailAddress = Layer.effect(
-  ContactEmailAddress.GetContactEmailAddress,
-  Effect.gen(function* () {
-    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
-
-    return Effect.fn(
-      function* (orcid) {
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
-          contactEmailAddressStore,
-          ...loggerEnv,
-        })
-      },
-      Effect.mapError(
-        flow(
-          Match.value,
-          Match.when('not-found', () => new ContactEmailAddress.ContactEmailAddressIsNotFound()),
-          Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
-          Match.exhaustive,
-        ),
-      ),
-    )
-  }),
-)
-
 const saveContactEmailAddress = Layer.effect(
   ContactEmailAddress.SaveContactEmailAddress,
   Effect.gen(function* () {
@@ -308,7 +282,6 @@ export const Program = pipe(
     OrcidRecords.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
     doesUserHaveAVerifiedEmailAddress,
-    getContactEmailAddress,
     ContactEmailAddresses.layer,
     saveContactEmailAddress,
     Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),
