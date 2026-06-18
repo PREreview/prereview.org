@@ -11,9 +11,15 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
 export class UnableToSendEmail extends Data.TaggedError('UnableToSendEmail')<{ cause?: unknown }> {}
 
 export class Email extends Schema.Class<Email>('Email')({
-  from: Schema.Struct({ name: Schema.NonEmptyTrimmedString, address: EmailAddress.EmailAddressSchema }),
-  to: Schema.Struct({ name: Schema.NonEmptyTrimmedString, address: EmailAddress.EmailAddressSchema }),
-  subject: Schema.NonEmptyTrimmedString,
-  text: Schema.NonEmptyTrimmedString,
+  from: Schema.Struct({
+    name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+    address: EmailAddress.EmailAddressSchema,
+  }),
+  to: Schema.Struct({
+    name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+    address: EmailAddress.EmailAddressSchema,
+  }),
+  subject: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+  text: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   html: HtmlSchema,
 }) {}
