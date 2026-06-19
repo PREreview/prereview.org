@@ -28,6 +28,15 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
       void,
       verifyContactEmailAddress.ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsUnavailable
     >
+    resendVerificationEmail: (args: {
+      orcidId: OrcidId
+      resumeAt?: `/${string}`
+    }) => Effect.Effect<
+      void,
+      | verifyContactEmailAddress.ContactEmailAddressHasAlreadyBeenVerified
+      | ContactEmailAddressIsNotFound
+      | ContactEmailAddressIsUnavailable
+    >
   }
 >() {}
 
@@ -57,6 +66,7 @@ export const layer = Layer.effect(
       ),
       verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
       startVerificationOfContactEmailAddress: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
+      resendVerificationEmail: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
     }
   }),
 )
