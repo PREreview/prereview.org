@@ -12,6 +12,10 @@ it.each<[_.Input, _.Result]>([
   ['//example.com@evil.com', '/my-details'],
   ['//example.com@evil.com/path', '/my-details'],
   ['/path/..//evil.com', '/my-details'],
+  ['/path?foo=bar#anchor', '/path?foo=bar'],
+  ['/?foo=bar', '/?foo=bar'],
+  ['///path', '/my-details'],
+  ['/path%20with%20spaces', '/path%20with%20spaces'],
 ])('%s', (redirectTo, expected) => {
   const actual = _.SanitizeRedirectTo(redirectTo)
 
