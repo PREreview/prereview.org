@@ -674,13 +674,6 @@ export const changeContactEmailAddressMatch = pipe(
   P.andThen(P.end),
 )
 
-export const verifyContactEmailAddressMatch = pipe(
-  P.lit('my-details'),
-  P.andThen(P.lit('change-email-address')),
-  P.andThen(query(C.struct({ verify: UuidC }))),
-  P.andThen(P.end),
-)
-
 export const profileMatch = pipe(P.lit('profiles'), P.andThen(type('profile', ProfileIdC)), P.andThen(P.end))
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.andThen(type('id', PreprintIdC)), P.andThen(P.end))

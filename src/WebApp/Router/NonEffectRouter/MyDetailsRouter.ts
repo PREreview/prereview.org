@@ -44,7 +44,6 @@ import {
   changeResearchInterestsVisibility,
   myDetails,
   removeAvatar,
-  verifyContactEmailAddress,
 } from '../../my-details-page/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
@@ -252,14 +251,6 @@ export const MyDetailsRouter = pipe(
             method: env.method,
             user: env.loggedInUser,
           }),
-      ),
-    ),
-    pipe(
-      Routes.verifyContactEmailAddressMatch.parser,
-      P.map(
-        ({ verify }) =>
-          (env: Env) =>
-            verifyContactEmailAddress({ locale: env.locale, user: env.loggedInUser, verify }),
       ),
     ),
   ],

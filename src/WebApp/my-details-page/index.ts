@@ -12,4 +12,3 @@ export { changeResearchInterestsVisibility } from './change-research-interests-v
 export { changeResearchInterests } from './change-research-interests.ts'
 export { myDetails } from './my-details.ts'
 export { removeAvatar } from './remove-avatar.ts'
-export { verifyContactEmailAddress } from './verify-contact-email-address.ts'
