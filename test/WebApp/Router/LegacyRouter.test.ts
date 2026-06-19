@@ -16,7 +16,10 @@ describe('LegacyRouter', () => {
   it.effect.each<[string, string]>([
     ['/10.1101/2020.08.27.270835', '/preprints/doi-10.1101-2020.08.27.270835'],
     ['/10.5281/zenodo.3733767', '/preprints/doi-10.5281-zenodo.3733767'],
-    ['/blog', 'https://content.prereview.org/'],
+    [
+      '/author-invite/0d062cd7-d41c-49b9-90ce-d8e1beb8687d/verify-email-address?verify=988349ad-ef61-46e4-860b-f6c0610ab56f',
+      '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fauthor-invite%2F0d062cd7-d41c-49b9-90ce-d8e1beb8687d%2Fcheck-your-prereview',
+    ],
     ['/blog?articles_format=grid', 'https://content.prereview.org/'],
     ['/clubs/hhmi-training-pilot', '/clubs/hhmi-training-program'],
     ['/coc', '/code-of-conduct'],
@@ -45,12 +48,20 @@ describe('LegacyRouter', () => {
       '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/review-type',
     ],
     [
+      '/preprints/doi-10.1101-2022.10.06.511170/write-a-prereview/verify-email-address?verify=988349ad-ef61-46e4-860b-f6c0610ab56f',
+      '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fpreprints%2Fdoi-10.1101-2022.10.06.511170%2Fwrite-a-prereview%2Fcheck-your-prereview',
+    ],
+    [
       '/preprints/doi-10.1590-a+b-c/write-a-prereview/already-written',
       '/preprints/doi-10.1590-a%2Bb-c/write-a-prereview/review-type',
     ],
     [
       '/preprints/philsci-22206/write-a-prereview/already-written',
       '/preprints/philsci-22206/write-a-prereview/review-type',
+    ],
+    [
+      '/preprints/philsci-22206/write-a-prereview/verify-email-address?verify=988349ad-ef61-46e4-860b-f6c0610ab56f',
+      '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fpreprints%2Fphilsci-22206%2Fwrite-a-prereview%2Fcheck-your-prereview',
     ],
     ['/prereview.org', '/'],
     ['/PREreview.org', '/'],

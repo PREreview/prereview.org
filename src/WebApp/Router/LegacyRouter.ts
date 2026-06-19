@@ -90,6 +90,19 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('/admin', showRemovedForNowMessage),
   MakeRoute('/api', showRemovedForNowMessage),
   MakeRoute('/api/*', showRemovedForNowMessage),
+  MakeQueryRoute('/author-invite/:id/verify-email-address', Schema.Struct({ verify: UuidSchema }), ({ verify }) =>
+    pipe(
+      HttpRouter.schemaParams(Schema.Struct({ id: UuidSchema })),
+      Effect.andThen(({ id }) =>
+        movedPermanently(
+          Routes.VerifyEmailAddress.href({
+            verificationToken: verify,
+            redirectTo: format(Routes.authorInviteCheckMatch.formatter, { id }) as `/${string}`,
+          }),
+        ),
+      ),
+    ),
+  ),
   MakeRoute('/blog', movedPermanently('https://content.prereview.org/')),
   MakeRoute('/clubs/hhmi-training-pilot', movedPermanently(Routes.ClubProfile.href({ id: 'hhmi-training-program' }))),
   MakeRoute('/coc', movedPermanently(Routes.CodeOfConduct)),
@@ -151,6 +164,22 @@ export const LegacyRouter = HttpRouter.fromIterable([
       HttpRouter.schemaParams(Schema.Struct({ id: PreprintIdSchema })),
       Effect.andThen(({ id }) => movedPermanently(format(Routes.writeReviewReviewTypeMatch.formatter, { id }))),
     ),
+  ),
+  MakeQueryRoute(
+    '/preprints/:id/write-a-prereview/verify-email-address',
+    Schema.Struct({ verify: UuidSchema }),
+    ({ verify }) =>
+      pipe(
+        HttpRouter.schemaParams(Schema.Struct({ id: PreprintIdSchema })),
+        Effect.andThen(({ id }) =>
+          movedPermanently(
+            Routes.VerifyEmailAddress.href({
+              verificationToken: verify,
+              redirectTo: format(Routes.writeReviewPublishMatch.formatter, { id }) as `/${string}`,
+            }),
+          ),
+        ),
+      ),
   ),
   MakeRoute('/prereview.org', movedPermanently(Routes.HomePage)),
   MakeRoute('/prereviewers', showRemovedForNowMessage),
