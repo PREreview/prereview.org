@@ -47,7 +47,6 @@ import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
-import * as Queries from './Queries.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
@@ -57,30 +56,6 @@ import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
-
-const doesUserHaveAVerifiedEmailAddress = Layer.effect(
-  Comments.DoesUserHaveAVerifiedEmailAddress,
-  Effect.gen(function* () {
-    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
-
-    return Effect.fn(
-      function* (orcid) {
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
-          contactEmailAddressStore,
-          ...loggerEnv,
-        })
-      },
-      Effect.map(contactEmailAddress => contactEmailAddress._tag === 'VerifiedContactEmailAddress'),
-      Effect.catchIf(
-        error => error === 'not-found',
-        () => Effect.succeed(false),
-      ),
-      Effect.orElseFail(() => new Queries.UnableToQuery({})),
-    )
-  }),
-)
 
 const saveContactEmailAddress = Layer.effect(
   ContactEmailAddress.SaveContactEmailAddress,
@@ -281,7 +256,6 @@ export const Program = pipe(
     OpenAlexWorks.layer,
     OrcidRecords.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
-    doesUserHaveAVerifiedEmailAddress,
     ContactEmailAddresses.layer,
     saveContactEmailAddress,
     Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),

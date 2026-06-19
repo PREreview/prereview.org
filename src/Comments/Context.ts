@@ -46,11 +46,6 @@ export interface InputForCommentZenodoRecord {
   readonly prereviewId: number
 }
 
-export class DoesUserHaveAVerifiedEmailAddress extends Context.Tag('DoesUserHaveAVerifiedEmailAddress')<
-  DoesUserHaveAVerifiedEmailAddress,
-  (orcid: OrcidId) => Effect.Effect<boolean, UnableToQuery>
->() {}
-
 export class PublishCommentOnZenodo extends Context.Tag('PublishCommentOnZenodo')<
   PublishCommentOnZenodo,
   (commentId: number) => Effect.Effect<void, UnableToPublishComment>
