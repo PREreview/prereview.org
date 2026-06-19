@@ -51,7 +51,6 @@ import {
   writeReviewStart,
   writeReviewUseOfAi,
   writeReviewUseOfAiSubmission,
-  writeReviewVerifyEmailAddress,
 } from '../../write-review/index.ts'
 import type { Env } from './index.ts'
 
@@ -383,19 +382,6 @@ export const WriteReviewRouter = pipe(
               locale: env.locale,
               method: env.method,
               user: env.loggedInUser,
-            }),
-      ),
-    ),
-    pipe(
-      Routes.writeReviewVerifyEmailAddressMatch.parser,
-      P.map(
-        ({ id, verify }) =>
-          (env: Env) =>
-            writeReviewVerifyEmailAddress({
-              id,
-              locale: env.locale,
-              user: env.loggedInUser,
-              verify,
             }),
       ),
     ),

@@ -22,7 +22,6 @@ import {
   authorInvitePersona,
   authorInvitePublished,
   authorInviteStart,
-  authorInviteVerifyEmailAddress,
 } from '../../author-invite-flow/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
@@ -73,14 +72,6 @@ export const AuthorInviteFlowRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             authorInviteNeedToVerifyEmailAddress({ id, locale: env.locale, user: env.loggedInUser }),
-      ),
-    ),
-    pipe(
-      Routes.authorInviteVerifyEmailAddressMatch.parser,
-      P.map(
-        ({ id, verify }) =>
-          (env: Env) =>
-            authorInviteVerifyEmailAddress({ id, locale: env.locale, user: env.loggedInUser, verify }),
       ),
     ),
     pipe(
@@ -176,7 +167,6 @@ export const AuthorInviteFlowRouter = pipe(
           EffectToFpts.toTaskEitherK(Email.verifyContactEmailAddressForInvitedAuthor, env.runtime),
           TE.mapLeft(() => 'unavailable' as const),
         ),
-        runtime: env.runtime,
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>

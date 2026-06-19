@@ -814,13 +814,6 @@ export const writeReviewNeedToVerifyEmailAddressMatch = pipe(
   P.andThen(P.end),
 )
 
-export const writeReviewVerifyEmailAddressMatch = pipe(
-  writeReviewBaseMatch,
-  P.andThen(P.lit('verify-email-address')),
-  P.andThen(query(C.struct({ verify: UuidC }))),
-  P.andThen(P.end),
-)
-
 export const writeReviewPublishMatch = pipe(
   writeReviewBaseMatch,
   P.andThen(P.lit('check-your-prereview')),
@@ -867,14 +860,6 @@ export const authorInviteNeedToVerifyEmailAddressMatch = pipe(
   P.lit('author-invite'),
   P.andThen(type('id', UuidC)),
   P.andThen(P.lit('verify-email-address')),
-  P.andThen(P.end),
-)
-
-export const authorInviteVerifyEmailAddressMatch = pipe(
-  P.lit('author-invite'),
-  P.andThen(type('id', UuidC)),
-  P.andThen(P.lit('verify-email-address')),
-  P.andThen(query(C.struct({ verify: UuidC }))),
   P.andThen(P.end),
 )
 
