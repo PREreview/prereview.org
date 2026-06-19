@@ -1,5 +1,4 @@
 import { Effect } from 'effect'
-import { format } from 'fp-ts-routing'
 import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
@@ -13,9 +12,11 @@ import { EmailAddress, type NonEmptyString } from '../../../types/index.ts'
 export const CreateEmail: (reviewRequest: {
   name: NonEmptyString.NonEmptyString
   emailAddress: UnverifiedContactEmailAddress
+  redirectTo: `/${string}`
 }) => Effect.Effect<Nodemailer.Email, never, Locale | PublicUrl> = Effect.fnUntraced(function* ({
   name,
   emailAddress,
+  redirectTo,
 }) {
   const locale = yield* Locale
 
@@ -23,7 +24,7 @@ export const CreateEmail: (reviewRequest: {
 
   const verificationUrl = yield* forRoute(Routes.VerifyEmailAddress, {
     verificationToken: emailAddress.verificationToken,
-    redirectTo: format(Routes.myDetailsMatch.formatter, {}) as `/${string}`,
+    redirectTo,
   })
 
   return {

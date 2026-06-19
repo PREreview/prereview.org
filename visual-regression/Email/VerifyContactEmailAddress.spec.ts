@@ -18,6 +18,7 @@ test('HTML looks right', async ({ page }) => {
           value: EmailAddress('jcarberry@example.com'),
           verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
         }),
+        redirectTo,
       }),
       [Layer.succeed(Locale, DefaultLocale), Layer.succeed(PublicUrl, new URL('http://example.com'))],
     ),
@@ -37,6 +38,7 @@ test('text looks right', { tag: '@text' }, async ({}) => {
           value: EmailAddress('jcarberry@example.com'),
           verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
         }),
+        redirectTo,
       }),
       [Layer.succeed(Locale, DefaultLocale), Layer.succeed(PublicUrl, new URL('http://example.com'))],
     ),
@@ -44,3 +46,5 @@ test('text looks right', { tag: '@text' }, async ({}) => {
 
   expect(`${email.text}\n`).toMatchSnapshot()
 })
+
+const redirectTo = '/my-details' as const

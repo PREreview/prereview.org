@@ -1,6 +1,7 @@
 import { NodeStream } from '@effect/platform-node'
 import { Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
+import { format } from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -483,7 +484,12 @@ export const MyDetailsRouter = pipe(
         },
         verifyContactEmailAddress: flow(
           EffectToFpts.toTaskEitherK(
-            (name, emailAddress) => Email.verifyContactEmailAddress({ name, emailAddress }),
+            (name, emailAddress) =>
+              Email.verifyContactEmailAddress({
+                name,
+                emailAddress,
+                redirectTo: format(Routes.myDetailsMatch.formatter, {}) as `/${string}`,
+              }),
             env.runtime,
           ),
           TE.mapLeft(() => 'unavailable' as const),
