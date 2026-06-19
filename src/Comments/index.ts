@@ -1,4 +1,5 @@
 import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Scope, Struct } from 'effect'
+import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../Events.ts'
 import * as EventStore from '../EventStore.ts'
 import { UnableToQuery } from '../Queries.ts'
@@ -6,7 +7,6 @@ import * as ReviewPage from '../WebApp/review-page/index.ts' // eslint-disable-l
 import {
   UnableToHandleCommand,
   type CreateRecordOnZenodoForComment,
-  type DoesUserHaveAVerifiedEmailAddress,
   type GetComment,
   type GetNextExpectedCommandForUser,
   type GetNextExpectedCommandForUserOnAComment,
@@ -147,7 +147,7 @@ export const ReactToCommentEvents: Layer.Layer<
   | EventStore.EventStore
   | GetComment
   | HandleCommentCommand
-  | DoesUserHaveAVerifiedEmailAddress
+  | ContactEmailAddresses
   | CreateRecordOnZenodoForComment
   | PublishCommentOnZenodo
   | ReviewPage.CommentsForReview

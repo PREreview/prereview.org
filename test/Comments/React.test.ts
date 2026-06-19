@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect, Either, pipe } from 'effect'
+import { Effect, Either, Layer, pipe } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
+import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../src/ContactEmailAddresses/index.ts'
 import * as Queries from '../../src/Queries.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
@@ -9,8 +11,12 @@ import { shouldNotBeCalled } from '../should-not-be-called.ts'
 describe('CheckIfUserHasAVerifiedEmailAddress', () => {
   it.effect.prop(
     'marks the email address as verified',
-    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })],
-    ([commentId, comment]) =>
+    [
+      fc.uuid(),
+      fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) }),
+      fc.verifiedContactEmailAddress(),
+    ],
+    ([commentId, comment, verifiedEmailAddress]) =>
       Effect.gen(function* () {
         const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
@@ -25,14 +31,21 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         )
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
+        Effect.provide(
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(verifiedEmailAddress) }),
+        ),
       ),
   )
 
   it.effect.prop(
     "when the comment can't be updated",
-    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) }), fc.commentError()],
-    ([commentId, comment, error]) =>
+    [
+      fc.uuid(),
+      fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) }),
+      fc.commentError(),
+      fc.verifiedContactEmailAddress(),
+    ],
+    ([commentId, comment, error, verifiedEmailAddress]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -43,14 +56,20 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
+        Effect.provide(
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(verifiedEmailAddress) }),
+        ),
       ),
   )
 
   it.effect.prop(
     "when there isn't a verified contact email address",
-    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })],
-    ([commentId, comment]) =>
+    [
+      fc.uuid(),
+      fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) }),
+      fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.unverifiedContactEmailAddress()),
+    ],
+    ([commentId, comment, emailAddress]) =>
       Effect.gen(function* () {
         yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -58,7 +77,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         )
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(false)),
+        Effect.provide(Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => emailAddress })),
       ),
   )
 
@@ -69,12 +88,16 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
-          Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => new Queries.UnableToQuery({})),
+          Effect.provide(
+            Layer.mock(ContactEmailAddresses, {
+              getContactEmailAddress: () => new ContactEmailAddressIsUnavailable({}),
+            }),
+          ),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
+        expect(actual).toStrictEqual(Either.left(new ContactEmailAddressIsUnavailable({})))
       }).pipe(Effect.provideService(Comments.GetComment, () => Effect.succeed(comment))),
   )
 
@@ -83,7 +106,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       const actual = yield* pipe(
         _.CheckIfUserHasAVerifiedEmailAddress(commentId),
         Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
-        Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, shouldNotBeCalled),
+        Effect.provide(Layer.mock(ContactEmailAddresses, {})),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
       )

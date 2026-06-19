@@ -1,9 +1,9 @@
 import { Effect, pipe } from 'effect'
+import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import type { Uuid } from '../types/index.ts'
 import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.ts'
 import {
   CreateRecordOnZenodoForComment,
-  DoesUserHaveAVerifiedEmailAddress,
   GetComment,
   HandleCommentCommand,
   type InputForCommentZenodoRecord,
@@ -18,11 +18,11 @@ type ToDo = unknown
 
 export const CheckIfUserHasAVerifiedEmailAddress = (
   commentId: Uuid.Uuid,
-): Effect.Effect<void, ToDo, GetComment | DoesUserHaveAVerifiedEmailAddress | HandleCommentCommand> =>
+): Effect.Effect<void, ToDo, GetComment | ContactEmailAddresses | HandleCommentCommand> =>
   Effect.gen(function* () {
     const getComment = yield* GetComment
     const handleCommand = yield* HandleCommentCommand
-    const doesUserHaveAVerifiedEmailAddress = yield* DoesUserHaveAVerifiedEmailAddress
+    const contactEmailAddresses = yield* ContactEmailAddresses
 
     const comment = yield* getComment(commentId)
 
@@ -30,7 +30,11 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
       return
     }
 
-    const userHasAVerifiedEmailAddress = yield* doesUserHaveAVerifiedEmailAddress(comment.authorId)
+    const userHasAVerifiedEmailAddress = yield* pipe(
+      contactEmailAddresses.getContactEmailAddress(comment.authorId),
+      Effect.andThen(emailAddress => emailAddress._tag === 'VerifiedContactEmailAddress'),
+      Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(false)),
+    )
 
     if (!userHasAVerifiedEmailAddress) {
       return
