@@ -1,6 +1,5 @@
 import { Effect } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
-import * as ContactEmailAddress from '../../../contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
@@ -20,28 +19,14 @@ export const VerifyEmailAddress = ({
 }): Effect.Effect<
   Response.PageResponse | Response.FlashMessageResponse | Response.LogInResponse,
   never,
-  | Comments.GetNextExpectedCommandForUserOnAComment
-  | ContactEmailAddress.SaveContactEmailAddress
-  | ContactEmailAddresses
-  | Locale
+  Comments.GetNextExpectedCommandForUserOnAComment | ContactEmailAddresses | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
 
     const contactEmailAddresses = yield* ContactEmailAddresses
 
-    const contactEmailAddress = yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
-
-    if (contactEmailAddress._tag === 'VerifiedContactEmailAddress' || contactEmailAddress.verificationToken !== token) {
-      return yield* PageNotFound
-    }
-
-    const saveContactEmailAddress = yield* ContactEmailAddress.SaveContactEmailAddress
-
-    yield* saveContactEmailAddress(
-      user.orcid,
-      new ContactEmailAddress.VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
-    )
+    yield* contactEmailAddresses.verifyContactEmailAddress({ orcid: user.orcid, verificationToken: token })
 
     const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
     const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
@@ -55,8 +40,10 @@ export const VerifyEmailAddress = ({
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
+      ContactEmailAddressHasAlreadyBeenVerified: () => PageNotFound,
       ContactEmailAddressIsNotFound: () => PageNotFound,
       ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+      VerificationTokenInvalid: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
