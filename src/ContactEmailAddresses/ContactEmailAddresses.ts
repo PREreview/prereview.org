@@ -1,14 +1,15 @@
-import { Context, Effect, flow, Layer, Match } from 'effect'
+import { Context, Effect, flow, Layer, Match, Scope } from 'effect'
 import {
   ContactEmailAddressIsNotFound,
   ContactEmailAddressIsUnavailable,
   type ContactEmailAddress,
 } from '../contact-email-address.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import type { Email } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
-import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as verifyContactEmailAddress from './VerifyContactEmailAddress.ts'
 
 export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
@@ -20,14 +21,9 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
     verifyContactEmailAddress: (
       args: verifyContactEmailAddress.Input,
     ) => Effect.Effect<void, verifyContactEmailAddress.Error>
-    startVerificationOfContactEmailAddress: (args: {
-      orcidId: OrcidId
-      emailAddress: EmailAddress
-      resumeAt?: `/${string}`
-    }) => Effect.Effect<
-      void,
-      verifyContactEmailAddress.ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsUnavailable
-    >
+    startVerificationOfContactEmailAddress: (
+      args: StartVerificationOfContactEmailAddress.Input,
+    ) => Effect.Effect<void, StartVerificationOfContactEmailAddress.Error>
     resendVerificationEmail: (args: {
       orcidId: OrcidId
       resumeAt?: `/${string}`
@@ -43,6 +39,8 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
 export const layer = Layer.effect(
   ContactEmailAddresses,
   Effect.gen(function* () {
+    const context = yield* Effect.andThen(Effect.context<Email.Email>(), Context.omit(Scope.Scope))
+
     const { contactEmailAddressStore } = yield* Keyv.KeyvStores
 
     return {
@@ -65,7 +63,10 @@ export const layer = Layer.effect(
         ),
       ),
       verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
-      startVerificationOfContactEmailAddress: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
+      startVerificationOfContactEmailAddress: flow(
+        StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress(contactEmailAddressStore),
+        Effect.provide(context),
+      ),
       resendVerificationEmail: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
     }
   }),

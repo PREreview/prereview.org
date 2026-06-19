@@ -268,7 +268,6 @@ export const Program = pipe(
     GhostPage.layer,
     CommunitySlack.layer,
     ZenodoRecords.layer,
-    Email.layer,
     Layer.effect(
       SessionStore,
       Effect.gen(function* () {
@@ -289,7 +288,7 @@ export const Program = pipe(
       }),
     ),
   ]),
-  Layer.provide(LanguageDetection.layerCld),
+  Layer.provide([Email.layer, LanguageDetection.layerCld]),
   Layer.provide([
     CoarNotify.layer,
     Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
