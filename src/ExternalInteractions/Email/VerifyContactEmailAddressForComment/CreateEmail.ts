@@ -24,7 +24,7 @@ export const CreateEmail: (details: {
 
   const verificationUrl = yield* forRoute(Routes.VerifyEmailAddress, {
     verificationToken: emailAddress.verificationToken,
-    redirectTo: Routes.WriteCommentCheck.href({ commentId: comment }),
+    redirectTo: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId: comment }),
   })
 
   return {
