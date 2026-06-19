@@ -1,4 +1,5 @@
 import { Effect } from 'effect'
+import { format } from 'fp-ts-routing'
 import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
@@ -20,8 +21,9 @@ export const CreateEmail: (reviewRequest: {
 
   const t = translate(locale, 'email')
 
-  const verificationUrl = yield* forRoute(Routes.verifyContactEmailAddressMatch.formatter, {
-    verify: emailAddress.verificationToken,
+  const verificationUrl = yield* forRoute(Routes.VerifyEmailAddress, {
+    verificationToken: emailAddress.verificationToken,
+    redirectTo: format(Routes.myDetailsMatch.formatter, {}) as `/${string}`,
   })
 
   return {
