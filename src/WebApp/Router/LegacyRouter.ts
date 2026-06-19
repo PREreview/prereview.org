@@ -187,6 +187,22 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('/settings/api', showRemovedForNowMessage),
   MakeRoute('/settings/drafts', showRemovedForNowMessage),
   MakeRoute('/signup', movedPermanently(Routes.LogIn)),
+  MakeQueryRoute(
+    '/write-a-comment/:commentId/verify-email-address',
+    Schema.Struct({ token: UuidSchema }),
+    ({ token }) =>
+      pipe(
+        HttpRouter.schemaParams(Schema.Struct({ commentId: UuidSchema })),
+        Effect.andThen(({ commentId }) =>
+          movedPermanently(
+            Routes.VerifyEmailAddress.href({
+              verificationToken: token,
+              redirectTo: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
+            }),
+          ),
+        ),
+      ),
+  ),
   MakeRoute('/)', movedPermanently(Routes.HomePage)),
   MakeRoute('/),', movedPermanently(Routes.HomePage)),
 ])

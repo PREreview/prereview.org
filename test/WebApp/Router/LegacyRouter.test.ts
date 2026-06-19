@@ -67,6 +67,10 @@ describe('LegacyRouter', () => {
     ['/PREreview.org', '/'],
     ['/reviews/new', '/review-a-preprint'],
     ['/signup', '/log-in'],
+    [
+      '/write-a-comment/0d062cd7-d41c-49b9-90ce-d8e1beb8687d/verify-email-address?token=988349ad-ef61-46e4-860b-f6c0610ab56f',
+      '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fwrite-a-comment%2F0d062cd7-d41c-49b9-90ce-d8e1beb8687d%2Fneed-to-verify-email-address',
+    ],
     ['/)', '/'],
     ['/),', '/'],
   ])('redirects %s', ([path, expected]) =>

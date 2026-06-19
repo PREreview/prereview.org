@@ -461,7 +461,6 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
     ),
   ),
   MakeRoute('GET', Routes.WriteCommentNeedToVerifyEmailAddress, WriteCommentFlow.NeedToVerifyEmailAddressPage),
-  MakeRoute('GET', Routes.WriteCommentVerifyEmailAddress, WriteCommentFlow.VerifyEmailAddress),
   MakeRoute('GET', Routes.WriteCommentCheck, WriteCommentFlow.CheckPage),
   MakeRoute('POST', Routes.WriteCommentCheck, WriteCommentFlow.CheckPageSubmission),
   MakeRoute('GET', Routes.WriteCommentPublishing, WriteCommentFlow.PublishingPage),
