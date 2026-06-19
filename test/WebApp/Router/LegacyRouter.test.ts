@@ -33,6 +33,10 @@ describe('LegacyRouter', () => {
     ['/login', '/log-in'],
     ['/login?next=/10.1101/2020.03.24.004655', '/log-in'],
     ['/logout', '/log-out'],
+    [
+      '/my-details/change-email-address?verify=4a4316a0-6a9c-463e-9297-fbc49ec0a5e5',
+      '/verify-email-address?verificationToken=4a4316a0-6a9c-463e-9297-fbc49ec0a5e5',
+    ],
     ['/preprint-journal-clubs', '/live-reviews'],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
     ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],

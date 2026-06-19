@@ -1,4 +1,4 @@
-import { HttpRouter } from '@effect/platform'
+import { HttpRouter, HttpServerError, HttpServerRequest } from '@effect/platform'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
@@ -7,6 +7,7 @@ import * as Preprints from '../../Preprints/index.ts'
 import { ArxivPreprintId, BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../../Preprints/index.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import { UuidSchema } from '../../types/Uuid.ts'
 import * as Response from '../Response/index.ts'
 import { RedirectResponse } from '../Response/index.ts'
 import { removedForNowPage } from './RemovedForNowPage.ts'
@@ -14,6 +15,24 @@ import { removedPermanentlyPage } from './RemovedPermanentlyPage.ts'
 
 const MakeRoute = <E, R>(path: `/${string}`, response: Effect.Effect<Response.Response, E, R>) =>
   HttpRouter.makeRoute('*', path, Effect.andThen(response, Response.toHttpServerResponse))
+
+const MakeQueryRoute = <A, I extends { readonly [K in keyof I]: string | ReadonlyArray<string> | undefined }, E, R>(
+  path: `/${string}`,
+  schema: Schema.Schema<A, I>,
+  response: (a: A) => Effect.Effect<Response.Response, E, R>,
+) =>
+  HttpRouter.makeRoute(
+    '*',
+    path,
+    pipe(
+      HttpServerRequest.schemaSearchParams(schema),
+      Effect.catchTag('ParseError', () =>
+        Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
+      ),
+      Effect.andThen(response),
+      Effect.andThen(Response.toHttpServerResponse),
+    ),
+  )
 
 const showRemovedPermanentlyMessage = Effect.andThen(Locale, removedPermanentlyPage)
 
@@ -109,6 +128,9 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeRoute('/login', movedPermanently(Routes.LogIn)),
   MakeRoute('/logout', movedPermanently(Routes.LogOut)),
+  MakeQueryRoute('/my-details/change-email-address', Schema.Struct({ verify: UuidSchema }), ({ verify }) =>
+    movedPermanently(Routes.VerifyEmailAddress.href({ verificationToken: verify })),
+  ),
   MakeRoute('/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
   MakeRoute(
     '/preprints/arxiv-:id',
