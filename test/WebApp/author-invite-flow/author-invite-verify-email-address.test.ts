@@ -1,13 +1,14 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
+import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/ContactEmailAddresses.ts'
 import {
-  VerifiedContactEmailAddress,
-  type GetContactEmailAddressEnv,
-  type SaveContactEmailAddressEnv,
-} from '../../../src/contact-email-address.ts'
+  ContactEmailAddressHasAlreadyBeenVerified,
+  VerificationTokenInvalid,
+} from '../../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -38,22 +39,17 @@ describe('authorInviteVerifyEmailAddress', () => {
               title: fc.html(),
             }),
           }),
-          fc
-            .unverifiedContactEmailAddress()
-            .map(contactEmailAddress => [contactEmailAddress, contactEmailAddress.verificationToken] as const),
+          fc.uuid(),
         ],
-        ([inviteId, [user, invite], locale, prereview, [contactEmailAddress, verifyToken]]) =>
+        ([inviteId, [user, invite], locale, prereview, verifyToken]) =>
           Effect.gen(function* () {
-            const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
-              TE.right(undefined),
-            )
+            const runtime = yield* Effect.runtime<ContactEmailAddresses>()
 
             const actual = yield* Effect.promise(
               _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
                 getAuthorInvite: () => TE.right(invite),
-                getContactEmailAddress: () => TE.right(contactEmailAddress),
                 getPrereview: () => TE.right(prereview),
-                saveContactEmailAddress,
+                runtime,
               }),
             )
 
@@ -62,11 +58,7 @@ describe('authorInviteVerifyEmailAddress', () => {
               location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
               message: 'contact-email-verified',
             })
-            expect(saveContactEmailAddress).toHaveBeenCalledWith(
-              user.orcid,
-              new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
-            )
-          }),
+          }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, { verifyContactEmailAddress: () => Effect.void }))),
       )
 
       it.effect.prop(
@@ -83,18 +75,17 @@ describe('authorInviteVerifyEmailAddress', () => {
               title: fc.html(),
             }),
           }),
-          fc
-            .tuple(fc.unverifiedContactEmailAddress(), fc.uuid())
-            .filter(([contactEmailAddress, verifyToken]) => contactEmailAddress.verificationToken !== verifyToken),
+          fc.uuid(),
         ],
-        ([inviteId, [user, invite], locale, prereview, [contactEmailAddress, verifyToken]]) =>
+        ([inviteId, [user, invite], locale, prereview, verifyToken]) =>
           Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
             const actual = yield* Effect.promise(
               _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
                 getAuthorInvite: () => TE.right(invite),
-                getContactEmailAddress: () => TE.right(contactEmailAddress),
                 getPrereview: () => TE.right(prereview),
-                saveContactEmailAddress: shouldNotBeCalled,
+                runtime,
               }),
             )
 
@@ -106,7 +97,11 @@ describe('authorInviteVerifyEmailAddress', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, { verifyContactEmailAddress: () => new VerificationTokenInvalid() }),
+            ),
+          ),
       )
 
       it.effect.prop(
@@ -123,22 +118,17 @@ describe('authorInviteVerifyEmailAddress', () => {
               title: fc.html(),
             }),
           }),
-          fc
-            .unverifiedContactEmailAddress()
-            .map(contactEmailAddress => [contactEmailAddress, contactEmailAddress.verificationToken] as const),
+          fc.uuid(),
         ],
-        ([inviteId, [user, invite], locale, prereview, [contactEmailAddress, verifyToken]]) =>
+        ([inviteId, [user, invite], locale, prereview, verifyToken]) =>
           Effect.gen(function* () {
-            const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
-              TE.left('unavailable'),
-            )
+            const runtime = yield* Effect.runtime<ContactEmailAddresses>()
 
             const actual = yield* Effect.promise(
               _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
                 getAuthorInvite: () => TE.right(invite),
-                getContactEmailAddress: () => TE.right(contactEmailAddress),
                 getPrereview: () => TE.right(prereview),
-                saveContactEmailAddress,
+                runtime,
               }),
             )
 
@@ -150,11 +140,13 @@ describe('authorInviteVerifyEmailAddress', () => {
               skipToLabel: 'main',
               js: [],
             })
-            expect(saveContactEmailAddress).toHaveBeenCalledWith(
-              user.orcid,
-              new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
-            )
-          }),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, {
+                verifyContactEmailAddress: () => new ContactEmailAddressIsUnavailable({}),
+              }),
+            ),
+          ),
       )
     })
 
@@ -173,20 +165,16 @@ describe('authorInviteVerifyEmailAddress', () => {
             title: fc.html(),
           }),
         }),
-        fc.verifiedContactEmailAddress(),
       ],
-      ([inviteId, [user, invite], locale, verifyToken, prereview, contactEmailAddress]) =>
+      ([inviteId, [user, invite], locale, verifyToken, prereview]) =>
         Effect.gen(function* () {
-          const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
-            TE.right(contactEmailAddress),
-          )
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress,
               getPrereview: () => TE.right(prereview),
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -198,8 +186,13 @@ describe('authorInviteVerifyEmailAddress', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
-        }),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(ContactEmailAddresses, {
+              verifyContactEmailAddress: () => new ContactEmailAddressHasAlreadyBeenVerified(),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -220,16 +213,13 @@ describe('authorInviteVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, verifyToken, prereview]) =>
         Effect.gen(function* () {
-          const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
-            TE.left('not-found'),
-          )
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress,
               getPrereview: () => TE.right(prereview),
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -241,8 +231,13 @@ describe('authorInviteVerifyEmailAddress', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
-        }),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(ContactEmailAddresses, {
+              verifyContactEmailAddress: () => new ContactEmailAddressIsNotFound(),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -259,12 +254,13 @@ describe('authorInviteVerifyEmailAddress', () => {
         Effect.gen(function* () {
           const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.left('unavailable'))
 
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -277,7 +273,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             js: [],
           })
           expect(getPrereview).toHaveBeenCalledWith(invite.review)
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -287,12 +283,13 @@ describe('authorInviteVerifyEmailAddress', () => {
         Effect.gen(function* () {
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.left('unavailable'))
 
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite,
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -305,7 +302,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             js: [],
           })
           expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -320,12 +317,13 @@ describe('authorInviteVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, verifyToken]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -334,7 +332,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -349,12 +347,13 @@ describe('authorInviteVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, verifyToken]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -366,7 +365,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -374,12 +373,13 @@ describe('authorInviteVerifyEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.uuid(), fc.openAuthorInvite()],
       ([inviteId, user, locale, verifyToken, invite]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -388,7 +388,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInviteMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -396,12 +396,13 @@ describe('authorInviteVerifyEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.uuid(), fc.declinedAuthorInvite()],
       ([inviteId, user, locale, verifyToken, invite]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -410,7 +411,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -420,12 +421,13 @@ describe('authorInviteVerifyEmailAddress', () => {
         Effect.gen(function* () {
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.left('not-found'))
 
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
               getAuthorInvite,
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -438,7 +440,7 @@ describe('authorInviteVerifyEmailAddress', () => {
             js: [],
           })
           expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
   })
 
@@ -447,12 +449,13 @@ describe('authorInviteVerifyEmailAddress', () => {
     [fc.uuid(), fc.supportedLocale(), fc.uuid(), fc.authorInvite()],
     ([inviteId, locale, verifyToken, invite]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
         const actual = yield* Effect.promise(
           _.authorInviteVerifyEmailAddress({ id: inviteId, locale, verify: verifyToken })({
             getAuthorInvite: () => TE.right(invite),
-            getContactEmailAddress: shouldNotBeCalled,
             getPrereview: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -460,6 +463,6 @@ describe('authorInviteVerifyEmailAddress', () => {
           _tag: 'LogInResponse',
           location: format(authorInviteVerifyEmailAddressMatch.formatter, { id: inviteId, verify: verifyToken }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
   )
 })

@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,16 +6,10 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
-import {
-  type GetContactEmailAddressEnv,
-  type SaveContactEmailAddressEnv,
-  VerifiedContactEmailAddress,
-  getContactEmailAddress,
-  isUnverified,
-  saveContactEmailAddress,
-} from '../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
 import type { Html } from '../../html.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -53,7 +47,7 @@ export const authorInviteVerifyEmailAddress = ({
   user?: User
   verify: Uuid
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveContactEmailAddressEnv,
+  GetPrereviewEnv & GetAuthorInviteEnv & EffectToFpts.EffectEnv<ContactEmailAddresses>,
   FlashMessageResponse | LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
@@ -75,18 +69,13 @@ export const authorInviteVerifyEmailAddress = ({
       ),
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
-    RTE.bindW('contactEmailAddress', ({ user }) =>
-      pipe(
-        getContactEmailAddress(user.orcid),
-        RTE.filterOrElseW(isUnverified, () => 'already-verified' as const),
-        RTE.filterOrElseW(
-          contactEmailAddress => contactEmailAddress.verificationToken === verify,
-          () => 'invalid-token' as const,
-        ),
+    RTE.chainFirstW(
+      EffectToFpts.toReaderTaskEitherK(
+        Effect.fnUntraced(function* (input) {
+          const contactEmailAddresses = yield* ContactEmailAddresses
+          yield* contactEmailAddresses.verifyContactEmailAddress({ orcid: input.user.orcid, verificationToken: verify })
+        }),
       ),
-    ),
-    RTE.chainFirstW(({ contactEmailAddress, user }) =>
-      saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: contactEmailAddress.value })),
     ),
     RTE.matchW(
       error =>
@@ -95,14 +84,18 @@ export const authorInviteVerifyEmailAddress = ({
             RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
           )
           .with('already-verified', () => pageNotFound(locale))
+          .with({ _tag: 'ContactEmailAddressHasAlreadyBeenVerified' }, () => pageNotFound(locale))
           .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('invalid-token', () => pageNotFound(locale))
+          .with({ _tag: 'VerificationTokenInvalid' }, () => pageNotFound(locale))
           .with('no-session', () =>
             LogInResponse({ location: format(authorInviteVerifyEmailAddressMatch.formatter, { id, verify }) }),
           )
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound(locale))
+          .with({ _tag: 'ContactEmailAddressIsNotFound' }, () => pageNotFound(locale))
           .with('unavailable', () => havingProblemsPage(locale))
+          .with({ _tag: 'ContactEmailAddressIsUnavailable' }, () => havingProblemsPage(locale))
           .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       () =>

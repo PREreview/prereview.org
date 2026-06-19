@@ -176,6 +176,7 @@ export const AuthorInviteFlowRouter = pipe(
           EffectToFpts.toTaskEitherK(Email.verifyContactEmailAddressForInvitedAuthor, env.runtime),
           TE.mapLeft(() => 'unavailable' as const),
         ),
+        runtime: env.runtime,
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
