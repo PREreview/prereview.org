@@ -443,12 +443,6 @@ export const WriteCommentNeedToVerifyEmailAddress = Route({
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
 })
 
-export const WriteCommentVerifyEmailAddress = Route({
-  path: '/write-a-comment/:commentId/verify-email-address',
-  href: params => `/write-a-comment/${params.commentId}/verify-email-address?token=${params.token}`,
-  schema: Schema.Struct({ commentId: Uuid.UuidSchema, token: Uuid.UuidSchema }),
-})
-
 export const WriteCommentCheck = Route({
   path: '/write-a-comment/:commentId/check-your-comment',
   href: params => `/write-a-comment/${params.commentId}/check-your-comment`,
