@@ -1,6 +1,12 @@
-import { Data, type Effect } from 'effect'
-import { type ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../contact-email-address.ts'
-import type * as Keyv from '../keyv.ts'
+import { Data, Effect } from 'effect'
+import {
+  ContactEmailAddressIsNotFound,
+  ContactEmailAddressIsUnavailable,
+  VerifiedContactEmailAddress,
+} from '../contact-email-address.ts'
+import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import * as Keyv from '../keyv.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 
@@ -22,5 +28,42 @@ export type Error =
   | ContactEmailAddressIsUnavailable
 
 export const VerifyContactEmailAddress: (
-  store: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
-) => (input: Input) => Effect.Effect<void, Error> = () => () => new ContactEmailAddressIsUnavailable({})
+  contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
+) => (input: Input) => Effect.Effect<void, Error> = contactEmailAddressStore =>
+  Effect.fn('ContactEmailAddresses.verifyContactEmailAddress')(
+    function* (input) {
+      const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+      const contactEmailAddress = yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(input.orcid), {
+        contactEmailAddressStore,
+        ...loggerEnv,
+      })
+
+      if (contactEmailAddress._tag === 'VerifiedContactEmailAddress') {
+        return yield* new ContactEmailAddressHasAlreadyBeenVerified()
+      }
+
+      if (contactEmailAddress.verificationToken !== input.verificationToken) {
+        return yield* new VerificationTokenInvalid()
+      }
+
+      yield* FptsToEffect.readerTaskEither(
+        Keyv.saveContactEmailAddress(
+          input.orcid,
+          new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
+        ),
+        {
+          contactEmailAddressStore,
+          ...loggerEnv,
+        },
+      )
+    },
+    Effect.catchIf(
+      error => error === 'not-found',
+      () => new ContactEmailAddressIsNotFound(),
+    ),
+    Effect.catchIf(
+      error => error === 'unavailable',
+      () => new ContactEmailAddressIsUnavailable({ cause: 'unknown' }),
+    ),
+  )
