@@ -22,9 +22,9 @@ export const CreateEmail: (details: {
 
   const t = translate(locale, 'email')
 
-  const verificationUrl = yield* forRoute(Routes.WriteCommentVerifyEmailAddress, {
-    commentId: comment,
-    token: emailAddress.verificationToken,
+  const verificationUrl = yield* forRoute(Routes.VerifyEmailAddress, {
+    verificationToken: emailAddress.verificationToken,
+    redirectTo: Routes.WriteCommentCheck.href({ commentId: comment }),
   })
 
   return {
