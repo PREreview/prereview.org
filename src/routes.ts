@@ -146,6 +146,14 @@ export const OrcidAuth = QueryRoute({
   ),
 })
 
+export const VerifyEmailAddress = QueryRoute({
+  path: '/verify-email-address',
+  schema: Schema.Struct({
+    verificationToken: Uuid.UuidSchema,
+    redirectTo: Schema.optional(Schema.TemplateLiteral('/', Schema.String)),
+  }),
+})
+
 export const ClubProfile = Route({
   path: '/clubs/:id',
   href: params => `/clubs/${Schema.encodeSync(ClubIdSchema)(params.id)}`,

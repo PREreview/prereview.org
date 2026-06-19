@@ -36,6 +36,7 @@ import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
 import { RobotsTxt } from '../RobotsTxt.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
+import { VerifyEmailAddress } from '../VerifyEmailAddress/index.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
@@ -535,7 +536,10 @@ export const Router = pipe(
   ]),
   HttpRouter.concat(
     pipe(
-      HttpRouter.fromIterable([MakeStaticRoute('GET', Routes.MyReviewRequests, MyReviewRequestsPage)]),
+      HttpRouter.fromIterable([
+        MakeStaticRoute('GET', Routes.MyReviewRequests, MyReviewRequestsPage),
+        MakeQueryRoute('GET', Routes.VerifyEmailAddress, VerifyEmailAddress),
+      ]),
       HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
     ),
   ),
