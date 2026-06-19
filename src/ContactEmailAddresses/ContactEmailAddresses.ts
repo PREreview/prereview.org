@@ -7,6 +7,7 @@ import {
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as verifyContactEmailAddress from './VerifyContactEmailAddress.ts'
 
@@ -19,6 +20,14 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
     verifyContactEmailAddress: (
       args: verifyContactEmailAddress.Input,
     ) => Effect.Effect<void, verifyContactEmailAddress.Error>
+    startVerificationOfContactEmailAddress: (args: {
+      orcidId: OrcidId
+      emailAddress: EmailAddress
+      resumeAt?: `/${string}`
+    }) => Effect.Effect<
+      void,
+      verifyContactEmailAddress.ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsUnavailable
+    >
   }
 >() {}
 
@@ -47,6 +56,7 @@ export const layer = Layer.effect(
         ),
       ),
       verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
+      startVerificationOfContactEmailAddress: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
     }
   }),
 )
