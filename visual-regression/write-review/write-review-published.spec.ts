@@ -3,6 +3,7 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import type { CompletedForm } from '../../src/WebApp/write-review/completed-form.ts'
 import { publishedPage } from '../../src/WebApp/write-review/published-page/published-page.ts'
@@ -74,9 +75,9 @@ test('content looks right when there are more authors', async ({ showPage }) => 
         ...form,
         moreAuthors: 'yes',
         otherAuthors: [
-          { name: NonEmptyString('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
-          { name: NonEmptyString('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
-          { name: NonEmptyString('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
+          { name: Name('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
+          { name: Name('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
+          { name: Name('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
         ],
       },
     },

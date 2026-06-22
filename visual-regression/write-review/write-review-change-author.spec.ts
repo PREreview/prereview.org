@@ -5,7 +5,7 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { changeAuthorForm } from '../../src/WebApp/write-review/change-author-page/change-author-form.ts'
 import { expect, test } from '../base.ts'
 
@@ -19,9 +19,9 @@ const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
   const response = changeAuthorForm({
-    author: { name: NonEmptyString('Josiah Carberry') },
+    author: { name: Name('Josiah Carberry') },
     form: {
-      name: E.right(NonEmptyString('Josiah Carberry')),
+      name: E.right(Name('Josiah Carberry')),
       emailAddress: E.right(EmailAddress('jcarberry@example.com')),
     },
     number: 1,
@@ -36,7 +36,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right when fields are missing', async ({ showPage }) => {
   const response = changeAuthorForm({
-    author: { name: NonEmptyString('Josiah Carberry') },
+    author: { name: Name('Josiah Carberry') },
     form: {
       name: E.left(missingE()),
       emailAddress: E.left(missingE()),
@@ -53,9 +53,9 @@ test('content looks right when fields are missing', async ({ showPage }) => {
 
 test('content looks right when fields are invalid', async ({ showPage }) => {
   const response = changeAuthorForm({
-    author: { name: NonEmptyString('Josiah Carberry') },
+    author: { name: Name('Josiah Carberry') },
     form: {
-      name: E.right(NonEmptyString('Josiah Carberry')),
+      name: E.right(Name('Josiah Carberry')),
       emailAddress: E.left(invalidE('not an email address')),
     },
     number: 1,

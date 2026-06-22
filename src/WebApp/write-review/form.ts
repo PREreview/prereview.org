@@ -29,6 +29,7 @@ import {
   writeReviewUseOfAiMatch,
 } from '../../routes.ts'
 import { EmailAddressC } from '../../types/EmailAddress.ts'
+import { NameC } from '../../types/Name.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 
@@ -227,7 +228,7 @@ export const FormC = pipe(
     }),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
-    otherAuthors: pipe(C.array(C.struct({ name: NonEmptyStringC, emailAddress: EmailAddressC })), C.readonly),
+    otherAuthors: pipe(C.array(C.struct({ name: NameC, emailAddress: EmailAddressC })), C.readonly),
     competingInterests: C.literal('yes', 'no'),
     competingInterestsDetails: NonEmptyStringC,
     conduct: C.literal('yes'),

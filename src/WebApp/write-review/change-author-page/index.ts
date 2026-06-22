@@ -11,8 +11,7 @@ import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
-import { NameC } from '../../../types/Name.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import { type Name, NameC } from '../../../types/Name.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
@@ -111,7 +110,7 @@ const handleChangeAuthorForm = ({
   user,
   locale,
 }: {
-  author: { name: NonEmptyString }
+  author: { name: Name }
   body: unknown
   form: Form
   number: number

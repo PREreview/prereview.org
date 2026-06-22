@@ -10,7 +10,7 @@ import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch } from '../../
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import type { Name } from '../../../types/Name.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
@@ -21,7 +21,7 @@ export function changeAuthorForm({
   preprint,
   locale,
 }: {
-  author: { name: NonEmptyString }
+  author: { name: Name }
   form: ChangeAuthorForm
   number: number
   preprint: PreprintTitle
@@ -126,7 +126,7 @@ export function changeAuthorForm({
 }
 
 export interface ChangeAuthorForm {
-  readonly name: E.Either<MissingE, NonEmptyString>
+  readonly name: E.Either<MissingE, Name>
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress>
 }
 

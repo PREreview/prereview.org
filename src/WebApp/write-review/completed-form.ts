@@ -3,6 +3,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { RawHtmlC } from '../../html.ts'
 import { EmailAddressC } from '../../types/EmailAddress.ts'
+import { NameC } from '../../types/Name.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
 import type { Form } from './form.ts'
 
@@ -30,7 +31,7 @@ export const CompletedFormC = pipe(
     C.sum('moreAuthors')({
       yes: C.struct({
         moreAuthors: C.literal('yes'),
-        otherAuthors: pipe(C.array(C.struct({ name: NonEmptyStringC, emailAddress: EmailAddressC })), C.readonly),
+        otherAuthors: pipe(C.array(C.struct({ name: NameC, emailAddress: EmailAddressC })), C.readonly),
       }),
       'yes-private': C.struct({
         moreAuthors: C.literal('yes-private'),

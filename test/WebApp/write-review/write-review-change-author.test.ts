@@ -20,7 +20,7 @@ describe('writeReviewChangeAuthor', () => {
         fc.preprintTitle(),
         fc.user(),
         fc.supportedLocale(),
-        fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
+        fc.record({ name: fc.name(), emailAddress: fc.emailAddress() }),
         fc
           .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
           .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),

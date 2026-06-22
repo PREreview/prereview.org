@@ -128,9 +128,9 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       persona: 'public',
       moreAuthors: 'yes',
       otherAuthors: [
-        { name: NonEmptyString('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
-        { name: NonEmptyString('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
-        { name: NonEmptyString('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
+        { name: Name('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
+        { name: Name('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
+        { name: Name('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
       ],
       generativeAiIdeas: 'no',
       competingInterests: 'no',

@@ -183,7 +183,7 @@ export const personaType = (): fc.Arbitrary<Required<Form>['persona']> => fc.con
 
 export const otherAuthors = ({ minLength }: { minLength?: number } = {}): fc.Arbitrary<
   Required<Form>['otherAuthors']
-> => fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }), { minLength })
+> => fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() }), { minLength })
 
 export const generativeAiIdeas = (): fc.Arbitrary<Required<Form>['generativeAiIdeas']> => fc.constantFrom('yes', 'no')
 
