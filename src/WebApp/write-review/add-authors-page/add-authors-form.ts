@@ -12,7 +12,7 @@ import {
 } from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import type { Name } from '../../../types/Name.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
@@ -21,7 +21,7 @@ export function addAuthorsForm({
   preprint,
   locale,
 }: {
-  authors: Array.NonEmptyReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
+  authors: Array.NonEmptyReadonlyArray<{ name: Name; emailAddress: EmailAddress }>
   preprint: PreprintTitle
   locale: SupportedLocale
 }) {

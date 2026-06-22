@@ -10,6 +10,7 @@ import { authorInviteDeclineMatch, profileMatch } from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { renderDate } from '../../../time.ts'
 import { ProfileId } from '../../../types/index.ts'
+import type { Name } from '../../../types/Name.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
@@ -167,7 +168,7 @@ export const declinePage = ({
     allowRobots: false,
   })
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
+function displayAuthor({ name, orcid }: { name: Name; orcid?: OrcidId }) {
   if (orcid) {
     return html`<a
       href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"

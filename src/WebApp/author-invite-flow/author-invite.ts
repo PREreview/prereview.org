@@ -20,6 +20,7 @@ import {
 } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
+import type { Name } from '../../types/Name.ts'
 import { type OrcidId, OrcidIdEquivalence } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
 import type { Uuid } from '../../types/Uuid.ts'
@@ -240,7 +241,7 @@ function startPage({
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
+function displayAuthor({ name, orcid }: { name: Name; orcid?: OrcidId }) {
   if (orcid) {
     return html`<a
       href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"

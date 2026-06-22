@@ -5,7 +5,7 @@ import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { Uuid } from '../../../types/index.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import type { Name } from '../../../types/Name.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const CheckInvitationsToAppearPage = ({
@@ -14,7 +14,7 @@ export const CheckInvitationsToAppearPage = ({
   locale,
 }: {
   datasetReviewId: Uuid.Uuid
-  authors: Array.NonEmptyReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress; invitationId: Uuid.Uuid }>
+  authors: Array.NonEmptyReadonlyArray<{ name: Name; emailAddress: EmailAddress; invitationId: Uuid.Uuid }>
   locale: SupportedLocale
 }) => {
   const t = translate(locale, 'review-a-dataset-flow')

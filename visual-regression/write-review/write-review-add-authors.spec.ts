@@ -3,7 +3,7 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { addAuthorsForm } from '../../src/WebApp/write-review/add-authors-page/add-authors-form.ts'
 import { expect, test } from '../base.ts'
 
@@ -17,7 +17,7 @@ const locale = DefaultLocale
 
 test('content looks right when there is another author', async ({ showPage }) => {
   const response = addAuthorsForm({
-    authors: [{ name: NonEmptyString('Josiah Carberry'), emailAddress: EmailAddress('jcarberry@example.com') }],
+    authors: [{ name: Name('Josiah Carberry'), emailAddress: EmailAddress('jcarberry@example.com') }],
     preprint,
     locale,
   })
@@ -30,10 +30,10 @@ test('content looks right when there is another author', async ({ showPage }) =>
 test('content looks right when there are other authors', async ({ showPage }) => {
   const response = addAuthorsForm({
     authors: [
-      { name: NonEmptyString('Josiah Carberry'), emailAddress: EmailAddress('jcarberry@example.com') },
-      { name: NonEmptyString('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
-      { name: NonEmptyString('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
-      { name: NonEmptyString('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
+      { name: Name('Josiah Carberry'), emailAddress: EmailAddress('jcarberry@example.com') },
+      { name: Name('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
+      { name: Name('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
+      { name: Name('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
     ],
     preprint,
     locale,

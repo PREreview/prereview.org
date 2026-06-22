@@ -4,7 +4,7 @@ import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
-import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import type { Name, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export type PublishedReviewRequest = PublishedPrereviewerReviewRequest | PublishedReceivedReviewRequest
@@ -17,7 +17,7 @@ export class PublishedPrereviewerReviewRequest extends Data.TaggedClass('Publish
 }> {}
 
 export class PublishedReceivedReviewRequest extends Data.TaggedClass('PublishedReceivedReviewRequest')<{
-  author: Option.Option<{ name: NonEmptyString.NonEmptyString }>
+  author: Option.Option<{ name: Name.Name }>
   preprintId: Preprints.IndeterminatePreprintId
   id: Uuid.Uuid
   published: Temporal.Instant

@@ -512,7 +512,7 @@ export const addAuthorToRecordOnZenodo = (
   )
 
 interface CommentToPublish {
-  author: { name: NonEmptyString; orcid?: OrcidId }
+  author: { name: Name; orcid?: OrcidId }
   comment: Html
   prereview: {
     doi: Doi

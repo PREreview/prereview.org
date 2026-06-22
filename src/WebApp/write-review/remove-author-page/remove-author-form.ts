@@ -9,7 +9,7 @@ import type { PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import type { Name } from '../../../types/Name.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
@@ -20,7 +20,7 @@ export function removeAuthorForm({
   preprint,
   locale,
 }: {
-  author: { name: NonEmptyString }
+  author: { name: Name }
   form: RemoveAuthorForm
   number: number
   preprint: PreprintTitle
@@ -112,7 +112,7 @@ export interface RemoveAuthorForm {
   readonly removeAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 
-const toErrorItems = (locale: SupportedLocale, authorName: string) => (form: RemoveAuthorForm) => html`
+const toErrorItems = (locale: SupportedLocale, authorName: Name) => (form: RemoveAuthorForm) => html`
   ${E.isLeft(form.removeAuthor)
     ? html`
         <li>

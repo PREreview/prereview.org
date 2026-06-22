@@ -4,7 +4,7 @@ import { missingE } from '../../src/form.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { removeAuthorForm } from '../../src/WebApp/write-review/remove-author-page/remove-author-form.ts'
 import { expect, test } from '../base.ts'
 
@@ -18,7 +18,7 @@ const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
   const response = removeAuthorForm({
-    author: { name: NonEmptyString('Josiah Carberry') },
+    author: { name: Name('Josiah Carberry') },
     form: { removeAuthor: E.right(undefined) },
     number: 1,
     preprint,
@@ -32,7 +32,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right when fields are missing', async ({ showPage }) => {
   const response = removeAuthorForm({
-    author: { name: NonEmptyString('Josiah Carberry') },
+    author: { name: Name('Josiah Carberry') },
     form: { removeAuthor: E.left(missingE()) },
     number: 1,
     preprint,

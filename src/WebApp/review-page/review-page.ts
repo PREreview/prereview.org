@@ -10,6 +10,7 @@ import * as Routes from '../../routes.ts'
 import { preprintReviewsMatch, profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
+import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -281,7 +282,7 @@ export const createPage = ({
     canonical: format(reviewMatch.formatter, { id }),
   })
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
+function displayAuthor({ name, orcid }: { name: Name; orcid?: OrcidId }) {
   if (orcid) {
     return html`<a
       href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"

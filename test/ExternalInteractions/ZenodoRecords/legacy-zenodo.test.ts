@@ -3935,7 +3935,7 @@ describe('createCommentOnZenodo', () => {
     'when the comment can be created',
     [
       fc.record({
-        author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
+        author: fc.record({ name: fc.name(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
         comment: fc.html(),
         prereview: fc.prereview(),
       }),
@@ -4049,7 +4049,7 @@ ${comment.comment.toString()}`,
     'Zenodo is unavailable',
     [
       fc.record({
-        author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
+        author: fc.record({ name: fc.name(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
         comment: fc.html(),
         prereview: fc.prereview(),
       }),

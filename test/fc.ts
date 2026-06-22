@@ -1864,7 +1864,7 @@ export const publishedReceivedReviewRequest = (): fc.Arbitrary<ReviewRequests.Pu
   fc
     .record({
       _tag: constant('PublishedReceivedReviewRequest'),
-      author: maybe(fc.record({ name: nonEmptyString() })),
+      author: maybe(fc.record({ name: name() })),
       preprintId: indeterminatePreprintId(),
       id: uuid(),
       published: instant(),
@@ -1881,7 +1881,7 @@ export const receivedReviewRequest = (): fc.Arbitrary<ReviewRequests.ReceivedRev
   })
 
 export const reviewRequestToAcknowledge = (): fc.Arbitrary<ReviewRequests.ReviewRequestToAcknowledge> =>
-  fc.record({ requester: fc.record({ name: nonEmptyString(), emailAddress: emailAddress() }) })
+  fc.record({ requester: fc.record({ name: name(), emailAddress: emailAddress() }) })
 
 export const commentWasStarted = ({
   commentId,
