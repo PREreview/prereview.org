@@ -16,16 +16,12 @@ COPY patches/ patches/
 COPY package.json pnpm-lock.yaml ./
 
 #
-# Stage: intlc environment
+# Stage: intlc setup
 #
-FROM --platform=linux/amd64 debian:13.4-slim AS intlc-amd64
-ENV LANG=C.UTF-8
-ENV LC_ALL=C.UTF-8
+FROM scratch AS intlc-amd64
 ADD --chmod=+x https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-x86_64 /usr/local/bin/intlc
 
-FROM --platform=linux/arm64 debian:13.4-slim AS intlc-arm64
-ENV LANG=C.UTF-8
-ENV LC_ALL=C.UTF-8
+FROM scratch AS intlc-arm64
 ADD --chmod=+x https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-aarch64 /usr/local/bin/intlc
 
 FROM intlc-$BUILDARCH AS intlc
