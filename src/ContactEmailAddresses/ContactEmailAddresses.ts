@@ -4,10 +4,12 @@ import {
   ContactEmailAddressIsUnavailable,
   type ContactEmailAddress,
 } from '../contact-email-address.ts'
+import type { Locale } from '../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as verifyContactEmailAddress from './VerifyContactEmailAddress.ts'
@@ -23,7 +25,7 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
     ) => Effect.Effect<void, verifyContactEmailAddress.Error>
     startVerificationOfContactEmailAddress: (
       args: StartVerificationOfContactEmailAddress.Input,
-    ) => Effect.Effect<void, StartVerificationOfContactEmailAddress.Error>
+    ) => Effect.Effect<void, StartVerificationOfContactEmailAddress.Error, Locale>
     resendVerificationEmail: (args: {
       orcidId: OrcidId
       resumeAt?: `/${string}`
@@ -40,7 +42,7 @@ export const layer = Layer.effect(
   ContactEmailAddresses,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<Email.Email | OrcidRecords.OrcidRecords>(),
+      Effect.context<Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid>(),
       Context.omit(Scope.Scope),
     )
 

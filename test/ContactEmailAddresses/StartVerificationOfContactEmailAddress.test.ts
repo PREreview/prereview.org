@@ -2,11 +2,14 @@ import { expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Layer } from 'effect'
 import * as _ from '../../src/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
+import { Locale } from '../../src/Context.ts'
 import { Email, OrcidRecords } from '../../src/ExternalInteractions/index.ts'
 import { Keyv } from '../../src/keyv.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Uuid } from '../../src/types/index.ts'
 
 const orcidIdWithNoEmailAddress = OrcidId('0000-0002-1825-0097')
 const orcidIdWithUnverified = OrcidId('0000-0002-6109-0367')
@@ -21,35 +24,35 @@ const name = Name('Josiah Carberry')
 it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'unverified', EmailAddress], boolean]>([
   [
     'no email address',
-    { orcidId: orcidIdWithNoEmailAddress, emailAddress: newEmailAddress },
+    { orcidId: orcidIdWithNoEmailAddress, emailAddress: newEmailAddress, resumeAt: '/resume' },
     Either.void,
     ['unverified', newEmailAddress],
     true,
   ],
   [
     'same as unverified email address',
-    { orcidId: orcidIdWithUnverified, emailAddress: existingUnverifiedEmailAddress },
+    { orcidId: orcidIdWithUnverified, emailAddress: existingUnverifiedEmailAddress, resumeAt: '/resume' },
     Either.void,
     ['unverified', existingUnverifiedEmailAddress],
     true,
   ],
   [
     'different to unverified email address',
-    { orcidId: orcidIdWithUnverified, emailAddress: newEmailAddress },
+    { orcidId: orcidIdWithUnverified, emailAddress: newEmailAddress, resumeAt: '/resume' },
     Either.void,
     ['unverified', newEmailAddress],
     true,
   ],
   [
     'same as verified email address',
-    { orcidId: orcidIdWithVerified, emailAddress: existingVerifiedEmailAddress },
+    { orcidId: orcidIdWithVerified, emailAddress: existingVerifiedEmailAddress, resumeAt: '/resume' },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
     ['verified', existingVerifiedEmailAddress],
     false,
   ],
   [
     'different to verified email address',
-    { orcidId: orcidIdWithVerified, emailAddress: newEmailAddress },
+    { orcidId: orcidIdWithVerified, emailAddress: newEmailAddress, resumeAt: '/resume' },
     Either.void,
     ['unverified', newEmailAddress],
     true,
@@ -90,5 +93,11 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'un
     } else {
       expect(verifyContactEmailAddress).not.toHaveBeenCalled()
     }
-  }).pipe(Effect.provide(Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }))),
+  }).pipe(
+    Effect.provide([
+      Layer.succeed(Locale, DefaultLocale),
+      Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
+      Uuid.layer,
+    ]),
+  ),
 )

@@ -1,20 +1,24 @@
 import type { Effect } from 'effect'
 import { ContactEmailAddressIsUnavailable } from '../contact-email-address.ts'
+import type { Locale } from '../Context.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
-import type { KeyvStores } from '../keyv.ts'
+import type * as Keyv from '../keyv.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
+import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
   readonly emailAddress: EmailAddress
-  readonly resumeAt?: `/${string}`
+  readonly resumeAt: `/${string}`
 }
 
 export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsUnavailable
 
 export const StartVerificationOfContactEmailAddress: (
-  contactEmailAddressStore: (typeof KeyvStores.Service)['contactEmailAddressStore'],
-) => (input: Input) => Effect.Effect<void, Error, Email.Email | OrcidRecords.OrcidRecords> = () => () =>
+  contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
+) => (
+  input: Input,
+) => Effect.Effect<void, Error, Email.Email | Locale | OrcidRecords.OrcidRecords | Uuid.GenerateUuid> = () => () =>
   new ContactEmailAddressIsUnavailable({ cause: 'not implemented' })
