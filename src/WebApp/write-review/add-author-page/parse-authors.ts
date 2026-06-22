@@ -1,11 +1,9 @@
 import { Array, Iterable, Option, String, flow, pipe } from 'effect'
-import { EmailAddress, NonEmptyString } from '../../../types/index.ts'
+import { EmailAddress, Name } from '../../../types/index.ts'
 
 export const parseAuthors = (
   authors: string,
-): Option.Option<
-  Array.NonEmptyReadonlyArray<{ name: NonEmptyString.NonEmptyString; emailAddress: EmailAddress.EmailAddress }>
-> =>
+): Option.Option<Array.NonEmptyReadonlyArray<{ name: Name.Name; emailAddress: EmailAddress.EmailAddress }>> =>
   pipe(
     String.linesIterator(authors),
     Iterable.map(flow(String.replaceAll(/[,\s]+/g, ' '), String.trim)),
@@ -22,7 +20,7 @@ export const parseAuthors = (
               onNonEmpty: (init, last) => {
                 try {
                   return Option.some({
-                    name: NonEmptyString.NonEmptyString(init.join(' ')),
+                    name: Name.Name(init.join(' ')),
                     emailAddress: EmailAddress.EmailAddress(last),
                   })
                 } catch {
@@ -35,7 +33,7 @@ export const parseAuthors = (
               onNonEmpty: (head, tail) => {
                 try {
                   return Option.some({
-                    name: NonEmptyString.NonEmptyString(tail.join(' ')),
+                    name: Name.Name(tail.join(' ')),
                     emailAddress: EmailAddress.EmailAddress(head),
                   })
                 } catch {

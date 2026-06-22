@@ -115,7 +115,7 @@ describe('writeReviewAddAuthor', () => {
       [
         fc.indeterminatePreprintId(),
         fc.preprintTitle(),
-        fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
+        fc.record({ name: fc.name(), emailAddress: fc.emailAddress() }),
         fc.user(),
         fc.supportedLocale(),
         fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors() }),
@@ -157,7 +157,7 @@ describe('writeReviewAddAuthor', () => {
       [
         fc.indeterminatePreprintId(),
         fc.preprintTitle(),
-        fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
+        fc.record({ name: fc.name(), emailAddress: fc.emailAddress() }),
         fc.user(),
         fc.supportedLocale(),
         fc.incompleteForm({ moreAuthors: fc.constant('yes') }),

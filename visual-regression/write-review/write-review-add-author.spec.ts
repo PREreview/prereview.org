@@ -4,7 +4,7 @@ import { invalidE, missingE } from '../../src/form.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { addAuthorForm } from '../../src/WebApp/write-review/add-author-page/add-author-form.ts'
 import { addMultipleAuthorsForm } from '../../src/WebApp/write-review/add-author-page/add-multiple-authors.ts'
 import { expect, test } from '../base.ts'
@@ -49,7 +49,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
 test('content looks right when fields are invalid', async ({ showPage }) => {
   const response = addAuthorForm({
     form: {
-      name: E.right(NonEmptyString('a name')),
+      name: E.right(Name('a name')),
       emailAddress: E.left(invalidE('not an email address')),
     },
     preprint,

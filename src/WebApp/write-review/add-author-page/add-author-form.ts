@@ -10,7 +10,7 @@ import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAutho
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import type { Name } from '../../../types/Name.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
@@ -123,7 +123,7 @@ export function addAuthorForm({
 }
 
 export interface AddAuthorForm {
-  readonly name: E.Either<MissingE, NonEmptyString | undefined>
+  readonly name: E.Either<MissingE, Name | undefined>
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
