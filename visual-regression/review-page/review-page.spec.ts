@@ -292,7 +292,7 @@ const structuredReview = new Prereview({
 
 const comment1 = {
   authors: {
-    named: [{ name: 'Josiah Carberry', orcid: OrcidId('0000-0002-1825-0097') }, { name: 'Orange Panda' }],
+    named: [{ name: Name('Josiah Carberry'), orcid: OrcidId('0000-0002-1825-0097') }, { name: Name('Orange Panda') }],
   },
   doi: Doi('10.5281/zenodo.10779311'),
   language: 'en',
@@ -304,7 +304,7 @@ const comment1 = {
 
 const comment2 = {
   authors: {
-    named: [{ name: 'Arne Saknussemm' }],
+    named: [{ name: Name('Arne Saknussemm') }],
   },
   doi: Doi('10.5281/zenodo.10779312'),
   language: 'is',

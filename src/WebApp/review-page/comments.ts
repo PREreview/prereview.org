@@ -5,11 +5,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../../html.ts'
+import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 
 export interface Comment {
   authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: OrcidId }>
+    named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
   }
   doi: Doi
   id: number

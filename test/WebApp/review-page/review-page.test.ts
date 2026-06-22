@@ -18,7 +18,7 @@ describe('reviewPage', () => {
       fc.array(
         fc.record({
           authors: fc.record({
-            named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcidId() }, { requiredKeys: ['name'] })),
+            named: fc.nonEmptyArray(fc.record({ name: fc.name(), orcid: fc.orcidId() }, { requiredKeys: ['name'] })),
           }),
           doi: fc.doi(),
           id: fc.integer(),

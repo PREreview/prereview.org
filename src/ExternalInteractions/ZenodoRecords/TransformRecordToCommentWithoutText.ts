@@ -1,6 +1,6 @@
 import { Array, Data, Either, Option, pipe, Schema, String } from 'effect'
 import type * as ReviewPage from '../../WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
-import { Doi, OrcidId, Temporal } from '../../types/index.ts'
+import { Doi, Name, OrcidId, Temporal } from '../../types/index.ts'
 import * as Iso639 from '../../types/iso639.ts'
 
 export type CommentWithoutText = Omit<ReviewPage.Comment, 'text'> & { textUrl: URL }
@@ -19,7 +19,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
     access_right: Schema.Literal('open'),
     creators: Schema.NonEmptyArray(
       Schema.Struct({
-        name: Schema.String,
+        name: Name.NameSchema,
         orcid: Schema.optionalWith(OrcidId.OrcidIdSchema, { exact: true }),
       }),
     ),
