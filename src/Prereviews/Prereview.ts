@@ -11,12 +11,13 @@ import type { PreprintId } from '../Preprints/index.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
 import type { NonEmptyString, Uuid } from '../types/index.ts'
+import type { Name } from '../types/Name.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 
 export class Prereview extends Data.TaggedClass('Prereview')<{
   addendum?: Html
   authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: NonEmptyString.NonEmptyString; orcid?: OrcidId }>
+    named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
     anonymous: number
   }
   club?: ClubId
@@ -50,7 +51,7 @@ export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPre
   id: number
   club?: ClubId
   reviewers: {
-    named: Array.NonEmptyReadonlyArray<NonEmptyString.NonEmptyString>
+    named: Array.NonEmptyReadonlyArray<Name>
     anonymous: number
   }
   published: Temporal.PlainDate
@@ -71,7 +72,7 @@ export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrere
 
 export interface PreprintPrereview {
   authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: NonEmptyString.NonEmptyString; orcid?: OrcidId }>
+    named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
     anonymous: number
   }
   club?: ClubId

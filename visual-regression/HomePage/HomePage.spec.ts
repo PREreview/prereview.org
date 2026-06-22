@@ -7,7 +7,7 @@ import * as Personas from '../../src/Personas/index.ts'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
-import { Name, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
+import { Name, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import { createPage } from '../../src/WebApp/HomePage/HomePage.ts'
 import { expect, test } from '../base.ts'
 
@@ -46,7 +46,7 @@ test('content looks right when empty', async ({ showPage }) => {
 const recentPrereview1 = new Prereviews.RecentPreprintPrereview({
   id: 11062553,
   reviewers: {
-    named: [NonEmptyString.NonEmptyString('Ashraya Ravikumar'), NonEmptyString.NonEmptyString('Stephanie Wankowicz')],
+    named: [Name.Name('Ashraya Ravikumar'), Name.Name('Stephanie Wankowicz')],
     anonymous: 2,
   },
   published: Temporal.PlainDate.from('2024-04-25'),
@@ -62,7 +62,7 @@ const recentPrereview1 = new Prereviews.RecentPreprintPrereview({
 const recentPrereview2 = new Prereviews.RecentPreprintPrereview({
   id: 10888905,
   club: 'reviewing-dental-articles-club',
-  reviewers: { named: [NonEmptyString.NonEmptyString('Alain Manuel Chaple Gil')], anonymous: 0 },
+  reviewers: { named: [Name.Name('Alain Manuel Chaple Gil')], anonymous: 0 },
   published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
   subfields: [],
@@ -77,23 +77,23 @@ const recentPrereview3 = new Prereviews.RecentPreprintPrereview({
   id: 10870479,
   reviewers: {
     named: [
-      NonEmptyString.NonEmptyString('Vanessa Fairhurst'),
-      NonEmptyString.NonEmptyString('Femi Qudus Arogundade'),
-      NonEmptyString.NonEmptyString('Cesar Acevedo-Triana'),
-      NonEmptyString.NonEmptyString('Kylie Yui Dan'),
-      NonEmptyString.NonEmptyString('Emerald Swan'),
-      NonEmptyString.NonEmptyString('Lamis Elkheir'),
-      NonEmptyString.NonEmptyString('Hickory Jaguar'),
-      NonEmptyString.NonEmptyString('Syeda Azra'),
-      NonEmptyString.NonEmptyString('María Sol Ruiz'),
-      NonEmptyString.NonEmptyString('Juan Bizzotto'),
-      NonEmptyString.NonEmptyString('Janaynne Carvalho do Amaral'),
-      NonEmptyString.NonEmptyString('Ebuka Ezeike'),
-      NonEmptyString.NonEmptyString('Ranea-Robles P.'),
-      NonEmptyString.NonEmptyString('María Eugenia Segretin'),
-      NonEmptyString.NonEmptyString('Samir  Hachani'),
-      NonEmptyString.NonEmptyString('Anna Oliveras'),
-      NonEmptyString.NonEmptyString('Prof. MI Subhani, PhD., PDoc.'),
+      Name.Name('Vanessa Fairhurst'),
+      Name.Name('Femi Qudus Arogundade'),
+      Name.Name('Cesar Acevedo-Triana'),
+      Name.Name('Kylie Yui Dan'),
+      Name.Name('Emerald Swan'),
+      Name.Name('Lamis Elkheir'),
+      Name.Name('Hickory Jaguar'),
+      Name.Name('Syeda Azra'),
+      Name.Name('María Sol Ruiz'),
+      Name.Name('Juan Bizzotto'),
+      Name.Name('Janaynne Carvalho do Amaral'),
+      Name.Name('Ebuka Ezeike'),
+      Name.Name('Ranea-Robles P.'),
+      Name.Name('María Eugenia Segretin'),
+      Name.Name('Samir  Hachani'),
+      Name.Name('Anna Oliveras'),
+      Name.Name('Prof. MI Subhani, PhD., PDoc.'),
     ],
     anonymous: 3,
   },
@@ -129,13 +129,13 @@ const recentPrereview5 = new Prereviews.RecentPreprintPrereview({
   club: 'language-club',
   reviewers: {
     named: [
-      NonEmptyString.NonEmptyString('Miguel Oliveira, Jr.'),
-      NonEmptyString.NonEmptyString('Arthur Ronald Brasil Terto'),
-      NonEmptyString.NonEmptyString('Cleber Ataíde'),
-      NonEmptyString.NonEmptyString('Glayci Kelli Reis da Silva Xavier'),
-      NonEmptyString.NonEmptyString('Kyvia Fernanda Tenório da Silva'),
-      NonEmptyString.NonEmptyString('Marcelo Travassos da Silva'),
-      NonEmptyString.NonEmptyString('Pedro Ricardo Bin'),
+      Name.Name('Miguel Oliveira, Jr.'),
+      Name.Name('Arthur Ronald Brasil Terto'),
+      Name.Name('Cleber Ataíde'),
+      Name.Name('Glayci Kelli Reis da Silva Xavier'),
+      Name.Name('Kyvia Fernanda Tenório da Silva'),
+      Name.Name('Marcelo Travassos da Silva'),
+      Name.Name('Pedro Ricardo Bin'),
     ],
     anonymous: 0,
   },

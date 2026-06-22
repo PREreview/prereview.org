@@ -34,7 +34,7 @@ import { reviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { OrcidId, Uuid } from '../../../src/types/index.ts'
 import { iso6391To3 } from '../../../src/types/iso639.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import type { NewPrereview } from '../../../src/WebApp/write-review/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
@@ -288,7 +288,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club: undefined,
                 id: 1061864,
-                reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: expectedAnonymous },
+                reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
                 published: new Temporal.PlainDate(2022, 7, 4),
                 fields: ['13', '11'],
                 subfields: ['1310', '1311', '1106'],
@@ -297,7 +297,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club: undefined,
                 id: 1065236,
-                reviewers: { named: [NonEmptyString('Josiah Carberry')], anonymous: 0 },
+                reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
                 published: new Temporal.PlainDate(2022, 7, 5),
                 fields: [],
                 subfields: [],
@@ -454,7 +454,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club: undefined,
                 id: 1061864,
-                reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: 0 },
+                reviewers: { named: [Name('PREreviewer')], anonymous: 0 },
                 published: new Temporal.PlainDate(2022, 7, 4),
                 fields: [],
                 subfields: [],
@@ -797,7 +797,7 @@ describe('getPrereviewFromZenodo', () => {
           E.right(
             new Prereviews.Prereview({
               addendum: rawHtml('<p>Some note.</p>'),
-              authors: { named: [{ name: NonEmptyString('PREreviewer') }], anonymous: expectedAnonymous },
+              authors: { named: [{ name: Name('PREreviewer') }], anonymous: expectedAnonymous },
               club,
               doi: Doi('10.5281/zenodo.1061864'),
               id,
@@ -1641,7 +1641,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club: undefined,
                 id: 1061864,
-                reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: expectedAnonymous },
+                reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
                 published: new Temporal.PlainDate(2022, 7, 4),
                 fields: [],
                 subfields: [],
@@ -1650,7 +1650,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club: undefined,
                 id: 1065236,
-                reviewers: { named: [NonEmptyString('Josiah Carberry')], anonymous: 0 },
+                reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
                 published: new Temporal.PlainDate(2022, 7, 5),
                 fields: [],
                 subfields: [],
@@ -1907,7 +1907,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club: undefined,
                 id: 1061864,
-                reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: expectedAnonymous },
+                reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
                 published: new Temporal.PlainDate(2022, 7, 4),
                 fields: ['13', '11'],
                 subfields: ['1310', '1311', '1106'],
@@ -1916,7 +1916,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               new Prereviews.RecentPreprintPrereview({
                 club,
                 id: 1065236,
-                reviewers: { named: [NonEmptyString('Josiah Carberry')], anonymous: 0 },
+                reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
                 published: new Temporal.PlainDate(2022, 7, 5),
                 fields: [],
                 subfields: [],
@@ -2108,7 +2108,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club: undefined,
               id: 1061864,
-              reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: 0 },
+              reviewers: { named: [Name('PREreviewer')], anonymous: 0 },
               published: new Temporal.PlainDate(2022, 7, 4),
               fields: [],
               subfields: [],
@@ -2397,7 +2397,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club: undefined,
               id: 1061864,
-              reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: expectedAnonymous },
+              reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
               published: new Temporal.PlainDate(2022, 7, 4),
               fields: ['13', '11'],
               subfields: ['1310', '1311', '1106'],
@@ -2406,7 +2406,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club: undefined,
               id: 1065236,
-              reviewers: { named: [NonEmptyString('Josiah Carberry')], anonymous: 0 },
+              reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
               published: new Temporal.PlainDate(2022, 7, 5),
               fields: [],
               subfields: [],
@@ -2601,7 +2601,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club: undefined,
               id: 1061864,
-              reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: 0 },
+              reviewers: { named: [Name('PREreviewer')], anonymous: 0 },
               published: new Temporal.PlainDate(2022, 7, 4),
               fields: [],
               subfields: [],
@@ -2859,7 +2859,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club,
               id: 1061864,
-              reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: expectedAnonymous },
+              reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
               fields: ['13', '11'],
               subfields: ['1310', '1311', '1106'],
               published: new Temporal.PlainDate(2022, 7, 4),
@@ -2868,7 +2868,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club,
               id: 1065236,
-              reviewers: { named: [NonEmptyString('Josiah Carberry')], anonymous: 0 },
+              reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
               fields: [],
               subfields: [],
               published: new Temporal.PlainDate(2022, 7, 5),
@@ -3108,7 +3108,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             new Prereviews.RecentPreprintPrereview({
               club,
               id: 1061864,
-              reviewers: { named: [NonEmptyString('PREreviewer')], anonymous: 0 },
+              reviewers: { named: [Name('PREreviewer')], anonymous: 0 },
               fields: [],
               subfields: [],
               published: new Temporal.PlainDate(2022, 7, 4),
@@ -3306,7 +3306,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           E.right([
             {
               authors: {
-                named: [{ name: NonEmptyString('PREreviewer'), orcid: undefined }],
+                named: [{ name: Name('PREreviewer'), orcid: undefined }],
                 anonymous: expectedAnonymous,
               },
               club,

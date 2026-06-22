@@ -67,7 +67,8 @@ import { DomainIdFromOpenAlexUrlSchema } from '../../types/domain.ts'
 import { type FieldId, FieldIdFromOpenAlexUrlSchema } from '../../types/field.ts'
 import { ProfileId, Uuid } from '../../types/index.ts'
 import { iso6391To3, iso6393To1, iso6393Validate } from '../../types/iso639.ts'
-import { NonEmptyString } from '../../types/NonEmptyString.ts'
+import { Name } from '../../types/Name.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
@@ -927,7 +928,7 @@ const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
 
 function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview['authors'] {
   const authors = Array.map(FptsToEffect.array(record.metadata.creators), ({ name, orcid }) => ({
-    name: NonEmptyString(name),
+    name: Name(name),
     orcid,
   }))
 

@@ -30,7 +30,7 @@ describe('reviewsPage', () => {
               .record({
                 id: fc.integer(),
                 reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
+                  named: fc.nonEmptyArray(fc.name()),
                   anonymous: fc.integer({ min: 0 }),
                 }),
                 published: fc.plainDate(),

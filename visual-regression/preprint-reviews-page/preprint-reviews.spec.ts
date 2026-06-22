@@ -7,7 +7,6 @@ import type { RapidPrereview } from '../../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
 import type { PreprintPrereview } from '../../src/Prereviews/index.ts'
 import { Name } from '../../src/types/Name.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { createPage } from '../../src/WebApp/preprint-reviews-page/preprint-reviews.ts'
 import { expect, test } from '../base.ts'
@@ -91,9 +90,9 @@ const prereview1 = {
   id: 11062553,
   authors: {
     named: [
-      { name: NonEmptyString('Ashraya Ravikumar'), orcid: OrcidId('0000-0002-4902-4025') },
-      { name: NonEmptyString('Stephanie Wankowicz'), orcid: OrcidId('0000-0002-4225-7459') },
-      { name: NonEmptyString('Flip Jansen'), orcid: OrcidId('0009-0004-7336-0274') },
+      { name: Name('Ashraya Ravikumar'), orcid: OrcidId('0000-0002-4902-4025') },
+      { name: Name('Stephanie Wankowicz'), orcid: OrcidId('0000-0002-4225-7459') },
+      { name: Name('Flip Jansen'), orcid: OrcidId('0009-0004-7336-0274') },
     ],
     anonymous: 1,
   },
@@ -287,7 +286,7 @@ const prereview1 = {
 const prereview2 = {
   id: 10888905,
   authors: {
-    named: [{ name: NonEmptyString('Alain Manuel Chaple Gil'), orcid: OrcidId('0000-0002-8571-4429') }],
+    named: [{ name: Name('Alain Manuel Chaple Gil'), orcid: OrcidId('0000-0002-8571-4429') }],
     anonymous: 0,
   },
   club: 'reviewing-dental-articles-club',
@@ -371,23 +370,23 @@ const prereview3 = {
   id: 10870479,
   authors: {
     named: [
-      { name: NonEmptyString('Vanessa Fairhurst'), orcid: OrcidId('0000-0001-8511-8689') },
-      { name: NonEmptyString('Femi Qudus Arogundade'), orcid: OrcidId('0000-0002-9222-1817') },
-      { name: NonEmptyString('Cesar Acevedo-Triana'), orcid: OrcidId('0000-0002-1296-9957') },
-      { name: NonEmptyString('Kylie Yui Dan'), orcid: OrcidId('0000-0001-5894-4651') },
-      { name: NonEmptyString('Emerald Swan') },
-      { name: NonEmptyString('Lamis Elkheir'), orcid: OrcidId('0000-0002-3516-334X') },
-      { name: NonEmptyString('Hickory Jaguar') },
-      { name: NonEmptyString('Syeda Azra'), orcid: OrcidId('0009-0001-6430-851X') },
-      { name: NonEmptyString('María Sol Ruiz'), orcid: OrcidId('0000-0001-9008-3302') },
-      { name: NonEmptyString('Juan Bizzotto'), orcid: OrcidId('0000-0002-7844-2162') },
-      { name: NonEmptyString('Janaynne Carvalho do Amaral'), orcid: OrcidId('0000-0002-9817-4572') },
-      { name: NonEmptyString('Ebuka Ezeike'), orcid: OrcidId('0000-0003-3452-0306') },
-      { name: NonEmptyString('Ranea-Robles P.'), orcid: OrcidId('0000-0001-6478-3815') },
-      { name: NonEmptyString('María Eugenia Segretin'), orcid: OrcidId('0000-0002-6336-0703') },
-      { name: NonEmptyString('Samir  Hachani'), orcid: OrcidId('0000-0002-9280-8941') },
-      { name: NonEmptyString('Anna Oliveras'), orcid: OrcidId('0000-0002-5880-5245') },
-      { name: NonEmptyString('Prof. MI Subhani, PhD., PDoc.'), orcid: OrcidId('0000-0003-1127-1853') },
+      { name: Name('Vanessa Fairhurst'), orcid: OrcidId('0000-0001-8511-8689') },
+      { name: Name('Femi Qudus Arogundade'), orcid: OrcidId('0000-0002-9222-1817') },
+      { name: Name('Cesar Acevedo-Triana'), orcid: OrcidId('0000-0002-1296-9957') },
+      { name: Name('Kylie Yui Dan'), orcid: OrcidId('0000-0001-5894-4651') },
+      { name: Name('Emerald Swan') },
+      { name: Name('Lamis Elkheir'), orcid: OrcidId('0000-0002-3516-334X') },
+      { name: Name('Hickory Jaguar') },
+      { name: Name('Syeda Azra'), orcid: OrcidId('0009-0001-6430-851X') },
+      { name: Name('María Sol Ruiz'), orcid: OrcidId('0000-0001-9008-3302') },
+      { name: Name('Juan Bizzotto'), orcid: OrcidId('0000-0002-7844-2162') },
+      { name: Name('Janaynne Carvalho do Amaral'), orcid: OrcidId('0000-0002-9817-4572') },
+      { name: Name('Ebuka Ezeike'), orcid: OrcidId('0000-0003-3452-0306') },
+      { name: Name('Ranea-Robles P.'), orcid: OrcidId('0000-0001-6478-3815') },
+      { name: Name('María Eugenia Segretin'), orcid: OrcidId('0000-0002-6336-0703') },
+      { name: Name('Samir  Hachani'), orcid: OrcidId('0000-0002-9280-8941') },
+      { name: Name('Anna Oliveras'), orcid: OrcidId('0000-0002-5880-5245') },
+      { name: Name('Prof. MI Subhani, PhD., PDoc.'), orcid: OrcidId('0000-0003-1127-1853') },
     ],
     anonymous: 3,
   },
@@ -654,15 +653,15 @@ const prereview4 = {
   id: 10779310,
   authors: {
     named: [
-      { name: NonEmptyString('James Fraser'), orcid: OrcidId('0000-0002-5080-2859') },
-      { name: NonEmptyString('Luisa Vasconcelos'), orcid: OrcidId('0000-0003-2016-5606') },
-      { name: NonEmptyString('Liyi Cheng'), orcid: OrcidId('0000-0002-5708-7835') },
-      { name: NonEmptyString('Samantha  Lish'), orcid: OrcidId('0000-0003-0060-1458') },
-      { name: NonEmptyString('S. Chan Baek'), orcid: OrcidId('0009-0004-3002-8888') },
-      { name: NonEmptyString('Lang Ding'), orcid: OrcidId('0000-0002-5365-9445') },
-      { name: NonEmptyString('Alexandra Probst'), orcid: OrcidId('0000-0001-8389-8159') },
-      { name: NonEmptyString('Naiya Phillips'), orcid: OrcidId('0000-0003-1836-5182') },
-      { name: NonEmptyString('William Grubbe'), orcid: OrcidId('0000-0002-4933-2626') },
+      { name: Name('James Fraser'), orcid: OrcidId('0000-0002-5080-2859') },
+      { name: Name('Luisa Vasconcelos'), orcid: OrcidId('0000-0003-2016-5606') },
+      { name: Name('Liyi Cheng'), orcid: OrcidId('0000-0002-5708-7835') },
+      { name: Name('Samantha  Lish'), orcid: OrcidId('0000-0003-0060-1458') },
+      { name: Name('S. Chan Baek'), orcid: OrcidId('0009-0004-3002-8888') },
+      { name: Name('Lang Ding'), orcid: OrcidId('0000-0002-5365-9445') },
+      { name: Name('Alexandra Probst'), orcid: OrcidId('0000-0001-8389-8159') },
+      { name: Name('Naiya Phillips'), orcid: OrcidId('0000-0003-1836-5182') },
+      { name: Name('William Grubbe'), orcid: OrcidId('0000-0002-4933-2626') },
     ],
     anonymous: 3,
   },
@@ -742,13 +741,13 @@ const prereview5 = {
   id: 10411168,
   authors: {
     named: [
-      { name: NonEmptyString('Miguel Oliveira, Jr.'), orcid: OrcidId('0000-0002-0866-0535') },
-      { name: NonEmptyString('Arthur Ronald Brasil Terto'), orcid: OrcidId('0000-0003-4806-4946') },
-      { name: NonEmptyString('Cleber Ataíde'), orcid: OrcidId('0000-0002-9340-9977') },
-      { name: NonEmptyString('Glayci Kelli Reis da Silva Xavier'), orcid: OrcidId('0000-0002-2934-4734') },
-      { name: NonEmptyString('Kyvia Fernanda Tenório da Silva'), orcid: OrcidId('0000-0002-0509-3555') },
-      { name: NonEmptyString('Marcelo Travassos da Silva'), orcid: OrcidId('0000-0002-5425-5071') },
-      { name: NonEmptyString('Pedro Ricardo Bin'), orcid: OrcidId('0000-0002-7547-3430') },
+      { name: Name('Miguel Oliveira, Jr.'), orcid: OrcidId('0000-0002-0866-0535') },
+      { name: Name('Arthur Ronald Brasil Terto'), orcid: OrcidId('0000-0003-4806-4946') },
+      { name: Name('Cleber Ataíde'), orcid: OrcidId('0000-0002-9340-9977') },
+      { name: Name('Glayci Kelli Reis da Silva Xavier'), orcid: OrcidId('0000-0002-2934-4734') },
+      { name: Name('Kyvia Fernanda Tenório da Silva'), orcid: OrcidId('0000-0002-0509-3555') },
+      { name: Name('Marcelo Travassos da Silva'), orcid: OrcidId('0000-0002-5425-5071') },
+      { name: Name('Pedro Ricardo Bin'), orcid: OrcidId('0000-0002-7547-3430') },
     ],
     anonymous: 0,
   },

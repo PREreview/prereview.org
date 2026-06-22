@@ -11,7 +11,7 @@ export const localPrereview = (): fc.Arbitrary<Prereview> =>
         {
           id: fc.integer(),
           club: fc.clubId(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.nonEmptyString()), anonymous: fc.integer({ min: 0 }) }),
+          reviewers: fc.record({ named: fc.nonEmptyArray(fc.name()), anonymous: fc.integer({ min: 0 }) }),
           published: fc.plainDate(),
           fields: fc.array(fc.fieldId()),
           subfields: fc.array(fc.subfieldId()),
