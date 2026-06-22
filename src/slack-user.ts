@@ -2,10 +2,11 @@ import { flow, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
+import type { Name } from './types/Name.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 
 export interface SlackUser {
-  readonly name: string
+  readonly name: Name
   readonly image: URL
   readonly profile: URL
 }

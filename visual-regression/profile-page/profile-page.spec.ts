@@ -21,7 +21,7 @@ test('content looks right', async ({ showPage }) => {
       name: NonEmptyString('Josiah Carberry'),
       orcid: OrcidId('0000-0002-1825-0097'),
       slackUser: {
-        name: 'jcarberry',
+        name: Name('jcarberry'),
         image: new URL('https://placehold.co/48x48'),
         profile: new URL('http://example.com/'),
       },

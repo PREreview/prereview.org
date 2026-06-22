@@ -1328,7 +1328,7 @@ export const slackChannelId = (): fc.Arbitrary<Slack.ChannelId> => fc.string().m
 
 export const slackTimestamp = (): fc.Arbitrary<Slack.Timestamp> => fc.string().map(id => Slack.Timestamp.make(id))
 
-export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
+export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: name(), image: url(), profile: url() })
 
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
   fc.record({

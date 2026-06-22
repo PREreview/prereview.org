@@ -24,7 +24,7 @@ test('content looks right when publicly visible', async ({ showPage }) => {
       scopes: HashSet.make(NonEmptyString('some-scope')),
     }),
     slackUser: Option.some({
-      name: 'jcarberry',
+      name: Name('jcarberry'),
       image: new URL('https://placehold.co/48x48'),
       profile: new URL('http://example.com/'),
     }),
@@ -64,7 +64,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
     orcidToken: Option.none(),
     avatar: Option.none(),
     slackUser: Option.some({
-      name: 'jcarberry',
+      name: Name('jcarberry'),
       image: new URL('https://placehold.co/48x48'),
       profile: new URL('http://example.com/'),
     }),
