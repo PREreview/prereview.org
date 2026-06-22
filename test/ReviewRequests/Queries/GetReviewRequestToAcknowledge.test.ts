@@ -6,7 +6,7 @@ import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetReviewRequestToAcknowledge.ts'
-import { Doi, EmailAddress, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, Name, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
@@ -17,7 +17,7 @@ const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestFo
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    name: Name.Name('Josiah Carberry'),
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
   reviewRequestId,
@@ -27,7 +27,7 @@ const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestFo
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({
-    name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul'),
+    name: Name.Name('Jean-Baptiste Botul'),
     emailAddress: EmailAddress.EmailAddress('jbbotul@example.com'),
   }),
   reviewRequestId,
@@ -36,7 +36,7 @@ const reviewRequestForAPreprintWasReceived3 = new ReviewRequests.ReviewRequestFo
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Arne Saknussemm') }),
+  requester: Option.some({ name: Name.Name('Arne Saknussemm') }),
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasReceived4 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
@@ -50,7 +50,7 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -264,7 +264,7 @@ describe('GetReviewRequestToAcknowledge', () => {
           .tuple(
             fc.reviewRequestForAPreprintWasReceived({
               reviewRequestId: fc.constant(reviewRequestId),
-              requester: fc.maybe(fc.record({ name: fc.nonEmptyString() })),
+              requester: fc.maybe(fc.record({ name: fc.name() })),
             }),
             fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
           )
@@ -314,7 +314,7 @@ describe('GetReviewRequestToAcknowledge', () => {
       'can contact',
       [
         fc
-          .record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })
+          .record({ name: fc.name(), emailAddress: fc.emailAddress() })
           .chain(requester =>
             fc.tuple(
               fc.constant(requester),
@@ -345,7 +345,7 @@ describe('GetReviewRequestToAcknowledge', () => {
                 reviewRequestId,
                 {
                   requester: {
-                    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+                    name: Name.Name('Josiah Carberry'),
                     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
                   },
                 },
@@ -362,7 +362,7 @@ describe('GetReviewRequestToAcknowledge', () => {
                 reviewRequestId,
                 {
                   requester: {
-                    name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul'),
+                    name: Name.Name('Jean-Baptiste Botul'),
                     emailAddress: EmailAddress.EmailAddress('jbbotul@example.com'),
                   },
                 },
@@ -380,7 +380,7 @@ describe('GetReviewRequestToAcknowledge', () => {
                 reviewRequestId,
                 {
                   requester: {
-                    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+                    name: Name.Name('Josiah Carberry'),
                     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
                   },
                 },

@@ -13,7 +13,7 @@ describe('ActorToRequester', () => {
             fc.record({
               id: fc.constant(OrcidId.toUrl(orcidId)),
               type: fc.constant('Person'),
-              name: fc.nonEmptyTrimmedString(),
+              name: fc.name(),
             }),
             fc.constant(orcidId),
           ),
@@ -34,7 +34,7 @@ describe('ActorToRequester', () => {
             fc.record({
               id: fc.constant(SciProfilesId.toUrl(sciProfilesId)),
               type: fc.constant('Person'),
-              name: fc.nonEmptyTrimmedString(),
+              name: fc.name(),
             }),
             fc.constant(sciProfilesId),
           ),
@@ -55,7 +55,7 @@ describe('ActorToRequester', () => {
             fc.record({
               id: fc.constant(EmailAddress.toUrl(emailAddress)),
               type: fc.constant('Person'),
-              name: fc.nonEmptyTrimmedString(),
+              name: fc.name(),
             }),
             fc.constant(emailAddress),
           ),
@@ -75,7 +75,7 @@ describe('ActorToRequester', () => {
       fc.record({
         id: fc.url(),
         type: fc.constantFrom('Application', 'Group', 'Organization', 'Service'),
-        name: fc.nonEmptyTrimmedString(),
+        name: fc.name(),
       }),
     ],
     ([actor]) => {

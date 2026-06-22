@@ -5,7 +5,7 @@ import { v4 } from 'uuid'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { NonEmptyString } from '../src/types/NonEmptyString.ts'
+import { Name } from '../src/types/Name.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Uuid } from '../src/types/Uuid.ts'
 import { areLoggedIn, canLogIn, expect, seedEvents, test } from './base.ts'
@@ -277,7 +277,7 @@ test.extend(
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
       reviewRequestId: reviewRequestId1,
       requester: Option.some({
-        name: NonEmptyString('Some Requester'),
+        name: Name('Some Requester'),
       }),
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -305,7 +305,7 @@ test.extend(
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
       reviewRequestId: reviewRequestId1,
       requester: Option.some({
-        name: NonEmptyString('Some Requester'),
+        name: Name('Some Requester'),
       }),
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -341,7 +341,7 @@ test.extend(
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
       reviewRequestId: reviewRequestId1,
       requester: Option.some({
-        name: NonEmptyString('Some Requester'),
+        name: Name('Some Requester'),
       }),
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -354,7 +354,7 @@ test.extend(
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
       reviewRequestId: reviewRequestId2,
       requester: Option.some({
-        name: NonEmptyString('Some Requester'),
+        name: Name('Some Requester'),
       }),
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -401,7 +401,7 @@ test.extend(
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
       reviewRequestId: reviewRequestId1,
       requester: Option.some({
-        name: NonEmptyString('Some Requester'),
+        name: Name('Some Requester'),
       }),
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -420,7 +420,7 @@ test.extend(
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
       reviewRequestId: reviewRequestId2,
       requester: Option.some({
-        name: NonEmptyString('Some Requester'),
+        name: Name('Some Requester'),
       }),
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasAccepted({

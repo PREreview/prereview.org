@@ -5,7 +5,7 @@ import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetReceivedReviewRequest.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, Name, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
@@ -15,21 +15,21 @@ const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestFo
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
+  requester: Option.some({ name: Name.Name('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({

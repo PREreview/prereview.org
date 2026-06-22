@@ -6,9 +6,9 @@ import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/WithdrawReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, Name, OrcidId, Uuid } from '../../../src/types/index.ts'
 
-const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
+const requester1 = { name: Name.Name('Josiah Carberry') }
 
 const requester2 = { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' as const }
 

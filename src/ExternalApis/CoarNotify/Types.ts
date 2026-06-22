@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { Doi, NonEmptyString } from '../../types/index.ts'
+import { Doi, Name } from '../../types/index.ts'
 
 export type RequestReview = Schema.Schema.Type<typeof RequestReviewSchema>
 
@@ -30,7 +30,7 @@ export const RequestReviewSchema = Schema.Struct({
   actor: Schema.Struct({
     id: Schema.URL,
     type: Schema.Literal('Application', 'Group', 'Organization', 'Person', 'Service'),
-    name: Schema.compose(Schema.Trim, NonEmptyString.NonEmptyStringSchema),
+    name: Name.NameSchema,
   }),
 })
 

@@ -6,13 +6,13 @@ import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/PublishReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, Name, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const commandRequester = OrcidId.OrcidId('0000-0002-6109-0367')
 
 const requester1 = OrcidId.OrcidId('0000-0002-1825-0097')
 
-const importedRequester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
+const importedRequester1 = { name: Name.Name('Josiah Carberry') }
 
 const commandRequestId = Uuid.Uuid('18174280-bb72-405b-8ff9-57e788a7a3eb')
 

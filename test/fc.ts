@@ -585,7 +585,7 @@ export const coarNotifyRequestReview = ({
     actor: fc.record({
       id: url(),
       type: fc.constantFrom('Application', 'Group', 'Organization', 'Person', 'Service'),
-      name: nonEmptyTrimmedString(),
+      name: name(),
     }),
   })
 
@@ -2395,7 +2395,7 @@ export const reviewRequestForAPreprintWasReceived = ({
         requester ??
         maybe(
           fc.record({
-            name: nonEmptyString(),
+            name: name(),
             orcidId: fc.option(orcidId(), { nil: undefined }),
             sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
             emailAddress: fc.option(emailAddress(), { nil: undefined }),
@@ -2459,7 +2459,7 @@ export const reviewRequestFromAPreprintServerWasImported = ({
       reviewRequestId: reviewRequestId ?? uuid(),
       requester: maybe(
         fc.record({
-          name: nonEmptyString(),
+          name: name(),
           orcidId: fc.option(orcidId(), { nil: undefined }),
           sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
           emailAddress: fc.option(emailAddress(), { nil: undefined }),

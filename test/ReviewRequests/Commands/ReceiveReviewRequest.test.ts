@@ -5,7 +5,7 @@ import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/ReceiveReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, Name, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
@@ -15,14 +15,14 @@ const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestFor
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasStarted = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
@@ -47,14 +47,14 @@ const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFro
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
@@ -71,7 +71,7 @@ const command = (): fc.Arbitrary<_.Command> =>
     preprintId: fc.indeterminatePreprintId(),
     reviewRequestId: fc.uuid(),
     requester: fc.record({
-      name: fc.nonEmptyString(),
+      name: fc.name(),
       orcidId: fc.option(fc.orcidId(), { nil: undefined }),
       sciProfilesId: fc.option(fc.sciProfilesId(), { nil: undefined }),
       emailAddress: fc.option(fc.emailAddress(), { nil: undefined }),

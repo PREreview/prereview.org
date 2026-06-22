@@ -5,12 +5,12 @@ import { Array, Either, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/SearchForPublishedReviewRequests.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, Name, OrcidId, Uuid } from '../../../src/types/index.ts'
 
-const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
-const requester2 = { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }
-const requester3 = { name: NonEmptyString.NonEmptyString('Arne Saknussemm') }
-const requester4 = { name: NonEmptyString.NonEmptyString('Axel Lidenbrock') }
+const requester1 = { name: Name.Name('Josiah Carberry') }
+const requester2 = { name: Name.Name('Jean-Baptiste Botul') }
+const requester3 = { name: Name.Name('Arne Saknussemm') }
+const requester4 = { name: Name.Name('Axel Lidenbrock') }
 
 const request1Id = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const request2Id = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
