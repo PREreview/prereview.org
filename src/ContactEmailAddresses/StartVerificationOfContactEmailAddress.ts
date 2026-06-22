@@ -1,6 +1,6 @@
 import type { Effect } from 'effect'
 import { ContactEmailAddressIsUnavailable } from '../contact-email-address.ts'
-import type { Email } from '../ExternalInteractions/index.ts'
+import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import type { KeyvStores } from '../keyv.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -16,5 +16,5 @@ export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddr
 
 export const StartVerificationOfContactEmailAddress: (
   contactEmailAddressStore: (typeof KeyvStores.Service)['contactEmailAddressStore'],
-) => (input: Input) => Effect.Effect<void, Error, Email.Email> = () => () =>
+) => (input: Input) => Effect.Effect<void, Error, Email.Email | OrcidRecords.OrcidRecords> = () => () =>
   new ContactEmailAddressIsUnavailable({ cause: 'not implemented' })

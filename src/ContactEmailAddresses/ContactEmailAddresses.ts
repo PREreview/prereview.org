@@ -5,7 +5,7 @@ import {
   type ContactEmailAddress,
 } from '../contact-email-address.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
-import type { Email } from '../ExternalInteractions/index.ts'
+import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -39,7 +39,10 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
 export const layer = Layer.effect(
   ContactEmailAddresses,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<Email.Email>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.andThen(
+      Effect.context<Email.Email | OrcidRecords.OrcidRecords>(),
+      Context.omit(Scope.Scope),
+    )
 
     const { contactEmailAddressStore } = yield* Keyv.KeyvStores
 
