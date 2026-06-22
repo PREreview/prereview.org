@@ -3,7 +3,7 @@ import * as _ from '../../src/ExternalInteractions/Email/InviteAuthorToReview/Cr
 import { html } from '../../src/html.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 import { expect, test } from '../base.ts'
 
@@ -32,11 +32,11 @@ test('text looks right', { tag: '@text' }, async () => {
 const invitationId = Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d')
 
 const invitee = {
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   emailAddress: EmailAddress('jcarberry@example.com'),
 }
 
-const inviter = NonEmptyString('Jean-Baptiste Botul')
+const inviter = Name('Jean-Baptiste Botul')
 
 const subject = {
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,

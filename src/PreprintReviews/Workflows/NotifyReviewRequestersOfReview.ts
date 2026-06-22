@@ -3,7 +3,7 @@ import { Email } from '../../ExternalInteractions/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
-import { NonEmptyString, Temporal } from '../../types/index.ts'
+import { Temporal } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as PreprintReviews from '../PreprintReviews.ts'
 
@@ -33,7 +33,7 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
             emailAddress: requester.email,
           },
           review: {
-            author: NonEmptyString.NonEmptyString(Array.headNonEmpty(prereview.authors.named).name),
+            author: Array.headNonEmpty(prereview.authors.named).name,
             id: prereview.id,
             preprint: prereview.preprint,
           },

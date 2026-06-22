@@ -23,7 +23,7 @@ import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublish
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
-import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import type { Name } from '../../../types/Name.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
@@ -36,7 +36,7 @@ import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.t
 
 export interface NewPrereview {
   conduct: 'yes'
-  otherAuthors: ReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
+  otherAuthors: ReadonlyArray<{ name: Name; emailAddress: EmailAddress }>
   persona: Personas.Persona
   preprint: PreprintTitle
   review: Html

@@ -3431,7 +3431,7 @@ export const invitedToBeAnAuthor: Fixtures<
       Effect.provide(
         Email.inviteAuthor({
           person: {
-            name: NonEmptyString('Josiah Carberry'),
+            name: Name('Josiah Carberry'),
             emailAddress: EmailAddress('jcarberry@example.com'),
           },
           authorInviteId: Uuid.Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
@@ -3530,7 +3530,7 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
             invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
             inviter: Pseudonym('Red Wolf'),
             invitee: {
-              name: NonEmptyString('Josiah Carberry'),
+              name: Name('Josiah Carberry'),
               emailAddress: EmailAddress('jcarberry@example.com'),
             },
             subject: {
@@ -3542,7 +3542,7 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
             invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
             inviter: Pseudonym('Red Wolf'),
             invitee: {
-              name: NonEmptyString('Arne Saknussemm'),
+              name: Name('Arne Saknussemm'),
               emailAddress: EmailAddress('asaknussemm@example.com'),
             },
             subject: {
@@ -3631,7 +3631,7 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
             invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
             inviter: Pseudonym('Red Wolf'),
             invitee: {
-              name: NonEmptyString('Josiah Carberry'),
+              name: Name('Josiah Carberry'),
               emailAddress: EmailAddress('jcarberry@example.com'),
             },
             subject: {
@@ -3643,7 +3643,7 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
             invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
             inviter: Pseudonym('Red Wolf'),
             invitee: {
-              name: NonEmptyString('Arne Saknussemm'),
+              name: Name('Arne Saknussemm'),
               emailAddress: EmailAddress('asaknussemm@example.com'),
             },
             subject: {

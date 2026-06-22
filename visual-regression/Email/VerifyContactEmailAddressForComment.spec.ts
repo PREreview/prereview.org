@@ -5,7 +5,7 @@ import * as _ from '../../src/ExternalInteractions/Email/VerifyContactEmailAddre
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 import { expect, test } from '../base.ts'
 
@@ -13,7 +13,7 @@ test('HTML looks right', async ({ page }) => {
   const email = await Effect.runPromise(
     Effect.provide(
       _.CreateEmail({
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         emailAddress: new UnverifiedContactEmailAddress({
           value: EmailAddress('jcarberry@example.com'),
           verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
@@ -33,7 +33,7 @@ test('text looks right', { tag: '@text' }, async ({}) => {
   const email = await Effect.runPromise(
     Effect.provide(
       _.CreateEmail({
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         emailAddress: new UnverifiedContactEmailAddress({
           value: EmailAddress('jcarberry@example.com'),
           verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),

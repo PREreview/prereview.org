@@ -4261,7 +4261,7 @@ describe('createRecordOnZenodo', () => {
       [
         fc.record<NewPrereview>({
           conduct: fc.constant('yes'),
-          otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+          otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.publicPersona(),
           preprint: fc.preprintTitle(),
           review: fc.html(),
@@ -4446,7 +4446,7 @@ ${newPrereview.review.toString()}`,
       [
         fc.record<NewPrereview>({
           conduct: fc.constant('yes'),
-          otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+          otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.publicPersona(),
           preprint: fc.preprintTitle(),
           review: fc.html(),
@@ -4635,7 +4635,7 @@ ${newPrereview.review.toString()}`,
       [
         fc.record<NewPrereview>({
           conduct: fc.constant('yes'),
-          otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+          otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.pseudonymPersona(),
           preprint: fc.preprintTitle(),
           review: fc.html(),
@@ -4802,7 +4802,7 @@ ${newPrereview.review.toString()}`,
       [
         fc.record<NewPrereview>({
           conduct: fc.constant('yes'),
-          otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+          otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.pseudonymPersona(),
           preprint: fc.preprintTitle(),
           review: fc.html(),
@@ -4972,7 +4972,7 @@ ${newPrereview.review.toString()}`,
     [
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
+        otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
         persona: fc.persona(),
         preprint: fc.preprintTitle(),
         review: fc.html(),

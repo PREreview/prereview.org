@@ -4,7 +4,7 @@ import { UnableToHandleCommand } from '../Commands.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Queries from '../Queries.ts'
-import { Temporal, type EmailAddress, type NonEmptyString, type OrcidId } from '../types/index.ts'
+import { Temporal, type EmailAddress, type Name, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
 import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
@@ -28,7 +28,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
     getContactDetails: (
       orcid: OrcidId.OrcidId,
-    ) => Effect.Effect<{ name: NonEmptyString.NonEmptyString; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
+    ) => Effect.Effect<{ name: Name.Name; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
     hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: Queries.FromOnDemandQuery<
       typeof HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests
     >

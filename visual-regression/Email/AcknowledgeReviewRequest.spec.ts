@@ -1,14 +1,14 @@
 import { Effect } from 'effect'
 import * as _ from '../../src/ExternalInteractions/Email/AcknowledgeReviewRequest/CreateEmail.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { expect, test } from '../base.ts'
 
 test('HTML looks right', async ({ page }) => {
   const email = await Effect.runPromise(
     _.CreateEmail({
       requester: {
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),
       },
     }),
@@ -23,7 +23,7 @@ test('text looks right', { tag: '@text' }, async () => {
   const email = await Effect.runPromise(
     _.CreateEmail({
       requester: {
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),
       },
     }),

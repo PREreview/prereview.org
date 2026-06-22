@@ -7,7 +7,7 @@ import { BiorxivPreprintId } from '../../src/Preprints/PreprintId.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 import { expect, test } from '../base.ts'
 
@@ -16,12 +16,12 @@ test('HTML looks right', async ({ page }) => {
     Effect.provide(
       _.CreateEmail({
         person: {
-          name: NonEmptyString('Josiah Carberry'),
+          name: Name('Josiah Carberry'),
           emailAddress: EmailAddress('jcarberry@example.com'),
         },
         authorInviteId: Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
         newPrereview: {
-          author: 'Jean-Baptiste Botul',
+          author: Name('Jean-Baptiste Botul'),
           preprint: {
             id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
             title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
@@ -43,7 +43,7 @@ test('text looks right', { tag: '@text' }, async () => {
     Effect.provide(
       _.CreateEmail({
         person: {
-          name: NonEmptyString('Josiah Carberry'),
+          name: Name('Josiah Carberry'),
           emailAddress: EmailAddress('jcarberry@example.com'),
         },
         authorInviteId: Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),

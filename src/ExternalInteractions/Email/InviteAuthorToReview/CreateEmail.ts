@@ -6,12 +6,12 @@ import { languageAttributesFor } from '../../../Locales.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
-import { EmailAddress, type NonEmptyString, type Uuid } from '../../../types/index.ts'
+import { EmailAddress, type Name, type Uuid } from '../../../types/index.ts'
 
 export const CreateEmail: (details: {
   invitationId: Uuid.Uuid
-  inviter: NonEmptyString.NonEmptyString
-  invitee: { name: NonEmptyString.NonEmptyString; emailAddress: EmailAddress.EmailAddress }
+  inviter: Name.Name
+  invitee: { name: Name.Name; emailAddress: EmailAddress.EmailAddress }
   subject: {
     language: LanguageCode
     title: Html

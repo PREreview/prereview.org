@@ -4,15 +4,15 @@ import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
-import { EmailAddress, type NonEmptyString } from '../../../types/index.ts'
+import { EmailAddress, type Name } from '../../../types/index.ts'
 
 export interface Requester {
-  readonly name: NonEmptyString.NonEmptyString
+  readonly name: Name.Name
   readonly emailAddress: EmailAddress.EmailAddress
 }
 
 export interface Review {
-  readonly author: NonEmptyString.NonEmptyString
+  readonly author: Name.Name
   readonly id: number
   readonly preprint: Preprints.PreprintTitle
 }

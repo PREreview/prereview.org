@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import type { Locale } from './Context.ts'
 import type { IndeterminatePreprintId } from './Preprints/index.ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
-import type { NonEmptyString } from './types/NonEmptyString.ts'
+import type { Name } from './types/Name.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import { type Uuid, UuidC } from './types/Uuid.ts'
 
@@ -45,14 +45,14 @@ export interface SaveContactEmailAddressEnv {
 
 export interface VerifyContactEmailAddressEnv {
   verifyContactEmailAddress: (
-    name: NonEmptyString,
+    name: Name,
     emailAddress: UnverifiedContactEmailAddress,
   ) => TE.TaskEither<'unavailable', void>
 }
 
 export interface VerifyContactEmailAddressForReviewEnv {
   verifyContactEmailAddressForReview: (
-    name: NonEmptyString,
+    name: Name,
     emailAddress: UnverifiedContactEmailAddress,
     preprint: IndeterminatePreprintId,
   ) => TE.TaskEither<'unavailable', void>
@@ -60,7 +60,7 @@ export interface VerifyContactEmailAddressForReviewEnv {
 
 export interface VerifyContactEmailAddressForInvitedAuthorEnv {
   verifyContactEmailAddressForInvitedAuthor: (verify: {
-    name: NonEmptyString
+    name: Name
     emailAddress: UnverifiedContactEmailAddress
     authorInvite: Uuid
   }) => TE.TaskEither<'unavailable', void>
@@ -69,7 +69,7 @@ export interface VerifyContactEmailAddressForInvitedAuthorEnv {
 export class VerifyContactEmailAddressForComment extends Context.Tag('VerifyContactEmailAddressForComment')<
   VerifyContactEmailAddressForComment,
   (
-    name: NonEmptyString,
+    name: Name,
     emailAddress: UnverifiedContactEmailAddress,
     comment: Uuid,
   ) => Effect.Effect<void, ContactEmailAddressIsUnavailable, Locale>
@@ -138,7 +138,7 @@ export const saveContactEmailAddress = (
   )
 
 export const verifyContactEmailAddress = (
-  name: NonEmptyString,
+  name: Name,
   emailAddress: UnverifiedContactEmailAddress,
 ): RTE.ReaderTaskEither<VerifyContactEmailAddressEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
@@ -146,7 +146,7 @@ export const verifyContactEmailAddress = (
   )
 
 export const verifyContactEmailAddressForReview = (
-  name: NonEmptyString,
+  name: Name,
   emailAddress: UnverifiedContactEmailAddress,
   preprint: IndeterminatePreprintId,
 ): RTE.ReaderTaskEither<VerifyContactEmailAddressForReviewEnv, 'unavailable', void> =>
@@ -157,7 +157,7 @@ export const verifyContactEmailAddressForReview = (
   )
 
 export const verifyContactEmailAddressForInvitedAuthor = (verify: {
-  name: NonEmptyString
+  name: Name
   emailAddress: UnverifiedContactEmailAddress
   authorInvite: Uuid
 }): RTE.ReaderTaskEither<VerifyContactEmailAddressForInvitedAuthorEnv, 'unavailable', void> =>

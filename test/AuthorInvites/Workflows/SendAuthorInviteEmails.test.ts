@@ -23,7 +23,7 @@ describe('SendAuthorInviteEmails', () => {
           fc.nonEmptyArray(
             fc.record({
               invitationId: fc.uuid(),
-              name: fc.nonEmptyString(),
+              name: fc.name(),
               emailAddress: fc.emailAddress(),
             }),
           ),
@@ -83,7 +83,7 @@ describe('SendAuthorInviteEmails', () => {
         fc.nonEmptyArray(
           fc.record({
             invitationId: fc.uuid(),
-            name: fc.nonEmptyString(),
+            name: fc.name(),
             emailAddress: fc.emailAddress(),
           }),
         ),

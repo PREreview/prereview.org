@@ -7,10 +7,10 @@ import { languageAttributesFor } from '../../../Locales.ts'
 import { translate } from '../../../locales/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
-import { EmailAddress, type NonEmptyString } from '../../../types/index.ts'
+import { EmailAddress, type Name } from '../../../types/index.ts'
 
 export const CreateEmail: (reviewRequest: {
-  name: NonEmptyString.NonEmptyString
+  name: Name.Name
   emailAddress: UnverifiedContactEmailAddress
   redirectTo: `/${string}`
 }) => Effect.Effect<Nodemailer.Email, never, Locale | PublicUrl> = Effect.fnUntraced(function* ({

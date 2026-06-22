@@ -9,10 +9,10 @@ import { translate } from '../../../locales/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
-import { EmailAddress, type NonEmptyString } from '../../../types/index.ts'
+import { EmailAddress, type Name } from '../../../types/index.ts'
 
 export const CreateEmail: (details: {
-  name: NonEmptyString.NonEmptyString
+  name: Name.Name
   emailAddress: UnverifiedContactEmailAddress
   preprint: Preprints.IndeterminatePreprintId
 }) => Effect.Effect<Nodemailer.Email, never, Locale | PublicUrl> = Effect.fnUntraced(function* ({

@@ -1,7 +1,7 @@
 import { Array, Either, Equal, HashSet, Option, Struct, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
-import type { EmailAddress, NonEmptyString, Uuid } from '../../types/index.ts'
+import type { EmailAddress, Name, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {
@@ -10,7 +10,7 @@ export interface Input {
 
 export interface InvitationToAppear {
   invitationId: Uuid.Uuid
-  name: NonEmptyString.NonEmptyString
+  name: Name.Name
   emailAddress: EmailAddress.EmailAddress
 }
 

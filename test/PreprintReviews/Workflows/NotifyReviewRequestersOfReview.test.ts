@@ -18,7 +18,7 @@ describe('NotifyReviewRequestersOfReview', () => {
           fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() }),
           fc.hashSet(fc.orcidId(), { minLength: 1 }),
           fc.record({
-            name: fc.nonEmptyString(),
+            name: fc.name(),
             email: fc.emailAddress(),
           }),
         ],
