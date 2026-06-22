@@ -65,10 +65,12 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'un
       store.set(orcidIdWithUnverified, {
         type: 'unverified',
         verificationToken: '982c8de0-5000-45cd-9f96-70fc12fe0bcb',
-        value: 'foo@example.com',
+        value: existingUnverifiedEmailAddress,
       }),
     )
-    yield* Effect.promise(() => store.set(orcidIdWithVerified, { type: 'verified', value: 'foo@example.com' }))
+    yield* Effect.promise(() =>
+      store.set(orcidIdWithVerified, { type: 'verified', value: existingVerifiedEmailAddress }),
+    )
 
     const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(_ => Effect.void)
 
@@ -86,7 +88,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'un
       expect(verifyContactEmailAddress).toHaveBeenCalledWith(
         expect.objectContaining({
           name,
-          emailAddress: input.emailAddress,
+          emailAddress: expect.objectContaining({ value: input.emailAddress }),
           redirectTo: input.resumeAt,
         }),
       )
