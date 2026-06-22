@@ -5,9 +5,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import { getContactEmailAddress, type GetContactEmailAddressEnv } from '../../contact-email-address.ts'
 import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
-import type { Locale } from '../../Context.ts'
 import { getInput, invalidE, missingE } from '../../form.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
@@ -16,7 +14,7 @@ import { myDetailsMatch } from '../../routes.ts'
 import { EmailAddressC, type EmailAddress } from '../../types/EmailAddress.ts'
 import type { User } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
-import { FlashMessageResponse, LogInResponse, RedirectResponse, type PageResponse } from '../Response/index.ts'
+import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../Response/index.ts'
 import { createFormPage } from './change-contact-email-address-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeContactEmailAddress>>
@@ -45,12 +43,6 @@ export const changeContactEmailAddress = ({
           .exhaustive(),
       state =>
         match(state)
-          .returnType<
-            RT.ReaderTask<
-              EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & GetContactEmailAddressEnv,
-              PageResponse | FlashMessageResponse | RedirectResponse
-            >
-          >()
           .with({ method: 'POST' }, handleChangeContactEmailAddressForm)
           .otherwise(showChangeContactEmailAddressForm),
     ),
@@ -58,7 +50,13 @@ export const changeContactEmailAddress = ({
 
 const showChangeContactEmailAddressForm = ({ locale, user }: { locale: SupportedLocale; user: User }) =>
   pipe(
-    getContactEmailAddress(user.orcid),
+    EffectToFpts.toReaderTaskEither(
+      Effect.gen(function* () {
+        const contactEmailAddresses = yield* ContactEmailAddresses
+
+        return yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
+      }),
+    ),
     RTE.getOrElseW(() => RT.of(undefined)),
     RT.map(emailAddress => createFormPage({ emailAddress: E.right(emailAddress?.value) }, locale)),
   )

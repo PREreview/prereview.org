@@ -1,16 +1,14 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-contact-email-address.ts'
-import { ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
+import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as fc from '../../fc.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('changeContactEmailAddress', () => {
   it.effect.prop(
@@ -20,18 +18,16 @@ describe('changeContactEmailAddress', () => {
       fc.string().filter(method => method !== 'POST'),
       fc.user(),
       fc.supportedLocale(),
-      fc.either(fc.constantFrom('not-found', 'unavailable'), fc.contactEmailAddress()),
+      fc.either(
+        fc.constantFrom(new ContactEmailAddressIsNotFound(), new ContactEmailAddressIsUnavailable({})),
+        fc.contactEmailAddress(),
+      ),
     ],
     ([body, method, user, locale, emailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 
-        const actual = yield* Effect.promise(
-          _.changeContactEmailAddress({ body, locale, method, user })({
-            getContactEmailAddress: () => TE.fromEither(emailAddress),
-            runtime,
-          }),
-        )
+        const actual = yield* Effect.promise(_.changeContactEmailAddress({ body, locale, method, user })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -43,7 +39,12 @@ describe('changeContactEmailAddress', () => {
           skipToLabel: 'form',
           js: [],
         })
-      }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.mock(ContactEmailAddresses, {})])),
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => emailAddress }),
+        ]),
+      ),
   )
 
   describe('when the form has been submitted', () => {
@@ -63,10 +64,7 @@ describe('changeContactEmailAddress', () => {
 
           const actual = yield* Effect.provide(
             Effect.promise(
-              _.changeContactEmailAddress({ body: { emailAddress }, locale, method: 'POST', user })({
-                getContactEmailAddress: shouldNotBeCalled,
-                runtime,
-              }),
+              _.changeContactEmailAddress({ body: { emailAddress }, locale, method: 'POST', user })({ runtime }),
             ),
             Layer.mock(ContactEmailAddresses, {}),
           )
@@ -97,10 +95,7 @@ describe('changeContactEmailAddress', () => {
               locale,
               method: 'POST',
               user,
-            })({
-              getContactEmailAddress: shouldNotBeCalled,
-              runtime,
-            }),
+            })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -134,10 +129,7 @@ describe('changeContactEmailAddress', () => {
           const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
-            _.changeContactEmailAddress({ body, locale, method: 'POST', user })({
-              getContactEmailAddress: shouldNotBeCalled,
-              runtime,
-            }),
+            _.changeContactEmailAddress({ body, locale, method: 'POST', user })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -161,10 +153,7 @@ describe('changeContactEmailAddress', () => {
           const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
-            _.changeContactEmailAddress({ body, locale, method: 'POST', user })({
-              getContactEmailAddress: shouldNotBeCalled,
-              runtime,
-            }),
+            _.changeContactEmailAddress({ body, locale, method: 'POST', user })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -194,10 +183,7 @@ describe('changeContactEmailAddress', () => {
         const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 
         const actual = yield* Effect.promise(
-          _.changeContactEmailAddress({ body, locale, method, user: undefined })({
-            getContactEmailAddress: shouldNotBeCalled,
-            runtime,
-          }),
+          _.changeContactEmailAddress({ body, locale, method, user: undefined })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
