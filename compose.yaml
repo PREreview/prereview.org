@@ -4,7 +4,7 @@ services:
       context: .
       target: prod
     depends_on:
-      - mailcatcher
+      - mailpit
       - redis
     env_file:
       - .env
@@ -13,14 +13,14 @@ services:
       - HTTP_CACHE_REDIS_URI=redis://redis:6379
       - HTTP_CACHE_READONLY_FALLBACK_REDIS_URI=redis://localhost:6379
       - POSTGRES_URL=postgres://postgres:password@postgres:5432
-      - SMTP_URI=smtp://mailcatcher:1025
+      - SMTP_URI=smtp://mailpit:1025
     ports:
       - 3000:3000
-  mailcatcher:
-    image: sj26/mailcatcher
+  mailpit:
+    image: axllent/mailpit
     ports:
+      - 1080:8025
       - 1025:1025
-      - 1080:1080
   nginx:
     image: nginx
     ports:
