@@ -11,7 +11,8 @@ import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
-import { type NonEmptyString, NonEmptyStringC } from '../../../types/NonEmptyString.ts'
+import { NameC } from '../../../types/Name.ts'
+import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
@@ -163,7 +164,7 @@ const handleChangeAuthorForm = ({
     ),
   )
 
-const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(Struct.get('name')))
+const NameFieldD = pipe(D.struct({ name: NameC }), D.map(Struct.get('name')))
 
 const EmailAddressFieldD = pipe(
   D.struct({ emailAddress: pipe(D.string, D.map(String.trim), D.compose(EmailAddressC)) }),
