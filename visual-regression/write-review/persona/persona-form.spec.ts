@@ -4,8 +4,7 @@ import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
-import { Doi, OrcidId, Pseudonym } from '../../../src/types/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Doi, Name, OrcidId, Pseudonym } from '../../../src/types/index.ts'
 import { personaForm } from '../../../src/WebApp/write-review/persona/persona-form.ts'
 import { expect, test } from '../../base.ts'
 
@@ -48,7 +47,7 @@ const preprint = {
 } satisfies PreprintTitle
 
 const publicPersona = new Personas.PublicPersona({
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name.Name('Josiah Carberry'),
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
 })
 

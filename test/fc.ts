@@ -1530,7 +1530,7 @@ export const publicPersona = (): fc.Arbitrary<Personas.PublicPersona> =>
   fc
     .record({
       orcidId: orcidId(),
-      name: nonEmptyString(),
+      name: name(),
     })
     .map(args => new Personas.PublicPersona(args))
 

@@ -2,7 +2,7 @@ import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import * as ChoosePersonaForm from '../../../src/WebApp/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.ts'
@@ -52,7 +52,7 @@ test('content looks right when the persona is missing', async ({ showPage }) => 
 })
 
 const publicPersona = new Personas.PublicPersona({
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

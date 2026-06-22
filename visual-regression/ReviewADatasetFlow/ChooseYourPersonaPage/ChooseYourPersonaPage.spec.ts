@@ -3,7 +3,7 @@ import * as Personas from '../../../src/Personas/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.ts'
+import { Name, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
@@ -54,7 +54,7 @@ const datasetReviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
 const publicPersona = new Personas.PublicPersona({
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-  name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+  name: Name.Name('Josiah Carberry'),
 })
 
 const pseudonymPersona = new Personas.PseudonymPersona({

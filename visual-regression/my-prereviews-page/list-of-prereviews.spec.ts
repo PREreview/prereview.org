@@ -7,6 +7,7 @@ import * as Personas from '../../src/Personas/index.ts'
 import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import { Uuid } from '../../src/types/index.ts'
+import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
@@ -18,7 +19,7 @@ test('content looks right', async ({ showPage }) => {
     _.ListOfPrereviews({
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
       publicPersona: new Personas.PublicPersona({
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         orcidId: OrcidId('0000-0002-1825-0097'),
       }),
       pseudonymPersona: new Personas.PseudonymPersona({
@@ -97,7 +98,7 @@ const prereview3 = new Prereviews.RecentPreprintPrereview({
 const prereview4 = new Prereviews.RecentDatasetPrereview({
   author: new Personas.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
-    name: NonEmptyString('Josiah Carberry'),
+    name: Name('Josiah Carberry'),
   }),
   otherAuthors: [new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
   anonymousAuthors: 1,

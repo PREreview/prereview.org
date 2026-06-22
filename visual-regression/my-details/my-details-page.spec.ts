@@ -3,6 +3,7 @@ import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../.
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
@@ -121,7 +122,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 const publicPersona = new Personas.PublicPersona({
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

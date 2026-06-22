@@ -3,7 +3,7 @@ import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
@@ -11,7 +11,7 @@ import * as _ from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage
 import { expect, test } from '../../base.ts'
 
 const publicPersona = new Personas.PublicPersona({
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

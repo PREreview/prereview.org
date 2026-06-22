@@ -3,14 +3,14 @@ import { test } from '@fast-check/vitest'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/ShareDatasetReview/DatasetReviewToChatPostMessageInput.ts'
 import * as Personas from '../../../../src/Personas/index.ts'
-import { NonEmptyString, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
+import { Name, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
 
 test.each([
   [
     'public persona',
     {
       author: new Personas.PublicPersona({
-        name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+        name: Name.Name('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: 0,
@@ -59,7 +59,7 @@ test.each([
     '1 other author',
     {
       author: new Personas.PublicPersona({
-        name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+        name: Name.Name('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: 1,
@@ -85,7 +85,7 @@ test.each([
     '2 other authors',
     {
       author: new Personas.PublicPersona({
-        name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+        name: Name.Name('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: 2,

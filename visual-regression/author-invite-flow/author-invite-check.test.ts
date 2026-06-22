@@ -2,7 +2,7 @@ import * as Personas from '../../src/Personas/index.ts'
 import { checkPage } from '../../src/WebApp/author-invite-flow/check-page/check-page.ts'
 import { failureMessage } from '../../src/WebApp/author-invite-flow/check-page/failure-message.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
@@ -12,7 +12,7 @@ test('content looks right', async ({ showPage }) => {
   const response = checkPage({
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     persona: new Personas.PublicPersona({
-      name: NonEmptyString('Josiah Carberry'),
+      name: Name('Josiah Carberry'),
       orcidId: OrcidId('0000-0002-1825-0097'),
     }),
     locale: DefaultLocale,

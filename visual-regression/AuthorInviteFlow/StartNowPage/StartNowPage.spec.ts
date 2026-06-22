@@ -3,7 +3,7 @@ import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { PseudonymPersona, PublicPersona } from '../../../src/Personas/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import { PlainDate } from '../../../src/types/Temporal.ts'
@@ -34,7 +34,7 @@ const viewModel = {
   invitationId: Uuid('d9de5f06-69ab-4ccf-a0ce-95b8f6af31c6'),
   author: new PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
-    name: NonEmptyString('Josiah Carberry'),
+    name: Name('Josiah Carberry'),
   }),
   otherAuthors: [
     new PseudonymPersona({

@@ -3,6 +3,7 @@ import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import * as _ from '../../../src/WebApp/WriteCommentFlow/CheckPage/CheckPage.ts'
@@ -51,7 +52,7 @@ test('content looks right with competing interests', async ({ showPage }) => {
 })
 
 const publicPersona = new Personas.PublicPersona({
-  name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

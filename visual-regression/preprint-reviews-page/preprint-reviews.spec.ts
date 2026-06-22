@@ -958,7 +958,7 @@ const prereview5 = {
 } satisfies PreprintPrereview
 
 const rapidPrereview1 = {
-  author: new PublicPersona({ name: NonEmptyString('Alizée Malnoë'), orcidId: OrcidId('0000-0002-8777-3174') }),
+  author: new PublicPersona({ name: Name('Alizée Malnoë'), orcidId: OrcidId('0000-0002-8777-3174') }),
   questions: {
     availableCode: 'not applicable',
     availableData: 'no',

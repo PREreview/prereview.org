@@ -1,10 +1,10 @@
 import { Data, Function } from 'effect'
-import type { NonEmptyString, OrcidId, Pseudonym } from '../types/index.ts'
+import type { Name, OrcidId, Pseudonym } from '../types/index.ts'
 
 export type Persona = PublicPersona | PseudonymPersona
 
 export class PublicPersona extends Data.TaggedClass('PublicPersona')<{
-  name: NonEmptyString.NonEmptyString
+  name: Name.Name
   orcidId: OrcidId.OrcidId
 }> {}
 

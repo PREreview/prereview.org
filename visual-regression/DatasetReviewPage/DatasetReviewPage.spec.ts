@@ -4,7 +4,7 @@ import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
-import { Doi, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
+import { Doi, Name, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/DatasetReviewPage/DatasetReviewPage.ts'
 import { expect, test } from '../base.ts'
 
@@ -36,7 +36,7 @@ test('content looks right with multiple authors', async ({ showPage }) => {
 
 const datasetReview: _.DatasetReview = {
   author: new Personas.PublicPersona({
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    name: Name.Name('Josiah Carberry'),
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),
   otherAuthors: [],

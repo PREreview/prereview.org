@@ -3,7 +3,7 @@ import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/CheckYourRequestPage/CheckYourRequestPage.ts'
@@ -18,7 +18,7 @@ test('content looks right', async ({ showPage }) => {
     preprint,
     reviewRequest: {
       persona: new Personas.PublicPersona({
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         orcidId: OrcidId('0000-0002-1825-0097'),
       }),
       reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),

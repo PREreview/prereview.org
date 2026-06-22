@@ -3,7 +3,7 @@ import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, Name, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.ts'
 import { expect, test } from '../../base.ts'
 
@@ -24,7 +24,7 @@ const datasetReviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 const review = {
   author: Option.some(
     new Personas.PublicPersona({
-      name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+      name: Name.Name('Josiah Carberry'),
       orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     }),
   ),

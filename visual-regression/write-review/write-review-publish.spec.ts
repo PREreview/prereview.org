@@ -4,6 +4,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { publishForm } from '../../src/WebApp/write-review/publish-page/publish-form.ts'
@@ -16,7 +17,7 @@ const preprint = {
 } satisfies PreprintTitle
 
 const publicPersona = new Personas.PublicPersona({
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 
