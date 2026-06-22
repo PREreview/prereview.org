@@ -853,7 +853,7 @@ function recordToScietyPrereview(
       preprint: review.preprintId,
       createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
       doi: review.metadata.doi,
-      authors: review.metadata.creators,
+      authors: Array.map(review.metadata.creators, creator => ({ ...creator, name: Name(creator.name) })),
       language: pipe(
         Option.fromNullable(review.metadata.language),
         Option.filter(iso6393Validate),

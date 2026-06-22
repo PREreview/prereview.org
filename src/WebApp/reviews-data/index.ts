@@ -8,6 +8,7 @@ import * as Preprints from '../../Preprints/index.ts'
 import { DomainIdSchema, type DomainId } from '../../types/domain.ts'
 import { FieldIdSchema, type FieldId } from '../../types/field.ts'
 import { Doi, Iso639, Temporal } from '../../types/index.ts'
+import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdSchema, type SubfieldId } from '../../types/subfield.ts'
@@ -17,7 +18,7 @@ export interface Prereview {
   preprint: PreprintId
   createdAt: Temporal.PlainDate
   doi: Doi.Doi
-  authors: ReadonlyArray<{ name: string; orcid?: OrcidId }>
+  authors: ReadonlyArray<{ name: Name; orcid?: OrcidId }>
   language?: LanguageCode
   type: 'full' | 'structured'
   club?: Clubs.ClubId

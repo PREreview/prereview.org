@@ -2,8 +2,8 @@ import { Either, flow, Function, pipe, Schema, Tuple } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as Preprints from '../../Preprints/index.ts'
+import { type Name, Doi, Temporal } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
-import { Doi, Temporal } from '../../types/index.ts'
 
 export interface ScietyListEnv {
   scietyListToken: NonEmptyString
@@ -13,7 +13,7 @@ export interface Prereview {
   preprint: Preprints.IndeterminatePreprintId
   createdAt: Temporal.PlainDate
   doi: Doi.Doi
-  authors: ReadonlyArray<{ name: string }>
+  authors: ReadonlyArray<{ name: Name.Name }>
 }
 
 export interface GetPrereviewsEnv {
