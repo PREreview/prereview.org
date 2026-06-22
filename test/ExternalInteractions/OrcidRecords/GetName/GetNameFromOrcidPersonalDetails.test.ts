@@ -2,7 +2,7 @@ import { describe, expect, it, test } from '@effect/vitest'
 import { Option, Tuple } from 'effect'
 import { Orcid } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/OrcidRecords/GetName/GetNameFromOrcidPersonalDetails.ts'
-import { NonEmptyString } from '../../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../../src/types/Name.ts'
 import * as fc from '../../../fc.ts'
 
 describe('GetNameFromOrcidPersonalDetails', () => {
@@ -24,9 +24,9 @@ describe('GetNameFromOrcidPersonalDetails', () => {
       const personalDetails = new Orcid.PersonalDetails({
         ...stubPersonalDetails,
         name: {
-          givenNames: { value: NonEmptyString(givenNames) },
-          familyName: typeof familyName === 'string' ? { value: NonEmptyString(familyName) } : null,
-          creditName: typeof creditName === 'string' ? { value: NonEmptyString(creditName) } : null,
+          givenNames: { value: Name(givenNames) },
+          familyName: typeof familyName === 'string' ? { value: Name(familyName) } : null,
+          creditName: typeof creditName === 'string' ? { value: Name(creditName) } : null,
         },
       })
 

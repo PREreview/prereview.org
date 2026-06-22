@@ -1,5 +1,5 @@
 import { Data, Schema } from 'effect'
-import { NonEmptyString } from '../../types/index.ts'
+import { Name } from '../../types/index.ts'
 
 export class PersonalDetails extends Schema.Class<PersonalDetails>('PersonalDetails')({
   name: Schema.NullOr(
@@ -7,21 +7,21 @@ export class PersonalDetails extends Schema.Class<PersonalDetails>('PersonalDeta
       givenNames: Schema.propertySignature(
         Schema.NullOr(
           Schema.Struct({
-            value: Schema.compose(Schema.Trim, NonEmptyString.NonEmptyStringSchema),
+            value: Name.NameSchema,
           }),
         ),
       ).pipe(Schema.fromKey('given-names')),
       familyName: Schema.propertySignature(
         Schema.NullOr(
           Schema.Struct({
-            value: Schema.compose(Schema.Trim, NonEmptyString.NonEmptyStringSchema),
+            value: Name.NameSchema,
           }),
         ),
       ).pipe(Schema.fromKey('family-name')),
       creditName: Schema.propertySignature(
         Schema.NullOr(
           Schema.Struct({
-            value: Schema.compose(Schema.Trim, NonEmptyString.NonEmptyStringSchema),
+            value: Name.NameSchema,
           }),
         ),
       ).pipe(Schema.fromKey('credit-name')),
