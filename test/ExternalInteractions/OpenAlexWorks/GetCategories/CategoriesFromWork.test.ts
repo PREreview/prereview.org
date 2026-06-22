@@ -7,7 +7,7 @@ describe('CategoriesFromWork', () => {
     'removes duplicates',
     [
       fc
-        .uniqueArray(fc.record({ id: fc.url(), display_name: fc.string() }), {
+        .uniqueArray(fc.record({ id: fc.url(), display_name: fc.name() }), {
           minLength: 8,
           maxLength: 8,
           selector: record => record.id.href,

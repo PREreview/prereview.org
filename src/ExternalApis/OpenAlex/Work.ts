@@ -1,4 +1,5 @@
 import { Data, Schema } from 'effect'
+import { Name } from '../../types/index.ts'
 
 export type Work = typeof WorkSchema.Type
 
@@ -7,24 +8,24 @@ export const WorkSchema = Schema.Struct({
   keywords: Schema.Array(
     Schema.Struct({
       id: Schema.URL,
-      display_name: Schema.String,
+      display_name: Name.NameSchema,
     }),
   ),
   topics: Schema.Array(
     Schema.Struct({
       id: Schema.URL,
-      display_name: Schema.String,
+      display_name: Name.NameSchema,
       subfield: Schema.Struct({
         id: Schema.URL,
-        display_name: Schema.String,
+        display_name: Name.NameSchema,
       }),
       field: Schema.Struct({
         id: Schema.URL,
-        display_name: Schema.String,
+        display_name: Name.NameSchema,
       }),
       domain: Schema.Struct({
         id: Schema.URL,
-        display_name: Schema.String,
+        display_name: Name.NameSchema,
       }),
     }),
   ),

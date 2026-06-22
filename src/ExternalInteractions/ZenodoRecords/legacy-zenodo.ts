@@ -81,7 +81,7 @@ export interface WasPrereviewRemovedEnv {
 }
 
 export interface GetPreprintSubjectsEnv {
-  getPreprintSubjects: (preprint: PreprintId) => T.Task<ReadonlyArray<{ id: URL; name: string }>>
+  getPreprintSubjects: (preprint: PreprintId) => T.Task<ReadonlyArray<{ id: URL; name: Name }>>
 }
 
 export interface IsReviewRequestedEnv {
@@ -93,7 +93,7 @@ const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boole
 
 const getPreprintSubjects = (
   preprint: PreprintId,
-): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: string }>> =>
+): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: Name }>> =>
   R.asks(({ getPreprintSubjects }) => getPreprintSubjects(preprint))
 
 const isReviewRequested = (preprint: PreprintId): RTE.ReaderTaskEither<IsReviewRequestedEnv, 'unavailable', boolean> =>
@@ -665,7 +665,7 @@ ${comment.comment.toString()}`,
 function createDepositMetadata(
   deposition: EmptyDeposition,
   newPrereview: NewPrereview,
-  subjects: ReadonlyArray<{ id: URL; name: string }>,
+  subjects: ReadonlyArray<{ id: URL; name: Name }>,
   requested: boolean,
 ) {
   return pipe(

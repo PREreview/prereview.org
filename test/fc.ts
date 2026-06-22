@@ -633,7 +633,7 @@ export const openAlexWork = ({
       language: languageCode(),
       keywords: fc.array(
         fc.record({
-          display_name: fc.string(),
+          display_name: name(),
           id: url(),
         }),
       ),
@@ -641,11 +641,11 @@ export const openAlexWork = ({
         topics ??
         fc.array(
           fc.record({
-            display_name: fc.string(),
+            display_name: name(),
             id: url(),
-            subfield: fc.record({ display_name: fc.string(), id: url() }),
-            field: fc.record({ display_name: fc.string(), id: url() }),
-            domain: fc.record({ display_name: fc.string(), id: url() }),
+            subfield: fc.record({ display_name: name(), id: url() }),
+            field: fc.record({ display_name: name(), id: url() }),
+            domain: fc.record({ display_name: name(), id: url() }),
           }),
         ),
     },
