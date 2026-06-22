@@ -1,12 +1,14 @@
-import type { Effect } from 'effect'
-import { ContactEmailAddressIsUnavailable } from '../contact-email-address.ts'
+import { Effect, Equal, Option, pipe } from 'effect'
+import { ContactEmailAddressIsUnavailable, UnverifiedContactEmailAddress } from '../contact-email-address.ts'
 import type { Locale } from '../Context.ts'
-import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
-import type * as Keyv from '../keyv.ts'
+import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
+import * as Keyv from '../keyv.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
-import type { Uuid } from '../types/index.ts'
+import { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import type { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
@@ -20,5 +22,74 @@ export const StartVerificationOfContactEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
 ) => (
   input: Input,
-) => Effect.Effect<void, Error, Email.Email | Locale | OrcidRecords.OrcidRecords | Uuid.GenerateUuid> = () => () =>
-  new ContactEmailAddressIsUnavailable({ cause: 'not implemented' })
+) => Effect.Effect<
+  void,
+  Error,
+  Email.Email | Locale | OrcidRecords.OrcidRecords | Uuid.GenerateUuid
+> = contactEmailAddressStore =>
+  Effect.fn(
+    function* (input) {
+      const email = yield* Email.Email
+      const orcidRecords = yield* OrcidRecords.OrcidRecords
+      const uuid = yield* Uuid.GenerateUuid
+      const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+      const currentContact = yield* pipe(
+        FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(input.orcidId), {
+          contactEmailAddressStore,
+          ...loggerEnv,
+        }),
+        Effect.map(Option.some),
+        Effect.catchIf(
+          error => error === 'not-found',
+          () => Effect.succeedNone,
+        ),
+      )
+
+      if (
+        Option.isSome(currentContact) &&
+        currentContact.value._tag === 'VerifiedContactEmailAddress' &&
+        Equal.equals(currentContact.value.value, input.emailAddress)
+      ) {
+        return yield* new ContactEmailAddressHasAlreadyBeenVerified()
+      }
+
+      const name = yield* orcidRecords.getName(input.orcidId)
+
+      if (
+        Option.isSome(currentContact) &&
+        currentContact.value._tag === 'UnverifiedContactEmailAddress' &&
+        Equal.equals(currentContact.value.value, input.emailAddress)
+      ) {
+        return yield* email.verifyContactEmailAddress({
+          name,
+          emailAddress: currentContact.value,
+          redirectTo: input.resumeAt,
+        })
+      }
+
+      const newContact = new UnverifiedContactEmailAddress({
+        value: input.emailAddress,
+        verificationToken: yield* uuid.v4(),
+      })
+
+      yield* FptsToEffect.readerTaskEither(Keyv.saveContactEmailAddress(input.orcidId, newContact), {
+        contactEmailAddressStore,
+        ...loggerEnv,
+      })
+
+      yield* email.verifyContactEmailAddress({
+        name,
+        emailAddress: newContact,
+        redirectTo: input.resumeAt,
+      })
+    },
+    Effect.catchIf(
+      error => error === 'unavailable',
+      () => new ContactEmailAddressIsUnavailable({ cause: 'unknown' }),
+    ),
+    Effect.catchTags({
+      NameIsNotAvailable: error => new ContactEmailAddressIsUnavailable({ cause: error }),
+      UnableToSendEmail: error => new ContactEmailAddressIsUnavailable({ cause: error }),
+    }),
+  )
