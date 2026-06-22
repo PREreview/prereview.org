@@ -3,6 +3,7 @@ import { Array, Either } from 'effect'
 import type { Philsci } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml } from '../../../html.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import { Name } from '../../../types/Name.ts'
 
 export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprints.Preprint, Preprints.NotAPreprint> =>
   Either.gen(function* () {
@@ -14,7 +15,7 @@ export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprint
       id: new Preprints.PhilsciPreprintId({ value: eprint.eprintid }),
       posted: eprint.date ?? eprint.datestamp.toPlainDate(),
       authors: Array.map(eprint.creators, author => ({
-        name: `${author.name.given} ${author.name.family}`,
+        name: Name(`${author.name.given} ${author.name.family}`),
         orcid: author.orcid,
       })),
       title: {

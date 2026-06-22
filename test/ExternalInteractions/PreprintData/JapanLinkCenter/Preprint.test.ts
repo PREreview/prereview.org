@@ -6,6 +6,7 @@ import { JapanLinkCenter } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/Preprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
 import { JxivPreprintId, Preprint } from '../../../../src/Preprints/index.ts'
+import { Name } from '../../../../src/types/Name.ts'
 import * as fc from '../../../fc.ts'
 
 describe('recordToPreprint', () => {
@@ -15,9 +16,9 @@ describe('recordToPreprint', () => {
     expect(actual).toStrictEqual(
       Preprint({
         authors: [
-          { name: 'Noriko Shiomitsu', orcid: undefined },
-          { name: 'Miwako Honma', orcid: undefined },
-          { name: 'Keiko Yamada', orcid: undefined },
+          { name: Name('Noriko Shiomitsu'), orcid: undefined },
+          { name: Name('Miwako Honma'), orcid: undefined },
+          { name: Name('Keiko Yamada'), orcid: undefined },
         ],
         id: new JxivPreprintId({ value: Doi('10.51094/jxiv.1041') }),
         posted: Temporal.PlainDate.from('2025-01-28'),

@@ -6,6 +6,7 @@ import { PublicPersona } from '../../src/Personas/Persona.ts'
 import type { RapidPrereview } from '../../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
 import type { PreprintPrereview } from '../../src/Prereviews/index.ts'
+import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { createPage } from '../../src/WebApp/preprint-reviews-page/preprint-reviews.ts'
@@ -55,9 +56,9 @@ test('content looks right with rapid PREreviews', async ({ showTwoUpPage }) => {
 
 const preprint = Preprint({
   authors: [
-    { name: 'Xin Liu' },
-    { name: 'Wojciech Nawrocki', orcid: OrcidId('0000-0001-5124-3000') },
-    { name: 'Roberta Croce', orcid: OrcidId('0000-0003-3469-834X') },
+    { name: Name('Xin Liu') },
+    { name: Name('Wojciech Nawrocki'), orcid: OrcidId('0000-0001-5124-3000') },
+    { name: Name('Roberta Croce'), orcid: OrcidId('0000-0003-3469-834X') },
   ],
   id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
   posted: Temporal.PlainDate.from('2022-01-14'),

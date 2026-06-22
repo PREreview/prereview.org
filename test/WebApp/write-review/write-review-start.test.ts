@@ -69,7 +69,7 @@ describe('writeReviewStart', () => {
           .chain(user =>
             fc.tuple(
               fc.constant(user),
-              fc.preprint({ authors: fc.tuple(fc.record({ name: fc.string(), orcid: fc.constant(user.orcid) })) }),
+              fc.preprint({ authors: fc.tuple(fc.record({ name: fc.name(), orcid: fc.constant(user.orcid) })) }),
             ),
           ),
         fc.supportedLocale(),

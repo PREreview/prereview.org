@@ -8,6 +8,7 @@ import { type Html, sanitizeHtml } from '../../../html.ts'
 import { transformJatsToHtml } from '../../../jats.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { Iso639 } from '../../../types/index.ts'
+import { Name } from '../../../types/Name.ts'
 import * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.ts'
 
@@ -111,15 +112,15 @@ const getAuthors = (
           flow(
             Match.value,
             Match.when({ given: Match.string }, author => ({
-              name: `${author.given} ${author.family}`,
+              name: Name(`${author.given} ${author.family}`),
               orcid: author.ORCID,
             })),
             Match.when({ family: Match.string }, author => ({
-              name: author.family,
+              name: Name(author.family),
               orcid: author.ORCID,
             })),
             Match.when({ name: Match.string }, author => ({
-              name: author.name,
+              name: Name(author.name),
               orcid: undefined,
             })),
             Match.exhaustive,

@@ -1576,7 +1576,7 @@ export const preprint = ({ authors }: { authors?: Arbitrary<Preprint['authors']>
         nonEmptyArray(
           fc.record(
             {
-              name: fc.string(),
+              name: name(),
               orcid: orcidId(),
             },
             { requiredKeys: ['name'] },

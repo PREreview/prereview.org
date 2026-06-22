@@ -5,7 +5,7 @@ import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePre
 import { html, rawHtml } from '../../../../src/html.ts'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
-import { Doi, NonEmptyString, OrcidId, Temporal } from '../../../../src/types/index.ts'
+import { Doi, Name, NonEmptyString, OrcidId, Temporal } from '../../../../src/types/index.ts'
 
 it.effect.each<
   [string, _.PreprintReviewRequestWithThread, Array.NonEmptyReadonlyArray<Slack.ChatPostMessageInput['blocks']>]
@@ -16,9 +16,9 @@ it.effect.each<
       author: Option.some(NonEmptyString.NonEmptyString('Josiah Carberry')),
       preprint: Preprints.Preprint({
         authors: [
-          { name: 'Xin Liu' },
-          { name: 'Wojciech Nawrocki', orcid: OrcidId.OrcidId('0000-0001-5124-3000') },
-          { name: 'Roberta Croce', orcid: OrcidId.OrcidId('0000-0003-3469-834X') },
+          { name: Name.Name('Xin Liu') },
+          { name: Name.Name('Wojciech Nawrocki'), orcid: OrcidId.OrcidId('0000-0001-5124-3000') },
+          { name: Name.Name('Roberta Croce'), orcid: OrcidId.OrcidId('0000-0003-3469-834X') },
         ],
         id: new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2022.01.13.476201') }),
         posted: Temporal.PlainDate.from('2022-01-14'),
@@ -95,7 +95,7 @@ it.effect.each<
     {
       author: Option.some(NonEmptyString.NonEmptyString('Jean-Baptiste Botul')),
       preprint: Preprints.Preprint({
-        authors: [{ name: 'Rowan Cockett', orcid: OrcidId.OrcidId('0000-0002-7859-8394') }],
+        authors: [{ name: Name.Name('Rowan Cockett'), orcid: OrcidId.OrcidId('0000-0002-7859-8394') }],
         id: new Preprints.CurvenotePreprintId({ value: Doi.Doi('10.62329/fmdw8234') }),
         posted: Temporal.PlainDate.from({ year: 2024, month: 5, day: 11 }),
         title: {

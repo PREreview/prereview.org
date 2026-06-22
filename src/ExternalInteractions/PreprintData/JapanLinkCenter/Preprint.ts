@@ -2,6 +2,7 @@ import { Array, Either, Option, pipe } from 'effect'
 import type { JapanLinkCenter } from '../../../ExternalApis/index.ts'
 import { html } from '../../../html.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import { Name } from '../../../types/Name.ts'
 import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.ts'
 
 const determineJapanLinkCenterPreprintId = (
@@ -29,7 +30,7 @@ export const recordToPreprint = (
 
     const authors = Array.map(record.creator_list, creator => ({
       name: pipe(Array.headNonEmpty(creator.names), name =>
-        typeof name.last_name === 'string' ? `${name.first_name} ${name.last_name}` : name.first_name,
+        typeof name.last_name === 'string' ? Name(`${name.first_name} ${name.last_name}`) : Name(name.first_name),
       ),
       orcid: Option.match(Array.head(creator.researcher_id_list), {
         onSome: id => id.id_code,

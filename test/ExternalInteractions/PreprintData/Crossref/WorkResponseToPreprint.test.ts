@@ -36,6 +36,7 @@ import {
   UmsidaPreprintId,
   VerixivPreprintId,
 } from '../../../../src/Preprints/index.ts'
+import { Name } from '../../../../src/types/Name.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
 
 it.effect.each([
@@ -43,13 +44,13 @@ it.effect.each([
     response: 'ssrn.json',
     expected: Preprint({
       authors: [
-        { name: 'Kazuaki Nagasaka', orcid: undefined },
-        { name: 'Yuto Ogawa', orcid: undefined },
-        { name: 'Daisuke Ishii', orcid: undefined },
-        { name: 'Ayane Nagao', orcid: undefined },
-        { name: 'Hitomi Ikarashi', orcid: undefined },
-        { name: 'Naofumi Otsuru', orcid: undefined },
-        { name: 'Hideaki Onishi', orcid: undefined },
+        { name: Name('Kazuaki Nagasaka'), orcid: undefined },
+        { name: Name('Yuto Ogawa'), orcid: undefined },
+        { name: Name('Daisuke Ishii'), orcid: undefined },
+        { name: Name('Ayane Nagao'), orcid: undefined },
+        { name: Name('Hitomi Ikarashi'), orcid: undefined },
+        { name: Name('Naofumi Otsuru'), orcid: undefined },
+        { name: Name('Hideaki Onishi'), orcid: undefined },
       ],
       id: new SsrnPreprintId({ value: Doi('10.2139/ssrn.5186959') }),
       posted: 2025,
@@ -65,7 +66,7 @@ it.effect.each([
   {
     response: 'ssrn-encoded-html.json',
     expected: Preprint({
-      authors: [{ name: 'Manish Kumar', orcid: OrcidId('0000-0002-6021-7063') }],
+      authors: [{ name: Name('Manish Kumar'), orcid: OrcidId('0000-0002-6021-7063') }],
       id: new SsrnPreprintId({ value: Doi('10.2139/ssrn.6518178') }),
       posted: 2026,
       title: {
@@ -87,10 +88,10 @@ it.effect.each([
     response: 'neurolibre.json',
     expected: Preprint({
       authors: [
-        { name: 'Evelyn McLean', orcid: undefined },
-        { name: 'Jane Abdo', orcid: undefined },
-        { name: 'Nadia Blostein', orcid: OrcidId('0000-0002-1864-1899') },
-        { name: 'Nikola Stikov', orcid: OrcidId('0000-0002-8480-5230') },
+        { name: Name('Evelyn McLean'), orcid: undefined },
+        { name: Name('Jane Abdo'), orcid: undefined },
+        { name: Name('Nadia Blostein'), orcid: OrcidId('0000-0002-1864-1899') },
+        { name: Name('Nikola Stikov'), orcid: OrcidId('0000-0002-8480-5230') },
       ],
       id: new NeurolibrePreprintId({ value: Doi('10.55458/neurolibre.00031') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
@@ -105,16 +106,16 @@ it.effect.each([
     response: 'biorxiv.json',
     expected: Preprint({
       authors: [
-        { name: 'Sydney L Miles', orcid: OrcidId('0000-0003-2291-4105') },
-        { name: 'Dilys Santillo', orcid: OrcidId('0009-0004-3966-4952') },
-        { name: 'Vincenzo Torraca', orcid: OrcidId('0000-0001-7340-0249') },
-        { name: 'Ana Teresa López Jiménez', orcid: OrcidId('0000-0002-0289-738X') },
-        { name: 'Claire Jenkins', orcid: OrcidId('0000-0001-8600-9169') },
-        { name: 'Stephen Baker', orcid: OrcidId('0000-0003-1308-5755') },
-        { name: 'Kate S Baker', orcid: OrcidId('0000-0001-5850-1949') },
-        { name: 'Vanessa Sancho-Shimizu', orcid: OrcidId('0000-0002-3519-0727') },
-        { name: 'Kathryn E Holt', orcid: OrcidId('0000-0003-3949-2471') },
-        { name: 'Serge Mostowy', orcid: OrcidId('0000-0002-7286-6503') },
+        { name: Name('Sydney L Miles'), orcid: OrcidId('0000-0003-2291-4105') },
+        { name: Name('Dilys Santillo'), orcid: OrcidId('0009-0004-3966-4952') },
+        { name: Name('Vincenzo Torraca'), orcid: OrcidId('0000-0001-7340-0249') },
+        { name: Name('Ana Teresa López Jiménez'), orcid: OrcidId('0000-0002-0289-738X') },
+        { name: Name('Claire Jenkins'), orcid: OrcidId('0000-0001-8600-9169') },
+        { name: Name('Stephen Baker'), orcid: OrcidId('0000-0003-1308-5755') },
+        { name: Name('Kate S Baker'), orcid: OrcidId('0000-0001-5850-1949') },
+        { name: Name('Vanessa Sancho-Shimizu'), orcid: OrcidId('0000-0002-3519-0727') },
+        { name: Name('Kathryn E Holt'), orcid: OrcidId('0000-0003-3949-2471') },
+        { name: Name('Serge Mostowy'), orcid: OrcidId('0000-0002-7286-6503') },
       ],
       id: new BiorxivPreprintId({ value: Doi('10.1101/2025.02.05.636615') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 2, day: 5 }),
@@ -137,12 +138,12 @@ it.effect.each([
     response: 'medrxiv.json',
     expected: Preprint({
       authors: [
-        { name: 'Giovanni Deiana', orcid: undefined },
-        { name: 'Jun He', orcid: undefined },
-        { name: 'Brenda Cabrera-Mendoza', orcid: undefined },
-        { name: 'Roberto Ciccocioppo', orcid: undefined },
-        { name: 'Valerio Napolioni', orcid: undefined },
-        { name: 'Renato Polimanti', orcid: OrcidId('0000-0003-0745-6046') },
+        { name: Name('Giovanni Deiana'), orcid: undefined },
+        { name: Name('Jun He'), orcid: undefined },
+        { name: Name('Brenda Cabrera-Mendoza'), orcid: undefined },
+        { name: Name('Roberto Ciccocioppo'), orcid: undefined },
+        { name: Name('Valerio Napolioni'), orcid: undefined },
+        { name: Name('Renato Polimanti'), orcid: OrcidId('0000-0003-0745-6046') },
       ],
       id: new MedrxivPreprintId({ value: Doi('10.1101/2024.05.27.24307989') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 5, day: 28 }),
@@ -163,13 +164,13 @@ it.effect.each([
     response: 'scielo-preprints-english.json',
     expected: Preprint({
       authors: [
-        { name: 'Vinicius Rofatto', orcid: OrcidId('0000-0003-1453-7530') },
-        { name: 'Ivandro Klein', orcid: OrcidId('0000-0003-4296-592X') },
-        { name: 'Marcelo Tomio Matsuoka', orcid: undefined },
-        { name: 'Paulo de Oliveira Camargo', orcid: OrcidId('0000-0003-0892-9175') },
-        { name: 'Mauricio Roberto Veronez', orcid: undefined },
-        { name: 'Luiz Gonzaga Jr', orcid: OrcidId('0000-0002-7661-2447') },
-        { name: 'Lincon Rodrigues Silva', orcid: OrcidId('0009-0000-5951-4434') },
+        { name: Name('Vinicius Rofatto'), orcid: OrcidId('0000-0003-1453-7530') },
+        { name: Name('Ivandro Klein'), orcid: OrcidId('0000-0003-4296-592X') },
+        { name: Name('Marcelo Tomio Matsuoka'), orcid: undefined },
+        { name: Name('Paulo de Oliveira Camargo'), orcid: OrcidId('0000-0003-0892-9175') },
+        { name: Name('Mauricio Roberto Veronez'), orcid: undefined },
+        { name: Name('Luiz Gonzaga Jr'), orcid: OrcidId('0000-0002-7661-2447') },
+        { name: Name('Lincon Rodrigues Silva'), orcid: OrcidId('0009-0000-5951-4434') },
       ],
       id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.11415') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 10 }),
@@ -192,8 +193,8 @@ it.effect.each([
     response: 'scielo-preprints-portuguese.json',
     expected: Preprint({
       authors: [
-        { name: 'Elodia Honse Lebourg', orcid: undefined },
-        { name: 'Rosa Maria Da Exaltação Coutrim', orcid: OrcidId('0000-0002-9510-1263') },
+        { name: Name('Elodia Honse Lebourg'), orcid: undefined },
+        { name: Name('Rosa Maria Da Exaltação Coutrim'), orcid: OrcidId('0000-0002-9510-1263') },
       ],
       id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.11538') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 11 }),
@@ -216,8 +217,8 @@ it.effect.each([
     response: 'scielo-preprints-spanish.json',
     expected: Preprint({
       authors: [
-        { name: 'Luis Alejandro Andrade Dorado', orcid: OrcidId('0000-0002-2731-6908') },
-        { name: 'Jesús Antonio Castillo Franco', orcid: undefined },
+        { name: Name('Luis Alejandro Andrade Dorado'), orcid: OrcidId('0000-0002-2731-6908') },
+        { name: Name('Jesús Antonio Castillo Franco'), orcid: undefined },
       ],
       id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.11386') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 3, day: 18 }),
@@ -239,7 +240,7 @@ it.effect.each([
   {
     response: 'scielo-preprints-title-encoded-html.json',
     expected: Preprint({
-      authors: [{ name: 'Helder Ferreira do Vale', orcid: OrcidId('0000-0002-4993-7932') }],
+      authors: [{ name: Name('Helder Ferreira do Vale'), orcid: OrcidId('0000-0002-4993-7932') }],
       id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.15155') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 2, day: 20 }),
       title: {
@@ -261,9 +262,9 @@ it.effect.each([
     response: 'preprintsorg.json',
     expected: Preprint({
       authors: [
-        { name: 'Matthew T.J. Halma', orcid: undefined },
-        { name: 'Cristof Plothe', orcid: undefined },
-        { name: 'Theresa Lawrie', orcid: undefined },
+        { name: Name('Matthew T.J. Halma'), orcid: undefined },
+        { name: Name('Cristof Plothe'), orcid: undefined },
+        { name: Name('Theresa Lawrie'), orcid: undefined },
       ],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202303.0344.v1') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 3, day: 20 }),
@@ -283,7 +284,7 @@ it.effect.each([
   {
     response: 'preprintsorg-title-encoded-html.json',
     expected: Preprint({
-      authors: [{ name: 'Tihomir Car', orcid: undefined }],
+      authors: [{ name: Name('Tihomir Car'), orcid: undefined }],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1190.v1') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 15 }),
       title: {
@@ -305,8 +306,8 @@ it.effect.each([
     response: 'preprintsorg-title-encoded-html-paragraph.json',
     expected: Preprint({
       authors: [
-        { name: 'Pascal Stiefenhofer', orcid: undefined },
-        { name: 'Jing Qian', orcid: undefined },
+        { name: Name('Pascal Stiefenhofer'), orcid: undefined },
+        { name: Name('Jing Qian'), orcid: undefined },
       ],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.0801.v1') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 13 }),
@@ -328,7 +329,7 @@ it.effect.each([
   {
     response: 'preprintsorg-title-containing-encoded-html.json',
     expected: Preprint({
-      authors: [{ name: 'Mariya Zhelyazkova', orcid: OrcidId('0000-0001-7479-4139') }],
+      authors: [{ name: Name('Mariya Zhelyazkova'), orcid: OrcidId('0000-0001-7479-4139') }],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1248.v1') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 16 }),
       title: {
@@ -350,8 +351,8 @@ it.effect.each([
     response: 'preprintsorg-title-containing-encoded-html-empty.json',
     expected: Preprint({
       authors: [
-        { name: 'Antonella Chesca', orcid: undefined },
-        { name: 'Tim Sandle', orcid: OrcidId('0000-0002-8304-8274') },
+        { name: Name('Antonella Chesca'), orcid: undefined },
+        { name: Name('Tim Sandle'), orcid: OrcidId('0000-0002-8304-8274') },
       ],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202202.0061.v4') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 2 }),
@@ -372,11 +373,11 @@ it.effect.each([
     response: 'preprintsorg-title-containing-encoded-html-attribute.json',
     expected: Preprint({
       authors: [
-        { name: 'Izabela de Castro Santiago' },
-        { name: 'Janaina de Alcântara Lemos', orcid: OrcidId('0000-0001-8458-0097') },
-        { name: 'Ivan Maulaz Silva' },
-        { name: 'Anna Eliza Maciel de Faria Mota Oliveira', orcid: OrcidId('0000-0001-9337-4519') },
-        { name: 'Diego dos Santos Ferreira' },
+        { name: Name('Izabela de Castro Santiago') },
+        { name: Name('Janaina de Alcântara Lemos'), orcid: OrcidId('0000-0001-8458-0097') },
+        { name: Name('Ivan Maulaz Silva') },
+        { name: Name('Anna Eliza Maciel de Faria Mota Oliveira'), orcid: OrcidId('0000-0001-9337-4519') },
+        { name: Name('Diego dos Santos Ferreira') },
       ],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1676.v2') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 4, day: 8 }),
@@ -399,8 +400,8 @@ it.effect.each([
     response: 'preprintsorg-abstract-encoded-html.json',
     expected: Preprint({
       authors: [
-        { name: 'István Biró', orcid: OrcidId('0009-0002-6013-1371') },
-        { name: 'Gábor Fazekas', orcid: OrcidId('0000-0003-3612-8826') },
+        { name: Name('István Biró'), orcid: OrcidId('0009-0002-6013-1371') },
+        { name: Name('Gábor Fazekas'), orcid: OrcidId('0000-0003-3612-8826') },
       ],
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202505.1032.v1') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 5, day: 14 }),
@@ -423,10 +424,10 @@ it.effect.each([
     response: 'verixiv.json',
     expected: Preprint({
       authors: [
-        { name: 'Zachary Thomas Stavrou–Dowd', orcid: OrcidId('0000-0002-0323-8896') },
-        { name: 'Clair Rose', orcid: undefined },
-        { name: 'Álvaro Acosta-Serrano', orcid: OrcidId('0000-0002-2576-7959') },
-        { name: 'Lee Rafuse Haines', orcid: OrcidId('0000-0001-8821-6479') },
+        { name: Name('Zachary Thomas Stavrou–Dowd'), orcid: OrcidId('0000-0002-0323-8896') },
+        { name: Name('Clair Rose'), orcid: undefined },
+        { name: Name('Álvaro Acosta-Serrano'), orcid: OrcidId('0000-0002-2576-7959') },
+        { name: Name('Lee Rafuse Haines'), orcid: OrcidId('0000-0001-8821-6479') },
       ],
       id: new VerixivPreprintId({ value: Doi('10.12688/verixiv.54.1') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 8, day: 29 }),
@@ -441,28 +442,28 @@ it.effect.each([
     response: 'biorxiv-group-author.json',
     expected: Preprint({
       authors: [
-        { name: 'Gina M. Many', orcid: OrcidId('0000-0003-4779-1690') },
-        { name: 'Tyler J Sagendorf', orcid: OrcidId('0000-0003-1552-4870') },
-        { name: 'Hugh Mitchell', orcid: undefined },
-        { name: 'James A Sanford', orcid: OrcidId('0000-0001-7901-5579') },
-        { name: 'Samuel Cohen', orcid: undefined },
-        { name: 'Ravi Misra', orcid: undefined },
-        { name: 'Igor Estevao', orcid: undefined },
-        { name: 'Ivo Díaz Ludovico', orcid: undefined },
-        { name: 'David A Gaul', orcid: OrcidId('0000-0002-9308-1895') },
-        { name: 'Malene E Lindholm', orcid: OrcidId('0000-0002-5763-7833') },
-        { name: 'Mereena Ushakumary', orcid: undefined },
-        { name: 'James Pino', orcid: undefined },
-        { name: 'Nicholas Musi', orcid: undefined },
-        { name: 'Jia Nie', orcid: undefined },
-        { name: 'Facundo M Fernández', orcid: OrcidId('0000-0002-0302-2534') },
-        { name: 'Eric A Ortlund', orcid: OrcidId('0000-0001-8855-3029') },
-        { name: 'Karyn A. Esser', orcid: OrcidId('0000-0002-5791-1441') },
-        { name: 'Sue C Bodine', orcid: undefined },
-        { name: 'Simon Schenk', orcid: undefined },
-        { name: 'Geremy Clair', orcid: undefined },
-        { name: 'Joshua N Adkins', orcid: OrcidId('0000-0003-0399-0700') },
-        { name: 'The MoTrPAC Study Group', orcid: undefined },
+        { name: Name('Gina M. Many'), orcid: OrcidId('0000-0003-4779-1690') },
+        { name: Name('Tyler J Sagendorf'), orcid: OrcidId('0000-0003-1552-4870') },
+        { name: Name('Hugh Mitchell'), orcid: undefined },
+        { name: Name('James A Sanford'), orcid: OrcidId('0000-0001-7901-5579') },
+        { name: Name('Samuel Cohen'), orcid: undefined },
+        { name: Name('Ravi Misra'), orcid: undefined },
+        { name: Name('Igor Estevao'), orcid: undefined },
+        { name: Name('Ivo Díaz Ludovico'), orcid: undefined },
+        { name: Name('David A Gaul'), orcid: OrcidId('0000-0002-9308-1895') },
+        { name: Name('Malene E Lindholm'), orcid: OrcidId('0000-0002-5763-7833') },
+        { name: Name('Mereena Ushakumary'), orcid: undefined },
+        { name: Name('James Pino'), orcid: undefined },
+        { name: Name('Nicholas Musi'), orcid: undefined },
+        { name: Name('Jia Nie'), orcid: undefined },
+        { name: Name('Facundo M Fernández'), orcid: OrcidId('0000-0002-0302-2534') },
+        { name: Name('Eric A Ortlund'), orcid: OrcidId('0000-0001-8855-3029') },
+        { name: Name('Karyn A. Esser'), orcid: OrcidId('0000-0002-5791-1441') },
+        { name: Name('Sue C Bodine'), orcid: undefined },
+        { name: Name('Simon Schenk'), orcid: undefined },
+        { name: Name('Geremy Clair'), orcid: undefined },
+        { name: Name('Joshua N Adkins'), orcid: OrcidId('0000-0003-0399-0700') },
+        { name: Name('The MoTrPAC Study Group'), orcid: undefined },
       ],
       id: new BiorxivPreprintId({ value: Doi('10.1101/2025.04.10.647997') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 4, day: 16 }),
@@ -485,8 +486,8 @@ it.effect.each([
     response: 'biorxiv-family-name-only.json',
     expected: Preprint({
       authors: [
-        { name: 'Neha', orcid: OrcidId('0000-0002-5719-6572') },
-        { name: 'Parimal Das', orcid: OrcidId('0000-0002-9857-4277') },
+        { name: Name('Neha'), orcid: OrcidId('0000-0002-5719-6572') },
+        { name: Name('Parimal Das'), orcid: OrcidId('0000-0002-9857-4277') },
       ],
       id: new BiorxivPreprintId({ value: Doi('10.1101/2023.07.06.547934') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 7, day: 6 }),
@@ -509,33 +510,33 @@ it.effect.each([
     response: 'research-square.json',
     expected: Preprint({
       authors: [
-        { name: 'Shaun Treweek', orcid: OrcidId('0000-0002-7239-7241') },
-        { name: 'Simon Bevan', orcid: undefined },
-        { name: 'Peter Bower', orcid: undefined },
-        { name: 'Matthias Briel', orcid: undefined },
-        { name: 'Marion Campbell', orcid: undefined },
-        { name: 'Jacquie Christie', orcid: undefined },
-        { name: 'Clive Collett', orcid: undefined },
-        { name: 'Seonaidh Cotton', orcid: undefined },
-        { name: 'Declan Devane', orcid: undefined },
-        { name: 'Adel El Feky', orcid: undefined },
-        { name: 'Sandra Galvin', orcid: undefined },
-        { name: 'Heidi Gardner', orcid: undefined },
-        { name: 'Katie Gillies', orcid: undefined },
-        { name: 'Kerenza Hood', orcid: undefined },
-        { name: 'Jan Jansen', orcid: undefined },
-        { name: 'Roberta Littleford', orcid: undefined },
-        { name: 'Adwoa Parker', orcid: undefined },
-        { name: 'Craig Ramsay', orcid: undefined },
-        { name: 'Lynne Restrup', orcid: undefined },
-        { name: 'Frank Sullivan', orcid: undefined },
-        { name: 'David Torgerson', orcid: undefined },
-        { name: 'Liz Tremain', orcid: undefined },
-        { name: 'Erik von Elm', orcid: undefined },
-        { name: 'Matthew Westmore', orcid: undefined },
-        { name: 'Hywel Williams', orcid: undefined },
-        { name: 'Paula R Williamson', orcid: undefined },
-        { name: 'Mike Clarke', orcid: undefined },
+        { name: Name('Shaun Treweek'), orcid: OrcidId('0000-0002-7239-7241') },
+        { name: Name('Simon Bevan'), orcid: undefined },
+        { name: Name('Peter Bower'), orcid: undefined },
+        { name: Name('Matthias Briel'), orcid: undefined },
+        { name: Name('Marion Campbell'), orcid: undefined },
+        { name: Name('Jacquie Christie'), orcid: undefined },
+        { name: Name('Clive Collett'), orcid: undefined },
+        { name: Name('Seonaidh Cotton'), orcid: undefined },
+        { name: Name('Declan Devane'), orcid: undefined },
+        { name: Name('Adel El Feky'), orcid: undefined },
+        { name: Name('Sandra Galvin'), orcid: undefined },
+        { name: Name('Heidi Gardner'), orcid: undefined },
+        { name: Name('Katie Gillies'), orcid: undefined },
+        { name: Name('Kerenza Hood'), orcid: undefined },
+        { name: Name('Jan Jansen'), orcid: undefined },
+        { name: Name('Roberta Littleford'), orcid: undefined },
+        { name: Name('Adwoa Parker'), orcid: undefined },
+        { name: Name('Craig Ramsay'), orcid: undefined },
+        { name: Name('Lynne Restrup'), orcid: undefined },
+        { name: Name('Frank Sullivan'), orcid: undefined },
+        { name: Name('David Torgerson'), orcid: undefined },
+        { name: Name('Liz Tremain'), orcid: undefined },
+        { name: Name('Erik von Elm'), orcid: undefined },
+        { name: Name('Matthew Westmore'), orcid: undefined },
+        { name: Name('Hywel Williams'), orcid: undefined },
+        { name: Name('Paula R Williamson'), orcid: undefined },
+        { name: Name('Mike Clarke'), orcid: undefined },
       ],
       id: new ResearchSquarePreprintId({ value: Doi('10.21203/rs.1.1/v2') }),
       posted: Temporal.PlainDate.from({ year: 2019, month: 10, day: 9 }),
@@ -556,8 +557,8 @@ it.effect.each([
     response: 'metaarxiv.json',
     expected: Preprint({
       authors: [
-        { name: 'Garret Christensen', orcid: undefined },
-        { name: 'Edward Miguel', orcid: undefined },
+        { name: Name('Garret Christensen'), orcid: undefined },
+        { name: Name('Edward Miguel'), orcid: undefined },
       ],
       id: new MetaarxivPreprintId({ value: Doi('10.31222/osf.io/9a3rw') }),
       posted: Temporal.PlainDate.from({ year: 2017, month: 3, day: 3 }),
@@ -577,7 +578,7 @@ it.effect.each([
   {
     response: 'socarxiv.json',
     expected: Preprint({
-      authors: [{ name: 'Paula Sequeiros', orcid: OrcidId('0000-0003-2069-5631') }],
+      authors: [{ name: Name('Paula Sequeiros'), orcid: OrcidId('0000-0003-2069-5631') }],
       id: new SocarxivPreprintId({ value: Doi('10.31235/osf.io/ny6h2') }),
       posted: Temporal.PlainDate.from({ year: 2022, month: 11, day: 26 }),
       title: {
@@ -596,7 +597,7 @@ it.effect.each([
   {
     response: 'osf-preprints.json',
     expected: Preprint({
-      authors: [{ name: 'Tran Duc Hung Long', orcid: undefined }],
+      authors: [{ name: Name('Tran Duc Hung Long'), orcid: undefined }],
       id: new OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/t9gbj') }),
       posted: Temporal.PlainDate.from({ year: 2021, month: 10, day: 11 }),
       title: {
@@ -615,7 +616,7 @@ it.effect.each([
   {
     response: 'osf-preprints-short-title.json',
     expected: Preprint({
-      authors: [{ name: 'Zane Orin Whitcomb', orcid: OrcidId('0009-0003-0457-2276') }],
+      authors: [{ name: Name('Zane Orin Whitcomb'), orcid: OrcidId('0009-0003-0457-2276') }],
       id: new OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/4k26r_v11') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 8, day: 11 }),
       title: {
@@ -634,7 +635,7 @@ it.effect.each([
   {
     response: 'psyarxiv.json',
     expected: Preprint({
-      authors: [{ name: 'JingHao MA' }],
+      authors: [{ name: Name('JingHao MA') }],
       id: new PsyarxivPreprintId({ value: Doi('10.31234/osf.io/hq8sd_v1') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 8, day: 21 }),
       title: {
@@ -653,7 +654,7 @@ it.effect.each([
   {
     response: 'africarxiv-osf.json',
     expected: Preprint({
-      authors: [{ name: 'Abdoul kafid Chabi TOKO KOUTOGUI' }],
+      authors: [{ name: Name('Abdoul kafid Chabi TOKO KOUTOGUI') }],
       id: new AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/yv9az') }),
       posted: Temporal.PlainDate.from({ year: 2019, month: 9, day: 10 }),
       title: {
@@ -673,9 +674,9 @@ it.effect.each([
     response: 'science-open.json',
     expected: Preprint({
       authors: [
-        { name: 'Antonia Schrader', orcid: OrcidId('0000-0001-7080-634X') },
-        { name: 'Alexander Grossmann', orcid: OrcidId('0000-0001-9169-5685') },
-        { name: 'Michael Reiche' },
+        { name: Name('Antonia Schrader'), orcid: OrcidId('0000-0001-7080-634X') },
+        { name: Name('Alexander Grossmann'), orcid: OrcidId('0000-0001-9169-5685') },
+        { name: Name('Michael Reiche') },
       ],
       id: new ScienceOpenPreprintId({ value: Doi('10.14293/s2199-1006.1.sor-.ppx3ec5.v1') }),
       posted: Temporal.PlainDate.from({ year: 2018, month: 9, day: 17 }),
@@ -696,9 +697,9 @@ it.effect.each([
     response: 'edarxiv.json',
     expected: Preprint({
       authors: [
-        { name: 'Stefan T. Siegel', orcid: OrcidId('0000-0002-7065-1306') },
-        { name: 'Astrid Krummenauer-Grasser' },
-        { name: 'Christine Stahl' },
+        { name: Name('Stefan T. Siegel'), orcid: OrcidId('0000-0002-7065-1306') },
+        { name: Name('Astrid Krummenauer-Grasser') },
+        { name: Name('Christine Stahl') },
       ],
       id: new EdarxivPreprintId({ value: Doi('10.35542/osf.io/dqw5h') }),
       posted: Temporal.PlainDate.from({ year: 2022, month: 5, day: 16 }),
@@ -721,13 +722,13 @@ it.effect.each([
     response: 'chemrxiv.json',
     expected: Preprint({
       authors: [
-        { name: 'Benjamin Mudrak', orcid: OrcidId('0000-0002-2805-5690') },
-        { name: 'Sara Bosshart' },
-        { name: 'Wolfram Koch' },
-        { name: 'Allison Leung' },
-        { name: 'Donna Minton' },
-        { name: 'Mitsuo Sawamoto' },
-        { name: 'Sarah Tegen' },
+        { name: Name('Benjamin Mudrak'), orcid: OrcidId('0000-0002-2805-5690') },
+        { name: Name('Sara Bosshart') },
+        { name: Name('Wolfram Koch') },
+        { name: Name('Allison Leung') },
+        { name: Name('Donna Minton') },
+        { name: Name('Mitsuo Sawamoto') },
+        { name: Name('Sarah Tegen') },
       ],
       id: new ChemrxivPreprintId({ value: Doi('10.26434/chemrxiv-2022-w0jzh-v2') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 1, day: 18 }),
@@ -754,10 +755,10 @@ it.effect.each([
         ),
       },
       authors: [
-        { name: 'Osman Yurekli', orcid: OrcidId('0000-0002-2160-6138') },
-        { name: 'Durmuş ALBAYRAK' },
-        { name: 'Fatih AYLIKCI' },
-        { name: 'Neşe Dernek' },
+        { name: Name('Osman Yurekli'), orcid: OrcidId('0000-0002-2160-6138') },
+        { name: Name('Durmuş ALBAYRAK') },
+        { name: Name('Fatih AYLIKCI') },
+        { name: Name('Neşe Dernek') },
       ],
       id: new AuthoreaPreprintId({ value: Doi('10.22541/au.169147825.53935627/v1') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 8, day: 8 }),
@@ -775,13 +776,13 @@ it.effect.each([
     expected: Preprint({
       abstract: undefined,
       authors: [
-        { name: 'Le Khanh Tuan', orcid: OrcidId('0000-0002-7115-1725') },
-        { name: 'Thi Ngoc Nguyen' },
-        { name: 'Kieu Hung Ly' },
-        { name: 'Thi Thanh' },
-        { name: 'Ha Dang' },
-        { name: 'Van Anh' },
-        { name: 'Hai Tong' },
+        { name: Name('Le Khanh Tuan'), orcid: OrcidId('0000-0002-7115-1725') },
+        { name: Name('Thi Ngoc Nguyen') },
+        { name: Name('Kieu Hung Ly') },
+        { name: Name('Thi Thanh') },
+        { name: Name('Ha Dang') },
+        { name: Name('Van Anh') },
+        { name: Name('Hai Tong') },
       ],
       id: new AdvancePreprintId({ value: Doi('10.31124/advance.172416255.59522334/v1') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 8, day: 20 }),
@@ -803,7 +804,7 @@ it.effect.each([
           '<p>The ability to build upon existing knowledge is fundamental to the process of science. Yet, despite the rapid advancement of science, the methods for citing and referencing content have remained surprisingly static. Today, we’re on the brink of transforming how we interact with scientific literature and educational content. The Curvenote team has been working in the MyST Markdown ecosystem to simplify the ways to reference and embed figures directly into publications. We are starting this process by integrating a <a href="https://mystmd.org/guide/external-references#tbl-syntax-xref">simple markdown syntax for hover-references</a>, which aims to not only streamline referencing academic citations but also enhance the readability and interactive capacity of scholarly articles. This blog post explores the importance of scientific reuse, as the driving FAIR principle, and introduces new tools to reshape how knowledge is reused, shared, and improved in the scientific community.</p>',
         ),
       },
-      authors: [{ name: 'Rowan Cockett', orcid: OrcidId('0000-0002-7859-8394') }],
+      authors: [{ name: Name('Rowan Cockett'), orcid: OrcidId('0000-0002-7859-8394') }],
       id: new CurvenotePreprintId({ value: Doi('10.62329/fmdw8234') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 5, day: 11 }),
       title: {
@@ -822,7 +823,10 @@ it.effect.each([
           '<p>For many applications in environmental remote sensing, the interpretation of a given measurement depends strongly on what time of year the measurement was taken. This is particularly the case for phenology studies concerned with identifying when plant developmental transitions occur, but it is also true for a wide range of applications including vegetation species classification, crop yield estimation, and more. This study explores the use of Fisher Discriminant Analysis (FDA) as a method for extracting time-resolved information from multivariate environmental time series data. FDA is useful because it can be applied to multivariate input data and, for phenological estimation problems, produces a transformation that is physically interpretable. This work contains both theoretical and applied components. First, we use FDA to demonstrate the time-resolved nature of phenological information. Where curve-fitting and other commonly used data transformations that are sensitive to variation throughout a full time series, we show how FDA identifies application-relevant variation in specific variables at specific points in time. Next, we apply FDA to estimate county-average corn planting dates in the United States corn belt. We find that using multivariate data inputs can reduce prediction RMSE (in days) by 20% relative to models using only univariate inputs. We also compare FDA (which is linear) to nonlinear planting date estimation models based on curve-fitting and random forest estimators. We find that multivariate FDA models significantly improve on univariate curve-fitting and have comparable performance when using the same univariate inputs (despite the linearity of FDA). We also find that FDA-based approaches have lower RMSE than random forest in all configurations. Finally, we interpret FDA coefficients for individual measurements sensitive to vegetation density, land surface temperature, and soil moisture by relating them to physical mechanisms indicative of earlier or later planting.</p>',
         ),
       },
-      authors: [{ name: 'Conor Doherty', orcid: OrcidId('0000-0003-2637-0029') }, { name: 'Meagan Mauter' }],
+      authors: [
+        { name: Name('Conor Doherty'), orcid: OrcidId('0000-0003-2637-0029') },
+        { name: Name('Meagan Mauter') },
+      ],
       id: new EartharxivPreprintId({ value: Doi('10.31223/x5h94p') }),
       posted: Temporal.PlainDate.from({ year: 2022, month: 10, day: 26 }),
       title: {
@@ -844,13 +848,13 @@ it.effect.each([
         ),
       },
       authors: [
-        { name: 'Samantha Burke' },
-        { name: 'Patrice Pottier' },
-        { name: 'Malgorzata Lagisz' },
-        { name: 'Erin Macartney' },
-        { name: 'Tracy Ainsworth' },
-        { name: 'Szymon Drobniak', orcid: OrcidId('0000-0001-8101-6247') },
-        { name: 'Shinichi Nakagawa' },
+        { name: Name('Samantha Burke') },
+        { name: Name('Patrice Pottier') },
+        { name: Name('Malgorzata Lagisz') },
+        { name: Name('Erin Macartney') },
+        { name: Name('Tracy Ainsworth') },
+        { name: Name('Szymon Drobniak'), orcid: OrcidId('0000-0001-8101-6247') },
+        { name: Name('Shinichi Nakagawa') },
       ],
       id: new EcoevorxivPreprintId({ value: Doi('10.32942/x2hp4p') }),
       posted: Temporal.PlainDate.from({ year: 2023, month: 1, day: 23 }),
@@ -867,7 +871,7 @@ it.effect.each([
     response: 'engrxiv.json',
     expected: Preprint({
       abstract: undefined,
-      authors: [{ name: 'Yoji Yamato' }],
+      authors: [{ name: Name('Yoji Yamato') }],
       id: new EngrxivPreprintId({ value: Doi('10.31224/2632') }),
       posted: Temporal.PlainDate.from({ year: 2022, month: 10, day: 20 }),
       title: {
@@ -882,10 +886,10 @@ it.effect.each([
     expected: Preprint({
       abstract: undefined,
       authors: [
-        { name: 'Shubhankar Kapoor', orcid: OrcidId('0009-0002-1293-2377') },
-        { name: 'Adrian G Wills' },
-        { name: 'Johannes Hendriks' },
-        { name: 'Lachlan Blackhall' },
+        { name: Name('Shubhankar Kapoor'), orcid: OrcidId('0009-0002-1293-2377') },
+        { name: Name('Adrian G Wills') },
+        { name: Name('Johannes Hendriks') },
+        { name: Name('Lachlan Blackhall') },
       ],
       id: new TechrxivPreprintId({ value: Doi('10.36227/techrxiv.170794036.66542348/v1') }),
       posted: Temporal.PlainDate.from({ year: 2024, month: 2, day: 14 }),
@@ -902,7 +906,10 @@ it.effect.each([
     response: 'umsida.json',
     expected: Preprint({
       abstract: undefined,
-      authors: [{ name: "Rif'atul Ula" }, { name: 'Farikh Marzuqi Ammar', orcid: OrcidId('0000-0002-0833-0659') }],
+      authors: [
+        { name: Name("Rif'atul Ula") },
+        { name: Name('Farikh Marzuqi Ammar'), orcid: OrcidId('0000-0002-0833-0659') },
+      ],
       id: new UmsidaPreprintId({ value: Doi('10.21070/ups.10182') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 2, day: 13 }),
       title: {
@@ -924,11 +931,11 @@ it.effect.each([
         ),
       },
       authors: [
-        { name: 'Kim Gadsden-Knowles', orcid: OrcidId('0000-0002-9657-5110') },
-        { name: 'Ramal Moonesinghe', orcid: undefined },
-        { name: 'Benjamin Fisher', orcid: undefined },
-        { name: 'Angela Child', orcid: undefined },
-        { name: 'Umed A Ajani', orcid: undefined },
+        { name: Name('Kim Gadsden-Knowles'), orcid: OrcidId('0000-0002-9657-5110') },
+        { name: Name('Ramal Moonesinghe'), orcid: undefined },
+        { name: Name('Benjamin Fisher'), orcid: undefined },
+        { name: Name('Angela Child'), orcid: undefined },
+        { name: Name('Umed A Ajani'), orcid: undefined },
       ],
       id: new JmirPreprintId({ value: Doi('10.2196/preprints.96189') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 3, day: 26 }),
