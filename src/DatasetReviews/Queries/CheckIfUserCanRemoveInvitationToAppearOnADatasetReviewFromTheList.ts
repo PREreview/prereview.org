@@ -1,7 +1,7 @@
 import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
-import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import type { Name, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {
@@ -11,7 +11,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  NonEmptyString.NonEmptyString,
+  Name.Name,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished

@@ -4,7 +4,7 @@ import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { NonEmptyString, Uuid } from '../../../types/index.ts'
+import type { Name, Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type * as RemoveInvitationToAppearForm from './RemoveInvitationToAppearForm.ts'
 
@@ -15,7 +15,7 @@ export const RemoveInvitationToAppearPage = ({
   form,
   locale,
 }: {
-  authorName: NonEmptyString.NonEmptyString
+  authorName: Name.Name
   datasetReviewId: Uuid.Uuid
   invitationId: Uuid.Uuid
   form: RemoveInvitationToAppearForm.RemoveInvitationToAppearForm
@@ -114,8 +114,7 @@ export const RemoveInvitationToAppearPage = ({
 }
 
 const toErrorItems =
-  (locale: SupportedLocale, authorName: NonEmptyString.NonEmptyString) =>
-  (form: RemoveInvitationToAppearForm.InvalidForm) => html`
+  (locale: SupportedLocale, authorName: Name.Name) => (form: RemoveInvitationToAppearForm.InvalidForm) => html`
     ${Either.isLeft(form.removeAuthor)
       ? html`
           <li>

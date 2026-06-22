@@ -2,7 +2,7 @@ import { Either } from 'effect'
 import * as RemoveInvitationToAppearForm from '../../../src/WebApp/ReviewADatasetFlow/RemoveInvitationToAppearPage/RemoveInvitationToAppearForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/RemoveInvitationToAppearPage/RemoveInvitationToAppearPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
 import { expect, test } from '../../base.ts'
 
@@ -52,7 +52,7 @@ test('content looks right when missing', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const authorName = NonEmptyString('Josiah Carberry')
+const authorName = Name('Josiah Carberry')
 
 const datasetReviewId = Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
