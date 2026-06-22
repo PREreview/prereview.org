@@ -9,6 +9,7 @@ import { maybeGetLanguages } from '../../languages.ts'
 import { maybeGetLocation } from '../../location.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { type SlackUser, maybeGetSlackUser } from '../../slack-user.ts'
+import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { OrcidProfileId } from '../../types/profile-id.ts'
@@ -17,7 +18,7 @@ import { type Prereviews, getPrereviews } from './prereviews.ts'
 
 export interface OrcidProfile {
   type: 'orcid'
-  name?: NonEmptyString
+  name?: Name
   orcid: OrcidId
   slackUser: SlackUser | undefined
   careerStage: 'early' | 'mid' | 'late' | undefined

@@ -11,15 +11,12 @@ import type { RecentDatasetPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
+import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import type { Prereviews } from './prereviews.ts'
 
-export function renderListOfPrereviews(
-  prereviews: Prereviews,
-  name: NonEmptyString | undefined,
-  locale: SupportedLocale,
-) {
+export function renderListOfPrereviews(prereviews: Prereviews, name: Name | undefined, locale: SupportedLocale) {
   return Array.match(prereviews, {
     onEmpty: () => html`
       <div class="inset">

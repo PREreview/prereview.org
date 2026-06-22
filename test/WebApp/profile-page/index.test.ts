@@ -26,7 +26,7 @@ describe('profile', () => {
           fc.supportedLocale(),
           fc.orcidProfileId(),
           fc.url(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -258,7 +258,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -324,7 +324,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -389,7 +389,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -454,7 +454,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -519,7 +519,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -584,7 +584,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -649,7 +649,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -714,7 +714,7 @@ describe('profile', () => {
         [
           fc.supportedLocale(),
           fc.orcidProfileId(),
-          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.option(fc.name(), { nil: undefined }),
           fc.array(
             fc.oneof(
               fc
@@ -881,7 +881,7 @@ describe('profile', () => {
 
   it.effect.prop(
     "when the PREreviews can't be loaded",
-    [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.nonEmptyString(), { nil: undefined })],
+    [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.name(), { nil: undefined })],
     ([locale, profile, avatar, name]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<Prereviewers>()

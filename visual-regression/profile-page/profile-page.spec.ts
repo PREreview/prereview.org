@@ -18,7 +18,7 @@ test('content looks right', async ({ showPage }) => {
   const response = createPage(
     {
       type: 'orcid',
-      name: NonEmptyString('Josiah Carberry'),
+      name: Name('Josiah Carberry'),
       orcid: OrcidId('0000-0002-1825-0097'),
       slackUser: {
         name: Name('jcarberry'),
@@ -46,7 +46,7 @@ test('content looks right when empty', async ({ showPage }) => {
   const response = createPage(
     {
       type: 'orcid',
-      name: NonEmptyString('Josiah Carberry'),
+      name: Name('Josiah Carberry'),
       orcid: OrcidId('0000-0002-1825-0097'),
       slackUser: undefined,
       careerStage: undefined,
