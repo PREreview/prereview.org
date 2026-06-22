@@ -1611,7 +1611,7 @@ export const dataset = (): fc.Arbitrary<Datasets.Dataset> =>
         authors: nonEmptyArray(
           fc.record(
             {
-              name: fc.string(),
+              name: name(),
               orcid: orcidId(),
             },
             { requiredKeys: ['name'] },

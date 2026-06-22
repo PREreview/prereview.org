@@ -5,6 +5,7 @@ import * as Datasets from '../../../Datasets/index.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml, type Html } from '../../../html.ts'
 import { Iso639, OrcidId } from '../../../types/index.ts'
+import { Name } from '../../../types/Name.ts'
 import * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { IsDoiFromSupportedPublisher, type DataciteDatasetId } from './DatasetId.ts'
 
@@ -40,9 +41,9 @@ export const RecordToDataset = (
             creators,
             flow(
               Match.value,
-              Match.when({ name: Match.string }, creator => ({ name: creator.name, orcid: findOrcid(creator) })),
+              Match.when({ name: Match.string }, creator => ({ name: Name(creator.name), orcid: findOrcid(creator) })),
               Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
-                name: `${creator.givenName} ${creator.familyName}`,
+                name: Name(`${creator.givenName} ${creator.familyName}`),
                 orcid: findOrcid(creator),
               })),
               Match.exhaustive,

@@ -3,6 +3,7 @@ import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Doi } from '../../../src/types/index.ts'
+import { Name } from '../../../src/types/Name.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewThisDatasetPage/ReviewThisDatasetPage.ts'
 import { expect, test } from '../../base.ts'
 
@@ -37,14 +38,14 @@ const dataset = new Datasets.Dataset({
     language: 'en',
   },
   authors: [
-    { name: 'Jesse Wolf' },
-    { name: 'Layla MacKay' },
-    { name: 'Sarah Haworth' },
-    { name: 'Morgan Dedato' },
-    { name: 'Kiana Young' },
-    { name: 'Marie-Laurence Cossette' },
-    { name: 'Colin Elliott' },
-    { name: 'Rebekah Oomen' },
+    { name: Name('Jesse Wolf') },
+    { name: Name('Layla MacKay') },
+    { name: Name('Sarah Haworth') },
+    { name: Name('Morgan Dedato') },
+    { name: Name('Kiana Young') },
+    { name: Name('Marie-Laurence Cossette') },
+    { name: Name('Colin Elliott') },
+    { name: Name('Rebekah Oomen') },
   ],
   id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
   posted: Temporal.PlainDate.from('2022-09-02'),

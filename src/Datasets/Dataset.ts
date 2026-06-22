@@ -2,7 +2,7 @@ import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PartialDate } from '../time.ts'
-import type { OrcidId } from '../types/index.ts'
+import type { Name, OrcidId } from '../types/index.ts'
 import type { DatasetId } from './DatasetId.ts'
 
 export class Dataset extends Data.Class<{
@@ -11,7 +11,7 @@ export class Dataset extends Data.Class<{
     text: Html
   }
   authors: Array.NonEmptyReadonlyArray<{
-    name: string
+    name: Name.Name
     orcid?: OrcidId.OrcidId
   }>
   id: DatasetId
