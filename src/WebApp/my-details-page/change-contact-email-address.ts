@@ -1,28 +1,22 @@
-import { Option, String, Struct, flow, pipe } from 'effect'
+import { Effect, Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import {
-  type SaveContactEmailAddressEnv,
-  UnverifiedContactEmailAddress,
-  type VerifyContactEmailAddressEnv,
-  getContactEmailAddress,
-  saveContactEmailAddress,
-  verifyContactEmailAddress,
-} from '../../contact-email-address.ts'
+import { getContactEmailAddress, type GetContactEmailAddressEnv } from '../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
+import type { Locale } from '../../Context.ts'
 import { getInput, invalidE, missingE } from '../../form.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { type GetPublicPersonaEnv, getPublicPersona } from '../../persona.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
-import { EmailAddressC } from '../../types/EmailAddress.ts'
-import { type GenerateUuidEnv, generateUuidIO } from '../../types/Uuid.ts'
+import { EmailAddressC, type EmailAddress } from '../../types/EmailAddress.ts'
 import type { User } from '../../user.ts'
-import { havingProblemsPage } from '../http-error.ts'
-import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { FlashMessageResponse, LogInResponse, RedirectResponse, type PageResponse } from '../Response/index.ts'
 import { createFormPage } from './change-contact-email-address-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeContactEmailAddress>>
@@ -51,6 +45,12 @@ export const changeContactEmailAddress = ({
           .exhaustive(),
       state =>
         match(state)
+          .returnType<
+            RT.ReaderTask<
+              EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & GetContactEmailAddressEnv,
+              PageResponse | FlashMessageResponse | RedirectResponse
+            >
+          >()
           .with({ method: 'POST' }, handleChangeContactEmailAddressForm)
           .otherwise(showChangeContactEmailAddressForm),
     ),
@@ -80,55 +80,39 @@ const handleChangeContactEmailAddressForm = ({
         .when(Option.isNone, () => RTE.right(undefined))
         .exhaustive(),
     ),
-    RTE.bindTo('emailAddress'),
-    RTE.apSW(
-      'originalEmailAddress',
-      pipe(
-        getContactEmailAddress(user.orcid),
-        RTE.map(originalEmailAddress => originalEmailAddress.value),
-        RTE.orElseW(() => RTE.right(undefined)),
-      ),
-    ),
     RTE.matchEW(
       state => RT.of(createFormPage({ emailAddress: E.left(state) }, locale)),
-      ({ emailAddress, originalEmailAddress }) =>
-        match(emailAddress)
-          .returnType<
-            RT.ReaderTask<
-              GenerateUuidEnv & SaveContactEmailAddressEnv & VerifyContactEmailAddressEnv & GetPublicPersonaEnv,
-              PageResponse | RedirectResponse | FlashMessageResponse
-            >
-          >()
-          .with(originalEmailAddress, () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .with(P.select(P.string), emailAddress =>
-            pipe(
-              RTE.rightReaderIO(generateUuidIO),
-              RTE.map(
-                verificationToken =>
-                  new UnverifiedContactEmailAddress({
-                    value: emailAddress,
-                    verificationToken,
-                  }),
-              ),
-              RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-              RTE.chainFirstW(contactEmailAddress =>
-                pipe(
-                  getPublicPersona(user.orcid),
-                  RTE.chainW(publicPersona => verifyContactEmailAddress(publicPersona.name, contactEmailAddress)),
-                ),
-              ),
-              RTE.matchW(
-                () => havingProblemsPage(locale),
-                () =>
-                  FlashMessageResponse({
-                    location: format(myDetailsMatch.formatter, {}),
-                    message: 'verify-contact-email',
-                  }),
-              ),
-            ),
-          )
-          .with(undefined, () => RT.of(createFormPage({ emailAddress: E.left(missingE()) }, locale)))
-          .exhaustive(),
+      EffectToFpts.toReaderTaskK(
+        Effect.fnUntraced(
+          function* (emailAddress: EmailAddress | undefined) {
+            const contactEmailAddresses = yield* ContactEmailAddresses
+
+            if (!emailAddress) {
+              return createFormPage({ emailAddress: E.left(missingE()) }, locale)
+            }
+
+            yield* contactEmailAddresses.startVerificationOfContactEmailAddress({
+              orcidId: user.orcid,
+              emailAddress,
+              resumeAt: format(myDetailsMatch.formatter, {}) as `/${string}`,
+            })
+
+            return FlashMessageResponse({
+              location: format(myDetailsMatch.formatter, {
+                orcidId: user.orcid,
+                emailAddress,
+                resumeAt: format(myDetailsMatch.formatter, {}),
+              }),
+              message: 'verify-contact-email',
+            })
+          },
+          Effect.catchTags({
+            ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+            ContactEmailAddressHasAlreadyBeenVerified: () =>
+              Effect.succeed(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
+          }),
+        ),
+      ),
     ),
   )
 

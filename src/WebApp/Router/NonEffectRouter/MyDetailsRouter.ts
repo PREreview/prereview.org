@@ -1,17 +1,15 @@
 import { NodeStream } from '@effect/platform-node'
 import { Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
-import { format } from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Cloudinary } from '../../../ExternalApis/index.ts'
-import { CommunitySlack, Email } from '../../../ExternalInteractions/index.ts'
+import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Personas from '../../../Personas/index.ts'
@@ -428,10 +426,6 @@ export const MyDetailsRouter = pipe(
           careerStageStore: env.users.careerStageStore,
           ...env.logger,
         }),
-        saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, {
-          contactEmailAddressStore: env.users.contactEmailAddressStore,
-          ...env.logger,
-        }),
         saveLanguages: withEnv(Keyv.saveLanguages, {
           languagesStore: env.users.languagesStore,
           ...env.logger,
@@ -473,18 +467,6 @@ export const MyDetailsRouter = pipe(
           clientSecret: Redacted.value(env.slackOauth.clientSecret),
           tokenUrl: env.slackOauth.tokenUrl,
         },
-        verifyContactEmailAddress: flow(
-          EffectToFpts.toTaskEitherK(
-            (name, emailAddress) =>
-              Email.verifyContactEmailAddress({
-                name,
-                emailAddress,
-                redirectTo: format(Routes.myDetailsMatch.formatter, {}) as `/${string}`,
-              }),
-            env.runtime,
-          ),
-          TE.mapLeft(() => 'unavailable' as const),
-        ),
         ...env.logger,
       }),
   ),
