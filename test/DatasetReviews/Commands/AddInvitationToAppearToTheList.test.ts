@@ -8,12 +8,12 @@ import * as Datasets from '../../../src/Datasets/index.ts'
 import * as Events from '../../../src/Events.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
 
 const input = {
-  name: NonEmptyString('Josiah Carberry'),
+  name: Name('Josiah Carberry'),
   emailAddress: EmailAddress('jcarberry@example.com'),
   invitationId: Uuid('000b3291-ee40-4d00-b43f-844d26831f7c'),
   datasetReviewId: Uuid('5871bddf-a2ff-4dd8-9e63-c42b4a6df684'),
@@ -22,7 +22,7 @@ const input = {
 
 const inputDifferentName = {
   ...input,
-  name: NonEmptyString('Not Josiah Carberry'),
+  name: Name('Not Josiah Carberry'),
 } satisfies _.Input
 
 const inputDifferentEmailAddress = {

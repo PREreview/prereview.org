@@ -6,7 +6,7 @@ import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import * as Events from '../../../src/Events.ts'
-import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, Name, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const input = {
   datasetReviewId: Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d'),
@@ -48,7 +48,7 @@ const invited = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheL
   datasetReviewId: input.datasetReviewId,
   invitationId: input.invitationId,
   contactDetails: Option.some({
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    name: Name.Name('Josiah Carberry'),
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
 })

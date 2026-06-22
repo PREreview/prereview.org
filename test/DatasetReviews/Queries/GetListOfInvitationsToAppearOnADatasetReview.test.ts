@@ -5,7 +5,7 @@ import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetListOfInvitationsToAppearOnADatasetReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import * as Events from '../../../src/Events.ts'
-import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, Name, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const input = {
   datasetReviewId: Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d'),
@@ -33,7 +33,7 @@ const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
   datasetReviewId: input.datasetReviewId,
   invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
   contactDetails: Option.some({
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    name: Name.Name('Josiah Carberry'),
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
 })
@@ -41,7 +41,7 @@ const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
   datasetReviewId: input.datasetReviewId,
   invitationId: Uuid.Uuid('e9aaf38b-2d3b-4703-a16a-6c1408762ab7'),
   contactDetails: Option.some({
-    name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+    name: Name.Name('Arne Saknussemm'),
     emailAddress: EmailAddress.EmailAddress('asaknussemm@example.com'),
   }),
 })

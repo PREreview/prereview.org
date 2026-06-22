@@ -2199,7 +2199,7 @@ export const invitationToAppearOnADatasetReviewAddedToTheList = ({
     .record({
       datasetReviewId: datasetReviewId ?? uuid(),
       invitationId: uuid(),
-      contactDetails: maybe(fc.record({ name: nonEmptyString(), emailAddress: emailAddress() })),
+      contactDetails: maybe(fc.record({ name: name(), emailAddress: emailAddress() })),
     })
     .map(data => new Events.InvitationToAppearOnADatasetReviewAddedToTheList(data))
 

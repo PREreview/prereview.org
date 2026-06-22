@@ -1,11 +1,11 @@
 import { Array, Boolean, Data, Either, Equal, HashSet, Match, Option, Struct, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
-import { EmailAddress, type NonEmptyString, type OrcidId, type Uuid } from '../../types/index.ts'
+import { EmailAddress, type Name, type OrcidId, type Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {
-  readonly name: NonEmptyString.NonEmptyString
+  readonly name: Name.Name
   readonly emailAddress: EmailAddress.EmailAddress
   readonly invitationId: Uuid.Uuid
   readonly datasetReviewId: Uuid.Uuid

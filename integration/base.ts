@@ -71,6 +71,7 @@ import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { Uuid } from '../src/types/index.ts'
+import { Name } from '../src/types/Name.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
@@ -3496,7 +3497,7 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
         datasetReviewId,
         invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
         contactDetails: Option.some({
-          name: NonEmptyString('Josiah Carberry'),
+          name: Name('Josiah Carberry'),
           emailAddress: EmailAddress('jcarberry@example.com'),
         }),
       }),
@@ -3504,7 +3505,7 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
         datasetReviewId,
         invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
         contactDetails: Option.some({
-          name: NonEmptyString('Arne Saknussemm'),
+          name: Name('Arne Saknussemm'),
           emailAddress: EmailAddress('asaknussemm@example.com'),
         }),
       }),
@@ -3597,7 +3598,7 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
         datasetReviewId,
         invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
         contactDetails: Option.some({
-          name: NonEmptyString('Josiah Carberry'),
+          name: Name('Josiah Carberry'),
           emailAddress: EmailAddress('jcarberry@example.com'),
         }),
       }),
@@ -3605,7 +3606,7 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
         datasetReviewId,
         invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
         contactDetails: Option.some({
-          name: NonEmptyString('Arne Saknussemm'),
+          name: Name('Arne Saknussemm'),
           emailAddress: EmailAddress('asaknussemm@example.com'),
         }),
       }),

@@ -1,7 +1,7 @@
 import { Array, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.ts'
 import { SensitiveData } from '../SensitiveData.ts'
-import { Doi, EmailAddress, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
+import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
@@ -146,7 +146,7 @@ export class InvitationToAppearOnADatasetReviewAddedToTheList extends Schema.Tag
     invitationId: Uuid.UuidSchema,
     contactDetails: SensitiveData(
       Schema.Struct({
-        name: NonEmptyString.NonEmptyStringSchema,
+        name: Name.NameSchema,
         emailAddress: EmailAddress.EmailAddressSchema,
       }),
     ),

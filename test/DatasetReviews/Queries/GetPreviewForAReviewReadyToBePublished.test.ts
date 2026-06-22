@@ -4,7 +4,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPreviewForAReviewReadyToBePublished.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -155,7 +155,7 @@ const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
   datasetReviewId,
   invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
   contactDetails: Option.some({
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    name: Name.Name('Josiah Carberry'),
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
 })
@@ -163,7 +163,7 @@ const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
   datasetReviewId,
   invitationId: Uuid.Uuid('e9aaf38b-2d3b-4703-a16a-6c1408762ab7'),
   contactDetails: Option.some({
-    name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+    name: Name.Name('Arne Saknussemm'),
     emailAddress: EmailAddress.EmailAddress('asaknussemm@example.com'),
   }),
 })

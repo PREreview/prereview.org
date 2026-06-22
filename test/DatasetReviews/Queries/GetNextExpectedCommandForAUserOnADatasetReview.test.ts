@@ -4,7 +4,7 @@ import { type Array, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetNextExpectedCommandForAUserOnADatasetReview.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -155,7 +155,7 @@ const invitationToAppearOnADatasetReviewAddedToTheList =
   new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
     invitationId: Uuid.Uuid('9af6576d-1733-4461-a000-a31d2b172e5d'),
     contactDetails: Option.some({
-      name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+      name: Name.Name('Arne Saknussemm'),
       emailAddress: EmailAddress.EmailAddress('arnesaknussemm@example.com'),
     }),
     datasetReviewId,
@@ -164,7 +164,7 @@ const invitationToAppearOnADatasetReviewAddedToTheList2 =
   new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
     invitationId: Uuid.Uuid('ab2d3965-8f40-4de8-97cd-73322daa5dda'),
     contactDetails: Option.some({
-      name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+      name: Name.Name('Arne Saknussemm'),
       emailAddress: EmailAddress.EmailAddress('arnesaknussemm@example.com'),
     }),
     datasetReviewId,
