@@ -126,6 +126,7 @@ import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
+import { Name, NameSchema } from '../src/types/Name.ts'
 import { type NonEmptyString, NonEmptyStringSchema, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, OrcidIdSchema } from '../src/types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
@@ -1509,6 +1510,8 @@ export const nonEmptyTrimmedString = (): fc.Arbitrary<NonEmptyString> =>
     .string({ minLength: 1 })
     .map(string => string.trim())
     .filter(isNonEmptyString)
+
+export const name = (): fc.Arbitrary<Name> => Arbitrary.make(NameSchema)
 
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
   fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)

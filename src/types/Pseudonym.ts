@@ -2,11 +2,12 @@ import { Arbitrary, Effect, Either, Number, Option, pipe, Random, Schema, type B
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
-import { NonEmptyStringSchema, type NonEmptyString } from './NonEmptyString.ts'
+import type { Name } from './Name.ts'
+import { NonEmptyStringSchema } from './NonEmptyString.ts'
 
 const PseudonymBrand: unique symbol = Symbol.for('Pseudonym')
 
-export type Pseudonym = NonEmptyString & Brand.Brand<typeof PseudonymBrand>
+export type Pseudonym = Name & Brand.Brand<typeof PseudonymBrand>
 
 export const PseudonymC = C.fromDecoder(
   pipe(
