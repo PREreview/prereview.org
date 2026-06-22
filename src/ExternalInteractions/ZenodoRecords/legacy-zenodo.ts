@@ -985,7 +985,7 @@ const getReviewSubfields = flow(
 
 const getReviewClub = flow(
   Option.liftNullable((record: Record) => record.metadata.contributors),
-  Option.flatMap(Array.findFirst(flow(Struct.get('name'), getClubByName))),
+  Option.flatMap(Array.findFirst(flow(Struct.get('name'), Name, getClubByName))),
 )
 
 const getReviewUrl = flow(

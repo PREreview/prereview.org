@@ -1,22 +1,23 @@
 import { describe, expect, it, test } from '@effect/vitest'
 import { Option } from 'effect'
 import * as _ from '../../src/Clubs/ClubDetails.ts'
+import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import * as fc from '../fc.ts'
 
 describe('getClubByName', () => {
   test.each([
-    ['ASAPbio Cancer Biology Crowd', 'asapbio-cancer-biology'],
-    ['ASAPbio Neurobiology Crowd', 'asapbio-neurobiology'],
-    ['HHMI Transparent and Accountable Peer Review Training Pilot', 'hhmi-training-program'],
-    ['HHMI Transparent and Accountable Peer Review Training Program', 'hhmi-training-program'],
+    [Name('ASAPbio Cancer Biology Crowd'), 'asapbio-cancer-biology'],
+    [Name('ASAPbio Neurobiology Crowd'), 'asapbio-neurobiology'],
+    [Name('HHMI Transparent and Accountable Peer Review Training Pilot'), 'hhmi-training-program'],
+    [Name('HHMI Transparent and Accountable Peer Review Training Program'), 'hhmi-training-program'],
   ])('with a club name (%s)', (name, expected) => {
     const actual = _.getClubByName(name)
 
     expect(actual).toStrictEqual(Option.some(expected))
   })
 
-  it.prop('with something else', [fc.string()], ([name]) => {
+  it.prop('with something else', [fc.name()], ([name]) => {
     const actual = _.getClubByName(name)
 
     expect(actual).toStrictEqual(Option.none())

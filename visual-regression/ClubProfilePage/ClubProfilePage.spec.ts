@@ -33,7 +33,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 const club1 = {
-  name: 'ASAPbio Cancer Biology Crowd',
+  name: Name('ASAPbio Cancer Biology Crowd'),
   description: {
     language: 'en',
     text: html`
@@ -46,8 +46,8 @@ const club1 = {
 
   added: Temporal.PlainDate.from('2024-01-02'),
   leads: [
-    { name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') },
-    { name: 'Garima Jain', orcid: OrcidId('0000-0002-8079-9611') },
+    { name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') },
+    { name: Name('Garima Jain'), orcid: OrcidId('0000-0002-8079-9611') },
   ],
   contact: EmailAddress('email@example.com'),
   joinLink: new URL(
@@ -56,7 +56,7 @@ const club1 = {
 } satisfies Club
 
 const club2 = {
-  name: 'ASAPbio Cancer Biology Crowd',
+  name: Name('ASAPbio Cancer Biology Crowd'),
   description: {
     language: 'en',
     text: html`
@@ -67,7 +67,7 @@ const club2 = {
     `,
   },
   added: Temporal.PlainDate.from('2025-02-03'),
-  leads: [{ name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') }],
+  leads: [{ name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') }],
 } satisfies Club
 
 const id = 'asapbio-cancer-biology' satisfies ClubId
