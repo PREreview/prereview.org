@@ -1,6 +1,6 @@
 import { UrlParams } from '@effect/platform'
 import { Data, Either, identity, pipe, Schema, String, Struct } from 'effect'
-import { EmailAddress, NonEmptyString } from '../../../types/index.ts'
+import { EmailAddress, Name, NonEmptyString } from '../../../types/index.ts'
 
 export type AddInvitationToAppearForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -11,12 +11,12 @@ export class Invalid extends Data.TaggedError('Invalid')<{ actual: NonEmptyStrin
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  name: Either.Either<NonEmptyString.NonEmptyString, Missing>
+  name: Either.Either<Name.Name, Missing>
   emailAddress: Either.Either<EmailAddress.EmailAddress, Missing | Invalid>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
-  name: NonEmptyString.NonEmptyString
+  name: Name.Name
   emailAddress: EmailAddress.EmailAddress
 }> {}
 
@@ -54,7 +54,7 @@ const CollapsedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, {
 
 const NameFieldSchema = UrlParams.schemaRecord(
   Schema.Struct({
-    name: Schema.compose(CollapsedWhitespaceSchema, NonEmptyString.NonEmptyStringSchema),
+    name: Name.NameSchema,
   }),
 )
 

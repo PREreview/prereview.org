@@ -3,6 +3,7 @@ import * as AddInvitationToAppearForm from '../../../src/WebApp/ReviewADatasetFl
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/AddInvitationToAppearPage/AddInvitationToAppearPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
+import { Name } from '../../../src/types/Name.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
 import { expect, test } from '../../base.ts'
@@ -37,7 +38,7 @@ test('content looks right when completed', async ({ showPage }) => {
   const response = _.AddInvitationToAppearPage({
     datasetReviewId,
     form: new AddInvitationToAppearForm.CompletedForm({
-      name: NonEmptyString('Josiah Carberry'),
+      name: Name('Josiah Carberry'),
       emailAddress: EmailAddress('jcarberry@example.com'),
     }),
     locale: DefaultLocale,
@@ -69,7 +70,7 @@ test('content looks right when invalid', async ({ showPage }) => {
   const response = _.AddInvitationToAppearPage({
     datasetReviewId,
     form: new AddInvitationToAppearForm.InvalidForm({
-      name: Either.right(NonEmptyString('Josiah Carberry')),
+      name: Either.right(Name('Josiah Carberry')),
       emailAddress: Either.left(
         new AddInvitationToAppearForm.Invalid({ actual: NonEmptyString('not an email address') }),
       ),

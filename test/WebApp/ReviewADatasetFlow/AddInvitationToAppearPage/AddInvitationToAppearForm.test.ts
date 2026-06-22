@@ -3,6 +3,7 @@ import { describe, expect, it } from '@effect/vitest'
 import { Either } from 'effect'
 import * as _ from '../../../../src/WebApp/ReviewADatasetFlow/AddInvitationToAppearPage/AddInvitationToAppearForm.ts'
 import { EmailAddress } from '../../../../src/types/EmailAddress.ts'
+import { Name } from '../../../../src/types/Name.ts'
 import { NonEmptyString } from '../../../../src/types/NonEmptyString.ts'
 
 describe('fromBody', () => {
@@ -21,7 +22,7 @@ describe('fromBody', () => {
       'valid name',
       { name: 'Josiah Carberry' },
       new _.InvalidForm({
-        name: Either.right(NonEmptyString('Josiah Carberry')),
+        name: Either.right(Name('Josiah Carberry')),
         emailAddress: Either.left(new _.Missing()),
       }),
     ],
@@ -45,7 +46,7 @@ describe('fromBody', () => {
       'valid name and email address',
       { name: 'Josiah Carberry', emailAddress: 'jcarberry@example.com' },
       new _.CompletedForm({
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),
       }),
     ],
@@ -53,7 +54,7 @@ describe('fromBody', () => {
       'valid name and email address with whitespace',
       { name: '  \n Josiah   \t Carberry   \n  ', emailAddress: '  \n jcarberry@example.com \t \n' },
       new _.CompletedForm({
-        name: NonEmptyString('Josiah Carberry'),
+        name: Name('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),
       }),
     ],
