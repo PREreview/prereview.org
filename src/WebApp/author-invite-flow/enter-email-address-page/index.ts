@@ -9,10 +9,8 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../../author-invite.ts'
 import {
-  type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
   VerifiedContactEmailAddress,
-  maybeGetContactEmailAddress,
   saveContactEmailAddress,
 } from '../../../contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
@@ -69,7 +67,6 @@ export const authorInviteEnterEmailAddress = ({
   user?: User
 }): RT.ReaderTask<
   EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> &
-    GetContactEmailAddressEnv &
     GetPrereviewEnv &
     GetAuthorInviteEnv &
     SaveContactEmailAddressEnv,
@@ -95,7 +92,18 @@ export const authorInviteEnterEmailAddress = ({
       ),
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
-    RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+    RTE.bindW(
+      'contactEmailAddress',
+      EffectToFpts.toReaderTaskEitherK(
+        Effect.fnUntraced(
+          function* ({ user }) {
+            const contactEmailAddresses = yield* ContactEmailAddresses
+            return yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
+          },
+          Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(undefined)),
+        ),
+      ),
+    ),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
     RTE.matchEW(
@@ -109,7 +117,7 @@ export const authorInviteEnterEmailAddress = ({
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound(locale))
-            .with('unavailable', () => havingProblemsPage(locale))
+            .with('unavailable', { _tag: 'ContactEmailAddressIsUnavailable' }, () => havingProblemsPage(locale))
             .with('wrong-user', () => noPermissionPage(locale))
             .exhaustive(),
         ),
