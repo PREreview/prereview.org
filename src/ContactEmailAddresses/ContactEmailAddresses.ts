@@ -1,16 +1,9 @@
-import { Context, Effect, flow, Layer, Match, Scope } from 'effect'
+import { Context, Effect, type Either, flow, Layer, Scope } from 'effect'
 import type { Locale } from '../Context.ts'
-import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
-import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { Uuid } from '../types/index.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
-import {
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-  type ContactEmailAddress,
-} from './ContactEmailAddress.ts'
+import * as GetContactEmailAddress from './GetContactEmailAddress.ts'
 import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as UseAuthorInviteEmailAddress from './UseAuthorInviteEmailAddress.ts'
@@ -20,8 +13,11 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
   ContactEmailAddresses,
   {
     getContactEmailAddress: (
-      orcid: OrcidId,
-    ) => Effect.Effect<ContactEmailAddress, ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable>
+      args: GetContactEmailAddress.Input,
+    ) => Effect.Effect<
+      Either.Either.Right<GetContactEmailAddress.Result>,
+      Either.Either.Left<GetContactEmailAddress.Result>
+    >
     verifyContactEmailAddress: (
       args: verifyContactEmailAddress.Input,
     ) => Effect.Effect<void, verifyContactEmailAddress.Error>
@@ -48,24 +44,7 @@ export const layer = Layer.effect(
     const { authorInviteStore, contactEmailAddressStore } = yield* Keyv.KeyvStores
 
     return {
-      getContactEmailAddress: Effect.fn('ContactEmailAddresses.getContactEmailAddress')(
-        function* (orcid) {
-          const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-          return yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
-            contactEmailAddressStore,
-            ...loggerEnv,
-          })
-        },
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('not-found', () => new ContactEmailAddressIsNotFound()),
-            Match.when('unavailable', () => new ContactEmailAddressIsUnavailable({})),
-            Match.exhaustive,
-          ),
-        ),
-      ),
+      getContactEmailAddress: GetContactEmailAddress.GetContactEmailAddress(contactEmailAddressStore),
       verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
       useAuthorInviteEmailAddress: UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(
         contactEmailAddressStore,
