@@ -1,14 +1,11 @@
 import { Data, Effect } from 'effect'
+import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import {
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-  VerifiedContactEmailAddress,
-} from './ContactEmailAddress.ts'
+import { ContactEmailAddressIsNotFound, VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
 
 export interface Input {
   orcid: OrcidId
@@ -25,7 +22,7 @@ export type Error =
   | ContactEmailAddressHasAlreadyBeenVerified
   | VerificationTokenInvalid
   | ContactEmailAddressIsNotFound
-  | ContactEmailAddressIsUnavailable
+  | Commands.UnableToHandleCommand
 
 export const VerifyContactEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
@@ -64,6 +61,6 @@ export const VerifyContactEmailAddress: (
     ),
     Effect.catchIf(
       error => error === 'unavailable',
-      () => new ContactEmailAddressIsUnavailable({ cause: 'unknown' }),
+      () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),
     ),
   )

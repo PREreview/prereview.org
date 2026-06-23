@@ -30,7 +30,7 @@ export const VerifyEmailAddress: (args: {
       ContactEmailAddressHasAlreadyBeenVerified: () =>
         Effect.succeed(Response.RedirectResponse({ location: SanitizeRedirectTo(redirectTo) })),
       ContactEmailAddressIsNotFound: () => PageNotFound,
-      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+      UnableToHandleCommand: () => HavingProblemsPage,
       VerificationTokenInvalid: () => PageNotFound,
     }),
 )
