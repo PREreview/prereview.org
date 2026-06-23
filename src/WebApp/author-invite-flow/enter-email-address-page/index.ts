@@ -1,4 +1,4 @@
-import { Option, Struct, pipe } from 'effect'
+import { Effect, Option, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -11,17 +11,16 @@ import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } f
 import {
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
-  UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
-  type VerifyContactEmailAddressForInvitedAuthorEnv,
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
-  verifyContactEmailAddressForInvitedAuthor,
 } from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
+import type { Locale } from '../../../Context.ts'
 import { getInput, invalidE, missingE } from '../../../form.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPublicPersonaEnv, getPublicPersona } from '../../../persona.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -29,9 +28,10 @@ import {
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
-import { EmailAddressC } from '../../../types/EmailAddress.ts'
-import { type GenerateUuidEnv, type Uuid, generateUuidIO } from '../../../types/Uuid.ts'
+import { type EmailAddress, EmailAddressC } from '../../../types/EmailAddress.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -68,13 +68,11 @@ export const authorInviteEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GenerateUuidEnv &
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> &
     GetContactEmailAddressEnv &
     GetPrereviewEnv &
     GetAuthorInviteEnv &
-    GetPublicPersonaEnv &
-    SaveContactEmailAddressEnv &
-    VerifyContactEmailAddressForInvitedAuthorEnv,
+    SaveContactEmailAddressEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -189,32 +187,42 @@ const handleEnterEmailAddressForm = ({
     ),
     RTE.chainW(fields =>
       match(fields)
+        .returnType<
+          RTE.ReaderTaskEither<
+            EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & SaveContactEmailAddressEnv,
+            'unavailable',
+            PageResponse | RedirectResponse
+          >
+        >()
         .with({ useInvitedAddress: 'yes' }, () =>
           pipe(
             saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: invite.emailAddress })),
             RTE.map(() => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) })),
           ),
         )
-        .with({ useInvitedAddress: 'no', otherEmailAddress: P.select(P.string) }, emailAddress =>
-          pipe(
-            RTE.Do,
-            RTE.apS('verificationToken', RTE.rightReaderIO(generateUuidIO)),
-            RTE.apSW('publicPersona', getPublicPersona(user.orcid)),
-            RTE.let(
-              'contactEmailAddress',
-              ({ verificationToken }) => new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
-            ),
-            RTE.chainFirstW(({ contactEmailAddress }) => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-            RTE.chainW(({ publicPersona, contactEmailAddress }) =>
-              verifyContactEmailAddressForInvitedAuthor({
-                name: publicPersona.name,
-                emailAddress: contactEmailAddress,
-                authorInvite: inviteId,
-              }),
-            ),
-            RTE.map(() =>
-              RedirectResponse({
-                location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
+        .with(
+          { useInvitedAddress: 'no', otherEmailAddress: P.select(P.string) },
+          EffectToFpts.toReaderTaskEitherK(
+            Effect.fnUntraced(
+              function* (emailAddress: EmailAddress) {
+                const contactEmailAddresses = yield* ContactEmailAddresses
+
+                yield* contactEmailAddresses.startVerificationOfContactEmailAddress({
+                  orcidId: user.orcid,
+                  emailAddress,
+                  resumeAt: format(authorInviteCheckMatch.formatter, { id: inviteId }) as `/${string}`,
+                })
+
+                return RedirectResponse({
+                  location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
+                })
+              },
+              Effect.catchTags({
+                ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+                ContactEmailAddressHasAlreadyBeenVerified: () =>
+                  Effect.succeed(
+                    RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
+                  ),
               }),
             ),
           ),
@@ -224,7 +232,7 @@ const handleEnterEmailAddressForm = ({
     RTE.getOrElseW(error =>
       RT.of(
         match(error)
-          .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
+          .with(P.union('unavailable'), () => havingProblemsPage(locale))
           .with({ useInvitedAddress: P.any }, form =>
             enterEmailAddressForm({
               form,

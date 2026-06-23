@@ -3,16 +3,14 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
-import { Email, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
-import { Uuid } from '../../../types/index.ts'
 import {
   authorInvite,
   authorInviteCheck,
@@ -126,7 +124,6 @@ export const AuthorInviteFlowRouter = pipe(
             zenodoUrl: env.zenodoApiConfig.origin,
           },
         ),
-        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPrereview: EffectToFpts.toTaskEitherK(
           flow(
             Prereviews.getPrereview,
@@ -155,6 +152,7 @@ export const AuthorInviteFlowRouter = pipe(
           ),
           env.runtime,
         ),
+        runtime: env.runtime,
         saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, {
           authorInviteStore: env.authorInviteStore,
           ...env.logger,
@@ -163,10 +161,6 @@ export const AuthorInviteFlowRouter = pipe(
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
         }),
-        verifyContactEmailAddressForInvitedAuthor: flow(
-          EffectToFpts.toTaskEitherK(Email.verifyContactEmailAddressForInvitedAuthor, env.runtime),
-          TE.mapLeft(() => 'unavailable' as const),
-        ),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
