@@ -5,7 +5,7 @@ import * as L from 'logger-fp-ts'
 import { match, P } from 'ts-pattern'
 import { maybeGetAvatar } from '../../avatar.ts'
 import { maybeGetCareerStage } from '../../career-stage.ts'
-import { maybeGetContactEmailAddress } from '../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import { maybeIsOpenForRequests } from '../../is-open-for-requests.ts'
 import { maybeGetLanguages } from '../../languages.ts'
@@ -39,7 +39,15 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
         RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW(
+          'contactEmailAddress',
+          EffectToFpts.toReaderTaskEither(
+            Effect.gen(function* () {
+              const contactEmailAddresses = yield* ContactEmailAddresses
+              return yield* Effect.map(contactEmailAddresses.getContactEmailAddress(user.orcid), Option.some)
+            }).pipe(Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeedNone)),
+          ),
+        ),
         RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(Option.fromNullable))),
@@ -75,7 +83,14 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
         match(error)
           .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
           .with(
-            P.union('unavailable', { _tag: P.union('UnableToGetPersona', 'UnableToQuery', 'UnknownPrereviewer') }),
+            P.union('unavailable', {
+              _tag: P.union(
+                'ContactEmailAddressIsUnavailable',
+                'UnableToGetPersona',
+                'UnableToQuery',
+                'UnknownPrereviewer',
+              ),
+            }),
             () => havingProblemsPage(locale),
           )
           .exhaustive(),

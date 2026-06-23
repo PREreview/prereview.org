@@ -4,6 +4,8 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import {
   HasNotOptedIn,
   HasOptedIn,
@@ -31,7 +33,7 @@ describe('myDetails', () => {
           fc.either(fc.constant('not-found'), fc.orcidToken()),
           fc.either(fc.constant('not-found'), fc.url()),
           fc.either(fc.constant('not-found'), fc.slackUser()),
-          fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+          fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
           fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
           fc.either(fc.constant('not-found'), fc.careerStage()),
           fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -55,13 +57,12 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
                 getAvatar: () => TE.fromEither(avatar),
                 getCareerStage: () => TE.fromEither(careerStage),
-                getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
                 getLanguages: () => TE.fromEither(languages),
                 getLocation: () => TE.fromEither(location),
                 getOrcidToken: () => TE.fromEither(orcidToken),
@@ -89,12 +90,13 @@ describe('myDetails', () => {
               js: [],
             })
           }).pipe(
-            Effect.provide(
+            Effect.provide([
+              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasOptedIn()),
               }),
-            ),
+            ]),
           ),
       )
 
@@ -109,7 +111,7 @@ describe('myDetails', () => {
           fc.either(fc.constant('not-found'), fc.orcidToken()),
           fc.either(fc.constant('not-found'), fc.url()),
           fc.either(fc.constant('not-found'), fc.slackUser()),
-          fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+          fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
           fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
           fc.either(fc.constant('not-found'), fc.careerStage()),
           fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -135,13 +137,12 @@ describe('myDetails', () => {
           Effect.gen(function* () {
             const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
                 getAvatar: () => TE.fromEither(avatar),
                 getCareerStage: () => TE.fromEither(careerStage),
-                getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
                 getLanguages: () => TE.fromEither(languages),
                 getLocation: () => TE.fromEither(location),
                 getOrcidToken: () => TE.fromEither(orcidToken),
@@ -170,12 +171,13 @@ describe('myDetails', () => {
             })
             expect(saveUserOnboarding).toHaveBeenCalledWith(publicPersona.orcidId, { seenMyDetailsPage: true })
           }).pipe(
-            Effect.provide(
+            Effect.provide([
+              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasOptedOut()),
               }),
-            ),
+            ]),
           ),
       )
 
@@ -190,7 +192,7 @@ describe('myDetails', () => {
           fc.either(fc.constant('not-found'), fc.orcidToken()),
           fc.either(fc.constant('not-found'), fc.url()),
           fc.either(fc.constant('not-found'), fc.slackUser()),
-          fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+          fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
           fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
           fc.either(fc.constant('not-found'), fc.careerStage()),
           fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -214,13 +216,12 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
                 getAvatar: () => TE.fromEither(avatar),
                 getCareerStage: () => TE.fromEither(careerStage),
-                getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
                 getLanguages: () => TE.fromEither(languages),
                 getLocation: () => TE.fromEither(location),
                 getOrcidToken: () => TE.fromEither(orcidToken),
@@ -246,12 +247,13 @@ describe('myDetails', () => {
               js: [],
             })
           }).pipe(
-            Effect.provide(
+            Effect.provide([
+              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasNotOptedIn()),
               }),
-            ),
+            ]),
           ),
       )
     })
@@ -266,7 +268,7 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -289,13 +291,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -321,12 +322,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -340,7 +342,7 @@ describe('myDetails', () => {
         fc.userOnboarding(),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -363,13 +365,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.left('unavailable'),
@@ -395,12 +396,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -414,7 +416,7 @@ describe('myDetails', () => {
         fc.userOnboarding(),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -437,13 +439,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -469,12 +470,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -511,13 +513,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.left('unavailable'),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -543,12 +544,15 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, {
+              getContactEmailAddress: () => new ContactEmailAddressIsUnavailable({}),
+            }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -563,7 +567,7 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.slackUser(),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
         fc.either(fc.constant('not-found'), fc.location()),
@@ -585,13 +589,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -617,12 +620,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -637,7 +641,7 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
         fc.either(fc.constant('not-found'), fc.location()),
@@ -659,13 +663,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.left('unavailable'),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -691,12 +694,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -711,7 +715,7 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.location()),
@@ -733,13 +737,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -765,12 +768,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -785,7 +789,7 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -807,13 +811,12 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.fromEither(languages),
               getLocation: () => TE.left('unavailable'),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -839,12 +842,13 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
 
@@ -859,7 +863,7 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found'), fc.orcidToken()),
         fc.either(fc.constant('not-found'), fc.url()),
         fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
         fc.either(fc.constant('not-found'), fc.careerStage()),
         fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -881,13 +885,12 @@ describe('myDetails', () => {
         location,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
               getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
               getLanguages: () => TE.left('unavailable'),
               getLocation: () => TE.fromEither(location),
               getOrcidToken: () => TE.fromEither(orcidToken),
@@ -913,25 +916,25 @@ describe('myDetails', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
             }),
-          ),
+          ]),
         ),
     )
   })
 
   it.effect.prop('when the user is not logged in', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime<Prereviewers>()
+      const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
       const actual = yield* Effect.promise(
         _.myDetails({ locale })({
           getAvatar: shouldNotBeCalled,
           getCareerStage: shouldNotBeCalled,
-          getContactEmailAddress: shouldNotBeCalled,
           getLanguages: shouldNotBeCalled,
           getLocation: shouldNotBeCalled,
           getOrcidToken: shouldNotBeCalled,
@@ -953,12 +956,13 @@ describe('myDetails', () => {
         location: format(myDetailsMatch.formatter, {}),
       })
     }).pipe(
-      Effect.provide(
+      Effect.provide([
+        Layer.mock(ContactEmailAddresses, {}),
         Layer.mock(Prereviewers, {
           hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
             Effect.succeed(new HasOptedIn()),
         }),
-      ),
+      ]),
     ),
   )
 })

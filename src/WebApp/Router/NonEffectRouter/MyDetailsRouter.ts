@@ -7,7 +7,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
-import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -346,19 +345,6 @@ export const MyDetailsRouter = pipe(
             ...env.logger,
             slackUserIdStore: env.users.slackUserIdStore,
           },
-        ),
-        getContactEmailAddress: EffectToFpts.toTaskEitherK(
-          Effect.fnUntraced(
-            function* (orcidId) {
-              const contactEmailAddresses = yield* ContactEmailAddresses
-              return yield* contactEmailAddresses.getContactEmailAddress(orcidId)
-            },
-            Effect.catchTags({
-              ContactEmailAddressIsNotFound: () => Effect.fail('not-found' as const),
-              ContactEmailAddressIsUnavailable: () => Effect.fail('unavailable' as const),
-            }),
-          ),
-          env.runtime,
         ),
         isOpenForRequests: withEnv(Keyv.isOpenForRequests, {
           isOpenForRequestsStore: env.users.isOpenForRequestsStore,
