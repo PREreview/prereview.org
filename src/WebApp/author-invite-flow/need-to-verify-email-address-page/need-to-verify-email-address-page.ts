@@ -24,7 +24,7 @@ export function needToVerifyEmailAddressPage({
 
       <p>
         ${t('pleaseOpenLinkInEmailWeSentYou')({
-          contactEmailAddress: contactEmailAddress.value,
+          contactEmailAddress: html`<bdi>${contactEmailAddress.value}</bdi>`,
         })}
       </p>
 

@@ -29,7 +29,7 @@ export const needToVerifyEmailAddressMessage = ({
     main: html`
       <h1>${t('verifyEmailAddress')()}</h1>
 
-      <p>${t('howToVerifyEmailAddress')({ emailAddress: contactEmailAddress.value })}</p>
+      <p>${t('howToVerifyEmailAddress')({ emailAddress: html`<bdi>${contactEmailAddress.value}</bdi>` })}</p>
 
       <p>${t('onceEmailAddressVerified')()}</p>
 

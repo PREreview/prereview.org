@@ -18,7 +18,13 @@ export const NeedToVerifyEmailAddressPage = ({
     main: html`
       <h1>${translate(locale, 'write-comment-flow', 'verifyEmailAddressTitle')()}</h1>
 
-      <p>${translate(locale, 'write-comment-flow', 'howToVerifyEmailAddress')({ emailAddress })}</p>
+      <p>
+        ${translate(
+          locale,
+          'write-comment-flow',
+          'howToVerifyEmailAddress',
+        )({ emailAddress: html`<bdi>${emailAddress}</bdi>` })}
+      </p>
 
       <p>${translate(locale, 'write-comment-flow', 'onceEmailAddressVerified')()}</p>
     `,
