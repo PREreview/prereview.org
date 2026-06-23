@@ -1,10 +1,11 @@
 import { Data, Effect, Option, pipe } from 'effect'
+import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import { ContactEmailAddressIsUnavailable, VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
+import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
 
 export interface Input {
@@ -17,7 +18,7 @@ export class AcceptedInvitationIsNotFound extends Data.TaggedError('AcceptedInvi
 export type Error =
   | ContactEmailAddressHasAlreadyBeenVerified
   | AcceptedInvitationIsNotFound
-  | ContactEmailAddressIsUnavailable
+  | Commands.UnableToHandleCommand
 
 export const UseAuthorInviteEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
@@ -68,6 +69,6 @@ export const UseAuthorInviteEmailAddress: (
     },
     Effect.catchIf(
       error => error === 'unavailable',
-      () => new ContactEmailAddressIsUnavailable({ cause: 'unknown' }),
+      () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),
     ),
   )
