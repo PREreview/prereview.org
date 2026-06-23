@@ -1,11 +1,9 @@
-import { Data, flow, Match, pipe, type Predicate } from 'effect'
+import { Data, flow, Match, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
-import type { IndeterminatePreprintId } from './Preprints/index.ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
-import type { Name } from './types/Name.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import { type Uuid, UuidC } from './types/Uuid.ts'
 
@@ -35,29 +33,6 @@ export interface SaveContactEmailAddressEnv {
     orcid: OrcidId,
     ContactEmailAddress: ContactEmailAddress,
   ) => TE.TaskEither<'unavailable', void>
-}
-
-export interface VerifyContactEmailAddressEnv {
-  verifyContactEmailAddress: (
-    name: Name,
-    emailAddress: UnverifiedContactEmailAddress,
-  ) => TE.TaskEither<'unavailable', void>
-}
-
-export interface VerifyContactEmailAddressForReviewEnv {
-  verifyContactEmailAddressForReview: (
-    name: Name,
-    emailAddress: UnverifiedContactEmailAddress,
-    preprint: IndeterminatePreprintId,
-  ) => TE.TaskEither<'unavailable', void>
-}
-
-export interface VerifyContactEmailAddressForInvitedAuthorEnv {
-  verifyContactEmailAddressForInvitedAuthor: (verify: {
-    name: Name
-    emailAddress: UnverifiedContactEmailAddress
-    authorInvite: Uuid
-  }) => TE.TaskEither<'unavailable', void>
 }
 
 export const ContactEmailAddressC = pipe(
@@ -121,37 +96,3 @@ export const saveContactEmailAddress = (
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ saveContactEmailAddress }) => saveContactEmailAddress(orcid, emailAddress)),
   )
-
-export const verifyContactEmailAddress = (
-  name: Name,
-  emailAddress: UnverifiedContactEmailAddress,
-): RTE.ReaderTaskEither<VerifyContactEmailAddressEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ verifyContactEmailAddress }) => verifyContactEmailAddress(name, emailAddress)),
-  )
-
-export const verifyContactEmailAddressForReview = (
-  name: Name,
-  emailAddress: UnverifiedContactEmailAddress,
-  preprint: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<VerifyContactEmailAddressForReviewEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ verifyContactEmailAddressForReview }) =>
-      verifyContactEmailAddressForReview(name, emailAddress, preprint),
-    ),
-  )
-
-export const verifyContactEmailAddressForInvitedAuthor = (verify: {
-  name: Name
-  emailAddress: UnverifiedContactEmailAddress
-  authorInvite: Uuid
-}): RTE.ReaderTaskEither<VerifyContactEmailAddressForInvitedAuthorEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ verifyContactEmailAddressForInvitedAuthor }) =>
-      verifyContactEmailAddressForInvitedAuthor(verify),
-    ),
-  )
-
-export const isUnverified: Predicate.Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (
-  emailAddress: ContactEmailAddress,
-): emailAddress is UnverifiedContactEmailAddress => emailAddress._tag === 'UnverifiedContactEmailAddress'
