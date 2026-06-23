@@ -2,7 +2,6 @@ import { Data, flow, Match, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
-import { match } from 'ts-pattern'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import { type Uuid, UuidC } from './types/Uuid.ts'
@@ -23,10 +22,6 @@ export class UnverifiedContactEmailAddress extends Data.TaggedClass('UnverifiedC
   value: EmailAddress
   verificationToken: Uuid
 }> {}
-
-export interface GetContactEmailAddressEnv {
-  getContactEmailAddress: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', ContactEmailAddress>
-}
 
 export interface SaveContactEmailAddressEnv {
   saveContactEmailAddress: (
@@ -73,21 +68,6 @@ export const ContactEmailAddressC = pipe(
     ),
   ),
 ) satisfies C.Codec<unknown, unknown, ContactEmailAddress>
-
-export const getContactEmailAddress = (orcid: OrcidId) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getContactEmailAddress }: GetContactEmailAddressEnv) => getContactEmailAddress(orcid)),
-  )
-
-export const maybeGetContactEmailAddress = flow(
-  getContactEmailAddress,
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.right(undefined))
-      .with('unavailable', RTE.left)
-      .exhaustive(),
-  ),
-)
 
 export const saveContactEmailAddress = (
   orcid: OrcidId,
