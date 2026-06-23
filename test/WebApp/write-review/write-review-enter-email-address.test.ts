@@ -3,6 +3,7 @@ import { Effect, Layer, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
+import { ContactEmailAddressIsNotFound } from '../../../src/contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -14,7 +15,6 @@ import {
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewEnterEmailAddress', () => {
@@ -41,7 +41,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -52,7 +51,12 @@ describe('writeReviewEnterEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
         })
-      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          Layer.succeed(Locale, locale),
+        ]),
+      ),
   )
 
   it.effect.prop(
@@ -65,7 +69,7 @@ describe('writeReviewEnterEmailAddress', () => {
       fc.form(),
       fc.user(),
       fc.supportedLocale(),
-      fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
+      fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.unverifiedContactEmailAddress()),
     ],
     ([preprintId, preprintTitle, body, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
@@ -77,7 +81,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore,
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -92,7 +95,12 @@ describe('writeReviewEnterEmailAddress', () => {
           skipToLabel: 'form',
           js: [],
         })
-      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+          Layer.succeed(Locale, locale),
+        ]),
+      ),
   )
 
   it.effect.prop(
@@ -103,7 +111,7 @@ describe('writeReviewEnterEmailAddress', () => {
       fc.emailAddress().map(emailAddress => Tuple.make({ emailAddress }, emailAddress)),
       fc.user(),
       fc.supportedLocale(),
-      fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
+      fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.unverifiedContactEmailAddress()),
       fc.form(),
     ],
     ([preprintId, preprintTitle, [body, emailAddress], user, locale, contactEmailAddress, newReview]) =>
@@ -116,13 +124,15 @@ describe('writeReviewEnterEmailAddress', () => {
 
         const runtime = yield* Effect.provide(
           Effect.runtime<ContactEmailAddresses | Locale>(),
-          Layer.mock(ContactEmailAddresses, { startVerificationOfContactEmailAddress }),
+          Layer.mock(ContactEmailAddresses, {
+            getContactEmailAddress: () => contactEmailAddress,
+            startVerificationOfContactEmailAddress,
+          }),
         )
 
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method: 'POST', locale, user })({
             formStore,
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -165,7 +175,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method: 'POST', locale, user })({
             formStore,
-            getContactEmailAddress: () => TE.left('not-found'),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -180,7 +189,12 @@ describe('writeReviewEnterEmailAddress', () => {
           skipToLabel: 'form',
           js: ['error-summary.js'],
         })
-      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new ContactEmailAddressIsNotFound() }),
+          Layer.succeed(Locale, locale),
+        ]),
+      ),
   )
 
   it.effect.prop(
@@ -193,7 +207,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -217,7 +230,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
             runtime,
           }),
@@ -244,7 +256,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
             runtime,
           }),
@@ -271,7 +282,6 @@ describe('writeReviewEnterEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user: undefined })({
             formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
