@@ -231,6 +231,7 @@ describe('authorInviteEnterEmailAddress', () => {
           fc
             .user()
             .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+          fc.publicPersona(),
           fc.supportedLocale(),
           fc.oneof(
             fc.record({ useInvitedAddress: fc.constant('yes') }),
@@ -245,7 +246,7 @@ describe('authorInviteEnterEmailAddress', () => {
           fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
           fc.uuid(),
         ],
-        ([inviteId, [user, invite], locale, body, prereview, contactEmailAddress, uuid]) =>
+        ([inviteId, [user, invite], publicPersona, locale, body, prereview, contactEmailAddress, uuid]) =>
           Effect.gen(function* () {
             const actual = yield* Effect.promise(
               _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method: 'POST', user })({
@@ -253,7 +254,7 @@ describe('authorInviteEnterEmailAddress', () => {
                 getAuthorInvite: () => TE.right(invite),
                 getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
                 getPrereview: () => TE.right(prereview),
-                getPublicPersona: shouldNotBeCalled,
+                getPublicPersona: () => TE.right(publicPersona),
                 saveContactEmailAddress: () => TE.left('unavailable'),
                 verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
               }),

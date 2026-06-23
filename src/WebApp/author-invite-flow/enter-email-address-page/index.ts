@@ -1,7 +1,6 @@
-import { Match, Option, Struct, pipe } from 'effect'
+import { Option, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -10,7 +9,6 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../../author-invite.ts'
 import {
-  type ContactEmailAddress,
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
   UnverifiedContactEmailAddress,
@@ -189,39 +187,42 @@ const handleEnterEmailAddressForm = ({
         E.mapLeft(() => fields),
       ),
     ),
-    RTE.chainReaderIOK(fields =>
+    RTE.chainW(fields =>
       match(fields)
-        .returnType<RIO.ReaderIO<GenerateUuidEnv, ContactEmailAddress>>()
         .with({ useInvitedAddress: 'yes' }, () =>
-          RIO.of(new VerifiedContactEmailAddress({ value: invite.emailAddress })),
+          pipe(
+            saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: invite.emailAddress })),
+            RTE.map(() => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) })),
+          ),
         )
         .with({ useInvitedAddress: 'no', otherEmailAddress: P.select(P.string) }, emailAddress =>
           pipe(
-            generateUuidIO,
-            RIO.map(verificationToken => new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken })),
-          ),
-        )
-        .run(),
-    ),
-    RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-    RTE.chainFirstW(
-      Match.valueTags({
-        VerifiedContactEmailAddress: () => RTE.of(undefined),
-        UnverifiedContactEmailAddress: contactEmailAddress =>
-          pipe(
-            getPublicPersona(user.orcid),
-            RTE.chainW(publicPersona =>
+            RTE.Do,
+            RTE.apS('verificationToken', RTE.rightReaderIO(generateUuidIO)),
+            RTE.apSW('publicPersona', getPublicPersona(user.orcid)),
+            RTE.let(
+              'contactEmailAddress',
+              ({ verificationToken }) => new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
+            ),
+            RTE.chainFirstW(({ contactEmailAddress }) => saveContactEmailAddress(user.orcid, contactEmailAddress)),
+            RTE.chainW(({ publicPersona, contactEmailAddress }) =>
               verifyContactEmailAddressForInvitedAuthor({
                 name: publicPersona.name,
                 emailAddress: contactEmailAddress,
                 authorInvite: inviteId,
               }),
             ),
+            RTE.map(() =>
+              RedirectResponse({
+                location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
+              }),
+            ),
           ),
-      }),
+        )
+        .run(),
     ),
-    RTE.matchW(
-      error =>
+    RTE.getOrElseW(error =>
+      RT.of(
         match(error)
           .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
           .with({ useInvitedAddress: P.any }, form =>
@@ -233,14 +234,7 @@ const handleEnterEmailAddressForm = ({
             }),
           )
           .exhaustive(),
-      Match.valueTags({
-        VerifiedContactEmailAddress: () =>
-          RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
-        UnverifiedContactEmailAddress: () =>
-          RedirectResponse({
-            location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
-          }),
-      }),
+      ),
     ),
   )
 
