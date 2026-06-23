@@ -419,7 +419,6 @@ export const WriteReviewRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         formStore: env.formStore,
-        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getContactEmailAddress: EffectToFpts.toTaskEitherK(
           Effect.fnUntraced(
             function* (orcidId) {
@@ -487,10 +486,6 @@ export const WriteReviewRouter = pipe(
           ...env.logger,
         }),
         runtime: env.runtime,
-        saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, {
-          contactEmailAddressStore: env.users.contactEmailAddressStore,
-          ...env.logger,
-        }),
         verifyContactEmailAddressForReview: flow(
           EffectToFpts.toTaskEitherK(
             (name, emailAddress, preprint) =>

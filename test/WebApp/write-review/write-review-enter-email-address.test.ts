@@ -1,15 +1,16 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect, Tuple } from 'effect'
+import { Effect, Layer, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import {
-  UnverifiedContactEmailAddress,
-  type SaveContactEmailAddressEnv,
-  type VerifyContactEmailAddressForReviewEnv,
-} from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
+import { Locale } from '../../../src/Context.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
-import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../../src/routes.ts'
+import {
+  writeReviewMatch,
+  writeReviewNeedToVerifyEmailAddressMatch,
+  writeReviewPublishMatch,
+} from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
@@ -32,17 +33,17 @@ describe('writeReviewEnterEmailAddress', () => {
     ([preprintId, preprintTitle, body, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const formStore = new Keyv()
+
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore,
-            generateUuid: shouldNotBeCalled,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -51,7 +52,7 @@ describe('writeReviewEnterEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -71,15 +72,14 @@ describe('writeReviewEnterEmailAddress', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore,
-            generateUuid: shouldNotBeCalled,
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -92,7 +92,7 @@ describe('writeReviewEnterEmailAddress', () => {
           skipToLabel: 'form',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -101,43 +101,30 @@ describe('writeReviewEnterEmailAddress', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc.emailAddress().map(emailAddress => Tuple.make({ emailAddress }, emailAddress)),
-      fc.uuid(),
       fc.user(),
-      fc.publicPersona(),
       fc.supportedLocale(),
       fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
       fc.form(),
     ],
-    ([
-      preprintId,
-      preprintTitle,
-      [body, emailAddress],
-      verificationToken,
-      user,
-      publicPersona,
-      locale,
-      contactEmailAddress,
-      newReview,
-    ]) =>
+    ([preprintId, preprintTitle, [body, emailAddress], user, locale, contactEmailAddress, newReview]) =>
       Effect.gen(function* () {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
-        const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
-          TE.right(undefined),
+        const startVerificationOfContactEmailAddress = vi.fn<
+          (typeof ContactEmailAddresses.Service)['startVerificationOfContactEmailAddress']
+        >(_ => Effect.void)
+
+        const runtime = yield* Effect.provide(
+          Effect.runtime<ContactEmailAddresses | Locale>(),
+          Layer.mock(ContactEmailAddresses, { startVerificationOfContactEmailAddress }),
         )
-        const verifyContactEmailAddressForReview = vi.fn<
-          VerifyContactEmailAddressForReviewEnv['verifyContactEmailAddressForReview']
-        >(_ => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method: 'POST', locale, user })({
             formStore,
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            generateUuid: () => verificationToken,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: () => TE.right(publicPersona),
-            saveContactEmailAddress,
-            verifyContactEmailAddressForReview,
+            runtime,
           }),
         )
 
@@ -146,16 +133,12 @@ describe('writeReviewEnterEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
         })
-        expect(saveContactEmailAddress).toHaveBeenCalledWith(
-          user.orcid,
-          new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
-        )
-        expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(
-          publicPersona.name,
-          new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
-          preprintTitle.id,
-        )
-      }),
+        expect(startVerificationOfContactEmailAddress).toHaveBeenCalledWith({
+          orcidId: user.orcid,
+          emailAddress,
+          resumeAt: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }) as `/${string}`,
+        })
+      }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
   it.effect.prop(
@@ -168,25 +151,23 @@ describe('writeReviewEnterEmailAddress', () => {
           .string()
           .filter(string => !string.includes('.') || !string.includes('@') || string === '' || /\s/g.test(string)),
       }),
-      fc.uuid(),
       fc.user(),
       fc.supportedLocale(),
       fc.form(),
     ],
-    ([preprintId, preprintTitle, body, verificationToken, user, locale, newReview]) =>
+    ([preprintId, preprintTitle, body, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method: 'POST', locale, user })({
             formStore,
             getContactEmailAddress: () => TE.left('not-found'),
-            generateUuid: () => verificationToken,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -199,7 +180,7 @@ describe('writeReviewEnterEmailAddress', () => {
           skipToLabel: 'form',
           js: ['error-summary.js'],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -207,15 +188,14 @@ describe('writeReviewEnterEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
-            generateUuid: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -224,7 +204,7 @@ describe('writeReviewEnterEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -232,15 +212,14 @@ describe('writeReviewEnterEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
-            generateUuid: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -252,7 +231,7 @@ describe('writeReviewEnterEmailAddress', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -260,15 +239,14 @@ describe('writeReviewEnterEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user })({
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
-            generateUuid: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -280,7 +258,7 @@ describe('writeReviewEnterEmailAddress', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -288,15 +266,14 @@ describe('writeReviewEnterEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewEnterEmailAddress({ body, id: preprintId, method, locale, user: undefined })({
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
-            generateUuid: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -305,6 +282,6 @@ describe('writeReviewEnterEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 })
