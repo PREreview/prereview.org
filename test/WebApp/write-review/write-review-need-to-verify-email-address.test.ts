@@ -1,14 +1,16 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import type { VerifyContactEmailAddressForReviewEnv } from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
+import { Locale } from '../../../src/Context.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
+  writeReviewPublishMatch,
 } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
@@ -33,13 +35,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -48,7 +51,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -67,13 +70,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -86,7 +90,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -96,25 +100,28 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
       fc.preprintTitle(),
       fc.form(),
       fc.user(),
-      fc.publicPersona(),
       fc.supportedLocale(),
       fc.unverifiedContactEmailAddress(),
     ],
-    ([preprintId, preprintTitle, newReview, user, publicPersona, locale, contactEmailAddress]) =>
+    ([preprintId, preprintTitle, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
-        const verifyContactEmailAddressForReview = vi.fn<
-          VerifyContactEmailAddressForReviewEnv['verifyContactEmailAddressForReview']
-        >(_ => TE.right(undefined))
+        const resendVerificationEmail = vi.fn<(typeof ContactEmailAddresses.Service)['resendVerificationEmail']>(
+          _ => Effect.void,
+        )
+
+        const runtime = yield* Effect.provide(
+          Effect.runtime<ContactEmailAddresses | Locale>(),
+          Layer.mock(ContactEmailAddresses, { resendVerificationEmail }),
+        )
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method: 'POST', user })({
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: () => TE.right(publicPersona),
-            verifyContactEmailAddressForReview,
+            runtime,
           }),
         )
 
@@ -123,12 +130,11 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
           message: 'verify-contact-email-resend',
         })
-        expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(
-          publicPersona.name,
-          contactEmailAddress,
-          preprintTitle.id,
-        )
-      }),
+        expect(resendVerificationEmail).toHaveBeenCalledWith({
+          orcidId: user.orcid,
+          resumeAt: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }) as `/${string}`,
+        })
+      }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
   it.effect.prop(
@@ -139,13 +145,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore,
             getContactEmailAddress: () => TE.left('not-found'),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -154,7 +161,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -162,13 +169,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
             formStore: new Keyv(),
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -177,7 +185,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -185,13 +193,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-            getPublicPersona: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -203,7 +212,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -211,13 +220,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-            getPublicPersona: shouldNotBeCalled,
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -229,7 +239,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 
   it.effect.prop(
@@ -237,13 +247,14 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user: undefined })({
             getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
             formStore: new Keyv(),
-            verifyContactEmailAddressForReview: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -252,6 +263,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
   )
 })

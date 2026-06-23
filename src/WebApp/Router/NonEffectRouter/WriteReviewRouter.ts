@@ -486,14 +486,6 @@ export const WriteReviewRouter = pipe(
           ...env.logger,
         }),
         runtime: env.runtime,
-        verifyContactEmailAddressForReview: flow(
-          EffectToFpts.toTaskEitherK(
-            (name, emailAddress, preprint) =>
-              Email.verifyContactEmailAddressForReview({ name, emailAddress, preprint }),
-            env.runtime,
-          ),
-          TE.mapLeft(() => 'unavailable' as const),
-        ),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>

@@ -1,26 +1,25 @@
-import { Match, pipe } from 'effect'
+import { Effect, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
-import {
-  type GetContactEmailAddressEnv,
-  type UnverifiedContactEmailAddress,
-  type VerifyContactEmailAddressForReviewEnv,
-  maybeGetContactEmailAddress,
-  verifyContactEmailAddressForReview,
-} from '../../../contact-email-address.ts'
+import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
+import type { Locale } from '../../../Context.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPublicPersonaEnv, getPublicPersona } from '../../../persona.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
+  writeReviewPublishMatch,
 } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
 import {
   FlashMessageResponse,
   type PageResponse,
@@ -41,11 +40,10 @@ export const writeReviewNeedToVerifyEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv &
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> &
+    GetContactEmailAddressEnv &
     GetPreprintTitleEnv &
-    GetPublicPersonaEnv &
-    FormStoreEnv &
-    VerifyContactEmailAddressForReviewEnv,
+    FormStoreEnv,
   PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -78,7 +76,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
               match(state)
                 .returnType<
                   RT.ReaderTask<
-                    VerifyContactEmailAddressForReviewEnv & GetPublicPersonaEnv,
+                    EffectToFpts.EffectEnv<ContactEmailAddresses | Locale>,
                     PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
                   >
                 >()
@@ -89,7 +87,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
                 )
                 .with(
                   { contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' }, method: 'POST' },
-                  resendVerificationEmail,
+                  EffectToFpts.toReaderTaskK(resendVerificationEmail),
                 )
                 .with({ contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' } }, state =>
                   RT.of(needToVerifyEmailAddressMessage(state)),
@@ -107,28 +105,25 @@ export const writeReviewNeedToVerifyEmailAddress = ({
     ),
   )
 
-const resendVerificationEmail = ({
-  contactEmailAddress,
-  locale,
-  preprint,
-  user,
-}: {
-  contactEmailAddress: UnverifiedContactEmailAddress
-  locale: SupportedLocale
-  preprint: PreprintTitle
-  user: User
-}) =>
-  pipe(
-    getPublicPersona(user.orcid),
-    RTE.chainW(publicPersona =>
-      verifyContactEmailAddressForReview(publicPersona.name, contactEmailAddress, preprint.id),
-    ),
-    RTE.matchW(
-      () => havingProblemsPage(locale),
-      () =>
-        FlashMessageResponse({
-          message: 'verify-contact-email-resend',
-          location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id }),
-        }),
-    ),
-  )
+const resendVerificationEmail = Effect.fnUntraced(
+  function* ({ preprint, user }: { preprint: PreprintTitle; user: User }) {
+    const contactEmailAddresses = yield* ContactEmailAddresses
+
+    yield* contactEmailAddresses.resendVerificationEmail({
+      orcidId: user.orcid,
+      resumeAt: format(writeReviewPublishMatch.formatter, { id: preprint.id }) as `/${string}`,
+    })
+
+    return FlashMessageResponse({
+      message: 'verify-contact-email-resend',
+      location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id }),
+    })
+  },
+  (result, { preprint }) =>
+    Effect.catchTags(result, {
+      ContactEmailAddressIsNotFound: () => PageNotFound,
+      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+      ContactEmailAddressHasAlreadyBeenVerified: () =>
+        Effect.succeed(RedirectResponse({ location: format(writeReviewPublishMatch.formatter, { id: preprint.id }) })),
+    }),
+)
