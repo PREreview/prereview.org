@@ -3,7 +3,6 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -139,19 +138,6 @@ export const AuthorInviteFlowRouter = pipe(
           authorInviteStore: env.authorInviteStore,
           ...env.logger,
         }),
-        getContactEmailAddress: EffectToFpts.toTaskEitherK(
-          Effect.fnUntraced(
-            function* (orcidId) {
-              const contactEmailAddresses = yield* ContactEmailAddresses
-              return yield* contactEmailAddresses.getContactEmailAddress(orcidId)
-            },
-            Effect.catchTags({
-              ContactEmailAddressIsNotFound: () => Effect.fail('not-found' as const),
-              ContactEmailAddressIsUnavailable: () => Effect.fail('unavailable' as const),
-            }),
-          ),
-          env.runtime,
-        ),
         runtime: env.runtime,
         saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, {
           authorInviteStore: env.authorInviteStore,

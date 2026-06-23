@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -12,7 +12,7 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../../../author-invite.ts'
-import { type GetContactEmailAddressEnv, getContactEmailAddress } from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
@@ -22,6 +22,7 @@ import {
   getPseudonymPersona,
 } from '../../../persona.ts'
 import type * as Personas from '../../../Personas/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
@@ -84,8 +85,8 @@ export const authorInviteCheck = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  AddAuthorToPrereviewEnv &
-    GetContactEmailAddressEnv &
+  EffectToFpts.EffectEnv<ContactEmailAddresses> &
+    AddAuthorToPrereviewEnv &
     GetPrereviewEnv &
     GetPublicPersonaEnv &
     GetPseudonymPersonaEnv &
@@ -118,14 +119,20 @@ export const authorInviteCheck = ({
       'personaChoice',
       RTE.fromNullableK('no-persona' as const)(({ invite }) => invite.persona),
     ),
-    RTE.bindW('contactEmailAddress', ({ user }) =>
-      pipe(
-        getContactEmailAddress(user.orcid),
-        RTE.filterOrElseW(
-          contactEmailAddress => contactEmailAddress._tag === 'VerifiedContactEmailAddress',
-          () => 'no-verified-email' as const,
+    RTE.bindW(
+      'contactEmailAddress',
+      EffectToFpts.toReaderTaskEitherK(
+        Effect.fnUntraced(
+          function* ({ user }) {
+            const contactEmailAddresses = yield* ContactEmailAddresses
+            return yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
+          },
+          Effect.filterOrFail(
+            contactEmailAddress => contactEmailAddress._tag === 'VerifiedContactEmailAddress',
+            () => 'no-verified-email' as const,
+          ),
+          Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.fail('no-verified-email' as const)),
         ),
-        RTE.mapLeft(error => (error === 'not-found' ? ('no-verified-email' as const) : error)),
       ),
     ),
     RTE.bindW('persona', ({ personaChoice, user }) => getPersona({ orcidId: user.orcid, persona: personaChoice })),
@@ -146,7 +153,10 @@ export const authorInviteCheck = ({
             )
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound(locale))
-            .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
+            .with(
+              P.union('unavailable', { _tag: P.union('ContactEmailAddressIsUnavailable', 'UnableToGetPersona') }),
+              () => havingProblemsPage(locale),
+            )
             .with('wrong-user', () => noPermissionPage(locale))
             .exhaustive(),
         ),

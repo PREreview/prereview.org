@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
-import type { GetContactEmailAddressEnv } from '../../../src/contact-email-address.ts'
+import { ContactEmailAddressIsNotFound } from '../../../src/contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -58,15 +59,17 @@ describe('authorInvite', () => {
             const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
             const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
+            const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
             const actual = yield* Effect.promise(
               _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
                 addAuthorToPrereview,
                 getAuthorInvite,
-                getContactEmailAddress: () => TE.right(contactEmailAddress),
                 getPrereview,
                 saveAuthorInvite,
                 getPublicPersona: invite.persona === 'public' ? () => TE.right(publicPersona) : shouldNotBeCalled,
                 getPseudonymPersona: () => TE.right(pseudonymPersona),
+                runtime,
               }),
             )
 
@@ -87,7 +90,11 @@ describe('authorInvite', () => {
               orcid: invite.orcid,
               review: invite.review,
             })
-          }),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+            ),
+          ),
       )
 
       it.effect.prop(
@@ -118,15 +125,17 @@ describe('authorInvite', () => {
           Effect.gen(function* () {
             const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
+            const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
             const actual = yield* Effect.promise(
               _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
                 addAuthorToPrereview: () => TE.left('unavailable'),
                 getAuthorInvite: () => TE.right(invite),
-                getContactEmailAddress: () => TE.right(contactEmailAddress),
                 getPrereview: () => TE.right(prereview),
                 saveAuthorInvite,
                 getPublicPersona: () => TE.right(publicPersona),
                 getPseudonymPersona: () => TE.right(pseudonymPersona),
+                runtime,
               }),
             )
 
@@ -139,7 +148,11 @@ describe('authorInvite', () => {
               js: [],
             })
             expect(saveAuthorInvite).toHaveBeenLastCalledWith(inviteId, invite)
-          }),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+            ),
+          ),
       )
     })
 
@@ -173,15 +186,17 @@ describe('authorInvite', () => {
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
           const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite,
-              getContactEmailAddress: () => TE.right(contactEmailAddress),
               getPrereview,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: () => TE.right(publicPersona),
               getPseudonymPersona: () => TE.right(pseudonymPersona),
+              runtime,
             }),
           )
 
@@ -196,7 +211,11 @@ describe('authorInvite', () => {
           })
           expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
           expect(getPrereview).toHaveBeenCalledWith(invite.review)
-        }),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -219,24 +238,29 @@ describe('authorInvite', () => {
             title: fc.html(),
           }),
         }),
-        fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
+        fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.unverifiedContactEmailAddress()),
         fc.supportedLocale(),
       ],
       ([inviteId, [user, invite], method, prereview, contactEmailAddress, locale]) =>
         Effect.gen(function* () {
-          const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
-            TE.fromEither(contactEmailAddress),
+          const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
+            _ => contactEmailAddress,
+          )
+
+          const runtime = yield* Effect.provide(
+            Effect.runtime<ContactEmailAddresses>(),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress }),
           )
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress,
               getPrereview: () => TE.right(prereview),
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -273,15 +297,17 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, prereview, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: () => TE.right(prereview),
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -290,7 +316,7 @@ describe('authorInvite', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -305,15 +331,17 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: () => TE.left('unavailable'),
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -325,7 +353,7 @@ describe('authorInvite', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -333,15 +361,17 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.supportedLocale()],
       ([inviteId, user, method, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.left('unavailable'),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -353,7 +383,7 @@ describe('authorInvite', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -368,15 +398,17 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -385,7 +417,7 @@ describe('authorInvite', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -400,15 +432,17 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -420,7 +454,7 @@ describe('authorInvite', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -428,15 +462,17 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.openAuthorInvite(), fc.supportedLocale()],
       ([inviteId, user, method, invite, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -445,7 +481,7 @@ describe('authorInvite', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInviteMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -453,15 +489,17 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.declinedAuthorInvite(), fc.supportedLocale()],
       ([inviteId, user, method, invite, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.right(invite),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -470,7 +508,7 @@ describe('authorInvite', () => {
             status: StatusCodes.SeeOther,
             location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
 
     it.effect.prop(
@@ -478,15 +516,17 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.supportedLocale()],
       ([inviteId, user, method, locale]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
               addAuthorToPrereview: shouldNotBeCalled,
               getAuthorInvite: () => TE.left('not-found'),
-              getContactEmailAddress: shouldNotBeCalled,
               getPrereview: shouldNotBeCalled,
               saveAuthorInvite: shouldNotBeCalled,
               getPublicPersona: shouldNotBeCalled,
               getPseudonymPersona: shouldNotBeCalled,
+              runtime,
             }),
           )
 
@@ -498,7 +538,7 @@ describe('authorInvite', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
     )
   })
 
@@ -507,15 +547,17 @@ describe('authorInvite', () => {
     [fc.uuid(), fc.string(), fc.authorInvite(), fc.supportedLocale()],
     ([inviteId, method, invite, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+
         const actual = yield* Effect.promise(
           _.authorInviteCheck({ id: inviteId, method, locale })({
             addAuthorToPrereview: shouldNotBeCalled,
             getAuthorInvite: () => TE.right(invite),
-            getContactEmailAddress: shouldNotBeCalled,
             getPrereview: shouldNotBeCalled,
             saveAuthorInvite: shouldNotBeCalled,
             getPublicPersona: shouldNotBeCalled,
             getPseudonymPersona: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -523,6 +565,6 @@ describe('authorInvite', () => {
           _tag: 'LogInResponse',
           location: format(authorInviteMatch.formatter, { id: inviteId }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(ContactEmailAddresses, {}))),
   )
 })
