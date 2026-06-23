@@ -146,7 +146,7 @@ const handleEnterEmailAddressForm = ({
             })
           },
           Effect.catchTags({
-            ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+            UnableToHandleCommand: () => HavingProblemsPage,
             ContactEmailAddressHasAlreadyBeenVerified: () =>
               Effect.succeed(
                 RedirectResponse({ location: format(writeReviewPublishMatch.formatter, { id: preprint.id }) }),

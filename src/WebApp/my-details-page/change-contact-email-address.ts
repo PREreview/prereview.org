@@ -105,7 +105,7 @@ const handleChangeContactEmailAddressForm = ({
             })
           },
           Effect.catchTags({
-            ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+            UnableToHandleCommand: () => HavingProblemsPage,
             ContactEmailAddressHasAlreadyBeenVerified: () =>
               Effect.succeed(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
           }),

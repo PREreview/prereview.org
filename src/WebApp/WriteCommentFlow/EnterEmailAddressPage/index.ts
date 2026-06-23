@@ -188,7 +188,7 @@ export const EnterEmailAddressSubmission = ({
             location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
           }),
         ),
-      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+      UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),

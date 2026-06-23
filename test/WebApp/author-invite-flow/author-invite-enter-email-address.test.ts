@@ -3,11 +3,8 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
-import {
-  ContactEmailAddresses,
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-} from '../../../src/ContactEmailAddresses/index.ts'
+import * as Commands from '../../../src/Commands.ts'
+import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import {
   authorInviteCheckMatch,
@@ -194,7 +191,7 @@ describe('authorInviteEnterEmailAddress', () => {
             Effect.provide([
               Layer.mock(ContactEmailAddresses, {
                 getContactEmailAddress: () => contactEmailAddress,
-                startVerificationOfContactEmailAddress: () => new ContactEmailAddressIsUnavailable({}),
+                startVerificationOfContactEmailAddress: () => new Commands.UnableToHandleCommand({}),
               }),
               Layer.succeed(Locale, locale),
             ]),

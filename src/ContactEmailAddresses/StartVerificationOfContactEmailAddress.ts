@@ -1,4 +1,5 @@
 import { Effect, Equal, Option, pipe } from 'effect'
+import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
@@ -7,7 +8,7 @@ import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
 import { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import { ContactEmailAddressIsUnavailable, UnverifiedContactEmailAddress } from './ContactEmailAddress.ts'
+import { UnverifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
 
 export interface Input {
@@ -16,7 +17,7 @@ export interface Input {
   readonly resumeAt: `/${string}`
 }
 
-export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsUnavailable
+export type Error = ContactEmailAddressHasAlreadyBeenVerified | Commands.UnableToHandleCommand
 
 export const StartVerificationOfContactEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
@@ -86,10 +87,10 @@ export const StartVerificationOfContactEmailAddress: (
     },
     Effect.catchIf(
       error => error === 'unavailable',
-      () => new ContactEmailAddressIsUnavailable({ cause: 'unknown' }),
+      () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),
     ),
     Effect.catchTags({
-      NameIsNotAvailable: error => new ContactEmailAddressIsUnavailable({ cause: error }),
-      UnableToSendEmail: error => new ContactEmailAddressIsUnavailable({ cause: error }),
+      NameIsNotAvailable: error => new Commands.UnableToHandleCommand({ cause: error }),
+      UnableToSendEmail: error => new Commands.UnableToHandleCommand({ cause: error }),
     }),
   )

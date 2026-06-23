@@ -239,7 +239,7 @@ const handleEnterEmailAddressForm = ({
                 })
               },
               Effect.catchTags({
-                ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+                UnableToHandleCommand: () => HavingProblemsPage,
                 ContactEmailAddressHasAlreadyBeenVerified: () =>
                   Effect.succeed(
                     RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
