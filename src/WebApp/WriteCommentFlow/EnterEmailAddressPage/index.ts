@@ -116,7 +116,6 @@ export const EnterEmailAddressPage = ({
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
-      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>

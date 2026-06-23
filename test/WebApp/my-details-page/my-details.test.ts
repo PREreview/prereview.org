@@ -4,17 +4,14 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import {
-  ContactEmailAddresses,
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-} from '../../../src/ContactEmailAddresses/index.ts'
+import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import {
   HasNotOptedIn,
   HasOptedIn,
   HasOptedOut,
 } from '../../../src/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { Prereviewers } from '../../../src/Prereviewers/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import type { SaveUserOnboardingEnv } from '../../../src/user-onboarding.ts'
@@ -548,9 +545,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, {
-              getContactEmailAddress: () => new ContactEmailAddressIsUnavailable({}),
-            }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new Queries.UnableToQuery({}) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),

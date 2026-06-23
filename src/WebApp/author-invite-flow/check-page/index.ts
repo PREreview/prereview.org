@@ -153,9 +153,8 @@ export const authorInviteCheck = ({
             )
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound(locale))
-            .with(
-              P.union('unavailable', { _tag: P.union('ContactEmailAddressIsUnavailable', 'UnableToGetPersona') }),
-              () => havingProblemsPage(locale),
+            .with(P.union('unavailable', { _tag: P.union('UnableToQuery', 'UnableToGetPersona') }), () =>
+              havingProblemsPage(locale),
             )
             .with('wrong-user', () => noPermissionPage(locale))
             .exhaustive(),

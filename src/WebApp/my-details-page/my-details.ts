@@ -83,14 +83,7 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
         match(error)
           .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
           .with(
-            P.union('unavailable', {
-              _tag: P.union(
-                'ContactEmailAddressIsUnavailable',
-                'UnableToGetPersona',
-                'UnableToQuery',
-                'UnknownPrereviewer',
-              ),
-            }),
+            P.union('unavailable', { _tag: P.union('UnableToGetPersona', 'UnableToQuery', 'UnknownPrereviewer') }),
             () => havingProblemsPage(locale),
           )
           .exhaustive(),

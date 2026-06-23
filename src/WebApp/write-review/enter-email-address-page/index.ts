@@ -72,9 +72,7 @@ export const writeReviewEnterEmailAddress = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with({ _tag: 'ContactEmailAddressIsUnavailable' }, 'form-unavailable', () =>
-                    havingProblemsPage(locale),
-                  )
+                  .with({ _tag: 'UnableToQuery' }, 'form-unavailable', () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>

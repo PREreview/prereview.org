@@ -101,7 +101,6 @@ export const NeedToVerifyEmailAddressPage = ({
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
       ContactEmailAddressIsNotFound: () => PageNotFound,
-      ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>

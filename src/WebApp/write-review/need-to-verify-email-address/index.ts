@@ -76,9 +76,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', { _tag: 'ContactEmailAddressIsUnavailable' }, () =>
-                    havingProblemsPage(locale),
-                  )
+                  .with('form-unavailable', { _tag: 'UnableToQuery' }, () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>

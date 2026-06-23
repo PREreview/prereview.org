@@ -167,9 +167,7 @@ describe('EnterEmailAddressPage', () => {
               Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
               Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
               Effect.provide(
-                Layer.mock(ContactEmailAddresses, {
-                  getContactEmailAddress: () => new ContactEmailAddress.ContactEmailAddressIsUnavailable({}),
-                }),
+                Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new Queries.UnableToQuery({}) }),
               ),
               Effect.provideService(LoggedInUser, user),
             ),

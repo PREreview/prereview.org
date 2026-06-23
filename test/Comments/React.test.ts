@@ -2,11 +2,7 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
-import {
-  ContactEmailAddresses,
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-} from '../../src/ContactEmailAddresses/index.ts'
+import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../src/ContactEmailAddresses/index.ts'
 import * as Queries from '../../src/Queries.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
@@ -92,15 +88,13 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         const actual = yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
           Effect.provide(
-            Layer.mock(ContactEmailAddresses, {
-              getContactEmailAddress: () => new ContactEmailAddressIsUnavailable({}),
-            }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new Queries.UnableToQuery({}) }),
           ),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new ContactEmailAddressIsUnavailable({})))
+        expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
       }).pipe(Effect.provideService(Comments.GetComment, () => Effect.succeed(comment))),
   )
 

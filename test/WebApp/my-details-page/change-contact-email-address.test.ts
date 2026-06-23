@@ -8,6 +8,7 @@ import {
   ContactEmailAddressIsUnavailable,
 } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-contact-email-address.ts'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../../../src/routes.ts'
@@ -22,7 +23,7 @@ describe('changeContactEmailAddress', () => {
       fc.user(),
       fc.supportedLocale(),
       fc.either(
-        fc.constantFrom(new ContactEmailAddressIsNotFound(), new ContactEmailAddressIsUnavailable({})),
+        fc.constantFrom(new ContactEmailAddressIsNotFound(), new Queries.UnableToQuery({})),
         fc.contactEmailAddress(),
       ),
     ],

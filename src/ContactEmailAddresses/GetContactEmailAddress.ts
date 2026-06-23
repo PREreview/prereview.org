@@ -1,19 +1,17 @@
 import { Effect, flow, Match, type Either } from 'effect'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
+import * as Queries from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+
 import type { OrcidId } from '../types/OrcidId.ts'
-import {
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-  type ContactEmailAddress,
-} from './ContactEmailAddress.ts'
+import { ContactEmailAddressIsNotFound, type ContactEmailAddress } from './ContactEmailAddress.ts'
 
 export type Input = OrcidId
 
 export type Result = Either.Either<ContactEmailAddress, Error>
 
-export type Error = ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable
+export type Error = ContactEmailAddressIsNotFound | Queries.UnableToQuery
 
 export const GetContactEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
@@ -33,7 +31,7 @@ export const GetContactEmailAddress: (
       flow(
         Match.value,
         Match.when('not-found', () => new ContactEmailAddressIsNotFound()),
-        Match.when('unavailable', () => new ContactEmailAddressIsUnavailable({})),
+        Match.when('unavailable', () => new Queries.UnableToQuery({ cause: 'unknown' })),
         Match.exhaustive,
       ),
     ),

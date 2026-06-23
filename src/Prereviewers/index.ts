@@ -122,7 +122,6 @@ export const layer = Layer.effect(
         },
         Effect.catchTag(
           'ContactEmailAddressIsNotFound',
-          'ContactEmailAddressIsUnavailable',
           'NameIsNotAvailable',
           error => new Queries.UnableToQuery({ cause: error }),
         ),

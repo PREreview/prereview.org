@@ -96,7 +96,7 @@ export const authorInviteNeedToVerifyEmailAddress = ({
           .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', { _tag: 'ContactEmailAddressIsUnavailable' }, () => havingProblemsPage(locale))
+          .with('unavailable', { _tag: 'UnableToQuery' }, () => havingProblemsPage(locale))
           .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       state =>
