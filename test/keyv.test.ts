@@ -4,7 +4,6 @@ import { Effect, Record, Struct } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import Keyv from 'keyv'
-import { ContactEmailAddressC } from '../src/contact-email-address.ts'
 import * as _ from '../src/keyv.ts'
 import { OrcidTokenC } from '../src/orcid-token.ts'
 import { SlackUserIdC } from '../src/slack-user-id.ts'
@@ -1939,7 +1938,7 @@ describe('getContactEmailAddress', () => {
     ([orcid, emailAddress]) =>
       Effect.gen(function* () {
         const store = new Keyv()
-        yield* Effect.promise(() => store.set(orcid, ContactEmailAddressC.encode(emailAddress)))
+        yield* Effect.promise(() => store.set(orcid, _.ContactEmailAddressC.encode(emailAddress)))
 
         const actual = yield* Effect.promise(
           _.getContactEmailAddress(orcid)({
@@ -2014,7 +2013,7 @@ describe('saveContactEmailAddress', () => {
     ([orcid, emailAddress]) =>
       Effect.gen(function* () {
         const store = new Keyv()
-        yield* Effect.promise(() => store.set(orcid, ContactEmailAddressC.encode(emailAddress)))
+        yield* Effect.promise(() => store.set(orcid, _.ContactEmailAddressC.encode(emailAddress)))
 
         const actual = yield* Effect.promise(
           _.saveContactEmailAddress(
@@ -2028,7 +2027,7 @@ describe('saveContactEmailAddress', () => {
         )
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(_.ContactEmailAddressC.encode(emailAddress))
       }),
   )
 
@@ -2052,7 +2051,7 @@ describe('saveContactEmailAddress', () => {
         )
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(_.ContactEmailAddressC.encode(emailAddress))
       }),
   )
 
@@ -2072,7 +2071,7 @@ describe('saveContactEmailAddress', () => {
       )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(_.ContactEmailAddressC.encode(emailAddress))
     }),
   )
 

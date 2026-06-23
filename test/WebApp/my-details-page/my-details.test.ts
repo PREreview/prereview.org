@@ -4,8 +4,11 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
-import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddresses,
+  ContactEmailAddressIsNotFound,
+  ContactEmailAddressIsUnavailable,
+} from '../../../src/ContactEmailAddresses/index.ts'
 import {
   HasNotOptedIn,
   HasOptedIn,

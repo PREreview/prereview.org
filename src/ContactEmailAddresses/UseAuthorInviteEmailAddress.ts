@@ -1,10 +1,10 @@
 import { Data, Effect, Option, pipe } from 'effect'
-import { ContactEmailAddressIsUnavailable, VerifiedContactEmailAddress } from '../contact-email-address.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
+import { ContactEmailAddressIsUnavailable, VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
 
 export interface Input {

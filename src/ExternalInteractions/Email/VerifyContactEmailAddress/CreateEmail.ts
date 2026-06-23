@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
+import type { UnverifiedContactEmailAddress } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'

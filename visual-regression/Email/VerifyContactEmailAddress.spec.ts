@@ -1,5 +1,5 @@
 import { Effect, Layer } from 'effect'
-import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
+import { UnverifiedContactEmailAddress } from '../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../src/Context.ts'
 import * as _ from '../../src/ExternalInteractions/Email/VerifyContactEmailAddress/CreateEmail.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'

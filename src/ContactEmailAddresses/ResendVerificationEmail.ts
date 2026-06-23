@@ -1,11 +1,11 @@
 import { Effect, pipe } from 'effect'
-import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../contact-email-address.ts'
 import type { Locale } from '../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
 
 export interface Input {

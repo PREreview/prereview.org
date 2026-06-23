@@ -3,8 +3,11 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
-import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
-import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddresses,
+  ContactEmailAddressIsNotFound,
+  ContactEmailAddressIsUnavailable,
+} from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import {
   authorInviteCheckMatch,

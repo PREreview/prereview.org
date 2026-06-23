@@ -35,11 +35,7 @@ import {
 } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
-import {
-  ContactEmailAddressC,
-  UnverifiedContactEmailAddress,
-  VerifiedContactEmailAddress,
-} from '../src/contact-email-address.ts'
+import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../src/ContactEmailAddresses/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
@@ -50,6 +46,7 @@ import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
 import {
+  ContactEmailAddressC,
   KeyvStores,
   type AuthorInviteStoreEnv,
   type ContactEmailAddressStoreEnv,

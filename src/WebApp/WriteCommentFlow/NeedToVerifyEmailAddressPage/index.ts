@@ -1,6 +1,6 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
-import type * as ContactEmailAddress from '../../../contact-email-address.ts'
+import type * as ContactEmailAddress from '../../../ContactEmailAddresses/index.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'

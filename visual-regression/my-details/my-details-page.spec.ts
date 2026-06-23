@@ -1,5 +1,5 @@
 import { HashSet, Option } from 'effect'
-import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/contact-email-address.ts'
+import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/ContactEmailAddresses/index.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'

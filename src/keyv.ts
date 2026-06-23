@@ -1,9 +1,10 @@
 import KeyvRedis from '@keyv/redis'
-import { Context, Effect, flow, Layer, Option, pipe, Record } from 'effect'
+import { Context, Effect, flow, Layer, Match, Option, pipe, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import * as C from 'io-ts/lib/Codec.js'
 import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -13,7 +14,11 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import { type CareerStage, CareerStageC } from './career-stage.ts'
-import { ContactEmailAddressC } from './contact-email-address.ts'
+import {
+  type ContactEmailAddress,
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
+} from './ContactEmailAddresses/ContactEmailAddress.ts' // eslint-disable-line import/no-internal-modules
 import { IsOpenForRequestsC } from './is-open-for-requests.ts'
 import { LanguagesC } from './languages.ts'
 import { LocationC } from './location.ts'
@@ -21,6 +26,7 @@ import { OrcidTokenC } from './orcid-token.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
+import { EmailAddressC } from './types/EmailAddress.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { UuidC } from './types/Uuid.ts'
@@ -136,6 +142,41 @@ export interface UserOnboardingStoreEnv {
 interface KeyvEnv {
   keyv: Keyv
 }
+
+export const ContactEmailAddressC = pipe(
+  C.sum('type')({
+    verified: C.struct({
+      type: C.literal('verified'),
+      value: EmailAddressC,
+    }),
+    unverified: C.struct({
+      type: C.literal('unverified'),
+      value: EmailAddressC,
+      verificationToken: UuidC,
+    }),
+  }),
+  C.imap(
+    flow(
+      Match.value,
+      Match.when({ type: 'verified' }, ({ value }) => new VerifiedContactEmailAddress({ value })),
+      Match.when(
+        { type: 'unverified' },
+        ({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken }),
+      ),
+      Match.exhaustive,
+    ),
+    flow(
+      Match.value,
+      Match.tag('VerifiedContactEmailAddress', ({ value }) => ({ type: 'verified' as const, value })),
+      Match.tag('UnverifiedContactEmailAddress', ({ value, verificationToken }) => ({
+        type: 'unverified' as const,
+        value,
+        verificationToken,
+      })),
+      Match.exhaustive,
+    ),
+  ),
+) satisfies C.Codec<unknown, unknown, ContactEmailAddress>
 
 const deleteKey =
   <K>(keyEncoder: Encoder<string, K>) =>

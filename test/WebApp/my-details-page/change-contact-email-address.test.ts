@@ -2,11 +2,14 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
-import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddresses,
+  ContactEmailAddressIsNotFound,
+  ContactEmailAddressIsUnavailable,
+} from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-contact-email-address.ts'
-import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as fc from '../../fc.ts'
 

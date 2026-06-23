@@ -1,6 +1,6 @@
 import { expect, it } from '@effect/vitest'
 import { Effect, Either } from 'effect'
-import { ContactEmailAddressIsNotFound } from '../../src/contact-email-address.ts'
+import { ContactEmailAddressIsNotFound } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import { Keyv } from '../../src/keyv.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'

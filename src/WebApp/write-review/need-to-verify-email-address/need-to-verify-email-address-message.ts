@@ -1,6 +1,6 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
+import type { UnverifiedContactEmailAddress } from '../../../ContactEmailAddresses/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'

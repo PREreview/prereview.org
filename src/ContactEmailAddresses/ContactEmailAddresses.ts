@@ -1,9 +1,4 @@
 import { Context, Effect, flow, Layer, Match, Scope } from 'effect'
-import {
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-  type ContactEmailAddress,
-} from '../contact-email-address.ts'
 import type { Locale } from '../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
@@ -11,6 +6,11 @@ import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import {
+  ContactEmailAddressIsNotFound,
+  ContactEmailAddressIsUnavailable,
+  type ContactEmailAddress,
+} from './ContactEmailAddress.ts'
 import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as UseAuthorInviteEmailAddress from './UseAuthorInviteEmailAddress.ts'

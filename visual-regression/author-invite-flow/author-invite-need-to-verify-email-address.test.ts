@@ -1,4 +1,4 @@
-import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
+import { UnverifiedContactEmailAddress } from '../../src/ContactEmailAddresses/index.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
