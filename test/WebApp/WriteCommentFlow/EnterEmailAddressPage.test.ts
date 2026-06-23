@@ -4,11 +4,9 @@ import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
-import { Uuid } from '../../../src/types/index.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/WriteCommentFlow/EnterEmailAddressPage/index.ts'
 import { RouteForCommand } from '../../../src/WebApp/WriteCommentFlow/Routes.ts'
@@ -410,26 +408,17 @@ describe('EnterEmailAddressSubmission', () => {
             fc
               .commentInProgress()
               .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-            fc.publicPersona(),
             fc.supportedLocale(),
             fc.record({ emailAddress: fc.emailAddress() }),
-            fc.uuid(),
           ],
-          ([commentId, [comment, user], publicPersona, locale, body, uuid]) =>
+          ([commentId, [comment, user], locale, body]) =>
             Effect.gen(function* () {
-              const saveContactEmailAddress = vi.fn<typeof ContactEmailAddress.SaveContactEmailAddress.Service>(
-                _ => Effect.void,
-              )
-              const verifyContactEmailAddressForComment = vi.fn<
-                typeof ContactEmailAddress.VerifyContactEmailAddressForComment.Service
+              const startVerificationOfContactEmailAddress = vi.fn<
+                (typeof ContactEmailAddresses.Service)['startVerificationOfContactEmailAddress']
               >(_ => Effect.void)
 
               const actual = yield* _.EnterEmailAddressSubmission({ body, commentId }).pipe(
-                Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, saveContactEmailAddress),
-                Effect.provideService(
-                  ContactEmailAddress.VerifyContactEmailAddressForComment,
-                  verifyContactEmailAddressForComment,
-                ),
+                Effect.provide(Layer.mock(ContactEmailAddresses, { startVerificationOfContactEmailAddress })),
               )
 
               expect(actual).toStrictEqual({
@@ -437,28 +426,14 @@ describe('EnterEmailAddressSubmission', () => {
                 status: StatusCodes.SeeOther,
                 location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
               })
-              expect(saveContactEmailAddress).toHaveBeenCalledWith(
-                user.orcid,
-                new ContactEmailAddress.UnverifiedContactEmailAddress({
-                  value: body.emailAddress,
-                  verificationToken: uuid,
-                }),
-              )
-              expect(verifyContactEmailAddressForComment).toHaveBeenCalledWith(
-                publicPersona.name,
-                new ContactEmailAddress.UnverifiedContactEmailAddress({
-                  value: body.emailAddress,
-                  verificationToken: uuid,
-                }),
-                commentId,
-              )
+              expect(startVerificationOfContactEmailAddress).toHaveBeenCalledWith({
+                orcidId: user.orcid,
+                emailAddress: body.emailAddress,
+                resumeAt: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
+              })
             }).pipe(
               Effect.provideService(Locale, locale),
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-              Effect.provide([
-                Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
-                Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
-              ]),
               Effect.provideService(LoggedInUser, user),
             ),
         )
@@ -496,9 +471,7 @@ describe('EnterEmailAddressSubmission', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-            Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-            Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-            Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+            Effect.provide(Layer.mock(ContactEmailAddresses, {})),
             Effect.provideService(LoggedInUser, user),
           ),
       )
@@ -526,9 +499,7 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -555,9 +526,7 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -584,9 +553,7 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -609,9 +576,7 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -641,9 +606,7 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -666,9 +629,7 @@ describe('EnterEmailAddressSubmission', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
-          Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-          Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+          Effect.provide(Layer.mock(ContactEmailAddresses, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -688,9 +649,7 @@ describe('EnterEmailAddressSubmission', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-        Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
-        Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-        Effect.provide([Layer.mock(Personas.Personas, {}), Layer.mock(Uuid.GenerateUuid, {})]),
+        Effect.provide(Layer.mock(ContactEmailAddresses, {})),
       ),
   )
 })

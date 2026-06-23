@@ -1,11 +1,10 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
-import * as ContactEmailAddress from '../../../contact-email-address.ts'
+import type * as ContactEmailAddress from '../../../contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
-import { Uuid } from '../../../types/index.ts'
+import type { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
@@ -134,14 +133,10 @@ export const EnterEmailAddressSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  | Comments.GetComment
-  | ContactEmailAddress.SaveContactEmailAddress
-  | ContactEmailAddress.VerifyContactEmailAddressForComment
-  | Uuid.GenerateUuid
-  | Personas.Personas
-  | Locale
+  Comments.GetComment | ContactEmailAddresses | Locale
 > =>
   Effect.gen(function* () {
+    const contactEmailAddresses = yield* ContactEmailAddresses
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -164,19 +159,11 @@ export const EnterEmailAddressSubmission = ({
             return MakeResponse({ commentId, form, locale })
           }
 
-          const saveContactEmailAddress = yield* ContactEmailAddress.SaveContactEmailAddress
-          const verifyContactEmailAddressForComment = yield* ContactEmailAddress.VerifyContactEmailAddressForComment
-
-          const verificationToken = yield* Uuid.v4()
-          const contactEmailAddress = new ContactEmailAddress.UnverifiedContactEmailAddress({
-            value: form.emailAddress,
-            verificationToken,
+          yield* contactEmailAddresses.startVerificationOfContactEmailAddress({
+            orcidId: user.orcid,
+            emailAddress: form.emailAddress,
+            resumeAt: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
           })
-
-          const publicPersona = yield* Personas.getPublicPersona(user.orcid)
-
-          yield* saveContactEmailAddress(user.orcid, contactEmailAddress)
-          yield* verifyContactEmailAddressForComment(publicPersona.name, contactEmailAddress, commentId)
 
           return Response.RedirectResponse({
             location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
@@ -196,8 +183,13 @@ export const EnterEmailAddressSubmission = ({
     )
   }).pipe(
     Effect.catchTags({
+      ContactEmailAddressHasAlreadyBeenVerified: () =>
+        Effect.succeed(
+          Response.RedirectResponse({
+            location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
+          }),
+        ),
       ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
-      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterEmailAddress.href({ commentId }) })),
