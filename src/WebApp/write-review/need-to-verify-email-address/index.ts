@@ -3,7 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../../contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
@@ -40,10 +39,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> &
-    GetContactEmailAddressEnv &
-    GetPreprintTitleEnv &
-    FormStoreEnv,
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & GetPreprintTitleEnv & FormStoreEnv,
   PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -60,7 +56,18 @@ export const writeReviewNeedToVerifyEmailAddress = ({
           RTE.let('preprint', () => preprint),
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
-          RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+          RTE.bindW(
+            'contactEmailAddress',
+            EffectToFpts.toReaderTaskEitherK(
+              Effect.fnUntraced(
+                function* ({ user }) {
+                  const contactEmailAddresses = yield* ContactEmailAddresses
+                  return yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
+                },
+                Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(undefined)),
+              ),
+            ),
+          ),
           RTE.let('method', () => method),
           RTE.matchEW(
             error =>
@@ -69,7 +76,9 @@ export const writeReviewNeedToVerifyEmailAddress = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', 'unavailable', () => havingProblemsPage(locale))
+                  .with('form-unavailable', { _tag: 'ContactEmailAddressIsUnavailable' }, () =>
+                    havingProblemsPage(locale),
+                  )
                   .exhaustive(),
               ),
             state =>

@@ -3,6 +3,7 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
+import { ContactEmailAddressIsNotFound } from '../../../src/contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -15,7 +16,6 @@ import {
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewNeedToVerifyEmailAddress', () => {
@@ -40,7 +40,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -51,7 +50,12 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
         })
-      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          Layer.succeed(Locale, locale),
+        ]),
+      ),
   )
 
   it.effect.prop(
@@ -75,7 +79,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -90,7 +93,12 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          Layer.succeed(Locale, locale),
+        ]),
+      ),
   )
 
   it.effect.prop(
@@ -113,13 +121,15 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
         const runtime = yield* Effect.provide(
           Effect.runtime<ContactEmailAddresses | Locale>(),
-          Layer.mock(ContactEmailAddresses, { resendVerificationEmail }),
+          Layer.mock(ContactEmailAddresses, {
+            getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
+            resendVerificationEmail,
+          }),
         )
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method: 'POST', user })({
             formStore,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -150,7 +160,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore,
-            getContactEmailAddress: () => TE.left('not-found'),
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
           }),
@@ -161,7 +170,12 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
         })
-      }).pipe(Effect.provide([Layer.mock(ContactEmailAddresses, {}), Layer.succeed(Locale, locale)])),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new ContactEmailAddressIsNotFound() }),
+          Layer.succeed(Locale, locale),
+        ]),
+      ),
   )
 
   it.effect.prop(
@@ -173,7 +187,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             formStore: new Keyv(),
             runtime,
@@ -198,7 +211,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
             runtime,
           }),
@@ -225,7 +237,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
             formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
             runtime,
           }),
@@ -251,7 +262,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user: undefined })({
-            getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             formStore: new Keyv(),
             runtime,
