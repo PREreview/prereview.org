@@ -11,6 +11,7 @@ import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as verifyContactEmailAddress from './VerifyContactEmailAddress.ts'
 
@@ -26,15 +27,9 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
     startVerificationOfContactEmailAddress: (
       args: StartVerificationOfContactEmailAddress.Input,
     ) => Effect.Effect<void, StartVerificationOfContactEmailAddress.Error, Locale>
-    resendVerificationEmail: (args: {
-      orcidId: OrcidId
-      resumeAt?: `/${string}`
-    }) => Effect.Effect<
-      void,
-      | verifyContactEmailAddress.ContactEmailAddressHasAlreadyBeenVerified
-      | ContactEmailAddressIsNotFound
-      | ContactEmailAddressIsUnavailable
-    >
+    resendVerificationEmail: (
+      args: ResendVerificationEmail.Input,
+    ) => Effect.Effect<void, ResendVerificationEmail.Error, Locale>
   }
 >() {}
 
@@ -72,7 +67,10 @@ export const layer = Layer.effect(
         StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress(contactEmailAddressStore),
         Effect.provide(context),
       ),
-      resendVerificationEmail: () => new ContactEmailAddressIsUnavailable({ cause: 'not implemented' }),
+      resendVerificationEmail: flow(
+        ResendVerificationEmail.ResendVerificationEmail(contactEmailAddressStore),
+        Effect.provide(context),
+      ),
     }
   }),
 )
