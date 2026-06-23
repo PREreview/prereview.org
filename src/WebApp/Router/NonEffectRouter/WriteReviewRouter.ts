@@ -7,7 +7,6 @@ import type * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
-import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -419,19 +418,6 @@ export const WriteReviewRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         formStore: env.formStore,
-        getContactEmailAddress: EffectToFpts.toTaskEitherK(
-          Effect.fnUntraced(
-            function* (orcidId) {
-              const contactEmailAddresses = yield* ContactEmailAddresses
-              return yield* contactEmailAddresses.getContactEmailAddress(orcidId)
-            },
-            Effect.catchTags({
-              ContactEmailAddressIsNotFound: () => Effect.fail('not-found' as const),
-              ContactEmailAddressIsUnavailable: () => Effect.fail('unavailable' as const),
-            }),
-          ),
-          env.runtime,
-        ),
         getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
         getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),

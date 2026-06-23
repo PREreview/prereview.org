@@ -7,11 +7,8 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import {
-  type ContactEmailAddress,
-  type GetContactEmailAddressEnv,
-  maybeGetContactEmailAddress,
-} from '../../../contact-email-address.ts'
+import type { ContactEmailAddress } from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -62,12 +59,11 @@ export const writeReviewPublish = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv &
-    GetPreprintTitleEnv &
+  GetPreprintTitleEnv &
     FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
-    EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Personas.Personas>,
+    EffectToFpts.EffectEnv<ContactEmailAddresses | LanguageDetection.LanguageDetection | Personas.Personas>,
   Response
 > =>
   pipe(
@@ -86,7 +82,18 @@ export const writeReviewPublish = ({
           RTE.bindW('originalForm', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('form', ({ originalForm }) => CompletedFormC.decode(originalForm)),
           RTE.let('method', () => method),
-          RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+          RTE.bindW(
+            'contactEmailAddress',
+            EffectToFpts.toReaderTaskEitherK(
+              Effect.fnUntraced(
+                function* ({ user }) {
+                  const contactEmailAddresses = yield* ContactEmailAddresses
+                  return yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
+                },
+                Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(undefined)),
+              ),
+            ),
+          ),
           RTE.matchEW(
             error =>
               RT.of(
