@@ -13,6 +13,7 @@ import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
+import * as UseAuthorInviteEmailAddress from './UseAuthorInviteEmailAddress.ts'
 import * as verifyContactEmailAddress from './VerifyContactEmailAddress.ts'
 
 export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
@@ -24,6 +25,9 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
     verifyContactEmailAddress: (
       args: verifyContactEmailAddress.Input,
     ) => Effect.Effect<void, verifyContactEmailAddress.Error>
+    useAuthorInviteEmailAddress: (
+      args: UseAuthorInviteEmailAddress.Input,
+    ) => Effect.Effect<void, UseAuthorInviteEmailAddress.Error>
     startVerificationOfContactEmailAddress: (
       args: StartVerificationOfContactEmailAddress.Input,
     ) => Effect.Effect<void, StartVerificationOfContactEmailAddress.Error, Locale>
@@ -63,6 +67,7 @@ export const layer = Layer.effect(
         ),
       ),
       verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
+      useAuthorInviteEmailAddress: UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(contactEmailAddressStore),
       startVerificationOfContactEmailAddress: flow(
         StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress(contactEmailAddressStore),
         Effect.provide(context),
