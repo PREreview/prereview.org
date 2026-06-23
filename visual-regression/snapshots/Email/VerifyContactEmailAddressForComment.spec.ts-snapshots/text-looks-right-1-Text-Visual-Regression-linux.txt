@@ -1,3 +1,0 @@
-Hi Josiah Carberry,
-
-Please verify your email address on PREreview by going to http://example.com/verify-email-address?verificationToken=2a29e36c-da26-438d-9a67-577101fa8968&redirectTo=%2Fwrite-a-comment%2Fee9dd955-7b3b-4ad2-8a61-25dd42cb70f0%2Fneed-to-verify-email-address

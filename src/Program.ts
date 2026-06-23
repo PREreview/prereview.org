@@ -4,7 +4,6 @@ import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, 
 import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
-import * as ContactEmailAddress from './contact-email-address.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import { SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
@@ -56,47 +55,6 @@ import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
-
-const saveContactEmailAddress = Layer.effect(
-  ContactEmailAddress.SaveContactEmailAddress,
-  Effect.gen(function* () {
-    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
-
-    return Effect.fn(
-      function* (orcid, contactEmailAddress) {
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* FptsToEffect.readerTaskEither(Keyv.saveContactEmailAddress(orcid, contactEmailAddress), {
-          contactEmailAddressStore,
-          ...loggerEnv,
-        })
-      },
-      Effect.mapError(
-        flow(
-          Match.value,
-          Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
-          Match.exhaustive,
-        ),
-      ),
-    )
-  }),
-)
-
-const verifyContactEmailAddressForComment = Layer.effect(
-  ContactEmailAddress.VerifyContactEmailAddressForComment,
-  Effect.gen(function* () {
-    const email = yield* Email.Email
-
-    return (name, contactEmailAddress, comment) =>
-      pipe(
-        email.verifyContactEmailAddressForComment({ name, emailAddress: contactEmailAddress, comment }),
-        Effect.catchTag(
-          'UnableToSendEmail',
-          error => new ContactEmailAddress.ContactEmailAddressIsUnavailable({ cause: error }),
-        ),
-      )
-  }),
-)
 
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
@@ -240,13 +198,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
-  Layer.provide([
-    AuthorInvites.layer,
-    PreprintReviews.layer,
-    Prereviews.layer,
-    ReviewRequests.layer,
-    verifyContactEmailAddressForComment,
-  ]),
+  Layer.provide([AuthorInvites.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer]),
   Layer.provide(DatasetReviews.layer),
   Layer.provide(Personas.layer),
   Layer.provide(Prereviewers.layer),
@@ -257,7 +209,6 @@ export const Program = pipe(
     OpenAlexWorks.layer,
     OrcidRecords.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
-    saveContactEmailAddress,
     Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),
     Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser),
     Layer.effect(

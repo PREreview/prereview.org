@@ -1,9 +1,8 @@
-import { Context, Data, type Effect, flow, Match, pipe, type Predicate } from 'effect'
+import { Data, flow, Match, pipe, type Predicate } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
-import type { Locale } from './Context.ts'
 import type { IndeterminatePreprintId } from './Preprints/index.ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
 import type { Name } from './types/Name.ts'
@@ -15,11 +14,6 @@ export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmai
 export class ContactEmailAddressIsUnavailable extends Data.TaggedError('ContactEmailAddressIsUnavailable')<{
   cause?: unknown
 }> {}
-
-export class SaveContactEmailAddress extends Context.Tag('SaveContactEmailAddress')<
-  SaveContactEmailAddress,
-  (orcid: OrcidId, ContactEmailAddress: ContactEmailAddress) => Effect.Effect<void, ContactEmailAddressIsUnavailable>
->() {}
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 
@@ -65,15 +59,6 @@ export interface VerifyContactEmailAddressForInvitedAuthorEnv {
     authorInvite: Uuid
   }) => TE.TaskEither<'unavailable', void>
 }
-
-export class VerifyContactEmailAddressForComment extends Context.Tag('VerifyContactEmailAddressForComment')<
-  VerifyContactEmailAddressForComment,
-  (
-    name: Name,
-    emailAddress: UnverifiedContactEmailAddress,
-    comment: Uuid,
-  ) => Effect.Effect<void, ContactEmailAddressIsUnavailable, Locale>
->() {}
 
 export const ContactEmailAddressC = pipe(
   C.sum('type')({
