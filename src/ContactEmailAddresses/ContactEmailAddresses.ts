@@ -45,7 +45,7 @@ export const layer = Layer.effect(
       Context.omit(Scope.Scope),
     )
 
-    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
+    const { authorInviteStore, contactEmailAddressStore } = yield* Keyv.KeyvStores
 
     return {
       getContactEmailAddress: Effect.fn('ContactEmailAddresses.getContactEmailAddress')(
@@ -67,7 +67,10 @@ export const layer = Layer.effect(
         ),
       ),
       verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
-      useAuthorInviteEmailAddress: UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(contactEmailAddressStore),
+      useAuthorInviteEmailAddress: UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(
+        contactEmailAddressStore,
+        authorInviteStore,
+      ),
       startVerificationOfContactEmailAddress: flow(
         StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress(contactEmailAddressStore),
         Effect.provide(context),

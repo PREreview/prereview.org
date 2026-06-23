@@ -19,5 +19,6 @@ export type Error =
 
 export const UseAuthorInviteEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
+  authorInviteStoreEnv: (typeof Keyv.KeyvStores.Service)['authorInviteStore'],
 ) => (input: Input) => Effect.Effect<void, Error> = () => () =>
   new ContactEmailAddressIsUnavailable({ cause: 'not implemented' })
