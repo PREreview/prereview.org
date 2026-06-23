@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,9 +6,10 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../../author-invite.ts'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../../contact-email-address.ts'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -50,7 +51,7 @@ export const authorInviteNeedToVerifyEmailAddress = ({
   locale: SupportedLocale
   user?: User
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv,
+  EffectToFpts.EffectEnv<ContactEmailAddresses> & GetPrereviewEnv & GetAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -73,7 +74,18 @@ export const authorInviteNeedToVerifyEmailAddress = ({
       ),
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
-    RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+    RTE.bindW(
+      'contactEmailAddress',
+      EffectToFpts.toReaderTaskEitherK(
+        Effect.fnUntraced(
+          function* ({ user }) {
+            const contactEmailAddresses = yield* ContactEmailAddresses
+            return yield* contactEmailAddresses.getContactEmailAddress(user.orcid)
+          },
+          Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(undefined)),
+        ),
+      ),
+    ),
     RTE.matchW(
       error =>
         match(error)
@@ -84,7 +96,7 @@ export const authorInviteNeedToVerifyEmailAddress = ({
           .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', () => havingProblemsPage(locale))
+          .with('unavailable', { _tag: 'ContactEmailAddressIsUnavailable' }, () => havingProblemsPage(locale))
           .with('wrong-user', () => noPermissionPage(locale))
           .exhaustive(),
       state =>
