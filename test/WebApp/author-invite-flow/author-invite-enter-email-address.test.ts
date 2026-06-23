@@ -3,12 +3,7 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
-import {
-  ContactEmailAddressIsNotFound,
-  ContactEmailAddressIsUnavailable,
-  VerifiedContactEmailAddress,
-  type SaveContactEmailAddressEnv,
-} from '../../../src/contact-email-address.ts'
+import { ContactEmailAddressIsNotFound, ContactEmailAddressIsUnavailable } from '../../../src/contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import {
@@ -51,13 +46,13 @@ describe('authorInviteEnterEmailAddress', () => {
               _ => contactEmailAddress,
             )
             const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-            const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
-              TE.right(undefined),
-            )
+            const useAuthorInviteEmailAddress = vi.fn<
+              (typeof ContactEmailAddresses.Service)['useAuthorInviteEmailAddress']
+            >(_ => Effect.void)
 
             const runtime = yield* Effect.provide(
               Effect.runtime<ContactEmailAddresses | Locale>(),
-              Layer.mock(ContactEmailAddresses, { getContactEmailAddress }),
+              Layer.mock(ContactEmailAddresses, { getContactEmailAddress, useAuthorInviteEmailAddress }),
             )
 
             const actual = yield* Effect.promise(
@@ -70,7 +65,6 @@ describe('authorInviteEnterEmailAddress', () => {
               })({
                 getAuthorInvite,
                 getPrereview,
-                saveContactEmailAddress,
                 runtime,
               }),
             )
@@ -83,10 +77,7 @@ describe('authorInviteEnterEmailAddress', () => {
             expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
             expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
             expect(getPrereview).toHaveBeenCalledWith(invite.review)
-            expect(saveContactEmailAddress).toHaveBeenCalledWith(
-              user.orcid,
-              new VerifiedContactEmailAddress({ value: invite.emailAddress }),
-            )
+            expect(useAuthorInviteEmailAddress).toHaveBeenCalledWith({ orcidId: user.orcid, inviteId })
           }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
       )
 
@@ -133,7 +124,6 @@ describe('authorInviteEnterEmailAddress', () => {
               })({
                 getAuthorInvite,
                 getPrereview,
-                saveContactEmailAddress: shouldNotBeCalled,
                 runtime,
               }),
             )
@@ -185,7 +175,6 @@ describe('authorInviteEnterEmailAddress', () => {
               })({
                 getAuthorInvite: () => TE.right(invite),
                 getPrereview: () => TE.right(prereview),
-                saveContactEmailAddress: shouldNotBeCalled,
                 runtime,
               }),
             )
@@ -241,7 +230,6 @@ describe('authorInviteEnterEmailAddress', () => {
               _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method: 'POST', user })({
                 getAuthorInvite: () => TE.right(invite),
                 getPrereview: () => TE.right(prereview),
-                saveContactEmailAddress: shouldNotBeCalled,
                 runtime,
               }),
             )
@@ -293,7 +281,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite,
               getPrereview,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -343,7 +330,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.right(invite),
               getPrereview: () => TE.right(prereview),
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -380,7 +366,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.right(invite),
               getPrereview: () => TE.left('unavailable'),
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -407,7 +392,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.left('unavailable'),
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -442,7 +426,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.right(invite),
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -474,7 +457,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.right(invite),
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -501,7 +483,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.right(invite),
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -525,7 +506,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.right(invite),
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -549,7 +529,6 @@ describe('authorInviteEnterEmailAddress', () => {
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
               getAuthorInvite: () => TE.left('not-found'),
               getPrereview: shouldNotBeCalled,
-              saveContactEmailAddress: shouldNotBeCalled,
               runtime,
             }),
           )
@@ -577,7 +556,6 @@ describe('authorInviteEnterEmailAddress', () => {
           _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method })({
             getAuthorInvite: () => TE.right(invite),
             getPrereview: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
             runtime,
           }),
         )

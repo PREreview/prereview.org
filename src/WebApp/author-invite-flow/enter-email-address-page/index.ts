@@ -8,11 +8,6 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../../author-invite.ts'
-import {
-  type SaveContactEmailAddressEnv,
-  VerifiedContactEmailAddress,
-  saveContactEmailAddress,
-} from '../../../contact-email-address.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import { getInput, invalidE, missingE } from '../../../form.ts'
@@ -66,10 +61,7 @@ export const authorInviteEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> &
-    GetPrereviewEnv &
-    GetAuthorInviteEnv &
-    SaveContactEmailAddressEnv,
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & GetPrereviewEnv & GetAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -197,15 +189,36 @@ const handleEnterEmailAddressForm = ({
       match(fields)
         .returnType<
           RTE.ReaderTaskEither<
-            EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & SaveContactEmailAddressEnv,
+            EffectToFpts.EffectEnv<ContactEmailAddresses | Locale>,
             'unavailable',
             PageResponse | RedirectResponse
           >
         >()
-        .with({ useInvitedAddress: 'yes' }, () =>
-          pipe(
-            saveContactEmailAddress(user.orcid, new VerifiedContactEmailAddress({ value: invite.emailAddress })),
-            RTE.map(() => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) })),
+        .with(
+          { useInvitedAddress: 'yes' },
+          EffectToFpts.toReaderTaskEitherK(
+            Effect.fnUntraced(
+              function* () {
+                const contactEmailAddresses = yield* ContactEmailAddresses
+
+                yield* contactEmailAddresses.useAuthorInviteEmailAddress({
+                  orcidId: user.orcid,
+                  inviteId,
+                })
+
+                return RedirectResponse({
+                  location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
+                })
+              },
+              Effect.catchTags({
+                AcceptedInvitationIsNotFound: () => HavingProblemsPage,
+                ContactEmailAddressIsUnavailable: () => HavingProblemsPage,
+                ContactEmailAddressHasAlreadyBeenVerified: () =>
+                  Effect.succeed(
+                    RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
+                  ),
+              }),
+            ),
           ),
         )
         .with(

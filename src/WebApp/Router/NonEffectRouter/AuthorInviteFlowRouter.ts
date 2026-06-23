@@ -143,10 +143,6 @@ export const AuthorInviteFlowRouter = pipe(
           authorInviteStore: env.authorInviteStore,
           ...env.logger,
         }),
-        saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, {
-          contactEmailAddressStore: env.users.contactEmailAddressStore,
-          ...env.logger,
-        }),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
