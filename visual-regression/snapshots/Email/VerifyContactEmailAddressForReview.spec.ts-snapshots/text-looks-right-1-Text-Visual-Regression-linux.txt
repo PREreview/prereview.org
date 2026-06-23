@@ -1,3 +1,0 @@
-Hi Josiah Carberry,
-
-Please verify your email address on PREreview by going to http://example.com/verify-email-address?verificationToken=2a29e36c-da26-438d-9a67-577101fa8968&redirectTo=%2Fpreprints%2Fdoi-10.1101-2022.01.13.476201%2Fwrite-a-prereview%2Fcheck-your-prereview

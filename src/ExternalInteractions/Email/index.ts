@@ -7,7 +7,6 @@ import { InviteAuthor } from './InviteAuthor/index.ts'
 import { InviteAuthorToReview } from './InviteAuthorToReview/index.ts'
 import { NotifyRequesterOfReview } from './NotifyRequesterOfReview/index.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
-import { VerifyContactEmailAddressForReview } from './VerifyContactEmailAddressForReview/index.ts'
 
 export class Email extends Context.Tag('Email')<
   Email,
@@ -44,13 +43,6 @@ export class Email extends Context.Tag('Email')<
       Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddress>>,
       Locale
     >
-    verifyContactEmailAddressForReview: (
-      ...args: Parameters<typeof VerifyContactEmailAddressForReview>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof VerifyContactEmailAddressForReview>>,
-      Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddressForReview>>,
-      Locale
-    >
   }
 >() {}
 
@@ -60,7 +52,6 @@ export const {
   inviteAuthorToReview,
   notifyRequesterOfReview,
   verifyContactEmailAddress,
-  verifyContactEmailAddressForReview,
 } = Effect.serviceFunctions(Email)
 
 export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer | PublicUrl> = Effect.gen(
@@ -76,7 +67,6 @@ export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemai
       inviteAuthorToReview: flow(InviteAuthorToReview, Effect.provide(context)),
       notifyRequesterOfReview: flow(NotifyRequesterOfReview, Effect.provide(context)),
       verifyContactEmailAddress: flow(VerifyContactEmailAddress, Effect.provide(context)),
-      verifyContactEmailAddressForReview: flow(VerifyContactEmailAddressForReview, Effect.provide(context)),
     }
   },
 )
