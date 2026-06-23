@@ -2784,6 +2784,10 @@ skip-link {
   & img {
     inline-size: clamp(35%, 15vi, 55%);
 
+    &:dir(rtl) {
+      transform: scaleX(-1);
+    }
+
     @media (width < 40em) {
       display: none;
     }
