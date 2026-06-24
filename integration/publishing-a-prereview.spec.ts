@@ -1417,7 +1417,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'see existing values when pasting an already-written PREreview and going back a step',
-  async ({ javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
@@ -1442,8 +1442,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     }
 
     await page.getByRole('link', { name: 'Back' }).click()
-
-    testInfo.fail()
 
     await expect(page.getByLabel('No')).toBeChecked()
 

@@ -81,13 +81,19 @@ const showCompetingInterestsForm = ({
       competingInterestsDetails: E.right(form.competingInterestsDetails),
     },
     locale,
+    form.alreadyWritten,
     form.moreAuthors,
   )
 
 const showCompetingInterestsErrorForm =
-  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale) =>
+  (
+    preprint: PreprintTitle,
+    alreadyWritten: Form['alreadyWritten'],
+    moreAuthors: Form['moreAuthors'],
+    locale: SupportedLocale,
+  ) =>
   (form: CompetingInterestsForm) =>
-    competingInterestsForm(preprint, form, locale, moreAuthors)
+    competingInterestsForm(preprint, form, locale, alreadyWritten, moreAuthors)
 
 const handleCompetingInterestsForm = ({
   body,
@@ -124,7 +130,10 @@ const handleCompetingInterestsForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage(locale))
-          .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, form.moreAuthors, locale))
+          .with(
+            { competingInterests: P.any },
+            showCompetingInterestsErrorForm(preprint, form.alreadyWritten, form.moreAuthors, locale),
+          )
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),

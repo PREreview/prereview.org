@@ -6,7 +6,12 @@ import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { writeReviewCompetingInterestsMatch, writeReviewUseOfAiMatch } from '../../../routes.ts'
+import {
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
+  writeReviewCompetingInterestsMatch,
+  writeReviewUseOfAiMatch,
+} from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
@@ -22,11 +27,17 @@ export function competingInterestsForm(
   preprint: PreprintTitle,
   form: CompetingInterestsForm,
   locale: SupportedLocale,
+  alreadyWritten?: 'yes' | 'no',
   moreAuthors?: 'yes' | 'yes-private' | 'no',
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
-  const backMatch = writeReviewUseOfAiMatch
+  const backMatch =
+    alreadyWritten === 'yes'
+      ? moreAuthors === 'yes'
+        ? writeReviewAddAuthorsMatch
+        : writeReviewAuthorsMatch
+      : writeReviewUseOfAiMatch
   const t = translate(locale)
 
   return StreamlinePageResponse({
