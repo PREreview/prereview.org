@@ -1,22 +1,21 @@
-import { Data, Effect } from 'effect'
+import { Effect } from 'effect'
 import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import { ContactEmailAddressIsNotFound, VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
+import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
+import {
+  ContactEmailAddressHasAlreadyBeenVerified,
+  ContactEmailAddressIsNotFound,
+  VerificationTokenInvalid,
+} from './Errors.ts'
 
 export interface Input {
   orcid: OrcidId
   verificationToken: Uuid
 }
-
-export class ContactEmailAddressHasAlreadyBeenVerified extends Data.TaggedError(
-  'ContactEmailAddressHasAlreadyBeenVerified',
-) {}
-
-export class VerificationTokenInvalid extends Data.TaggedError('VerificationTokenInvalid') {}
 
 export type Error =
   | ContactEmailAddressHasAlreadyBeenVerified

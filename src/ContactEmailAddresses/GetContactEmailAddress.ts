@@ -3,9 +3,9 @@ import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as Keyv from '../keyv.ts'
 import * as Queries from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
-
 import type { OrcidId } from '../types/OrcidId.ts'
-import { ContactEmailAddressIsNotFound, type ContactEmailAddress } from './ContactEmailAddress.ts'
+import type { ContactEmailAddress } from './ContactEmailAddress.ts'
+import { ContactEmailAddressIsNotFound } from './Errors.ts'
 
 export type Input = OrcidId
 

@@ -2,8 +2,11 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as Commands from '../../../src/Commands.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
-import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddresses,
+  ContactEmailAddressHasAlreadyBeenVerified,
+  ContactEmailAddressIsNotFound,
+} from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

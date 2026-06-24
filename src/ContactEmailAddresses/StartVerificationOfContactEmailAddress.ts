@@ -9,7 +9,7 @@ import type { EmailAddress } from '../types/EmailAddress.ts'
 import { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { UnverifiedContactEmailAddress } from './ContactEmailAddress.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 
 export interface Input {
   readonly orcidId: OrcidId

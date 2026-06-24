@@ -1,8 +1,10 @@
 import { expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Layer } from 'effect'
 import * as _ from '../../src/ContactEmailAddresses/ResendVerificationEmail.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
-import { ContactEmailAddressIsNotFound } from '../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddressHasAlreadyBeenVerified,
+  ContactEmailAddressIsNotFound,
+} from '../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../src/Context.ts'
 import { Email, OrcidRecords } from '../../src/ExternalInteractions/index.ts'
 import { Keyv } from '../../src/keyv.ts'

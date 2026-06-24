@@ -1,6 +1,10 @@
 import { expect, it } from '@effect/vitest'
 import { Effect, Either } from 'effect'
-import { ContactEmailAddressIsNotFound } from '../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddressHasAlreadyBeenVerified,
+  ContactEmailAddressIsNotFound,
+  VerificationTokenInvalid,
+} from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import { Keyv } from '../../src/keyv.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -23,7 +27,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, 'verified' | 'unv
   [
     'currently unverified, invalid token',
     { orcid: orcidWithUnverified, verificationToken: invalidVerificationToken },
-    Either.left(new _.VerificationTokenInvalid()),
+    Either.left(new VerificationTokenInvalid()),
     'unverified',
   ],
   [
@@ -35,7 +39,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, 'verified' | 'unv
   [
     'already verified',
     { orcid: orcidWithVerified, verificationToken: validVerificationToken },
-    Either.left(new _.ContactEmailAddressHasAlreadyBeenVerified()),
+    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
     'verified',
   ],
 ])('%s', ([, input, expectedReturn, expectedState]) =>

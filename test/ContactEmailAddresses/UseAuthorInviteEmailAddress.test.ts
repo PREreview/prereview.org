@@ -1,7 +1,7 @@
 import { expect, it } from '@effect/vitest'
 import { Effect, Either } from 'effect'
+import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import { Keyv } from '../../src/keyv.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'

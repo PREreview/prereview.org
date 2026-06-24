@@ -1,15 +1,15 @@
 import { expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Layer } from 'effect'
+import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import { Locale } from '../../src/Context.ts'
 import { Email, OrcidRecords } from '../../src/ExternalInteractions/index.ts'
 import { Keyv } from '../../src/keyv.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { Uuid } from '../../src/types/index.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/index.ts'
 
 const orcidIdWithNoEmailAddress = OrcidId('0000-0002-1825-0097')
 const orcidIdWithUnverified = OrcidId('0000-0002-6109-0367')

@@ -6,7 +6,7 @@ import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from './VerifyContactEmailAddress.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
