@@ -1130,6 +1130,72 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can go back through the form when pasting an already-written PREreview',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('I’ve already written the review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Paste your PREreview').focus()
+    await page.getByLabel('Paste your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+    await page.goBack()
+
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('No, I reviewed it alone')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
+
+    await page.goBack()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    } else {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveValue(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    }
+
+    await page.goBack()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('I’ve already written the review')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when answering questions', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
@@ -1346,6 +1412,46 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'see existing values when pasting an already-written PREreview and going back a step',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('I’ve already written the review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Paste your PREreview').focus()
+    await page.getByLabel('Paste your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    } else {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveValue(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    }
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    testInfo.fail()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('I’ve already written the review')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
   },
 )
 
