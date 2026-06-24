@@ -116,6 +116,20 @@ const getPrereviewsPageForSciety = flow(
       flow(RT.traverseArray(recordToScietyPrereview), RT.map(Array.map(FptsToEffect.either)), RT.map(Array.getRights)),
     ),
   ),
+  RTE.orElseFirstW(
+    RTE.fromReaderIOK(
+      flow(
+        error => ({
+          error: match(error)
+            .with(P.instanceOf(Error), error => error as never)
+            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+            .with({ _tag: P.string }, error => D.draw(error))
+            .exhaustive(),
+        }),
+        L.errorP('Unable to get list of all PREreviews'),
+      ),
+    ),
+  ),
   RTE.bimap(() => 'unavailable' as const, Array.flatten),
 )
 
