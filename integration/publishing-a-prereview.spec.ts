@@ -1428,6 +1428,32 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByLabel('Paste your PREreview').focus()
     await page.getByLabel('Paste your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No, I reviewed it alone')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1453,7 +1479,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'see existing values when answering questions and going back a step',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
@@ -1491,6 +1517,38 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Yes, after minor changes').check()
     await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No, I reviewed it alone')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
