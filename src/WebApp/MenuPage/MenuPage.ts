@@ -26,7 +26,7 @@ export const createMenuPage = ({
 
       <div class="menu">
         <div>
-          <h3>${t('getInvolved')()}</h3>
+          <h2>${t('getInvolved')()}</h2>
           <ul>
             <li>
               <a href="${format(Routes.reviewsMatch.formatter, {})}">${t('menuReviews')()}</a>
@@ -52,7 +52,7 @@ export const createMenuPage = ({
         </div>
 
         <div>
-          <h3>${t('findOutMore')()}</h3>
+          <h2>${t('findOutMore')()}</h2>
           <ul>
             <li>
               <a href="https://content.prereview.org/">${t('menuBlog')()}</a>
@@ -79,7 +79,7 @@ export const createMenuPage = ({
         </div>
 
         <div>
-          <h3>${t('myAccount')()}</h3>
+          <h2>${t('myAccount')()}</h2>
           <ul>
             ${Boolean.match(isLoggedIn, {
               onTrue: () => html`

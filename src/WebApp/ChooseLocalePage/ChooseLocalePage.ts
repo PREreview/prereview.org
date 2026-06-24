@@ -21,7 +21,7 @@ export const createChooseLocalePage = ({
 
       <div class="menu">
         <div class="locales">
-          <h3>${t('chooseLanguage')()}</h3>
+          <h2>${t('chooseLanguage')()}</h2>
           <ul>
             ${pipe(
               Array.fromIterable(enabledLocales),
