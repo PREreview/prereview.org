@@ -189,7 +189,6 @@ ${Match.valueTags(form, {
                       type="radio"
                       value="unsure"
                       aria-describedby="rate-the-quality-tip-unsure"
-                      aria-controls="rate-the-quality-unsure-control"
                       ${pipe(
                         Match.value(form),
                         Match.when({ _tag: 'CompletedForm', qualityRating: 'unsure' }, () => 'checked'),
