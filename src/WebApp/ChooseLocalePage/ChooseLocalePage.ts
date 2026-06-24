@@ -17,11 +17,9 @@ export const createChooseLocalePage = ({
   return PageResponse({
     title: plainText(t('chooseLanguage')()),
     main: html`
-      <h1 class="visually-hidden">${t('chooseLanguage')()}</h1>
-
       <div class="menu">
         <div class="locales">
-          <h2>${t('chooseLanguage')()}</h2>
+          <h1>${t('chooseLanguage')()}</h1>
           <ul>
             ${pipe(
               Array.fromIterable(enabledLocales),
