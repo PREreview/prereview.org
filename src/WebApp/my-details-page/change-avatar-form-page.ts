@@ -69,7 +69,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
 
             ${E.isLeft(form.avatar)
               ? html`
-                  <div class="error-message" id="review-error">
+                  <div class="error-message" id="avatar-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.avatar.left, {
                       MissingE: () => t('selectImageError')(),
@@ -86,7 +86,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
               type="file"
               accept="image/*"
               aria-describedby="avatar-tip"
-              ${E.isLeft(form.avatar) ? html`aria-invalid="true" aria-errormessage="review-error"` : ''}
+              ${E.isLeft(form.avatar) ? html`aria-invalid="true" aria-errormessage="avatar-error"` : ''}
             />
           </div>
 
