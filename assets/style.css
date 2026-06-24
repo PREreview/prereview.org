@@ -2469,7 +2469,7 @@ skip-link {
     & > .contents {
       & > main {
         &,
-        & > :first-child {
+        & > .visually-hidden:first-child + * {
           margin-block-start: 0;
         }
       }

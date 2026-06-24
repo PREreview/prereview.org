@@ -32,8 +32,6 @@ export const toPage = ({
         title: response.title,
         description: response.description,
         content: html`
-          <h1 class="visually-hidden">${response.h1}</h1>
-
           <aside
             id="${response.type}-details"
             tabindex="0"
@@ -45,6 +43,8 @@ export const toPage = ({
           </aside>
 
           <main id="prereviews">
+            <h1 class="visually-hidden">${response.h1}</h1>
+
             ${showSpotlight ? spotlight : ''} ${message ? showFlashMessage(message, locale) : ''} ${response.main}
           </main>
         `,
