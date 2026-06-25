@@ -1,11 +1,12 @@
-import { Effect } from 'effect'
+import { Effect, pipe } from 'effect'
+import { v5 } from 'uuid'
 import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { EventStore } from '../EventStore.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import type { Uuid } from '../types/Uuid.ts'
+import { Uuid } from '../types/Uuid.ts'
 import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
@@ -56,7 +57,17 @@ export const VerifyContactEmailAddress: (
         },
       )
 
-      yield* Commands.makeCommand(ImportContactAddress)
+      const contactAddressId = Uuid(
+        v5(`${input.orcid}-${contactEmailAddress.value}`, Uuid('2b74ca85-7549-4e7d-ba0a-21a3b385d801')),
+      )
+
+      const importCommand = yield* Commands.makeCommand(ImportContactAddress)
+      yield* importCommand({
+        contactAddressId,
+        emailAddress: contactEmailAddress.value,
+        orcidId: input.orcid,
+        verificationStatus: { status: 'verified' as const },
+      })
     },
     Effect.catchIf(
       error => error === 'not-found',
@@ -66,4 +77,10 @@ export const VerifyContactEmailAddress: (
       error => error === 'unavailable',
       () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),
     ),
+    Effect.catchTags({
+      ContactAddressIdHasAlreadyBeenUsed: error =>
+        pipe(Effect.logError('contact address import failed'), Effect.annotateLogs({ error })),
+      DetailsDoNotMatchExistingImport: error =>
+        pipe(Effect.logError('contact address import failed'), Effect.annotateLogs({ error })),
+    }),
   )
