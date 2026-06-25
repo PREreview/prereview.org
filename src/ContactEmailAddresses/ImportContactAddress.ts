@@ -1,5 +1,6 @@
-import { Data } from 'effect'
-import type * as Commands from '../Commands.ts'
+import { Array, Data, Either, Equal, Match, Option } from 'effect'
+import * as Commands from '../Commands.ts'
+import * as Events from '../Events.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
@@ -17,11 +18,83 @@ export class DetailsDoNotMatchExistingImport extends Data.TaggedError('DetailsDo
 
 export type Error = ContactAddressIdHasAlreadyBeenUsed | DetailsDoNotMatchExistingImport
 
-export type State = unknown
+export interface State {
+  contactIdInUse: boolean
+  contactAddress?: {
+    emailAddress: Option.Option<EmailAddress>
+    orcidId: OrcidId
+    verificationStatus: 'verified' | 'unverified'
+  }
+}
 
-export declare const ImportContactAddress: Commands.Command<
+const createFilter = (input: Input) =>
+  Events.EventFilter({
+    types: ['ContactAddressImported', 'ContactAddressVerified'],
+    predicates: { contactAddressId: input.contactAddressId },
+  })
+
+const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
+
+  const contactIdInUse = Array.isNonEmptyArray(filteredEvents)
+
+  const contactAddress = Array.reduce(
+    filteredEvents,
+    Option.none<{
+      emailAddress: Option.Option<EmailAddress>
+      orcidId: OrcidId
+      verificationStatus: 'verified' | 'unverified'
+    }>(),
+    (state, event) =>
+      Match.valueTags(event, {
+        ContactAddressImported: event =>
+          Option.some({
+            emailAddress: event.emailAddress,
+            orcidId: event.orcidId,
+            verificationStatus: event.verificationStatus.status,
+          }),
+        ContactAddressVerified: () =>
+          Option.map(state, contactAddress => ({
+            ...contactAddress,
+            verificationStatus: 'verified' as const,
+          })),
+      }),
+  )
+
+  return { contactIdInUse, contactAddress: Option.getOrUndefined(contactAddress) }
+}
+
+const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> => {
+  if (!state.contactAddress && !state.contactIdInUse) {
+    return Either.right(
+      Option.some(new Events.ContactAddressImported({ ...input, emailAddress: Option.some(input.emailAddress) })),
+    )
+  }
+
+  if (state.contactIdInUse && !state.contactAddress) {
+    return Either.left(new ContactAddressIdHasAlreadyBeenUsed())
+  }
+
+  if (
+    state.contactAddress &&
+    (!Equal.equals(state.contactAddress.emailAddress, Option.some(input.emailAddress)) ||
+      state.contactAddress.orcidId !== input.orcidId ||
+      state.contactAddress.verificationStatus !== input.verificationStatus.status)
+  ) {
+    return Either.left(new DetailsDoNotMatchExistingImport())
+  }
+
+  return Either.right(Option.none())
+}
+
+export const ImportContactAddress: Commands.Command<
   'ContactAddressImported' | 'ContactAddressVerified',
   [Input],
   State,
   Error
->
+> = Commands.Command({
+  name: 'ContactEmailAddresses.importContactAddress',
+  createFilter,
+  foldState,
+  decide,
+})

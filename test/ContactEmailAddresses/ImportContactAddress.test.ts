@@ -34,7 +34,7 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
   verifiedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events, input is verified', [], inputVerified, Either.right(Option.some(verifiedImported))],
   ['no events, input is unverified', [], inputUnverified, Either.right(Option.some(unverifiedImported))],
   ['already imported, input is verified', [verifiedImported], inputVerified, Either.right(Option.none())],
