@@ -1,5 +1,6 @@
 import { Context, Effect, type Either, flow, Layer, Scope } from 'effect'
 import type { Locale } from '../Context.ts'
+import type { EventStore } from '../EventStore.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import type { Uuid } from '../types/index.ts'
@@ -37,7 +38,7 @@ export const layer = Layer.effect(
   ContactEmailAddresses,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid>(),
+      Effect.context<Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid | EventStore>(),
       Context.omit(Scope.Scope),
     )
 
@@ -45,7 +46,10 @@ export const layer = Layer.effect(
 
     return {
       getContactEmailAddress: GetContactEmailAddress.GetContactEmailAddress(contactEmailAddressStore),
-      verifyContactEmailAddress: verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
+      verifyContactEmailAddress: flow(
+        verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
+        Effect.provide(context),
+      ),
       useAuthorInviteEmailAddress: UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(
         contactEmailAddressStore,
         authorInviteStore,

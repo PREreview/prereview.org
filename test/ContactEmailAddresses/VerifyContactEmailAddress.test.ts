@@ -1,14 +1,19 @@
+import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '@effect/vitest'
-import { Effect, Either } from 'effect'
+import { Effect, Either, Layer } from 'effect'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
   VerificationTokenInvalid,
 } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
+import { Events } from '../../src/Events.ts'
+import { EventStore } from '../../src/EventStore.ts'
 import { Keyv } from '../../src/keyv.ts'
+import { SensitiveDataStore } from '../../src/SensitiveDataStore.ts'
+import * as SqlEventStore from '../../src/SqlEventStore.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/Uuid.ts'
+import { GenerateUuid, Uuid } from '../../src/types/Uuid.ts'
 
 const orcidWithVerified = OrcidId('0000-0002-1825-0097')
 const orcidWithUnverified = OrcidId('0000-0002-6109-0367')
@@ -46,6 +51,8 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, 'verified' | 'unv
   Effect.gen(function* () {
     const store = new Keyv()
 
+    const eventStore = yield* SqlEventStore.make
+
     yield* Effect.promise(() =>
       store.set(orcidWithUnverified, {
         type: 'unverified',
@@ -55,12 +62,21 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, 'verified' | 'unv
     )
     yield* Effect.promise(() => store.set(orcidWithVerified, { type: 'verified', value: 'foo@example.com' }))
 
-    const actualReturn = yield* Effect.either(_.VerifyContactEmailAddress(store)(input))
+    const actualReturn = yield* Effect.either(
+      _.VerifyContactEmailAddress(store)(input).pipe(Effect.provideService(EventStore, eventStore)),
+    )
     const actualState = yield* Effect.promise(() => store.get(input.orcid))
 
     expect(actualReturn).toStrictEqual(expectedReturn)
     expect(actualState).toStrictEqual(
       expectedState === 'does-not-exist' ? undefined : expect.objectContaining({ type: expectedState }),
     )
-  }),
+  }).pipe(
+    Effect.provide([
+      Layer.mock(GenerateUuid, {}),
+      Layer.mock(SensitiveDataStore, {}),
+      Layer.mock(Events, {} as never),
+      LibsqlClient.layer({ url: ':memory:' }),
+    ]),
+  ),
 )

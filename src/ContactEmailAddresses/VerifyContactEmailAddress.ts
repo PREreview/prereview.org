@@ -1,6 +1,7 @@
 import { Effect } from 'effect'
 import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import type { EventStore } from '../EventStore.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -11,6 +12,7 @@ import {
   ContactEmailAddressIsNotFound,
   VerificationTokenInvalid,
 } from './Errors.ts'
+import { ImportContactAddress } from './ImportContactAddress.ts'
 
 export interface Input {
   orcid: OrcidId
@@ -25,7 +27,7 @@ export type Error =
 
 export const VerifyContactEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
-) => (input: Input) => Effect.Effect<void, Error> = contactEmailAddressStore =>
+) => (input: Input) => Effect.Effect<void, Error, EventStore> = contactEmailAddressStore =>
   Effect.fn('ContactEmailAddresses.verifyContactEmailAddress')(
     function* (input) {
       const loggerEnv = yield* MakeDeprecatedLoggerEnv
@@ -53,6 +55,8 @@ export const VerifyContactEmailAddress: (
           ...loggerEnv,
         },
       )
+
+      yield* Commands.makeCommand(ImportContactAddress)
     },
     Effect.catchIf(
       error => error === 'not-found',
