@@ -17,6 +17,7 @@ import {
 } from 'effect'
 import * as AuthorInviteEvents from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
+import * as ContactEmailAddressesEvents from './ContactEmailAddresses/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as DatasetReviewEvents from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as PreprintReviews from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as PrereviewerEvents from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
@@ -24,6 +25,7 @@ import * as ReviewRequestsEvents from './ReviewRequests/Events.ts' // eslint-dis
 
 export * from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
+export * from './ContactEmailAddresses/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
@@ -34,6 +36,7 @@ export type Event = typeof Event.Type
 export const Event = Schema.Union(
   ...AuthorInviteEvents.AuthorInviteEvent.members,
   ...CommentEvents.CommentEvent.members,
+  ContactEmailAddressesEvents.ContactAddressImported,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
   PreprintReviews.RapidPrereviewImported,
