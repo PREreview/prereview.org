@@ -1,4 +1,5 @@
 import type * as Commands from '../Commands.ts'
+import type { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import type {
@@ -10,6 +11,7 @@ import type {
 export interface Input {
   orcid: OrcidId
   verificationToken: Uuid
+  verifiedAt: Temporal.Instant
 }
 
 export type Error = ContactEmailAddressHasAlreadyBeenVerified | VerificationTokenInvalid | ContactEmailAddressIsNotFound

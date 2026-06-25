@@ -33,40 +33,42 @@ const unverifiedImported = new Events.ContactAddressImported({
   verificationStatus: { status: 'unverified', token: validVerificationToken },
 })
 
+const verifiedAt = Temporal.Now.instant()
+
 const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
   contactAddressId: unverifiedImported.contactAddressId,
-  verifiedAt: Temporal.Now.instant(),
+  verifiedAt,
 })
 
 test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   [
     'currently unverified, valid token',
     [unverifiedImported],
-    { orcid: orcidWithUnverified, verificationToken: validVerificationToken },
+    { orcid: orcidWithUnverified, verificationToken: validVerificationToken, verifiedAt },
     Either.right(Option.some(verifiedPreviouslyUnverified)),
   ],
   [
     'currently unverified, invalid token',
     [unverifiedImported],
-    { orcid: orcidWithUnverified, verificationToken: invalidVerificationToken },
+    { orcid: orcidWithUnverified, verificationToken: invalidVerificationToken, verifiedAt },
     Either.left(new VerificationTokenInvalid()),
   ],
   [
     'no events',
     [],
-    { orcid: orcidWithNoEmailAddress, verificationToken: validVerificationToken },
+    { orcid: orcidWithNoEmailAddress, verificationToken: validVerificationToken, verifiedAt },
     Either.left(new ContactEmailAddressIsNotFound()),
   ],
   [
     'already verified imported',
     [verifiedImported],
-    { orcid: orcidWithVerified, verificationToken: validVerificationToken },
+    { orcid: orcidWithVerified, verificationToken: validVerificationToken, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'already verified after imported unverified',
     [unverifiedImported, verifiedPreviouslyUnverified],
-    { orcid: orcidWithVerified, verificationToken: validVerificationToken },
+    { orcid: orcidWithVerified, verificationToken: validVerificationToken, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
 ])('%s', (_name, events, input, expected) => {
