@@ -11,12 +11,12 @@ const inputVerified = {
   contactAddressId: Uuid('e08d00fa-42ea-487a-a536-dc0642e2ab85'),
   orcidId: OrcidId('0000-0002-1825-0097'),
   emailAddress: EmailAddress('josiah@example.com'),
-  verificationStatus: { status: 'verified' },
+  verificationStatus: 'verified',
 } satisfies _.Input
 
 const inputUnverified = {
   ...inputVerified,
-  verificationStatus: { status: 'unverified', token: Uuid('70813069-89e6-4099-9a52-712ef2c1bafa') },
+  verificationStatus: 'unverified',
 } satisfies _.Input
 
 const verifiedImported = new Events.ContactAddressImported({

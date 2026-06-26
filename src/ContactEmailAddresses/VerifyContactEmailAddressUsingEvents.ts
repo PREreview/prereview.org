@@ -35,7 +35,7 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     return new ContactEmailAddressIsNotFound()
   }
 
-  if (importStatus.value.verificationStatus.status === 'verified') {
+  if (importStatus.value.verificationStatus === 'verified') {
     return new ContactEmailAddressHasAlreadyBeenVerified()
   }
 

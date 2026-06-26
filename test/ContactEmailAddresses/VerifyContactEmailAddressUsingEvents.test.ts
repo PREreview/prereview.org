@@ -19,14 +19,14 @@ const verifiedImported = new Events.ContactAddressImported({
   orcidId: orcidWithVerified,
   contactAddressId: Uuid('4cd3642a-74d4-418d-a41d-d2edcd3dbcad'),
   emailAddress: Option.some(EmailAddress('josiah@example.com')),
-  verificationStatus: { status: 'verified' },
+  verificationStatus: 'verified',
 })
 
 const unverifiedImported = new Events.ContactAddressImported({
   orcidId: orcidWithUnverified,
   contactAddressId: Uuid('1a2c8e69-39c4-40b7-b3db-b941a74ba3e8'),
   emailAddress: Option.some(EmailAddress('josiah@example.com')),
-  verificationStatus: { status: 'unverified', token: Uuid('784f7806-14a2-47dd-9801-00364bdf1829') },
+  verificationStatus: 'unverified',
 })
 
 const verifiedAt = Temporal.Now.instant()

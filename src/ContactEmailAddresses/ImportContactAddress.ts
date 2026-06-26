@@ -9,7 +9,7 @@ export interface Input {
   readonly contactAddressId: Uuid
   readonly emailAddress: EmailAddress
   readonly orcidId: OrcidId
-  readonly verificationStatus: { status: 'unverified'; token: Uuid } | { status: 'verified' }
+  readonly verificationStatus: 'verified' | 'unverified'
 }
 
 export class ContactAddressIdHasAlreadyBeenUsed extends Data.TaggedError('ContactAddressIdHasAlreadyBeenUsed') {}
@@ -51,7 +51,7 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
           Option.some({
             emailAddress: event.emailAddress,
             orcidId: event.orcidId,
-            verificationStatus: event.verificationStatus.status,
+            verificationStatus: event.verificationStatus,
           }),
         ContactAddressVerified: () =>
           Option.map(state, contactAddress => ({
@@ -79,7 +79,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
     state.contactAddress &&
     (!Equal.equals(state.contactAddress.emailAddress, Option.some(input.emailAddress)) ||
       state.contactAddress.orcidId !== input.orcidId ||
-      state.contactAddress.verificationStatus !== input.verificationStatus.status)
+      state.contactAddress.verificationStatus !== input.verificationStatus)
   ) {
     return Either.left(new DetailsDoNotMatchExistingImport())
   }

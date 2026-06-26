@@ -66,7 +66,7 @@ export const VerifyContactEmailAddress: (
         contactAddressId,
         emailAddress: contactEmailAddress.value,
         orcidId: input.orcid,
-        verificationStatus: { status: 'verified' as const },
+        verificationStatus: 'verified',
       })
     },
     Effect.catchIf(
