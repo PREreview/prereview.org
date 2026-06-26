@@ -7,7 +7,7 @@ import type { Uuid } from '../types/Uuid.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
-  type OnlyCurrentContactAddressCanBeVerified,
+  OnlyCurrentContactAddressCanBeVerified,
 } from './Errors.ts'
 
 export interface Input {
@@ -23,14 +23,19 @@ export type Error =
 
 class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified')<{ orcidId: OrcidId }> {}
 class ContactAddressVerified extends Data.TaggedClass('ContactAddressVerified')<{ orcidId: OrcidId }> {}
+class ContactAddressChanged extends Data.TaggedClass('ContactAddressChanged')<{ orcidId: OrcidId }> {}
 
-type State = ContactAddressUnverified | ContactAddressVerified | ContactEmailAddressIsNotFound
+type State = ContactAddressUnverified | ContactAddressVerified | ContactAddressChanged | ContactEmailAddressIsNotFound
 
 const createFilter = (input: Input) =>
   Events.EventFilter([
     {
       types: ['ContactAddressImported', 'ContactAddressRecorded', 'ContactAddressVerified'],
       predicates: { contactAddressId: input.contactAddressId },
+    },
+    {
+      types: ['ContactAddressRecorded', 'AuthorInviteEmailAddressChosenAsContactAddress'],
+      predicates: { orcidId: input.orcid },
     },
   ])
 
@@ -39,11 +44,21 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
   const originEvent = Array.findLast(
     filteredEvents,
-    event => event._tag === 'ContactAddressImported' || event._tag === 'ContactAddressRecorded',
+    event =>
+      event._tag === 'ContactAddressImported' ||
+      event._tag === 'ContactAddressRecorded' ||
+      event._tag === 'AuthorInviteEmailAddressChosenAsContactAddress',
   )
 
   if (Option.isNone(originEvent)) {
     return new ContactEmailAddressIsNotFound()
+  }
+
+  if (
+    originEvent.value._tag === 'AuthorInviteEmailAddressChosenAsContactAddress' ||
+    originEvent.value.contactAddressId !== input.contactAddressId
+  ) {
+    return new ContactAddressChanged({ orcidId: originEvent.value.orcidId })
   }
 
   if (originEvent.value._tag === 'ContactAddressImported' && originEvent.value.verificationStatus === 'verified') {
@@ -72,6 +87,10 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
 
   if (state._tag === 'ContactAddressVerified') {
     return Either.left(new ContactEmailAddressHasAlreadyBeenVerified())
+  }
+
+  if (state._tag === 'ContactAddressChanged') {
+    return Either.left(new OnlyCurrentContactAddressCanBeVerified())
   }
 
   return Either.right(
