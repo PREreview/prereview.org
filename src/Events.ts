@@ -4,7 +4,6 @@ import {
   Data,
   Effect,
   Equal,
-  Function,
   Layer,
   Option,
   PubSub,
@@ -47,23 +46,64 @@ export const Event = Schema.Union(
   ...PrereviewerEvents.PrereviewerEvent.members,
 )
 
-export type EventFilter<T extends Types.Tags<Event> = Types.Tags<Event>> =
-  | {
-      types: Array.NonEmptyReadonlyArray<T>
-      predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
-    }
-  | Array.NonEmptyReadonlyArray<{
-      types: Array.NonEmptyReadonlyArray<T>
-      predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
-    }>
+type PredicatesFor<T extends Types.Tags<Event>> = Partial<Types.UnionToIntersection<Omit<EventSubset<T>, '_tag'>>>
 
-export const EventFilter = <T extends Types.Tags<Event>>(filter: EventFilter<T>) => filter
+interface EventFilterClauseInput {
+  readonly types: Array.NonEmptyReadonlyArray<Types.Tags<Event>>
+  readonly predicates?: Readonly<Record<string, unknown>>
+}
 
-export const matches: {
-  <T extends Types.Tags<Event>>(event: Event, filter: EventFilter<T>): event is EventSubset<T>
-  <T extends Types.Tags<Event>>(filter: EventFilter<T>): (event: Event) => event is EventSubset<T>
-} = Function.dual(2, <T extends Types.Tags<Event>>(event: Event, filter: EventFilter<T>): event is EventSubset<T> =>
-  Array.some(Array.ensure(filter), filter => {
+type ValidatePredicates<P, T extends Types.Tags<Event>> =
+  P extends PredicatesFor<T> ? Types.NoExcessProperties<PredicatesFor<T>, P> : never
+
+type ValidateClause<C> = C extends {
+  readonly types: infer TTypes extends Array.NonEmptyReadonlyArray<Types.Tags<Event>>
+}
+  ? Omit<C, 'predicates'> &
+      (C extends { readonly predicates: infer P }
+        ? { readonly predicates: ValidatePredicates<P, TTypes[number]> }
+        : { readonly predicates?: undefined })
+  : never
+
+type ValidateClauses<T extends Array.NonEmptyReadonlyArray<EventFilterClauseInput>> = {
+  readonly [K in keyof T]: ValidateClause<T[K]>
+}
+
+export type EventFilter = EventFilterClauseInput | Array.NonEmptyReadonlyArray<EventFilterClauseInput>
+
+export function EventFilter<const C extends EventFilterClauseInput>(filter: C & ValidateClause<C>): C
+export function EventFilter<const C extends Array.NonEmptyReadonlyArray<EventFilterClauseInput>>(
+  // eslint-disable-next-line @typescript-eslint/unified-signatures
+  filter: C & ValidateClauses<C>,
+): C
+export function EventFilter(filter: EventFilter) {
+  return filter
+}
+
+type TagsFromFilter<F> =
+  F extends ReadonlyArray<infer C>
+    ? C extends { types: ReadonlyArray<infer T> }
+      ? T & Types.Tags<Event>
+      : never
+    : F extends { types: ReadonlyArray<infer T> }
+      ? T & Types.Tags<Event>
+      : never
+
+export function matches<F extends EventFilter>(event: Event, filter: F): event is EventSubset<TagsFromFilter<F>>
+export function matches<F extends EventFilter>(filter: F): (event: Event) => event is EventSubset<TagsFromFilter<F>>
+export function matches<F extends EventFilter>(
+  eventOrFilter: Event | F,
+  maybeFilter?: F,
+): boolean | ((event: Event) => boolean) {
+  if (maybeFilter === undefined) {
+    const filter = eventOrFilter as F
+    return (event: Event): event is EventSubset<TagsFromFilter<F>> => matches(event, filter)
+  }
+
+  const event = eventOrFilter as Event
+  const filter = maybeFilter
+
+  return Array.some(Array.ensure(filter), filter => {
     if (!Array.contains(filter.types, event._tag)) {
       return false
     }
@@ -80,8 +120,8 @@ export const matches: {
     const encodedEvent = Schema.encodeSync(predicateEncoder as never)(event)
 
     return Equal.equals(Data.struct(encodedPredicates as never), Data.struct(encodedEvent as never))
-  }),
-)
+  })
+}
 
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
 
@@ -99,7 +139,7 @@ export const layer = Layer.scoped(
   ),
 )
 
-export type EventsForFilter<F extends EventFilter> = F extends EventFilter<infer T> ? EventSubset<T> : never
+export type EventsForFilter<F extends EventFilter> = EventSubset<TagsFromFilter<F>>
 
 export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Types.Tags<Event>>> = Types.ExtractTag<
   Event,
