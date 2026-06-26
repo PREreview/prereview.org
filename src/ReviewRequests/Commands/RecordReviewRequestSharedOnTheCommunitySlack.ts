@@ -21,12 +21,11 @@ export class HasBeenShared extends Data.TaggedClass('HasBeenShared')<{
   readonly messageTimestamp: Slack.Timestamp
 }> {}
 
-export const createFilter = (
-  reviewRequestId: Uuid.Uuid,
-): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
-  types: ['ReviewRequestForAPreprintWasSharedOnTheCommunitySlack'],
-  predicates: { reviewRequestId },
-})
+export const createFilter = (reviewRequestId: Uuid.Uuid) =>
+  Events.EventFilter({
+    types: ['ReviewRequestForAPreprintWasSharedOnTheCommunitySlack'],
+    predicates: { reviewRequestId },
+  })
 
 export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))

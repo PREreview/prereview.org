@@ -27,17 +27,16 @@ export class HasBeenAccepted extends Data.TaggedClass('HasBeenAccepted') {}
 
 export class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
 
-export const createFilter = (
-  reviewRequestId: Uuid.Uuid,
-): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
-  types: [
-    'ReviewRequestForAPreprintWasReceived',
-    'ReviewRequestForAPreprintWasRejected',
-    'ReviewRequestForAPreprintWasAccepted',
-    'ReviewRequestForAPreprintWasWithdrawn',
-  ],
-  predicates: { reviewRequestId },
-})
+export const createFilter = (reviewRequestId: Uuid.Uuid) =>
+  Events.EventFilter({
+    types: [
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasRejected',
+      'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestForAPreprintWasWithdrawn',
+    ],
+    predicates: { reviewRequestId },
+  })
 
 export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))

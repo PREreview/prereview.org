@@ -1,6 +1,6 @@
 import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
-import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
+import { EventFilter } from '../../Events.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
@@ -17,15 +17,16 @@ export type Result = Either.Either<
   | Errors.DatasetReviewHasBeenPublished
 >
 
-export const createFilter = ({ datasetReviewId }: Input): EventFilter<Types.Tags<Events.DatasetReviewEvent>> => ({
-  types: [
-    'DatasetReviewWasStarted',
-    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
-    'PublicationOfDatasetReviewWasRequested',
-    'DatasetReviewWasPublished',
-  ],
-  predicates: { datasetReviewId },
-})
+export const createFilter = ({ datasetReviewId }: Input) =>
+  EventFilter({
+    types: [
+      'DatasetReviewWasStarted',
+      'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+      'PublicationOfDatasetReviewWasRequested',
+      'DatasetReviewWasPublished',
+    ],
+    predicates: { datasetReviewId },
+  })
 
 export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: Input): Result =>
   Either.gen(function* () {

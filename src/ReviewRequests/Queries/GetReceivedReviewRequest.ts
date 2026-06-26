@@ -1,5 +1,4 @@
 import { Array, Either, type Types } from 'effect'
-import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -20,14 +19,15 @@ export type Result = Either.Either<
   Errors.ReviewRequestHasBeenAccepted | Errors.ReviewRequestHasBeenRejected | Errors.UnknownReviewRequest
 >
 
-const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
-  types: [
-    'ReviewRequestForAPreprintWasReceived',
-    'ReviewRequestForAPreprintWasAccepted',
-    'ReviewRequestForAPreprintWasRejected',
-  ],
-  predicates: { reviewRequestId },
-})
+const createFilter = ({ reviewRequestId }: Input) =>
+  Events.EventFilter({
+    types: [
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestForAPreprintWasRejected',
+    ],
+    predicates: { reviewRequestId },
+  })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
   Either.gen(function* () {

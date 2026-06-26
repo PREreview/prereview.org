@@ -31,17 +31,16 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ aut
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: OrcidId.OrcidId }> {}
 
-export const createFilter = (
-  datasetReviewId: Uuid.Uuid,
-): Events.EventFilter<Types.Tags<Events.DatasetReviewEvent>> => ({
-  types: [
-    'DatasetReviewWasStarted',
-    'AnsweredIfTheDatasetHasTrackedChanges',
-    'PublicationOfDatasetReviewWasRequested',
-    'DatasetReviewWasPublished',
-  ],
-  predicates: { datasetReviewId },
-})
+export const createFilter = (datasetReviewId: Uuid.Uuid) =>
+  Events.EventFilter({
+    types: [
+      'DatasetReviewWasStarted',
+      'AnsweredIfTheDatasetHasTrackedChanges',
+      'PublicationOfDatasetReviewWasRequested',
+      'DatasetReviewWasPublished',
+    ],
+    predicates: { datasetReviewId },
+  })
 
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, datasetReviewId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(datasetReviewId)))

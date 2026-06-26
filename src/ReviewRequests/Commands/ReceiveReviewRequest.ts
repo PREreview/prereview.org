@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Function, Match, Option, type Types } from 'effect'
+import { Array, Data, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import type { EmailAddress, Name, OrcidId, SciProfilesId, Uuid } from '../../types/index.ts'
@@ -23,17 +23,16 @@ export class NotReceived extends Data.TaggedClass('NotReceived') {}
 
 export class HasBeenReceived extends Data.TaggedClass('HasBeenReceived') {}
 
-export const createFilter = (
-  reviewRequestId: Uuid.Uuid,
-): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
-  types: [
-    'ReviewRequestForAPreprintWasReceived',
-    'ReviewRequestForAPreprintWasStarted',
-    'ReviewRequestFromAPreprintServerWasImported',
-    'ReviewRequestByAPrereviewerWasImported',
-  ],
-  predicates: { reviewRequestId },
-})
+export const createFilter = (reviewRequestId: Uuid.Uuid) =>
+  Events.EventFilter({
+    types: [
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasStarted',
+      'ReviewRequestFromAPreprintServerWasImported',
+      'ReviewRequestByAPrereviewerWasImported',
+    ],
+    predicates: { reviewRequestId },
+  })
 
 export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))

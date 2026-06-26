@@ -1,6 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, Option, pipe, type Types } from 'effect'
-import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -29,18 +28,19 @@ export interface Input {
 
 export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewRequest>
 
-const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
-  types: [
-    'ReviewRequestForAPreprintWasStarted',
-    'PersonaForAReviewRequestForAPreprintWasChosen',
-    'ReviewRequestForAPreprintWasPublished',
-    'ReviewRequestForAPreprintWasReceived',
-    'ReviewRequestForAPreprintWasAccepted',
-    'ReviewRequestByAPrereviewerWasImported',
-    'ReviewRequestFromAPreprintServerWasImported',
-  ],
-  predicates: { reviewRequestId },
-})
+const createFilter = ({ reviewRequestId }: Input) =>
+  Events.EventFilter({
+    types: [
+      'ReviewRequestForAPreprintWasStarted',
+      'PersonaForAReviewRequestForAPreprintWasChosen',
+      'ReviewRequestForAPreprintWasPublished',
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestByAPrereviewerWasImported',
+      'ReviewRequestFromAPreprintServerWasImported',
+    ],
+    predicates: { reviewRequestId },
+  })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
   Either.gen(function* () {
