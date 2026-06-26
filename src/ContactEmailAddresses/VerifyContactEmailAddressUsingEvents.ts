@@ -4,24 +4,17 @@ import * as Events from '../Events.ts'
 import type { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import {
-  ContactEmailAddressHasAlreadyBeenVerified,
-  ContactEmailAddressIsNotFound,
-  VerificationTokenInvalid,
-} from './Errors.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified, ContactEmailAddressIsNotFound } from './Errors.ts'
 
 export interface Input {
   orcid: OrcidId
-  verificationToken: Uuid
+  contactAddressId: Uuid
   verifiedAt: Temporal.Instant
 }
 
-export type Error = ContactEmailAddressHasAlreadyBeenVerified | VerificationTokenInvalid | ContactEmailAddressIsNotFound
+export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound
 
-class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified')<{
-  verificationToken: Uuid
-  contactAddressId: Uuid
-}> {}
+class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified') {}
 
 type State = ContactAddressUnverified | ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound
 
@@ -29,7 +22,7 @@ const createFilter = (input: Input) =>
   Events.EventFilter([
     {
       types: ['ContactAddressImported'],
-      predicates: { orcidId: input.orcid },
+      predicates: { contactAddressId: input.contactAddressId },
     },
   ])
 
@@ -46,10 +39,7 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     return new ContactEmailAddressHasAlreadyBeenVerified()
   }
 
-  return new ContactAddressUnverified({
-    verificationToken: importStatus.value.verificationStatus.token,
-    contactAddressId: importStatus.value.contactAddressId,
-  })
+  return new ContactAddressUnverified()
 }
 
 const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> => {
@@ -61,13 +51,9 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
     return Either.left(state)
   }
 
-  if (state.verificationToken !== input.verificationToken) {
-    return Either.left(new VerificationTokenInvalid())
-  }
-
   return Either.right(
     Option.some(
-      new Events.ContactAddressVerified({ contactAddressId: state.contactAddressId, verifiedAt: input.verifiedAt }),
+      new Events.ContactAddressVerified({ contactAddressId: input.contactAddressId, verifiedAt: input.verifiedAt }),
     ),
   )
 }

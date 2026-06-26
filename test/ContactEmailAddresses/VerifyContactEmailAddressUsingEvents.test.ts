@@ -4,7 +4,6 @@ import { Either, Option } from 'effect'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
-  VerificationTokenInvalid,
 } from '../../src/ContactEmailAddresses/Errors.ts'
 import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddressUsingEvents.ts'
 import * as Events from '../../src/Events.ts'
@@ -15,9 +14,6 @@ import { Uuid } from '../../src/types/Uuid.ts'
 const orcidWithVerified = OrcidId('0000-0002-1825-0097')
 const orcidWithUnverified = OrcidId('0000-0002-6109-0367')
 const orcidWithNoEmailAddress = OrcidId('0000-0003-4921-6155')
-
-const validVerificationToken = Uuid('27e501e5-bc25-4975-995a-b0e789ac0865')
-const invalidVerificationToken = Uuid('784f7806-14a2-47dd-9801-00364bdf1829')
 
 const verifiedImported = new Events.ContactAddressImported({
   orcidId: orcidWithVerified,
@@ -30,7 +26,7 @@ const unverifiedImported = new Events.ContactAddressImported({
   orcidId: orcidWithUnverified,
   contactAddressId: Uuid('1a2c8e69-39c4-40b7-b3db-b941a74ba3e8'),
   emailAddress: Option.some(EmailAddress('josiah@example.com')),
-  verificationStatus: { status: 'unverified', token: validVerificationToken },
+  verificationStatus: { status: 'unverified', token: Uuid('784f7806-14a2-47dd-9801-00364bdf1829') },
 })
 
 const verifiedAt = Temporal.Now.instant()
@@ -42,33 +38,27 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   [
-    'currently unverified, valid token',
+    'currently unverified',
     [unverifiedImported],
-    { orcid: orcidWithUnverified, verificationToken: validVerificationToken, verifiedAt },
+    { orcid: orcidWithUnverified, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
     Either.right(Option.some(verifiedPreviouslyUnverified)),
-  ],
-  [
-    'currently unverified, invalid token',
-    [unverifiedImported],
-    { orcid: orcidWithUnverified, verificationToken: invalidVerificationToken, verifiedAt },
-    Either.left(new VerificationTokenInvalid()),
   ],
   [
     'no events',
     [],
-    { orcid: orcidWithNoEmailAddress, verificationToken: validVerificationToken, verifiedAt },
+    { orcid: orcidWithNoEmailAddress, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
     Either.left(new ContactEmailAddressIsNotFound()),
   ],
   [
     'already verified imported',
     [verifiedImported],
-    { orcid: orcidWithVerified, verificationToken: validVerificationToken, verifiedAt },
+    { orcid: orcidWithVerified, contactAddressId: verifiedImported.contactAddressId, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   // [
   //   'already verified after imported unverified',
   //   [unverifiedImported, verifiedPreviouslyUnverified],
-  //   { orcid: orcidWithVerified, verificationToken: validVerificationToken, verifiedAt },
+  //   { orcid: orcidWithVerified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
   //   Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   // ],
 ])('%s', (_name, events, input, expected) => {
