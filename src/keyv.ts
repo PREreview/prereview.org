@@ -145,10 +145,17 @@ interface KeyvEnv {
 
 export const ContactEmailAddressC = pipe(
   C.sum('type')({
-    verified: C.struct({
-      type: C.literal('verified'),
-      value: EmailAddressC,
-    }),
+    verified: pipe(
+      C.struct({
+        type: C.literal('verified'),
+        value: EmailAddressC,
+      }),
+      C.intersect(
+        C.partial({
+          contactAddressId: UuidC,
+        }),
+      ),
+    ),
     unverified: C.struct({
       type: C.literal('unverified'),
       value: EmailAddressC,
@@ -158,7 +165,10 @@ export const ContactEmailAddressC = pipe(
   C.imap(
     flow(
       Match.value,
-      Match.when({ type: 'verified' }, ({ value }) => new VerifiedContactEmailAddress({ value })),
+      Match.when(
+        { type: 'verified' },
+        ({ value, contactAddressId }) => new VerifiedContactEmailAddress({ value, contactAddressId }),
+      ),
       Match.when(
         { type: 'unverified' },
         ({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken }),
@@ -167,7 +177,15 @@ export const ContactEmailAddressC = pipe(
     ),
     flow(
       Match.value,
-      Match.tag('VerifiedContactEmailAddress', ({ value }) => ({ type: 'verified' as const, value })),
+      Match.tag('VerifiedContactEmailAddress', ({ value, contactAddressId }) =>
+        contactAddressId
+          ? {
+              type: 'verified' as const,
+              value,
+              contactAddressId,
+            }
+          : { type: 'verified' as const, value },
+      ),
       Match.tag('UnverifiedContactEmailAddress', ({ value, verificationToken }) => ({
         type: 'unverified' as const,
         value,

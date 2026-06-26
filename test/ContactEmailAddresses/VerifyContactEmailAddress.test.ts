@@ -36,7 +36,7 @@ it.effect.each<
     { orcid: orcidWithUnverified, verificationToken: validVerificationToken },
     Either.void,
     'verified',
-    ['ContactAddressImported'],
+    ['ContactAddressImported', 'ContactAddressVerified'],
   ],
   [
     'currently unverified, invalid token',

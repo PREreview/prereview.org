@@ -6,6 +6,7 @@ export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContac
 
 export class VerifiedContactEmailAddress extends Data.TaggedClass('VerifiedContactEmailAddress')<{
   value: EmailAddress
+  contactAddressId?: Uuid
 }> {}
 
 export class UnverifiedContactEmailAddress extends Data.TaggedClass('UnverifiedContactEmailAddress')<{

@@ -1,12 +1,12 @@
 import { Effect, pipe } from 'effect'
-import { v5 } from 'uuid'
 import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { EventStore } from '../EventStore.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import { Uuid } from '../types/Uuid.ts'
+import type { Uuid } from '../types/Uuid.ts'
 import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
@@ -14,6 +14,7 @@ import {
   VerificationTokenInvalid,
 } from './Errors.ts'
 import { ImportContactAddress } from './ImportContactAddress.ts'
+import { VerifyContactEmailAddressUsingEvents } from './VerifyContactEmailAddressUsingEvents.ts'
 
 export interface Input {
   orcid: OrcidId
@@ -49,7 +50,10 @@ export const VerifyContactEmailAddress: (
       yield* FptsToEffect.readerTaskEither(
         Keyv.saveContactEmailAddress(
           input.orcid,
-          new VerifiedContactEmailAddress({ value: contactEmailAddress.value }),
+          new VerifiedContactEmailAddress({
+            value: contactEmailAddress.value,
+            contactAddressId: contactEmailAddress.verificationToken,
+          }),
         ),
         {
           contactEmailAddressStore,
@@ -57,16 +61,21 @@ export const VerifyContactEmailAddress: (
         },
       )
 
-      const contactAddressId = Uuid(
-        v5(`${input.orcid}-${contactEmailAddress.value}`, Uuid('2b74ca85-7549-4e7d-ba0a-21a3b385d801')),
-      )
+      const contactAddressId = contactEmailAddress.verificationToken
 
       const importCommand = yield* Commands.makeCommand(ImportContactAddress)
+      const verifyCommand = yield* Commands.makeCommand(VerifyContactEmailAddressUsingEvents)
+
       yield* importCommand({
         contactAddressId,
         emailAddress: contactEmailAddress.value,
         orcidId: input.orcid,
-        verificationStatus: 'verified',
+        verificationStatus: 'unverified',
+      })
+      yield* verifyCommand({
+        contactAddressId,
+        orcid: input.orcid,
+        verifiedAt: yield* Temporal.currentInstant,
       })
     },
     Effect.catchIf(
