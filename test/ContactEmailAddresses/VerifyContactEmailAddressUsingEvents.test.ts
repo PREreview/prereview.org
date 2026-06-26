@@ -1,6 +1,7 @@
 import { expect, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
+import * as Commands from '../../src/Commands.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
@@ -14,6 +15,7 @@ import { Uuid } from '../../src/types/Uuid.ts'
 const orcidWithVerified = OrcidId('0000-0002-1825-0097')
 const orcidWithUnverified = OrcidId('0000-0002-6109-0367')
 const orcidWithNoEmailAddress = OrcidId('0000-0003-4921-6155')
+const differentOrcid = OrcidId('0000-0003-4921-6155')
 
 const verifiedImported = new Events.ContactAddressImported({
   orcidId: orcidWithVerified,
@@ -36,7 +38,14 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
   verifiedAt,
 })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<
+  [
+    string,
+    ReadonlyArray<Events.Event>,
+    _.Input,
+    Either.Either<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
+  ]
+>([
   [
     'currently unverified',
     [unverifiedImported],
@@ -58,15 +67,23 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
   [
     'already verified after imported unverified',
     [unverifiedImported, verifiedPreviouslyUnverified],
-    { orcid: orcidWithVerified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
+    { orcid: orcidWithUnverified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
+  [
+    'orcidId does not match (unexpected user issueing command)',
+    [unverifiedImported],
+    { orcid: differentOrcid, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
+    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+  ],
 ])('%s', (_name, events, input, expected) => {
-  const { foldState, decide } = _.VerifyContactEmailAddressUsingEvents
+  const { foldState, authorize, decide } = _.VerifyContactEmailAddressUsingEvents
 
   const state = foldState(events, input)
 
-  const actual = decide(state, input)
+  const actual = authorize(state, input)
+    ? decide(state, input)
+    : Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
 
   expect(actual).toStrictEqual(expected)
 })

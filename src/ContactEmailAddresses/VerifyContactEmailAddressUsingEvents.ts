@@ -14,9 +14,10 @@ export interface Input {
 
 export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound
 
-class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified') {}
+class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified')<{ orcidId: OrcidId }> {}
+class ContactAddressVerified extends Data.TaggedClass('ContactAddressVerified')<{ orcidId: OrcidId }> {}
 
-type State = ContactAddressUnverified | ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound
+type State = ContactAddressUnverified | ContactAddressVerified | ContactEmailAddressIsNotFound
 
 const createFilter = (input: Input) =>
   Events.EventFilter([
@@ -36,14 +37,22 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   }
 
   if (importStatus.value.verificationStatus === 'verified') {
-    return new ContactEmailAddressHasAlreadyBeenVerified()
+    return new ContactAddressVerified({ orcidId: importStatus.value.orcidId })
   }
 
   if (Array.some(filteredEvents, event => event._tag === 'ContactAddressVerified')) {
-    return new ContactEmailAddressHasAlreadyBeenVerified()
+    return new ContactAddressVerified({ orcidId: importStatus.value.orcidId })
   }
 
-  return new ContactAddressUnverified()
+  return new ContactAddressUnverified({ orcidId: importStatus.value.orcidId })
+}
+
+const authorize = (state: State, input: Input): boolean => {
+  if (state._tag === 'ContactEmailAddressIsNotFound') {
+    return true
+  }
+
+  return state.orcidId === input.orcid
 }
 
 const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> => {
@@ -51,8 +60,8 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
     return Either.left(state)
   }
 
-  if (state._tag === 'ContactEmailAddressHasAlreadyBeenVerified') {
-    return Either.left(state)
+  if (state._tag === 'ContactAddressVerified') {
+    return Either.left(new ContactEmailAddressHasAlreadyBeenVerified())
   }
 
   return Either.right(
@@ -62,14 +71,16 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
   )
 }
 
-export const VerifyContactEmailAddressUsingEvents: Commands.Command<
+export const VerifyContactEmailAddressUsingEvents = Commands.Command<
   'ContactAddressImported' | 'ContactAddressVerified',
   [Input],
   State,
-  Error
-> = Commands.Command({
+  Error,
+  true
+>({
   name: 'ContactEmailAddresses.importContactAddress',
   createFilter,
   foldState,
+  authorize,
   decide,
 })
