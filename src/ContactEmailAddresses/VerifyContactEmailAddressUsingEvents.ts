@@ -22,7 +22,7 @@ type State = ContactAddressUnverified | ContactAddressVerified | ContactEmailAdd
 const createFilter = (input: Input) =>
   Events.EventFilter([
     {
-      types: ['ContactAddressImported', 'ContactAddressVerified'],
+      types: ['ContactAddressImported', 'ContactAddressRecorded', 'ContactAddressVerified'],
       predicates: { contactAddressId: input.contactAddressId },
     },
   ])
@@ -30,21 +30,24 @@ const createFilter = (input: Input) =>
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
 
-  const importStatus = Array.findLast(filteredEvents, event => event._tag === 'ContactAddressImported')
+  const originEvent = Array.findLast(
+    filteredEvents,
+    event => event._tag === 'ContactAddressImported' || event._tag === 'ContactAddressRecorded',
+  )
 
-  if (Option.isNone(importStatus)) {
+  if (Option.isNone(originEvent)) {
     return new ContactEmailAddressIsNotFound()
   }
 
-  if (importStatus.value.verificationStatus === 'verified') {
-    return new ContactAddressVerified({ orcidId: importStatus.value.orcidId })
+  if (originEvent.value._tag === 'ContactAddressImported' && originEvent.value.verificationStatus === 'verified') {
+    return new ContactAddressVerified({ orcidId: originEvent.value.orcidId })
   }
 
   if (Array.some(filteredEvents, event => event._tag === 'ContactAddressVerified')) {
-    return new ContactAddressVerified({ orcidId: importStatus.value.orcidId })
+    return new ContactAddressVerified({ orcidId: originEvent.value.orcidId })
   }
 
-  return new ContactAddressUnverified({ orcidId: importStatus.value.orcidId })
+  return new ContactAddressUnverified({ orcidId: originEvent.value.orcidId })
 }
 
 const authorize = (state: State, input: Input): boolean => {
@@ -72,7 +75,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
 }
 
 export const VerifyContactEmailAddressUsingEvents = Commands.Command<
-  'ContactAddressImported' | 'ContactAddressVerified',
+  'ContactAddressImported' | 'ContactAddressRecorded' | 'ContactAddressVerified',
   [Input],
   State,
   Error,

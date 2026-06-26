@@ -38,6 +38,17 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
   verifiedAt,
 })
 
+const addressRecorded = new Events.ContactAddressRecorded({
+  orcidId: orcidWithUnverified,
+  contactAddressId: Uuid('2487f220-bd30-4986-a362-429e1f6bdd60'),
+  emailAddress: Option.some(EmailAddress('josiah@example.com')),
+})
+
+const addressVerified = new Events.ContactAddressVerified({
+  contactAddressId: addressRecorded.contactAddressId,
+  verifiedAt,
+})
+
 test.each<
   [
     string,
@@ -47,10 +58,16 @@ test.each<
   ]
 >([
   [
-    'currently unverified',
+    'currently unverified from import',
     [unverifiedImported],
     { orcid: orcidWithUnverified, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
     Either.right(Option.some(verifiedPreviouslyUnverified)),
+  ],
+  [
+    'currently unverified',
+    [addressRecorded],
+    { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
+    Either.right(Option.some(addressVerified)),
   ],
   [
     'no events',
@@ -65,15 +82,27 @@ test.each<
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
+    'already verified',
+    [addressRecorded, addressVerified],
+    { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
+    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+  ],
+  [
     'already verified after imported unverified',
     [unverifiedImported, verifiedPreviouslyUnverified],
     { orcid: orcidWithUnverified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
-    'orcidId does not match (unexpected user issueing command)',
+    'orcidId does not match from import (unexpected user issueing command)',
     [unverifiedImported],
     { orcid: differentOrcid, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
+    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+  ],
+  [
+    'orcidId does not match (unexpected user issueing command)',
+    [addressRecorded],
+    { orcid: differentOrcid, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
     Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
 ])('%s', (_name, events, input, expected) => {
