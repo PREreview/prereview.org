@@ -38,6 +38,7 @@ export const Event = Schema.Union(
   ...CommentEvents.CommentEvent.members,
   ContactEmailAddressesEvents.ContactAddressImported,
   ContactEmailAddressesEvents.ContactAddressVerified,
+  ContactEmailAddressesEvents.ContactAddressRecorded,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
   PreprintReviews.RapidPrereviewImported,

@@ -16,3 +16,9 @@ export class ContactAddressVerified extends Schema.TaggedClass<ContactAddressVer
   contactAddressId: UuidSchema,
   verifiedAt: InstantSchema,
 }) {}
+
+export class ContactAddressRecorded extends Schema.TaggedClass<ContactAddressRecorded>()('ContactAddressRecorded', {
+  contactAddressId: UuidSchema,
+  emailAddress: SensitiveData(EmailAddressSchema),
+  orcidId: OrcidIdSchema,
+}) {}
