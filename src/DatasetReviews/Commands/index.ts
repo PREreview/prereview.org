@@ -185,12 +185,15 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         Effect.provide(context),
       )
 
+    const allDatasetReviewEvents = (datasetReviewId: Uuid.Uuid) =>
+      Events.EventFilter({
+        types: Events.DatasetReviewEventTypes,
+        predicates: { datasetReviewId },
+      })
+
     return {
       startDatasetReview: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         StartDatasetReview.foldState,
         () => () => true,
         StartDatasetReview.decide,
@@ -289,55 +292,37 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         DeclareFollowingCodeOfConduct.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         MarkRecordCreatedOnZenodo.foldState,
         () => () => true,
         MarkRecordCreatedOnZenodo.decide,
       ),
       markRecordAsPublishedOnZenodo: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         MarkRecordAsPublishedOnZenodo.foldState,
         () => () => true,
         MarkRecordAsPublishedOnZenodo.decide,
       ),
       markDoiAsAssigned: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         MarkDoiAsAssigned.foldState,
         () => () => true,
         MarkDoiAsAssigned.decide,
       ),
       markDoiAsActivated: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         MarkDoiAsActivated.foldState,
         () => () => true,
         MarkDoiAsActivated.decide,
       ),
       publishDatasetReview: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         PublishDatasetReview.foldState,
         () => () => true,
         PublishDatasetReview.decide,
       ),
       markDatasetReviewAsPublished: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        allDatasetReviewEvents,
         MarkDatasetReviewAsPublished.foldState,
         () => () => true,
         MarkDatasetReviewAsPublished.decide,
