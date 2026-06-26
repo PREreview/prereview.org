@@ -78,6 +78,7 @@ export const VerifyContactEmailAddress: (
         verifiedAt: yield* Temporal.currentInstant,
       })
     },
+    Effect.uninterruptible,
     Effect.catchIf(
       error => error === 'not-found',
       () => new ContactEmailAddressIsNotFound(),
