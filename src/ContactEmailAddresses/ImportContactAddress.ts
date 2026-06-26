@@ -28,10 +28,16 @@ export interface State {
 }
 
 const createFilter = (input: Input) =>
-  Events.EventFilter({
-    types: ['ContactAddressImported', 'ContactAddressVerified'],
-    predicates: { contactAddressId: input.contactAddressId },
-  })
+  Events.EventFilter([
+    {
+      types: ['ContactAddressImported', 'ContactAddressRecorded', 'ContactAddressVerified'],
+      predicates: { contactAddressId: input.contactAddressId },
+    },
+    {
+      types: ['ContactAddressRecorded', 'AuthorInviteEmailAddressChosenAsContactAddress'],
+      predicates: { orcidId: input.orcidId },
+    },
+  ])
 
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
@@ -53,11 +59,23 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
             orcidId: event.orcidId,
             verificationStatus: event.verificationStatus,
           }),
+        ContactAddressRecorded: event =>
+          Option.some({
+            emailAddress: event.emailAddress,
+            orcidId: event.orcidId,
+            verificationStatus: 'unverified' as const,
+          }),
         ContactAddressVerified: () =>
           Option.map(state, contactAddress => ({
             ...contactAddress,
             verificationStatus: 'verified' as const,
           })),
+        AuthorInviteEmailAddressChosenAsContactAddress: event =>
+          Option.some({
+            emailAddress: event.emailAddress,
+            orcidId: event.orcidId,
+            verificationStatus: 'verified' as const,
+          }),
       }),
   )
 

@@ -34,11 +34,43 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
   verifiedAt: Temporal.Now.instant(),
 })
 
+const addressRecorded = new Events.ContactAddressRecorded({
+  orcidId: inputUnverified.orcidId,
+  contactAddressId: inputUnverified.contactAddressId,
+  emailAddress: Option.some(inputUnverified.emailAddress),
+})
+
+const addressVerified = new Events.ContactAddressVerified({
+  contactAddressId: addressRecorded.contactAddressId,
+  verifiedAt: Temporal.Now.instant(),
+})
+
+const newerAddressRecorded = new Events.ContactAddressRecorded({
+  orcidId: addressRecorded.orcidId,
+  contactAddressId: Uuid('c70ba65f-96f2-4489-a1b5-43cbb41c6eff'),
+  emailAddress: Option.some(EmailAddress('jc@example.com')),
+})
+
+const authorInviteAddressChosen = new Events.AuthorInviteEmailAddressChosenAsContactAddress({
+  inviteId: Uuid('c6aed52a-0f7b-4d67-8fc9-64adaa4f9e38'),
+  orcidId: inputVerified.orcidId,
+  emailAddress: Option.some(inputVerified.emailAddress),
+  chosenAt: Temporal.Now.instant(),
+})
+
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events, input is verified', [], inputVerified, Either.right(Option.some(verifiedImported))],
   ['no events, input is unverified', [], inputUnverified, Either.right(Option.some(unverifiedImported))],
   ['already imported, input is verified', [verifiedImported], inputVerified, Either.right(Option.none())],
   ['already imported, input is unverified', [unverifiedImported], inputUnverified, Either.right(Option.none())],
+  [
+    'already recorded and verified, input is verified',
+    [addressRecorded, addressVerified],
+    inputVerified,
+    Either.right(Option.none()),
+  ],
+  ['already recorded, input is unverified', [addressRecorded], inputUnverified, Either.right(Option.none())],
+  ['invite address chosen, input is verified', [authorInviteAddressChosen], inputVerified, Either.right(Option.none())],
   [
     'imported unverified, has been verified, input is verified',
     [unverifiedImported, verifiedPreviouslyUnverified],
@@ -68,6 +100,30 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     [verifiedPreviouslyUnverified],
     inputVerified,
     Either.left(new _.ContactAddressIdHasAlreadyBeenUsed()),
+  ],
+  [
+    'new address recorded in the meantime',
+    [addressRecorded, newerAddressRecorded],
+    inputUnverified,
+    Either.left(new _.DetailsDoNotMatchExistingImport()),
+  ],
+  [
+    'already recorded and verified, input is unverified',
+    [addressRecorded, addressVerified],
+    inputUnverified,
+    Either.left(new _.DetailsDoNotMatchExistingImport()),
+  ],
+  [
+    'already recorded, input is verified',
+    [addressRecorded],
+    inputVerified,
+    Either.left(new _.DetailsDoNotMatchExistingImport()),
+  ],
+  [
+    'invite address chosen, input is unverified',
+    [authorInviteAddressChosen],
+    inputUnverified,
+    Either.left(new _.DetailsDoNotMatchExistingImport()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ImportContactAddress
