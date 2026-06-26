@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Duration, Effect, Layer, Option, type PubSub, type Types } from 'effect'
+import { Array, Duration, Effect, Layer, Option, type PubSub } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as Preprints from '../src/Preprints/index.ts'
@@ -188,14 +188,7 @@ const preprintId1Indeterminate = new Preprints.BiorxivOrMedrxivPreprintId({ valu
 const preprintId2 = new Preprints.PhilsciPreprintId({ value: 1 })
 const preprintId3 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.67890') })
 
-it.effect.each<
-  [
-    string,
-    Events.EventFilter<Types.Tags<Events.Event>>,
-    Array.NonEmptyReadonlyArray<Events.Event>,
-    ReadonlyArray<Events.Event>,
-  ]
->([
+it.effect.each<[string, Events.EventFilter, Array.NonEmptyReadonlyArray<Events.Event>, ReadonlyArray<Events.Event>]>([
   [
     'one type',
     { types: ['CodeOfConductForCommentWasAgreed'] },

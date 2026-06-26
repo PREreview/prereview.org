@@ -47,7 +47,7 @@ export const Event = Schema.Union(
   ...PrereviewerEvents.PrereviewerEvent.members,
 )
 
-export type EventFilter<T extends Types.Tags<Event>> =
+export type EventFilter<T extends Types.Tags<Event> = Types.Tags<Event>> =
   | {
       types: Array.NonEmptyReadonlyArray<T>
       predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
@@ -99,8 +99,7 @@ export const layer = Layer.scoped(
   ),
 )
 
-export type EventsForFilter<F extends EventFilter<Types.Tags<Event>>> =
-  F extends EventFilter<infer T> ? EventSubset<T> : never
+export type EventsForFilter<F extends EventFilter> = F extends EventFilter<infer T> ? EventSubset<T> : never
 
 export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Types.Tags<Event>>> = Types.ExtractTag<
   Event,
