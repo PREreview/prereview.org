@@ -1,12 +1,9 @@
-import { Context, Data, Effect, Option, pipe, Scope, type Either, type Types } from 'effect'
+import { Context, Data, Effect, Option, pipe, Scope, type Either } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FromCommand<T extends Command<any, any, any, any>> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Command<any, infer Input, any, infer Error>,
-]
+export type FromCommand<T extends Command<any, any, any>> = [T] extends [Command<infer Input, any, infer Error>]
   ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
   : never
 
@@ -18,7 +15,6 @@ export type FromStatelessCommand<T extends StatelessCommand<any>> = [T] extends 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
 export type Command<
-  EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   State,
   Error,
@@ -26,14 +22,14 @@ export type Command<
 > = Authorize extends true
   ? {
       name: string
-      createFilter: (...input: Input) => Events.EventFilter<EventTags>
+      createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       authorize: (state: State, ...input: Input) => boolean
       decide: (state: State, ...input: Input) => Either.Either<Option.Option<Events.Event>, Error>
     }
   : {
       name: string
-      createFilter: (...input: Input) => Events.EventFilter<EventTags>
+      createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       decide: (state: State, ...input: Input) => Either.Either<Option.Option<Events.Event>, Error>
     }
@@ -43,28 +39,16 @@ export interface StatelessCommand<Input extends ReadonlyArray<unknown>> {
   decide: (...input: Input) => Events.Event
 }
 
-export const Command: <
-  EventTags extends Types.Tags<Events.Event>,
-  Input extends ReadonlyArray<unknown>,
-  State,
-  Error,
-  Authorize extends boolean = false,
->(
-  command: Command<EventTags, Input, State, Error, Authorize>,
-) => Command<EventTags, Input, State, Error, Authorize> = Data.struct as never
+export const Command: <Input extends ReadonlyArray<unknown>, State, Error, Authorize extends boolean = false>(
+  command: Command<Input, State, Error, Authorize>,
+) => Command<Input, State, Error, Authorize> = Data.struct as never
 
 export const StatelessCommand: <Input extends ReadonlyArray<unknown>>(
   command: StatelessCommand<Input>,
 ) => StatelessCommand<Input> = Data.struct
 
-export const makeCommand = <
-  EventTags extends Types.Tags<Events.Event>,
-  Input extends ReadonlyArray<unknown>,
-  State,
-  Error,
-  Authorize extends boolean = false,
->(
-  command: Command<EventTags, Input, State, Error, Authorize>,
+export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, Authorize extends boolean = false>(
+  command: Command<Input, State, Error, Authorize>,
 ): Effect.Effect<
   (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>,
   never,

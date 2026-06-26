@@ -145,18 +145,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
       ),
   })
 
-export const AddInvitationToAppearToTheList = Commands.Command<
-  | 'DatasetReviewWasStarted'
-  | 'AnsweredIfOthersNeedToBeListedOnTheReview'
-  | 'InvitationToAppearOnADatasetReviewAddedToTheList'
-  | 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-  | 'PublicationOfDatasetReviewWasRequested'
-  | 'DatasetReviewWasPublished',
-  [Input],
-  State,
-  Error,
-  true
->({
+export const AddInvitationToAppearToTheList = Commands.Command<[Input], State, Error, true>({
   name: 'DatasetReviews.addInvitationToAppearToTheList',
   createFilter,
   foldState,

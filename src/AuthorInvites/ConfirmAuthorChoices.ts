@@ -69,12 +69,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
     HasBeenConfirmed: () => Either.left(new ChoicesCannotBeChanged()),
   })
 
-export const ConfirmAuthorChoices: Commands.Command<
-  'AuthorInviteAccepted' | 'PersonaForAReviewChosen' | 'AuthorChoicesForAReviewConfirmed' | 'DatasetReviewWasStarted',
-  [Input],
-  State,
-  Error
-> = Commands.Command({
+export const ConfirmAuthorChoices: Commands.Command<[Input], State, Error> = Commands.Command({
   name: 'AuthorInvites.confirmAuthorChoices',
   createFilter,
   foldState,

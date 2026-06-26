@@ -120,18 +120,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
       Either.right(Option.some(new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList(input))),
   })
 
-export const RemoveInvitationToAppearFromTheList = Commands.Command<
-  | 'DatasetReviewWasStarted'
-  | 'AnsweredIfOthersNeedToBeListedOnTheReview'
-  | 'InvitationToAppearOnADatasetReviewAddedToTheList'
-  | 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-  | 'PublicationOfDatasetReviewWasRequested'
-  | 'DatasetReviewWasPublished',
-  [Input],
-  State,
-  Error,
-  true
->({
+export const RemoveInvitationToAppearFromTheList = Commands.Command<[Input], State, Error, true>({
   name: 'DatasetReviews.removeInvitationToAppearFromTheList',
   createFilter,
   foldState,

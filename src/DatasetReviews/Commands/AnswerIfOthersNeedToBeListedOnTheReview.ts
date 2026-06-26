@@ -97,16 +97,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
       }),
   })
 
-export const AnswerIfOthersNeedToBeListedOnTheReview = Commands.Command<
-  | 'DatasetReviewWasStarted'
-  | 'AnsweredIfOthersNeedToBeListedOnTheReview'
-  | 'PublicationOfDatasetReviewWasRequested'
-  | 'DatasetReviewWasPublished',
-  [Input],
-  State,
-  Error,
-  true
->({
+export const AnswerIfOthersNeedToBeListedOnTheReview = Commands.Command<[Input], State, Error, true>({
   name: 'DatasetReviews.answerIfOthersNeedToBeListedOnTheReview',
   createFilter,
   foldState,

@@ -87,12 +87,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
   return Either.right(Option.none())
 }
 
-export const ImportContactAddress: Commands.Command<
-  'ContactAddressImported' | 'ContactAddressVerified',
-  [Input],
-  State,
-  Error
-> = Commands.Command({
+export const ImportContactAddress: Commands.Command<[Input], State, Error> = Commands.Command({
   name: 'ContactEmailAddresses.importContactAddress',
   createFilter,
   foldState,
