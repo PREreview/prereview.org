@@ -69,7 +69,7 @@ export const make: Effect.Effect<
     orElse: () => Effect.void,
   })
 
-  const buildFilterCondition = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
+  const buildFilterCondition = (filter: Events.EventFilter) =>
     sql.or(
       Array.map(Array.ensure(filter), filter => {
         if (!filter.predicates || Struct.keys(filter.predicates).length === 0) {
@@ -97,7 +97,7 @@ export const make: Effect.Effect<
       }),
     )
 
-  const selectEventRows = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
+  const selectEventRows = <F extends Events.EventFilter>(filter: F) =>
     pipe(
       sql`
         SELECT
@@ -122,7 +122,7 @@ export const make: Effect.Effect<
           ): result is {
             readonly id: Uuid.Uuid
             readonly position: EventStore.Position
-            readonly event: Events.EventSubset<T>
+            readonly event: Events.EventsForFilter<F>
           } => Events.matches(result.event, filter),
         ),
         () => new UnexpectedEventFound(),

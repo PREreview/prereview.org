@@ -1,5 +1,5 @@
-import { type Array, Context, Data, Effect, type Option, Schema, type Types, pipe } from 'effect'
-import type { Event, EventFilter, EventSubset } from './Events.ts'
+import { type Array, Context, Data, Effect, type Option, Schema, pipe } from 'effect'
+import type { Event, EventFilter, EventsForFilter } from './Events.ts'
 
 export const EventStore = Context.GenericTag<EventStore>('EventStore')
 
@@ -26,11 +26,11 @@ export interface EventStore {
     FailedToGetEvents
   >
 
-  readonly query: <Tag extends Types.Tags<Event>>(
-    filter: EventFilter<Tag>,
+  readonly query: <Filter extends EventFilter>(
+    filter: Filter,
   ) => Effect.Effect<
     Option.Option<{
-      readonly events: Array.NonEmptyReadonlyArray<EventSubset<Tag>>
+      readonly events: Array.NonEmptyReadonlyArray<EventsForFilter<Filter>>
       readonly lastKnownPosition: Position
     }>,
     FailedToGetEvents
@@ -38,27 +38,18 @@ export interface EventStore {
 
   readonly append: (event: Event) => Effect.Effect<void, FailedToCommitEvent>
 
-  readonly appendIf: <Tag extends Types.Tags<Event>>(
+  readonly appendIf: (
     event: Event,
-    condition: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
+    condition: { filter: EventFilter; lastKnownPosition: Option.Option<Position> },
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
 
 export const { all } = Effect.serviceConstants(EventStore)
 
-export const { since, append } = Effect.serviceFunctions(EventStore)
+export const { since, append, appendIf } = Effect.serviceFunctions(EventStore)
 
-export const query = Effect.fn(function* <Tag extends Types.Tags<Event>>(filter: EventFilter<Tag>) {
+export const query = Effect.fn(function* <Filter extends EventFilter>(filter: Filter) {
   const eventStore = yield* EventStore
 
   return yield* eventStore.query(filter)
-})
-
-export const appendIf = Effect.fn(function* <Tag extends Types.Tags<Event>>(
-  event: Event,
-  condition: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
-) {
-  const eventStore = yield* EventStore
-
-  return yield* eventStore.appendIf(event, condition)
 })
