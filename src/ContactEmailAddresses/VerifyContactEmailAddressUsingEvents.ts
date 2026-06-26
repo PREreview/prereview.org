@@ -4,7 +4,11 @@ import * as Events from '../Events.ts'
 import type { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified, ContactEmailAddressIsNotFound } from './Errors.ts'
+import {
+  ContactEmailAddressHasAlreadyBeenVerified,
+  ContactEmailAddressIsNotFound,
+  type OnlyCurrentContactAddressCanBeVerified,
+} from './Errors.ts'
 
 export interface Input {
   orcid: OrcidId
@@ -12,7 +16,10 @@ export interface Input {
   verifiedAt: Temporal.Instant
 }
 
-export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound
+export type Error =
+  | ContactEmailAddressHasAlreadyBeenVerified
+  | ContactEmailAddressIsNotFound
+  | OnlyCurrentContactAddressCanBeVerified
 
 class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified')<{ orcidId: OrcidId }> {}
 class ContactAddressVerified extends Data.TaggedClass('ContactAddressVerified')<{ orcidId: OrcidId }> {}

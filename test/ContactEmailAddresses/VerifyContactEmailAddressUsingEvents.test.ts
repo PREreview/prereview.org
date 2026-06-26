@@ -49,6 +49,13 @@ const addressVerified = new Events.ContactAddressVerified({
   verifiedAt,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const newerAddressRecorded = new Events.ContactAddressRecorded({
+  orcidId: addressRecorded.orcidId,
+  contactAddressId: Uuid('c70ba65f-96f2-4489-a1b5-43cbb41c6eff'),
+  emailAddress: Option.some(EmailAddress('jc@example.com')),
+})
+
 test.each<
   [
     string,
@@ -93,6 +100,12 @@ test.each<
     { orcid: orcidWithUnverified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
+  // [
+  //   'new address recorded in the meantime',
+  //   [addressRecorded, newerAddressRecorded],
+  //   { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
+  //   Either.left(new OnlyCurrentContactAddressCanBeVerified()),
+  // ],
   [
     'orcidId does not match from import (unexpected user issueing command)',
     [unverifiedImported],

@@ -92,5 +92,7 @@ export const VerifyContactEmailAddress: (
         pipe(Effect.logError('contact address import failed'), Effect.annotateLogs({ error })),
       DetailsDoNotMatchExistingImport: error =>
         pipe(Effect.logError('contact address import failed'), Effect.annotateLogs({ error })),
+      OnlyCurrentContactAddressCanBeVerified: error =>
+        pipe(Effect.logError('contact address import failed'), Effect.annotateLogs({ error })),
     }),
   )
