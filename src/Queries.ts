@@ -15,8 +15,7 @@ export type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FromOnDemandQuery<T extends OnDemandQuery<ReadonlyArray<any>, any, any>> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  OnDemandQuery<infer Input, infer Result, infer Error, any>,
+  OnDemandQuery<infer Input, infer Result, infer Error>,
 ]
   ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
   : never
@@ -33,14 +32,9 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
-export interface OnDemandQuery<
-  Input extends ReadonlyArray<unknown>,
-  Result,
-  Error = never,
-  EventTags extends Types.Tags<Events.Event> = Types.Tags<Events.Event>,
-> {
+export interface OnDemandQuery<Input extends ReadonlyArray<unknown>, Result, Error = never> {
   name: string
-  createFilter: (...input: Input) => Events.EventFilter<EventTags>
+  createFilter: (...input: Input) => Events.EventFilter
   query: (
     events: ReadonlyArray<Events.Event>,
     ...input: Input
@@ -54,29 +48,19 @@ export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Err
   query: (state: State, ...input: Input) => Either.Either<Result, Error>
 }
 
-export const OnDemandQuery: <
-  Input extends ReadonlyArray<unknown>,
-  Result,
-  Error = never,
-  EventTags extends Types.Tags<Events.Event> = Types.Tags<Events.Event>,
->(
-  query: OnDemandQuery<Input, Result, Error, EventTags>,
-) => OnDemandQuery<Input, Result, Error, EventTags> = Data.struct
+export const OnDemandQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never>(
+  query: OnDemandQuery<Input, Result, Error>,
+) => OnDemandQuery<Input, Result, Error> = Data.struct
 
 export const StatefulQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>(
   query: StatefulQuery<Input, Result, Error, State>,
 ) => StatefulQuery<Input, Result, Error, State> = Data.struct
 
-export const makeOnDemandQuery = <
-  Input extends ReadonlyArray<unknown>,
-  Result,
-  Error = never,
-  EventTags extends Types.Tags<Events.Event> = Types.Tags<Events.Event>,
->({
+export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never>({
   name,
   createFilter,
   query,
-}: OnDemandQuery<Input, Result, Error, EventTags>): Effect.Effect<
+}: OnDemandQuery<Input, Result, Error>): Effect.Effect<
   (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>,
   never,
   EventStore.EventStore
