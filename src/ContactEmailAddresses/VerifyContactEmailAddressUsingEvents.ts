@@ -21,7 +21,7 @@ type State = ContactAddressUnverified | ContactEmailAddressHasAlreadyBeenVerifie
 const createFilter = (input: Input) =>
   Events.EventFilter([
     {
-      types: ['ContactAddressImported'],
+      types: ['ContactAddressImported', 'ContactAddressVerified'],
       predicates: { contactAddressId: input.contactAddressId },
     },
   ])
@@ -29,13 +29,17 @@ const createFilter = (input: Input) =>
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
 
-  const importStatus = Array.last(filteredEvents)
+  const importStatus = Array.findLast(filteredEvents, event => event._tag === 'ContactAddressImported')
 
   if (Option.isNone(importStatus)) {
     return new ContactEmailAddressIsNotFound()
   }
 
   if (importStatus.value.verificationStatus.status === 'verified') {
+    return new ContactEmailAddressHasAlreadyBeenVerified()
+  }
+
+  if (Array.some(filteredEvents, event => event._tag === 'ContactAddressVerified')) {
     return new ContactEmailAddressHasAlreadyBeenVerified()
   }
 

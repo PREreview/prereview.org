@@ -55,12 +55,12 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     { orcid: orcidWithVerified, contactAddressId: verifiedImported.contactAddressId, verifiedAt },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
-  // [
-  //   'already verified after imported unverified',
-  //   [unverifiedImported, verifiedPreviouslyUnverified],
-  //   { orcid: orcidWithVerified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
-  //   Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
-  // ],
+  [
+    'already verified after imported unverified',
+    [unverifiedImported, verifiedPreviouslyUnverified],
+    { orcid: orcidWithVerified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
+    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+  ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.VerifyContactEmailAddressUsingEvents
 
