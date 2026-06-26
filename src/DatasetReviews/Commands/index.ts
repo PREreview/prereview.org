@@ -1,4 +1,4 @@
-import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope, type Types } from 'effect'
+import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -144,13 +144,13 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
-      Event extends Types.Tags<Events.DatasetReviewEvent>,
+      Filter extends Events.EventFilter,
       State,
       Command extends { datasetReviewId: Uuid.Uuid },
       Error,
     >(
-      createFilter: (datasetReviewId: Uuid.Uuid) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Events.EventSubset<Event>>, datasetReviewId: Uuid.Uuid) => State,
+      createFilter: (datasetReviewId: Uuid.Uuid) => Filter,
+      foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, datasetReviewId: Uuid.Uuid) => State,
       authorize: (command: Command) => (state: State) => boolean,
       decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
     ): CommandHandler<Command, Error> =>

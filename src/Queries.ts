@@ -1,4 +1,4 @@
-import { Array, Data, Effect, Option, pipe, Ref, Struct, type Either, type Types } from 'effect'
+import { Array, Data, Effect, Option, pipe, Ref, Struct, type Either } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
@@ -117,10 +117,10 @@ export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, 
   })
 
 /** @deprecated */
-export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
+export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Error>(
   name: string,
-  createFilter: (input: Input) => Events.EventFilter<Event>,
-  query: (events: ReadonlyArray<Events.EventSubset<Event>>, input: Input) => Either.Either<Result, Error>,
+  createFilter: (input: Input) => Filter,
+  query: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, input: Input) => Either.Either<Result, Error>,
 ): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore
@@ -144,10 +144,10 @@ export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result,
   })
 
 /** @deprecated */
-export const makeSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
+export const makeSimpleQuery = <Filter extends Events.EventFilter, Result>(
   name: string,
-  filter: Events.EventFilter<Event>,
-  query: (events: ReadonlyArray<Events.EventSubset<Event>>) => Result,
+  filter: Filter,
+  query: (events: ReadonlyArray<Events.EventsForFilter<Filter>>) => Result,
 ): Effect.Effect<() => Effect.Effect<Result, UnableToQuery>, never, EventStore.EventStore> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore

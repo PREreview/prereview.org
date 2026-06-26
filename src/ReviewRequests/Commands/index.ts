@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Either, flow, Layer, Option, pipe, Scope, type Types } from 'effect'
+import { Context, Data, Effect, Either, flow, Layer, Option, pipe, Scope } from 'effect'
 import * as Commands from '../../Commands.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -60,13 +60,13 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
-      Event extends Types.Tags<Events.ReviewRequestEvent>,
+      Filter extends Events.EventFilter,
       State,
       Command extends { reviewRequestId: Uuid.Uuid },
       Error,
     >(
-      createFilter: (reviewRequestId: Uuid.Uuid) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Events.EventSubset<Event>>, reviewRequestId: Uuid.Uuid) => State,
+      createFilter: (reviewRequestId: Uuid.Uuid) => Filter,
+      foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, reviewRequestId: Uuid.Uuid) => State,
       decide: (
         command: Command,
       ) => (
