@@ -22,3 +22,13 @@ export class ContactAddressRecorded extends Schema.TaggedClass<ContactAddressRec
   emailAddress: SensitiveData(EmailAddressSchema),
   orcidId: OrcidIdSchema,
 }) {}
+
+export class AuthorInviteEmailAddressChosenAsContactAddress extends Schema.TaggedClass<AuthorInviteEmailAddressChosenAsContactAddress>()(
+  'AuthorInviteEmailAddressChosenAsContactAddress',
+  {
+    emailAddress: SensitiveData(EmailAddressSchema),
+    inviteId: UuidSchema,
+    orcidId: OrcidIdSchema,
+    chosenAt: InstantSchema,
+  },
+) {}
