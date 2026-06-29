@@ -146,7 +146,7 @@ export const getPrereviewsForSciety = pipe(
   RTE.chain(
     flow(
       records => Math.ceil(records.hits.total / 100),
-      Array.makeBy(i => pipe(getPrereviewsPageForSciety(i + 1), R.map(T.delay(100)))),
+      Array.makeBy(i => pipe(getPrereviewsPageForSciety(i + 1), R.map(T.delay(1000)))),
       RTE.sequenceArray,
       RTE.map(Array.flatten),
     ),
