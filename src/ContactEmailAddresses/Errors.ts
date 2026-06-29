@@ -11,3 +11,5 @@ export class ContactEmailAddressHasAlreadyBeenVerified extends Data.TaggedError(
 ) {}
 
 export class VerificationTokenInvalid extends Data.TaggedError('VerificationTokenInvalid') {}
+
+export class AcceptedInvitationIsNotFound extends Data.TaggedError('AcceptedInvitationIsNotFound') {}
