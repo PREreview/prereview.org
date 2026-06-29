@@ -80,7 +80,7 @@
     "@types/markdown-it": "^14.1.2",
     "@types/mjml": "^5.0.0",
     "@types/node": "^24.13.2",
-    "@types/nodemailer": "^8.0.0",
+    "@types/nodemailer": "^8.0.1",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.16.1",
     "@types/turndown": "^5.0.6",
