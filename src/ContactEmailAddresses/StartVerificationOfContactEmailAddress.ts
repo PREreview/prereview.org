@@ -7,11 +7,12 @@ import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
-import { Uuid } from '../types/index.ts'
+import { Temporal, Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { UnverifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 import { RecordContactAddress } from './RecordContactAddress.ts'
+import { RecordEmailSentToVerifyContactAddress } from './RecordEmailSentToVerifyContactAddress.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
@@ -59,15 +60,22 @@ export const StartVerificationOfContactEmailAddress: (
 
       const name = yield* orcidRecords.getName(input.orcidId)
 
+      const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
+
       if (
         Option.isSome(currentContact) &&
         currentContact.value._tag === 'UnverifiedContactEmailAddress' &&
         Equal.equals(currentContact.value.value, input.emailAddress)
       ) {
-        return yield* email.verifyContactEmailAddress({
+        yield* email.verifyContactEmailAddress({
           name,
           emailAddress: currentContact.value,
           redirectTo: input.resumeAt,
+        })
+
+        return yield* recordEmailCommand({
+          contactAddressId: currentContact.value.verificationToken,
+          sentAt: yield* Temporal.currentInstant,
         })
       }
 
@@ -98,6 +106,11 @@ export const StartVerificationOfContactEmailAddress: (
         name,
         emailAddress: newContact,
         redirectTo: input.resumeAt,
+      })
+
+      yield* recordEmailCommand({
+        contactAddressId: newContact.verificationToken,
+        sentAt: yield* Temporal.currentInstant,
       })
     },
     Effect.uninterruptible,

@@ -42,7 +42,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | un
       { orcidId: orcidIdWithUnverified, resumeAt: '/resume' },
       Either.void,
       existingUnverifiedEmailAddress,
-      [],
+      ['EmailToVerifyContactAddressSent'],
     ],
     [
       'verified email address',

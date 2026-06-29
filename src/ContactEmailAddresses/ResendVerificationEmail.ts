@@ -6,8 +6,10 @@ import type { EventStore } from '../EventStore.ts'
 import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified, ContactEmailAddressIsNotFound } from './Errors.ts'
+import { RecordEmailSentToVerifyContactAddress } from './RecordEmailSentToVerifyContactAddress.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
@@ -55,12 +57,20 @@ export const ResendVerificationEmail: (
 
       const name = yield* orcidRecords.getName(input.orcidId)
 
+      const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
+
       yield* email.verifyContactEmailAddress({
         name,
         emailAddress: contactAddress,
         redirectTo: input.resumeAt,
       })
+
+      yield* recordEmailCommand({
+        contactAddressId: contactAddress.verificationToken,
+        sentAt: yield* Temporal.currentInstant,
+      })
     },
+    Effect.uninterruptible,
     Effect.catchTags({
       NameIsNotAvailable: error => new Commands.UnableToHandleCommand({ cause: error }),
       UnableToSendEmail: error => new Commands.UnableToHandleCommand({ cause: error }),
