@@ -88,9 +88,9 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     Either.right(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
-          inviteId: inviteAccepted.invitationId,
+          inviteId,
           orcidId,
-          emailAddress: Option.some(Option.getOrThrow(inviteAdded.contactDetails).emailAddress),
+          emailAddress: Option.some(emailAddress),
           chosenAt,
         }),
       ),
