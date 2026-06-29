@@ -1,7 +1,11 @@
 import { expect, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
-import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactAddressIdHasAlreadyBeenUsed,
+  ContactEmailAddressHasAlreadyBeenVerified,
+  DetailsDoNotMatchExistingContactAddress,
+} from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/RecordContactAddress.ts'
 import * as Events from '../../src/Events.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
@@ -19,14 +23,21 @@ const inputDifferentEmail = {
   emailAddress: EmailAddress('jc@example.com'),
 } satisfies _.Input
 
-const verifiedImported = new Events.ContactAddressImported({
+const inputDifferentOrcidId = {
   ...input,
+  orcidId: OrcidId('0000-0002-6109-0367'),
+} satisfies _.Input
+
+const verifiedImported = new Events.ContactAddressImported({
+  orcidId: input.orcidId,
+  contactAddressId: Uuid('155a652b-5d31-4199-9b86-1d5b000bceac'),
   emailAddress: Option.some(input.emailAddress),
   verificationStatus: 'verified',
 })
 
 const unverifiedImported = new Events.ContactAddressImported({
-  ...input,
+  orcidId: input.orcidId,
+  contactAddressId: Uuid('05767986-ad98-4ef3-8d66-70349c908404'),
   emailAddress: Option.some(input.emailAddress),
   verificationStatus: 'unverified',
 })
@@ -39,7 +50,7 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
 
 const addressRecorded = new Events.ContactAddressRecorded({
   orcidId: input.orcidId,
-  contactAddressId: input.contactAddressId,
+  contactAddressId: Uuid('6afe6537-81fd-4a5c-ba22-0d10c4764953'),
   emailAddress: Option.some(input.emailAddress),
 })
 
@@ -77,6 +88,12 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     ),
   ],
   ['same as recorded', [addressRecorded], input, Either.right(Option.none())],
+  [
+    "same as recorded but ORCID iD doesn't match",
+    [addressRecorded],
+    inputDifferentOrcidId,
+    Either.left(new DetailsDoNotMatchExistingContactAddress()),
+  ],
   [
     'same as recorded then verified',
     [addressRecorded, addressVerified],
@@ -185,6 +202,12 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
         }),
       ),
     ),
+  ],
+  [
+    'contact address ID has been used',
+    [addressRecorded],
+    { ...input, contactAddressId: addressRecorded.contactAddressId },
+    Either.left(new ContactAddressIdHasAlreadyBeenUsed()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.RecordContactAddress
