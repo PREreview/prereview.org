@@ -4,7 +4,6 @@ import { Either, Option } from 'effect'
 import {
   ContactAddressIdHasAlreadyBeenUsed,
   ContactEmailAddressHasAlreadyBeenVerified,
-  DetailsDoNotMatchExistingContactAddress,
 } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/RecordContactAddress.ts'
 import * as Events from '../../src/Events.ts'
@@ -21,11 +20,6 @@ const input = {
 const inputDifferentEmail = {
   ...input,
   emailAddress: EmailAddress('jc@example.com'),
-} satisfies _.Input
-
-const inputDifferentOrcidId = {
-  ...input,
-  orcidId: OrcidId('0000-0002-6109-0367'),
 } satisfies _.Input
 
 const verifiedImported = new Events.ContactAddressImported({
@@ -89,12 +83,6 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
   ],
   ['same as recorded', [addressRecorded], input, Either.right(Option.none())],
   [
-    "same as recorded but ORCID iD doesn't match",
-    [addressRecorded],
-    inputDifferentOrcidId,
-    Either.left(new DetailsDoNotMatchExistingContactAddress()),
-  ],
-  [
     'same as recorded then verified',
     [addressRecorded, addressVerified],
     input,
@@ -136,7 +124,14 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     'different from recorded then verified',
     [addressRecorded, addressVerified],
     inputDifferentEmail,
-    Either.right(Option.none()),
+    Either.right(
+      Option.some(
+        new Events.ContactAddressRecorded({
+          ...inputDifferentEmail,
+          emailAddress: Option.some(inputDifferentEmail.emailAddress),
+        }),
+      ),
+    ),
   ],
   [
     'different from invite used',

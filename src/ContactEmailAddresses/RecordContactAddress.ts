@@ -2,11 +2,7 @@ import type * as Commands from '../Commands.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import type {
-  ContactAddressIdHasAlreadyBeenUsed,
-  ContactEmailAddressHasAlreadyBeenVerified,
-  DetailsDoNotMatchExistingContactAddress,
-} from './Errors.ts'
+import type { ContactAddressIdHasAlreadyBeenUsed, ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 
 export interface Input {
   readonly contactAddressId: Uuid
@@ -14,10 +10,7 @@ export interface Input {
   readonly orcidId: OrcidId
 }
 
-export type Error =
-  | ContactEmailAddressHasAlreadyBeenVerified
-  | DetailsDoNotMatchExistingContactAddress
-  | ContactAddressIdHasAlreadyBeenUsed
+export type Error = ContactEmailAddressHasAlreadyBeenVerified | ContactAddressIdHasAlreadyBeenUsed
 
 type State = unknown
 
