@@ -24,6 +24,14 @@ export class ContactAddressRecorded extends Schema.TaggedClass<ContactAddressRec
   orcidId: OrcidIdSchema,
 }) {}
 
+export class EmailToVerifyContactAddressSent extends Schema.TaggedClass<EmailToVerifyContactAddressSent>()(
+  'EmailToVerifyContactAddressSent',
+  {
+    contactAddressId: UuidSchema,
+    sentAt: InstantSchema,
+  },
+) {}
+
 export class AuthorInviteEmailAddressChosenAsContactAddress extends Schema.TaggedClass<AuthorInviteEmailAddressChosenAsContactAddress>()(
   'AuthorInviteEmailAddressChosenAsContactAddress',
   {

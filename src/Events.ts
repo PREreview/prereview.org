@@ -38,6 +38,7 @@ export const Event = Schema.Union(
   ContactEmailAddressesEvents.ContactAddressImported,
   ContactEmailAddressesEvents.ContactAddressVerified,
   ContactEmailAddressesEvents.ContactAddressRecorded,
+  ContactEmailAddressesEvents.EmailToVerifyContactAddressSent,
   ContactEmailAddressesEvents.AuthorInviteEmailAddressChosenAsContactAddress,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
