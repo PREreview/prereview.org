@@ -2,6 +2,7 @@ import { Effect, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import type { EventStore } from '../EventStore.ts'
 import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
@@ -22,7 +23,11 @@ export const ResendVerificationEmail: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
 ) => (
   input: Input,
-) => Effect.Effect<void, Error, Email.Email | Locale | OrcidRecords.OrcidRecords> = contactEmailAddressStore =>
+) => Effect.Effect<
+  void,
+  Error,
+  Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords
+> = contactEmailAddressStore =>
   Effect.fn(
     function* (input) {
       const email = yield* Email.Email
