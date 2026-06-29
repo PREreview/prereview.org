@@ -14,6 +14,7 @@ export class ContactAddressImported extends Schema.TaggedClass<ContactAddressImp
 
 export class ContactAddressVerified extends Schema.TaggedClass<ContactAddressVerified>()('ContactAddressVerified', {
   contactAddressId: UuidSchema,
+  orcidId: Schema.optional(OrcidIdSchema),
   verifiedAt: InstantSchema,
 }) {}
 

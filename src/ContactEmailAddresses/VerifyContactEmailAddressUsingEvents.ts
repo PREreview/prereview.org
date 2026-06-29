@@ -95,7 +95,11 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
 
   return Either.right(
     Option.some(
-      new Events.ContactAddressVerified({ contactAddressId: input.contactAddressId, verifiedAt: input.verifiedAt }),
+      new Events.ContactAddressVerified({
+        contactAddressId: input.contactAddressId,
+        orcidId: input.orcid,
+        verifiedAt: input.verifiedAt,
+      }),
     ),
   )
 }

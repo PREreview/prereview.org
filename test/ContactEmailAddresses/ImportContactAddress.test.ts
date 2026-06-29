@@ -30,6 +30,7 @@ const unverifiedImported = new Events.ContactAddressImported({
 })
 
 const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
+  orcidId: unverifiedImported.orcidId,
   contactAddressId: unverifiedImported.contactAddressId,
   verifiedAt: Temporal.Now.instant(),
 })
@@ -41,6 +42,7 @@ const addressRecorded = new Events.ContactAddressRecorded({
 })
 
 const addressVerified = new Events.ContactAddressVerified({
+  orcidId: addressRecorded.orcidId,
   contactAddressId: addressRecorded.contactAddressId,
   verifiedAt: Temporal.Now.instant(),
 })
