@@ -1,6 +1,7 @@
 import { Data, Effect, Option, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
+import type { EventStore } from '../EventStore.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -23,7 +24,7 @@ export type Error =
 export const UseAuthorInviteEmailAddress: (
   contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
   authorInviteStoreEnv: (typeof Keyv.KeyvStores.Service)['authorInviteStore'],
-) => (input: Input) => Effect.Effect<void, Error> = (contactEmailAddressStore, authorInviteStoreEnv) =>
+) => (input: Input) => Effect.Effect<void, Error, EventStore> = (contactEmailAddressStore, authorInviteStoreEnv) =>
   Effect.fn('ContactEmailAddresses.useAuthorInviteEmailAddress')(
     function* (input) {
       const loggerEnv = yield* MakeDeprecatedLoggerEnv

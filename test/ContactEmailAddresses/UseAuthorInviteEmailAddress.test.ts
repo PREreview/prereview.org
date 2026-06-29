@@ -1,11 +1,16 @@
+import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '@effect/vitest'
-import { Effect, Either } from 'effect'
+import { Array, Effect, Either, Layer, Option, pipe, Struct } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
+import { type Event, Events } from '../../src/Events.ts'
+import { EventStore } from '../../src/EventStore.ts'
 import { Keyv } from '../../src/keyv.ts'
+import { make as makeSqlEventStore } from '../../src/SqlEventStore.ts'
+import { layer as sqlSensitiveDataStoreLayer } from '../../src/SqlSensitiveDataStore.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/Uuid.ts'
+import { Uuid, layer as uuidLayer } from '../../src/types/Uuid.ts'
 
 const openInvitationId = Uuid('72ec8ae8-7f4f-4efa-9693-53e2772437be')
 const acceptedInvitationId = Uuid('47c7ab91-0935-4b5c-9c50-b260047315b0')
@@ -25,53 +30,70 @@ const someoneElseOrcidId = OrcidId('0000-0002-5753-2556')
 const existingUnverifiedEmailAddress = EmailAddress('unverified@example.com')
 const existingVerifiedEmailAddress = EmailAddress('verified@example.com')
 
-it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'unverified', EmailAddress] | undefined]>([
+it.effect.each<
+  [
+    string,
+    _.Input,
+    Either.Either<void, _.Error>,
+    ['verified' | 'unverified', EmailAddress] | undefined,
+    ReadonlyArray<Event['_tag']>,
+  ]
+>([
   [
     'accepted invitation, no email address',
     { orcidId: orcidIdWithNoEmailAddress, inviteId: acceptedInvitationId },
     Either.void,
     ['verified', acceptedInvitationEmailAddress],
+    [],
   ],
   [
     'accepted invitation, unverified email address',
     { orcidId: orcidIdWithUnverified, inviteId: acceptedInvitationId },
     Either.void,
     ['verified', acceptedInvitationEmailAddress],
+    [],
   ],
   [
     'accepted invitation, verified email address',
     { orcidId: orcidIdWithVerified, inviteId: acceptedInvitationId },
     Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
     ['verified', existingVerifiedEmailAddress],
+    [],
   ],
   [
     'open invitation',
     { orcidId: orcidIdWithNoEmailAddress, inviteId: openInvitationId },
     Either.left(new _.AcceptedInvitationIsNotFound()),
     undefined,
+    [],
   ],
   [
     'invitation accepted by someone else',
     { orcidId: orcidIdWithNoEmailAddress, inviteId: acceptedInvitationBySomeoneElseId },
     Either.left(new _.AcceptedInvitationIsNotFound()),
     undefined,
+    [],
   ],
   [
     'declined invitation',
     { orcidId: orcidIdWithNoEmailAddress, inviteId: declinedInvitation },
     Either.left(new _.AcceptedInvitationIsNotFound()),
     undefined,
+    [],
   ],
   [
     'completed invitation',
     { orcidId: orcidIdWithNoEmailAddress, inviteId: completedInvitation },
     Either.left(new _.AcceptedInvitationIsNotFound()),
     undefined,
+    [],
   ],
-])('%s', ([, input, expectedReturn, expectedState]) =>
+])('%s', ([, input, expectedReturn, expectedState, expectedEvents]) =>
   Effect.gen(function* () {
     const contactEmailStore = new Keyv()
     const authorInviteStore = new Keyv()
+
+    const eventStore = yield* makeSqlEventStore
 
     yield* Effect.promise(() =>
       contactEmailStore.set(orcidIdWithUnverified, {
@@ -121,9 +143,17 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'un
     )
 
     const actualReturn = yield* Effect.either(
-      _.UseAuthorInviteEmailAddress(contactEmailStore, authorInviteStore)(input),
+      _.UseAuthorInviteEmailAddress(
+        contactEmailStore,
+        authorInviteStore,
+      )(input).pipe(Effect.provideService(EventStore, eventStore)),
     )
     const actualState = yield* Effect.promise(() => contactEmailStore.get(input.orcidId))
+    const actualEvents = yield* pipe(
+      eventStore.all,
+      Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+      Effect.andThen(Array.map(Struct.get('_tag'))),
+    )
 
     expect(actualReturn).toStrictEqual(expectedReturn)
     if (expectedState) {
@@ -131,5 +161,13 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ['verified' | 'un
     } else {
       expect(actualState).toBeUndefined()
     }
-  }),
+    expect(actualEvents).toStrictEqual(expectedEvents)
+  }).pipe(
+    Effect.provide(sqlSensitiveDataStoreLayer),
+    Effect.provide([
+      uuidLayer,
+      Layer.mock(Events, { publish: () => Effect.succeed(true) } as never),
+      LibsqlClient.layer({ url: ':memory:' }),
+    ]),
+  ),
 )

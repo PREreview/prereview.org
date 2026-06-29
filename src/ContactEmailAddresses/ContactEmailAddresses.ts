@@ -50,9 +50,9 @@ export const layer = Layer.effect(
         verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
         Effect.provide(context),
       ),
-      useAuthorInviteEmailAddress: UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(
-        contactEmailAddressStore,
-        authorInviteStore,
+      useAuthorInviteEmailAddress: flow(
+        UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(contactEmailAddressStore, authorInviteStore),
+        Effect.provide(context),
       ),
       startVerificationOfContactEmailAddress: flow(
         StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress(contactEmailAddressStore),
