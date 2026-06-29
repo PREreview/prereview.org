@@ -80,7 +80,7 @@ const inviteAccepted = new Events.AuthorInviteAccepted({
   acceptedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   [
     'no contact address',
     [],
