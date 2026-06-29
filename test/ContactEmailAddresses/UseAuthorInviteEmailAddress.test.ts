@@ -44,14 +44,14 @@ it.effect.each<
     { orcidId: orcidIdWithNoEmailAddress, inviteId: acceptedInvitationId },
     Either.void,
     ['verified', acceptedInvitationEmailAddress],
-    [],
+    ['AuthorInviteEmailAddressChosenAsContactAddress'],
   ],
   [
     'accepted invitation, unverified email address',
     { orcidId: orcidIdWithUnverified, inviteId: acceptedInvitationId },
     Either.void,
     ['verified', acceptedInvitationEmailAddress],
-    [],
+    ['AuthorInviteEmailAddressChosenAsContactAddress'],
   ],
   [
     'accepted invitation, verified email address',

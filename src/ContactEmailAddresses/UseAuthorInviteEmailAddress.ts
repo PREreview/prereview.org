@@ -4,10 +4,12 @@ import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { EventStore } from '../EventStore.ts'
 import * as Keyv from '../keyv.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
+import { UseAuthorInviteEmailAddressFromLegacyInvite } from './UseAuthorInviteEmailAddressFromLegacyInvite.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
@@ -67,7 +69,22 @@ export const UseAuthorInviteEmailAddress: (
           ...loggerEnv,
         },
       )
+
+      const useLegacyCommand = yield* Commands.makeCommand(UseAuthorInviteEmailAddressFromLegacyInvite)
+
+      yield* useLegacyCommand({
+        orcidId: input.orcidId,
+        inviteId: input.inviteId,
+        emailAddress: invite.emailAddress,
+        chosenAt: yield* Temporal.currentInstant,
+      }).pipe(
+        Effect.catchTags({
+          ContactEmailAddressHasAlreadyBeenVerified: error =>
+            pipe(Effect.logError('using author invite email address failed'), Effect.annotateLogs({ error })),
+        }),
+      )
     },
+    Effect.uninterruptible,
     Effect.catchIf(
       error => error === 'unavailable',
       () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),
