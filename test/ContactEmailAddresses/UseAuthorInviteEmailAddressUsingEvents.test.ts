@@ -102,7 +102,7 @@ test.fails.each<
     'invitation accepted by someone else',
     [inviteAdded, inviteAccepted],
     { orcidId: differentOrcid, inviteId, chosenAt },
-    Either.left(new AcceptedInvitationIsNotFound()),
+    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
   [
     'accepted invitation, no email address',
