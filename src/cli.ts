@@ -10,6 +10,7 @@ import { LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
+import * as Redis from './Redis.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
@@ -35,7 +36,9 @@ pipe(
         Orcid.layer,
         Philsci.layer,
       ]),
-      Layer.provideMerge(SqlEventStore.layer),
+      Layer.provideMerge(
+        Layer.mergeAll(SqlEventStore.layer, Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI')))),
+      ),
       Layer.provide([Events.layer, SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
       Layer.provideMerge(EventDispatcher.EventDispatcherLayer),
       Layer.provide([

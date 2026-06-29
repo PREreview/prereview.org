@@ -101,6 +101,7 @@ test-integration-image:
 	docker build --target test-integration --tag ${INTEGRATION_TEST_IMAGE_TAG} .
 
 cli-local: .env node_modules start-services
+	REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	POSTGRES_URL=postgres://postgres:password@$(shell docker compose port postgres 5432) \
 	node --env-file .env src/cli.ts --wizard
 
