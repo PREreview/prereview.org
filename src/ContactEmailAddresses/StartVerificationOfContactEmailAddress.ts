@@ -11,6 +11,7 @@ import { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { UnverifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
+import { RecordContactAddress } from './RecordContactAddress.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
@@ -80,12 +81,26 @@ export const StartVerificationOfContactEmailAddress: (
         ...loggerEnv,
       })
 
+      const recordCommand = yield* Commands.makeCommand(RecordContactAddress)
+
+      yield* recordCommand({
+        contactAddressId: newContact.verificationToken,
+        orcidId: input.orcidId,
+        emailAddress: newContact.value,
+      }).pipe(
+        Effect.catchTags({
+          ContactAddressIdHasAlreadyBeenUsed: error =>
+            pipe(Effect.logError('recording contact address failed'), Effect.annotateLogs({ error })),
+        }),
+      )
+
       yield* email.verifyContactEmailAddress({
         name,
         emailAddress: newContact,
         redirectTo: input.resumeAt,
       })
     },
+    Effect.uninterruptible,
     Effect.catchIf(
       error => error === 'unavailable',
       () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),

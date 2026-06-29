@@ -42,7 +42,7 @@ it.effect.each<
     Either.void,
     ['unverified', newEmailAddress],
     true,
-    [],
+    ['ContactAddressRecorded'],
   ],
   [
     'same as unverified email address',
@@ -58,7 +58,7 @@ it.effect.each<
     Either.void,
     ['unverified', newEmailAddress],
     true,
-    [],
+    ['ContactAddressRecorded'],
   ],
   [
     'same as verified email address',
@@ -74,7 +74,7 @@ it.effect.each<
     Either.void,
     ['unverified', newEmailAddress],
     true,
-    [],
+    ['ContactAddressRecorded'],
   ],
 ])('%s', ([, input, expectedReturn, expectedState, expectedEmail, expectedEvents]) =>
   Effect.gen(function* () {
