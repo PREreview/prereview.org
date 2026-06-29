@@ -28,7 +28,7 @@ const verifiedImported = new Events.ContactAddressImported({
 const unverifiedImported = new Events.ContactAddressImported({
   ...input,
   emailAddress: Option.some(input.emailAddress),
-  verificationStatus: 'verified',
+  verificationStatus: 'unverified',
 })
 
 const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
