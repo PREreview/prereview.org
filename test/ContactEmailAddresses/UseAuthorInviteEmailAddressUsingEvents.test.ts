@@ -85,7 +85,7 @@ const inviteAccepted = new Events.AuthorInviteAccepted({
   acceptedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<
+test.each<
   [
     string,
     ReadonlyArray<Events.Event>,
