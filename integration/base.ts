@@ -35,7 +35,6 @@ import {
 } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
-import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../src/ContactEmailAddresses/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
@@ -46,7 +45,6 @@ import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
 import {
-  ContactEmailAddressC,
   KeyvStores,
   type AuthorInviteStoreEnv,
   type ContactEmailAddressStoreEnv,
@@ -3317,35 +3315,41 @@ export const willPublishAComment: Fixtures<
 export const hasAnUnverifiedEmailAddress: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'contactEmailAddressStore'>
+  Pick<AppFixtures, 'seedEvents'>
 > = {
-  contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
-    await contactEmailAddressStore.set(
-      '0000-0002-1825-0097',
-      ContactEmailAddressC.encode(
-        new UnverifiedContactEmailAddress({
-          value: EmailAddress('jcarberry@example.com'),
-          verificationToken: Uuid.Uuid('ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a'),
-        }),
-      ),
-    )
-
-    await use(contactEmailAddressStore)
+  seedEvents: async ({ seedEvents }, use) => {
+    await use([
+      ...seedEvents,
+      new Events.ContactAddressRecorded({
+        contactAddressId: Uuid.Uuid('ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a'),
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        emailAddress: Option.some(EmailAddress('jcarberry@example.com')),
+      }),
+    ])
   },
 }
 
 export const hasAVerifiedEmailAddress: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'contactEmailAddressStore'>
+  Pick<AppFixtures, 'seedEvents'>
 > = {
-  contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
-    await contactEmailAddressStore.set(
-      '0000-0002-1825-0097',
-      ContactEmailAddressC.encode(new VerifiedContactEmailAddress({ value: EmailAddress('jcarberry@example.com') })),
-    )
+  seedEvents: async ({ seedEvents }, use) => {
+    const contactAddressId = Uuid.Uuid('41ca4cf0-117e-4f60-a864-535863fe1897')
 
-    await use(contactEmailAddressStore)
+    await use([
+      ...seedEvents,
+      new Events.ContactAddressRecorded({
+        contactAddressId,
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        emailAddress: Option.some(EmailAddress('jcarberry@example.com')),
+      }),
+      new Events.ContactAddressVerified({
+        contactAddressId,
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        verifiedAt: Temporal.Now.instant(),
+      }),
+    ])
   },
 }
 
