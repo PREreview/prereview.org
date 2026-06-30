@@ -7,7 +7,7 @@ import {
   VerifiedContactEmailAddress,
 } from '../../src/ContactEmailAddresses/ContactEmailAddress.ts'
 import { ContactEmailAddressIsNotFound } from '../../src/ContactEmailAddresses/Errors.ts'
-import * as _ from '../../src/ContactEmailAddresses/GetContactEmailAddressUsingEvents.ts'
+import * as _ from '../../src/ContactEmailAddresses/GetContactEmailAddress.ts'
 import * as Events from '../../src/Events.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -135,7 +135,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     ),
   ],
 ])('%s', (_name, input, events, expected) => {
-  const { query } = _.GetContactEmailAddressUsingEvents
+  const { query } = _.GetContactEmailAddress
 
   const actual = query(events, input)
 

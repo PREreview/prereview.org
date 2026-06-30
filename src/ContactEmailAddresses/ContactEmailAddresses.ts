@@ -6,7 +6,7 @@ import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
 import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/index.ts'
-import { GetContactEmailAddressUsingEvents } from './GetContactEmailAddressUsingEvents.ts'
+import { GetContactEmailAddress } from './GetContactEmailAddress.ts'
 import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as UseAuthorInviteEmailAddress from './UseAuthorInviteEmailAddress.ts'
@@ -15,7 +15,7 @@ import { VerifyContactEmailAddressUsingEvents } from './VerifyContactEmailAddres
 export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
   ContactEmailAddresses,
   {
-    getContactEmailAddress: Queries.FromOnDemandQuery<typeof GetContactEmailAddressUsingEvents>
+    getContactEmailAddress: Queries.FromOnDemandQuery<typeof GetContactEmailAddress>
     verifyContactEmailAddress: Commands.FromCommand<typeof VerifyContactEmailAddressUsingEvents>
     useAuthorInviteEmailAddress: (
       args: UseAuthorInviteEmailAddress.Input,
@@ -40,7 +40,7 @@ export const layer = Layer.effect(
     const { authorInviteStore } = yield* Keyv.KeyvStores
 
     return {
-      getContactEmailAddress: yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents),
+      getContactEmailAddress: yield* Queries.makeOnDemandQuery(GetContactEmailAddress),
       verifyContactEmailAddress: yield* Commands.makeCommand(VerifyContactEmailAddressUsingEvents),
       useAuthorInviteEmailAddress: flow(
         UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(authorInviteStore),

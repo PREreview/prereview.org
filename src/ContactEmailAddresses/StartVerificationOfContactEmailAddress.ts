@@ -8,7 +8,7 @@ import type { EmailAddress } from '../types/EmailAddress.ts'
 import { Temporal, Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
-import { GetContactEmailAddressUsingEvents } from './GetContactEmailAddressUsingEvents.ts'
+import { GetContactEmailAddress } from './GetContactEmailAddress.ts'
 import { RecordContactAddress } from './RecordContactAddress.ts'
 import { RecordEmailSentToVerifyContactAddress } from './RecordEmailSentToVerifyContactAddress.ts'
 
@@ -33,7 +33,7 @@ export const StartVerificationOfContactEmailAddress: (
 
       const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
       const recordCommand = yield* Commands.makeCommand(RecordContactAddress)
-      const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents)
+      const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddress)
 
       yield* recordCommand({
         contactAddressId: yield* uuid.v4(),

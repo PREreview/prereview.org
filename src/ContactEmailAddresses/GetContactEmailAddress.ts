@@ -89,7 +89,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     })
   })
 
-export const GetContactEmailAddressUsingEvents = Queries.OnDemandQuery({
+export const GetContactEmailAddress = Queries.OnDemandQuery({
   name: 'ContactEmailAddresses.getContactEmailAddress',
   createFilter,
   query,

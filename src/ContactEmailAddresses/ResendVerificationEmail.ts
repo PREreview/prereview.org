@@ -7,7 +7,7 @@ import * as Queries from '../Queries.ts'
 import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified, type ContactEmailAddressIsNotFound } from './Errors.ts'
-import { GetContactEmailAddressUsingEvents } from './GetContactEmailAddressUsingEvents.ts'
+import { GetContactEmailAddress } from './GetContactEmailAddress.ts'
 import { RecordEmailSentToVerifyContactAddress } from './RecordEmailSentToVerifyContactAddress.ts'
 
 export interface Input {
@@ -27,7 +27,7 @@ export const ResendVerificationEmail: (
     const email = yield* Email.Email
     const orcidRecords = yield* OrcidRecords.OrcidRecords
 
-    const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents)
+    const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddress)
 
     const contactAddress = yield* pipe(
       getAddress(input.orcidId),
