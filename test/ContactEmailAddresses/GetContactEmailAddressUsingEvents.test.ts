@@ -60,7 +60,7 @@ const newerRecorded = new Events.ContactAddressRecorded({
   orcidId: input,
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new ContactEmailAddressIsNotFound())],
   [
     'imported verified',
