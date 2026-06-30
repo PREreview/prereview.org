@@ -40,7 +40,6 @@ export class KeyvStores extends Context.Tag('KeyvStores')<
   AvatarStoreEnv &
     AuthorInviteStoreEnv &
     CareerStageStoreEnv &
-    ContactEmailAddressStoreEnv &
     IsOpenForRequestsStoreEnv &
     LanguagesStoreEnv &
     LocationStoreEnv &
@@ -65,11 +64,6 @@ export const keyvStoresLayer = Layer.effect(
     return {
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
-      contactEmailAddressStore: new Keyv({
-        emitErrors: false,
-        namespace: 'contact-email-address',
-        store: createKeyvStore(),
-      }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
       careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
       isOpenForRequestsStore: new Keyv({
@@ -101,10 +95,6 @@ export interface AvatarStoreEnv {
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv
-}
-
-export interface ContactEmailAddressStoreEnv {
-  contactEmailAddressStore: Keyv
 }
 
 export interface IsOpenForRequestsStoreEnv {
@@ -458,16 +448,6 @@ export const getLanguages = flow(
 export const saveLanguages = flow(
   setKey(OrcidC, LanguagesC),
   RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
-)
-
-export const getContactEmailAddress = flow(
-  getKey(OrcidC, ContactEmailAddressC),
-  RTE.local((env: ContactEmailAddressStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.contactEmailAddressStore })),
-)
-
-export const saveContactEmailAddress = flow(
-  setKey(OrcidC, ContactEmailAddressC),
-  RTE.local((env: ContactEmailAddressStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.contactEmailAddressStore })),
 )
 
 export const getUserOnboarding = flow(

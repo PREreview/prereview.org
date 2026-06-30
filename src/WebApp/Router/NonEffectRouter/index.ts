@@ -131,7 +131,6 @@ export const nonEffectRouter: Effect.Effect<
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: keyvStores.avatarStore,
-    contactEmailAddressStore: keyvStores.contactEmailAddressStore,
     userOnboardingStore: keyvStores.userOnboardingStore,
     orcidTokenStore: keyvStores.orcidTokenStore,
     slackUserIdStore: keyvStores.slackUserIdStore,
@@ -231,7 +230,6 @@ export interface Env {
     userOnboardingStore: Keyv.Keyv
     orcidTokenStore: Keyv.Keyv
     avatarStore: Keyv.Keyv
-    contactEmailAddressStore: Keyv.Keyv
     slackUserIdStore: Keyv.Keyv
     isOpenForRequestsStore: Keyv.Keyv
     careerStageStore: Keyv.Keyv

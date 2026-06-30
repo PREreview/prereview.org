@@ -47,7 +47,6 @@ import { html, rawHtml } from '../src/html.ts'
 import {
   KeyvStores,
   type AuthorInviteStoreEnv,
-  type ContactEmailAddressStoreEnv,
   type IsOpenForRequestsStoreEnv,
   type LanguagesStoreEnv,
   type LocationStoreEnv,
@@ -89,7 +88,6 @@ interface AppFixtures {
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: Keyv
-  contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: typeof IsUserBlocked.Service
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
@@ -116,9 +114,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(false)
   },
   careerStageStore: async ({}, use) => {
-    await use(new Keyv())
-  },
-  contactEmailAddressStore: async ({}, use) => {
     await use(new Keyv())
   },
   fetch: async ({}, use) => {
@@ -2391,7 +2386,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         port,
         formStore,
         careerStageStore,
-        contactEmailAddressStore,
         isOpenForRequestsStore,
         isUserBlocked,
         languagesStore,
@@ -2421,7 +2415,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             avatarStore: new Keyv(),
             formStore,
             careerStageStore,
-            contactEmailAddressStore,
             isOpenForRequestsStore,
             languagesStore,
             locationStore,
