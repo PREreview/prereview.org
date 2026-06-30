@@ -10,8 +10,6 @@ export class ContactEmailAddressHasAlreadyBeenVerified extends Data.TaggedError(
   'ContactEmailAddressHasAlreadyBeenVerified',
 ) {}
 
-export class VerificationTokenInvalid extends Data.TaggedError('VerificationTokenInvalid') {}
-
 export class AcceptedInvitationIsNotFound extends Data.TaggedError('AcceptedInvitationIsNotFound') {}
 
 export class ContactAddressIdHasAlreadyBeenUsed extends Data.TaggedError('ContactAddressIdHasAlreadyBeenUsed') {}
