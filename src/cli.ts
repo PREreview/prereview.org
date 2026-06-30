@@ -28,7 +28,7 @@ pipe(
         ReviewRequest.queriesLayer,
         ReviewRequest.commandsLayer,
       ),
-      Layer.provideMerge(ContactEmailAddresses.layer),
+      Layer.provide(ContactEmailAddresses.layer),
       Layer.provide([
         LanguageDetection.layerCld,
         OrcidRecords.layer,
