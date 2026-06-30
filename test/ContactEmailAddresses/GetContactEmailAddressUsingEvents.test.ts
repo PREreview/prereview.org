@@ -35,6 +35,13 @@ const verifiedPreviouslyUnverified = new Events.ContactAddressVerified({
   verifiedAt: Temporal.Now.instant(),
 })
 
+const authorInviteAddressChosen = new Events.AuthorInviteEmailAddressChosenAsContactAddress({
+  inviteId: Uuid('eb73b830-d0cc-4398-a0d6-86d6a9cec4bc'),
+  emailAddress: Option.some(EmailAddress('author-invite@example.com')),
+  orcidId: input,
+  chosenAt: Temporal.Now.instant(),
+})
+
 const recorded = new Events.ContactAddressRecorded({
   contactAddressId: Uuid('8040b2f5-a169-47e3-9eeb-839a8da9e582'),
   emailAddress: Option.some(EmailAddress('recorded@example.com')),
@@ -87,6 +94,12 @@ test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
         contactAddressId: unverifiedImported.contactAddressId,
       }),
     ),
+  ],
+  [
+    'author invite address chosen',
+    input,
+    [authorInviteAddressChosen],
+    Either.right(new VerifiedContactEmailAddress({ value: Option.getOrThrow(authorInviteAddressChosen.emailAddress) })),
   ],
   [
     'recorded',
