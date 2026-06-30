@@ -50,7 +50,7 @@ export const layer = Layer.effect(
         Effect.provide(context),
       ),
       startVerificationOfContactEmailAddress: flow(
-        StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress(contactEmailAddressStore),
+        StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress,
         Effect.provide(context),
       ),
       resendVerificationEmail: flow(
