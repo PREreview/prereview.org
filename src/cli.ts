@@ -2,12 +2,13 @@ import { NodeContext, NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, pipe } from 'effect'
 import { Cli } from './Cli/index.ts'
-import { ContactEmailAddresses } from './ContactEmailAddresses/index.ts'
+import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
-import { LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
+import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
+import * as Keyv from './keyv.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Redis from './Redis.ts'
@@ -27,7 +28,13 @@ pipe(
         ReviewRequest.queriesLayer,
         ReviewRequest.commandsLayer,
       ),
-      Layer.provide([LanguageDetection.layerCld, OrcidRecords.layer, Layer.mock(ContactEmailAddresses, {})]),
+      Layer.provideMerge(ContactEmailAddresses.layer),
+      Layer.provide([
+        LanguageDetection.layerCld,
+        OrcidRecords.layer,
+        Layer.mock(Email.Email, {}),
+        Keyv.keyvStoresLayer,
+      ]),
       Layer.provide([
         Crossref.layer,
         Datacite.layer,
