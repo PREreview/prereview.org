@@ -1,6 +1,7 @@
 import { Effect } from 'effect'
 import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../Context.ts'
+import { Temporal } from '../../types/index.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
@@ -18,7 +19,11 @@ export const VerifyEmailAddress: (args: {
     const contactEmailAddresses = yield* ContactEmailAddresses
     const user = yield* LoggedInUser
 
-    yield* contactEmailAddresses.verifyContactEmailAddress({ orcid: user.orcid, verificationToken })
+    yield* contactEmailAddresses.verifyContactEmailAddress({
+      orcid: user.orcid,
+      contactAddressId: verificationToken,
+      verifiedAt: yield* Temporal.currentInstant,
+    })
 
     return Response.FlashMessageResponse({
       location: SanitizeRedirectTo(redirectTo),
@@ -30,7 +35,7 @@ export const VerifyEmailAddress: (args: {
       ContactEmailAddressHasAlreadyBeenVerified: () =>
         Effect.succeed(Response.RedirectResponse({ location: SanitizeRedirectTo(redirectTo) })),
       ContactEmailAddressIsNotFound: () => PageNotFound,
+      OnlyCurrentContactAddressCanBeVerified: () => PageNotFound,
       UnableToHandleCommand: () => HavingProblemsPage,
-      VerificationTokenInvalid: () => PageNotFound,
     }),
 )
