@@ -16,7 +16,7 @@ test('content looks right', async ({ showPage }) => {
 
 const contactEmailAddress = new UnverifiedContactEmailAddress({
   value: EmailAddress.EmailAddress('jcarberry@example.com'),
-  verificationToken: Uuid.Uuid('224d8877-d59f-409f-aed0-5157df78357f'),
+  contactAddressId: Uuid.Uuid('224d8877-d59f-409f-aed0-5157df78357f'),
 })
 
 const locale = DefaultLocale

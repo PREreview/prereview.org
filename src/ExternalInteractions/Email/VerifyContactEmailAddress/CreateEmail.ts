@@ -23,7 +23,7 @@ export const CreateEmail: (reviewRequest: {
   const t = translate(locale, 'email')
 
   const verificationUrl = yield* forRoute(Routes.VerifyEmailAddress, {
-    verificationToken: emailAddress.verificationToken,
+    verificationToken: emailAddress.contactAddressId,
     redirectTo,
   })
 

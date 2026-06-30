@@ -10,7 +10,7 @@ test('content looks right', async ({ showPage }) => {
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     contactEmailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
-      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
+      contactAddressId: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
     }),
     locale: DefaultLocale,
   })

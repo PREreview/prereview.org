@@ -161,7 +161,8 @@ export const ContactEmailAddressC = pipe(
       ),
       Match.when(
         { type: 'unverified' },
-        ({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken }),
+        ({ value, verificationToken }) =>
+          new UnverifiedContactEmailAddress({ value, contactAddressId: verificationToken }),
       ),
       Match.exhaustive,
     ),
@@ -176,7 +177,7 @@ export const ContactEmailAddressC = pipe(
             }
           : { type: 'verified' as const, value },
       ),
-      Match.tag('UnverifiedContactEmailAddress', ({ value, verificationToken }) => ({
+      Match.tag('UnverifiedContactEmailAddress', ({ value, contactAddressId: verificationToken }) => ({
         type: 'unverified' as const,
         value,
         verificationToken,

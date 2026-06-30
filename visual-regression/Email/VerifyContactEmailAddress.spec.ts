@@ -16,7 +16,7 @@ test('HTML looks right', async ({ page }) => {
         name: Name('Josiah Carberry'),
         emailAddress: new UnverifiedContactEmailAddress({
           value: EmailAddress('jcarberry@example.com'),
-          verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
+          contactAddressId: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
         }),
         redirectTo,
       }),
@@ -36,7 +36,7 @@ test('text looks right', { tag: '@text' }, async ({}) => {
         name: Name('Josiah Carberry'),
         emailAddress: new UnverifiedContactEmailAddress({
           value: EmailAddress('jcarberry@example.com'),
-          verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
+          contactAddressId: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
         }),
         redirectTo,
       }),

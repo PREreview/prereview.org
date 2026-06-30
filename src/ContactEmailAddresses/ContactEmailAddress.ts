@@ -11,5 +11,5 @@ export class VerifiedContactEmailAddress extends Data.TaggedClass('VerifiedConta
 
 export class UnverifiedContactEmailAddress extends Data.TaggedClass('UnverifiedContactEmailAddress')<{
   value: EmailAddress
-  verificationToken: Uuid
+  contactAddressId: Uuid
 }> {}

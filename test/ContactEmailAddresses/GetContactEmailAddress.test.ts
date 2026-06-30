@@ -80,7 +80,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     Either.right(
       new UnverifiedContactEmailAddress({
         value: Option.getOrThrow(unverifiedImported.emailAddress),
-        verificationToken: unverifiedImported.contactAddressId,
+        contactAddressId: unverifiedImported.contactAddressId,
       }),
     ),
   ],
@@ -108,7 +108,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     Either.right(
       new UnverifiedContactEmailAddress({
         value: Option.getOrThrow(recorded.emailAddress),
-        verificationToken: recorded.contactAddressId,
+        contactAddressId: recorded.contactAddressId,
       }),
     ),
   ],
@@ -130,7 +130,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     Either.right(
       new UnverifiedContactEmailAddress({
         value: Option.getOrThrow(newerRecorded.emailAddress),
-        verificationToken: newerRecorded.contactAddressId,
+        contactAddressId: newerRecorded.contactAddressId,
       }),
     ),
   ],

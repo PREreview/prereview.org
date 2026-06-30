@@ -49,7 +49,7 @@ export const ResendVerificationEmail: (
     })
 
     yield* recordEmailCommand({
-      contactAddressId: contactAddress.verificationToken,
+      contactAddressId: contactAddress.contactAddressId,
       sentAt: yield* Temporal.currentInstant,
     })
   },

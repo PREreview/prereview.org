@@ -71,7 +71,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
     contactEmailAddress: Option.some(
       new UnverifiedContactEmailAddress({
         value: EmailAddress('some-email@example.com'),
-        verificationToken: Uuid('9492b53b-ac19-4a6d-966c-5d2f27e80b83'),
+        contactAddressId: Uuid('9492b53b-ac19-4a6d-966c-5d2f27e80b83'),
       }),
     ),
     openForRequests: Option.some({ value: false, visibility: 'restricted' }),

@@ -84,7 +84,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
         Either.right(
           state.status === 'verified'
             ? new VerifiedContactEmailAddress({ value: emailAddress, contactAddressId: state.contactAddressId })
-            : new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken: state.contactAddressId }),
+            : new UnverifiedContactEmailAddress({ value: emailAddress, contactAddressId: state.contactAddressId }),
         ),
     })
   })

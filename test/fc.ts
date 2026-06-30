@@ -442,7 +442,7 @@ export const unverifiedContactEmailAddress = (): fc.Arbitrary<UnverifiedContactE
   fc
     .record({
       value: emailAddress(),
-      verificationToken: uuid(),
+      contactAddressId: uuid(),
     })
     .map(data => new UnverifiedContactEmailAddress(data))
 
