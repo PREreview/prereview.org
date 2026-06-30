@@ -1,13 +1,14 @@
-import { Effect } from 'effect'
+import { Effect, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
 import type { EventStore } from '../EventStore.ts'
 import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
+import * as Queries from '../Queries.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
 import { Temporal, Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import { UnverifiedContactEmailAddress } from './ContactEmailAddress.ts'
 import type { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
+import { GetContactEmailAddressUsingEvents } from './GetContactEmailAddressUsingEvents.ts'
 import { RecordContactAddress } from './RecordContactAddress.ts'
 import { RecordEmailSentToVerifyContactAddress } from './RecordEmailSentToVerifyContactAddress.ts'
 
@@ -32,26 +33,35 @@ export const StartVerificationOfContactEmailAddress: (
 
       const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
       const recordCommand = yield* Commands.makeCommand(RecordContactAddress)
-
-      const contactAddressId = yield* uuid.v4()
+      const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents)
 
       yield* recordCommand({
-        contactAddressId,
+        contactAddressId: yield* uuid.v4(),
         orcidId: input.orcidId,
         emailAddress: input.emailAddress,
       })
 
+      const contactAddress = yield* pipe(
+        getAddress(input.orcidId),
+        Effect.filterOrElse(
+          contactAddress => contactAddress._tag !== 'VerifiedContactEmailAddress',
+          () => new Commands.UnableToHandleCommand({ cause: 'contact address expected to be unverified' }),
+        ),
+        Effect.catchTag(
+          'ContactEmailAddressIsNotFound',
+          'UnableToQuery',
+          error => new Commands.UnableToHandleCommand({ cause: error }),
+        ),
+      )
+
       yield* email.verifyContactEmailAddress({
         name,
-        emailAddress: new UnverifiedContactEmailAddress({
-          value: input.emailAddress,
-          verificationToken: contactAddressId,
-        }),
+        emailAddress: contactAddress,
         redirectTo: input.resumeAt,
       })
 
       yield* recordEmailCommand({
-        contactAddressId,
+        contactAddressId: contactAddress.verificationToken,
         sentAt: yield* Temporal.currentInstant,
       })
     },
