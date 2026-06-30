@@ -123,6 +123,7 @@ const RequestAReviewFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(RequestAReviewFlow.EnterEmailAddressSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.RequestAReviewNeedToVerifyEmailAddress, RequestAReviewFlow.NeedToVerifyEmailAddressPage),
   MakeRoute('GET', Routes.RequestAReviewCheckYourRequest, RequestAReviewFlow.CheckYourRequestPage),
   MakeRoute('POST', Routes.RequestAReviewCheckYourRequest, RequestAReviewFlow.CheckYourRequestSubmission),
   MakeRoute('GET', Routes.RequestAReviewPublished, RequestAReviewFlow.PublishedPage),
