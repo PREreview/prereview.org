@@ -1,11 +1,12 @@
-import { Context, Effect, type Either, flow, Layer, Scope } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
 import type { EventStore } from '../EventStore.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Keyv from '../keyv.ts'
+import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/index.ts'
-import * as GetContactEmailAddress from './GetContactEmailAddress.ts'
+import { GetContactEmailAddressUsingEvents } from './GetContactEmailAddressUsingEvents.ts'
 import * as ImportContactAddress from './ImportContactAddress.ts'
 import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
@@ -15,12 +16,7 @@ import * as verifyContactEmailAddress from './VerifyContactEmailAddress.ts'
 export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
   ContactEmailAddresses,
   {
-    getContactEmailAddress: (
-      args: GetContactEmailAddress.Input,
-    ) => Effect.Effect<
-      Either.Either.Right<GetContactEmailAddress.Result>,
-      Either.Either.Left<GetContactEmailAddress.Result>
-    >
+    getContactEmailAddress: Queries.FromOnDemandQuery<typeof GetContactEmailAddressUsingEvents>
     importContactAddress: Commands.FromCommand<typeof ImportContactAddress.ImportContactAddress>
     verifyContactEmailAddress: (
       args: verifyContactEmailAddress.Input,
@@ -48,7 +44,7 @@ export const layer = Layer.effect(
     const { authorInviteStore, contactEmailAddressStore } = yield* Keyv.KeyvStores
 
     return {
-      getContactEmailAddress: GetContactEmailAddress.GetContactEmailAddress(contactEmailAddressStore),
+      getContactEmailAddress: yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents),
       importContactAddress: yield* Commands.makeCommand(ImportContactAddress.ImportContactAddress),
       verifyContactEmailAddress: flow(
         verifyContactEmailAddress.VerifyContactEmailAddress(contactEmailAddressStore),
