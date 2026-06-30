@@ -39,7 +39,7 @@ export const layer = Layer.effect(
       Context.omit(Scope.Scope),
     )
 
-    const { authorInviteStore, contactEmailAddressStore } = yield* Keyv.KeyvStores
+    const { authorInviteStore } = yield* Keyv.KeyvStores
 
     return {
       getContactEmailAddress: yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents),
@@ -53,10 +53,7 @@ export const layer = Layer.effect(
         StartVerificationOfContactEmailAddress.StartVerificationOfContactEmailAddress,
         Effect.provide(context),
       ),
-      resendVerificationEmail: flow(
-        ResendVerificationEmail.ResendVerificationEmail(contactEmailAddressStore),
-        Effect.provide(context),
-      ),
+      resendVerificationEmail: flow(ResendVerificationEmail.ResendVerificationEmail, Effect.provide(context)),
     }
   }),
 )

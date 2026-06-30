@@ -7,10 +7,9 @@ import {
 } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/ResendVerificationEmail.ts'
 import { Locale } from '../../src/Context.ts'
-import { Events, type Event } from '../../src/Events.ts'
+import { ContactAddressImported, Events, type Event } from '../../src/Events.ts'
 import { EventStore } from '../../src/EventStore.ts'
 import { Email, OrcidRecords } from '../../src/ExternalInteractions/index.ts'
-import { Keyv } from '../../src/keyv.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { make as makeSqlEventStore } from '../../src/SqlEventStore.ts'
 import { layer as sqlSensitiveDataStoreLayer } from '../../src/SqlSensitiveDataStore.ts'
@@ -54,31 +53,37 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | un
   ],
 )('%s', ([, input, expectedReturn, expectedEmail, expectedEvents]) =>
   Effect.gen(function* () {
-    const store = new Keyv()
-
     const eventStore = yield* makeSqlEventStore
 
-    yield* Effect.promise(() =>
-      store.set(orcidIdWithUnverified, {
-        type: 'unverified',
-        verificationToken: '982c8de0-5000-45cd-9f96-70fc12fe0bcb',
-        value: existingUnverifiedEmailAddress,
-      }),
+    yield* Effect.forEach(
+      [
+        new ContactAddressImported({
+          orcidId: orcidIdWithUnverified,
+          contactAddressId: Uuid.Uuid('982c8de0-5000-45cd-9f96-70fc12fe0bcb'),
+          emailAddress: Option.some(existingUnverifiedEmailAddress),
+          verificationStatus: 'unverified',
+        }),
+        new ContactAddressImported({
+          orcidId: orcidIdWithVerified,
+          contactAddressId: Uuid.Uuid('a6eab1d8-0a13-45cc-8868-730c6ef0c6f1'),
+          emailAddress: Option.some(existingVerifiedEmailAddress),
+          verificationStatus: 'verified',
+        }),
+      ],
+      eventStore.append,
     )
-    yield* Effect.promise(() =>
-      store.set(orcidIdWithVerified, { type: 'verified', value: existingVerifiedEmailAddress }),
-    )
+    const lastKnownPosition = yield* Effect.map(eventStore.all, Option.map(Struct.get('lastKnownPosition')))
 
     const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(_ => Effect.void)
 
     const actualReturn = yield* Effect.either(
-      Effect.provide(_.ResendVerificationEmail(store)(input), [
+      Effect.provide(_.ResendVerificationEmail(input), [
         Layer.mock(Email.Email, { verifyContactEmailAddress }),
         Layer.succeed(EventStore, eventStore),
       ]),
     )
     const actualEvents = yield* pipe(
-      eventStore.all,
+      Option.match(lastKnownPosition, { onNone: () => eventStore.all, onSome: eventStore.since }),
       Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       Effect.andThen(Array.map(Struct.get('_tag'))),
     )

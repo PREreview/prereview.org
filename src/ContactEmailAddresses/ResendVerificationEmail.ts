@@ -1,14 +1,13 @@
 import { Effect, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
-import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { EventStore } from '../EventStore.ts'
 import { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
-import * as Keyv from '../keyv.ts'
-import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import * as Queries from '../Queries.ts'
 import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified, ContactEmailAddressIsNotFound } from './Errors.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified, type ContactEmailAddressIsNotFound } from './Errors.ts'
+import { GetContactEmailAddressUsingEvents } from './GetContactEmailAddressUsingEvents.ts'
 import { RecordEmailSentToVerifyContactAddress } from './RecordEmailSentToVerifyContactAddress.ts'
 
 export interface Input {
@@ -22,57 +21,41 @@ export type Error =
   | Commands.UnableToHandleCommand
 
 export const ResendVerificationEmail: (
-  contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
-) => (
   input: Input,
-) => Effect.Effect<
-  void,
-  Error,
-  Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords
-> = contactEmailAddressStore =>
-  Effect.fn(
-    function* (input) {
-      const email = yield* Email.Email
-      const orcidRecords = yield* OrcidRecords.OrcidRecords
-      const loggerEnv = yield* MakeDeprecatedLoggerEnv
+) => Effect.Effect<void, Error, Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords> = Effect.fn(
+  function* (input) {
+    const email = yield* Email.Email
+    const orcidRecords = yield* OrcidRecords.OrcidRecords
 
-      const contactAddress = yield* pipe(
-        FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(input.orcidId), {
-          contactEmailAddressStore,
-          ...loggerEnv,
-        }),
-        Effect.filterOrElse(
-          contactAddress => contactAddress._tag !== 'VerifiedContactEmailAddress',
-          () => new ContactEmailAddressHasAlreadyBeenVerified(),
-        ),
-        Effect.catchIf(
-          error => error === 'not-found',
-          () => new ContactEmailAddressIsNotFound(),
-        ),
-        Effect.catchIf(
-          error => error === 'unavailable',
-          () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),
-        ),
-      )
+    const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddressUsingEvents)
 
-      const name = yield* orcidRecords.getName(input.orcidId)
+    const contactAddress = yield* pipe(
+      getAddress(input.orcidId),
+      Effect.filterOrElse(
+        contactAddress => contactAddress._tag !== 'VerifiedContactEmailAddress',
+        () => new ContactEmailAddressHasAlreadyBeenVerified(),
+      ),
+      Effect.catchTag('UnableToQuery', error => new Commands.UnableToHandleCommand({ cause: error })),
+    )
 
-      const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
+    const name = yield* orcidRecords.getName(input.orcidId)
 
-      yield* email.verifyContactEmailAddress({
-        name,
-        emailAddress: contactAddress,
-        redirectTo: input.resumeAt,
-      })
+    const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
 
-      yield* recordEmailCommand({
-        contactAddressId: contactAddress.verificationToken,
-        sentAt: yield* Temporal.currentInstant,
-      })
-    },
-    Effect.uninterruptible,
-    Effect.catchTags({
-      NameIsNotAvailable: error => new Commands.UnableToHandleCommand({ cause: error }),
-      UnableToSendEmail: error => new Commands.UnableToHandleCommand({ cause: error }),
-    }),
-  )
+    yield* email.verifyContactEmailAddress({
+      name,
+      emailAddress: contactAddress,
+      redirectTo: input.resumeAt,
+    })
+
+    yield* recordEmailCommand({
+      contactAddressId: contactAddress.verificationToken,
+      sentAt: yield* Temporal.currentInstant,
+    })
+  },
+  Effect.uninterruptible,
+  Effect.catchTags({
+    NameIsNotAvailable: error => new Commands.UnableToHandleCommand({ cause: error }),
+    UnableToSendEmail: error => new Commands.UnableToHandleCommand({ cause: error }),
+  }),
+)
