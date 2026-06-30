@@ -1,4 +1,4 @@
-import { Data, Effect, Option, pipe } from 'effect'
+import { Data, Effect, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import type { EventStore } from '../EventStore.ts'
@@ -7,8 +7,7 @@ import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import { VerifiedContactEmailAddress } from './ContactEmailAddress.ts'
-import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
+import type { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 import { UseAuthorInviteEmailAddressFromLegacyInvite } from './UseAuthorInviteEmailAddressFromLegacyInvite.ts'
 
 export interface Input {
@@ -24,9 +23,8 @@ export type Error =
   | Commands.UnableToHandleCommand
 
 export const UseAuthorInviteEmailAddress: (
-  contactEmailAddressStore: (typeof Keyv.KeyvStores.Service)['contactEmailAddressStore'],
   authorInviteStoreEnv: (typeof Keyv.KeyvStores.Service)['authorInviteStore'],
-) => (input: Input) => Effect.Effect<void, Error, EventStore> = (contactEmailAddressStore, authorInviteStoreEnv) =>
+) => (input: Input) => Effect.Effect<void, Error, EventStore> = authorInviteStoreEnv =>
   Effect.fn('ContactEmailAddresses.useAuthorInviteEmailAddress')(
     function* (input) {
       const loggerEnv = yield* MakeDeprecatedLoggerEnv
@@ -46,30 +44,6 @@ export const UseAuthorInviteEmailAddress: (
         return yield* new AcceptedInvitationIsNotFound()
       }
 
-      const contactEmailAddress = yield* pipe(
-        FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(input.orcidId), {
-          contactEmailAddressStore,
-          ...loggerEnv,
-        }),
-        Effect.map(Option.some),
-        Effect.catchIf(
-          error => error === 'not-found',
-          () => Effect.succeedNone,
-        ),
-      )
-
-      if (Option.isSome(contactEmailAddress) && contactEmailAddress.value._tag === 'VerifiedContactEmailAddress') {
-        return yield* new ContactEmailAddressHasAlreadyBeenVerified()
-      }
-
-      yield* FptsToEffect.readerTaskEither(
-        Keyv.saveContactEmailAddress(input.orcidId, new VerifiedContactEmailAddress({ value: invite.emailAddress })),
-        {
-          contactEmailAddressStore,
-          ...loggerEnv,
-        },
-      )
-
       const useLegacyCommand = yield* Commands.makeCommand(UseAuthorInviteEmailAddressFromLegacyInvite)
 
       yield* useLegacyCommand({
@@ -77,14 +51,8 @@ export const UseAuthorInviteEmailAddress: (
         inviteId: input.inviteId,
         emailAddress: invite.emailAddress,
         chosenAt: yield* Temporal.currentInstant,
-      }).pipe(
-        Effect.catchTags({
-          ContactEmailAddressHasAlreadyBeenVerified: error =>
-            pipe(Effect.logError('using author invite email address failed'), Effect.annotateLogs({ error })),
-        }),
-      )
+      })
     },
-    Effect.uninterruptible,
     Effect.catchIf(
       error => error === 'unavailable',
       () => new Commands.UnableToHandleCommand({ cause: 'unknown' }),

@@ -46,7 +46,7 @@ export const layer = Layer.effect(
       importContactAddress: yield* Commands.makeCommand(ImportContactAddress.ImportContactAddress),
       verifyContactEmailAddress: yield* Commands.makeCommand(VerifyContactEmailAddressUsingEvents),
       useAuthorInviteEmailAddress: flow(
-        UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(contactEmailAddressStore, authorInviteStore),
+        UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(authorInviteStore),
         Effect.provide(context),
       ),
       startVerificationOfContactEmailAddress: flow(
