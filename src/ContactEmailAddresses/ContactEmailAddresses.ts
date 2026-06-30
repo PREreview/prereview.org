@@ -10,13 +10,13 @@ import { GetContactEmailAddress } from './GetContactEmailAddress.ts'
 import * as ResendVerificationEmail from './ResendVerificationEmail.ts'
 import * as StartVerificationOfContactEmailAddress from './StartVerificationOfContactEmailAddress.ts'
 import * as UseAuthorInviteEmailAddress from './UseAuthorInviteEmailAddress.ts'
-import { VerifyContactEmailAddressUsingEvents } from './VerifyContactEmailAddressUsingEvents.ts'
+import { VerifyContactEmailAddress } from './VerifyContactEmailAddress.ts'
 
 export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
   ContactEmailAddresses,
   {
     getContactEmailAddress: Queries.FromOnDemandQuery<typeof GetContactEmailAddress>
-    verifyContactEmailAddress: Commands.FromCommand<typeof VerifyContactEmailAddressUsingEvents>
+    verifyContactEmailAddress: Commands.FromCommand<typeof VerifyContactEmailAddress>
     useAuthorInviteEmailAddress: (
       args: UseAuthorInviteEmailAddress.Input,
     ) => Effect.Effect<void, UseAuthorInviteEmailAddress.Error>
@@ -41,7 +41,7 @@ export const layer = Layer.effect(
 
     return {
       getContactEmailAddress: yield* Queries.makeOnDemandQuery(GetContactEmailAddress),
-      verifyContactEmailAddress: yield* Commands.makeCommand(VerifyContactEmailAddressUsingEvents),
+      verifyContactEmailAddress: yield* Commands.makeCommand(VerifyContactEmailAddress),
       useAuthorInviteEmailAddress: flow(
         UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(authorInviteStore),
         Effect.provide(context),

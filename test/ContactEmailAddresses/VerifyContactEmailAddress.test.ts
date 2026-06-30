@@ -7,7 +7,7 @@ import {
   ContactEmailAddressIsNotFound,
   OnlyCurrentContactAddressCanBeVerified,
 } from '../../src/ContactEmailAddresses/Errors.ts'
-import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddressUsingEvents.ts'
+import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
 import * as Events from '../../src/Events.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -135,7 +135,7 @@ test.each<
     Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
 ])('%s', (_name, events, input, expected) => {
-  const { foldState, authorize, decide } = _.VerifyContactEmailAddressUsingEvents
+  const { foldState, authorize, decide } = _.VerifyContactEmailAddress
 
   const state = foldState(events, input)
 

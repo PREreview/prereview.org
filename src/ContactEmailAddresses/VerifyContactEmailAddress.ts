@@ -104,7 +104,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
   )
 }
 
-export const VerifyContactEmailAddressUsingEvents = Commands.Command<[Input], State, Error, true>({
+export const VerifyContactEmailAddress = Commands.Command<[Input], State, Error, true>({
   name: 'ContactEmailAddresses.verifyContactEmailAddress',
   createFilter,
   foldState,
