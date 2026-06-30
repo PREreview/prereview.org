@@ -1,5 +1,6 @@
 export * from './CheckYourRequestPage/index.ts'
 export * from './ChooseYourPersonaPage/index.ts'
+export * from './EnterEmailAddressPage/index.ts'
 export * from './PublishedPage/index.ts'
 export * from './RequestAReviewOfThisPreprintPage/index.ts'
 export * from './RequestAReviewPage/index.ts'

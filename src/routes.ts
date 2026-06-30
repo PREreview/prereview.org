@@ -205,6 +205,13 @@ export const RequestAReviewChooseYourPersona = Route({
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
+export const RequestAReviewEnterEmailAddress = Route({
+  path: '/preprints/:preprintId/request-a-prereview/enter-email-address',
+  href: params =>
+    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/enter-email-address`,
+  schema: Schema.Struct({ preprintId: PreprintIdSchema }),
+})
+
 export const RequestAReviewCheckYourRequest = Route({
   path: '/preprints/:preprintId/request-a-prereview/check-your-request',
   href: params =>
