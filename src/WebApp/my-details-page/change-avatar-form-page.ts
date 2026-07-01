@@ -43,10 +43,10 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
                               <li>
                                 <a href="#avatar">
                                   ${Match.valueTags(form.avatar.left, {
-                                  MissingE: () => t('selectImageError')(),
-                                  WrongTypeE: () => t('imageTypeError')(),
-                                  TooBigE: () => t('imageSizeError')({ size: 5 }),
-                                })}
+                                    MissingE: () => t('selectImageError')(),
+                                    WrongTypeE: () => t('imageTypeError')(),
+                                    TooBigE: () => t('imageSizeError')({ size: 5 }),
+                                  })}
                                 </a>
                               </li>
                             `

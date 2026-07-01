@@ -59,8 +59,8 @@ export function introductionMatchesForm(
                             <li>
                               <a href="#introduction-matches-yes">
                                 ${Match.valueTags(form.introductionMatches.left, {
-                                MissingE: () => t('selectIntroductionExplains')(),
-                              })}
+                                  MissingE: () => t('selectIntroductionExplains')(),
+                                })}
                               </a>
                             </li>
                           `

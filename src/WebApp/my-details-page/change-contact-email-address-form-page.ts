@@ -39,9 +39,9 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
                             <li>
                               <a href="#email-address">
                                 ${Match.valueTags(form.emailAddress.left, {
-                                MissingE: () => t('enterEmailAddressError')(),
-                                InvalidE: () => t('enterEmailAddressFormatError')(),
-                              })}
+                                  MissingE: () => t('enterEmailAddressError')(),
+                                  InvalidE: () => t('enterEmailAddressFormatError')(),
+                                })}
                               </a>
                             </li>
                           `

@@ -50,8 +50,8 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                             <li>
                               <a href="#language-editing-no">
                                 ${Match.valueTags(form.languageEditing.left, {
-                                MissingE: () => t('selectBenefitFromEditing')(),
-                              })}
+                                  MissingE: () => t('selectBenefitFromEditing')(),
+                                })}
                               </a>
                             </li>
                           `

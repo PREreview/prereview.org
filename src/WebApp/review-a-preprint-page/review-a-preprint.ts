@@ -38,8 +38,8 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
                             <li>
                               <a href="#preprint">
                                 ${Match.valueTags(whichPreprint.left, {
-                                InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
-                              })}
+                                  InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
+                                })}
                               </a>
                             </li>
                           `

@@ -43,12 +43,12 @@ export const CodeOfConductPage = ({
                             <li>
                               <a href="#agree-yes">
                                 ${pipe(
-                                Match.value(form.agree.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
-                                ),
-                                Match.exhaustive,
-                              )}
+                                  Match.value(form.agree.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
                               </a>
                             </li>
                           `

@@ -43,12 +43,12 @@ export const CompetingInterestsPage = ({
                             <li>
                               <a href="#competing-interests-no">
                                 ${pipe(
-                                Match.value(form.competingInterests.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
-                                ),
-                                Match.exhaustive,
-                              )}
+                                  Match.value(form.competingInterests.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
                               </a>
                             </li>
                           `
@@ -60,12 +60,12 @@ export const CompetingInterestsPage = ({
                             <li>
                               <a href="#competing-interests-details">
                                 ${pipe(
-                                Match.value(form.competingInterestsDetails.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
-                                ),
-                                Match.exhaustive,
-                              )}
+                                  Match.value(form.competingInterestsDetails.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
                               </a>
                             </li>
                           `

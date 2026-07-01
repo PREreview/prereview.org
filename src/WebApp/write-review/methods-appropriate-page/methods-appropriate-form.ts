@@ -66,8 +66,8 @@ export function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsApp
                             <li>
                               <a href="#methods-appropriate-highly-appropriate">
                                 ${Match.valueTags(form.methodsAppropriate.left, {
-                                MissingE: () => t('selectMethodsWellSuited')(),
-                              })}
+                                  MissingE: () => t('selectMethodsWellSuited')(),
+                                })}
                               </a>
                             </li>
                           `

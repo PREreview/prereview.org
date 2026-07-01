@@ -51,8 +51,8 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
                             <li>
                               <a href="#should-read-yes">
                                 ${Match.valueTags(form.shouldRead.left, {
-                                MissingE: () => t('selectWouldRecommend')(),
-                              })}
+                                  MissingE: () => t('selectWouldRecommend')(),
+                                })}
                               </a>
                             </li>
                           `

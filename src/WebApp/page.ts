@@ -200,22 +200,22 @@ export const page = ({
                                   ${current === 'choose-locale' ? html`aria-current="page"` : ''}
                                   class="locale"
                                   >${
-                                  new Intl.DisplayNames(locale, {
-                                    type: 'language',
-                                    languageDisplay: 'standard',
-                                    style: 'narrow',
-                                  }).of(locale.split('-')[0] ?? locale) ?? locale
-                                }</a
-                                >
-                                <button aria-controls="locale" aria-expanded="false" hidden>
-                                  <span class="locale"
-                                    >${
                                     new Intl.DisplayNames(locale, {
                                       type: 'language',
                                       languageDisplay: 'standard',
                                       style: 'narrow',
                                     }).of(locale.split('-')[0] ?? locale) ?? locale
-                                  }</span
+                                  }</a
+                                >
+                                <button aria-controls="locale" aria-expanded="false" hidden>
+                                  <span class="locale"
+                                    >${
+                                      new Intl.DisplayNames(locale, {
+                                        type: 'language',
+                                        languageDisplay: 'standard',
+                                        style: 'narrow',
+                                      }).of(locale.split('-')[0] ?? locale) ?? locale
+                                    }</span
                                   >
                                 </button>
                               </expander-button>
@@ -328,14 +328,14 @@ export const page = ({
                                       href="${format(Routes.myDetailsMatch.formatter, {})}"
                                       ${current === 'my-details' ? html`aria-current="page"` : ''}
                                       >${t('header', 'menuMyDetails')()}${
-                                      userOnboarding?.seenMyDetailsPage === false
-                                        ? html` <span role="status"
-                                            ><span class="visually-hidden"
-                                              >${t('header', 'menuNewNotification')()}</span
-                                            ></span
-                                          >`
-                                        : ''
-                                    }</a
+                                        userOnboarding?.seenMyDetailsPage === false
+                                          ? html` <span role="status"
+                                              ><span class="visually-hidden"
+                                                >${t('header', 'menuNewNotification')()}</span
+                                              ></span
+                                            >`
+                                          : ''
+                                      }</a
                                     >
                                   </li>
                                   <li>
@@ -361,13 +361,13 @@ export const page = ({
                                     <a href="${Routes.LogIn}">${t('header', 'menuLogIn')()}</a>
                                   </li>
                                   ${Boolean.match(canLogInAsDemoUser, {
-                                  onFalse: () => '',
-                                  onTrue: () => html`
-                                    <li>
-                                      <a href="${Routes.LogInDemo}">${t('header', 'menuLogInDemoUser')()}</a>
-                                    </li>
-                                  `,
-                                })}
+                                    onFalse: () => '',
+                                    onTrue: () => html`
+                                      <li>
+                                        <a href="${Routes.LogInDemo}">${t('header', 'menuLogInDemoUser')()}</a>
+                                      </li>
+                                    `,
+                                  })}
                                 `
                           }
                         </ul>
@@ -382,36 +382,36 @@ export const page = ({
                                 <h3>${t('header', 'chooseLanguage')()}</h3>
                                 <ul>
                                   ${pipe(
-                                  Array.fromIterable(enabledLocales),
-                                  Array.map(enabledLocale =>
-                                    Tuple.make(
-                                      enabledLocale,
-                                      new Intl.DisplayNames(enabledLocale, {
-                                        type: 'language',
-                                        languageDisplay: 'standard',
-                                        style: 'short',
-                                      }).of(enabledLocale) ?? enabledLocale,
+                                    Array.fromIterable(enabledLocales),
+                                    Array.map(enabledLocale =>
+                                      Tuple.make(
+                                        enabledLocale,
+                                        new Intl.DisplayNames(enabledLocale, {
+                                          type: 'language',
+                                          languageDisplay: 'standard',
+                                          style: 'short',
+                                        }).of(enabledLocale) ?? enabledLocale,
+                                      ),
                                     ),
-                                  ),
-                                  Array.sortWith(
-                                    ([, b]) => b,
-                                    (a, b) =>
-                                      String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
-                                  ),
-                                  Array.map(
-                                    ([code, name]) => html`
-                                      <li>
-                                        <a
-                                          href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                          ${languageAttributesFor(code)}
-                                          hreflang="${code}"
-                                          ${locale === code ? html`aria-current="true"` : ''}
-                                          >${name}</a
-                                        >
-                                      </li>
-                                    `,
-                                  ),
-                                )}
+                                    Array.sortWith(
+                                      ([, b]) => b,
+                                      (a, b) =>
+                                        String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                    ),
+                                    Array.map(
+                                      ([code, name]) => html`
+                                        <li>
+                                          <a
+                                            href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                            ${languageAttributesFor(code)}
+                                            hreflang="${code}"
+                                            ${locale === code ? html`aria-current="true"` : ''}
+                                            >${name}</a
+                                          >
+                                        </li>
+                                      `,
+                                    ),
+                                  )}
                                 </ul>
                               </div>
                             </div>
@@ -447,35 +447,36 @@ export const page = ({
 
                             <ul>
                               ${pipe(
-                              Array.fromIterable(enabledLocales),
-                              Array.map(enabledLocale =>
-                                Tuple.make(
-                                  enabledLocale,
-                                  new Intl.DisplayNames(enabledLocale, {
-                                    type: 'language',
-                                    languageDisplay: 'standard',
-                                    style: 'short',
-                                  }).of(enabledLocale) ?? enabledLocale,
+                                Array.fromIterable(enabledLocales),
+                                Array.map(enabledLocale =>
+                                  Tuple.make(
+                                    enabledLocale,
+                                    new Intl.DisplayNames(enabledLocale, {
+                                      type: 'language',
+                                      languageDisplay: 'standard',
+                                      style: 'short',
+                                    }).of(enabledLocale) ?? enabledLocale,
+                                  ),
                                 ),
-                              ),
-                              Array.sortWith(
-                                ([, b]) => b,
-                                (a, b) => String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
-                              ),
-                              Array.map(
-                                ([code, name]) => html`
-                                  <li>
-                                    <a
-                                      href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
-                                      ${languageAttributesFor(code)}
-                                      hreflang="${code}"
-                                      ${locale === code ? html`aria-current="true"` : ''}
-                                      >${name}</a
-                                    >
-                                  </li>
-                                `,
-                              ),
-                            )}
+                                Array.sortWith(
+                                  ([, b]) => b,
+                                  (a, b) =>
+                                    String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                ),
+                                Array.map(
+                                  ([code, name]) => html`
+                                    <li>
+                                      <a
+                                        href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                        ${languageAttributesFor(code)}
+                                        hreflang="${code}"
+                                        ${locale === code ? html`aria-current="true"` : ''}
+                                        >${name}</a
+                                      >
+                                    </li>
+                                  `,
+                                ),
+                              )}
                             </ul>
                           </div>
                         `

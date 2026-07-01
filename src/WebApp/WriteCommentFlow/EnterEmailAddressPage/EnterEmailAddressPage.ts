@@ -43,15 +43,15 @@ export const EnterEmailAddressPage = ({
                             <li>
                               <a href="#email-address">
                                 ${pipe(
-                                Match.value(form.emailAddress.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
-                                ),
-                                Match.tag('Invalid', () =>
-                                  translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
-                                ),
-                                Match.exhaustive,
-                              )}
+                                  Match.value(form.emailAddress.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
+                                  ),
+                                  Match.tag('Invalid', () =>
+                                    translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
                               </a>
                             </li>
                           `

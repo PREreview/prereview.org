@@ -53,8 +53,8 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
                             <li>
                               <a href="#novel-highly">
                                 ${Match.valueTags(form.novel.left, {
-                                MissingE: () => t('selectAdvanceKnowledge')(),
-                              })}
+                                  MissingE: () => t('selectAdvanceKnowledge')(),
+                                })}
                               </a>
                             </li>
                           `

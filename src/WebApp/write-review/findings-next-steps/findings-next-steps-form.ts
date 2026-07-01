@@ -58,8 +58,8 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
                             <li>
                               <a href="#findings-next-steps-exceptionally">
                                 ${Match.valueTags(form.findingsNextSteps.left, {
-                                MissingE: () => t('selectClearDiscussion')(),
-                              })}
+                                  MissingE: () => t('selectClearDiscussion')(),
+                                })}
                               </a>
                             </li>
                           `

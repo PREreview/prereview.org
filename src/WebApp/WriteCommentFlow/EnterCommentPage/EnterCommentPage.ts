@@ -47,12 +47,12 @@ export const EnterCommentPage = ({
                             <li>
                               <a href="#comment">
                                 ${pipe(
-                                Match.value(form.comment.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorEnterComment')(),
-                                ),
-                                Match.exhaustive,
-                              )}
+                                  Match.value(form.comment.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorEnterComment')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
                               </a>
                             </li>
                           `

@@ -60,8 +60,8 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
                             <li>
                               <a href="#results-supported-strongly-supported">
                                 ${Match.valueTags(form.resultsSupported.left, {
-                                MissingE: () => t('selectConclusionsSupported')(),
-                              })}
+                                  MissingE: () => t('selectConclusionsSupported')(),
+                                })}
                               </a>
                             </li>
                           `

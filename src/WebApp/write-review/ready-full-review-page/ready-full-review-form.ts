@@ -51,8 +51,8 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
                             <li>
                               <a href="#ready-full-review-yes">
                                 ${Match.valueTags(form.readyFullReview.left, {
-                                MissingE: () => t('selectReadyForAttention')(),
-                              })}
+                                  MissingE: () => t('selectReadyForAttention')(),
+                                })}
                               </a>
                             </li>
                           `

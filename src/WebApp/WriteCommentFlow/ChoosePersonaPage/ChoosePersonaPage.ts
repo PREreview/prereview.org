@@ -48,12 +48,12 @@ export const ChoosePersonaPage = ({
                             <li>
                               <a href="#persona-public">
                                 ${pipe(
-                                Match.value(form.persona.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorSelectName')(),
-                                ),
-                                Match.exhaustive,
-                              )}
+                                  Match.value(form.persona.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorSelectName')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
                               </a>
                             </li>
                           `

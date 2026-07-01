@@ -57,8 +57,8 @@ export const personaForm = (
                             <li>
                               <a href="#persona-public">
                                 ${Match.valueTags(form.persona.left, {
-                                MissingE: () => t('selectTheNameError')(),
-                              })}
+                                  MissingE: () => t('selectTheNameError')(),
+                                })}
                               </a>
                             </li>
                           `

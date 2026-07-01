@@ -45,9 +45,9 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
                             <li>
                               <a href="#review">
                                 ${Match.valueTags(form.review.left, {
-                                MissingE: () => t('write-review', 'enterYourReviewError')(),
-                                InvalidE: () => t('write-review', 'enterYourReviewError')(),
-                              })}
+                                  MissingE: () => t('write-review', 'enterYourReviewError')(),
+                                  InvalidE: () => t('write-review', 'enterYourReviewError')(),
+                                })}
                               </a>
                             </li>
                           `

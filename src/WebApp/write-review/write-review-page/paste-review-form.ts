@@ -42,8 +42,8 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
                             <li>
                               <a href="#review">
                                 ${Match.valueTags(form.review.left, {
-                                MissingE: () => t('write-review', 'pasteYourReviewError')(),
-                              })}
+                                  MissingE: () => t('write-review', 'pasteYourReviewError')(),
+                                })}
                               </a>
                             </li>
                           `
