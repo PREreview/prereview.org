@@ -3,6 +3,7 @@ import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, pipe } from 'effect'
 import { Cli } from './Cli/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
+import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
@@ -22,6 +23,7 @@ pipe(
   Effect.provide(
     pipe(
       Layer.mergeAll(
+        DatasetReviews.commandsLayer,
         OpenAlexWorks.layer,
         PreprintData.layer,
         Prereviewers.layer,
