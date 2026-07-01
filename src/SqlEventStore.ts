@@ -70,15 +70,6 @@ export const make: Effect.Effect<
     orElse: () => Effect.void,
   })
 
-  yield* sql.onDialectOrElse({
-    pg: () =>
-      sql`
-        ALTER TABLE events
-        ADD CONSTRAINT events_position_key UNIQUE (position);
-      `.pipe(Effect.ignoreLogged),
-    orElse: () => Effect.void,
-  })
-
   const buildFilterCondition = (filter: Events.EventFilter) =>
     sql.or(
       Array.map(Array.ensure(filter), filter => {
