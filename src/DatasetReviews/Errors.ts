@@ -40,6 +40,10 @@ export class PublicationOfDatasetReviewWasNotRequested extends Data.TaggedError(
   'PublicationOfDatasetReviewWasNotRequested',
 ) {}
 
+export class DatasetReviewHasAlreadyBeenAddedToAClub extends Data.TaggedError(
+  'DatasetReviewHasAlreadyBeenAddedToAClub',
+) {}
+
 export class DatasetReviewNotReadyToBeMarkedAsPublished extends Data.TaggedError(
   'DatasetReviewNotReadyToBeMarkedAsPublished',
 )<{

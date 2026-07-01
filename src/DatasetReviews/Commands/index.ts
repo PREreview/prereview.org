@@ -5,6 +5,7 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import type * as Errors from '../Errors.ts'
 import { AddInvitationToAppearToTheList } from './AddInvitationToAppearToTheList.ts'
+import type { AddReviewToAClub } from './AddReviewToAClub.ts'
 import { AnswerIfOthersNeedToBeListedOnTheReview } from './AnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
@@ -95,6 +96,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     >
     markDoiAsAssigned: CommandHandler<MarkDoiAsAssigned.Command, MarkDoiAsAssigned.Error>
     markDoiAsActivated: CommandHandler<MarkDoiAsActivated.Command, MarkDoiAsActivated.Error>
+    addReviewToAClub: Commands.FromCommand<typeof AddReviewToAClub>
     publishDatasetReview: CommandHandler<PublishDatasetReview.Command, PublishDatasetReview.Error>
     markDatasetReviewAsPublished: CommandHandler<
       MarkDatasetReviewAsPublished.Command,
@@ -135,6 +137,7 @@ export const {
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
   markDoiAsActivated,
+  addReviewToAClub,
   publishDatasetReview,
   markDatasetReviewAsPublished,
 } = Effect.serviceFunctions(DatasetReviewCommands)
@@ -315,6 +318,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         () => () => true,
         MarkDoiAsActivated.decide,
       ),
+      addReviewToAClub: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
       publishDatasetReview: handleCommand(
         allDatasetReviewEvents,
         PublishDatasetReview.foldState,
