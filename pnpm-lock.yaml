@@ -240,8 +240,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@typescript/analyze-trace':
-        specifier: ^0.11.0
-        version: 0.11.0
+        specifier: ^0.11.1
+        version: 0.11.1
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260628.1
         version: 7.0.0-dev.20260628.1
@@ -1839,8 +1839,8 @@ packages:
     resolution: {integrity: sha512-CY3uyFSRbcQv3nnSv8S0+lDftMVz6P963PoRlxrV7ew/Md564g9ut60PYzdLM5qW4jFn93GBF+Soi90ISAN+GQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript/analyze-trace@0.11.0':
-    resolution: {integrity: sha512-hg2uQJC3TMyxisn8y5vIJ1TXp5dTRGhI+J4Ld4FBTH2+VvFD3vi1LkHwmQmEWBTezfRhHNX4KmELVmIlPMTyLQ==}
+  '@typescript/analyze-trace@0.11.1':
+    resolution: {integrity: sha512-8T8oMXji6e06d4OnHxSvFNR/jMU6BJMo0xsFVgkvAd8PKapHjjE4OOQvOA6gEeTAlgW3O6sMld/GJPWP7zKyDw==}
     hasBin: true
 
   '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260628.1':
@@ -5170,12 +5170,12 @@ packages:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
 
-  yargs@16.2.0:
-    resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
+  yargs@16.2.2:
+    resolution: {integrity: sha512-Nt9ZJjXTv5R8MHbqby/wXQ6Gi0Bb3TcYZkR1bzuL4yB2OxWPkXknz513gEF0GoA6tn00UpbPvERW8rzCuWCA6w==}
     engines: {node: '>=10'}
 
-  yargs@17.7.2:
-    resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
+  yargs@17.7.3:
+    resolution: {integrity: sha512-GZtjxm/J/4TSxuL3FNYjCmLktBTnIw/rVmKSIyKeYAZpmJB2ig9VauCC5xsa82GNKVKDAqpOn3KVzNt0zmrU0g==}
     engines: {node: '>=12'}
 
   yocto-queue@0.1.0:
@@ -6587,7 +6587,7 @@ snapshots:
       '@typescript-eslint/types': 8.62.0
       eslint-visitor-keys: 5.0.1
 
-  '@typescript/analyze-trace@0.11.0':
+  '@typescript/analyze-trace@0.11.1':
     dependencies:
       chalk: 4.1.2
       exit: 0.1.2
@@ -6596,7 +6596,7 @@ snapshots:
       p-limit: 3.1.0
       split2: 3.2.2
       treeify: 1.1.0
-      yargs: 16.2.0
+      yargs: 16.2.2
 
   '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260628.1':
     optional: true
@@ -8443,7 +8443,7 @@ snapshots:
       mjml-parser-xml: 5.3.0
       mjml-preset-core: 5.3.0(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
       mjml-validator: 5.3.0
-      yargs: 17.7.2
+      yargs: 17.7.3
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10447,7 +10447,7 @@ snapshots:
 
   yargs-parser@21.1.1: {}
 
-  yargs@16.2.0:
+  yargs@16.2.2:
     dependencies:
       cliui: 7.0.4
       escalade: 3.2.0
@@ -10457,7 +10457,7 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 20.2.9
 
-  yargs@17.7.2:
+  yargs@17.7.3:
     dependencies:
       cliui: 8.0.1
       escalade: 3.2.0
