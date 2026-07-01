@@ -1,4 +1,5 @@
 import { Array, Either, HashMap, Match, MutableHashSet, Option, pipe } from 'effect'
+import type { ClubId } from '../../Clubs/index.ts'
 import type { DatasetId } from '../../Datasets/index.ts'
 import type * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
@@ -17,6 +18,7 @@ export interface DatasetReviewForInvite {
     persona: 'public' | 'pseudonym'
   }>
   anonymousAuthors: number
+  clubId: Option.Option<ClubId>
   doi: Doi.Doi
   id: Uuid.Uuid
   published: Temporal.PlainDate
@@ -36,6 +38,7 @@ interface State {
       authorOrcidId: OrcidId.OrcidId
       authorPersona?: 'public' | 'pseudonym'
       invitedAuthors: MutableHashSet.MutableHashSet<Uuid.Uuid>
+      clubId?: ClubId
       doi?: Doi.Doi
       published?: Temporal.PlainDate
       datasetId: DatasetId
@@ -87,6 +90,12 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
         HashMap.modify(datasetReviews, event.datasetReviewId, datasetReview => ({
           ...datasetReview,
           doi: event.doi,
+        }))
+      }),
+      Match.tag('DatasetReviewWasAddedToAClub', event => {
+        HashMap.modify(datasetReviews, event.datasetReviewId, datasetReview => ({
+          ...datasetReview,
+          clubId: event.clubId,
         }))
       }),
       Match.tag('DatasetReviewWasPublished', event => {
@@ -146,6 +155,7 @@ const query = (state: State, invitationId: Input): Result => {
     },
     otherAuthors: [],
     anonymousAuthors: MutableHashSet.size(datasetReview.value.invitedAuthors),
+    clubId: Option.fromNullable(datasetReview.value.clubId),
     doi: datasetReview.value.doi,
     id: datasetReviewId.value,
     published: datasetReview.value.published,

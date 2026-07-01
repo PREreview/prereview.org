@@ -83,6 +83,11 @@ const publication = new Events.DatasetReviewWasPublished({
   publicationDate: Temporal.Now.plainDateISO(),
 })
 
+const club = new Events.DatasetReviewWasAddedToAClub({
+  datasetReviewId,
+  clubId: '13e21570-0d1a-47f0-b378-b8c20776496a',
+})
+
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
   ['no events', [], input, Either.left(new DatasetReviews.DatasetReviewInvitationNotInList())],
   [
@@ -114,6 +119,25 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
       },
       otherAuthors: [],
       anonymousAuthors: 1,
+      clubId: Option.none(),
+      doi: doi.doi,
+      id: datasetReviewId,
+      published: publication.publicationDate as Temporal.PlainDate,
+      dataset: started.datasetId,
+    }),
+  ],
+  [
+    'review published, only author added, added to a club',
+    [started, persona, authorAdded, doi, publication, club],
+    input,
+    Either.right({
+      author: {
+        orcidId: started.authorId,
+        persona: persona.persona,
+      },
+      otherAuthors: [],
+      anonymousAuthors: 1,
+      clubId: Option.some(club.clubId),
       doi: doi.doi,
       id: datasetReviewId,
       published: publication.publicationDate as Temporal.PlainDate,
@@ -149,6 +173,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
       },
       otherAuthors: [],
       anonymousAuthors: 3,
+      clubId: Option.none(),
       doi: doi.doi,
       id: datasetReviewId,
       published: publication.publicationDate as Temporal.PlainDate,
