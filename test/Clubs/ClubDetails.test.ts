@@ -24,6 +24,24 @@ describe('getClubByName', () => {
   })
 })
 
+describe('getClubBySlug', () => {
+  test.each([
+    [Name('asapbio-cancer-biology'), 'asapbio-cancer-biology'],
+    [Name('asapbio-neurobiology'), 'asapbio-neurobiology'],
+    [Name('hhmi-training-program'), 'hhmi-training-program'],
+  ])('with a club slug (%s)', (slug, expected) => {
+    const actual = _.getClubBySlug(slug)
+
+    expect(actual).toStrictEqual(Option.some(expected))
+  })
+
+  it.prop('with something else', [fc.name()], ([slug]) => {
+    const actual = _.getClubBySlug(slug)
+
+    expect(actual).toStrictEqual(Option.none())
+  })
+})
+
 describe('isLeadFor', () => {
   test.each([
     ['Jay Patel', OrcidId('0000-0003-1040-3607'), ['asapbio-meta-research']],

@@ -1,19 +1,20 @@
 import { UrlParams } from '@effect/platform'
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Array, Data, Match, Option, Record, Schema, Tuple, flow, identity, pipe } from 'effect'
+import { Array, Data, Match, Option, ParseResult, Record, Schema, Tuple, flow, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import { match, P as p } from 'ts-pattern'
-import { ClubIdSchema } from './Clubs/index.ts'
+import * as Club from './Clubs/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import * as Preprints from './Preprints/index.ts'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import { FieldIdSchema, isFieldId } from './types/field.ts'
 import { Iso639, ProfileId, Uuid } from './types/index.ts'
+import { NameSchema } from './types/Name.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { PseudonymC } from './types/Pseudonym.ts'
@@ -138,6 +139,13 @@ const DatasetIdSchema = Schema.transform(
   },
 )
 
+const ClubIdFromSlugSchema = Schema.transformOrFail(NameSchema, Club.ClubIdSchema, {
+  strict: true,
+  decode: (slug, _, ast) =>
+    ParseResult.fromOption(Club.getClubBySlug(slug), () => new ParseResult.Type(ast, slug, 'Unknown club slug')),
+  encode: id => ParseResult.succeed(Club.getClubSlug(id)),
+})
+
 export const OrcidAuth = QueryRoute({
   path: '/orcid',
   schema: Schema.Union(
@@ -156,8 +164,8 @@ export const VerifyEmailAddress = QueryRoute({
 
 export const ClubProfile = Route({
   path: '/clubs/:id',
-  href: params => `/clubs/${Schema.encodeSync(ClubIdSchema)(params.id)}`,
-  schema: Schema.Struct({ id: Schema.compose(Schema.String, ClubIdSchema) }),
+  href: params => `/clubs/${Schema.encodeSync(ClubIdFromSlugSchema)(params.id)}`,
+  schema: Schema.Struct({ id: Schema.compose(Schema.String, ClubIdFromSlugSchema) }),
 })
 
 export const DatasetReviews = Route({
