@@ -16,7 +16,7 @@ import { PageResponse } from '../../Response/index.ts'
 
 export type ViewModel = Omit<
   DatasetReviews.PublishedReview,
-  'author' | 'otherAuthors' | 'dataset' | 'questions' | 'competingInterests'
+  'author' | 'otherAuthors' | 'clubId' | 'dataset' | 'questions' | 'competingInterests'
 > & {
   readonly invitationId: Uuid
   readonly author: Personas.Persona

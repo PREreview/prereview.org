@@ -258,6 +258,10 @@ const datasetReviewWasAssignedADoi2 = new DatasetReviews.DatasetReviewWasAssigne
   doi: Doi.Doi('10.1000/67890'),
   datasetReviewId,
 })
+const datasetReviewWasAddedToAClub = new DatasetReviews.DatasetReviewWasAddedToAClub({
+  datasetReviewId,
+  clubId: '07f0572c-aaee-4b93-b6ab-8bdc78644991',
+})
 const datasetReviewWasPublished1 = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
@@ -284,6 +288,7 @@ describe('GetPublishedReview', () => {
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<Events.Event>, _.PublishedReview]>(events, {
                 author: { orcidId: events[0].authorId, persona: events[2].persona },
+                clubId: Option.none(),
                 dataset: events[0].datasetId,
                 doi: events[3].doi,
                 id: events[0].datasetReviewId,
@@ -341,6 +346,7 @@ describe('GetPublishedReview', () => {
                     personaForDatasetReviewWasChosen1,
                     competingInterestsForADatasetReviewWereDeclared1,
                     datasetReviewWasAssignedADoi1,
+                    datasetReviewWasAddedToAClub,
                     datasetReviewWasPublished1,
                   ],
                   {
@@ -348,6 +354,7 @@ describe('GetPublishedReview', () => {
                       orcidId: datasetReviewWasStarted.authorId,
                       persona: personaForDatasetReviewWasChosen1.persona,
                     },
+                    clubId: Option.some(datasetReviewWasAddedToAClub.clubId),
                     dataset: datasetReviewWasStarted.datasetId,
                     doi: datasetReviewWasAssignedADoi1.doi,
                     id: datasetReviewId,
@@ -445,6 +452,7 @@ describe('GetPublishedReview', () => {
                       orcidId: datasetReviewWasStarted.authorId,
                       persona: personaForDatasetReviewWasChosen2.persona,
                     },
+                    clubId: Option.none(),
                     dataset: datasetReviewWasStarted.datasetId,
                     doi: datasetReviewWasAssignedADoi2.doi,
                     id: datasetReviewId,
@@ -510,6 +518,7 @@ describe('GetPublishedReview', () => {
                   ],
                   {
                     author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
                     dataset: datasetReviewWasStarted.datasetId,
                     doi: datasetReviewWasAssignedADoi1.doi,
                     id: datasetReviewId,
@@ -547,6 +556,7 @@ describe('GetPublishedReview', () => {
                   ],
                   {
                     author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
                     otherAuthors: [],
                     anonymousAuthors: 1,
                     dataset: datasetReviewWasStarted.datasetId,
@@ -600,6 +610,7 @@ describe('GetPublishedReview', () => {
                   ],
                   {
                     author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
                     otherAuthors: [{ orcidId: invited3Accepted.orcidId, persona: invited3Persona2.persona }],
                     anonymousAuthors: 2,
                     dataset: datasetReviewWasStarted.datasetId,
@@ -638,6 +649,7 @@ describe('GetPublishedReview', () => {
                   ],
                   {
                     author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
                     otherAuthors: [],
                     anonymousAuthors: 0,
                     dataset: datasetReviewWasStarted.datasetId,

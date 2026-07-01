@@ -1,4 +1,5 @@
 import { Array, Either, MutableHashMap, MutableHashSet, Option, pipe, Struct, type Types } from 'effect'
+import type { ClubId } from '../../Clubs/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
@@ -9,6 +10,7 @@ export interface PublishedReview {
   author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
   otherAuthors?: Array<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>
   anonymousAuthors?: number
+  clubId: Option.Option<ClubId>
   dataset: Datasets.DatasetId
   doi: Doi.Doi
   id: Uuid.Uuid
@@ -168,6 +170,11 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
     Struct.get('competingInterests'),
   )
 
+  const clubId = Option.andThen(
+    Array.findLast(filteredEvents, hasTag('DatasetReviewWasAddedToAClub')),
+    Struct.get('clubId'),
+  )
+
   const includeOtherAuthors = Array.some(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview'))
 
   const invitations = MutableHashSet.fromIterable(
@@ -238,6 +245,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
         },
         otherAuthors: includeOtherAuthors ? otherAuthors : undefined,
         anonymousAuthors: includeOtherAuthors ? anonymousAuthors : undefined,
+        clubId,
         dataset: data.datasetReviewWasStarted.datasetId,
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,

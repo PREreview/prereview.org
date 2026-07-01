@@ -11,7 +11,7 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'clubId' | 'dataset'> & {
   readonly author: Personas.Persona
   readonly otherAuthors: ReadonlyArray<Personas.Persona>
   readonly anonymousAuthors: number
