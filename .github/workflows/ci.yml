@@ -126,7 +126,7 @@ jobs:
         uses: actions/checkout@v7.0.0
 
       - name: 'Set up Docker'
-        uses: docker/setup-docker-action@v5.2.0
+        uses: docker/setup-docker-action@v5.3.0
 
       - name: 'Set up Docker Build'
         uses: docker/setup-buildx-action@v4.1.0
@@ -381,7 +381,7 @@ jobs:
         uses: actions/checkout@v7.0.0
 
       - name: 'Set up Docker'
-        uses: docker/setup-docker-action@v5.2.0
+        uses: docker/setup-docker-action@v5.3.0
 
       - name: 'Download image'
         uses: actions/download-artifact@v8.0.1
@@ -523,7 +523,7 @@ jobs:
 
     steps:
       - name: 'Set up Docker'
-        uses: docker/setup-docker-action@v5.2.0
+        uses: docker/setup-docker-action@v5.3.0
 
       - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@1.6
