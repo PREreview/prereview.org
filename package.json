@@ -100,7 +100,7 @@
     "html-validate": "^11.5.3",
     "iso-639-3": "^2.2.0",
     "oauth2-mock-server": "^9.0.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.16",
     "postcss-font-display": "^0.3.0",
     "postcss-preset-env": "^11.3.1",
     "postcss-rtlcss": "^6.0.0",
