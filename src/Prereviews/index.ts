@@ -35,7 +35,9 @@ export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>>
-    getForClub: (id: ClubId) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview>, PrereviewsAreUnavailable>
+    getForClub: (
+      id: ClubId,
+    ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
     getForProfile: (
       profile: ProfileId,
@@ -120,12 +122,23 @@ export const layer = Layer.effect(
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(id), {
             fetch,
             getPreprintTitle,
+            publicUrl,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
             ...loggerEnv,
           })
         },
+        Effect.andThen(
+          Effect.forEach(
+            Match.valueTags({
+              RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+              DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
+            }),
+            { concurrency: 'inherit' },
+          ),
+        ),
         Effect.mapError(() => new PrereviewsAreUnavailable()),
+        Effect.provide(context),
       ),
       getForPreprint: Effect.fn('Prereviews.getForPreprint')(
         function* (id) {

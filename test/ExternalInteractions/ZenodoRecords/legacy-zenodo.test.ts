@@ -2658,6 +2658,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
   it.effect.prop(
     'when the PREreviews can be loaded',
     [
+      fc.origin(),
       fc.clubId(),
       fc.preprintTitle(),
       fc.preprintTitle(),
@@ -2667,7 +2668,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         fc.integer({ min: 2 }).map(number => [number, [{ name: `${number} other authors` }]] as const),
       ),
     ],
-    ([club, preprint1, preprint2, [expectedAnonymous, otherAuthors]]) =>
+    ([publicUrl, club, preprint1, preprint2, [expectedAnonymous, otherAuthors]]) =>
       Effect.gen(function* () {
         const records: Records = {
           hits: {
@@ -2826,7 +2827,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .getOnce({
                   url: 'https://zenodo.org/api/communities/prereview-reviews/records',
                   query: {
-                    q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                    q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                       Array.map(
                         getClubNameAndFormerNames(club),
                         name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
@@ -2851,6 +2852,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
+            publicUrl,
           }),
         )
 
@@ -2879,7 +2881,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       }),
   )
 
-  it.effect.prop('when there are no Prereviews', [fc.clubId()], ([club]) =>
+  it.effect.prop('when there are no Prereviews', [fc.origin(), fc.clubId()], ([publicUrl, club]) =>
     Effect.gen(function* () {
       const actual = yield* Effect.promise(
         _.getPrereviewsForClubFromZenodo(club)({
@@ -2889,7 +2891,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               .getOnce({
                 url: 'https://zenodo.org/api/communities/prereview-reviews/records',
                 query: {
-                  q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                  q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                     Array.map(
                       getClubNameAndFormerNames(club),
                       name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
@@ -2910,6 +2912,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           getPreprintTitle: shouldNotBeCalled,
           clock: SystemClock,
           logger: () => IO.of(undefined),
+          publicUrl,
         }),
       )
 
@@ -2920,18 +2923,19 @@ describe('getPrereviewsForClubFromZenodo', () => {
   it.effect.prop(
     'when the PREreviews cannot be loaded',
     [
+      fc.origin(),
       fc.clubId(),
       fc.integer({
         min: 400,
         max: 599,
       }),
     ],
-    ([club, status]) =>
+    ([publicUrl, club, status]) =>
       Effect.gen(function* () {
         const fetch = fetchMock.createInstance().getOnce({
           url: 'https://zenodo.org/api/communities/prereview-reviews/records',
           query: {
-            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+            q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
               Array.map(
                 getClubNameAndFormerNames(club),
                 name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
@@ -2952,6 +2956,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
             fetch: (...args) => fetch.fetchHandler(...args),
             getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
+            publicUrl,
           }),
         )
 
@@ -2962,8 +2967,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
   it.effect.prop(
     'when a preprint cannot be loaded',
-    [fc.clubId(), fc.preprintTitle(), fc.constantFrom(new PreprintIsNotFound({}), new PreprintIsUnavailable({}))],
-    ([club, preprint, error]) =>
+    [
+      fc.origin(),
+      fc.clubId(),
+      fc.preprintTitle(),
+      fc.constantFrom(new PreprintIsNotFound({}), new PreprintIsUnavailable({})),
+    ],
+    ([publicUrl, club, preprint, error]) =>
       Effect.gen(function* () {
         const records: Records = {
           hits: {
@@ -3075,7 +3085,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .getOnce({
                   url: 'https://zenodo.org/api/communities/prereview-reviews/records',
                   query: {
-                    q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                    q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                       Array.map(
                         getClubNameAndFormerNames(club),
                         name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
@@ -3100,6 +3110,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
+            publicUrl,
           }),
         )
 
@@ -3121,8 +3132,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
   it.effect.prop(
     'when a review is not part of the club',
-    [fc.clubId(), fc.preprintTitle(), fc.preprintTitle()],
-    ([club, preprint1, preprint2]) =>
+    [fc.origin(), fc.clubId(), fc.preprintTitle(), fc.preprintTitle()],
+    ([publicUrl, club, preprint1, preprint2]) =>
       Effect.gen(function* () {
         const records: Records = {
           hits: {
@@ -3181,7 +3192,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .getOnce({
                   url: 'https://zenodo.org/api/communities/prereview-reviews/records',
                   query: {
-                    q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                    q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                       Array.map(
                         getClubNameAndFormerNames(club),
                         name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
@@ -3206,6 +3217,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
+            publicUrl,
           }),
         )
 

@@ -413,20 +413,23 @@ export const getPrereviewsForUserFromZenodo = flow(
 
 export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
   pipe(
-    new URLSearchParams({
-      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
-        Array.map(
-          getClubNameAndFormerNames(club),
-          name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
-        ),
-        ' OR ',
-      )})`,
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-peerreview',
-      access_status: 'open',
-    }),
-    getCommunityRecords('prereview-reviews'),
+    RTE.asks(
+      ({ publicUrl }: PublicUrlEnv) =>
+        new URLSearchParams({
+          q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
+            Array.map(
+              getClubNameAndFormerNames(club),
+              name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+            ),
+            ' OR ',
+          )})`,
+          size: '100',
+          sort: 'publication-desc',
+          resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
+        }),
+    ),
+    RTE.chainW(getCommunityRecords('prereview-reviews')),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(5000)),
     RTE.orElseFirstW(
@@ -446,14 +449,19 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
     RTE.chainReaderTaskKW(
       flow(
         records => records.hits.hits,
-        RT.traverseArray(recordToRecentPrereview),
+        RT.traverseArray(record =>
+          pipe(
+            recordToRecentDatasetPrereview(record),
+            RTE.altW(() => recordToRecentPrereview(record)),
+          ),
+        ),
         RT.map(Array.map(FptsToEffect.either)),
         RT.map(Array.getRights),
       ),
     ),
     RTE.bimap(
       () => 'unavailable' as const,
-      Array.filter(recentPrereview => recentPrereview.club === club),
+      Array.filter(recentPrereview => recentPrereview._tag === 'DatasetReview' || recentPrereview.club === club),
     ),
   )
 
