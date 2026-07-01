@@ -29,7 +29,7 @@ const addedDifferentClub = new Events.DatasetReviewWasAddedToAClub({
   clubId: 'd3e62606-0367-44b9-8d52-b75e0e7e5ba7',
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new DatasetReviews.UnknownDatasetReview({}))],
   ['not in a club', [started], input, Either.right(Option.some(added))],
   ['already in the club', [started, added], input, Either.right(Option.none())],
