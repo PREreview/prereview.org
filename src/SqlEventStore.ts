@@ -44,7 +44,8 @@ export const make: Effect.Effect<
         type TEXT NOT NULL,
         timestamp TIMESTAMPTZ DEFAULT (now() AT TIME ZONE 'utc'),
         payload JSONB NOT NULL,
-        position SERIAL
+        position SERIAL,
+        UNIQUE (position)
       )
     `,
     orElse: () => sql`
@@ -66,6 +67,15 @@ export const make: Effect.Effect<
 
       CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
     `,
+    orElse: () => Effect.void,
+  })
+
+  yield* sql.onDialectOrElse({
+    pg: () =>
+      sql`
+        ALTER TABLE events
+        ADD CONSTRAINT events_position_key UNIQUE (position);
+      `.pipe(Effect.ignoreLogged),
     orElse: () => Effect.void,
   })
 
