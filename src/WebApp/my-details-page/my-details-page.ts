@@ -235,40 +235,42 @@ export function createPage({
             `,
           )
           .exhaustive()}
-        ${Option.isSome(contactEmailAddress) && contactEmailAddress.value._tag === 'VerifiedContactEmailAddress'
-          ? pipe(
-              Match.value(requestedReviewNotifications),
-              Match.when(
-                false,
-                () => html`
-                  <div>
-                    <dt>${t('requestedReviewNotifications')()}</dt>
-                    <dd>${t('requestedReviewNotificationsOff')()}</dd>
-                    <dd>
-                      <a href="${Routes.ChangeRequestedReviewNotifications}"
-                        >${t('changeRequestedReviewNotifications')(visuallyHidden)}</a
-                      >
-                    </dd>
-                  </div>
-                `,
-              ),
-              Match.when(
-                true,
-                () => html`
-                  <div>
-                    <dt>${t('requestedReviewNotifications')()}</dt>
-                    <dd>${t('requestedReviewNotificationsOn')()}</dd>
-                    <dd>
-                      <a href="${Routes.ChangeRequestedReviewNotifications}"
-                        >${t('changeRequestedReviewNotifications')(visuallyHidden)}</a
-                      >
-                    </dd>
-                  </div>
-                `,
-              ),
-              Match.exhaustive,
-            )
-          : ''}
+        ${
+          Option.isSome(contactEmailAddress) && contactEmailAddress.value._tag === 'VerifiedContactEmailAddress'
+            ? pipe(
+                Match.value(requestedReviewNotifications),
+                Match.when(
+                  false,
+                  () => html`
+                    <div>
+                      <dt>${t('requestedReviewNotifications')()}</dt>
+                      <dd>${t('requestedReviewNotificationsOff')()}</dd>
+                      <dd>
+                        <a href="${Routes.ChangeRequestedReviewNotifications}"
+                          >${t('changeRequestedReviewNotifications')(visuallyHidden)}</a
+                        >
+                      </dd>
+                    </div>
+                  `,
+                ),
+                Match.when(
+                  true,
+                  () => html`
+                    <div>
+                      <dt>${t('requestedReviewNotifications')()}</dt>
+                      <dd>${t('requestedReviewNotificationsOn')()}</dd>
+                      <dd>
+                        <a href="${Routes.ChangeRequestedReviewNotifications}"
+                          >${t('changeRequestedReviewNotifications')(visuallyHidden)}</a
+                        >
+                      </dd>
+                    </div>
+                  `,
+                ),
+                Match.exhaustive,
+              )
+            : ''
+        }
         ${match(slackUser)
           .when(Option.isNone, () => '')
           .when(

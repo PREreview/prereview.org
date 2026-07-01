@@ -35,9 +35,11 @@ export const toPage = ({
           <aside
             id="${response.type}-details"
             tabindex="0"
-            aria-label="${response.type === 'dataset'
-              ? translate(locale, `${response.type}-reviews-page`, `${response.type}Details`)()
-              : translate(locale, `${response.type}-reviews`, `${response.type}Details`)()}"
+            aria-label="${
+              response.type === 'dataset'
+                ? translate(locale, `${response.type}-reviews-page`, `${response.type}Details`)()
+                : translate(locale, `${response.type}-reviews`, `${response.type}Details`)()
+            }"
           >
             ${response.aside}
           </aside>

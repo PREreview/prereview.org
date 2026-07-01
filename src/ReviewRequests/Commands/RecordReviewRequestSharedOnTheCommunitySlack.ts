@@ -39,32 +39,30 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
-    Match.valueTags(state, {
-      NotShared: () =>
-        Either.right(
-          Option.some(
-            new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
-              channelId: command.channelId,
-              messageTimestamp: command.messageTimestamp,
-              reviewRequestId: command.reviewRequestId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  Match.valueTags(state, {
+    NotShared: () =>
+      Either.right(
+        Option.some(
+          new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+            channelId: command.channelId,
+            messageTimestamp: command.messageTimestamp,
+            reviewRequestId: command.reviewRequestId,
+          }),
         ),
-      HasBeenShared: ({ channelId, messageTimestamp }) =>
-        Boolean.match(
-          Boolean.and(
-            Equal.equals(command.channelId, channelId),
-            Equal.equals(command.messageTimestamp, messageTimestamp),
-          ),
-          {
-            onTrue: () => Either.right(Option.none()),
-            onFalse: () => Either.left(new Errors.ReviewRequestWasAlreadySharedOnTheCommunitySlack()),
-          },
+      ),
+    HasBeenShared: ({ channelId, messageTimestamp }) =>
+      Boolean.match(
+        Boolean.and(
+          Equal.equals(command.channelId, channelId),
+          Equal.equals(command.messageTimestamp, messageTimestamp),
         ),
-    }),
+        {
+          onTrue: () => Either.right(Option.none()),
+          onFalse: () => Either.left(new Errors.ReviewRequestWasAlreadySharedOnTheCommunitySlack()),
+        },
+      ),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

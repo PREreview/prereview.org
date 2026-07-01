@@ -15,72 +15,74 @@ export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
     main: html`
       <h1>${t('doNotKnowPreprint')()}</h1>
 
-      ${preprint._tag === 'PhilsciPreprintId'
-        ? html`
-            <p>
-              ${t('urlCouldBePhilsci')({
-                url: html`<q class="select-all" dir="auto" translate="no"
-                  >https://philsci-archive.pitt.edu/${preprint.value}/</q
-                >`,
-              })}
-            </p>
+      ${
+        preprint._tag === 'PhilsciPreprintId'
+          ? html`
+              <p>
+                ${t('urlCouldBePhilsci')({
+                  url: html`<q class="select-all" dir="auto" translate="no"
+                    >https://philsci-archive.pitt.edu/${preprint.value}/</q
+                  >`,
+                })}
+              </p>
 
-            <p>${t('checkCorrectUrl')()}</p>
+              <p>${t('checkCorrectUrl')()}</p>
 
-            <p>${t('checkPastedUrl')()}</p>
+              <p>${t('checkPastedUrl')()}</p>
 
-            <p>${t('urlIsCorrect')({ contact: mailToHelp })}</p>
-          `
-        : html`
-            <p>
-              ${Match.valueTags(preprint, {
-                AdvancePreprintId: () => t('doiCouldBeAdvance'),
-                AfricarxivFigsharePreprintId: () => t('doiCouldBeAfricarxiv'),
-                AfricarxivOsfPreprintId: () => t('doiCouldBeAfricarxiv'),
-                AfricarxivUbuntunetPreprintId: () => t('doiCouldBeAfricarxiv'),
-                AfricarxivZenodoPreprintId: () => t('doiCouldBeAfricarxiv'),
-                ArcadiaSciencePreprintId: () => t('doiCouldBeArcadiaScience'),
-                ArxivPreprintId: () => t('doiCouldBeArxiv'),
-                AuthoreaPreprintId: () => t('doiCouldBeAuthorea'),
-                BiorxivPreprintId: () => t('doiCouldBeBiorxiv'),
-                BiorxivOrMedrxivPreprintId: () => t('doiCouldBeBiorxivMedrxiv'),
-                ChemrxivPreprintId: () => t('doiCouldBeChemrxiv'),
-                CurvenotePreprintId: () => t('doiCouldBeCurvenote'),
-                EartharxivPreprintId: () => t('doiCouldBeEartharxiv'),
-                EcoevorxivPreprintId: () => t('doiCouldBeEcoevorxiv'),
-                EdarxivPreprintId: () => t('doiCouldBeEdarxiv'),
-                EngrxivPreprintId: () => t('doiCouldBeEngrxiv'),
-                JmirPreprintId: () => t('doiCouldBeJmir'),
-                JxivPreprintId: () => t('doiCouldBeJxiv'),
-                LifecycleJournalPreprintId: () => t('doiCouldBeLifecycleJournal'),
-                MedrxivPreprintId: () => t('doiCouldBeMedrxiv'),
-                MetaarxivPreprintId: () => t('doiCouldBeMetaarxiv'),
-                NeurolibrePreprintId: () => t('doiCouldBeNeurolibre'),
-                OsfPreprintId: () => t('doiCouldBeOsf'),
-                OsfPreprintsPreprintId: () => t('doiCouldBeOsf'),
-                OsfOrLifecycleJournalPreprintId: () => t('doiCouldBeOsfLifecycleJournal'),
-                PreprintsorgPreprintId: () => t('doiCouldBePreprintsorg'),
-                PsyarxivPreprintId: () => t('doiCouldBePsyarxiv'),
-                PsychArchivesPreprintId: () => t('doiCouldBePsycharchives'),
-                ResearchSquarePreprintId: () => t('doiCouldBeResearchSquare'),
-                ScieloPreprintId: () => t('doiCouldBeScielo'),
-                ScienceOpenPreprintId: () => t('doiCouldBeScienceOpen'),
-                SocarxivPreprintId: () => t('doiCouldBeSocarxiv'),
-                SsrnPreprintId: () => t('doiCouldBeSsrn'),
-                TechrxivPreprintId: () => t('doiCouldBeTechrxiv'),
-                UmsidaPreprintId: () => t('doiCouldBeUmsida'),
-                VerixivPreprintId: () => t('doiCouldBeVerixiv'),
-                ZenodoPreprintId: () => t('doiCouldBeZenodo'),
-                ZenodoOrAfricarxivPreprintId: () => t('doiCouldBeZenodoAfricarxiv'),
-              })({ doi: html`<q class="select-all" dir="auto" translate="no">${preprint.value}</q>` })}
-            </p>
+              <p>${t('urlIsCorrect')({ contact: mailToHelp })}</p>
+            `
+          : html`
+              <p>
+                ${Match.valueTags(preprint, {
+                  AdvancePreprintId: () => t('doiCouldBeAdvance'),
+                  AfricarxivFigsharePreprintId: () => t('doiCouldBeAfricarxiv'),
+                  AfricarxivOsfPreprintId: () => t('doiCouldBeAfricarxiv'),
+                  AfricarxivUbuntunetPreprintId: () => t('doiCouldBeAfricarxiv'),
+                  AfricarxivZenodoPreprintId: () => t('doiCouldBeAfricarxiv'),
+                  ArcadiaSciencePreprintId: () => t('doiCouldBeArcadiaScience'),
+                  ArxivPreprintId: () => t('doiCouldBeArxiv'),
+                  AuthoreaPreprintId: () => t('doiCouldBeAuthorea'),
+                  BiorxivPreprintId: () => t('doiCouldBeBiorxiv'),
+                  BiorxivOrMedrxivPreprintId: () => t('doiCouldBeBiorxivMedrxiv'),
+                  ChemrxivPreprintId: () => t('doiCouldBeChemrxiv'),
+                  CurvenotePreprintId: () => t('doiCouldBeCurvenote'),
+                  EartharxivPreprintId: () => t('doiCouldBeEartharxiv'),
+                  EcoevorxivPreprintId: () => t('doiCouldBeEcoevorxiv'),
+                  EdarxivPreprintId: () => t('doiCouldBeEdarxiv'),
+                  EngrxivPreprintId: () => t('doiCouldBeEngrxiv'),
+                  JmirPreprintId: () => t('doiCouldBeJmir'),
+                  JxivPreprintId: () => t('doiCouldBeJxiv'),
+                  LifecycleJournalPreprintId: () => t('doiCouldBeLifecycleJournal'),
+                  MedrxivPreprintId: () => t('doiCouldBeMedrxiv'),
+                  MetaarxivPreprintId: () => t('doiCouldBeMetaarxiv'),
+                  NeurolibrePreprintId: () => t('doiCouldBeNeurolibre'),
+                  OsfPreprintId: () => t('doiCouldBeOsf'),
+                  OsfPreprintsPreprintId: () => t('doiCouldBeOsf'),
+                  OsfOrLifecycleJournalPreprintId: () => t('doiCouldBeOsfLifecycleJournal'),
+                  PreprintsorgPreprintId: () => t('doiCouldBePreprintsorg'),
+                  PsyarxivPreprintId: () => t('doiCouldBePsyarxiv'),
+                  PsychArchivesPreprintId: () => t('doiCouldBePsycharchives'),
+                  ResearchSquarePreprintId: () => t('doiCouldBeResearchSquare'),
+                  ScieloPreprintId: () => t('doiCouldBeScielo'),
+                  ScienceOpenPreprintId: () => t('doiCouldBeScienceOpen'),
+                  SocarxivPreprintId: () => t('doiCouldBeSocarxiv'),
+                  SsrnPreprintId: () => t('doiCouldBeSsrn'),
+                  TechrxivPreprintId: () => t('doiCouldBeTechrxiv'),
+                  UmsidaPreprintId: () => t('doiCouldBeUmsida'),
+                  VerixivPreprintId: () => t('doiCouldBeVerixiv'),
+                  ZenodoPreprintId: () => t('doiCouldBeZenodo'),
+                  ZenodoOrAfricarxivPreprintId: () => t('doiCouldBeZenodoAfricarxiv'),
+                })({ doi: html`<q class="select-all" dir="auto" translate="no">${preprint.value}</q>` })}
+              </p>
 
-            <p>${t('checkCorrectDoi')()}</p>
+              <p>${t('checkCorrectDoi')()}</p>
 
-            <p>${t('checkPastedDoi')()}</p>
+              <p>${t('checkPastedDoi')()}</p>
 
-            <p>${t('doiIsCorrect')({ contact: mailToHelp })}</p>
-          `}
+              <p>${t('doiIsCorrect')({ contact: mailToHelp })}</p>
+            `
+      }
 
       <a href="${Routes.RequestAReview}" class="button">${t('forms', 'backLink')()}</a>
     `,

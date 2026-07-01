@@ -17,18 +17,20 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
     nav: html`<a href="${Routes.HomePage}" class="back">${t('forms', 'backLink')()}</a>`,
     main: html`
       <form method="post" action="${Routes.RequestAReview}" novalidate>
-        ${hasAnError
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  <li>
-                    <a href="#which-preprint">${t('request-a-prereview-page', 'errorEnterPreprint')()}</a>
-                  </li>
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          hasAnError
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    <li>
+                      <a href="#which-preprint">${t('request-a-prereview-page', 'errorEnterPreprint')()}</a>
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(hasAnError ? 'class="error"' : '')}>
           <h1>
@@ -58,14 +60,16 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
             </div>
           </details>
 
-          ${hasAnError && Either.isLeft(form.whichPreprint)
-            ? html`
-                <div class="error-message" id="which-preprint-error">
-                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${t('request-a-prereview-page', 'errorEnterPreprint')()}
-                </div>
-              `
-            : ''}
+          ${
+            hasAnError && Either.isLeft(form.whichPreprint)
+              ? html`
+                  <div class="error-message" id="which-preprint-error">
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                    ${t('request-a-prereview-page', 'errorEnterPreprint')()}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             id="which-preprint"
@@ -75,13 +79,15 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
             dir="ltr"
             spellcheck="false"
             aria-describedby="which-preprint-tip"
-            ${hasAnError && Either.isLeft(form.whichPreprint)
-              ? html`aria-invalid="true" aria-errormessage="which-preprint-error"
-                ${Match.valueTags(form.whichPreprint.left, {
-                  Invalid: ({ value }) => html`value="${value}"`,
-                  Missing: () => '',
-                })}`
-              : ''}
+            ${
+              hasAnError && Either.isLeft(form.whichPreprint)
+                ? html`aria-invalid="true" aria-errormessage="which-preprint-error"
+                  ${Match.valueTags(form.whichPreprint.left, {
+                    Invalid: ({ value }) => html`value="${value}"`,
+                    Missing: () => '',
+                  })}`
+                : ''
+            }
           />
         </div>
 

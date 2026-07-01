@@ -67,34 +67,32 @@ const foldStateWithPertinentEvent = (
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
-    Match.valueTags(state, {
-      NotCategorized: () =>
-        Either.right(
-          Option.some(
-            new Events.ReviewRequestForAPreprintWasCategorized({
-              language: command.language,
-              keywords: command.keywords,
-              topics: command.topics,
-              reviewRequestId: command.reviewRequestId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  Match.valueTags(state, {
+    NotCategorized: () =>
+      Either.right(
+        Option.some(
+          new Events.ReviewRequestForAPreprintWasCategorized({
+            language: command.language,
+            keywords: command.keywords,
+            topics: command.topics,
+            reviewRequestId: command.reviewRequestId,
+          }),
         ),
-      HasBeenCategorized: state =>
-        Boolean.match(
-          Boolean.every([
-            Equal.equals(command.language, state.language),
-            Equal.equals(Data.array(command.keywords), Data.array(state.keywords)),
-            Equal.equals(Data.array(command.topics), Data.array(state.topics)),
-          ]),
-          {
-            onTrue: () => Either.right(Option.none()),
-            onFalse: () => Either.right(Option.some(constructRecategorizationEvent(state, command))),
-          },
-        ),
-    }),
+      ),
+    HasBeenCategorized: state =>
+      Boolean.match(
+        Boolean.every([
+          Equal.equals(command.language, state.language),
+          Equal.equals(Data.array(command.keywords), Data.array(state.keywords)),
+          Equal.equals(Data.array(command.topics), Data.array(state.topics)),
+        ]),
+        {
+          onTrue: () => Either.right(Option.none()),
+          onFalse: () => Either.right(Option.some(constructRecategorizationEvent(state, command))),
+        },
+      ),
+  }),
 )
 
 const constructRecategorizationEvent = (

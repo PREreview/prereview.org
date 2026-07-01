@@ -11,9 +11,7 @@ export interface Input {
 }
 
 export type Error =
-  | Errors.DatasetReviewHasNotBeenStarted
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewHasBeenPublished
+  Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewHasBeenPublished
 
 type State = NotStarted | NotAnswered | HasBeenAnswered | IsBeingPublished | HasBeenPublished
 

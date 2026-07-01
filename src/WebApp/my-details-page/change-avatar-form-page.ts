@@ -31,28 +31,32 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
           enctype="multipart/form-data"
           novalidate
         >
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                  <ul>
-                    ${E.isLeft(form.avatar)
-                      ? html`
-                          <li>
-                            <a href="#avatar">
-                              ${Match.valueTags(form.avatar.left, {
-                                MissingE: () => t('selectImageError')(),
-                                WrongTypeE: () => t('imageTypeError')(),
-                                TooBigE: () => t('imageSizeError')({ size: 5 }),
-                              })}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
-              `
-            : ''}
+          ${
+            error
+              ? html`
+                  <error-summary aria-labelledby="error-summary-title" role="alert">
+                    <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                    <ul>
+                      ${
+                        E.isLeft(form.avatar)
+                          ? html`
+                              <li>
+                                <a href="#avatar">
+                                  ${Match.valueTags(form.avatar.left, {
+                                  MissingE: () => t('selectImageError')(),
+                                  WrongTypeE: () => t('imageTypeError')(),
+                                  TooBigE: () => t('imageSizeError')({ size: 5 }),
+                                })}
+                                </a>
+                              </li>
+                            `
+                          : ''
+                      }
+                    </ul>
+                  </error-summary>
+                `
+              : ''
+          }
 
           <div ${rawHtml(E.isLeft(form.avatar) ? 'class="error"' : '')}>
             <h1><label for="avatar">${t('uploadAnAvatar')()}</label></h1>
@@ -67,18 +71,20 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
               </div>
             </details>
 
-            ${E.isLeft(form.avatar)
-              ? html`
-                  <div class="error-message" id="avatar-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.avatar.left, {
-                      MissingE: () => t('selectImageError')(),
-                      WrongTypeE: () => t('imageTypeError')(),
-                      TooBigE: () => t('imageSizeError')({ size: 5 }),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              E.isLeft(form.avatar)
+                ? html`
+                    <div class="error-message" id="avatar-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.avatar.left, {
+                        MissingE: () => t('selectImageError')(),
+                        WrongTypeE: () => t('imageTypeError')(),
+                        TooBigE: () => t('imageSizeError')({ size: 5 }),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <input
               name="avatar"

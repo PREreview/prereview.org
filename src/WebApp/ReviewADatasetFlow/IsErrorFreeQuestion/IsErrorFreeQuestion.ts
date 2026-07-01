@@ -49,16 +49,18 @@ export const IsErrorFreeQuestion = ({
 
               <p id="is-error-free-tip" role="note">${t('relativelyErrorFreeTip')()}</p>
 
-              ${hasAnError && Either.isLeft(form.isErrorFree)
-                ? html`
-                    <div class="error-message" id="is-error-free-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.isErrorFree.left, {
-                        Missing: () => t('selectRelativelyErrorFree')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.isErrorFree)
+                  ? html`
+                      <div class="error-message" id="is-error-free-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.isErrorFree.left, {
+                          Missing: () => t('selectRelativelyErrorFree')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -92,15 +94,10 @@ export const IsErrorFreeQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isErrorFreeYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isErrorFreeYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form => Option.getOrElse(Option.flatten(Either.getRight(form.isErrorFreeYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isErrorFreeYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -134,15 +131,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isErrorFreePartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isErrorFreePartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.isErrorFreePartlyDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isErrorFreePartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -176,15 +169,10 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isErrorFreeNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isErrorFreeNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form => Option.getOrElse(Option.flatten(Either.getRight(form.isErrorFreeNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isErrorFreeNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

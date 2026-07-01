@@ -67,16 +67,18 @@ export function personaForm({
               </div>
             </details>
 
-            ${E.isLeft(form.persona)
-              ? html`
-                  <div class="error-message" id="persona-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.persona.left, {
-                      MissingE: t('selectTheNameYouWouldLikeToUse'),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              E.isLeft(form.persona)
+                ? html`
+                    <div class="error-message" id="persona-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.persona.left, {
+                        MissingE: t('selectTheNameYouWouldLikeToUse'),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -124,15 +126,17 @@ export function personaForm({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: PersonaForm) => html`
-  ${E.isLeft(form.persona)
-    ? html`
-        <li>
-          <a href="#persona-public">
-            ${Match.valueTags(form.persona.left, {
-              MissingE: translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.persona)
+      ? html`
+          <li>
+            <a href="#persona-public">
+              ${Match.valueTags(form.persona.left, {
+                MissingE: translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

@@ -45,8 +45,4 @@ export class CommentPublished extends Data.TaggedClass('CommentPublished')<{
 }> {}
 
 export type CommentState =
-  | CommentNotStarted
-  | CommentInProgress
-  | CommentReadyForPublishing
-  | CommentBeingPublished
-  | CommentPublished
+  CommentNotStarted | CommentInProgress | CommentReadyForPublishing | CommentBeingPublished | CommentPublished

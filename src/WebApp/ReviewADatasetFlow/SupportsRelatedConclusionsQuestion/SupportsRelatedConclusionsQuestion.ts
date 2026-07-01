@@ -50,16 +50,18 @@ export const SupportsRelatedConclusionsQuestion = ({
                 <h1>${t('supportsConclusion')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.supportsRelatedConclusions)
-                ? html`
-                    <div class="error-message" id="supports-related-conclusions-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
-                      ${Match.valueTags(form.supportsRelatedConclusions.left, {
-                        Missing: () => t('selectSupportsConclusion')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.supportsRelatedConclusions)
+                  ? html`
+                      <div class="error-message" id="supports-related-conclusions-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
+                        ${Match.valueTags(form.supportsRelatedConclusions.left, {
+                          Missing: () => t('selectSupportsConclusion')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -93,16 +95,11 @@ export const SupportsRelatedConclusionsQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.supportsRelatedConclusionsYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.supportsRelatedConclusionsYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.supportsRelatedConclusionsYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.supportsRelatedConclusionsYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -136,16 +133,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.supportsRelatedConclusionsPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.supportsRelatedConclusionsPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.supportsRelatedConclusionsPartlyDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.supportsRelatedConclusionsPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -179,16 +171,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.supportsRelatedConclusionsNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.supportsRelatedConclusionsNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.supportsRelatedConclusionsNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.supportsRelatedConclusionsNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

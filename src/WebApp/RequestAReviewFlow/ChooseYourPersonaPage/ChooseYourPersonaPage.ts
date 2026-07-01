@@ -66,16 +66,18 @@ export function ChooseYourPersonaPage({
               </div>
             </details>
 
-            ${hasAnError && Either.isLeft(form.chooseYourPersona)
-              ? html`
-                  <div class="error-message" id="choose-your-persona-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.chooseYourPersona.left, {
-                      Missing: t('selectNameYouWouldLikeToUse'),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              hasAnError && Either.isLeft(form.chooseYourPersona)
+                ? html`
+                    <div class="error-message" id="choose-your-persona-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.chooseYourPersona.left, {
+                        Missing: t('selectNameYouWouldLikeToUse'),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -135,15 +137,17 @@ export function ChooseYourPersonaPage({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
-  ${Either.isLeft(form.chooseYourPersona)
-    ? html`
-        <li>
-          <a href="#choose-your-persona-public">
-            ${Match.valueTags(form.chooseYourPersona.left, {
-              Missing: translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.chooseYourPersona)
+      ? html`
+          <li>
+            <a href="#choose-your-persona-public">
+              ${Match.valueTags(form.chooseYourPersona.left, {
+                Missing: translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

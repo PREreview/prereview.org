@@ -27,44 +27,50 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
     >`,
     main: html`
       <form method="post" action="${format(changeContactEmailAddressMatch.formatter, {})}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.emailAddress)
-                    ? html`
-                        <li>
-                          <a href="#email-address">
-                            ${Match.valueTags(form.emailAddress.left, {
-                              MissingE: () => t('enterEmailAddressError')(),
-                              InvalidE: () => t('enterEmailAddressFormatError')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.emailAddress)
+                        ? html`
+                            <li>
+                              <a href="#email-address">
+                                ${Match.valueTags(form.emailAddress.left, {
+                                MissingE: () => t('enterEmailAddressError')(),
+                                InvalidE: () => t('enterEmailAddressFormatError')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${error ? html`class="error"` : ''}>
           <h1><label for="email-address">${t('whatEmailAddress')()}</label></h1>
 
           <p id="email-address-tip" role="note">${t('usedToContactYouAboutYourAccountAndPrereviews')()}</p>
 
-          ${E.isLeft(form.emailAddress)
-            ? html`
-                <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.emailAddress.left, {
-                    MissingE: () => t('enterEmailAddressError')(),
-                    InvalidE: () => t('enterEmailAddressFormatError')(),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            E.isLeft(form.emailAddress)
+              ? html`
+                  <div class="error-message" id="email-address-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.emailAddress.left, {
+                      MissingE: () => t('enterEmailAddressError')(),
+                      InvalidE: () => t('enterEmailAddressFormatError')(),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="emailAddress"

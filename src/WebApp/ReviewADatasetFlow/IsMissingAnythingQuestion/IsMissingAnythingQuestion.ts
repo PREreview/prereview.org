@@ -45,8 +45,7 @@ export const IsMissingAnythingQuestion = ({
               ></textarea>`,
             CompletedForm: form =>
               html`<textarea id="is-missing-anything" name="isMissingAnything" placeholder=" " dir="auto" rows="5">
-${Option.getOrElse(form.isMissingAnything, () => String.empty)}</textarea
-              >`,
+${Option.getOrElse(form.isMissingAnything, () => String.empty)}</textarea>`,
           })}
         </div>
 

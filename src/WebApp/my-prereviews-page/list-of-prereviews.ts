@@ -90,13 +90,15 @@ export const toResponse = (
                     })}
                   </a>
 
-                  ${prereview.subfields.length > 0
-                    ? html`
-                        <ul class="categories">
-                          ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
-                        </ul>
-                      `
-                    : ''}
+                  ${
+                    prereview.subfields.length > 0
+                      ? html`
+                          <ul class="categories">
+                            ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
+                          </ul>
+                        `
+                      : ''
+                  }
 
                   <dl>
                     <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
@@ -111,19 +113,23 @@ export const toResponse = (
               <li>
                 <article>
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                    ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
-                      ? html`${authorList(prereview, locale)} reviewed
-                          <cite ${languageAttributesFor(prereview.dataset.language)}>${prereview.dataset.title}</cite>`
-                      : translate(
-                          locale,
-                          'dataset-reviews-list',
-                          'reviewText',
-                        )({
-                          reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
-                          dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                            >${prereview.dataset.title}</cite
-                          >`,
-                        })}
+                    ${
+                      prereview.otherAuthors.length + prereview.anonymousAuthors > 0
+                        ? html`${authorList(prereview, locale)} reviewed
+                            <cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            >`
+                        : translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewText',
+                          )({
+                            reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            >`,
+                          })
+                    }
                   </a>
 
                   <dl>

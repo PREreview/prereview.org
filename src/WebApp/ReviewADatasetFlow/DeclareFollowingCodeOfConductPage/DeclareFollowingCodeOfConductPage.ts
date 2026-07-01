@@ -85,16 +85,18 @@ export const DeclareFollowingCodeOfConductPage = ({
               </div>
             </details>
 
-            ${hasAnError && Either.isLeft(form.followingCodeOfConduct)
-              ? html`
-                  <div class="error-message" id="following-code-of-conduct-error">
-                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.followingCodeOfConduct.left, {
-                      Missing: () => t('confirmCodeOfConduct')(),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              hasAnError && Either.isLeft(form.followingCodeOfConduct)
+                ? html`
+                    <div class="error-message" id="following-code-of-conduct-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.followingCodeOfConduct.left, {
+                        Missing: () => t('confirmCodeOfConduct')(),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <label>
               <input

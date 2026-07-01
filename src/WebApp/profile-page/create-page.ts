@@ -66,68 +66,82 @@ function renderContentForOrcidId(
             <dd><a href="https://orcid.org/${orcid}" class="orcid-id">${orcid}</a></dd>
           </div>
 
-          ${slackUser
-            ? html`
-                <div>
-                  <dt>${translate(locale, 'profile-page', 'slackName')()}</dt>
-                  <dd>
-                    <span class="slack">
-                      <img src="${slackUser.image.href}" alt="" width="48" height="48" />
-                      <bdi translate="no">${slackUser.name}</bdi>
-                    </span>
-                  </dd>
-                </div>
-              `
-            : ''}
-          ${careerStage
-            ? html`
-                <div>
-                  <dt>${translate(locale, 'profile-page', 'careerStage')()}</dt>
-                  <dd>${translate(locale, 'profile-page', `careerStage${capitalize(careerStage)}`)()}</dd>
-                </div>
-              `
-            : ''}
-          ${researchInterests
-            ? html`
-                <div>
-                  <dt>${translate(locale, 'profile-page', 'researchInterests')()}</dt>
-                  <dd>${researchInterests}</dd>
-                </div>
-              `
-            : ''}
-          ${location
-            ? html`
-                <div>
-                  <dt>${translate(locale, 'profile-page', 'location')()}</dt>
-                  <dd>${location}</dd>
-                </div>
-              `
-            : ''}
-          ${languages
-            ? html`
-                <div>
-                  <dt>${translate(locale, 'profile-page', 'languages')()}</dt>
-                  <dd>${languages}</dd>
-                </div>
-              `
-            : ''}
-          ${Array.isNonEmptyReadonlyArray(clubs)
-            ? html`
-                <div>
-                  <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>
-                  <dd>
-                    ${pipe(
-                      clubs,
-                      Array.map(
-                        club =>
-                          html`<a href="${Routes.ClubProfile.href({ id: club })}" dir="auto">${getClubName(club)}</a>`,
-                      ),
-                      formatList(locale),
-                    )}
-                  </dd>
-                </div>
-              `
-            : ''}
+          ${
+            slackUser
+              ? html`
+                  <div>
+                    <dt>${translate(locale, 'profile-page', 'slackName')()}</dt>
+                    <dd>
+                      <span class="slack">
+                        <img src="${slackUser.image.href}" alt="" width="48" height="48" />
+                        <bdi translate="no">${slackUser.name}</bdi>
+                      </span>
+                    </dd>
+                  </div>
+                `
+              : ''
+          }
+          ${
+            careerStage
+              ? html`
+                  <div>
+                    <dt>${translate(locale, 'profile-page', 'careerStage')()}</dt>
+                    <dd>${translate(locale, 'profile-page', `careerStage${capitalize(careerStage)}`)()}</dd>
+                  </div>
+                `
+              : ''
+          }
+          ${
+            researchInterests
+              ? html`
+                  <div>
+                    <dt>${translate(locale, 'profile-page', 'researchInterests')()}</dt>
+                    <dd>${researchInterests}</dd>
+                  </div>
+                `
+              : ''
+          }
+          ${
+            location
+              ? html`
+                  <div>
+                    <dt>${translate(locale, 'profile-page', 'location')()}</dt>
+                    <dd>${location}</dd>
+                  </div>
+                `
+              : ''
+          }
+          ${
+            languages
+              ? html`
+                  <div>
+                    <dt>${translate(locale, 'profile-page', 'languages')()}</dt>
+                    <dd>${languages}</dd>
+                  </div>
+                `
+              : ''
+          }
+          ${
+            Array.isNonEmptyReadonlyArray(clubs)
+              ? html`
+                  <div>
+                    <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>
+                    <dd>
+                      ${pipe(
+                        clubs,
+                        Array.map(
+                          club =>
+                            html`<a href="${Routes.ClubProfile.href({ id: club })}" dir="auto"
+                              >${getClubName(club)}</a
+                            >`,
+                        ),
+                        formatList(locale),
+                      )}
+                    </dd>
+                  </div>
+                `
+              : ''
+          }
         </dl>
       </div>
 
@@ -136,24 +150,30 @@ function renderContentForOrcidId(
 
     <h2>${translate(locale, 'profile-page', 'prereviewsTitle')()}</h2>
 
-    ${isOpenForRequests
-      ? html`
-          <div class="inset">
-            ${name
-              ? translate(locale, 'profile-page', 'openForRequests')({ name })
-              : translate(locale, 'profile-page', 'openForRequestsAnonymous')()}
-            ${slackUser
-              ? translate(
-                  locale,
-                  'profile-page',
-                  'contactSlack',
-                )({
-                  link: text => html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`,
-                })
-              : ''}
-          </div>
-        `
-      : ''}
+    ${
+      isOpenForRequests
+        ? html`
+            <div class="inset">
+              ${
+                name
+                  ? translate(locale, 'profile-page', 'openForRequests')({ name })
+                  : translate(locale, 'profile-page', 'openForRequestsAnonymous')()
+              }
+              ${
+                slackUser
+                  ? translate(
+                      locale,
+                      'profile-page',
+                      'contactSlack',
+                    )({
+                      link: text => html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`,
+                    })
+                  : ''
+              }
+            </div>
+          `
+        : ''
+    }
     ${renderListOfPrereviews(prereviews, name, locale)}
   `
 }

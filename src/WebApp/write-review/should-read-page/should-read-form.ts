@@ -39,26 +39,30 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
     `,
     main: html`
       <form method="post" action="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.shouldRead)
-                    ? html`
-                        <li>
-                          <a href="#should-read-yes">
-                            ${Match.valueTags(form.shouldRead.left, {
-                              MissingE: () => t('selectWouldRecommend')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.shouldRead)
+                        ? html`
+                            <li>
+                              <a href="#should-read-yes">
+                                ${Match.valueTags(form.shouldRead.left, {
+                                MissingE: () => t('selectWouldRecommend')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.shouldRead) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -70,16 +74,18 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
                 <h1>${t('wouldRecommend')()}</h1>
               </legend>
 
-              ${E.isLeft(form.shouldRead)
-                ? html`
-                    <div class="error-message" id="should-read-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.shouldRead.left, {
-                        MissingE: () => t('selectWouldRecommend')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.shouldRead)
+                  ? html`
+                      <div class="error-message" id="should-read-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.shouldRead.left, {
+                          MissingE: () => t('selectWouldRecommend')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -108,9 +114,8 @@ export function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, lo
                         rows="5"
                       >
 ${match(form.shouldReadYesDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -141,9 +146,8 @@ ${match(form.shouldReadYesDetails)
                         rows="5"
                       >
 ${match(form.shouldReadYesButDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -172,9 +176,8 @@ ${match(form.shouldReadYesButDetails)
                         rows="5"
                       >
 ${match(form.shouldReadNoDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>

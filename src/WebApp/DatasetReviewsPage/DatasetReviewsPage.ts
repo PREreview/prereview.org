@@ -77,15 +77,17 @@ export const createDatasetReviewsPage = ({
           </dl>
         </header>
 
-        ${dataset.abstract
-          ? html`
-              <h3>${t('abstractHeading')()}</h3>
+        ${
+          dataset.abstract
+            ? html`
+                <h3>${t('abstractHeading')()}</h3>
 
-              <div ${languageAttributesFor(dataset.abstract.language)}>
-                ${fixHeadingLevels(3, dataset.abstract.text)}
-              </div>
-            `
-          : ''}
+                <div ${languageAttributesFor(dataset.abstract.language)}>
+                  ${fixHeadingLevels(3, dataset.abstract.text)}
+                </div>
+              `
+            : ''
+        }
 
         <a href="${dataset.url.href}" class="button">${t('seeDataset')()}</a>
       </article>

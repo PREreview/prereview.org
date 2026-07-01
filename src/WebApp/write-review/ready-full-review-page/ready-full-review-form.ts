@@ -39,26 +39,30 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
     `,
     main: html`
       <form method="post" action="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.readyFullReview)
-                    ? html`
-                        <li>
-                          <a href="#ready-full-review-yes">
-                            ${Match.valueTags(form.readyFullReview.left, {
-                              MissingE: () => t('selectReadyForAttention')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.readyFullReview)
+                        ? html`
+                            <li>
+                              <a href="#ready-full-review-yes">
+                                ${Match.valueTags(form.readyFullReview.left, {
+                                MissingE: () => t('selectReadyForAttention')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.readyFullReview) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -72,16 +76,18 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
                 <h1>${t('readyForAttention')()}</h1>
               </legend>
 
-              ${E.isLeft(form.readyFullReview)
-                ? html`
-                    <div class="error-message" id="ready-full-review-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.readyFullReview.left, {
-                        MissingE: () => t('selectReadyForAttention')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.readyFullReview)
+                  ? html`
+                      <div class="error-message" id="ready-full-review-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.readyFullReview.left, {
+                          MissingE: () => t('selectReadyForAttention')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -112,9 +118,8 @@ export function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullRevi
                         rows="5"
                       >
 ${match(form.readyFullReviewYesDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -145,9 +150,8 @@ ${match(form.readyFullReviewYesDetails)
                         rows="5"
                       >
 ${match(form.readyFullReviewYesChangesDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -178,9 +182,8 @@ ${match(form.readyFullReviewYesChangesDetails)
                         rows="5"
                       >
 ${match(form.readyFullReviewNoDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>

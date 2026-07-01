@@ -10,9 +10,7 @@ export interface Command {
 }
 
 export type Error =
-  | Errors.DatasetReviewHasNotBeenStarted
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewHasBeenPublished
+  Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewHasBeenPublished
 
 export type State = NotStarted | NotDeclared | HasBeenDeclared | IsBeingPublished | HasBeenPublished
 
@@ -73,36 +71,34 @@ export const authorize: {
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-      HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
-      NotDeclared: () =>
-        Either.right(
-          Option.some(
-            new Events.CompetingInterestsForADatasetReviewWereDeclared({
-              competingInterests: command.competingInterests,
-              datasetReviewId: command.datasetReviewId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    NotDeclared: () =>
+      Either.right(
+        Option.some(
+          new Events.CompetingInterestsForADatasetReviewWereDeclared({
+            competingInterests: command.competingInterests,
+            datasetReviewId: command.datasetReviewId,
+          }),
         ),
-      HasBeenDeclared: ({ competingInterests }) =>
-        Boolean.match(Equal.equals(command.competingInterests, competingInterests), {
-          onTrue: () => Either.right(Option.none()),
-          onFalse: () =>
-            Either.right(
-              Option.some(
-                new Events.CompetingInterestsForADatasetReviewWereDeclared({
-                  competingInterests: command.competingInterests,
-                  datasetReviewId: command.datasetReviewId,
-                }),
-              ),
+      ),
+    HasBeenDeclared: ({ competingInterests }) =>
+      Boolean.match(Equal.equals(command.competingInterests, competingInterests), {
+        onTrue: () => Either.right(Option.none()),
+        onFalse: () =>
+          Either.right(
+            Option.some(
+              new Events.CompetingInterestsForADatasetReviewWereDeclared({
+                competingInterests: command.competingInterests,
+                datasetReviewId: command.datasetReviewId,
+              }),
             ),
-        }),
-    }),
+          ),
+      }),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

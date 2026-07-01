@@ -44,16 +44,18 @@ export function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, lo
               <h1>${t('howWouldYouLikeToStart')()}</h1>
             </legend>
 
-            ${E.isLeft(form.reviewType)
-              ? html`
-                  <div class="error-message" id="review-type-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.reviewType.left, {
-                      MissingE: () => t('selectHowToStart')(),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              E.isLeft(form.reviewType)
+                ? html`
+                    <div class="error-message" id="review-type-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.reviewType.left, {
+                        MissingE: () => t('selectHowToStart')(),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>

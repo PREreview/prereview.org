@@ -46,16 +46,18 @@ export const IsReadyToBeSharedQuestion = ({
                 <h1>${t('readyToBeShared')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.isReadyToBeShared)
-                ? html`
-                    <div class="error-message" id="is-ready-to-be-shared-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.isReadyToBeShared.left, {
-                        Missing: () => t('selectReadyToBeShared')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.isReadyToBeShared)
+                  ? html`
+                      <div class="error-message" id="is-ready-to-be-shared-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.isReadyToBeShared.left, {
+                          Missing: () => t('selectReadyToBeShared')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -87,15 +89,11 @@ export const IsReadyToBeSharedQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isReadyToBeSharedYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isReadyToBeSharedYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.isReadyToBeSharedYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isReadyToBeSharedYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -127,15 +125,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isReadyToBeSharedNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isReadyToBeSharedNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.isReadyToBeSharedNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isReadyToBeSharedNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

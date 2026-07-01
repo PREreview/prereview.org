@@ -45,26 +45,30 @@ export const personaForm = (
     `,
     main: html`
       <form method="post" action="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.persona)
-                    ? html`
-                        <li>
-                          <a href="#persona-public">
-                            ${Match.valueTags(form.persona.left, {
-                              MissingE: () => t('selectTheNameError')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.persona)
+                        ? html`
+                            <li>
+                              <a href="#persona-public">
+                                ${Match.valueTags(form.persona.left, {
+                                MissingE: () => t('selectTheNameError')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.persona) ? 'class="error"' : '')}>
           <fieldset
@@ -93,16 +97,18 @@ export const personaForm = (
               </div>
             </details>
 
-            ${E.isLeft(form.persona)
-              ? html`
-                  <div class="error-message" id="persona-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.persona.left, {
-                      MissingE: () => t('selectTheNameError')(),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              E.isLeft(form.persona)
+                ? html`
+                    <div class="error-message" id="persona-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.persona.left, {
+                        MissingE: () => t('selectTheNameError')(),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>

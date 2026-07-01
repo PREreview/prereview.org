@@ -25,33 +25,37 @@ export const ReviewPublishedPage = ({
         </div>
       </div>
 
-      ${typeof datasetReview.otherAuthors === 'boolean'
-        ? datasetReview.otherAuthors
-          ? html`
+      ${
+        typeof datasetReview.otherAuthors === 'boolean'
+          ? datasetReview.otherAuthors
+            ? html`
+                <h2>${t('whatHappensNext')()}</h2>
+
+                <p>${t('invitedEmailsSent')()}</p>
+              `
+            : ''
+          : html`
               <h2>${t('whatHappensNext')()}</h2>
 
-              <p>${t('invitedEmailsSent')()}</p>
+              <p>
+                ${t('inviteOthers')({
+                  emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
+                    ><bdi translate="no">help@prereview.org</bdi
+                    ><span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
+                  >`,
+                })}
+              </p>
+            `
+      }
+      ${
+        datasetReview.persona === 'public'
+          ? html`
+              <h2>${t('shareYourReview')()}</h2>
+
+              <p>${t('shareYourReviewText')()}</p>
             `
           : ''
-        : html`
-            <h2>${t('whatHappensNext')()}</h2>
-
-            <p>
-              ${t('inviteOthers')({
-                emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-                  ><bdi translate="no">help@prereview.org</bdi
-                  ><span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
-                >`,
-              })}
-            </p>
-          `}
-      ${datasetReview.persona === 'public'
-        ? html`
-            <h2>${t('shareYourReview')()}</h2>
-
-            <p>${t('shareYourReviewText')()}</p>
-          `
-        : ''}
+      }
 
       <h2>${t('letUsKnowHowItWent')()}</h2>
 

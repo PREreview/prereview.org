@@ -6,12 +6,7 @@ import type { Page } from '../page.ts'
 import type { FlashMessageSchema } from './FlashMessage.ts'
 
 export type Response =
-  | PageResponse
-  | StreamlinePageResponse
-  | TwoUpPageResponse
-  | RedirectResponse
-  | FlashMessageResponse
-  | LogInResponse
+  PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | FlashMessageResponse | LogInResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'

@@ -55,22 +55,23 @@ export function addMultipleAuthorsForm({
               <pre>
 Josiah Carberry    carberry@example.com
 Minerva McGonagall mcgonagall@example.com
-</pre
-              >
+</pre>
             </div>
           </details>
 
-          ${E.isLeft(form.authors)
-            ? html`
-                <div class="error-message" id="authors-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.authors.left, {
-                    InvalidE: () => t('namesAndEmailAddressInvalidFormat')(),
-                    MissingE: () => t('namesAndEmailAddressMissing')(),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            E.isLeft(form.authors)
+              ? html`
+                  <div class="error-message" id="authors-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.authors.left, {
+                      InvalidE: () => t('namesAndEmailAddressInvalidFormat')(),
+                      MissingE: () => t('namesAndEmailAddressMissing')(),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <textarea
             name="authors"
@@ -83,12 +84,11 @@ Minerva McGonagall mcgonagall@example.com
             ${E.isLeft(form.authors) ? html`aria-invalid="true" aria-errormessage="authors-error"` : ''}
           >
 ${match(form.authors)
-              .with({ right: P.select(P.string) }, identity)
-              .with({ right: undefined }, () => '')
-              .with({ left: { _tag: 'InvalidE', actual: P.select() } }, identity)
-              .with({ left: { _tag: 'MissingE' } }, () => '')
-              .exhaustive()}</textarea
-          >
+  .with({ right: P.select(P.string) }, identity)
+  .with({ right: undefined }, () => '')
+  .with({ left: { _tag: 'InvalidE', actual: P.select() } }, identity)
+  .with({ left: { _tag: 'MissingE' } }, () => '')
+  .exhaustive()}</textarea>
         </div>
 
         ${saveAndContinueButton(locale)}
@@ -105,16 +105,18 @@ export interface AddMultipleAuthorsForm {
 }
 
 const toErrorItems = (form: AddMultipleAuthorsForm, locale: SupportedLocale) => html`
-  ${E.isLeft(form.authors)
-    ? html`
-        <li>
-          <a href="#authors">
-            ${Match.valueTags(form.authors.left, {
-              InvalidE: () => translate(locale, 'write-review', 'namesAndEmailAddressInvalidFormat')(),
-              MissingE: () => translate(locale, 'write-review', 'namesAndEmailAddressMissing')(),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.authors)
+      ? html`
+          <li>
+            <a href="#authors">
+              ${Match.valueTags(form.authors.left, {
+                InvalidE: () => translate(locale, 'write-review', 'namesAndEmailAddressInvalidFormat')(),
+                MissingE: () => translate(locale, 'write-review', 'namesAndEmailAddressMissing')(),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

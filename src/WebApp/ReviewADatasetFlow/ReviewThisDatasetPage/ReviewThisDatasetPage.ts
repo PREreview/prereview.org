@@ -53,13 +53,15 @@ export const ReviewThisDatasetPage = ({
           </dl>
         </header>
 
-        ${dataset.abstract
-          ? html`
-              <div ${languageAttributesFor(dataset.abstract.language)}>
-                ${fixHeadingLevels(2, dataset.abstract.text)}
-              </div>
-            `
-          : ''}
+        ${
+          dataset.abstract
+            ? html`
+                <div ${languageAttributesFor(dataset.abstract.language)}>
+                  ${fixHeadingLevels(2, dataset.abstract.text)}
+                </div>
+              `
+            : ''
+        }
       </article>
 
       <p>

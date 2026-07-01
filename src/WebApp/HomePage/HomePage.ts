@@ -115,69 +115,73 @@ export const createPage = ({
                         </h3>
 
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${prereview.club
-                            ? translate(
-                                locale,
-                                'reviews-list',
-                                'clubReviewText',
-                              )({
-                                club: html`<b dir="auto">${getClubName(prereview.club)}</b>`,
-                                numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                                reviewers: pipe(
-                                  prereview.reviewers.named,
-                                  Array.appendAll(
-                                    prereview.reviewers.anonymous > 0
-                                      ? [
-                                          translate(
-                                            locale,
-                                            'reviews-list',
-                                            'otherAuthors',
-                                          )({ number: prereview.reviewers.anonymous }),
-                                        ]
-                                      : [],
+                          ${
+                            prereview.club
+                              ? translate(
+                                  locale,
+                                  'reviews-list',
+                                  'clubReviewText',
+                                )({
+                                  club: html`<b dir="auto">${getClubName(prereview.club)}</b>`,
+                                  numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                                  reviewers: pipe(
+                                    prereview.reviewers.named,
+                                    Array.appendAll(
+                                      prereview.reviewers.anonymous > 0
+                                        ? [
+                                            translate(
+                                              locale,
+                                              'reviews-list',
+                                              'otherAuthors',
+                                            )({ number: prereview.reviewers.anonymous }),
+                                          ]
+                                        : [],
+                                    ),
+                                    formatList(locale),
                                   ),
-                                  formatList(locale),
-                                ),
-                                preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                                  >${prereview.preprint.title}</cite
-                                >`,
-                              })
-                            : translate(
-                                locale,
-                                'reviews-list',
-                                'reviewText',
-                              )({
-                                numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                                reviewers: pipe(
-                                  prereview.reviewers.named,
-                                  Array.appendAll(
-                                    prereview.reviewers.anonymous > 0
-                                      ? [
-                                          translate(
-                                            locale,
-                                            'reviews-list',
-                                            'otherAuthors',
-                                          )({ number: prereview.reviewers.anonymous }),
-                                        ]
-                                      : [],
+                                  preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                                    >${prereview.preprint.title}</cite
+                                  >`,
+                                })
+                              : translate(
+                                  locale,
+                                  'reviews-list',
+                                  'reviewText',
+                                )({
+                                  numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                                  reviewers: pipe(
+                                    prereview.reviewers.named,
+                                    Array.appendAll(
+                                      prereview.reviewers.anonymous > 0
+                                        ? [
+                                            translate(
+                                              locale,
+                                              'reviews-list',
+                                              'otherAuthors',
+                                            )({ number: prereview.reviewers.anonymous }),
+                                          ]
+                                        : [],
+                                    ),
+                                    formatList(locale),
                                   ),
-                                  formatList(locale),
-                                ),
-                                preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
-                                  >${prereview.preprint.title}</cite
-                                >`,
-                              })}
+                                  preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                                    >${prereview.preprint.title}</cite
+                                  >`,
+                                })
+                          }
                         </a>
 
-                        ${prereview.subfields.length > 0
-                          ? html`
-                              <ul class="categories">
-                                ${prereview.subfields.map(
-                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
-                                )}
-                              </ul>
-                            `
-                          : ''}
+                        ${
+                          prereview.subfields.length > 0
+                            ? html`
+                                <ul class="categories">
+                                  ${prereview.subfields.map(
+                                    subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                                  )}
+                                </ul>
+                              `
+                            : ''
+                        }
 
                         <dl>
                           <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
@@ -204,21 +208,23 @@ export const createPage = ({
                         </h3>
 
                         <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                          ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
-                            ? html`${authorList(prereview, locale)} reviewed
-                                <cite ${languageAttributesFor(prereview.dataset.language)}
-                                  >${prereview.dataset.title}</cite
-                                >`
-                            : translate(
-                                locale,
-                                'dataset-reviews-list',
-                                'reviewText',
-                              )({
-                                reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
-                                dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                                  >${prereview.dataset.title}</cite
-                                >`,
-                              })}
+                          ${
+                            prereview.otherAuthors.length + prereview.anonymousAuthors > 0
+                              ? html`${authorList(prereview, locale)} reviewed
+                                  <cite ${languageAttributesFor(prereview.dataset.language)}
+                                    >${prereview.dataset.title}</cite
+                                  >`
+                              : translate(
+                                  locale,
+                                  'dataset-reviews-list',
+                                  'reviewText',
+                                )({
+                                  reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                                  dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                                    >${prereview.dataset.title}</cite
+                                  >`,
+                                })
+                          }
                         </a>
 
                         <dl>
@@ -282,13 +288,15 @@ export const createPage = ({
                         })}
                       </a>
 
-                      ${request.subfields.length > 0
-                        ? html`
-                            <ul class="categories">
-                              ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
-                            </ul>
-                          `
-                        : ''}
+                      ${
+                        request.subfields.length > 0
+                          ? html`
+                              <ul class="categories">
+                                ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
+                              </ul>
+                            `
+                          : ''
+                      }
 
                       <dl>
                         <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>

@@ -73,17 +73,19 @@ export function useOfAiForm(
                 <h2>${t('write-review', otherAuthors ? 'didAuthorsUseAi' : 'didYouUseAi')()}</h2>
               </legend>
 
-              ${E.isLeft(form.generativeAiIdeas)
-                ? html`
-                    <div class="error-message" id="generative-ai-ideas-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.generativeAiIdeas.left, {
-                        MissingE: () =>
-                          t('write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.generativeAiIdeas)
+                  ? html`
+                      <div class="error-message" id="generative-ai-ideas-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.generativeAiIdeas.left, {
+                          MissingE: () =>
+                            t('write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -128,16 +130,18 @@ export function useOfAiForm(
 }
 
 const toErrorItems = (otherAuthors: boolean, locale: SupportedLocale) => (form: UseOfAiForm) => html`
-  ${E.isLeft(form.generativeAiIdeas)
-    ? html`
-        <li>
-          <a href="#generative-ai-ideas-no">
-            ${Match.valueTags(form.generativeAiIdeas.left, {
-              MissingE: () =>
-                translate(locale, 'write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.generativeAiIdeas)
+      ? html`
+          <li>
+            <a href="#generative-ai-ideas-no">
+              ${Match.valueTags(form.generativeAiIdeas.left, {
+                MissingE: () =>
+                  translate(locale, 'write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

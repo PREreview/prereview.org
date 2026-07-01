@@ -90,26 +90,28 @@ export const renderStartNowPage = ({
 
       <p>${t('author-invite-flow', 'invitedToAppear')()}</p>
 
-      ${!isLoggedIn
-        ? html`
-            <h2>${t('author-invite-flow', 'beforeYouStart')()}</h2>
+      ${
+        !isLoggedIn
+          ? html`
+              <h2>${t('author-invite-flow', 'beforeYouStart')()}</h2>
 
-            <p>${t('author-invite-flow', 'weWillAskYouToLogInWithYourOrcid')()}</p>
+              <p>${t('author-invite-flow', 'weWillAskYouToLogInWithYourOrcid')()}</p>
 
-            <details>
-              <summary>${t('author-invite-flow', 'whatIsAnOrcid')()}</summary>
+              <details>
+                <summary>${t('author-invite-flow', 'whatIsAnOrcid')()}</summary>
 
-              <div>
-                <p>
-                  ${t(
-                    'author-invite-flow',
-                    'orcidExplainer',
-                  )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>` })}
-                </p>
-              </div>
-            </details>
-          `
-        : ''}
+                <div>
+                  <p>
+                    ${t(
+                      'author-invite-flow',
+                      'orcidExplainer',
+                    )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>` })}
+                  </p>
+                </div>
+              </details>
+            `
+          : ''
+      }
 
       <a
         href="${Routes.AuthorInviteAcceptInvite.href({ invitationId: viewModel.invitationId })}"

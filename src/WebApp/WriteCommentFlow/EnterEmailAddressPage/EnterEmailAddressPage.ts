@@ -31,33 +31,37 @@ export const EnterEmailAddressPage = ({
     `,
     main: html`
       <form method="post" action="${Routes.WriteCommentEnterEmailAddress.href({ commentId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${Either.isLeft(form.emailAddress)
-                    ? html`
-                        <li>
-                          <a href="#email-address">
-                            ${pipe(
-                              Match.value(form.emailAddress.left),
-                              Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
-                              ),
-                              Match.tag('Invalid', () =>
-                                translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
-                              ),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          form._tag === 'InvalidForm'
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      Either.isLeft(form.emailAddress)
+                        ? html`
+                            <li>
+                              <a href="#email-address">
+                                ${pipe(
+                                Match.value(form.emailAddress.left),
+                                Match.tag('Missing', () =>
+                                  translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
+                                ),
+                                Match.tag('Invalid', () =>
+                                  translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
+                                ),
+                                Match.exhaustive,
+                              )}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <h1>${translate(locale, 'write-comment-flow', 'contactDetailsTitle')()}</h1>
 
@@ -72,21 +76,23 @@ export const EnterEmailAddressPage = ({
             >
           </h2>
 
-          ${form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
-            ? html`
-                <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${pipe(
-                    Match.value(form.emailAddress.left),
-                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')()),
-                    Match.tag('Invalid', () =>
-                      translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
-                    ),
-                    Match.exhaustive,
-                  )}
-                </div>
-              `
-            : ''}
+          ${
+            form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+              ? html`
+                  <div class="error-message" id="email-address-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${pipe(
+                      Match.value(form.emailAddress.left),
+                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')()),
+                      Match.tag('Invalid', () =>
+                        translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
+                      ),
+                      Match.exhaustive,
+                    )}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="emailAddress"
@@ -105,9 +111,11 @@ export const EnterEmailAddressPage = ({
               ),
               Match.orElse(() => ''),
             )}
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
-              ? html`aria-invalid="true" aria-errormessage="email-address-error"`
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+                ? html`aria-invalid="true" aria-errormessage="email-address-error"`
+                : ''
+            }
           />
         </div>
 

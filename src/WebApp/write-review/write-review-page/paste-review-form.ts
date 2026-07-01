@@ -30,26 +30,30 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
     `,
     main: html`
       <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.review)
-                    ? html`
-                        <li>
-                          <a href="#review">
-                            ${Match.valueTags(form.review.left, {
-                              MissingE: () => t('write-review', 'pasteYourReviewError')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.review)
+                        ? html`
+                            <li>
+                              <a href="#review">
+                                ${Match.valueTags(form.review.left, {
+                                MissingE: () => t('write-review', 'pasteYourReviewError')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
           <h1>
@@ -58,16 +62,18 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
 
           <p id="review-tip" role="note">${t('write-review', 'copyAndPasteReview')()}</p>
 
-          ${E.isLeft(form.review)
-            ? html`
-                <div class="error-message" id="review-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.review.left, {
-                    MissingE: () => t('write-review', 'pasteYourReviewError')(),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            E.isLeft(form.review)
+              ? html`
+                  <div class="error-message" id="review-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.review.left, {
+                      MissingE: () => t('write-review', 'pasteYourReviewError')(),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <html-editor>
             ${match(form.review)
@@ -95,8 +101,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
                     rows="20"
                     aria-describedby="review-tip"
                   >
-${turndown.turndown(review.toString())}</textarea
-                  >
+${turndown.turndown(review.toString())}</textarea>
                   <textarea hidden disabled>${review}</textarea>
                 `,
               )

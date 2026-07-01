@@ -65,18 +65,20 @@ export const renderChooseYourPersonaPage = ({
               </div>
             </details>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.chooseYourPersona)
-              ? html`
-                  <div class="error-message" id="choose-your-persona-error">
-                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.chooseYourPersona.left),
-                      Match.tag('Missing', t('selectTheNameYouWouldLikeToUse')),
-                      Match.exhaustive,
-                    )}
-                  </div>
-                `
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.chooseYourPersona)
+                ? html`
+                    <div class="error-message" id="choose-your-persona-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${pipe(
+                        Match.value(form.chooseYourPersona.left),
+                        Match.tag('Missing', t('selectTheNameYouWouldLikeToUse')),
+                        Match.exhaustive,
+                      )}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -136,17 +138,19 @@ export const renderChooseYourPersonaPage = ({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: ChooseYourPersonaForm.InvalidForm) => html`
-  ${Either.isLeft(form.chooseYourPersona)
-    ? html`
-        <li>
-          <a href="#choose-your-persona-public">
-            ${pipe(
-              Match.value(form.chooseYourPersona.left),
-              Match.tag('Missing', translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse')),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.chooseYourPersona)
+      ? html`
+          <li>
+            <a href="#choose-your-persona-public">
+              ${pipe(
+                Match.value(form.chooseYourPersona.left),
+                Match.tag('Missing', translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse')),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

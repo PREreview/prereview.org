@@ -33,22 +33,20 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      AlreadyHasARecord: () => Either.left(new Errors.DatasetReviewAlreadyHasAZenodoRecord({})),
-      DoesNotHaveARecord: () =>
-        Either.right(
-          Option.some(
-            new Events.ZenodoRecordForDatasetReviewWasCreated({
-              recordId: command.recordId,
-              datasetReviewId: command.datasetReviewId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    AlreadyHasARecord: () => Either.left(new Errors.DatasetReviewAlreadyHasAZenodoRecord({})),
+    DoesNotHaveARecord: () =>
+      Either.right(
+        Option.some(
+          new Events.ZenodoRecordForDatasetReviewWasCreated({
+            recordId: command.recordId,
+            datasetReviewId: command.datasetReviewId,
+          }),
         ),
-    }),
+      ),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

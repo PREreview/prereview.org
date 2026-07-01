@@ -33,27 +33,31 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
     `,
     main: html`
       <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.review)
-                    ? html`
-                        <li>
-                          <a href="#review">
-                            ${Match.valueTags(form.review.left, {
-                              MissingE: () => t('write-review', 'enterYourReviewError')(),
-                              InvalidE: () => t('write-review', 'enterYourReviewError')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.review)
+                        ? html`
+                            <li>
+                              <a href="#review">
+                                ${Match.valueTags(form.review.left, {
+                                MissingE: () => t('write-review', 'enterYourReviewError')(),
+                                InvalidE: () => t('write-review', 'enterYourReviewError')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
           <h1>
@@ -91,17 +95,19 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
             </div>
           </details>
 
-          ${E.isLeft(form.review)
-            ? html`
-                <div class="error-message" id="review-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.review.left, {
-                    MissingE: () => t('write-review', 'enterYourReviewError')(),
-                    InvalidE: () => t('write-review', 'enterYourReviewError')(),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            E.isLeft(form.review)
+              ? html`
+                  <div class="error-message" id="review-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.review.left, {
+                      MissingE: () => t('write-review', 'enterYourReviewError')(),
+                      InvalidE: () => t('write-review', 'enterYourReviewError')(),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <html-editor>
             ${match(form.review)
@@ -116,8 +122,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
                     rows="20"
                     aria-describedby="review-tip"
                   >
-${template(locale)}</textarea
-                  >
+${template(locale)}</textarea>
                   <textarea hidden disabled>${markdownIt().render(template(locale))}</textarea>
                 `,
               )
@@ -132,8 +137,7 @@ ${template(locale)}</textarea
                     rows="20"
                     aria-describedby="review-tip"
                   >
-${turndown.turndown(review.toString())}</textarea
-                  >
+${turndown.turndown(review.toString())}</textarea>
                   <textarea hidden disabled>${review}</textarea>
                 `,
               )
@@ -165,8 +169,7 @@ ${turndown.turndown(review.toString())}</textarea
                     aria-invalid="true"
                     aria-errormessage="review-error"
                   >
-${turndown.turndown(review)}</textarea
-                  >
+${turndown.turndown(review)}</textarea>
                   <textarea hidden disabled>${rawHtml(review)}</textarea>
                 `,
               )

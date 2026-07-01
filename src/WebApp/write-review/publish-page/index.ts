@@ -258,9 +258,11 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
                   .with('skip', () => t('iDoNotKnow')())
                   .exhaustive()}
               </dd>
-              ${form.introductionMatches !== 'skip' && form.introductionMatchesDetails
-                ? html` <dd>${form.introductionMatchesDetails}</dd>`
-                : ''}
+              ${
+                form.introductionMatches !== 'skip' && form.introductionMatchesDetails
+                  ? html` <dd>${form.introductionMatchesDetails}</dd>`
+                  : ''
+              }
             </div>
             <div>
               <dt>${t('methodsWellSuited')()}</dt>
@@ -274,9 +276,11 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
                   .with('skip', () => t('iDoNotKnow')())
                   .exhaustive()}
               </dd>
-              ${form.methodsAppropriate !== 'skip' && form.methodsAppropriateDetails
-                ? html` <dd>${form.methodsAppropriateDetails}</dd>`
-                : ''}
+              ${
+                form.methodsAppropriate !== 'skip' && form.methodsAppropriateDetails
+                  ? html` <dd>${form.methodsAppropriateDetails}</dd>`
+                  : ''
+              }
             </div>
             <div>
               <dt>${t('conclusionsSupported')()}</dt>
@@ -290,9 +294,11 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
                   .with('skip', () => t('iDoNotKnow')())
                   .exhaustive()}
               </dd>
-              ${form.resultsSupported !== 'skip' && form.resultsSupportedDetails
-                ? html` <dd>${form.resultsSupportedDetails}</dd>`
-                : ''}
+              ${
+                form.resultsSupported !== 'skip' && form.resultsSupportedDetails
+                  ? html` <dd>${form.resultsSupportedDetails}</dd>`
+                  : ''
+              }
             </div>
             <div>
               <dt>${t('dataPresentationWellSuited')()}</dt>
@@ -306,9 +312,11 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
                   .with('skip', () => t('iDoNotKnow')())
                   .exhaustive()}
               </dd>
-              ${form.dataPresentation !== 'skip' && form.dataPresentationDetails
-                ? html` <dd>${form.dataPresentationDetails}</dd>`
-                : ''}
+              ${
+                form.dataPresentation !== 'skip' && form.dataPresentationDetails
+                  ? html` <dd>${form.dataPresentationDetails}</dd>`
+                  : ''
+              }
             </div>
             <div>
               <dt>${t('clearDiscussion')()}</dt>
@@ -322,9 +330,11 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
                   .with('skip', () => t('iDoNotKnow')())
                   .exhaustive()}
               </dd>
-              ${form.findingsNextSteps !== 'skip' && form.findingsNextStepsDetails
-                ? html` <dd>${form.findingsNextStepsDetails}</dd>`
-                : ''}
+              ${
+                form.findingsNextSteps !== 'skip' && form.findingsNextStepsDetails
+                  ? html` <dd>${form.findingsNextStepsDetails}</dd>`
+                  : ''
+              }
             </div>
             <div>
               <dt>${t('advanceKnowledge')()}</dt>

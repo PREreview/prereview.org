@@ -73,13 +73,15 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedI
           </dl>
         </header>
 
-        ${preprint.abstract
-          ? html`
-              <div ${languageAttributesFor(preprint.abstract.language)}>
-                ${fixHeadingLevels(2, preprint.abstract.text)}
-              </div>
-            `
-          : ''}
+        ${
+          preprint.abstract
+            ? html`
+                <div ${languageAttributesFor(preprint.abstract.language)}>
+                  ${fixHeadingLevels(2, preprint.abstract.text)}
+                </div>
+              `
+            : ''
+        }
       </article>
 
       <p>

@@ -26,26 +26,30 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
     nav: html`<a href="${Routes.HomePage}" class="back">${t('forms', 'backLink')()}</a>`,
     main: html`
       <form method="post" action="${format(reviewAPreprintMatch.formatter, {})}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(whichPreprint)
-                    ? html`
-                        <li>
-                          <a href="#preprint">
-                            ${Match.valueTags(whichPreprint.left, {
-                              InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(whichPreprint)
+                        ? html`
+                            <li>
+                              <a href="#preprint">
+                                ${Match.valueTags(whichPreprint.left, {
+                                InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(whichPreprint) ? 'class="error"' : '')}>
           <h1>
@@ -73,16 +77,18 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
             </div>
           </details>
 
-          ${error
-            ? html`
-                <div class="error-message" id="preprint-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(whichPreprint.left, {
-                    InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            error
+              ? html`
+                  <div class="error-message" id="preprint-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(whichPreprint.left, {
+                      InvalidE: () => t('review-a-preprint', 'errorEnterPreprint')(),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             id="preprint"

@@ -10,9 +10,7 @@ export interface Command {
 }
 
 export type Error =
-  | Errors.DatasetReviewHasNotBeenStarted
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewHasBeenPublished
+  Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewHasBeenPublished
 
 export type State = NotStarted | NotChosen | HasBeenChosen | IsBeingPublished | HasBeenPublished
 
@@ -73,36 +71,34 @@ export const authorize: {
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-      HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
-      NotChosen: () =>
-        Either.right(
-          Option.some(
-            new Events.PersonaForDatasetReviewWasChosen({
-              persona: command.persona,
-              datasetReviewId: command.datasetReviewId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    NotChosen: () =>
+      Either.right(
+        Option.some(
+          new Events.PersonaForDatasetReviewWasChosen({
+            persona: command.persona,
+            datasetReviewId: command.datasetReviewId,
+          }),
         ),
-      HasBeenChosen: ({ persona }) =>
-        Boolean.match(Equal.equals(command.persona, persona), {
-          onTrue: () => Either.right(Option.none()),
-          onFalse: () =>
-            Either.right(
-              Option.some(
-                new Events.PersonaForDatasetReviewWasChosen({
-                  persona: command.persona,
-                  datasetReviewId: command.datasetReviewId,
-                }),
-              ),
+      ),
+    HasBeenChosen: ({ persona }) =>
+      Boolean.match(Equal.equals(command.persona, persona), {
+        onTrue: () => Either.right(Option.none()),
+        onFalse: () =>
+          Either.right(
+            Option.some(
+              new Events.PersonaForDatasetReviewWasChosen({
+                persona: command.persona,
+                datasetReviewId: command.datasetReviewId,
+              }),
             ),
-        }),
-    }),
+          ),
+      }),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

@@ -10,9 +10,7 @@ export interface Input {
 }
 
 export type Error =
-  | Errors.UnknownReviewRequest
-  | Errors.ReviewRequestNotReadyToBePublished
-  | Errors.ReviewRequestHasBeenPublished
+  Errors.UnknownReviewRequest | Errors.ReviewRequestNotReadyToBePublished | Errors.ReviewRequestHasBeenPublished
 
 type State = NotStarted | NotReady | IsReady | HasBeenPublished
 

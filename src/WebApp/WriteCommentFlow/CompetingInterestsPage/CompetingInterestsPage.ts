@@ -31,45 +31,51 @@ export const CompetingInterestsPage = ({
     `,
     main: html`
       <form method="post" action="${Routes.WriteCommentCompetingInterests.href({ commentId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${Either.isLeft(form.competingInterests)
-                    ? html`
-                        <li>
-                          <a href="#competing-interests-no">
-                            ${pipe(
-                              Match.value(form.competingInterests.left),
-                              Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
-                              ),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                  ${Either.isLeft(form.competingInterestsDetails)
-                    ? html`
-                        <li>
-                          <a href="#competing-interests-details">
-                            ${pipe(
-                              Match.value(form.competingInterestsDetails.left),
-                              Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
-                              ),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          form._tag === 'InvalidForm'
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      Either.isLeft(form.competingInterests)
+                        ? html`
+                            <li>
+                              <a href="#competing-interests-no">
+                                ${pipe(
+                                Match.value(form.competingInterests.left),
+                                Match.tag('Missing', () =>
+                                  translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
+                                ),
+                                Match.exhaustive,
+                              )}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                    ${
+                      Either.isLeft(form.competingInterestsDetails)
+                        ? html`
+                            <li>
+                              <a href="#competing-interests-details">
+                                ${pipe(
+                                Match.value(form.competingInterestsDetails.left),
+                                Match.tag('Missing', () =>
+                                  translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
+                                ),
+                                Match.exhaustive,
+                              )}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <conditional-inputs>
@@ -111,20 +117,22 @@ export const CompetingInterestsPage = ({
                 </div>
               </details>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterests)
-                ? html`
-                    <div class="error-message" id="competing-interests-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.competingInterests.left),
-                        Match.tag('Missing', () =>
-                          translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
-                        ),
-                        Match.exhaustive,
-                      )}
-                    </div>
-                  `
-                : ''}
+              ${
+                form._tag === 'InvalidForm' && Either.isLeft(form.competingInterests)
+                  ? html`
+                      <div class="error-message" id="competing-interests-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${pipe(
+                          Match.value(form.competingInterests.left),
+                          Match.tag('Missing', () =>
+                            translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
+                          ),
+                          Match.exhaustive,
+                        )}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -171,20 +179,22 @@ export const CompetingInterestsPage = ({
                         >${translate(locale, 'write-comment-flow', 'competingInterestsDetailsTitle')()}</label
                       >
 
-                      ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
-                        ? html`
-                            <div class="error-message" id="competing-interests-details-error">
-                              <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                              ${pipe(
-                                Match.value(form.competingInterestsDetails.left),
-                                Match.tag('Missing', () =>
-                                  translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
-                                ),
-                                Match.exhaustive,
-                              )}
-                            </div>
-                          `
-                        : ''}
+                      ${
+                        form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
+                          ? html`
+                              <div class="error-message" id="competing-interests-details-error">
+                                <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                                ${pipe(
+                                  Match.value(form.competingInterestsDetails.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
+                              </div>
+                            `
+                          : ''
+                      }
 
                       <textarea
                         name="competingInterestsDetails"
@@ -199,11 +209,10 @@ export const CompetingInterestsPage = ({
                         )}
                       >
 ${pipe(
-                          Match.value(form),
-                          Match.tag('CompletedFormYes', form => form.competingInterestsDetails),
-                          Match.orElse(() => ''),
-                        )}</textarea
-                      >
+  Match.value(form),
+  Match.tag('CompletedFormYes', form => form.competingInterestsDetails),
+  Match.orElse(() => ''),
+)}</textarea>
                     </div>
                   </div>
                 </li>

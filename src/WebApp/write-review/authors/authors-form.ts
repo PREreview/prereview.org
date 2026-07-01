@@ -47,16 +47,18 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
 
               <p id="more-authors-tip" role="note">${t('write-review', 'thisCanIncludePeopleWho')()}</p>
 
-              ${E.isLeft(form.moreAuthors)
-                ? html`
-                    <div class="error-message" id="more-authors-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.moreAuthors.left, {
-                        MissingE: t('write-review', 'selectYesIfYouReviewedWithSomeoneElse'),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.moreAuthors)
+                  ? html`
+                      <div class="error-message" id="more-authors-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.moreAuthors.left, {
+                          MissingE: t('write-review', 'selectYesIfYouReviewedWithSomeoneElse'),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -101,16 +103,18 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
                   </label>
                   <div class="conditional" id="more-authors-yes-control">
                     <div ${rawHtml(E.isLeft(form.moreAuthorsApproved) ? 'class="error"' : '')}>
-                      ${E.isLeft(form.moreAuthorsApproved)
-                        ? html`
-                            <div class="error-message" id="more-authors-approved-error">
-                              <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                              ${Match.valueTags(form.moreAuthorsApproved.left, {
-                                MissingE: translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
-                              })}
-                            </div>
-                          `
-                        : ''}
+                      ${
+                        E.isLeft(form.moreAuthorsApproved)
+                          ? html`
+                              <div class="error-message" id="more-authors-approved-error">
+                                <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                                ${Match.valueTags(form.moreAuthorsApproved.left, {
+                                  MissingE: translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
+                                })}
+                              </div>
+                            `
+                          : ''
+                      }
 
                       <label>
                         <input
@@ -146,26 +150,30 @@ export function authorsForm(preprint: PreprintTitle, form: AuthorsForm, locale: 
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: AuthorsForm) => html`
-  ${E.isLeft(form.moreAuthors)
-    ? html`
-        <li>
-          <a href="#more-authors-no">
-            ${Match.valueTags(form.moreAuthors.left, {
-              MissingE: translate(locale, 'write-review', 'selectYesIfYouReviewedWithSomeoneElse'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
-  ${E.isLeft(form.moreAuthorsApproved)
-    ? html`
-        <li>
-          <a href="#more-authors-approved-yes">
-            ${Match.valueTags(form.moreAuthorsApproved.left, {
-              MissingE: translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.moreAuthors)
+      ? html`
+          <li>
+            <a href="#more-authors-no">
+              ${Match.valueTags(form.moreAuthors.left, {
+                MissingE: translate(locale, 'write-review', 'selectYesIfYouReviewedWithSomeoneElse'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
+  ${
+    E.isLeft(form.moreAuthorsApproved)
+      ? html`
+          <li>
+            <a href="#more-authors-approved-yes">
+              ${Match.valueTags(form.moreAuthorsApproved.left, {
+                MissingE: translate(locale, 'write-review', 'confirmOtherAuthorsHaveReadAndApproved'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

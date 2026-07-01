@@ -35,30 +35,34 @@ export const EnterCommentPage = ({
     `,
     main: html`
       <form method="post" action="${Routes.WriteCommentEnterComment.href({ commentId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${Either.isLeft(form.comment)
-                    ? html`
-                        <li>
-                          <a href="#comment">
-                            ${pipe(
-                              Match.value(form.comment.left),
-                              Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorEnterComment')(),
-                              ),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          form._tag === 'InvalidForm'
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      Either.isLeft(form.comment)
+                        ? html`
+                            <li>
+                              <a href="#comment">
+                                ${pipe(
+                                Match.value(form.comment.left),
+                                Match.tag('Missing', () =>
+                                  translate(locale, 'write-comment-flow', 'errorEnterComment')(),
+                                ),
+                                Match.exhaustive,
+                              )}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <h1>
@@ -67,18 +71,20 @@ export const EnterCommentPage = ({
             >
           </h1>
 
-          ${form._tag === 'InvalidForm' && Either.isLeft(form.comment)
-            ? html`
-                <div class="error-message" id="comment-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                  ${pipe(
-                    Match.value(form.comment.left),
-                    Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')()),
-                    Match.exhaustive,
-                  )}
-                </div>
-              `
-            : ''}
+          ${
+            form._tag === 'InvalidForm' && Either.isLeft(form.comment)
+              ? html`
+                  <div class="error-message" id="comment-error">
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                    ${pipe(
+                      Match.value(form.comment.left),
+                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')()),
+                      Match.exhaustive,
+                    )}
+                  </div>
+                `
+              : ''
+          }
 
           <html-editor>
             ${pipe(
@@ -107,8 +113,7 @@ export const EnterCommentPage = ({
                 'CompletedForm',
                 form => html`
                   <textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20">
-${Turndown.turndown(form.comment.toString())}</textarea
-                  >
+${Turndown.turndown(form.comment.toString())}</textarea>
                   <textarea hidden disabled>${form.comment}</textarea>
                 `,
               ),

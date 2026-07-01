@@ -38,26 +38,30 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
     `,
     main: html`
       <form method="post" action="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.languageEditing)
-                    ? html`
-                        <li>
-                          <a href="#language-editing-no">
-                            ${Match.valueTags(form.languageEditing.left, {
-                              MissingE: () => t('selectBenefitFromEditing')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.languageEditing)
+                        ? html`
+                            <li>
+                              <a href="#language-editing-no">
+                                ${Match.valueTags(form.languageEditing.left, {
+                                MissingE: () => t('selectBenefitFromEditing')(),
+                              })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.languageEditing) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -71,16 +75,18 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                 <h1>${t('benefitFromEditing')()}</h1>
               </legend>
 
-              ${E.isLeft(form.languageEditing)
-                ? html`
-                    <div class="error-message" id="language-editing-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.languageEditing.left, {
-                        MissingE: () => t('selectBenefitFromEditing')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.languageEditing)
+                  ? html`
+                      <div class="error-message" id="language-editing-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.languageEditing.left, {
+                          MissingE: () => t('selectBenefitFromEditing')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -113,9 +119,8 @@ export function languageEditingForm(preprint: PreprintTitle, form: LanguageEditi
                         rows="5"
                       >
 ${match(form.languageEditingNoDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -148,9 +153,8 @@ ${match(form.languageEditingNoDetails)
                         rows="5"
                       >
 ${match(form.languageEditingYesDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
