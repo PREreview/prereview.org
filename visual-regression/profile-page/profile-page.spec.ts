@@ -29,7 +29,7 @@ test('content looks right', async ({ showPage }) => {
       researchInterests: NonEmptyString('Psychoceramics'),
       location: NonEmptyString('Providence, Rhode Island'),
       languages: NonEmptyString('English'),
-      clubs: ['asapbio-cancer-biology', 'language-club'],
+      clubs: ['13e21570-0d1a-47f0-b378-b8c20776496a', '998f32b4-ced9-49f8-8042-ce8fe41e62ec'],
       avatar: new URL('https://placehold.co/300x300'),
       isOpenForRequests: true,
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],

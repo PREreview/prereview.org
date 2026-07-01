@@ -46,7 +46,7 @@ test('content looks right when in a club', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
     locale: DefaultLocale,
-    review: { ...review, club: 'hhmi-training-program' },
+    review: { ...review, club: '206ef17f-c5f3-44d3-acee-ba9b1f8299e9' },
     comments: [],
   })
 

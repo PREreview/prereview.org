@@ -104,7 +104,10 @@ export const LegacyRouter = HttpRouter.fromIterable([
     ),
   ),
   MakeRoute('/blog', movedPermanently('https://content.prereview.org/')),
-  MakeRoute('/clubs/hhmi-training-pilot', movedPermanently(Routes.ClubProfile.href({ id: 'hhmi-training-program' }))),
+  MakeRoute(
+    '/clubs/hhmi-training-pilot',
+    movedPermanently(Routes.ClubProfile.href({ id: '206ef17f-c5f3-44d3-acee-ba9b1f8299e9' })),
+  ),
   MakeRoute('/coc', movedPermanently(Routes.CodeOfConduct)),
   MakeRoute('/communities', movedPermanently(Routes.Clubs)),
   MakeRoute(

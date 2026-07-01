@@ -72,7 +72,7 @@ const club2 = {
   leads: [{ name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') }],
 } satisfies Club
 
-const id = 'asapbio-cancer-biology' satisfies ClubId
+const id = '13e21570-0d1a-47f0-b378-b8c20776496a' satisfies ClubId
 
 const prereview1 = new Prereviews.RecentPreprintPrereview({
   id: 11062553,

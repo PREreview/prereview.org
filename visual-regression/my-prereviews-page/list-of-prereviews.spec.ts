@@ -48,7 +48,7 @@ const prereview1 = new Prereviews.RecentPreprintPrereview({
 
 const prereview2 = new Prereviews.RecentPreprintPrereview({
   id: 10888905,
-  club: 'reviewing-dental-articles-club',
+  club: '4f8076fc-2219-49fc-be5f-6682ca7cc009',
   reviewers: { named: [Name('Alain Manuel Chaple Gil')], anonymous: 0 },
   published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
@@ -113,7 +113,7 @@ const prereview4 = new Prereviews.RecentDatasetPrereview({
 
 const prereview5 = new Prereviews.RecentPreprintPrereview({
   id: 10411168,
-  club: 'language-club',
+  club: '998f32b4-ced9-49f8-8042-ce8fe41e62ec',
   reviewers: {
     named: [
       Name('Miguel Oliveira, Jr.'),

@@ -289,7 +289,7 @@ const prereview2 = {
     named: [{ name: Name('Alain Manuel Chaple Gil'), orcid: OrcidId('0000-0002-8571-4429') }],
     anonymous: 0,
   },
-  club: 'reviewing-dental-articles-club',
+  club: '4f8076fc-2219-49fc-be5f-6682ca7cc009',
   language: 'en',
   text: html`<p>
       The article addresses an important issue because it considers verifying the implementation of necessary programs
@@ -665,7 +665,7 @@ const prereview4 = {
     ],
     anonymous: 3,
   },
-  club: 'hhmi-training-program',
+  club: '206ef17f-c5f3-44d3-acee-ba9b1f8299e9',
   language: 'en',
   text: html`<p>
       The SARS-CoV-2 virus has experienced tremendous selective pressure over the course of the global pandemic with
@@ -751,7 +751,7 @@ const prereview5 = {
     ],
     anonymous: 0,
   },
-  club: 'language-club',
+  club: '998f32b4-ced9-49f8-8042-ce8fe41e62ec',
   language: 'pt',
   text: html`<p><b>Introdução</b></p>
     <p>

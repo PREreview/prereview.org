@@ -31,7 +31,7 @@ export function createPage({
       <h1 dir="auto">${club.name}</h1>
 
       ${pipe(
-        Match.value(id),
+        Match.value(club.slug),
         Match.when(
           String.startsWith('asapbio-'),
           () => html`
