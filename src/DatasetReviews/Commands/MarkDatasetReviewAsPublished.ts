@@ -51,24 +51,22 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      NotRequested: () => Either.left(new Errors.PublicationOfDatasetReviewWasNotRequested()),
-      NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
-      IsReady: () =>
-        Either.right(
-          Option.some(
-            new Events.DatasetReviewWasPublished({
-              datasetReviewId: command.datasetReviewId,
-              publicationDate: command.publicationDate,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotRequested: () => Either.left(new Errors.PublicationOfDatasetReviewWasNotRequested()),
+    NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
+    IsReady: () =>
+      Either.right(
+        Option.some(
+          new Events.DatasetReviewWasPublished({
+            datasetReviewId: command.datasetReviewId,
+            publicationDate: command.publicationDate,
+          }),
         ),
-      AlreadyMarkedAsPublished: () => Either.right(Option.none()),
-    }),
+      ),
+    AlreadyMarkedAsPublished: () => Either.right(Option.none()),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

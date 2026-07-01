@@ -11,9 +11,7 @@ export interface Command {
 }
 
 export type Error =
-  | Errors.ReviewRequestHasBeenAccepted
-  | Errors.UnknownReviewRequest
-  | Errors.ReviewRequestHasBeenWithdrawn
+  Errors.ReviewRequestHasBeenAccepted | Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenWithdrawn
 
 export type State = NotReceived | NotRejected | HasBeenRejected | HasBeenAccepted | HasBeenWithdrawn
 
@@ -63,25 +61,23 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
-    Match.valueTags(state, {
-      NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
-      HasBeenAccepted: () => Either.left(new Errors.ReviewRequestHasBeenAccepted({})),
-      HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
-      HasBeenRejected: () => Either.right(Option.none()),
-      NotRejected: () =>
-        Either.right(
-          Option.some(
-            new Events.ReviewRequestForAPreprintWasRejected({
-              rejectedAt: command.rejectedAt,
-              reviewRequestId: command.reviewRequestId,
-              reason: command.reason,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  Match.valueTags(state, {
+    NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
+    HasBeenAccepted: () => Either.left(new Errors.ReviewRequestHasBeenAccepted({})),
+    HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
+    HasBeenRejected: () => Either.right(Option.none()),
+    NotRejected: () =>
+      Either.right(
+        Option.some(
+          new Events.ReviewRequestForAPreprintWasRejected({
+            rejectedAt: command.rejectedAt,
+            reviewRequestId: command.reviewRequestId,
+            reason: command.reason,
+          }),
         ),
-    }),
+      ),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

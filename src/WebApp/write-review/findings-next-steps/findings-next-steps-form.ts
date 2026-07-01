@@ -46,26 +46,30 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
         action="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}"
         novalidate
       >
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.findingsNextSteps)
-                    ? html`
-                        <li>
-                          <a href="#findings-next-steps-exceptionally">
-                            ${Match.valueTags(form.findingsNextSteps.left, {
-                              MissingE: () => t('selectClearDiscussion')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.findingsNextSteps)
+                        ? html`
+                            <li>
+                              <a href="#findings-next-steps-exceptionally">
+                                ${Match.valueTags(form.findingsNextSteps.left, {
+                                  MissingE: () => t('selectClearDiscussion')(),
+                                })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.findingsNextSteps) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -81,16 +85,18 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
                 <h1>${t('clearDiscussion')()}</h1>
               </legend>
 
-              ${E.isLeft(form.findingsNextSteps)
-                ? html`
-                    <div class="error-message" id="findings-next-steps-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.findingsNextSteps.left, {
-                        MissingE: () => t('selectClearDiscussion')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.findingsNextSteps)
+                  ? html`
+                      <div class="error-message" id="findings-next-steps-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.findingsNextSteps.left, {
+                          MissingE: () => t('selectClearDiscussion')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -123,9 +129,8 @@ export function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNex
                         rows="5"
                       >
 ${match(form.findingsNextStepsExceptionallyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -158,9 +163,8 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                         rows="5"
                       >
 ${match(form.findingsNextStepsClearlyInsightfullyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -193,9 +197,8 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                         rows="5"
                       >
 ${match(form.findingsNextStepsAdequatelyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -228,9 +231,8 @@ ${match(form.findingsNextStepsAdequatelyDetails)
                         rows="5"
                       >
 ${match(form.findingsNextStepsInsufficientlyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -263,9 +265,8 @@ ${match(form.findingsNextStepsInsufficientlyDetails)
                         rows="5"
                       >
 ${match(form.findingsNextStepsInadequatelyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>

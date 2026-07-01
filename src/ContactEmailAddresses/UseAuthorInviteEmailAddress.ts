@@ -18,9 +18,7 @@ export interface Input {
 export class AcceptedInvitationIsNotFound extends Data.TaggedError('AcceptedInvitationIsNotFound') {}
 
 export type Error =
-  | ContactEmailAddressHasAlreadyBeenVerified
-  | AcceptedInvitationIsNotFound
-  | Commands.UnableToHandleCommand
+  ContactEmailAddressHasAlreadyBeenVerified | AcceptedInvitationIsNotFound | Commands.UnableToHandleCommand
 
 export const UseAuthorInviteEmailAddress: (
   authorInviteStoreEnv: (typeof Keyv.KeyvStores.Service)['authorInviteStore'],

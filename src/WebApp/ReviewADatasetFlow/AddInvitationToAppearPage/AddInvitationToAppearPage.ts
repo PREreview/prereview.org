@@ -45,18 +45,20 @@ export const AddInvitationToAppearPage = ({
           <h2><label for="name">${t('addAnAuthorName')()}</label></h2>
 
           <p id="name-tip" role="note">${t('addAnAuthorNameTip')()}</p>
-          ${form._tag === 'InvalidForm' && Either.isLeft(form.name)
-            ? html`
-                <div class="error-message" id="name-error">
-                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${pipe(
-                    Match.value(form.name.left),
-                    Match.tag('Missing', () => t('addAnAuthorNameError')()),
-                    Match.exhaustive,
-                  )}
-                </div>
-              `
-            : ''}
+          ${
+            form._tag === 'InvalidForm' && Either.isLeft(form.name)
+              ? html`
+                  <div class="error-message" id="name-error">
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                    ${pipe(
+                      Match.value(form.name.left),
+                      Match.tag('Missing', () => t('addAnAuthorNameError')()),
+                      Match.exhaustive,
+                    )}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="name"
@@ -72,9 +74,11 @@ export const AddInvitationToAppearPage = ({
               Match.when({ _tag: 'InvalidForm', name: Either.isRight }, ({ name }) => html`value="${name.right}"`),
               Match.orElse(() => ''),
             )}
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.name)
-              ? html`aria-invalid="true" aria-errormessage="name-error"`
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.name)
+                ? html`aria-invalid="true" aria-errormessage="name-error"`
+                : ''
+            }
           />
         </div>
 
@@ -82,23 +86,25 @@ export const AddInvitationToAppearPage = ({
           <h2><label for="email-address">${t('addAnAuthorEmailAddress')()}</label></h2>
 
           <p id="email-address-tip" role="note">${t('addAnAuthorEmailAddressTip')()}</p>
-          ${form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
-            ? html`
-                <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${pipe(
-                    Match.value(form.emailAddress.left),
-                    Match.tag('Missing', () => t('addAnAuthorEmailAddressError')()),
-                    Match.tag('Invalid', () =>
-                      t('addAnAuthorEmailAddressInvalidError')({
-                        exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
-                      }),
-                    ),
-                    Match.exhaustive,
-                  )}
-                </div>
-              `
-            : ''}
+          ${
+            form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+              ? html`
+                  <div class="error-message" id="email-address-error">
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                    ${pipe(
+                      Match.value(form.emailAddress.left),
+                      Match.tag('Missing', () => t('addAnAuthorEmailAddressError')()),
+                      Match.tag('Invalid', () =>
+                        t('addAnAuthorEmailAddressInvalidError')({
+                          exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                        }),
+                      ),
+                      Match.exhaustive,
+                    )}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="emailAddress"
@@ -126,9 +132,11 @@ export const AddInvitationToAppearPage = ({
               ),
               Match.orElse(() => ''),
             )}
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
-              ? html`aria-invalid="true" aria-errormessage="email-address-error"`
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+                ? html`aria-invalid="true" aria-errormessage="email-address-error"`
+                : ''
+            }
           />
         </div>
 
@@ -142,37 +150,43 @@ export const AddInvitationToAppearPage = ({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: AddInvitationToAppearForm.InvalidForm) => html`
-  ${Either.isLeft(form.name)
-    ? html`
-        <li>
-          <a href="#name">
-            ${pipe(
-              Match.value(form.name.left),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorNameError')()),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}
-  ${Either.isLeft(form.emailAddress)
-    ? html`
-        <li>
-          <a href="#email-address">
-            ${pipe(
-              Match.value(form.emailAddress.left),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorEmailAddressError')()),
-              Match.tag('Invalid', () =>
-                translate(
-                  locale,
-                  'review-a-dataset-flow',
-                  'addAnAuthorEmailAddressInvalidError',
-                )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
-              ),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.name)
+      ? html`
+          <li>
+            <a href="#name">
+              ${pipe(
+                Match.value(form.name.left),
+                Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorNameError')()),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }
+  ${
+    Either.isLeft(form.emailAddress)
+      ? html`
+          <li>
+            <a href="#email-address">
+              ${pipe(
+                Match.value(form.emailAddress.left),
+                Match.tag('Missing', () =>
+                  translate(locale, 'review-a-dataset-flow', 'addAnAuthorEmailAddressError')(),
+                ),
+                Match.tag('Invalid', () =>
+                  translate(
+                    locale,
+                    'review-a-dataset-flow',
+                    'addAnAuthorEmailAddressInvalidError',
+                  )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
+                ),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

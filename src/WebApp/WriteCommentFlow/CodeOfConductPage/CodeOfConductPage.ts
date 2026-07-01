@@ -31,30 +31,34 @@ export const CodeOfConductPage = ({
     `,
     main: html`
       <form method="post" action="${Routes.WriteCommentCodeOfConduct.href({ commentId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${Either.isLeft(form.agree)
-                    ? html`
-                        <li>
-                          <a href="#agree-yes">
-                            ${pipe(
-                              Match.value(form.agree.left),
-                              Match.tag('Missing', () =>
-                                translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
-                              ),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          form._tag === 'InvalidForm'
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      Either.isLeft(form.agree)
+                        ? html`
+                            <li>
+                              <a href="#agree-yes">
+                                ${pipe(
+                                  Match.value(form.agree.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <fieldset
@@ -114,20 +118,22 @@ export const CodeOfConductPage = ({
               </div>
             </details>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.agree)
-              ? html`
-                  <div class="error-message" id="agree-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.agree.left),
-                      Match.tag('Missing', () =>
-                        translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
-                      ),
-                      Match.exhaustive,
-                    )}
-                  </div>
-                `
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.agree)
+                ? html`
+                    <div class="error-message" id="agree-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${pipe(
+                        Match.value(form.agree.left),
+                        Match.tag('Missing', () =>
+                          translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
+                        ),
+                        Match.exhaustive,
+                      )}
+                    </div>
+                  `
+                : ''
+            }
 
             <label>
               <input

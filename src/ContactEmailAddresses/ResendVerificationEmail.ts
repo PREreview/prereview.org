@@ -16,9 +16,7 @@ export interface Input {
 }
 
 export type Error =
-  | ContactEmailAddressHasAlreadyBeenVerified
-  | ContactEmailAddressIsNotFound
-  | Commands.UnableToHandleCommand
+  ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound | Commands.UnableToHandleCommand
 
 export const ResendVerificationEmail: (
   input: Input,

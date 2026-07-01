@@ -98,25 +98,27 @@ export function publishForm(
                 </dd>
               </div>
 
-              ${review.moreAuthors === 'yes' && Array.isNonEmptyReadonlyArray(review.otherAuthors)
-                ? html`
-                    <div>
-                      <dt>${t('invitedAuthors')({ number: review.otherAuthors.length })}</dt>
-                      <dd>
-                        ${pipe(
-                          review.otherAuthors,
-                          Array.map(({ name }) => html`<bdi>${name}</bdi>`),
-                          formatList(locale),
-                        )}
-                      </dd>
-                      <dd>
-                        <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
-                          >${t('changeInvitedAuthors')(visuallyHidden)}</a
-                        >
-                      </dd>
-                    </div>
-                  `
-                : ''}
+              ${
+                review.moreAuthors === 'yes' && Array.isNonEmptyReadonlyArray(review.otherAuthors)
+                  ? html`
+                      <div>
+                        <dt>${t('invitedAuthors')({ number: review.otherAuthors.length })}</dt>
+                        <dd>
+                          ${pipe(
+                            review.otherAuthors,
+                            Array.map(({ name }) => html`<bdi>${name}</bdi>`),
+                            formatList(locale),
+                          )}
+                        </dd>
+                        <dd>
+                          <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
+                            >${t('changeInvitedAuthors')(visuallyHidden)}</a
+                          >
+                        </dd>
+                      </div>
+                    `
+                  : ''
+              }
 
               <div>
                 <dt>${t('useOfAiShort')()}</dt>
@@ -144,13 +146,15 @@ export function publishForm(
             <div>
               <h2 id="review-label">${t('yourReview')()}</h2>
 
-              ${review.reviewType === 'freeform'
-                ? html`
-                    <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}"
-                      >${t('changePrereview')(visuallyHidden)}</a
-                    >
-                  `
-                : ''}
+              ${
+                review.reviewType === 'freeform'
+                  ? html`
+                      <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}"
+                        >${t('changePrereview')(visuallyHidden)}</a
+                      >
+                    `
+                  : ''
+              }
             </div>
 
             <div
@@ -158,181 +162,193 @@ export function publishForm(
               role="region"
               ${review.reviewType === 'freeform' ? rawHtml('tabindex="0"') : ''}
             >
-              ${review.reviewType === 'freeform'
-                ? fixHeadingLevels(2, review.review)
-                : html`
-                    <dl class="summary-list">
-                      <div>
-                        <dt>${t('doesIntroductionExplain')()}</dt>
-                        <dd>
-                          ${match(review.introductionMatches)
-                            .with('yes', () => t('yes')())
-                            .with('partly', () => t('partly')())
-                            .with('no', () => t('no')())
-                            .with('skip', () => t('iDoNotKnow')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.introductionMatches !== 'skip' && review.introductionMatchesDetails
-                          ? html` <dd>${review.introductionMatchesDetails}</dd>`
-                          : ''}
-                        <dd>
-                          <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
-                            >${t('changeIfIntroExplains')(visuallyHidden)}
-                          </a>
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('methodsWellSuited')()}</dt>
-                        <dd>
-                          ${match(review.methodsAppropriate)
-                            .with('inappropriate', () => t('methodsHighlyInappropriate')())
-                            .with('somewhat-inappropriate', () => t('methodsSomewhatInappropriate')())
-                            .with('adequate', () => t('methodsNeitherAppropriateNorInappropriate')())
-                            .with('mostly-appropriate', () => t('methodsSomewhatAppropriate')())
-                            .with('highly-appropriate', () => t('methodsHighlyAppropriate')())
-                            .with('skip', () => t('iDoNotKnow')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.methodsAppropriate !== 'skip' && review.methodsAppropriateDetails
-                          ? html` <dd>${review.methodsAppropriateDetails}</dd>`
-                          : ''}
-                        <dd>
-                          <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
-                            >${t('changeMethodsWellSuited')(visuallyHidden)}
-                          </a>
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('conclusionsSupported')()}</dt>
-                        <dd>
-                          ${match(review.resultsSupported)
-                            .with('not-supported', () => t('conclusionsHighlyUnsupported')())
-                            .with('partially-supported', () => t('conclusionsSomewhatUnsupported')())
-                            .with('neutral', () => t('conclusionsNeitherSupportedNorUnsupported')())
-                            .with('well-supported', () => t('conclusionsSomewhatSupported')())
-                            .with('strongly-supported', () => t('conclusionsHighlySupported')())
-                            .with('skip', () => t('iDoNotKnow')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.resultsSupported !== 'skip' && review.resultsSupportedDetails
-                          ? html` <dd>${review.resultsSupportedDetails}</dd>`
-                          : ''}
-                        <dd>
-                          <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
-                            >${t('changeConclusionsSupported')(visuallyHidden)}</a
-                          >
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('dataPresentationWellSuited')()}</dt>
-                        <dd>
-                          ${match(review.dataPresentation)
-                            .with('inappropriate-unclear', () => t('highlyInappropriate')())
-                            .with('somewhat-inappropriate-unclear', () => t('somewhatInappropriate')())
-                            .with('neutral', () => t('neitherAppropriateOrClear')())
-                            .with('mostly-appropriate-clear', () => t('somewhatAppropriate')())
-                            .with('highly-appropriate-clear', () => t('highlyAppropriateAndClear')())
-                            .with('skip', () => t('iDoNotKnow')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.dataPresentation !== 'skip' && review.dataPresentationDetails
-                          ? html` <dd>${review.dataPresentationDetails}</dd>`
-                          : ''}
-                        <dd>
-                          <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
-                            >${t('changeDataPresentationWellSuited')(visuallyHidden)}</a
-                          >
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('clearDiscussion')()}</dt>
-                        <dd>
-                          ${match(review.findingsNextSteps)
-                            .with('inadequately', () => t('veryUnclearly')())
-                            .with('insufficiently', () => t('somewhatUnclearly')())
-                            .with('adequately', () => t('neitherClearlyNorUnclearly')())
-                            .with('clearly-insightfully', () => t('somewhatClearly')())
-                            .with('exceptionally', () => t('veryClearly')())
-                            .with('skip', () => t('iDoNotKnow')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.findingsNextSteps !== 'skip' && review.findingsNextStepsDetails
-                          ? html` <dd>${review.findingsNextStepsDetails}</dd>`
-                          : ''}
-                        <dd>
-                          <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}"
-                            >${t('changeClearDiscussion')(visuallyHidden)}
-                          </a>
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('advanceKnowledge')()}</dt>
-                        <dd>
-                          ${match(review.novel)
-                            .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
-                            .with('limited', () => t('advanceKnowledgeNotLikely')())
-                            .with('some', () => t('advanceKnowledgeModeratelyLikely')())
-                            .with('substantial', () => t('advanceKnowledgeSomewhatLikely')())
-                            .with('highly', () => t('advanceKnowledgeHighlyLikely')())
-                            .with('skip', () => t('iDoNotKnow')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.novel !== 'skip' && review.novelDetails ? html` <dd>${review.novelDetails}</dd>` : ''}
-                        <dd>
-                          <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
-                            >${t('changeAdvanceKnowledge')(visuallyHidden)}</a
-                          >
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('benefitFromEditing')()}</dt>
-                        <dd>
-                          ${match(review.languageEditing)
-                            .with('no', () => t('no')())
-                            .with('yes', () => t('yes')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.languageEditingDetails ? html` <dd>${review.languageEditingDetails}</dd>` : ''}
-                        <dd>
-                          <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
-                            >${t('changeBenefitFromEditing')(visuallyHidden)}</a
-                          >
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('wouldRecommend')()}</dt>
-                        <dd>
-                          ${match(review.shouldRead)
-                            .with('no', () => t('wouldRecommendNo')())
-                            .with('yes-but', () => t('wouldRecommendYesImproved')())
-                            .with('yes', () => t('wouldRecommendYes')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
-                        <dd>
-                          <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
-                            >${t('changeWouldRecommend')(visuallyHidden)}
-                          </a>
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>${t('readyForAttention')()}</dt>
-                        <dd>
-                          ${match(review.readyFullReview)
-                            .with('no', () => t('readyForAttentionNo')())
-                            .with('yes-changes', () => t('readyForAttentionMinorChanges')())
-                            .with('yes', () => t('readyForAttentionYes')())
-                            .exhaustive()}
-                        </dd>
-                        ${review.readyFullReviewDetails ? html` <dd>${review.readyFullReviewDetails}</dd>` : ''}
-                        <dd>
-                          <a href="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
-                            >${t('changeReadyForAttention')(visuallyHidden)}</a
-                          >
-                        </dd>
-                      </div>
-                    </dl>
-                  `}
+              ${
+                review.reviewType === 'freeform'
+                  ? fixHeadingLevels(2, review.review)
+                  : html`
+                      <dl class="summary-list">
+                        <div>
+                          <dt>${t('doesIntroductionExplain')()}</dt>
+                          <dd>
+                            ${match(review.introductionMatches)
+                              .with('yes', () => t('yes')())
+                              .with('partly', () => t('partly')())
+                              .with('no', () => t('no')())
+                              .with('skip', () => t('iDoNotKnow')())
+                              .exhaustive()}
+                          </dd>
+                          ${
+                            review.introductionMatches !== 'skip' && review.introductionMatchesDetails
+                              ? html` <dd>${review.introductionMatchesDetails}</dd>`
+                              : ''
+                          }
+                          <dd>
+                            <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
+                              >${t('changeIfIntroExplains')(visuallyHidden)}
+                            </a>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('methodsWellSuited')()}</dt>
+                          <dd>
+                            ${match(review.methodsAppropriate)
+                              .with('inappropriate', () => t('methodsHighlyInappropriate')())
+                              .with('somewhat-inappropriate', () => t('methodsSomewhatInappropriate')())
+                              .with('adequate', () => t('methodsNeitherAppropriateNorInappropriate')())
+                              .with('mostly-appropriate', () => t('methodsSomewhatAppropriate')())
+                              .with('highly-appropriate', () => t('methodsHighlyAppropriate')())
+                              .with('skip', () => t('iDoNotKnow')())
+                              .exhaustive()}
+                          </dd>
+                          ${
+                            review.methodsAppropriate !== 'skip' && review.methodsAppropriateDetails
+                              ? html` <dd>${review.methodsAppropriateDetails}</dd>`
+                              : ''
+                          }
+                          <dd>
+                            <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
+                              >${t('changeMethodsWellSuited')(visuallyHidden)}
+                            </a>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('conclusionsSupported')()}</dt>
+                          <dd>
+                            ${match(review.resultsSupported)
+                              .with('not-supported', () => t('conclusionsHighlyUnsupported')())
+                              .with('partially-supported', () => t('conclusionsSomewhatUnsupported')())
+                              .with('neutral', () => t('conclusionsNeitherSupportedNorUnsupported')())
+                              .with('well-supported', () => t('conclusionsSomewhatSupported')())
+                              .with('strongly-supported', () => t('conclusionsHighlySupported')())
+                              .with('skip', () => t('iDoNotKnow')())
+                              .exhaustive()}
+                          </dd>
+                          ${
+                            review.resultsSupported !== 'skip' && review.resultsSupportedDetails
+                              ? html` <dd>${review.resultsSupportedDetails}</dd>`
+                              : ''
+                          }
+                          <dd>
+                            <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
+                              >${t('changeConclusionsSupported')(visuallyHidden)}</a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('dataPresentationWellSuited')()}</dt>
+                          <dd>
+                            ${match(review.dataPresentation)
+                              .with('inappropriate-unclear', () => t('highlyInappropriate')())
+                              .with('somewhat-inappropriate-unclear', () => t('somewhatInappropriate')())
+                              .with('neutral', () => t('neitherAppropriateOrClear')())
+                              .with('mostly-appropriate-clear', () => t('somewhatAppropriate')())
+                              .with('highly-appropriate-clear', () => t('highlyAppropriateAndClear')())
+                              .with('skip', () => t('iDoNotKnow')())
+                              .exhaustive()}
+                          </dd>
+                          ${
+                            review.dataPresentation !== 'skip' && review.dataPresentationDetails
+                              ? html` <dd>${review.dataPresentationDetails}</dd>`
+                              : ''
+                          }
+                          <dd>
+                            <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
+                              >${t('changeDataPresentationWellSuited')(visuallyHidden)}</a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('clearDiscussion')()}</dt>
+                          <dd>
+                            ${match(review.findingsNextSteps)
+                              .with('inadequately', () => t('veryUnclearly')())
+                              .with('insufficiently', () => t('somewhatUnclearly')())
+                              .with('adequately', () => t('neitherClearlyNorUnclearly')())
+                              .with('clearly-insightfully', () => t('somewhatClearly')())
+                              .with('exceptionally', () => t('veryClearly')())
+                              .with('skip', () => t('iDoNotKnow')())
+                              .exhaustive()}
+                          </dd>
+                          ${
+                            review.findingsNextSteps !== 'skip' && review.findingsNextStepsDetails
+                              ? html` <dd>${review.findingsNextStepsDetails}</dd>`
+                              : ''
+                          }
+                          <dd>
+                            <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}"
+                              >${t('changeClearDiscussion')(visuallyHidden)}
+                            </a>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('advanceKnowledge')()}</dt>
+                          <dd>
+                            ${match(review.novel)
+                              .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
+                              .with('limited', () => t('advanceKnowledgeNotLikely')())
+                              .with('some', () => t('advanceKnowledgeModeratelyLikely')())
+                              .with('substantial', () => t('advanceKnowledgeSomewhatLikely')())
+                              .with('highly', () => t('advanceKnowledgeHighlyLikely')())
+                              .with('skip', () => t('iDoNotKnow')())
+                              .exhaustive()}
+                          </dd>
+                          ${review.novel !== 'skip' && review.novelDetails ? html` <dd>${review.novelDetails}</dd>` : ''}
+                          <dd>
+                            <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
+                              >${t('changeAdvanceKnowledge')(visuallyHidden)}</a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('benefitFromEditing')()}</dt>
+                          <dd>
+                            ${match(review.languageEditing)
+                              .with('no', () => t('no')())
+                              .with('yes', () => t('yes')())
+                              .exhaustive()}
+                          </dd>
+                          ${review.languageEditingDetails ? html` <dd>${review.languageEditingDetails}</dd>` : ''}
+                          <dd>
+                            <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
+                              >${t('changeBenefitFromEditing')(visuallyHidden)}</a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('wouldRecommend')()}</dt>
+                          <dd>
+                            ${match(review.shouldRead)
+                              .with('no', () => t('wouldRecommendNo')())
+                              .with('yes-but', () => t('wouldRecommendYesImproved')())
+                              .with('yes', () => t('wouldRecommendYes')())
+                              .exhaustive()}
+                          </dd>
+                          ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
+                          <dd>
+                            <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
+                              >${t('changeWouldRecommend')(visuallyHidden)}
+                            </a>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>${t('readyForAttention')()}</dt>
+                          <dd>
+                            ${match(review.readyFullReview)
+                              .with('no', () => t('readyForAttentionNo')())
+                              .with('yes-changes', () => t('readyForAttentionMinorChanges')())
+                              .with('yes', () => t('readyForAttentionYes')())
+                              .exhaustive()}
+                          </dd>
+                          ${review.readyFullReviewDetails ? html` <dd>${review.readyFullReviewDetails}</dd>` : ''}
+                          <dd>
+                            <a href="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
+                              >${t('changeReadyForAttention')(visuallyHidden)}</a
+                            >
+                          </dd>
+                        </div>
+                      </dl>
+                    `
+              }
             </div>
           </div>
 

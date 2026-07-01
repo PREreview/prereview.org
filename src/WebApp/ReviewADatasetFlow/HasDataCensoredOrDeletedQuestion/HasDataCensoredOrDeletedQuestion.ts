@@ -50,16 +50,18 @@ export const HasDataCensoredOrDeletedQuestion = ({
                 <h1>${t('signsOfAlteration')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.hasDataCensoredOrDeleted)
-                ? html`
-                    <div class="error-message" id="has-data-censored-or-deleted-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.hasDataCensoredOrDeleted.left, {
-                        Missing: () => t('selectSignsOfAlteration')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.hasDataCensoredOrDeleted)
+                  ? html`
+                      <div class="error-message" id="has-data-censored-or-deleted-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.hasDataCensoredOrDeleted.left, {
+                          Missing: () => t('selectSignsOfAlteration')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -93,16 +95,11 @@ export const HasDataCensoredOrDeletedQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.hasDataCensoredOrDeletedYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasDataCensoredOrDeletedYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -136,16 +133,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.hasDataCensoredOrDeletedPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedPartlyDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasDataCensoredOrDeletedPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -179,16 +171,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.hasDataCensoredOrDeletedNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasDataCensoredOrDeletedNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

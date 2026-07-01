@@ -92,30 +92,32 @@ export const CheckYourReviewPage = ({
                 </div>
               </div>`,
           })}
-          ${review.authorsToInvite
-            ? html`
-                <div class="summary-card">
-                  <div>
-                    <h2 id="invited-authors-label">${t('invitedAuthors')()}</h2>
+          ${
+            review.authorsToInvite
+              ? html`
+                  <div class="summary-card">
+                    <div>
+                      <h2 id="invited-authors-label">${t('invitedAuthors')()}</h2>
 
-                    <a
-                      href="${Option.match(review.authorsToInvite, {
-                        onNone: () => Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
-                        onSome: () => Routes.ReviewADatasetCheckInvitationsToAppear,
-                      }).href({ datasetReviewId })}"
-                      >${t('changeInvitedAuthors')({ visuallyHidden })}</a
-                    >
-                  </div>
+                      <a
+                        href="${Option.match(review.authorsToInvite, {
+                          onNone: () => Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+                          onSome: () => Routes.ReviewADatasetCheckInvitationsToAppear,
+                        }).href({ datasetReviewId })}"
+                        >${t('changeInvitedAuthors')({ visuallyHidden })}</a
+                      >
+                    </div>
 
-                  <div aria-labelledby="invited-authors-label" role="region">
-                    ${Option.match(review.authorsToInvite, {
-                      onNone: () => html`<i>${t('invitedAuthorsNone')()}</i>`,
-                      onSome: formatList(locale),
-                    })}
+                    <div aria-labelledby="invited-authors-label" role="region">
+                      ${Option.match(review.authorsToInvite, {
+                        onNone: () => html`<i>${t('invitedAuthorsNone')()}</i>`,
+                        onSome: formatList(locale),
+                      })}
+                    </div>
                   </div>
-                </div>
-              `
-            : ''}
+                `
+              : ''
+          }
 
           <div class="summary-card">
             <div>

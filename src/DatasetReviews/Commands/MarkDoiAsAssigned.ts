@@ -32,26 +32,24 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      AlreadyHasADoi: ({ doi }) =>
-        Boolean.match(Equal.equals(command.doi, doi), {
-          onFalse: () => Either.left(new Errors.DatasetReviewAlreadyHasADoi({})),
-          onTrue: () => Either.right(Option.none()),
-        }),
-      DoesNotHaveADoi: () =>
-        Either.right(
-          Option.some(
-            new Events.DatasetReviewWasAssignedADoi({
-              doi: command.doi,
-              datasetReviewId: command.datasetReviewId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    AlreadyHasADoi: ({ doi }) =>
+      Boolean.match(Equal.equals(command.doi, doi), {
+        onFalse: () => Either.left(new Errors.DatasetReviewAlreadyHasADoi({})),
+        onTrue: () => Either.right(Option.none()),
+      }),
+    DoesNotHaveADoi: () =>
+      Either.right(
+        Option.some(
+          new Events.DatasetReviewWasAssignedADoi({
+            doi: command.doi,
+            datasetReviewId: command.datasetReviewId,
+          }),
         ),
-    }),
+      ),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

@@ -103,16 +103,20 @@ export function createPage({
         </dd>
       </dl>
 
-      ${club.contact
-        ? html`<a href="mailto:${club.contact}" class="button"
-            >${translate(locale, 'club-profile-page', 'contactClub')()}</a
-          >`
-        : ''}
-      ${club.joinLink
-        ? html`<a href="${club.joinLink.href}" class="button"
-            >${translate(locale, 'club-profile-page', 'joinClub')()}</a
-          > `
-        : ''}
+      ${
+        club.contact
+          ? html`<a href="mailto:${club.contact}" class="button"
+              >${translate(locale, 'club-profile-page', 'contactClub')()}</a
+            >`
+          : ''
+      }
+      ${
+        club.joinLink
+          ? html`<a href="${club.joinLink.href}" class="button"
+              >${translate(locale, 'club-profile-page', 'joinClub')()}</a
+            > `
+          : ''
+      }
 
       <h2>${translate(locale, 'club-profile-page', 'prereviews')()}</h2>
 
@@ -159,13 +163,15 @@ export function createPage({
                       })}
                     </a>
 
-                    ${prereview.subfields.length > 0
-                      ? html`
-                          <ul class="categories">
-                            ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
-                          </ul>
-                        `
-                      : ''}
+                    ${
+                      prereview.subfields.length > 0
+                        ? html`
+                            <ul class="categories">
+                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
+                            </ul>
+                          `
+                        : ''
+                    }
 
                     <dl>
                       <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>

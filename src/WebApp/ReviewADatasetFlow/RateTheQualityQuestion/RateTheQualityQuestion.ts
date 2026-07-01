@@ -41,16 +41,18 @@ export const RateTheQualityQuestion = ({
                 <h1>${t('rateQuality')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.qualityRating)
-                ? html`
-                    <div class="error-message" id="rate-the-quality-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.qualityRating.left, {
-                        Missing: () => t('selectRateQuality')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.qualityRating)
+                  ? html`
+                      <div class="error-message" id="rate-the-quality-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.qualityRating.left, {
+                          Missing: () => t('selectRateQuality')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -84,16 +86,11 @@ export const RateTheQualityQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.qualityRatingExcellentDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.qualityRatingExcellentDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.qualityRatingExcellentDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.qualityRatingExcellentDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -127,15 +124,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.qualityRatingFairDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.qualityRatingFairDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.qualityRatingFairDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.qualityRatingFairDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -169,15 +162,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.qualityRatingPoorDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.qualityRatingPoorDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.qualityRatingPoorDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.qualityRatingPoorDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -213,16 +202,18 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  html` ${Either.isLeft(form.qualityRating)
-    ? html`
-        <li>
-          <a href="#rate-the-quality-excellent">
-            ${pipe(
-              Match.value(form.qualityRating.left),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRateQuality')()),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}`
+  html` ${
+    Either.isLeft(form.qualityRating)
+      ? html`
+          <li>
+            <a href="#rate-the-quality-excellent">
+              ${pipe(
+                Match.value(form.qualityRating.left),
+                Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRateQuality')()),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }`

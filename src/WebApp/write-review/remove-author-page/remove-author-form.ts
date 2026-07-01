@@ -55,16 +55,18 @@ export function removeAuthorForm({
               <h1>${t('write-review', 'sureYouWantToRemove')({ authorName: author.name })}</h1>
             </legend>
 
-            ${E.isLeft(form.removeAuthor)
-              ? html`
-                  <div class="error-message" id="remove-author-error">
-                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.removeAuthor.left, {
-                      MissingE: () => t('write-review', 'selectYesToRemove')({ authorName: author.name }),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              E.isLeft(form.removeAuthor)
+                ? html`
+                    <div class="error-message" id="remove-author-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.removeAuthor.left, {
+                        MissingE: () => t('write-review', 'selectYesToRemove')({ authorName: author.name }),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -113,15 +115,17 @@ export interface RemoveAuthorForm {
 }
 
 const toErrorItems = (locale: SupportedLocale, authorName: Name) => (form: RemoveAuthorForm) => html`
-  ${E.isLeft(form.removeAuthor)
-    ? html`
-        <li>
-          <a href="#remove-author-no">
-            ${Match.valueTags(form.removeAuthor.left, {
-              MissingE: () => translate(locale, 'write-review', 'selectYesToRemove')({ authorName }),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.removeAuthor)
+      ? html`
+          <li>
+            <a href="#remove-author-no">
+              ${Match.valueTags(form.removeAuthor.left, {
+                MissingE: () => translate(locale, 'write-review', 'selectYesToRemove')({ authorName }),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

@@ -46,16 +46,18 @@ export const HasEnoughMetadataQuestion = ({
                 <h1>${t('enoughMetadata')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.hasEnoughMetadata)
-                ? html`
-                    <div class="error-message" id="has-enough-metadata-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.hasEnoughMetadata.left, {
-                        Missing: () => t('selectEnoughMetadata')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.hasEnoughMetadata)
+                  ? html`
+                      <div class="error-message" id="has-enough-metadata-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.hasEnoughMetadata.left, {
+                          Missing: () => t('selectEnoughMetadata')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -89,15 +91,11 @@ export const HasEnoughMetadataQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasEnoughMetadataYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasEnoughMetadataYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -131,16 +129,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasEnoughMetadataPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.hasEnoughMetadataPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasEnoughMetadataPartlyDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -174,15 +167,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasEnoughMetadataNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasEnoughMetadataNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

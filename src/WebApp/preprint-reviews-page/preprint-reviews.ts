@@ -99,15 +99,17 @@ export const createPage = ({
           </dl>
         </header>
 
-        ${preprint.abstract
-          ? html`
-              <h3>${translate(locale, 'preprint-reviews', 'abstractHeading')()}</h3>
+        ${
+          preprint.abstract
+            ? html`
+                <h3>${translate(locale, 'preprint-reviews', 'abstractHeading')()}</h3>
 
-              <div ${languageAttributesFor(preprint.abstract.language)}>
-                ${fixHeadingLevels(3, preprint.abstract.text)}
-              </div>
-            `
-          : ''}
+                <div ${languageAttributesFor(preprint.abstract.language)}>
+                  ${fixHeadingLevels(3, preprint.abstract.text)}
+                </div>
+              `
+            : ''
+        }
 
         <a href="${preprint.url.href}" class="button">${translate(locale, 'preprint-reviews', 'readPreprint')()}</a>
       </article>

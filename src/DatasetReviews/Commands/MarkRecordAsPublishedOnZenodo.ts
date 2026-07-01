@@ -50,21 +50,17 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      NotPublished: () => Either.left(new Errors.DatasetReviewHasNotBeenPublished({})),
-      DoesNotHaveARecord: () => Either.left(new Errors.DatasetReviewDoesNotHaveAZenodoRecord({})),
-      HasAnUnpublishedRecord: () =>
-        Either.right(
-          Option.some(
-            new Events.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId: command.datasetReviewId }),
-          ),
-        ),
-      HasAPublishedRecord: () => Either.right(Option.none()),
-    }),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotPublished: () => Either.left(new Errors.DatasetReviewHasNotBeenPublished({})),
+    DoesNotHaveARecord: () => Either.left(new Errors.DatasetReviewDoesNotHaveAZenodoRecord({})),
+    HasAnUnpublishedRecord: () =>
+      Either.right(
+        Option.some(new Events.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId: command.datasetReviewId })),
+      ),
+    HasAPublishedRecord: () => Either.right(Option.none()),
+  }),
 )
 
 function hasEvent(

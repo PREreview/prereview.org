@@ -46,16 +46,18 @@ export const HasTrackedChangesQuestion = ({
                 <h1>${t('trackChanges')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.hasTrackedChanges)
-                ? html`
-                    <div class="error-message" id="has-tracked-changes-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
-                      ${Match.valueTags(form.hasTrackedChanges.left, {
-                        Missing: () => t('selectTrackChanges')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.hasTrackedChanges)
+                  ? html`
+                      <div class="error-message" id="has-tracked-changes-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
+                        ${Match.valueTags(form.hasTrackedChanges.left, {
+                          Missing: () => t('selectTrackChanges')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -89,15 +91,11 @@ export const HasTrackedChangesQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasTrackedChangesYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.hasTrackedChangesYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasTrackedChangesYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasTrackedChangesYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -131,16 +129,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasTrackedChangesPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.hasTrackedChangesPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasTrackedChangesPartlyDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasTrackedChangesPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -173,15 +166,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.hasTrackedChangesNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.hasTrackedChangesNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.hasTrackedChangesNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.hasTrackedChangesNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

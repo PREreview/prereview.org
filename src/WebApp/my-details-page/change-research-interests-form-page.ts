@@ -19,10 +19,9 @@ export const createFormPage = (researchInterests: Option.Option<ResearchInterest
 
         <textarea name="researchInterests" id="research-interests" placeholder=" " dir="auto" rows="5">
 ${match(researchInterests)
-            .with({ value: { value: P.select() } }, rawHtml)
-            .when(Option.isNone, () => '')
-            .exhaustive()}</textarea
-        >
+  .with({ value: { value: P.select() } }, rawHtml)
+  .when(Option.isNone, () => '')
+  .exhaustive()}</textarea>
 
         <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>

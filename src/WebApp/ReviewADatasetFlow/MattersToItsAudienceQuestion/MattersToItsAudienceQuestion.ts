@@ -46,16 +46,18 @@ export const MattersToItsAudienceQuestion = ({
                 <h1>${t('howConsequential')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.mattersToItsAudience)
-                ? html`
-                    <div class="error-message" id="matters-to-its-audience-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.mattersToItsAudience.left, {
-                        Missing: () => t('selectHowConsequential')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.mattersToItsAudience)
+                  ? html`
+                      <div class="error-message" id="matters-to-its-audience-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.mattersToItsAudience.left, {
+                          Missing: () => t('selectHowConsequential')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -92,16 +94,14 @@ export const MattersToItsAudienceQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.mattersToItsAudienceVeryConsequentialDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.mattersToItsAudienceVeryConsequentialDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.mattersToItsAudienceVeryConsequentialDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.mattersToItsAudienceVeryConsequentialDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -140,16 +140,14 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.mattersToItsAudienceSomewhatConsequentialDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.mattersToItsAudienceSomewhatConsequentialDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.mattersToItsAudienceSomewhatConsequentialDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.mattersToItsAudienceSomewhatConsequentialDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -186,16 +184,14 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.mattersToItsAudienceNotConsequentialDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.mattersToItsAudienceNotConsequentialDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.mattersToItsAudienceNotConsequentialDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.mattersToItsAudienceNotConsequentialDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

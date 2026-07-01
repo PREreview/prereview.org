@@ -41,26 +41,30 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
     `,
     main: html`
       <form method="post" action="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.novel)
-                    ? html`
-                        <li>
-                          <a href="#novel-highly">
-                            ${Match.valueTags(form.novel.left, {
-                              MissingE: () => t('selectAdvanceKnowledge')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.novel)
+                        ? html`
+                            <li>
+                              <a href="#novel-highly">
+                                ${Match.valueTags(form.novel.left, {
+                                  MissingE: () => t('selectAdvanceKnowledge')(),
+                                })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.novel) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -72,16 +76,18 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
                 <h1>${t('advanceKnowledge')()}</h1>
               </legend>
 
-              ${E.isLeft(form.novel)
-                ? html`
-                    <div class="error-message" id="novel-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.novel.left, {
-                        MissingE: () => t('selectAdvanceKnowledge')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.novel)
+                  ? html`
+                      <div class="error-message" id="novel-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.novel.left, {
+                          MissingE: () => t('selectAdvanceKnowledge')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -108,9 +114,8 @@ export function novelForm(preprint: PreprintTitle, form: NovelForm, locale: Supp
 
                       <textarea name="novelHighlyDetails" id="novel-highly-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelHighlyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -143,9 +148,8 @@ ${match(form.novelHighlyDetails)
                         rows="5"
                       >
 ${match(form.novelSubstantialDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -172,9 +176,8 @@ ${match(form.novelSubstantialDetails)
 
                       <textarea name="novelSomeDetails" id="novel-some-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelSomeDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -205,9 +208,8 @@ ${match(form.novelSomeDetails)
                         rows="5"
                       >
 ${match(form.novelLimitedDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -232,9 +234,8 @@ ${match(form.novelLimitedDetails)
 
                       <textarea name="novelNoDetails" id="novel-no-details" placeholder=" " dir="auto" rows="5">
 ${match(form.novelNoDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>

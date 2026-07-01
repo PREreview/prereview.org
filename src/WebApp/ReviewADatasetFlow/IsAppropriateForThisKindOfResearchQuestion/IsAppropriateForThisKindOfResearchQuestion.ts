@@ -50,16 +50,18 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                 <h1>${t('suitedForPurpose')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
-                ? html`
-                    <div class="error-message" id="is-appropriate-for-this-kind-of-research-question-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.isAppropriateForThisKindOfResearch.left, {
-                        Missing: () => t('selectSuitedForPurpose')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
+                  ? html`
+                      <div class="error-message" id="is-appropriate-for-this-kind-of-research-question-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.isAppropriateForThisKindOfResearch.left, {
+                          Missing: () => t('selectSuitedForPurpose')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -98,16 +100,14 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.isAppropriateForThisKindOfResearchYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchYesDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.isAppropriateForThisKindOfResearchYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -146,16 +146,14 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.isAppropriateForThisKindOfResearchPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchPartlyDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.isAppropriateForThisKindOfResearchPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -194,16 +192,14 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.isAppropriateForThisKindOfResearchNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchNoDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.isAppropriateForThisKindOfResearchNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

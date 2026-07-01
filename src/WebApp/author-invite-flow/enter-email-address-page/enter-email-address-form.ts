@@ -59,16 +59,18 @@ export function enterEmailAddressForm({
                 <h2>${t('whatEmailAddressShouldWeUse')()}</h2>
               </legend>
 
-              ${E.isLeft(form.useInvitedAddress)
-                ? html`
-                    <div class="error-message" id="use-invited-address-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.useInvitedAddress.left, {
-                        MissingE: t('selectTheEmailAddressYouWouldLikeToUse'),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.useInvitedAddress)
+                  ? html`
+                      <div class="error-message" id="use-invited-address-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.useInvitedAddress.left, {
+                          MissingE: t('selectTheEmailAddressYouWouldLikeToUse'),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -102,17 +104,19 @@ export function enterEmailAddressForm({
                     <div ${rawHtml(E.isLeft(form.otherEmailAddress) ? 'class="error"' : '')}>
                       <label for="other-email-address" class="textarea">${t('whatIsYourEmailAddress')()}</label>
 
-                      ${E.isLeft(form.otherEmailAddress)
-                        ? html`
-                            <div class="error-message" id="other-email-address-error">
-                              <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                              ${Match.valueTags(form.otherEmailAddress.left, {
-                                MissingE: t('enterYourEmailAddress'),
-                                InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
-                              })}
-                            </div>
-                          `
-                        : ''}
+                      ${
+                        E.isLeft(form.otherEmailAddress)
+                          ? html`
+                              <div class="error-message" id="other-email-address-error">
+                                <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                                ${Match.valueTags(form.otherEmailAddress.left, {
+                                  MissingE: t('enterYourEmailAddress'),
+                                  InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
+                                })}
+                              </div>
+                            `
+                          : ''
+                      }
 
                       <input
                         name="otherEmailAddress"
@@ -128,9 +132,11 @@ export function enterEmailAddressForm({
                           .with({ left: { _tag: 'MissingE' } }, () => '')
                           .with({ left: { _tag: 'InvalidE', actual: P.select() } }, value => html`value="${value}"`)
                           .exhaustive()}
-                        ${E.isLeft(form.otherEmailAddress)
-                          ? html`aria-invalid="true" aria-errormessage="other-email-address-error"`
-                          : ''}
+                        ${
+                          E.isLeft(form.otherEmailAddress)
+                            ? html`aria-invalid="true" aria-errormessage="other-email-address-error"`
+                            : ''
+                        }
                       />
                     </div>
                   </div>
@@ -152,28 +158,32 @@ export function enterEmailAddressForm({
 const toErrorItems = (locale: SupportedLocale) => (form: EnterEmailAddressForm) => {
   const t = translate(locale, 'author-invite-flow')
   return html`
-    ${E.isLeft(form.useInvitedAddress)
-      ? html`
-          <li>
-            <a href="#use-invited-address-yes">
-              ${Match.valueTags(form.useInvitedAddress.left, {
-                MissingE: t('selectTheEmailAddressYouWouldLikeToUse'),
-              })}
-            </a>
-          </li>
-        `
-      : ''}
-    ${E.isLeft(form.otherEmailAddress)
-      ? html`
-          <li>
-            <a href="#other-email-address">
-              ${Match.valueTags(form.otherEmailAddress.left, {
-                MissingE: t('enterYourEmailAddress'),
-                InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
-              })}
-            </a>
-          </li>
-        `
-      : ''}
+    ${
+      E.isLeft(form.useInvitedAddress)
+        ? html`
+            <li>
+              <a href="#use-invited-address-yes">
+                ${Match.valueTags(form.useInvitedAddress.left, {
+                  MissingE: t('selectTheEmailAddressYouWouldLikeToUse'),
+                })}
+              </a>
+            </li>
+          `
+        : ''
+    }
+    ${
+      E.isLeft(form.otherEmailAddress)
+        ? html`
+            <li>
+              <a href="#other-email-address">
+                ${Match.valueTags(form.otherEmailAddress.left, {
+                  MissingE: t('enterYourEmailAddress'),
+                  InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
+                })}
+              </a>
+            </li>
+          `
+        : ''
+    }
   `
 }

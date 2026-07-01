@@ -47,65 +47,75 @@ export const publishedPage = ({
       <h2>${t('write-review', 'whatHappensNext')()}</h2>
 
       <p>
-        ${isScietyPreprint(preprint.id)
-          ? t('write-review', 'whereYouCanSeeYourPrereviewSciety')({ communitySlack, sciety })
-          : t('write-review', 'whereYouCanSeeYourPrereview')({ communitySlack })}
+        ${
+          isScietyPreprint(preprint.id)
+            ? t('write-review', 'whereYouCanSeeYourPrereviewSciety')({ communitySlack, sciety })
+            : t('write-review', 'whereYouCanSeeYourPrereview')({ communitySlack })
+        }
       </p>
 
-      ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
-        ? html`
-            <div class="inset">
-              <p>${t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
-            </div>
-          `
-        : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
-          ? html`<p>${t('write-review', 'sentEmailsToAuthors')()}</p> `
-          : ''}
-      ${form.persona === 'public'
-        ? html`
-            <h2>${t('write-review', 'shareYourReview')()}</h2>
+      ${
+        form.moreAuthors === 'yes' && form.otherAuthors.length === 0
+          ? html`
+              <div class="inset">
+                <p>${t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
+              </div>
+            `
+          : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
+            ? html`<p>${t('write-review', 'sentEmailsToAuthors')()}</p> `
+            : ''
+      }
+      ${
+        form.persona === 'public'
+          ? html`
+              <h2>${t('write-review', 'shareYourReview')()}</h2>
 
-            <p>${t('write-review', 'letAuthorsKnow')()}</p>
+              <p>${t('write-review', 'letAuthorsKnow')()}</p>
 
-            <p>${t('write-review', 'letCommunityKnow')()}</p>
+              <p>${t('write-review', 'letCommunityKnow')()}</p>
 
-            <div class="button-group" role="group">
-              <a
-                href="https://bsky.app/intent/compose?${new URLSearchParams({
-                  text: `${t(
-                    'write-review',
-                    'shareOnBlueskyMessage',
-                  )({
-                    preprintTitle: plainText`“${preprint.title}”`,
-                    prereviewHandle: '@prereview.bsky.social',
-                  }).toString()} ${url.href}`,
-                }).toString()}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="bluesky"
-                >${t('write-review', 'shareOnBluesky')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
-              >
-              <a
-                href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({
-                  url: url.href,
-                }).toString()}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="linked-in"
-                >${t('write-review', 'shareOnLinkedin')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
-              >
-              ${isScietyPreprint(preprint.id)
-                ? html` <a
-                    href="${scietyUrl(preprint.id).href}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="sciety"
-                    >${t('write-review', 'listOnSciety')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
-                  >`
-                : ''}
-            </div>
-          `
-        : ''}
+              <div class="button-group" role="group">
+                <a
+                  href="https://bsky.app/intent/compose?${new URLSearchParams({
+                    text: `${t(
+                      'write-review',
+                      'shareOnBlueskyMessage',
+                    )({
+                      preprintTitle: plainText`“${preprint.title}”`,
+                      prereviewHandle: '@prereview.bsky.social',
+                    }).toString()} ${url.href}`,
+                  }).toString()}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="bluesky"
+                  >${t('write-review', 'shareOnBluesky')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+                >
+                <a
+                  href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({
+                    url: url.href,
+                  }).toString()}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="linked-in"
+                  >${t('write-review', 'shareOnLinkedin')()}<span class="visually-hidden"> (${opensInNewTab})</span></a
+                >
+                ${
+                  isScietyPreprint(preprint.id)
+                    ? html` <a
+                        href="${scietyUrl(preprint.id).href}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="sciety"
+                        >${t('write-review', 'listOnSciety')()}<span class="visually-hidden">
+                          (${opensInNewTab})</span
+                        ></a
+                      >`
+                    : ''
+                }
+              </div>
+            `
+          : ''
+      }
 
       <h2>${t('write-review', 'howItWent')()}</h2>
 

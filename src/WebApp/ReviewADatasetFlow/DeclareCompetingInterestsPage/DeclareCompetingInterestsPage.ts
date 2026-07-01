@@ -62,9 +62,11 @@ export const DeclareCompetingInterestsPage = ({
             >
               <legend>
                 <h1>
-                  ${otherAuthors
-                    ? 'Do you, or any of the other authors, have any competing interests?'
-                    : t('haveCompetingInterests')()}
+                  ${
+                    otherAuthors
+                      ? 'Do you, or any of the other authors, have any competing interests?'
+                      : t('haveCompetingInterests')()
+                  }
                 </h1>
               </legend>
 
@@ -89,18 +91,20 @@ export const DeclareCompetingInterestsPage = ({
                 </div>
               </details>
 
-              ${hasAnError && Either.isLeft(form.declareCompetingInterests)
-                ? html`
-                    <div class="error-message" id="declare-competing-interests-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.declareCompetingInterests.left),
-                        Match.tag('Missing', () => t('selectCompetingInterests')()),
-                        Match.exhaustive,
-                      )}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.declareCompetingInterests)
+                  ? html`
+                      <div class="error-message" id="declare-competing-interests-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${pipe(
+                          Match.value(form.declareCompetingInterests.left),
+                          Match.tag('Missing', () => t('selectCompetingInterests')()),
+                          Match.exhaustive,
+                        )}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -156,18 +160,20 @@ export const DeclareCompetingInterestsPage = ({
                         >${t('competingInterestsDetails')()}</label
                       >
 
-                      ${hasAnError && Either.isLeft(form.competingInterestsDetails)
-                        ? html`
-                            <div class="error-message" id="competing-interests-details-error">
-                              <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                              ${pipe(
-                                Match.value(form.competingInterestsDetails.left),
-                                Match.tag('Missing', () => t('enterCompetingInterestsDetails')()),
-                                Match.exhaustive,
-                              )}
-                            </div>
-                          `
-                        : ''}
+                      ${
+                        hasAnError && Either.isLeft(form.competingInterestsDetails)
+                          ? html`
+                              <div class="error-message" id="competing-interests-details-error">
+                                <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                                ${pipe(
+                                  Match.value(form.competingInterestsDetails.left),
+                                  Match.tag('Missing', () => t('enterCompetingInterestsDetails')()),
+                                  Match.exhaustive,
+                                )}
+                              </div>
+                            `
+                          : ''
+                      }
 
                       <textarea
                         name="competingInterestsDetails"
@@ -182,14 +188,13 @@ export const DeclareCompetingInterestsPage = ({
                         )}
                       >
 ${pipe(
-                          Match.value(form),
-                          Match.when(
-                            { _tag: 'CompletedForm', competingInterestsDetails: Option.isSome },
-                            ({ competingInterestsDetails }) => competingInterestsDetails.value,
-                          ),
-                          Match.orElse(() => ''),
-                        )}</textarea
-                      >
+  Match.value(form),
+  Match.when(
+    { _tag: 'CompletedForm', competingInterestsDetails: Option.isSome },
+    ({ competingInterestsDetails }) => competingInterestsDetails.value,
+  ),
+  Match.orElse(() => ''),
+)}</textarea>
                     </div>
                   </div>
                 </li>
@@ -208,32 +213,36 @@ ${pipe(
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInterestsForm.InvalidForm) => html`
-  ${Either.isLeft(form.declareCompetingInterests)
-    ? html`
-        <li>
-          <a href="#declare-competing-interests-no">
-            ${pipe(
-              Match.value(form.declareCompetingInterests.left),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectCompetingInterests')()),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}
-  ${Either.isLeft(form.competingInterestsDetails)
-    ? html`
-        <li>
-          <a href="#competing-interests-details">
-            ${pipe(
-              Match.value(form.competingInterestsDetails.left),
-              Match.tag('Missing', () =>
-                translate(locale, 'review-a-dataset-flow', 'enterCompetingInterestsDetails')(),
-              ),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.declareCompetingInterests)
+      ? html`
+          <li>
+            <a href="#declare-competing-interests-no">
+              ${pipe(
+                Match.value(form.declareCompetingInterests.left),
+                Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectCompetingInterests')()),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }
+  ${
+    Either.isLeft(form.competingInterestsDetails)
+      ? html`
+          <li>
+            <a href="#competing-interests-details">
+              ${pipe(
+                Match.value(form.competingInterestsDetails.left),
+                Match.tag('Missing', () =>
+                  translate(locale, 'review-a-dataset-flow', 'enterCompetingInterestsDetails')(),
+                ),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

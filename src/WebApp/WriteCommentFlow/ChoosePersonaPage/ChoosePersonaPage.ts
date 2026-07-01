@@ -36,28 +36,34 @@ export const ChoosePersonaPage = ({
     `,
     main: html`
       <form method="post" action="${Routes.WriteCommentChoosePersona.href({ commentId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${Either.isLeft(form.persona)
-                    ? html`
-                        <li>
-                          <a href="#persona-public">
-                            ${pipe(
-                              Match.value(form.persona.left),
-                              Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          form._tag === 'InvalidForm'
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      Either.isLeft(form.persona)
+                        ? html`
+                            <li>
+                              <a href="#persona-public">
+                                ${pipe(
+                                  Match.value(form.persona.left),
+                                  Match.tag('Missing', () =>
+                                    translate(locale, 'write-comment-flow', 'errorSelectName')(),
+                                  ),
+                                  Match.exhaustive,
+                                )}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <fieldset
@@ -94,18 +100,20 @@ export const ChoosePersonaPage = ({
               </div>
             </details>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.persona)
-              ? html`
-                  <div class="error-message" id="persona-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.persona.left),
-                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
-                      Match.exhaustive,
-                    )}
-                  </div>
-                `
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.persona)
+                ? html`
+                    <div class="error-message" id="persona-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${pipe(
+                        Match.value(form.persona.left),
+                        Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
+                        Match.exhaustive,
+                      )}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>

@@ -20,15 +20,13 @@ describe('changeAvatar', () => {
           contentType: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
           path: fc.string(),
         })
-        .map(
-          (args): Multipart.PersistedFile => ({
-            [Multipart.TypeId]: Multipart.TypeId,
-            _tag: 'PersistedFile',
-            ...args,
-            toJSON: shouldNotBeCalled,
-            [Inspectable.NodeInspectSymbol]: shouldNotBeCalled,
-          }),
-        ),
+        .map((args): Multipart.PersistedFile => ({
+          [Multipart.TypeId]: Multipart.TypeId,
+          _tag: 'PersistedFile',
+          ...args,
+          toJSON: shouldNotBeCalled,
+          [Inspectable.NodeInspectSymbol]: shouldNotBeCalled,
+        })),
       fc.user(),
       fc.supportedLocale(),
     ],
@@ -58,15 +56,13 @@ describe('changeAvatar', () => {
           contentType: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
           path: fc.string(),
         })
-        .map(
-          (args): Multipart.PersistedFile => ({
-            [Multipart.TypeId]: Multipart.TypeId,
-            _tag: 'PersistedFile',
-            ...args,
-            toJSON: shouldNotBeCalled,
-            [Inspectable.NodeInspectSymbol]: shouldNotBeCalled,
-          }),
-        ),
+        .map((args): Multipart.PersistedFile => ({
+          [Multipart.TypeId]: Multipart.TypeId,
+          _tag: 'PersistedFile',
+          ...args,
+          toJSON: shouldNotBeCalled,
+          [Inspectable.NodeInspectSymbol]: shouldNotBeCalled,
+        })),
       fc.user(),
       fc.supportedLocale(),
     ],
@@ -104,15 +100,13 @@ describe('changeAvatar', () => {
             .filter(string => !['image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'].includes(string)),
           path: fc.string(),
         })
-        .map(
-          (args): Multipart.PersistedFile => ({
-            [Multipart.TypeId]: Multipart.TypeId,
-            _tag: 'PersistedFile',
-            ...args,
-            toJSON: shouldNotBeCalled,
-            [Inspectable.NodeInspectSymbol]: shouldNotBeCalled,
-          }),
-        ),
+        .map((args): Multipart.PersistedFile => ({
+          [Multipart.TypeId]: Multipart.TypeId,
+          _tag: 'PersistedFile',
+          ...args,
+          toJSON: shouldNotBeCalled,
+          [Inspectable.NodeInspectSymbol]: shouldNotBeCalled,
+        })),
       fc.user(),
       fc.supportedLocale(),
     ],

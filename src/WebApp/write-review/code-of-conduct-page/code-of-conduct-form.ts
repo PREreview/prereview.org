@@ -79,16 +79,18 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
               </div>
             </details>
 
-            ${E.isLeft(form.conduct)
-              ? html`
-                  <div class="error-message" id="conduct-error">
-                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.conduct.left, {
-                      MissingE: t('write-review', 'confirmCodeOfConduct'),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              E.isLeft(form.conduct)
+                ? html`
+                    <div class="error-message" id="conduct-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.conduct.left, {
+                        MissingE: t('write-review', 'confirmCodeOfConduct'),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <label>
               <input
@@ -116,15 +118,17 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
 const codeOfConductLink = (text: Html) => html`<a href="${Routes.CodeOfConduct}">${text}</a>`
 
 const toErrorItems = (locale: SupportedLocale) => (form: CodeOfConductForm) => html`
-  ${E.isLeft(form.conduct)
-    ? html`
-        <li>
-          <a href="#conduct-yes">
-            ${Match.valueTags(form.conduct.left, {
-              MissingE: translate(locale, 'write-review', 'confirmCodeOfConduct'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.conduct)
+      ? html`
+          <li>
+            <a href="#conduct-yes">
+              ${Match.valueTags(form.conduct.left, {
+                MissingE: translate(locale, 'write-review', 'confirmCodeOfConduct'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

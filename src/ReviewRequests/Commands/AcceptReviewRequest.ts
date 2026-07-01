@@ -10,9 +10,7 @@ export interface Command {
 }
 
 export type Error =
-  | Errors.ReviewRequestHasBeenRejected
-  | Errors.UnknownReviewRequest
-  | Errors.ReviewRequestHasBeenWithdrawn
+  Errors.ReviewRequestHasBeenRejected | Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenWithdrawn
 
 export type State = NotReceived | NotAccepted | HasBeenAccepted | HasBeenRejected | HasBeenWithdrawn
 
@@ -62,24 +60,22 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
-    Match.valueTags(state, {
-      NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
-      HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
-      HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
-      HasBeenAccepted: () => Either.right(Option.none()),
-      NotAccepted: () =>
-        Either.right(
-          Option.some(
-            new Events.ReviewRequestForAPreprintWasAccepted({
-              acceptedAt: command.acceptedAt,
-              reviewRequestId: command.reviewRequestId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  Match.valueTags(state, {
+    NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
+    HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
+    HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
+    HasBeenAccepted: () => Either.right(Option.none()),
+    NotAccepted: () =>
+      Either.right(
+        Option.some(
+          new Events.ReviewRequestForAPreprintWasAccepted({
+            acceptedAt: command.acceptedAt,
+            reviewRequestId: command.reviewRequestId,
+          }),
         ),
-    }),
+      ),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

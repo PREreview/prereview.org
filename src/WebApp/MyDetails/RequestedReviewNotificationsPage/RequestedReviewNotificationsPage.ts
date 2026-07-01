@@ -36,16 +36,18 @@ export function RequestedReviewNotificationsPage({
               <h1>${t('receiveRequestedReviewNotifications')()}</h1>
             </legend>
 
-            ${hasAnError && Either.isLeft(form.requestedReviewNotifications)
-              ? html`
-                  <div class="error-message" id="requested-review-notifications-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.requestedReviewNotifications.left, {
-                      Missing: () => t('selectReceiveRequestedReviewNotificationsError')(),
-                    })}
-                  </div>
-                `
-              : ''}
+            ${
+              hasAnError && Either.isLeft(form.requestedReviewNotifications)
+                ? html`
+                    <div class="error-message" id="requested-review-notifications-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.requestedReviewNotifications.left, {
+                        Missing: () => t('selectReceiveRequestedReviewNotificationsError')(),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -105,15 +107,17 @@ export function RequestedReviewNotificationsPage({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
-  ${Either.isLeft(form.requestedReviewNotifications)
-    ? html`
-        <li>
-          <a href="#requested-review-notifications-yes">
-            ${Match.valueTags(form.requestedReviewNotifications.left, {
-              Missing: () => translate(locale, 'my-details', 'selectReceiveRequestedReviewNotificationsError')(),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.requestedReviewNotifications)
+      ? html`
+          <li>
+            <a href="#requested-review-notifications-yes">
+              ${Match.valueTags(form.requestedReviewNotifications.left, {
+                Missing: () => translate(locale, 'my-details', 'selectReceiveRequestedReviewNotificationsError')(),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

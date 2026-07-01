@@ -11,9 +11,7 @@ export interface Command {
 }
 
 export type Error =
-  | Errors.DatasetReviewHasNotBeenStarted
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewHasBeenPublished
+  Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewHasBeenPublished
 
 export type State = NotStarted | NotAnswered | HasBeenAnswered | IsBeingPublished | HasBeenPublished
 
@@ -75,38 +73,36 @@ export const authorize: {
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Match.valueTags(state, {
-      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-      IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-      HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
-      NotAnswered: () =>
-        Either.right(
-          Option.some(
-            new Events.AnsweredIfTheDatasetIsErrorFree({
-              answer: command.answer,
-              detail: command.detail,
-              datasetReviewId: command.datasetReviewId,
-            }),
-          ),
+} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    NotAnswered: () =>
+      Either.right(
+        Option.some(
+          new Events.AnsweredIfTheDatasetIsErrorFree({
+            answer: command.answer,
+            detail: command.detail,
+            datasetReviewId: command.datasetReviewId,
+          }),
         ),
-      HasBeenAnswered: ({ answer, detail }) =>
-        Boolean.match(Boolean.and(Equal.equals(command.answer, answer), Equal.equals(command.detail, detail)), {
-          onTrue: () => Either.right(Option.none()),
-          onFalse: () =>
-            Either.right(
-              Option.some(
-                new Events.AnsweredIfTheDatasetIsErrorFree({
-                  answer: command.answer,
-                  detail: command.detail,
-                  datasetReviewId: command.datasetReviewId,
-                }),
-              ),
+      ),
+    HasBeenAnswered: ({ answer, detail }) =>
+      Boolean.match(Boolean.and(Equal.equals(command.answer, answer), Equal.equals(command.detail, detail)), {
+        onTrue: () => Either.right(Option.none()),
+        onFalse: () =>
+          Either.right(
+            Option.some(
+              new Events.AnsweredIfTheDatasetIsErrorFree({
+                answer: command.answer,
+                detail: command.detail,
+                datasetReviewId: command.datasetReviewId,
+              }),
             ),
-        }),
-    }),
+          ),
+      }),
+  }),
 )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

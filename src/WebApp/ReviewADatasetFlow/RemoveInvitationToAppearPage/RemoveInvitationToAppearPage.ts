@@ -53,18 +53,20 @@ export const RemoveInvitationToAppearPage = ({
               <h1>${t('wantToRemoveName')({ name: authorName })}</h1>
             </legend>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.removeAuthor)
-              ? html`
-                  <div class="error-message" id="remove-author-error">
-                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.removeAuthor.left),
-                      Match.tag('Missing', () => t('wantToRemoveNameError')({ name: authorName })),
-                      Match.exhaustive,
-                    )}
-                  </div>
-                `
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.removeAuthor)
+                ? html`
+                    <div class="error-message" id="remove-author-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${pipe(
+                        Match.value(form.removeAuthor.left),
+                        Match.tag('Missing', () => t('wantToRemoveNameError')({ name: authorName })),
+                        Match.exhaustive,
+                      )}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -115,19 +117,21 @@ export const RemoveInvitationToAppearPage = ({
 
 const toErrorItems =
   (locale: SupportedLocale, authorName: Name.Name) => (form: RemoveInvitationToAppearForm.InvalidForm) => html`
-    ${Either.isLeft(form.removeAuthor)
-      ? html`
-          <li>
-            <a href="#remove-author-no">
-              ${pipe(
-                Match.value(form.removeAuthor.left),
-                Match.tag('Missing', () =>
-                  translate(locale, 'review-a-dataset-flow', 'wantToRemoveNameError')({ name: authorName }),
-                ),
-                Match.exhaustive,
-              )}
-            </a>
-          </li>
-        `
-      : ''}
+    ${
+      Either.isLeft(form.removeAuthor)
+        ? html`
+            <li>
+              <a href="#remove-author-no">
+                ${pipe(
+                  Match.value(form.removeAuthor.left),
+                  Match.tag('Missing', () =>
+                    translate(locale, 'review-a-dataset-flow', 'wantToRemoveNameError')({ name: authorName }),
+                  ),
+                  Match.exhaustive,
+                )}
+              </a>
+            </li>
+          `
+        : ''
+    }
   `

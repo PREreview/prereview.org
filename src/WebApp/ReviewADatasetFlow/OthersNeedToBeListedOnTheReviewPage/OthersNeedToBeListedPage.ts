@@ -52,18 +52,20 @@ export const OthersNeedToBeListedPage = ({
 
             <p id="others-need-to-be-listed-tip" role="note">${t('didYouReviewWithAnyoneElseTip')()}</p>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.othersNeedToBeListed)
-              ? html`
-                  <div class="error-message" id="others-need-to-be-listed-error">
-                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.othersNeedToBeListed.left),
-                      Match.tag('Missing', () => t('selectDidYouReviewWithAnyoneElse')()),
-                      Match.exhaustive,
-                    )}
-                  </div>
-                `
-              : ''}
+            ${
+              form._tag === 'InvalidForm' && Either.isLeft(form.othersNeedToBeListed)
+                ? html`
+                    <div class="error-message" id="others-need-to-be-listed-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${pipe(
+                        Match.value(form.othersNeedToBeListed.left),
+                        Match.tag('Missing', () => t('selectDidYouReviewWithAnyoneElse')()),
+                        Match.exhaustive,
+                      )}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>
@@ -123,19 +125,21 @@ export const OthersNeedToBeListedPage = ({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: OthersNeedToBeListedForm.InvalidForm) => html`
-  ${Either.isLeft(form.othersNeedToBeListed)
-    ? html`
-        <li>
-          <a href="#others-need-to-be-listed-no">
-            ${pipe(
-              Match.value(form.othersNeedToBeListed.left),
-              Match.tag('Missing', () =>
-                translate(locale, 'review-a-dataset-flow', 'selectDidYouReviewWithAnyoneElse')(),
-              ),
-              Match.exhaustive,
-            )}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.othersNeedToBeListed)
+      ? html`
+          <li>
+            <a href="#others-need-to-be-listed-no">
+              ${pipe(
+                Match.value(form.othersNeedToBeListed.left),
+                Match.tag('Missing', () =>
+                  translate(locale, 'review-a-dataset-flow', 'selectDidYouReviewWithAnyoneElse')(),
+                ),
+                Match.exhaustive,
+              )}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

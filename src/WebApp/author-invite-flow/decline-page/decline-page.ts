@@ -48,56 +48,58 @@ export const declinePage = ({
             </h2>
 
             <div class="byline">
-              ${review.club
-                ? translate(
-                    locale,
-                    'review-page',
-                    'clubReviewAuthors',
-                  )({
-                    authors: pipe(
-                      review.authors.named,
-                      Array.map(displayAuthor),
-                      Array.appendAll(
-                        review.authors.anonymous > 0
-                          ? [
-                              translate(
-                                locale,
-                                'review-page',
-                                'otherAuthors',
-                              )({ otherAuthors: review.authors.anonymous }),
-                            ]
-                          : [],
+              ${
+                review.club
+                  ? translate(
+                      locale,
+                      'review-page',
+                      'clubReviewAuthors',
+                    )({
+                      authors: pipe(
+                        review.authors.named,
+                        Array.map(displayAuthor),
+                        Array.appendAll(
+                          review.authors.anonymous > 0
+                            ? [
+                                translate(
+                                  locale,
+                                  'review-page',
+                                  'otherAuthors',
+                                )({ otherAuthors: review.authors.anonymous }),
+                              ]
+                            : [],
+                        ),
+                        formatList(locale),
                       ),
-                      formatList(locale),
-                    ),
-                    club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
-                      >${getClubName(review.club)}</a
-                    >`,
-                    hide: text => html`<span class="visually-hidden">${text}</span>`,
-                  })
-                : translate(
-                    locale,
-                    'review-page',
-                    'reviewAuthors',
-                  )({
-                    authors: pipe(
-                      review.authors.named,
-                      Array.map(displayAuthor),
-                      Array.appendAll(
-                        review.authors.anonymous > 0
-                          ? [
-                              translate(
-                                locale,
-                                'review-page',
-                                'otherAuthors',
-                              )({ otherAuthors: review.authors.anonymous }),
-                            ]
-                          : [],
+                      club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
+                        >${getClubName(review.club)}</a
+                      >`,
+                      hide: text => html`<span class="visually-hidden">${text}</span>`,
+                    })
+                  : translate(
+                      locale,
+                      'review-page',
+                      'reviewAuthors',
+                    )({
+                      authors: pipe(
+                        review.authors.named,
+                        Array.map(displayAuthor),
+                        Array.appendAll(
+                          review.authors.anonymous > 0
+                            ? [
+                                translate(
+                                  locale,
+                                  'review-page',
+                                  'otherAuthors',
+                                )({ otherAuthors: review.authors.anonymous }),
+                              ]
+                            : [],
+                        ),
+                        formatList(locale),
                       ),
-                      formatList(locale),
-                    ),
-                    hide: text => html`<span class="visually-hidden">${text}</span>`,
-                  })}
+                      hide: text => html`<span class="visually-hidden">${text}</span>`,
+                    })
+              }
             </div>
 
             <dl>
@@ -147,13 +149,15 @@ export const declinePage = ({
             ${fixHeadingLevels(1, review.text)}
           </div>
 
-          ${review.addendum
-            ? html`
-                <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
+          ${
+            review.addendum
+              ? html`
+                  <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
 
-                ${fixHeadingLevels(2, review.addendum)}
-              `
-            : ''}
+                  ${fixHeadingLevels(2, review.addendum)}
+                `
+              : ''
+          }
         </article>
 
         <p>${translate(locale, 'author-invite-flow', 'invitedToAppear')()}</p>

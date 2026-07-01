@@ -19,12 +19,7 @@ export type Error =
   | Errors.DatasetReviewHasBeenPublished
 
 type State =
-  | NotStarted
-  | DoesNotNeedInvitationsToAppear
-  | HasNotBeenAdded
-  | HasBeenAdded
-  | IsBeingPublished
-  | HasBeenPublished
+  NotStarted | DoesNotNeedInvitationsToAppear | HasNotBeenAdded | HasBeenAdded | IsBeingPublished | HasBeenPublished
 
 class NotStarted extends Data.TaggedClass('NotStarted') {}
 

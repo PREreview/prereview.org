@@ -44,38 +44,40 @@ export const WriteCommentPage = ({
           </h2>
 
           <div class="byline">
-            ${prereview.club
-              ? t(
-                  'review-page',
-                  'clubReviewAuthors',
-                )({
-                  authors: pipe(
-                    Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
-                    Array.appendAll(
-                      prereview.authors.anonymous > 0
-                        ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
-                        : [],
+            ${
+              prereview.club
+                ? t(
+                    'review-page',
+                    'clubReviewAuthors',
+                  )({
+                    authors: pipe(
+                      Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
+                      Array.appendAll(
+                        prereview.authors.anonymous > 0
+                          ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
+                          : [],
+                      ),
+                      formatList(locale),
                     ),
-                    formatList(locale),
-                  ),
-                  club: html`<bdi>${getClubName(prereview.club)}</bdi>`,
-                  hide: text => html`<span class="visually-hidden">${text}</span>`,
-                })
-              : t(
-                  'review-page',
-                  'reviewAuthors',
-                )({
-                  authors: pipe(
-                    Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
-                    Array.appendAll(
-                      prereview.authors.anonymous > 0
-                        ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
-                        : [],
+                    club: html`<bdi>${getClubName(prereview.club)}</bdi>`,
+                    hide: text => html`<span class="visually-hidden">${text}</span>`,
+                  })
+                : t(
+                    'review-page',
+                    'reviewAuthors',
+                  )({
+                    authors: pipe(
+                      Array.map(prereview.authors.named, author => html`<bdi>${author.name}</bdi>`),
+                      Array.appendAll(
+                        prereview.authors.anonymous > 0
+                          ? [t('review-page', 'otherAuthors')({ otherAuthors: prereview.authors.anonymous })]
+                          : [],
+                      ),
+                      formatList(locale),
                     ),
-                    formatList(locale),
-                  ),
-                  hide: text => html`<span class="visually-hidden">${text}</span>`,
-                })}
+                    hide: text => html`<span class="visually-hidden">${text}</span>`,
+                  })
+            }
           </div>
 
           <dl>

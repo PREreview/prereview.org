@@ -46,20 +46,18 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 export const decide: {
   (state: State, command: Command): Option.Option<Events.ReviewRequestEvent>
   (command: Command): (state: State) => Option.Option<Events.ReviewRequestEvent>
-} = Function.dual(
-  2,
-  (state: State, command: Command): Option.Option<Events.ReviewRequestEvent> =>
-    Match.valueTags(state, {
-      HasBeenReceived: () => Option.none(),
-      NotReceived: () =>
-        Option.some(
-          new Events.ReviewRequestForAPreprintWasReceived({
-            receivedAt: command.receivedAt,
-            receivedFrom: command.receivedFrom,
-            preprintId: command.preprintId,
-            reviewRequestId: command.reviewRequestId,
-            requester: Option.some(command.requester),
-          }),
-        ),
-    }),
+} = Function.dual(2, (state: State, command: Command): Option.Option<Events.ReviewRequestEvent> =>
+  Match.valueTags(state, {
+    HasBeenReceived: () => Option.none(),
+    NotReceived: () =>
+      Option.some(
+        new Events.ReviewRequestForAPreprintWasReceived({
+          receivedAt: command.receivedAt,
+          receivedFrom: command.receivedFrom,
+          preprintId: command.preprintId,
+          reviewRequestId: command.reviewRequestId,
+          requester: Option.some(command.requester),
+        }),
+      ),
+  }),
 )

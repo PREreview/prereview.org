@@ -47,26 +47,30 @@ export function introductionMatchesForm(
         action="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
         novalidate
       >
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.introductionMatches)
-                    ? html`
-                        <li>
-                          <a href="#introduction-matches-yes">
-                            ${Match.valueTags(form.introductionMatches.left, {
-                              MissingE: () => t('selectIntroductionExplains')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.introductionMatches)
+                        ? html`
+                            <li>
+                              <a href="#introduction-matches-yes">
+                                ${Match.valueTags(form.introductionMatches.left, {
+                                  MissingE: () => t('selectIntroductionExplains')(),
+                                })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.introductionMatches) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -82,16 +86,18 @@ export function introductionMatchesForm(
                 <h1>${t('doesIntroductionExplain')()}</h1>
               </legend>
 
-              ${E.isLeft(form.introductionMatches)
-                ? html`
-                    <div class="error-message" id="introduction-matches-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.introductionMatches.left, {
-                        MissingE: () => t('selectIntroductionExplains')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.introductionMatches)
+                  ? html`
+                      <div class="error-message" id="introduction-matches-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.introductionMatches.left, {
+                          MissingE: () => t('selectIntroductionExplains')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -124,9 +130,8 @@ export function introductionMatchesForm(
                         rows="5"
                       >
 ${match(form.introductionMatchesYesDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -157,9 +162,8 @@ ${match(form.introductionMatchesYesDetails)
                         rows="5"
                       >
 ${match(form.introductionMatchesPartlyDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -190,9 +194,8 @@ ${match(form.introductionMatchesPartlyDetails)
                         rows="5"
                       >
 ${match(form.introductionMatchesNoDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>

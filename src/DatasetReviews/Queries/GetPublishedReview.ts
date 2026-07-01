@@ -66,9 +66,7 @@ export interface PublishedReview {
 export type Input = Uuid.Uuid
 
 export type Error =
-  | Errors.DatasetReviewHasNotBeenPublished
-  | Errors.UnknownDatasetReview
-  | Queries.UnexpectedSequenceOfEvents
+  Errors.DatasetReviewHasNotBeenPublished | Errors.UnknownDatasetReview | Queries.UnexpectedSequenceOfEvents
 
 export type Result = Either.Either<PublishedReview, Error>
 

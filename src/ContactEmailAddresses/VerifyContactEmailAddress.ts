@@ -17,9 +17,7 @@ export interface Input {
 }
 
 export type Error =
-  | ContactEmailAddressHasAlreadyBeenVerified
-  | ContactEmailAddressIsNotFound
-  | OnlyCurrentContactAddressCanBeVerified
+  ContactEmailAddressHasAlreadyBeenVerified | ContactEmailAddressIsNotFound | OnlyCurrentContactAddressCanBeVerified
 
 class ContactAddressUnverified extends Data.TaggedClass('ContactAddressUnverified')<{ orcidId: OrcidId }> {}
 class ContactAddressVerified extends Data.TaggedClass('ContactAddressVerified')<{ orcidId: OrcidId }> {}

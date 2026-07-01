@@ -89,16 +89,18 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                 </div>
               </details>
 
-              ${hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
-                ? html`
-                    <div class="error-message" id="findings-next-steps-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
-                        Missing: () => t('selectFollowFairAndCare')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
+                  ? html`
+                      <div class="error-message" id="findings-next-steps-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
+                          Missing: () => t('selectFollowFairAndCare')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -132,16 +134,11 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.followsFairAndCarePrinciplesYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.followsFairAndCarePrinciplesYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -177,16 +174,14 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.followsFairAndCarePrinciplesPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(
+      Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesPartlyDetail)),
+      () => String.empty,
+    ),
+  CompletedForm: form => Option.getOrElse(form.followsFairAndCarePrinciplesPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -220,16 +215,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.followsFairAndCarePrinciplesNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.followsFairAndCarePrinciplesNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

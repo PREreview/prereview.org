@@ -26,20 +26,22 @@ export const createFormPage = ({
     >`,
     main: html`
       <form method="post" action="${format(changeOpenForRequestsMatch.formatter, {})}" novalidate>
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  <li>
-                    <a href="#open-for-requests-yes"
-                      >${translate(locale, 'my-details', 'selectHappyTakeRequestsError')()}</a
-                    >
-                  </li>
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    <li>
+                      <a href="#open-for-requests-yes"
+                        >${translate(locale, 'my-details', 'selectHappyTakeRequestsError')()}</a
+                      >
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${error ? rawHtml('class="error"') : ''}>
           <fieldset
@@ -50,14 +52,16 @@ export const createFormPage = ({
               <h1>${translate(locale, 'my-details', 'happyTakeRequests')()}</h1>
             </legend>
 
-            ${error
-              ? html`
-                  <div class="error-message" id="open-for-requests-error">
-                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${translate(locale, 'my-details', 'selectHappyTakeRequestsError')()}
-                  </div>
-                `
-              : ''}
+            ${
+              error
+                ? html`
+                    <div class="error-message" id="open-for-requests-error">
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      ${translate(locale, 'my-details', 'selectHappyTakeRequestsError')()}
+                    </div>
+                  `
+                : ''
+            }
 
             <ol>
               <li>

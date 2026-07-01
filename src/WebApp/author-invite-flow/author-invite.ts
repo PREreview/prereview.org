@@ -116,44 +116,58 @@ function startPage({
           </h2>
 
           <div class="byline">
-            ${review.club
-              ? translate(
-                  locale,
-                  'review-page',
-                  'clubReviewAuthors',
-                )({
-                  authors: pipe(
-                    review.authors.named,
-                    Array.map(displayAuthor),
-                    Array.appendAll(
-                      review.authors.anonymous > 0
-                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
-                        : [],
+            ${
+              review.club
+                ? translate(
+                    locale,
+                    'review-page',
+                    'clubReviewAuthors',
+                  )({
+                    authors: pipe(
+                      review.authors.named,
+                      Array.map(displayAuthor),
+                      Array.appendAll(
+                        review.authors.anonymous > 0
+                          ? [
+                              translate(
+                                locale,
+                                'review-page',
+                                'otherAuthors',
+                              )({ otherAuthors: review.authors.anonymous }),
+                            ]
+                          : [],
+                      ),
+                      formatList(locale),
                     ),
-                    formatList(locale),
-                  ),
-                  club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
-                    >${getClubName(review.club)}</a
-                  >`,
-                  hide: text => html`<span class="visually-hidden">${text}</span>`,
-                })
-              : translate(
-                  locale,
-                  'review-page',
-                  'reviewAuthors',
-                )({
-                  authors: pipe(
-                    review.authors.named,
-                    Array.map(displayAuthor),
-                    Array.appendAll(
-                      review.authors.anonymous > 0
-                        ? [translate(locale, 'review-page', 'otherAuthors')({ otherAuthors: review.authors.anonymous })]
-                        : [],
+                    club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
+                      >${getClubName(review.club)}</a
+                    >`,
+                    hide: text => html`<span class="visually-hidden">${text}</span>`,
+                  })
+                : translate(
+                    locale,
+                    'review-page',
+                    'reviewAuthors',
+                  )({
+                    authors: pipe(
+                      review.authors.named,
+                      Array.map(displayAuthor),
+                      Array.appendAll(
+                        review.authors.anonymous > 0
+                          ? [
+                              translate(
+                                locale,
+                                'review-page',
+                                'otherAuthors',
+                              )({ otherAuthors: review.authors.anonymous }),
+                            ]
+                          : [],
+                      ),
+                      formatList(locale),
                     ),
-                    formatList(locale),
-                  ),
-                  hide: text => html`<span class="visually-hidden">${text}</span>`,
-                })}
+                    hide: text => html`<span class="visually-hidden">${text}</span>`,
+                  })
+            }
           </div>
 
           <dl>
@@ -201,36 +215,40 @@ function startPage({
 
         <div ${review.language ? languageAttributesFor(review.language) : ''}>${fixHeadingLevels(1, review.text)}</div>
 
-        ${review.addendum
-          ? html`
-              <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
+        ${
+          review.addendum
+            ? html`
+                <h2>${translate(locale, 'review-page', 'addendumTitle')()}</h2>
 
-              ${fixHeadingLevels(2, review.addendum)}
-            `
-          : ''}
+                ${fixHeadingLevels(2, review.addendum)}
+              `
+            : ''
+        }
       </article>
 
       <p>${t('invitedToAppear')()}</p>
 
-      ${user
-        ? ''
-        : html`
-            <h2>${t('beforeYouStart')()}</h2>
+      ${
+        user
+          ? ''
+          : html`
+              <h2>${t('beforeYouStart')()}</h2>
 
-            <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
+              <p>${t('weWillAskYouToLogInWithYourOrcid')()}</p>
 
-            <details>
-              <summary>${t('whatIsAnOrcid')()}</summary>
+              <details>
+                <summary>${t('whatIsAnOrcid')()}</summary>
 
-              <div>
-                <p>
-                  ${t('orcidExplainer')({
-                    link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`,
-                  })}
-                </p>
-              </div>
-            </details>
-          `}
+                <div>
+                  <p>
+                    ${t('orcidExplainer')({
+                      link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`,
+                    })}
+                  </p>
+                </div>
+              </details>
+            `
+      }
 
       <a href="${format(authorInviteStartMatch.formatter, { id: inviteId })}" role="button" draggable="false"
         >${translate(locale, 'forms', 'startButton')()}</a

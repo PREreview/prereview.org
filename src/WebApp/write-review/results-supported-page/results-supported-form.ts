@@ -48,26 +48,30 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
         action="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
         novalidate
       >
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
-                <ul>
-                  ${E.isLeft(form.resultsSupported)
-                    ? html`
-                        <li>
-                          <a href="#results-supported-strongly-supported">
-                            ${Match.valueTags(form.resultsSupported.left, {
-                              MissingE: () => t('selectConclusionsSupported')(),
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${
+          error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
+                  <ul>
+                    ${
+                      E.isLeft(form.resultsSupported)
+                        ? html`
+                            <li>
+                              <a href="#results-supported-strongly-supported">
+                                ${Match.valueTags(form.resultsSupported.left, {
+                                  MissingE: () => t('selectConclusionsSupported')(),
+                                })}
+                              </a>
+                            </li>
+                          `
+                        : ''
+                    }
+                  </ul>
+                </error-summary>
+              `
+            : ''
+        }
 
         <div ${rawHtml(E.isLeft(form.resultsSupported) ? 'class="error"' : '')}>
           <conditional-inputs>
@@ -83,16 +87,18 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
                 <h1>${t('conclusionsSupported')()}</h1>
               </legend>
 
-              ${E.isLeft(form.resultsSupported)
-                ? html`
-                    <div class="error-message" id="results-supported-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.resultsSupported.left, {
-                        MissingE: () => t('selectConclusionsSupported')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.resultsSupported)
+                  ? html`
+                      <div class="error-message" id="results-supported-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.resultsSupported.left, {
+                          MissingE: () => t('selectConclusionsSupported')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -127,9 +133,8 @@ export function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSuppo
                         rows="5"
                       >
 ${match(form.resultsSupportedStronglySupportedDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -162,9 +167,8 @@ ${match(form.resultsSupportedStronglySupportedDetails)
                         rows="5"
                       >
 ${match(form.resultsSupportedWellSupportedDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -199,9 +203,8 @@ ${match(form.resultsSupportedWellSupportedDetails)
                         rows="5"
                       >
 ${match(form.resultsSupportedNeutralDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -236,9 +239,8 @@ ${match(form.resultsSupportedNeutralDetails)
                         rows="5"
                       >
 ${match(form.resultsSupportedPartiallySupportedDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -271,9 +273,8 @@ ${match(form.resultsSupportedPartiallySupportedDetails)
                         rows="5"
                       >
 ${match(form.resultsSupportedNotSupportedDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>

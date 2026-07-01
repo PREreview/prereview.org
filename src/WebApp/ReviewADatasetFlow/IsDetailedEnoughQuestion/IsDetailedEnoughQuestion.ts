@@ -46,16 +46,18 @@ export const IsDetailedEnoughQuestion = ({
                 <h1>${t('granularEnough')()}</h1>
               </legend>
 
-              ${hasAnError && Either.isLeft(form.isDetailedEnough)
-                ? html`
-                    <div class="error-message" id="is-detailed-enough-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.isDetailedEnough.left, {
-                        Missing: () => t('selectGranularEnough')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                hasAnError && Either.isLeft(form.isDetailedEnough)
+                  ? html`
+                      <div class="error-message" id="is-detailed-enough-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.isDetailedEnough.left, {
+                          Missing: () => t('selectGranularEnough')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -89,15 +91,11 @@ export const IsDetailedEnoughQuestion = ({
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isDetailedEnoughYesDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isDetailedEnoughYesDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.isDetailedEnoughYesDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isDetailedEnoughYesDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -131,16 +129,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isDetailedEnoughPartlyDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form =>
-                            Option.getOrElse(form.isDetailedEnoughPartlyDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.isDetailedEnoughPartlyDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isDetailedEnoughPartlyDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>
@@ -174,15 +167,11 @@ ${Match.valueTags(form, {
                         rows="5"
                       >
 ${Match.valueTags(form, {
-                          EmptyForm: () => '',
-                          InvalidForm: form =>
-                            Option.getOrElse(
-                              Option.flatten(Either.getRight(form.isDetailedEnoughNoDetail)),
-                              () => String.empty,
-                            ),
-                          CompletedForm: form => Option.getOrElse(form.isDetailedEnoughNoDetail, () => String.empty),
-                        })}</textarea
-                      >
+  EmptyForm: () => '',
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Either.getRight(form.isDetailedEnoughNoDetail)), () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.isDetailedEnoughNoDetail, () => String.empty),
+})}</textarea>
                     </div>
                   </div>
                 </li>

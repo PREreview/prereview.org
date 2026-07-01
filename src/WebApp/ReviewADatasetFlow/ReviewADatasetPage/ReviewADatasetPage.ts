@@ -47,17 +47,19 @@ export const ReviewADatasetPage = ({
             </div>
           </details>
 
-          ${hasAnError && Either.isLeft(form.whichDataset)
-            ? html`
-                <div class="error-message" id="which-dataset-error">
-                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.whichDataset.left, {
-                    Invalid: () => t('errorEnterADataset')(),
-                    Missing: () => t('errorEnterTheDataset')(),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            hasAnError && Either.isLeft(form.whichDataset)
+              ? html`
+                  <div class="error-message" id="which-dataset-error">
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.whichDataset.left, {
+                      Invalid: () => t('errorEnterADataset')(),
+                      Missing: () => t('errorEnterTheDataset')(),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="whichDataset"
@@ -67,13 +69,15 @@ export const ReviewADatasetPage = ({
             dir="ltr"
             spellcheck="false"
             aria-describedby="which-dataset-tip"
-            ${hasAnError && Either.isLeft(form.whichDataset)
-              ? html`aria-invalid="true" aria-errormessage="dataset-error"
-                ${Match.valueTags(form.whichDataset.left, {
-                  Invalid: ({ value }) => html`value="${value}"`,
-                  Missing: () => '',
-                })}`
-              : ''}
+            ${
+              hasAnError && Either.isLeft(form.whichDataset)
+                ? html`aria-invalid="true" aria-errormessage="dataset-error"
+                  ${Match.valueTags(form.whichDataset.left, {
+                    Invalid: ({ value }) => html`value="${value}"`,
+                    Missing: () => '',
+                  })}`
+                : ''
+            }
           />
         </div>
 
@@ -87,16 +91,18 @@ export const ReviewADatasetPage = ({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: ReviewADatasetForm.InvalidForm) => html`
-  ${Either.isLeft(form.whichDataset)
-    ? html`
-        <li>
-          <a href="#which-dataset">
-            ${Match.valueTags(form.whichDataset.left, {
-              Invalid: () => translate(locale, 'review-a-dataset-flow', 'errorEnterADataset')(),
-              Missing: () => translate(locale, 'review-a-dataset-flow', 'errorEnterTheDataset')(),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    Either.isLeft(form.whichDataset)
+      ? html`
+          <li>
+            <a href="#which-dataset">
+              ${Match.valueTags(form.whichDataset.left, {
+                Invalid: () => translate(locale, 'review-a-dataset-flow', 'errorEnterADataset')(),
+                Missing: () => translate(locale, 'review-a-dataset-flow', 'errorEnterTheDataset')(),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

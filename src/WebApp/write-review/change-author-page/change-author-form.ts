@@ -54,16 +54,18 @@ export function changeAuthorForm({
 
           <p id="name-tip" role="note">${t('write-review', 'ableToChoseName')()}</p>
 
-          ${E.isLeft(form.name)
-            ? html`
-                <div class="error-message" id="name-error">
-                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.name.left, {
-                    MissingE: t('write-review', 'enterName'),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            E.isLeft(form.name)
+              ? html`
+                  <div class="error-message" id="name-error">
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.name.left, {
+                      MissingE: t('write-review', 'enterName'),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="name"
@@ -86,17 +88,19 @@ export function changeAuthorForm({
 
           <p id="email-address-tip" role="note">${t('write-review', 'useOfEmail')()}</p>
 
-          ${E.isLeft(form.emailAddress)
-            ? html`
-                <div class="error-message" id="email-address-error">
-                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                  ${Match.valueTags(form.emailAddress.left, {
-                    MissingE: t('write-review', 'enterEmail'),
-                    InvalidE: t('write-review', 'invalidEmail'),
-                  })}
-                </div>
-              `
-            : ''}
+          ${
+            E.isLeft(form.emailAddress)
+              ? html`
+                  <div class="error-message" id="email-address-error">
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                    ${Match.valueTags(form.emailAddress.left, {
+                      MissingE: t('write-review', 'enterEmail'),
+                      InvalidE: t('write-review', 'invalidEmail'),
+                    })}
+                  </div>
+                `
+              : ''
+          }
 
           <input
             name="emailAddress"
@@ -131,27 +135,31 @@ export interface ChangeAuthorForm {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: ChangeAuthorForm) => html`
-  ${E.isLeft(form.name)
-    ? html`
-        <li>
-          <a href="#name">
-            ${Match.valueTags(form.name.left, {
-              MissingE: translate(locale, 'write-review', 'enterName'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
-  ${E.isLeft(form.emailAddress)
-    ? html`
-        <li>
-          <a href="#email-address">
-            ${Match.valueTags(form.emailAddress.left, {
-              MissingE: translate(locale, 'write-review', 'enterEmail'),
-              InvalidE: translate(locale, 'write-review', 'invalidEmail'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.name)
+      ? html`
+          <li>
+            <a href="#name">
+              ${Match.valueTags(form.name.left, {
+                MissingE: translate(locale, 'write-review', 'enterName'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
+  ${
+    E.isLeft(form.emailAddress)
+      ? html`
+          <li>
+            <a href="#email-address">
+              ${Match.valueTags(form.emailAddress.left, {
+                MissingE: translate(locale, 'write-review', 'enterEmail'),
+                InvalidE: translate(locale, 'write-review', 'invalidEmail'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

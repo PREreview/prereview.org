@@ -92,26 +92,30 @@ export function competingInterestsForm(
             >
               <legend>
                 <h2>
-                  ${otherAuthors
-                    ? t('write-review', 'doAuthorsHaveCompetingInterests')()
-                    : t('write-review', 'doYouHaveCompetingInterests')()}
+                  ${
+                    otherAuthors
+                      ? t('write-review', 'doAuthorsHaveCompetingInterests')()
+                      : t('write-review', 'doYouHaveCompetingInterests')()
+                  }
                 </h2>
               </legend>
 
-              ${E.isLeft(form.competingInterests)
-                ? html`
-                    <div class="error-message" id="competing-interests-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+              ${
+                E.isLeft(form.competingInterests)
+                  ? html`
+                      <div class="error-message" id="competing-interests-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
 
-                      ${Match.valueTags(form.competingInterests.left, {
-                        MissingE: () =>
-                          otherAuthors
-                            ? translate(locale, 'write-review', 'selectYesIfAuthorsCompetingInterest')()
-                            : translate(locale, 'write-review', 'selectYesIfCompetingInterest')(),
-                      })}
-                    </div>
-                  `
-                : ''}
+                        ${Match.valueTags(form.competingInterests.left, {
+                          MissingE: () =>
+                            otherAuthors
+                              ? translate(locale, 'write-review', 'selectYesIfAuthorsCompetingInterest')()
+                              : translate(locale, 'write-review', 'selectYesIfCompetingInterest')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -147,19 +151,21 @@ export function competingInterestsForm(
                         >${t('write-review', 'whatAreThey')()}</label
                       >
 
-                      ${E.isLeft(form.competingInterestsDetails)
-                        ? html`
-                            <div class="error-message" id="competing-interests-details-error">
-                              <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                              ${Match.valueTags(form.competingInterestsDetails.left, {
-                                MissingE: () =>
-                                  otherAuthors
-                                    ? translate(locale, 'write-review', 'authorsCompetingInterestDetails')()
-                                    : translate(locale, 'write-review', 'competingInterestDetails')(),
-                              })}
-                            </div>
-                          `
-                        : ''}
+                      ${
+                        E.isLeft(form.competingInterestsDetails)
+                          ? html`
+                              <div class="error-message" id="competing-interests-details-error">
+                                <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                                ${Match.valueTags(form.competingInterestsDetails.left, {
+                                  MissingE: () =>
+                                    otherAuthors
+                                      ? translate(locale, 'write-review', 'authorsCompetingInterestDetails')()
+                                      : translate(locale, 'write-review', 'competingInterestDetails')(),
+                                })}
+                              </div>
+                            `
+                          : ''
+                      }
 
                       <textarea
                         name="competingInterestsDetails"
@@ -174,9 +180,8 @@ export function competingInterestsForm(
                         )}
                       >
 ${match(form.competingInterestsDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -195,32 +200,36 @@ ${match(form.competingInterestsDetails)
 }
 
 const toErrorItems = (locale: SupportedLocale, otherAuthors: boolean) => (form: CompetingInterestsForm) => html`
-  ${E.isLeft(form.competingInterests)
-    ? html`
-        <li>
-          <a href="#competing-interests-no">
-            ${Match.valueTags(form.competingInterests.left, {
-              MissingE: () =>
-                otherAuthors
-                  ? translate(locale, 'write-review', 'selectYesIfAuthorsCompetingInterest')()
-                  : translate(locale, 'write-review', 'selectYesIfCompetingInterest')(),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
-  ${E.isLeft(form.competingInterestsDetails)
-    ? html`
-        <li>
-          <a href="#competing-interests-details">
-            ${Match.valueTags(form.competingInterestsDetails.left, {
-              MissingE: () =>
-                otherAuthors
-                  ? translate(locale, 'write-review', 'authorsCompetingInterestDetails')()
-                  : translate(locale, 'write-review', 'competingInterestDetails')(),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.competingInterests)
+      ? html`
+          <li>
+            <a href="#competing-interests-no">
+              ${Match.valueTags(form.competingInterests.left, {
+                MissingE: () =>
+                  otherAuthors
+                    ? translate(locale, 'write-review', 'selectYesIfAuthorsCompetingInterest')()
+                    : translate(locale, 'write-review', 'selectYesIfCompetingInterest')(),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
+  ${
+    E.isLeft(form.competingInterestsDetails)
+      ? html`
+          <li>
+            <a href="#competing-interests-details">
+              ${Match.valueTags(form.competingInterestsDetails.left, {
+                MissingE: () =>
+                  otherAuthors
+                    ? translate(locale, 'write-review', 'authorsCompetingInterestDetails')()
+                    : translate(locale, 'write-review', 'competingInterestDetails')(),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `

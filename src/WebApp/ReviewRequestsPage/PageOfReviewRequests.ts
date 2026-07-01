@@ -59,13 +59,15 @@ export const PageOfReviewRequests = ({
                   })}
                 </a>
 
-                ${request.subfields.length > 0
-                  ? html`
-                      <ul class="categories">
-                        ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
-                      </ul>
-                    `
-                  : ''}
+                ${
+                  request.subfields.length > 0
+                    ? html`
+                        <ul class="categories">
+                          ${request.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
+                        </ul>
+                      `
+                    : ''
+                }
 
                 <dl>
                   <dt>${t('requests-list', 'requestPublished')()}</dt>
@@ -80,16 +82,20 @@ export const PageOfReviewRequests = ({
       </ol>
 
       <nav class="pager">
-        ${currentPage > 1
-          ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage - 1, field, language })}" rel="prev"
-              >${t('pagerNewer')()}</a
-            >`
-          : ''}
-        ${currentPage < totalPages
-          ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage + 1, field, language })}" rel="next"
-              >${t('pagerOlder')()}</a
-            >`
-          : ''}
+        ${
+          currentPage > 1
+            ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage - 1, field, language })}" rel="prev"
+                >${t('pagerNewer')()}</a
+              >`
+            : ''
+        }
+        ${
+          currentPage < totalPages
+            ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage + 1, field, language })}" rel="next"
+                >${t('pagerOlder')()}</a
+              >`
+            : ''
+        }
       </nav>
     `,
     canonical: Routes.ReviewRequests.href({ page: currentPage, field, language }),

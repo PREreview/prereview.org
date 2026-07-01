@@ -70,16 +70,18 @@ export function dataPresentationForm(preprint: PreprintTitle, form: DataPresenta
                 <h1>${t('areTheDataPresentationsWellSuited')()}</h1>
               </legend>
 
-              ${E.isLeft(form.dataPresentation)
-                ? html`
-                    <div class="error-message" id="data-presentation-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.dataPresentation.left, {
-                        MissingE: t('selectIfDataPresentationsWellSuited'),
-                      })}
-                    </div>
-                  `
-                : ''}
+              ${
+                E.isLeft(form.dataPresentation)
+                  ? html`
+                      <div class="error-message" id="data-presentation-error">
+                        <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.dataPresentation.left, {
+                          MissingE: t('selectIfDataPresentationsWellSuited'),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -114,9 +116,8 @@ export function dataPresentationForm(preprint: PreprintTitle, form: DataPresenta
                         rows="5"
                       >
 ${match(form.dataPresentationHighlyAppropriateClearDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -151,9 +152,8 @@ ${match(form.dataPresentationHighlyAppropriateClearDetails)
                         rows="5"
                       >
 ${match(form.dataPresentationMostlyAppropriateClearDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -186,9 +186,8 @@ ${match(form.dataPresentationMostlyAppropriateClearDetails)
                         rows="5"
                       >
 ${match(form.dataPresentationNeutralDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -223,9 +222,8 @@ ${match(form.dataPresentationNeutralDetails)
                         rows="5"
                       >
 ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -258,9 +256,8 @@ ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
                         rows="5"
                       >
 ${match(form.dataPresentationInappropriateUnclearDetails)
-                          .with({ right: P.select(P.string) }, identity)
-                          .otherwise(() => '')}</textarea
-                      >
+  .with({ right: P.select(P.string) }, identity)
+  .otherwise(() => '')}</textarea>
                     </div>
                   </div>
                 </li>
@@ -291,15 +288,17 @@ ${match(form.dataPresentationInappropriateUnclearDetails)
   })
 }
 const toErrorItems = (locale: SupportedLocale) => (form: DataPresentationForm) => html`
-  ${E.isLeft(form.dataPresentation)
-    ? html`
-        <li>
-          <a href="#data-presentation-highly-appropriate">
-            ${Match.valueTags(form.dataPresentation.left, {
-              MissingE: translate(locale, 'write-review', 'selectIfDataPresentationsWellSuited'),
-            })}
-          </a>
-        </li>
-      `
-    : ''}
+  ${
+    E.isLeft(form.dataPresentation)
+      ? html`
+          <li>
+            <a href="#data-presentation-highly-appropriate">
+              ${Match.valueTags(form.dataPresentation.left, {
+                MissingE: translate(locale, 'write-review', 'selectIfDataPresentationsWellSuited'),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
 `
