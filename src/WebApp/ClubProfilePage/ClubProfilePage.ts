@@ -1,16 +1,19 @@
-import { Array, flow, Match, pipe, String } from 'effect'
+import { Array, flow, Match, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { Club, ClubId } from '../../Clubs/index.ts'
+import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
+import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
@@ -22,7 +25,7 @@ export function createPage({
 }: {
   club: Club
   id: ClubId
-  prereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview>
+  prereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview | Prereviews.RecentDatasetPrereview>
   locale: SupportedLocale
 }) {
   return PageResponse({
@@ -131,57 +134,93 @@ export function createPage({
         onNonEmpty: prereviews => html`
           <ol class="cards">
             ${prereviews.map(
-              prereview => html`
-                <li>
-                  <article>
-                    <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                      ${translate(
-                        locale,
-                        'reviews-list',
-                        'reviewText',
-                      )({
-                        numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                        reviewers: pipe(
-                          prereview.reviewers.named,
-                          Array.appendAll(
-                            prereview.reviewers.anonymous > 0
-                              ? [
-                                  translate(
-                                    locale,
-                                    'reviews-list',
-                                    'otherAuthors',
-                                  )({ number: prereview.reviewers.anonymous }),
-                                ]
-                              : [],
+              Match.valueTags({
+                RecentPreprintPrereview: prereview => html`
+                  <li>
+                    <article>
+                      <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                        ${translate(
+                          locale,
+                          'reviews-list',
+                          'reviewText',
+                        )({
+                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                          reviewers: pipe(
+                            prereview.reviewers.named,
+                            Array.appendAll(
+                              prereview.reviewers.anonymous > 0
+                                ? [
+                                    translate(
+                                      locale,
+                                      'reviews-list',
+                                      'otherAuthors',
+                                    )({ number: prereview.reviewers.anonymous }),
+                                  ]
+                                : [],
+                            ),
+                            Array.map(name => html`<b dir="auto">${name}</b>`),
+                            formatList(locale),
                           ),
-                          Array.map(name => html`<b dir="auto">${name}</b>`),
-                          formatList(locale),
-                        ),
-                        preprint: html`
-                          <cite ${languageAttributesFor(prereview.preprint.language)}>${prereview.preprint.title}</cite>
-                        `,
-                      })}
-                    </a>
+                          preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                            >${prereview.preprint.title}</cite
+                          >`,
+                        })}
+                      </a>
 
-                    ${
-                      prereview.subfields.length > 0
-                        ? html`
-                            <ul class="categories">
-                              ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
-                            </ul>
-                          `
-                        : ''
-                    }
+                      ${
+                        prereview.subfields.length > 0
+                          ? html`
+                              <ul class="categories">
+                                ${prereview.subfields.map(
+                                  subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`,
+                                )}
+                              </ul>
+                            `
+                          : ''
+                      }
 
-                    <dl>
-                      <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
-                      <dd>${renderDate(locale)(prereview.published)}</dd>
-                      <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                      <dd>${Preprints.getServerName(prereview.preprint.id)}</dd>
-                    </dl>
-                  </article>
-                </li>
-              `,
+                      <dl>
+                        <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
+                        <dd>${renderDate(locale)(prereview.published)}</dd>
+                        <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
+                        <dd>${Preprints.getServerName(prereview.preprint.id)}</dd>
+                      </dl>
+                    </article>
+                  </li>
+                `,
+                RecentDatasetPrereview: prereview => html`
+                  <li>
+                    <article>
+                      <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
+                        ${
+                          prereview.otherAuthors.length + prereview.anonymousAuthors > 0
+                            ? html`${authorList(prereview, locale)} reviewed
+                                <cite ${languageAttributesFor(prereview.dataset.language)}
+                                  >${prereview.dataset.title}</cite
+                                >`
+                            : translate(
+                                locale,
+                                'dataset-reviews-list',
+                                'reviewText',
+                              )({
+                                reviewer: html`<b dir="auto">${displayPersona(prereview.author)}</b>`,
+                                dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                                  >${prereview.dataset.title}</cite
+                                >`,
+                              })
+                        }
+                      </a>
+
+                      <dl>
+                        <dt>${translate(locale, 'dataset-reviews-list', 'reviewPublished')()}</dt>
+                        <dd>${renderDate(locale)(prereview.published)}</dd>
+                        <dt>${translate(locale, 'dataset-reviews-list', 'repository')()}</dt>
+                        <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
+                      </dl>
+                    </article>
+                  </li>
+                `,
+              }),
             )}
           </ol>
         `,
@@ -190,6 +229,24 @@ export function createPage({
     canonical: Routes.ClubProfile.href({ id }),
   })
 }
+
+const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: SupportedLocale) => {
+  const list: Array.NonEmptyArray<Html | NonEmptyString> = Array.map(
+    Array.make(datasetReview.author, ...datasetReview.otherAuthors),
+    displayPersona,
+  )
+
+  if (datasetReview.anonymousAuthors > 0) {
+    list.push(translate(locale, 'dataset-reviews-list', 'otherAuthors')({ number: datasetReview.anonymousAuthors }))
+  }
+
+  return formatList(locale)(Array.map(list, name => html`<b dir="auto">${name}</b>`))
+}
+
+const displayPersona = Personas.match({
+  onPublic: Struct.get('name'),
+  onPseudonym: Struct.get('pseudonym'),
+})
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
