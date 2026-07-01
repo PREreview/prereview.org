@@ -5,7 +5,7 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import type * as Errors from '../Errors.ts'
 import { AddInvitationToAppearToTheList } from './AddInvitationToAppearToTheList.ts'
-import type { AddReviewToAClub } from './AddReviewToAClub.ts'
+import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import { AnswerIfOthersNeedToBeListedOnTheReview } from './AnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
@@ -318,7 +318,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         () => () => true,
         MarkDoiAsActivated.decide,
       ),
-      addReviewToAClub: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      addReviewToAClub: yield* Commands.makeCommand(AddReviewToAClub),
       publishDatasetReview: handleCommand(
         allDatasetReviewEvents,
         PublishDatasetReview.foldState,
