@@ -1,12 +1,15 @@
 import { Args, Command } from '@effect/cli'
-import { Effect, pipe } from 'effect'
+import { Array, Effect, pipe, Tuple } from 'effect'
 import * as Clubs from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import { Uuid } from '../types/index.ts'
 
 const datasetReviewId = pipe(Args.text({ name: 'datasetReviewId' }), Args.withSchema(Uuid.UuidSchema))
 
-const clubId = pipe(Args.text({ name: 'clubId' }), Args.withSchema(Clubs.ClubIdSchema))
+const clubId = Args.choice(
+  Array.map(Clubs.ClubIdSchema.literals, clubId => Tuple.make(Clubs.getClubName(clubId), clubId)),
+  { name: 'clubId' },
+)
 
 const program = Effect.fnUntraced(function* ({
   datasetReviewId,
