@@ -34,6 +34,20 @@ test('content looks right with multiple authors', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when in a club', async ({ showPage }) => {
+  const response = _.createDatasetReviewPage({
+    datasetReview: {
+      ...datasetReview,
+      clubId: Option.some('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
+    },
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 const datasetReview: _.DatasetReview = {
   author: new Personas.PublicPersona({
     name: Name.Name('Josiah Carberry'),
@@ -41,6 +55,7 @@ const datasetReview: _.DatasetReview = {
   }),
   otherAuthors: [],
   anonymousAuthors: 0,
+  clubId: Option.none(),
   dataset: {
     id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,

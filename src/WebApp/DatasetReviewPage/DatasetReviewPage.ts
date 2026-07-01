@@ -1,6 +1,7 @@
 import { Array, flow, identity, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
+import { getClubName } from '../../Clubs/index.ts'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
@@ -12,7 +13,7 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'clubId' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
   readonly author: Personas.Persona
   readonly otherAuthors: ReadonlyArray<Personas.Persona>
   readonly anonymousAuthors: number
@@ -35,7 +36,10 @@ export const createDatasetReviewPage = ({
 
   return PageResponse({
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”` })),
-    description: plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
+    description: Option.match(datasetReview.clubId, {
+      onNone: () => plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
+      onSome: clubId => plainText`Authored by ${authorList(datasetReview, locale)} of ${getClubName(clubId)}`,
+    }),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
         >${t('backLink')()}</a
@@ -53,9 +57,17 @@ export const createDatasetReviewPage = ({
         </h1>
 
         <div class="byline">
-          ${t('authoredBy')({
-            author: authorList(datasetReview, locale),
-            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+          ${Option.match(datasetReview.clubId, {
+            onNone: () =>
+              t('authoredBy')({
+                author: authorList(datasetReview, locale),
+                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+              }),
+            onSome: clubId =>
+              html`<span lang="en" dir="ltr"
+                ><span class="visually-hidden">Authored</span> by ${authorList(datasetReview, locale)} of
+                ${getClubName(clubId)}</span
+              >`,
           })}
         </div>
 
