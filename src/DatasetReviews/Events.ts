@@ -1,4 +1,5 @@
 import { Array, Schema, Struct } from 'effect'
+import * as Clubs from '../Clubs/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { SensitiveData } from '../SensitiveData.ts'
 import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
@@ -190,6 +191,14 @@ export class DatasetReviewWasAssignedADoi extends Schema.TaggedClass<DatasetRevi
   },
 ) {}
 
+export class DatasetReviewWasAddedToAClub extends Schema.TaggedClass<DatasetReviewWasAddedToAClub>()(
+  'DatasetReviewWasAddedToAClub',
+  {
+    clubId: Clubs.ClubIdSchema,
+    datasetReviewId: Uuid.UuidSchema,
+  },
+) {}
+
 export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewWasPublished>()(
   'DatasetReviewWasPublished',
   { datasetReviewId: Uuid.UuidSchema, publicationDate: Schema.Union(Temporal.InstantSchema, Temporal.PlainDateSchema) },
@@ -228,6 +237,7 @@ export const DatasetReviewEvent = Schema.Union(
   InvitationToAppearOnADatasetReviewRemovedFromTheList,
   CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,
+  DatasetReviewWasAddedToAClub,
   DatasetReviewWasPublished,
   ZenodoRecordForDatasetReviewWasPublished,
   DatasetReviewDoiWasActivated,
