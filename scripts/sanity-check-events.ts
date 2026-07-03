@@ -45,13 +45,54 @@ interface Rule {
     types: ReadonlyArray<EventType>
     matchingField: string
   }
-  permittedPrecedingEvents: 'None'
+  permittedPrecedingEvents: ReadonlyArray<ReadonlyArray<EventType>>
 }
 
 const rules: Partial<Record<EventType, Rule>> = {
   ContactAddressImported: {
-    pertinentEventFilter: { types: ['ContactAddressImported'], matchingField: 'contactAddressId' },
-    permittedPrecedingEvents: 'None',
+    pertinentEventFilter: {
+      types: [
+        'ContactAddressImported',
+        'ContactAddressRecorded',
+        'ContactAddressVerified',
+        'EmailToVerifyContactAddressSent',
+      ],
+      matchingField: 'contactAddressId',
+    },
+    permittedPrecedingEvents: [[]],
+  },
+  ContactAddressRecorded: {
+    pertinentEventFilter: {
+      types: [
+        'ContactAddressImported',
+        'ContactAddressRecorded',
+        'ContactAddressVerified',
+        'EmailToVerifyContactAddressSent',
+      ],
+      matchingField: 'contactAddressId',
+    },
+    permittedPrecedingEvents: [[]],
+  },
+  ContactAddressVerified: {
+    pertinentEventFilter: {
+      types: ['ContactAddressImported', 'ContactAddressRecorded', 'ContactAddressVerified'],
+      matchingField: 'contactAddressId',
+    },
+    permittedPrecedingEvents: [['ContactAddressImported'], ['ContactAddressRecorded']],
+  },
+  EmailToVerifyContactAddressSent: {
+    pertinentEventFilter: {
+      types: ['ContactAddressImported', 'ContactAddressRecorded'],
+      matchingField: 'contactAddressId',
+    },
+    permittedPrecedingEvents: [['ContactAddressImported'], ['ContactAddressRecorded']],
+  },
+  AuthorInviteEmailAddressChosenAsContactAddress: {
+    pertinentEventFilter: {
+      types: ['AuthorInviteEmailAddressChosenAsContactAddress'],
+      matchingField: 'inviteId',
+    },
+    permittedPrecedingEvents: [[]],
   },
 }
 
@@ -85,11 +126,15 @@ const sanityCheck = (row: typeof EventRow.Type): Effect.Effect<void, SqlError.Sq
       return
     }
     const pertinentPrecedingEvents = yield* getPertinentPrecedingEvents(row, rule.pertinentEventFilter)
-    if (pertinentPrecedingEvents.length !== 0) {
+    const isPermitted = rule.permittedPrecedingEvents.some(
+      seq =>
+        seq.length === pertinentPrecedingEvents.length && seq.every((type, i) => type === pertinentPrecedingEvents[i]),
+    )
+    if (!isPermitted) {
       console.log(
         row.position,
         row.event._tag,
-        'should be preceded by',
+        'should be preceded by one of',
         rule.permittedPrecedingEvents,
         'is preceded by',
         pertinentPrecedingEvents,
