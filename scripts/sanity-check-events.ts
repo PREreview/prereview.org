@@ -94,6 +94,20 @@ const rules: Partial<Record<EventType, Rule>> = {
     },
     permittedPrecedingEvents: [[]],
   },
+  EmailToInviteAuthorSent: {
+    pertinentEventFilter: {
+      types: ['AuthorInviteAccepted'],
+      matchingField: 'invitationId',
+    },
+    permittedPrecedingEvents: [[]],
+  },
+  AuthorInviteAccepted: {
+    pertinentEventFilter: {
+      types: ['AuthorInviteAccepted'],
+      matchingField: 'invitationId',
+    },
+    permittedPrecedingEvents: [[]],
+  },
 }
 
 const getPertinentPrecedingEvents = (
