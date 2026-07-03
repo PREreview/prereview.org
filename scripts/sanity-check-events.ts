@@ -1,7 +1,7 @@
 /* eslint-disable import/no-internal-modules */
 import { SqlClient, type SqlError } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Console, Effect, Layer, ParseResult, Schema, pipe } from 'effect'
+import { Console, Data, Effect, Layer, Match, ParseResult, Schema, pipe } from 'effect'
 import path from 'path'
 import { Event, type EventTypes } from '../src/Events.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -40,12 +40,24 @@ const EventRow = Schema.transformOrFail(
 
 type EventType = (typeof EventTypes)[number]
 
+class NoPrecedingEvents extends Data.TaggedClass('NoPrecedingEvents') {}
+
+class FullSequence extends Data.TaggedClass('FullSequence')<{
+  readonly sequences: ReadonlyArray<ReadonlyArray<EventType>>
+}> {}
+
+class LastPrecedingEvent extends Data.TaggedClass('LastPrecedingEvent')<{
+  readonly types: ReadonlyArray<EventType>
+}> {}
+
+type PermittedPrecedingEvents = NoPrecedingEvents | FullSequence | LastPrecedingEvent
+
 interface Rule {
   pertinentEventFilter: {
     types: ReadonlyArray<EventType>
     matchingFields: ReadonlyArray<string>
   }
-  permittedPrecedingEvents: ReadonlyArray<ReadonlyArray<EventType>>
+  permittedPrecedingEvents: PermittedPrecedingEvents
 }
 
 const rules: Partial<Record<EventType, Rule>> = {
@@ -59,7 +71,7 @@ const rules: Partial<Record<EventType, Rule>> = {
       ],
       matchingFields: ['contactAddressId'],
     },
-    permittedPrecedingEvents: [[]],
+    permittedPrecedingEvents: new NoPrecedingEvents(),
   },
   ContactAddressRecorded: {
     pertinentEventFilter: {
@@ -71,56 +83,56 @@ const rules: Partial<Record<EventType, Rule>> = {
       ],
       matchingFields: ['contactAddressId'],
     },
-    permittedPrecedingEvents: [[]],
+    permittedPrecedingEvents: new NoPrecedingEvents(),
   },
   ContactAddressVerified: {
     pertinentEventFilter: {
       types: ['ContactAddressImported', 'ContactAddressRecorded', 'ContactAddressVerified'],
       matchingFields: ['contactAddressId'],
     },
-    permittedPrecedingEvents: [['ContactAddressImported'], ['ContactAddressRecorded']],
+    permittedPrecedingEvents: new LastPrecedingEvent({ types: ['ContactAddressImported', 'ContactAddressRecorded'] }),
   },
   EmailToVerifyContactAddressSent: {
     pertinentEventFilter: {
       types: ['ContactAddressImported', 'ContactAddressRecorded'],
       matchingFields: ['contactAddressId'],
     },
-    permittedPrecedingEvents: [['ContactAddressImported'], ['ContactAddressRecorded']],
+    permittedPrecedingEvents: new LastPrecedingEvent({ types: ['ContactAddressImported', 'ContactAddressRecorded'] }),
   },
   AuthorInviteEmailAddressChosenAsContactAddress: {
     pertinentEventFilter: {
       types: ['AuthorInviteEmailAddressChosenAsContactAddress'],
       matchingFields: ['inviteId'],
     },
-    permittedPrecedingEvents: [[]],
+    permittedPrecedingEvents: new NoPrecedingEvents(),
   },
   EmailToInviteAuthorSent: {
     pertinentEventFilter: {
       types: ['AuthorInviteAccepted'],
       matchingFields: ['invitationId'],
     },
-    permittedPrecedingEvents: [[]],
+    permittedPrecedingEvents: new NoPrecedingEvents(),
   },
   AuthorInviteAccepted: {
     pertinentEventFilter: {
       types: ['AuthorInviteAccepted'],
       matchingFields: ['invitationId'],
     },
-    permittedPrecedingEvents: [[]],
+    permittedPrecedingEvents: new NoPrecedingEvents(),
   },
   PersonaForAReviewChosen: {
     pertinentEventFilter: {
-      types: ['AuthorInviteAccepted', 'AuthorChoicesForAReviewConfirmed'],
+      types: ['AuthorInviteAccepted', 'PersonaForAReviewChosen', 'AuthorChoicesForAReviewConfirmed'],
       matchingFields: ['reviewId', 'orcidId'],
     },
-    permittedPrecedingEvents: [['AuthorInviteAccepted']],
+    permittedPrecedingEvents: new LastPrecedingEvent({ types: ['AuthorInviteAccepted', 'PersonaForAReviewChosen'] }),
   },
   AuthorChoicesForAReviewConfirmed: {
     pertinentEventFilter: {
-      types: ['AuthorInviteAccepted', 'AuthorChoicesForAReviewConfirmed'],
+      types: ['AuthorInviteAccepted', 'PersonaForAReviewChosen', 'AuthorChoicesForAReviewConfirmed'],
       matchingFields: ['reviewId', 'orcidId'],
     },
-    permittedPrecedingEvents: [['AuthorInviteAccepted']],
+    permittedPrecedingEvents: new LastPrecedingEvent({ types: ['PersonaForAReviewChosen'] }),
   },
 }
 
@@ -159,10 +171,19 @@ const sanityCheck = (row: typeof EventRow.Type): Effect.Effect<void, SqlError.Sq
       return
     }
     const pertinentPrecedingEvents = yield* getPertinentPrecedingEvents(row, rule.pertinentEventFilter)
-    const isPermitted = rule.permittedPrecedingEvents.some(
-      seq =>
-        seq.length === pertinentPrecedingEvents.length && seq.every((type, i) => type === pertinentPrecedingEvents[i]),
-    )
+    const isPermitted = Match.valueTags(rule.permittedPrecedingEvents, {
+      NoPrecedingEvents: () => pertinentPrecedingEvents.length === 0,
+      FullSequence: ({ sequences }) =>
+        sequences.some(
+          seq =>
+            seq.length === pertinentPrecedingEvents.length &&
+            seq.every((type, i) => type === pertinentPrecedingEvents[i]),
+        ),
+      LastPrecedingEvent: ({ types }) => {
+        const last = pertinentPrecedingEvents.at(-1)
+        return last !== undefined && types.includes(last)
+      },
+    })
     if (!isPermitted) {
       console.log(
         row.position,
