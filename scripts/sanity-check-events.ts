@@ -43,7 +43,7 @@ type EventType = (typeof EventTypes)[number]
 interface Rule {
   pertinentEventFilter: {
     types: ReadonlyArray<EventType>
-    matchingField: string
+    matchingFields: ReadonlyArray<string>
   }
   permittedPrecedingEvents: ReadonlyArray<ReadonlyArray<EventType>>
 }
@@ -57,7 +57,7 @@ const rules: Partial<Record<EventType, Rule>> = {
         'ContactAddressVerified',
         'EmailToVerifyContactAddressSent',
       ],
-      matchingField: 'contactAddressId',
+      matchingFields: ['contactAddressId'],
     },
     permittedPrecedingEvents: [[]],
   },
@@ -69,44 +69,58 @@ const rules: Partial<Record<EventType, Rule>> = {
         'ContactAddressVerified',
         'EmailToVerifyContactAddressSent',
       ],
-      matchingField: 'contactAddressId',
+      matchingFields: ['contactAddressId'],
     },
     permittedPrecedingEvents: [[]],
   },
   ContactAddressVerified: {
     pertinentEventFilter: {
       types: ['ContactAddressImported', 'ContactAddressRecorded', 'ContactAddressVerified'],
-      matchingField: 'contactAddressId',
+      matchingFields: ['contactAddressId'],
     },
     permittedPrecedingEvents: [['ContactAddressImported'], ['ContactAddressRecorded']],
   },
   EmailToVerifyContactAddressSent: {
     pertinentEventFilter: {
       types: ['ContactAddressImported', 'ContactAddressRecorded'],
-      matchingField: 'contactAddressId',
+      matchingFields: ['contactAddressId'],
     },
     permittedPrecedingEvents: [['ContactAddressImported'], ['ContactAddressRecorded']],
   },
   AuthorInviteEmailAddressChosenAsContactAddress: {
     pertinentEventFilter: {
       types: ['AuthorInviteEmailAddressChosenAsContactAddress'],
-      matchingField: 'inviteId',
+      matchingFields: ['inviteId'],
     },
     permittedPrecedingEvents: [[]],
   },
   EmailToInviteAuthorSent: {
     pertinentEventFilter: {
       types: ['AuthorInviteAccepted'],
-      matchingField: 'invitationId',
+      matchingFields: ['invitationId'],
     },
     permittedPrecedingEvents: [[]],
   },
   AuthorInviteAccepted: {
     pertinentEventFilter: {
       types: ['AuthorInviteAccepted'],
-      matchingField: 'invitationId',
+      matchingFields: ['invitationId'],
     },
     permittedPrecedingEvents: [[]],
+  },
+  PersonaForAReviewChosen: {
+    pertinentEventFilter: {
+      types: ['AuthorInviteAccepted', 'AuthorChoicesForAReviewConfirmed'],
+      matchingFields: ['reviewId', 'orcidId'],
+    },
+    permittedPrecedingEvents: [['AuthorInviteAccepted']],
+  },
+  AuthorChoicesForAReviewConfirmed: {
+    pertinentEventFilter: {
+      types: ['AuthorInviteAccepted', 'AuthorChoicesForAReviewConfirmed'],
+      matchingFields: ['reviewId', 'orcidId'],
+    },
+    permittedPrecedingEvents: [['AuthorInviteAccepted']],
   },
 }
 
@@ -116,8 +130,13 @@ const getPertinentPrecedingEvents = (
 ): Effect.Effect<ReadonlyArray<EventType>, SqlError.SqlError, SqlClient.SqlClient> =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
-    const matchingValue = (row.event as unknown as Record<string, unknown>)[filter.matchingField]
-    if (typeof matchingValue !== 'string') return []
+    const event = row.event as unknown as Record<string, unknown>
+    const matchingEntries: Array<[string, string]> = []
+    for (const field of filter.matchingFields) {
+      const value = event[field]
+      if (typeof value !== 'string') return []
+      matchingEntries.push([field, value])
+    }
     const results = yield* sql`
       SELECT
         type
@@ -126,7 +145,7 @@ const getPertinentPrecedingEvents = (
       WHERE
         position < ${row.position}
         AND ${sql.in('type', filter.types)}
-        AND payload ->> ${filter.matchingField} = ${matchingValue}
+        AND ${sql.and(matchingEntries.map(([field, value]) => sql`payload ->> ${field} = ${value}`))}
       ORDER BY
         position ASC
     `
