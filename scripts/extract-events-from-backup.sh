@@ -12,11 +12,11 @@ SSH_KEY="${2:-$HOME/.ssh/id_rsa}"
 
 cd "$(dirname "$0")/.."
 
-age --decrypt -i "$SSH_KEY" "$BACKUP" | tar -xzOf - events.csv | tail -n +2 >data/events-dump.csv
+age --decrypt -i "$SSH_KEY" "$BACKUP" | tar -xzOf - events.csv | tail -n +2 > data/events-dump.csv
 
 rm -f data/events.db
 
-sqlite3 data/events.db <<'EOF'
+sqlite3 data/events.db << 'EOF'
 CREATE TABLE events (
   id TEXT NOT NULL,
   type TEXT NOT NULL,
