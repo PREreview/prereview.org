@@ -45,7 +45,9 @@ export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.Tag
 export class NoReviewRequestsFound extends Data.TaggedError('NoReviewRequestsFound')<{ cause?: unknown }> {}
 
 export class ReviewRequestNotReadyToBePublished extends Data.TaggedError('ReviewRequestNotReadyToBePublished')<{
-  missing: Array.NonEmptyReadonlyArray<'PersonaForAReviewRequestForAPreprintWasChosen' | 'ContactAddressVerified'>
+  missing: Array.NonEmptyReadonlyArray<
+    'PersonaForAReviewRequestForAPreprintWasChosen' | 'ContactAddressVerified' | 'DecisionOnReviewNotifications'
+  >
 }> {}
 
 export class ReviewRequestHasBeenPublished extends Data.TaggedError('ReviewRequestHasBeenPublished')<{
