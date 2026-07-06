@@ -3,7 +3,7 @@ import type * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
-import type { DoesAReviewRequestNeedAContactAddressToBeVerified } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
+import { DoesAReviewRequestNeedAContactAddressToBeVerified } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
 import { FindReviewRequestByAPrereviewer } from './FindReviewRequestByAPrereviewer.ts'
 import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
@@ -107,7 +107,9 @@ const makeReviewRequestQueries: Effect.Effect<
     listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: yield* Queries.makeStatefulQuery(
       ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
     ),
-    doesAReviewRequestNeedAContactAddressToBeVerified: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+    doesAReviewRequestNeedAContactAddressToBeVerified: yield* Queries.makeStatefulQuery(
+      DoesAReviewRequestNeedAContactAddressToBeVerified,
+    ),
   }
 })
 
