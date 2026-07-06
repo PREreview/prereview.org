@@ -16,7 +16,7 @@ export type Result = Either.Either<
   Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenPublished
 >
 
-type ContactAddress = VerifiedContactAddress | UnverifiedContactAddress | NoContactAddress
+export type ContactAddress = VerifiedContactAddress | UnverifiedContactAddress | NoContactAddress
 
 export class VerifiedContactAddress extends Data.TaggedClass('VerifiedContactAddress')<{ value: EmailAddress }> {}
 

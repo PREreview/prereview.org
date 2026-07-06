@@ -68,6 +68,7 @@ export const {
   doesAReviewRequestNeedAContactAddressToBeVerified,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
+export type { ContactAddress } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
 export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnAReviewRequest.ts'
 export {

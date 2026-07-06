@@ -1,4 +1,5 @@
-import { Data, type Either } from 'effect'
+import { Data, Match, type Either } from 'effect'
+import type { ContactAddress } from '../../../ReviewRequests/index.ts'
 import type { EmailAddress } from '../../../types/index.ts'
 
 export type EnterEmailAddressForm = EmptyForm | InvalidForm | CompletedForm
@@ -16,3 +17,9 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   emailAddress: EmailAddress.EmailAddress
 }> {}
+
+export const fromContactAddress = Match.typeTags<ContactAddress, EnterEmailAddressForm>()({
+  VerifiedContactAddress: contactAddress => new CompletedForm({ emailAddress: contactAddress.value }),
+  UnverifiedContactAddress: contactAddress => new CompletedForm({ emailAddress: contactAddress.value }),
+  NoContactAddress: () => new EmptyForm(),
+})
