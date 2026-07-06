@@ -106,6 +106,7 @@ export const CheckYourRequestSubmission: ({
 )
 
 const routeForMissing = {
+  ContactAddressVerified: Routes.RequestAReviewEnterEmailAddress,
   PersonaForAReviewRequestForAPreprintWasChosen: Routes.RequestAReviewChooseYourPersona,
 } satisfies Record<
   ReviewRequests.ReviewRequestNotReadyToBePublished['missing'][number],
