@@ -1,7 +1,8 @@
-import { Context, Effect, Layer } from 'effect'
+import { Context, Effect, Fiber, Layer, Match } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
+import { ReviewRequestNotReadyToBePublished } from '../Errors.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
 import { DoesAReviewRequestNeedAContactAddressToBeVerified } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
 import { FindReviewRequestByAPrereviewer } from './FindReviewRequestByAPrereviewer.ts'
@@ -85,13 +86,31 @@ const makeReviewRequestQueries: Effect.Effect<
   never,
   EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
+  const getReviewRequestReadyToBePublished = yield* Queries.makeStatefulQuery(GetReviewRequestReadyToBePublished)
+
+  const doesAReviewRequestNeedAContactAddressToBeVerified = yield* Queries.makeStatefulQuery(
+    DoesAReviewRequestNeedAContactAddressToBeVerified,
+  )
+
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
     findReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(FindReviewRequestByAPrereviewer),
     getNextExpectedCommandForAUserOnAReviewRequest: yield* Queries.makeOnDemandQuery(
       GetNextExpectedCommandForAUserOnAReviewRequest,
     ),
-    getReviewRequestReadyToBePublished: yield* Queries.makeStatefulQuery(GetReviewRequestReadyToBePublished),
+    getReviewRequestReadyToBePublished: Effect.fnUntraced(function* (input) {
+      const contactAddressFiber = yield* Effect.fork(doesAReviewRequestNeedAContactAddressToBeVerified(input))
+
+      const reviewRequest = yield* getReviewRequestReadyToBePublished(input)
+
+      const { contactAddress } = yield* Fiber.join(contactAddressFiber)
+
+      return yield* Match.valueTags(contactAddress, {
+        NoContactAddress: () => new ReviewRequestNotReadyToBePublished({ missing: ['ContactAddressVerified'] }),
+        UnverifiedContactAddress: () => new ReviewRequestNotReadyToBePublished({ missing: ['ContactAddressVerified'] }),
+        VerifiedContactAddress: () => Effect.succeed(reviewRequest),
+      })
+    }),
     getPersonaChoice: yield* Queries.makeStatefulQuery(GetPersonaChoice),
     getPublishedReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(GetPublishedReviewRequestByAPrereviewer),
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(GetFiveMostRecentReviewRequests),
@@ -107,9 +126,7 @@ const makeReviewRequestQueries: Effect.Effect<
     listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: yield* Queries.makeStatefulQuery(
       ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
     ),
-    doesAReviewRequestNeedAContactAddressToBeVerified: yield* Queries.makeStatefulQuery(
-      DoesAReviewRequestNeedAContactAddressToBeVerified,
-    ),
+    doesAReviewRequestNeedAContactAddressToBeVerified,
   }
 })
 

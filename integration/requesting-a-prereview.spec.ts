@@ -101,13 +101,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to give your email address',
-  async ({ emails, javaScriptEnabled, page }, testInfo) => {
+  async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
@@ -137,13 +136,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   'have to verify your email address',
-  async ({ emails, javaScriptEnabled, page }, testInfo) => {
+  async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
     await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 
@@ -361,47 +359,41 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ page
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'have to enter an email address',
-  async ({ javaScriptEnabled, page }, testInfo) => {
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'Enter your email address' }).click()
+  await page.getByRole('link', { name: 'Enter your email address' }).click()
 
-    await expect(page.getByLabel('What is your email address?')).toBeFocused()
+  await expect(page.getByLabel('What is your email address?')).toBeFocused()
 
-    await page.getByLabel('What is your email address?').fill('not an email address')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('What is your email address?').fill('not an email address')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
 
-    await page
-      .getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' })
-      .click()
+  await page.getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' }).click()
 
-    await expect(page.getByLabel('What is your email address?')).toBeFocused()
-  },
-)
+  await expect(page.getByLabel('What is your email address?')).toBeFocused()
+})
 
 test.extend(
   seedEvents(
