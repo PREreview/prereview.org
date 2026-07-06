@@ -31,6 +31,10 @@ export const EnterEmailAddressPage: ({
       preprintId,
     })
 
+    if (contactAddress._tag === 'VerifiedContactAddress') {
+      return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
+    }
+
     const form = EnterEmailAddressForm.fromContactAddress(contactAddress)
 
     return renderEnterEmailAddressPage({ preprintId: preprint.id, form, locale })
