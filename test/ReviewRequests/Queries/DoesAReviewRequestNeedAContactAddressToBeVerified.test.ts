@@ -95,7 +95,7 @@ const newerRecorded = new Events.ContactAddressRecorded({
   orcidId: input.requesterId,
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], Either.left(new UnknownReviewRequest({}))],
   ['request imported', [requestImported], Either.left(new ReviewRequestHasBeenPublished({}))],
   ['request published', [requestStarted, requestPublished], Either.left(new ReviewRequestHasBeenPublished({}))],
