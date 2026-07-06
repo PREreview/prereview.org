@@ -108,7 +108,7 @@ test
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(optedInToRequestedReviewNotifications)(
   'have to give your email address',
   async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
@@ -143,7 +143,11 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAnUnverifiedEmailAddress)
+  .extend(optedInToRequestedReviewNotifications)(
   'have to verify your email address',
   async ({ emails, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
