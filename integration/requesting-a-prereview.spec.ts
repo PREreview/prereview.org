@@ -78,7 +78,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'are returned to the next step if you have already started requesting a PREreview',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
