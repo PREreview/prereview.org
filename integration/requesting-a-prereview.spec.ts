@@ -14,6 +14,7 @@ import {
   expect,
   hasAnUnverifiedEmailAddress,
   hasAVerifiedEmailAddress,
+  optedInToRequestedReviewNotifications,
   seedEvents,
   test,
 } from './base.ts'
@@ -22,36 +23,39 @@ const reviewRequestId1 = Uuid(v4())
 const reviewRequestId2 = Uuid(v4())
 const now = Temporal.Now.instant()
 
-test.extend(canLogIn).extend(hasAVerifiedEmailAddress)('can request a PREreview', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'commit' })
-  await page.getByRole('link', { name: 'Request a review' }).click()
-  await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
-  await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(optedInToRequestedReviewNotifications)(
+  'can request a PREreview',
+  async ({ page }) => {
+    await page.goto('/', { waitUntil: 'commit' })
+    await page.getByRole('link', { name: 'Request a review' }).click()
+    await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
-  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
 
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
-  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-  await page.getByRole('button', { name: 'Request PREreview' }).click()
+    await page.getByRole('button', { name: 'Request PREreview' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
 
-  await page.getByRole('link', { name: 'list of requests' }).click()
+    await page.getByRole('link', { name: 'list of requests' }).click()
 
-  await expect(async () => {
-    await page.reload({ waitUntil: 'commit' })
+    await expect(async () => {
+      await page.reload({ waitUntil: 'commit' })
 
-    await expect(page.getByRole('main')).toContainText(
-      'A review was requested for Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory',
-    )
-  }).toPass()
-})
+      await expect(page.getByRole('main')).toContainText(
+        'A review was requested for Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory',
+      )
+    }).toPass()
+  },
+)
 
 test('can choose a locale before starting', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
@@ -61,24 +65,29 @@ test('can choose a locale before starting', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Solicite uma avaliação')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
-  'can request a PREreview using a pseudonym',
-  async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Orange Panda').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(optedInToRequestedReviewNotifications)('can request a PREreview using a pseudonym', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Orange Panda').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
-    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 
-    await page.getByRole('button', { name: 'Request PREreview' }).click()
+  await page.getByRole('button', { name: 'Request PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
+})
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(optedInToRequestedReviewNotifications)(
   'are returned to the next step if you have already started requesting a PREreview',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
@@ -169,6 +178,26 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'have to choose whether to receive notifications for requested PREreviews being published ',
+  async ({ page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Would you like to be notified when a PREreview is published?',
+    )
+
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your request')
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
 
@@ -179,60 +208,63 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('What name would you like to use?')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
-  'can change the name after previewing',
-  async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(optedInToRequestedReviewNotifications)('can change the name after previewing', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-    await page.getByRole('link', { name: 'Change name' }).click()
+  await page.getByRole('link', { name: 'Change name' }).click()
 
-    await page.getByLabel('Orange Panda').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Orange Panda').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
-  },
-)
+  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
+})
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
-  'can go back through the form',
-  async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(optedInToRequestedReviewNotifications)('can go back through the form', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your request')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your request')
 
-    await page.goBack()
+  await page.goBack()
 
-    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
+  await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
-    await page.goBack()
+  await page.goBack()
 
-    await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
-  },
-)
+  await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
+})
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
-  'see existing values when going back a step',
-  async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(optedInToRequestedReviewNotifications)('see existing values when going back a step', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
 
-    await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
-  },
-)
+  await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)('requires a valid preprint', async ({ page }) => {
   await page.goto('/request-a-prereview', { waitUntil: 'commit' })
@@ -394,6 +426,37 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', asyn
 
   await expect(page.getByLabel('What is your email address?')).toBeFocused()
 })
+
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'have to say if you want to receive notifications for requested PREreviews being published',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+    await expect(page.getByRole('button', { name: 'Save and continue' })).toBeVisible()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Would you like to be notified when a requested PREreview is published?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select yes if you would like to be notified' }).click()
+
+    await expect(
+      page
+        .getByRole('group', { name: 'Would you like to be notified when a requested PREreview is published?' })
+        .getByLabel('Yes'),
+    ).toBeFocused()
+  },
+)
 
 test.extend(
   seedEvents(

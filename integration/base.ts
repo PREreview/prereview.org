@@ -3346,6 +3346,22 @@ export const hasAVerifiedEmailAddress: Fixtures<
   },
 }
 
+export const optedInToRequestedReviewNotifications: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'seedEvents'>
+> = {
+  seedEvents: async ({ seedEvents }, use) => {
+    await use([
+      ...seedEvents,
+      new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        optedInAt: Temporal.Now.instant(),
+      }),
+    ])
+  },
+}
+
 export const invitedToBeAnAuthor: Fixtures<
   Record<never, never>,
   Record<never, never>,
