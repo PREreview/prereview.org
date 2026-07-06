@@ -71,7 +71,7 @@ export const EnterEmailAddressSubmission: ({
     })
 
     if (contactAddress._tag === 'VerifiedContactAddress') {
-      return RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint.id }) })
+      return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
     }
 
     const form = EnterEmailAddressForm.fromBody(body)
