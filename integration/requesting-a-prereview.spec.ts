@@ -184,13 +184,12 @@ test
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'have to choose whether to receive notifications for requested PREreviews being published ',
-  async ({ page }, testInfo) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Would you like to be notified when a PREreview is published?',
     )
@@ -433,14 +432,12 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', asyn
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'have to say if you want to receive notifications for requested PREreviews being published',
-  async ({ javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
-    await expect(page.getByRole('button', { name: 'Save and continue' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {

@@ -97,6 +97,10 @@ const makeReviewRequestQueries: Effect.Effect<
     DoesAReviewRequestNeedAContactAddressToBeVerified,
   )
 
+  const doesAReviewRequestNeedADecisionOnReviewNotifications = yield* Queries.makeStatefulQuery(
+    DoesAReviewRequestNeedADecisionOnReviewNotifications,
+  )
+
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
     findReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(FindReviewRequestByAPrereviewer),
@@ -105,6 +109,9 @@ const makeReviewRequestQueries: Effect.Effect<
     ),
     getReviewRequestReadyToBePublished: Effect.fnUntraced(function* (input) {
       const contactAddressFiber = yield* Effect.fork(doesAReviewRequestNeedAContactAddressToBeVerified(input))
+      const needsNotificationsDecisionFiber = yield* Effect.fork(
+        doesAReviewRequestNeedADecisionOnReviewNotifications(input),
+      )
 
       const reviewRequest = yield* getReviewRequestReadyToBePublished(input)
 
@@ -113,7 +120,16 @@ const makeReviewRequestQueries: Effect.Effect<
       return yield* Match.valueTags(contactAddress, {
         NoContactAddress: () => new ReviewRequestNotReadyToBePublished({ missing: ['ContactAddressVerified'] }),
         UnverifiedContactAddress: () => new ReviewRequestNotReadyToBePublished({ missing: ['ContactAddressVerified'] }),
-        VerifiedContactAddress: () => Effect.succeed(reviewRequest),
+        VerifiedContactAddress: () =>
+          Effect.gen(function* () {
+            const needsNotificationsDecision = yield* Fiber.join(needsNotificationsDecisionFiber)
+
+            if (needsNotificationsDecision) {
+              return yield* new ReviewRequestNotReadyToBePublished({ missing: ['DecisionOnReviewNotifications'] })
+            }
+
+            return reviewRequest
+          }),
       })
     }),
     getPersonaChoice: yield* Queries.makeStatefulQuery(GetPersonaChoice),
@@ -132,9 +148,7 @@ const makeReviewRequestQueries: Effect.Effect<
       ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
     ),
     doesAReviewRequestNeedAContactAddressToBeVerified,
-    doesAReviewRequestNeedADecisionOnReviewNotifications: yield* Queries.makeStatefulQuery(
-      DoesAReviewRequestNeedADecisionOnReviewNotifications,
-    ),
+    doesAReviewRequestNeedADecisionOnReviewNotifications,
   }
 })
 
