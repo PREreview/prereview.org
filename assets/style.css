@@ -606,7 +606,7 @@ nav {
 
   & [rel='prev'] {
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
 
     &::before {
       content: '←\00a0';
@@ -615,7 +615,7 @@ nav {
 
   & [rel='next'] {
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
 
     &::after {
       content: '\00a0→';
@@ -2091,7 +2091,7 @@ single-use-form {
 
 .back {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   font-size: var(--step--1);
 
   &::before {
@@ -2109,7 +2109,7 @@ single-use-form {
 
 .forward {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   font-size: var(--step--1);
 
   &::after {
@@ -2437,7 +2437,7 @@ skip-link {
 
 .more {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   margin-block-start: var(--space-xs);
 
   &::before {
