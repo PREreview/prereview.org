@@ -58,7 +58,7 @@ export const renderEnterEmailAddressPage = ({
 
         <p>
           <span lang="en" dir="ltr"
-            >We’re ready to publish your review request, but we need to confirm your email address first.</span
+            >We’re ready to publish your request, but we need to confirm your email address first.</span
           >
         </p>
 
