@@ -6,6 +6,10 @@ import { NonEmptyStringSchema } from '../../../types/NonEmptyString.ts'
 
 export type EnterEmailAddressForm = EmptyForm | InvalidForm | CompletedForm
 
+export type ValidForm = Exclude<EnterEmailAddressForm, InvalidForm>
+
+export type SubmittedForm = Exclude<EnterEmailAddressForm, EmptyForm>
+
 export class Missing extends Data.TaggedError('Missing') {}
 
 export class Invalid extends Data.TaggedError('Invalid')<{ value: string }> {}
@@ -20,13 +24,13 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   emailAddress: EmailAddress.EmailAddress
 }> {}
 
-export const fromContactAddress = Match.typeTags<ContactAddress, EnterEmailAddressForm>()({
+export const fromContactAddress = Match.typeTags<ContactAddress, ValidForm>()({
   VerifiedContactAddress: contactAddress => new CompletedForm({ emailAddress: contactAddress.value }),
   UnverifiedContactAddress: contactAddress => new CompletedForm({ emailAddress: contactAddress.value }),
   NoContactAddress: () => new EmptyForm(),
 })
 
-export const fromBody = (body: UrlParams.UrlParams): EnterEmailAddressForm => {
+export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
   const emailAddress = pipe(
     Schema.decodeEither(EmailAddressFieldSchema)(body),
     Either.mapBoth({
