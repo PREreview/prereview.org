@@ -1,5 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
+import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
 import { Preprints, type IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import { ReviewRequestQueries } from '../../../ReviewRequests/index.ts'
@@ -58,12 +59,13 @@ export const EnterEmailAddressSubmission: ({
 }: {
   body: UrlParams.UrlParams
   preprintId: IndeterminatePreprintId
-}) => Effect.Effect<Response, never, Locale | Preprints | ReviewRequestQueries> = Effect.fn(
+}) => Effect.Effect<Response, never, ContactEmailAddresses | Locale | Preprints | ReviewRequestQueries> = Effect.fn(
   'RequestAReviewFlow.EnterEmailAddressSubmission',
 )(
   function* ({ body, preprintId }) {
     const preprints = yield* Preprints
     const reviewRequestQueries = yield* ReviewRequestQueries
+    const contactEmailAddresses = yield* ContactEmailAddresses
     const user = yield* EnsureUserIsLoggedIn
     const locale = yield* Locale
 
@@ -81,9 +83,16 @@ export const EnterEmailAddressSubmission: ({
     const form = EnterEmailAddressForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       CompletedForm: Effect.fnUntraced(function* (form: EnterEmailAddressForm.CompletedForm) {
-        return yield* HavingProblemsPage
+        yield* contactEmailAddresses.startVerificationOfContactEmailAddress({
+          orcidId: user.orcid,
+          emailAddress: form.emailAddress,
+          resumeAt: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }),
+        })
+
+        return RedirectResponse({
+          location: Routes.RequestAReviewNeedToVerifyEmailAddress.href({ preprintId: preprint.id }),
+        })
       }),
       InvalidForm: (form: EnterEmailAddressForm.InvalidForm) =>
         Effect.succeed(renderEnterEmailAddressPage({ preprintId: preprint.id, form, locale })),
@@ -91,10 +100,13 @@ export const EnterEmailAddressSubmission: ({
   },
   (result, { preprintId }) =>
     Effect.catchTags(result, {
+      ContactEmailAddressHasAlreadyBeenVerified: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId }) })),
       PreprintIsNotFound: () => PageNotFound,
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
+      UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
