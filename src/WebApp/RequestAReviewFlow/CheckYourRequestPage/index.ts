@@ -50,8 +50,10 @@ export const CheckYourRequestPage: ({
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
-      ReviewRequestNotReadyToBePublished: () =>
-        Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }) })),
+      ReviewRequestNotReadyToBePublished: error =>
+        Effect.succeed(
+          RedirectResponse({ location: routeForMissing[Array.headNonEmpty(error.missing)].href({ preprintId }) }),
+        ),
       UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
