@@ -2,6 +2,7 @@ import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { type IndeterminatePreprintId, Preprints } from '../../../Preprints/index.ts'
+import { Prereviewers } from '../../../Prereviewers/index.ts'
 import { ReviewRequestQueries } from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
@@ -55,12 +56,13 @@ export const ReceiveNotificationsPage: (input: {
 export const ReceiveNotificationsSubmission: (input: {
   body: UrlParams.UrlParams
   preprintId: IndeterminatePreprintId
-}) => Effect.Effect<Response, never, Locale | Preprints | ReviewRequestQueries> = Effect.fn(
+}) => Effect.Effect<Response, never, Locale | Preprints | Prereviewers | ReviewRequestQueries> = Effect.fn(
   'RequestAReviewFlow.ReceiveNotificationsSubmission',
 )(
   function* ({ body, preprintId }) {
     const preprints = yield* Preprints
     const reviewRequestQueries = yield* ReviewRequestQueries
+    const prereviewers = yield* Prereviewers
     const user = yield* EnsureUserIsLoggedIn
     const locale = yield* Locale
 
@@ -78,9 +80,14 @@ export const ReceiveNotificationsSubmission: (input: {
     const form = ReceiveNotificationsForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       CompletedForm: Effect.fnUntraced(function* (form: ReceiveNotificationsForm.CompletedForm) {
-        return yield* HavingProblemsPage
+        if (form.receiveNotifications === 'yes') {
+          yield* prereviewers.optInToNotificationsForReviewsPublishedInResponseToRequests(user.orcid)
+        } else {
+          yield* prereviewers.optOutOfNotificationsForReviewsPublishedInResponseToRequests(user.orcid)
+        }
+
+        return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
       }),
       InvalidForm: (form: ReceiveNotificationsForm.InvalidForm) =>
         Effect.succeed(renderReceiveNotificationsPage({ preprintId: preprint.id, form, locale })),
@@ -92,7 +99,9 @@ export const ReceiveNotificationsSubmission: (input: {
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
+      UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
+      UnknownPrereviewer: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),
