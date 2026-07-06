@@ -611,6 +611,12 @@ nav {
     &::before {
       content: '←\00a0';
     }
+
+    &:dir(rtl) {
+      &::before {
+        content: '→\00a0';
+      }
+    }
   }
 
   & [rel='next'] {
@@ -619,6 +625,12 @@ nav {
 
     &::after {
       content: '\00a0→';
+    }
+
+    &:dir(rtl) {
+      &::after {
+        content: '\00a0←';
+      }
     }
   }
 
