@@ -31,7 +31,7 @@ export const NeedToVerifyEmailAddressPage: ({
 
     return Match.valueTags(contactAddress, {
       VerifiedContactAddress: () =>
-        RedirectResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint.id }) }),
+        RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) }),
       UnverifiedContactAddress: contactAddress =>
         renderNeedToVerifyEmailAddressPage({ preprintId: preprint.id, emailAddress: contactAddress.value, locale }),
       NoContactAddress: () =>
