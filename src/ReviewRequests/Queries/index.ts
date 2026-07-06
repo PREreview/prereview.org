@@ -5,6 +5,7 @@ import * as Queries from '../../Queries.ts'
 import { ReviewRequestNotReadyToBePublished } from '../Errors.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
 import { DoesAReviewRequestNeedAContactAddressToBeVerified } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
+import type { DoesAReviewRequestNeedADecisionOnReviewNotifications } from './DoesAReviewRequestNeedADecisionOnReviewNotifications.ts'
 import { FindReviewRequestByAPrereviewer } from './FindReviewRequestByAPrereviewer.ts'
 import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
@@ -47,6 +48,9 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     doesAReviewRequestNeedAContactAddressToBeVerified: Queries.FromStatefulQuery<
       typeof DoesAReviewRequestNeedAContactAddressToBeVerified
     >
+    doesAReviewRequestNeedADecisionOnReviewNotifications: Queries.FromStatefulQuery<
+      typeof DoesAReviewRequestNeedADecisionOnReviewNotifications
+    >
   }
 >() {}
 
@@ -67,6 +71,7 @@ export const {
   listAllPublishedReviewRequestsForStats,
   listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
   doesAReviewRequestNeedAContactAddressToBeVerified,
+  doesAReviewRequestNeedADecisionOnReviewNotifications,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { ContactAddress } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
@@ -127,6 +132,7 @@ const makeReviewRequestQueries: Effect.Effect<
       ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
     ),
     doesAReviewRequestNeedAContactAddressToBeVerified,
+    doesAReviewRequestNeedADecisionOnReviewNotifications: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
   }
 })
 
