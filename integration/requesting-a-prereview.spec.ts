@@ -449,14 +449,14 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(
-      page.getByRole('group', { name: 'Would you like to be notified when a requested PREreview is published?' }),
+      page.getByRole('group', { name: 'Would you like to be notified when a PREreview is published?' }),
     ).toHaveAttribute('aria-invalid', 'true')
 
     await page.getByRole('link', { name: 'Select yes if you would like to be notified' }).click()
 
     await expect(
       page
-        .getByRole('group', { name: 'Would you like to be notified when a requested PREreview is published?' })
+        .getByRole('group', { name: 'Would you like to be notified when a PREreview is published?' })
         .getByLabel('Yes'),
     ).toBeFocused()
   },
