@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { type IndeterminatePreprintId, Preprints } from '../../../Preprints/index.ts'
 import { ReviewRequestQueries } from '../../../ReviewRequests/index.ts'
@@ -57,7 +57,44 @@ export const ReceiveNotificationsSubmission: (input: {
   preprintId: IndeterminatePreprintId
 }) => Effect.Effect<Response, never, Locale | Preprints | ReviewRequestQueries> = Effect.fn(
   'RequestAReviewFlow.ReceiveNotificationsSubmission',
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-)(function* ({ body, preprintId }) {
-  return yield* HavingProblemsPage
-})
+)(
+  function* ({ body, preprintId }) {
+    const preprints = yield* Preprints
+    const reviewRequestQueries = yield* ReviewRequestQueries
+    const user = yield* EnsureUserIsLoggedIn
+    const locale = yield* Locale
+
+    const preprint = yield* preprints.getPreprintTitle(preprintId)
+
+    const needADecision = yield* reviewRequestQueries.doesAReviewRequestNeedADecisionOnReviewNotifications({
+      requesterId: user.orcid,
+      preprintId,
+    })
+
+    if (!needADecision) {
+      return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
+    }
+
+    const form = ReceiveNotificationsForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      CompletedForm: Effect.fnUntraced(function* (form: ReceiveNotificationsForm.CompletedForm) {
+        return yield* HavingProblemsPage
+      }),
+      InvalidForm: (form: ReceiveNotificationsForm.InvalidForm) =>
+        Effect.succeed(renderReceiveNotificationsPage({ preprintId: preprint.id, form, locale })),
+    })
+  },
+  (result, { preprintId }) =>
+    Effect.catchTags(result, {
+      PreprintIsNotFound: () => PageNotFound,
+      PreprintIsUnavailable: () => HavingProblemsPage,
+      ReviewRequestHasBeenPublished: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
+      UnableToQuery: () => HavingProblemsPage,
+      UnknownReviewRequest: () => PageNotFound,
+      UserIsNotLoggedIn: () =>
+        Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),
+    }),
+)
