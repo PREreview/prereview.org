@@ -107,7 +107,10 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started with indeterminate preprint ID, no contact address',
     [requestStartedWithIndeterminatePreprintId],
-    Either.right({ contactAddress: new _.NoContactAddress(), reviewRequestId: requestStarted.reviewRequestId }),
+    Either.right({
+      contactAddress: new _.NoContactAddress(),
+      reviewRequestId: requestStartedWithIndeterminatePreprintId.reviewRequestId,
+    }),
   ],
   [
     'request started, imported verified contact address',
