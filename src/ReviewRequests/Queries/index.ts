@@ -5,7 +5,7 @@ import * as Queries from '../../Queries.ts'
 import { ReviewRequestNotReadyToBePublished } from '../Errors.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
 import { DoesAReviewRequestNeedAContactAddressToBeVerified } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
-import type { DoesAReviewRequestNeedADecisionOnReviewNotifications } from './DoesAReviewRequestNeedADecisionOnReviewNotifications.ts'
+import { DoesAReviewRequestNeedADecisionOnReviewNotifications } from './DoesAReviewRequestNeedADecisionOnReviewNotifications.ts'
 import { FindReviewRequestByAPrereviewer } from './FindReviewRequestByAPrereviewer.ts'
 import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
@@ -132,7 +132,9 @@ const makeReviewRequestQueries: Effect.Effect<
       ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
     ),
     doesAReviewRequestNeedAContactAddressToBeVerified,
-    doesAReviewRequestNeedADecisionOnReviewNotifications: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+    doesAReviewRequestNeedADecisionOnReviewNotifications: yield* Queries.makeStatefulQuery(
+      DoesAReviewRequestNeedADecisionOnReviewNotifications,
+    ),
   }
 })
 
