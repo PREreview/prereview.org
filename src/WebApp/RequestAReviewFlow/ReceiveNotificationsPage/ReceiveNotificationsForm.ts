@@ -1,4 +1,5 @@
-import { Data, type Either } from 'effect'
+import { UrlParams } from '@effect/platform'
+import { Data, Either, pipe, Schema, Struct } from 'effect'
 
 export type ReceiveNotificationsForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -17,3 +18,24 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   receiveNotifications: 'yes' | 'no'
 }> {}
+
+export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
+  const receiveNotifications = pipe(
+    Schema.decodeEither(ReceiveNotificationsFieldSchema)(body),
+    Either.mapBoth({
+      onRight: Struct.get('receiveNotifications'),
+      onLeft: () => new Missing(),
+    }),
+  )
+
+  return Either.match(receiveNotifications, {
+    onRight: receiveNotifications => new CompletedForm({ receiveNotifications }),
+    onLeft: receiveNotifications => new InvalidForm({ receiveNotifications: Either.left(receiveNotifications) }),
+  })
+}
+
+const ReceiveNotificationsFieldSchema = UrlParams.schemaRecord(
+  Schema.Struct({
+    receiveNotifications: Schema.Literal('yes', 'no'),
+  }),
+)
