@@ -97,7 +97,7 @@
     "fast-check": "^3.23.2",
     "fetch-mock": "^12.6.0",
     "handlebars": "^4.7.9",
-    "html-validate": "^11.5.3",
+    "html-validate": "^11.5.5",
     "iso-639-3": "^2.2.0",
     "oauth2-mock-server": "^9.0.0",
     "postcss": "^8.5.16",
