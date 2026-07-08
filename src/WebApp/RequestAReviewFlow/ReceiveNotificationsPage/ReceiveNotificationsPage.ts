@@ -22,11 +22,7 @@ export function renderReceiveNotificationsPage({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Would you like to be notified when a PREreview is published?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('beNotifiedWhenReviewPublished')(), errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.RequestAReviewReceiveNotifications.href({ preprintId })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
@@ -38,7 +34,7 @@ export function renderReceiveNotificationsPage({
             ${rawHtml(hasAnError ? 'aria-invalid="true" aria-errormessage="receive-notifications-error"' : '')}
           >
             <legend>
-              <h1><span lang="en" dir="ltr">Would you like to be notified when a PREreview is published?</span></h1>
+              <h1>${t('beNotifiedWhenReviewPublished')()}</h1>
             </legend>
 
             ${
@@ -47,21 +43,16 @@ export function renderReceiveNotificationsPage({
                     <div class="error-message" id="receive-notifications-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.receiveNotifications.left, {
-                        Missing: () =>
-                          html`<span lang="en" dir="ltr">Select yes if you would like to be notified</span>`,
+                        Missing: () => t('beNotifiedWhenReviewPublishedMissing')(),
                       })}
                     </div>
                   `
                 : ''
             }
 
-            <p>
-              <span lang="en" dir="ltr">We can email you whenever a PREreview is published for this preprint.</span>
-            </p>
+            <p>${t('canContactWhenReviewPublished')()}</p>
 
-            <p>
-              <span lang="en" dir="ltr">You can change your preference at any time.</span>
-            </p>
+            <p>${t('canChangeContactWhenReviewPublished')()}</p>
 
             <ol>
               <li>
@@ -83,7 +74,7 @@ export function renderReceiveNotificationsPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span lang="en" dir="ltr">Yes</span>
+                  ${t('beNotifiedWhenReviewPublishedYes')()}
                 </label>
               </li>
               <li>
@@ -104,7 +95,7 @@ export function renderReceiveNotificationsPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span lang="en" dir="ltr">No</span>
+                  ${t('beNotifiedWhenReviewPublishedNo')()}
                 </label>
               </li>
             </ol>
@@ -120,7 +111,6 @@ export function renderReceiveNotificationsPage({
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
   ${
     Either.isLeft(form.receiveNotifications)
@@ -128,7 +118,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
           <li>
             <a href="#receive-notifications-yes">
               ${Match.valueTags(form.receiveNotifications.left, {
-                Missing: () => html`<span lang="en" dir="ltr">Select yes if you would like to be notified</span>`,
+                Missing: () => translate(locale, 'request-review-flow', 'beNotifiedWhenReviewPublishedMissing')(),
               })}
             </a>
           </li>

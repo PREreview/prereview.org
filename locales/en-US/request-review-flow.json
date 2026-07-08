@@ -74,6 +74,30 @@
     "message": "Once your address is verified, you can close this page.",
     "description": "Text shown alongside the title “Verify your email address” that explains what to do after verifying your email address."
   },
+  "beNotifiedWhenReviewPublished": {
+    "message": "Would you like to be notified when a PREreview is published?",
+    "description": "Label for the question that asks if the user wants to be notified when a PREreview is published following their request."
+  },
+  "canContactWhenReviewPublished": {
+    "message": "We can email you whenever a PREreview is published for this preprint.",
+    "description": "Text shown alongside the question “Would you like to be notified when a PREreview is published?” that explains what will happen if the user selects “yes”."
+  },
+  "canChangeContactWhenReviewPublished": {
+    "message": "You can change your preference at any time.",
+    "description": "Text shown alongside the question “Would you like to be notified when a PREreview is published?” that explains that the user can change their preference."
+  },
+  "beNotifiedWhenReviewPublishedMissing": {
+    "message": "Select yes if you would like to be notified",
+    "description": "Error message shown when the user tries to submit the form “Would you like to be notified when a PREreview is published?” without selecting an option."
+  },
+  "beNotifiedWhenReviewPublishedYes": {
+    "message": "Yes",
+    "description": "Label for the positive option to the question “Would you like to be notified when a PREreview is published?”."
+  },
+  "beNotifiedWhenReviewPublishedNo": {
+    "message": "No",
+    "description": "Label for the negative option to the question “Would you like to be notified when a PREreview is published?”."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?"
   },
