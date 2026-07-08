@@ -1,5 +1,6 @@
 import { Array, flow, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
+import { getClubName } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -113,17 +114,27 @@ export const toResponse = (
               <li>
                 <article>
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                    ${translate(
-                      locale,
-                      'dataset-reviews-list',
-                      'reviewText',
-                    )({
-                      numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
-                      reviewer: authorList(prereview, locale),
-                      dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
-                        >${prereview.dataset.title}</cite
-                      >`,
-                    })}
+                    ${
+                      prereview.club
+                        ? html`<span lang="en" dir="ltr"
+                            >${authorList(prereview, locale)} of
+                            <b dir="auto">${getClubName(prereview.club)}</b> reviewed
+                            <cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            ></span
+                          >`
+                        : translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewText',
+                          )({
+                            numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
+                            reviewer: authorList(prereview, locale),
+                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            >`,
+                          })
+                    }
                   </a>
 
                   <dl>
