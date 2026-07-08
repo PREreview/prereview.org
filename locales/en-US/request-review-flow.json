@@ -38,6 +38,30 @@
   "ifProblemPersistsContactUs": {
     "message": "If this problem persists, please <mailtoHelp>get in touch</mailtoHelp>."
   },
+  "contactDetails": {
+    "message": "Contact details",
+    "description": "Title of the page that asks you to provide your email address."
+  },
+  "confirmEmailAddressFirst": {
+    "message": "We’re ready to publish your request, but we need to confirm your email address first.",
+    "description": "Text shown alongside the title “Contact details”."
+  },
+  "onlyUseToContactYou": {
+    "message": "We’ll only use this to contact you about your account and what you publish.",
+    "description": "Text shown alongside the title “Contact details” that explains how we’ll use your email address."
+  },
+  "whatIsYourEmailAddress": {
+    "message": "What is your email address?",
+    "description": "Label for the text field on the “Contact details” form for the user’s email address."
+  },
+  "whatIsYourEmailAddressErrorMissing": {
+    "message": "Enter your email address",
+    "description": "Error message shown when the user tries to complete the “Contact details” form without answering the question “What is your email address?”."
+  },
+  "whatIsYourEmailAddressErrorInvalid": {
+    "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
+    "description": "Error message shown when the user tries to complete the “Contact details” form and answers the question “What is your email address?” with an invalid email address."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?"
   },

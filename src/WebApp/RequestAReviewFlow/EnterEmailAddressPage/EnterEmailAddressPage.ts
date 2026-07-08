@@ -21,7 +21,7 @@ export const renderEnterEmailAddressPage = ({
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Contact details', errorPrefix(locale, form._tag === 'InvalidForm'), plainText),
+    title: pipe(t('contactDetails')(), errorPrefix(locale, form._tag === 'InvalidForm'), plainText),
     main: html`
       <form method="post" action="${Routes.RequestAReviewEnterEmailAddress.href({ preprintId })}" novalidate>
         ${
@@ -36,12 +36,11 @@ export const renderEnterEmailAddressPage = ({
                             <li>
                               <a href="#email-address">
                                 ${Match.valueTags(form.emailAddress.left, {
-                                  Missing: () => html`<span lang="en" dir="ltr">Enter your email address</span>`,
+                                  Missing: () => t('whatIsYourEmailAddressErrorMissing')(),
                                   Invalid: () =>
-                                    html`<span lang="en" dir="ltr"
-                                      >Enter an email address in the correct format, like
-                                      <bdi>name@example.com</bdi></span
-                                    >`,
+                                    t('whatIsYourEmailAddressErrorInvalid')({
+                                      exampleEmailAddress: html`<bdi>name@example.com</bdi>`,
+                                    }),
                                 })}
                               </a>
                             </li>
@@ -54,21 +53,15 @@ export const renderEnterEmailAddressPage = ({
             : ''
         }
 
-        <h1><span lang="en" dir="ltr">Contact details</span></h1>
+        <h1>${t('contactDetails')()}</h1>
 
-        <p>
-          <span lang="en" dir="ltr"
-            >We’re ready to publish your request, but we need to confirm your email address first.</span
-          >
-        </p>
+        <p>${t('confirmEmailAddressFirst')()}</p>
 
-        <p>
-          <span lang="en" dir="ltr">We’ll only use this to contact you about your account and what you publish.</span>
-        </p>
+        <p>${t('onlyUseToContactYou')()}</p>
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <h2>
-            <label for="email-address"><span lang="en" dir="ltr">What is your email address?</span></label>
+            <label for="email-address">${t('whatIsYourEmailAddress')()}</label>
           </h2>
 
           ${
@@ -77,11 +70,11 @@ export const renderEnterEmailAddressPage = ({
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.emailAddress.left, {
-                      Missing: () => html`<span lang="en" dir="ltr">Enter your email address</span>`,
+                      Missing: () => t('whatIsYourEmailAddressErrorMissing')(),
                       Invalid: () =>
-                        html`<span lang="en" dir="ltr"
-                          >Enter an email address in the correct format, like <bdi>name@example.com</bdi></span
-                        >`,
+                        t('whatIsYourEmailAddressErrorInvalid')({
+                          exampleEmailAddress: html`<bdi>name@example.com</bdi>`,
+                        }),
                     })}
                   </div>
                 `
