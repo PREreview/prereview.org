@@ -64,10 +64,11 @@ export const createDatasetReviewPage = ({
                 visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
               }),
             onSome: clubId =>
-              html`<span lang="en" dir="ltr"
-                ><span class="visually-hidden">Authored</span> by ${authorList(datasetReview, locale)} of
-                <a href="${Routes.ClubProfile.href({ id: clubId })}" dir="auto">${getClubName(clubId)}</a></span
-              >`,
+              t('authoredByInClub')({
+                author: authorList(datasetReview, locale),
+                club: html`<a href="${Routes.ClubProfile.href({ id: clubId })}" dir="auto">${getClubName(clubId)}</a>`,
+                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+              }),
           })}
         </div>
 

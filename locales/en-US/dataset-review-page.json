@@ -7,6 +7,10 @@
     "message": "<visuallyHidden>Authored</visuallyHidden> by {author}",
     "description": "Byline that shows the author of the dataset review."
   },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {author} of {club}",
+    "description": "Byline that shows the author of the dataset review in a club."
+  },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {# other author} other {# other authors}}",
     "description": "Text for the entry in the author list indicating the number of anonymous authors."
