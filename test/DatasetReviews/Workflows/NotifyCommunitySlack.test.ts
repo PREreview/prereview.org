@@ -3,7 +3,7 @@ import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Workflows/NotifyCommunitySlack.ts'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as fc from '../../fc.ts'
@@ -29,7 +29,7 @@ describe('NotifyCommunitySlack', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
-            Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+            Layer.mock(Prereviewers.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
             Layer.succeed(PublicUrl, publicUrl),
           ]),
         ),
@@ -54,7 +54,7 @@ describe('NotifyCommunitySlack', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
-            Layer.mock(Personas.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+            Layer.mock(Prereviewers.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
             Layer.succeed(PublicUrl, publicUrl),
           ]),
         ),
@@ -82,7 +82,7 @@ describe('NotifyCommunitySlack', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => Effect.succeed(publishedReview),
           }),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -105,9 +105,9 @@ describe('NotifyCommunitySlack', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => Effect.succeed(publishedReview),
           }),
-          Layer.mock(Personas.Personas, {
-            getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-            getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          Layer.mock(Prereviewers.Personas, {
+            getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
           }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
@@ -140,7 +140,7 @@ describe('NotifyCommunitySlack', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => error,
           }),
-          Layer.mock(Personas.Personas, {}),
+          Layer.mock(Prereviewers.Personas, {}),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
       ),

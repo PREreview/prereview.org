@@ -3,6 +3,7 @@ import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'
 import { Datasets } from '../../Datasets/index.ts'
 import { Email } from '../../ExternalInteractions/index.ts'
 import * as Personas from '../../Personas/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import { Temporal } from '../../types/index.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import { AuthorInvites } from '../AuthorInvites.ts'
@@ -23,7 +24,7 @@ export const SendAuthorInviteEmails = Effect.fn(
 
     const { author, dataset, invitations } = yield* Effect.all(
       {
-        author: Personas.getPersona(review.author),
+        author: Prereviewers.getPersona(review.author),
         dataset: datasets.getDataset(review.dataset),
         invitations: datasetReviewQueries.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId: review.id }),
       },

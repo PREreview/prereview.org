@@ -11,9 +11,10 @@ import { type ContactEmailAddress, ContactEmailAddresses } from '../../../Contac
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
@@ -62,7 +63,7 @@ export const writeReviewPublish = ({
     FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
-    EffectToFpts.EffectEnv<ContactEmailAddresses | LanguageDetection.LanguageDetection | Personas.Personas>,
+    EffectToFpts.EffectEnv<ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas>,
   Response
 > =>
   pipe(
@@ -134,7 +135,7 @@ const decideNextStep = (state: {
     .with({ form: P.when(E.isRight) }, ({ form, ...state }) =>
       pipe(
         EffectToFpts.toReaderTaskEither(
-          Personas.getPersona({ orcidId: state.user.orcid, persona: form.right.persona }),
+          Prereviewers.getPersona({ orcidId: state.user.orcid, persona: form.right.persona }),
         ),
         RTE.matchW(
           () => failureMessage(state.locale),
@@ -173,7 +174,7 @@ const handlePublishForm = ({
             match(form)
               .returnType<
                 RT.ReaderTask<
-                  EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Personas.Personas>,
+                  EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Prereviewers.Personas>,
                   Option.Option<LanguageCode>
                 >
               >()
@@ -186,9 +187,9 @@ const handlePublishForm = ({
         ),
         RTE.apSW(
           'persona',
-          EffectToFpts.toReaderTaskEither(Personas.getPersona({ orcidId: user.orcid, persona: form.persona })),
+          EffectToFpts.toReaderTaskEither(Prereviewers.getPersona({ orcidId: user.orcid, persona: form.persona })),
         ),
-        RTE.apSW('pseudonymPersona', EffectToFpts.toReaderTaskEither(Personas.getPseudonymPersona(user.orcid))),
+        RTE.apSW('pseudonymPersona', EffectToFpts.toReaderTaskEither(Prereviewers.getPseudonymPersona(user.orcid))),
         RTE.map(({ language, persona, pseudonymPersona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],

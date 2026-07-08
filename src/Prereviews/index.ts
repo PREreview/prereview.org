@@ -7,9 +7,9 @@ import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
 import { ZenodoRecords } from '../ExternalInteractions/index.ts'
-import * as Personas from '../Personas/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
+import * as Prereviewers from '../Prereviewers/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { FieldId } from '../types/field.ts'
@@ -71,7 +71,7 @@ export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Personas.Personas>(),
+      Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Personas>(),
       Context.omit(Scope.Scope),
     )
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
@@ -190,7 +190,7 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          const { pseudonym } = yield* Personas.getPseudonymPersona(user)
+          const { pseudonym } = yield* Prereviewers.getPseudonymPersona(user)
 
           return yield* FptsToEffect.readerTaskEither(
             ZenodoRecords.getPrereviewsForUserFromZenodo({ orcidId: user, pseudonym }),
@@ -285,8 +285,10 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
 
   const { author, otherAuthors, dataset } = yield* Effect.all(
     {
-      author: Personas.getPersona(datasetReview.author),
-      otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, { concurrency: 'inherit' }),
+      author: Prereviewers.getPersona(datasetReview.author),
+      otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
+        concurrency: 'inherit',
+      }),
       dataset: Datasets.getDatasetTitle(datasetReview.dataset),
     },
     { concurrency: 'inherit' },

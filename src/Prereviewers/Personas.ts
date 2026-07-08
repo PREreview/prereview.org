@@ -1,0 +1,52 @@
+import { Context, Data, Effect, Layer, Match, pipe, Scope } from 'effect'
+import { OrcidRecords } from '../ExternalInteractions/index.ts'
+import { PseudonymPersona, PublicPersona, type Persona } from '../Personas/index.ts'
+import type { OrcidId } from '../types/index.ts'
+import { Prereviewers } from './Prereviewers.ts'
+
+export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{ cause?: unknown }> {}
+
+export class Personas extends Context.Tag('Personas')<
+  Personas,
+  {
+    getPublicPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PublicPersona, UnableToGetPersona>
+    getPseudonymPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PseudonymPersona, UnableToGetPersona>
+  }
+>() {}
+
+export const { getPublicPersona, getPseudonymPersona } = Effect.serviceFunctions(Personas)
+
+export const getPersona = pipe(
+  Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),
+  Match.withReturnType<Effect.Effect<Persona, UnableToGetPersona, Personas>>(),
+  Match.when({ persona: 'public' }, ({ orcidId }) => getPublicPersona(orcidId)),
+  Match.when({ persona: 'pseudonym' }, ({ orcidId }) => getPseudonymPersona(orcidId)),
+  Match.exhaustive,
+)
+
+const make: Effect.Effect<typeof Personas.Service, never, Prereviewers | OrcidRecords.OrcidRecords> = Effect.gen(
+  function* () {
+    const context = yield* Effect.andThen(Effect.context<OrcidRecords.OrcidRecords>(), Context.omit(Scope.Scope))
+    const prereviewers = yield* Prereviewers
+
+    return {
+      getPublicPersona: orcidId =>
+        pipe(
+          OrcidRecords.getName(orcidId),
+          Effect.mapBoth({
+            onSuccess: name => new PublicPersona({ name, orcidId }),
+            onFailure: error => new UnableToGetPersona({ cause: error }),
+          }),
+          Effect.provide(context),
+        ),
+      getPseudonymPersona: orcidId =>
+        pipe(
+          prereviewers.getPseudonym(orcidId),
+          Effect.mapError(error => new UnableToGetPersona({ cause: error })),
+          Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
+        ),
+    }
+  },
+)
+
+export const layerPersonas = Layer.effect(Personas, make)

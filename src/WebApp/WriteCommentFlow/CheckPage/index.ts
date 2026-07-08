@@ -1,7 +1,7 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
@@ -17,7 +17,7 @@ export const CheckPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Personas.Personas | Locale
+  Comments.GetComment | Prereviewers.Personas | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -36,7 +36,7 @@ export const CheckPage = ({
       Match.value(comment),
       Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', comment =>
-        Effect.andThen(Personas.getPersona({ orcidId: user.orcid, persona: comment.persona }), persona =>
+        Effect.andThen(Prereviewers.getPersona({ orcidId: user.orcid, persona: comment.persona }), persona =>
           MakeResponse({
             competingInterests: comment.competingInterests,
             comment: comment.comment,

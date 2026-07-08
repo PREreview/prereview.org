@@ -1,8 +1,8 @@
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Workflows/NotifyCommunitySlack.ts'
@@ -31,7 +31,7 @@ describe('NotifyCommunitySlack', () => {
                 Layer.mock(CommunitySlack.CommunitySlack, {
                   sharePreprintReviewRequest: () => Effect.succeed(response),
                 }),
-                Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+                Layer.mock(Prereviewers.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
                 Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
                 Layer.mock(ReviewRequests.ReviewRequestCommands, {
                   recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
@@ -62,7 +62,7 @@ describe('NotifyCommunitySlack', () => {
                 Layer.mock(CommunitySlack.CommunitySlack, {
                   sharePreprintReviewRequest: () => Effect.succeed(response),
                 }),
-                Layer.mock(Personas.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+                Layer.mock(Prereviewers.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
                 Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
                 Layer.mock(ReviewRequests.ReviewRequestCommands, {
                   recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
@@ -91,7 +91,7 @@ describe('NotifyCommunitySlack', () => {
           }).pipe(
             Effect.provide([
               Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
-              Layer.mock(Personas.Personas, {}),
+              Layer.mock(Prereviewers.Personas, {}),
               Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
               Layer.mock(ReviewRequests.ReviewRequestCommands, {
                 recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
@@ -123,7 +123,7 @@ describe('NotifyCommunitySlack', () => {
         }).pipe(
           Effect.provide([
             Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
-            Layer.mock(Personas.Personas, {
+            Layer.mock(Prereviewers.Personas, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -157,7 +157,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => error }),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -191,7 +191,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -209,7 +209,7 @@ describe('NotifyCommunitySlack', () => {
     [
       fc.uuid(),
       fc.publishedPrereviewerReviewRequest(),
-      fc.anything().map(cause => new Personas.UnableToGetPersona({ cause })),
+      fc.anything().map(cause => new Prereviewers.UnableToGetPersona({ cause })),
     ],
     ([reviewRequestId, reviewRequest, error]) =>
       Effect.gen(function* () {
@@ -219,7 +219,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => error,
             getPseudonymPersona: () => error,
           }),
@@ -250,7 +250,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Personas.Personas, {}),
+          Layer.mock(Prereviewers.Personas, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),

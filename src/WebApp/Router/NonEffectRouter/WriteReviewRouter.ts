@@ -15,6 +15,7 @@ import * as Personas from '../../../Personas/index.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -420,8 +421,8 @@ export const WriteReviewRouter = pipe(
         formStore: env.formStore,
         getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
-        getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
-        getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
+        getPublicPersona: EffectToFpts.toTaskEitherK(Prereviewers.getPublicPersona, env.runtime),
+        getPseudonymPersona: EffectToFpts.toTaskEitherK(Prereviewers.getPseudonymPersona, env.runtime),
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'

@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
-import * as Personas from '../../Personas/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import type { Uuid } from '../../types/index.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
@@ -15,8 +15,10 @@ export const DatasetReviewPage = Effect.fn(
     const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
     const { author, otherAuthors, dataset } = yield* Effect.all(
       {
-        author: Personas.getPersona(datasetReview.author),
-        otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, { concurrency: 'inherit' }),
+        author: Prereviewers.getPersona(datasetReview.author),
+        otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
+          concurrency: 'inherit',
+        }),
         dataset: Datasets.getDataset(datasetReview.dataset),
       },
       { concurrency: 'inherit' },

@@ -45,10 +45,9 @@ import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
-import * as Personas from '../../../Personas/index.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { PublicUrl } from '../../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
@@ -208,7 +207,7 @@ export interface Env {
     | LanguageDetection.LanguageDetection
     | OpenAlexWorks.OpenAlexWorks
     | OrcidOauth
-    | Personas.Personas
+    | Prereviewers.Personas
     | PreprintReviews.PreprintReviews
     | Preprints.Preprints
     | Prereviewers.Prereviewers
@@ -264,8 +263,8 @@ const routerWithoutHyperTs = pipe(
               ),
               env.runtime,
             ),
-            getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
-            getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
+            getPublicPersona: EffectToFpts.toTaskEitherK(Prereviewers.getPublicPersona, env.runtime),
+            getPseudonymPersona: EffectToFpts.toTaskEitherK(Prereviewers.getPseudonymPersona, env.runtime),
           }),
       ),
     ),
@@ -321,7 +320,7 @@ const routerWithoutHyperTs = pipe(
               }),
               getName: EffectToFpts.toTaskEitherK(
                 flow(
-                  Personas.getPublicPersona,
+                  Prereviewers.getPublicPersona,
                   Effect.andThen(Struct.get('name')),
                   Effect.catchTag('UnableToGetPersona', () => Effect.fail('unavailable' as const)),
                 ),

@@ -3,7 +3,7 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
-import * as Personas from '../../src/Personas/index.ts'
+import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import * as Queries from '../../src/Queries.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -49,7 +49,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -93,9 +93,9 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Personas.Personas, {
-            getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-            getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          Layer.mock(Prereviewers.Personas, {
+            getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
           }),
         ),
         Effect.provideService(Locale, locale),
@@ -139,7 +139,7 @@ describe('DatasetReviewsPage', () => {
             getDataset: () => Effect.succeed(dataset),
           }),
         ),
-        Effect.provide(Layer.mock(Personas.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
         Effect.provideService(Locale, locale),
       ),
   )
@@ -184,7 +184,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -233,7 +233,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -261,7 +261,7 @@ describe('DatasetReviewsPage', () => {
         }),
       ),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),
-      Effect.provide(Layer.mock(Personas.Personas, {})),
+      Effect.provide(Layer.mock(Prereviewers.Personas, {})),
       Effect.provideService(Locale, locale),
     ),
   )

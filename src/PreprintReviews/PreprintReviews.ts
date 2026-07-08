@@ -1,7 +1,8 @@
 import { Array, Context, Effect, Layer, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
-import * as Personas from '../Personas/index.ts'
+import type * as Personas from '../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
+import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
@@ -37,7 +38,7 @@ export const {
 export const layer = Layer.effect(
   PreprintReviews,
   Effect.gen(function* () {
-    const personas = yield* Personas.Personas
+    const personas = yield* Prereviewers.Personas
 
     const getRapidPrereviewsForAPreprint = yield* Queries.makeOnDemandQuery(GetRapidPrereviewsForAPreprint)
 
@@ -49,11 +50,11 @@ export const layer = Layer.effect(
             Array.map(
               Effect.fnUntraced(
                 function* (rapidPrereview) {
-                  const persona = yield* Personas.getPersona(rapidPrereview.author)
+                  const persona = yield* Prereviewers.getPersona(rapidPrereview.author)
 
                   return { ...rapidPrereview, author: persona } satisfies RapidPrereview
                 },
-                Effect.provideService(Personas.Personas, personas),
+                Effect.provideService(Prereviewers.Personas, personas),
               ),
             ),
           ),

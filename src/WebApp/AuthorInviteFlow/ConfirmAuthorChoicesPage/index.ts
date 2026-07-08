@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
@@ -15,7 +15,7 @@ export const ConfirmAuthorChoicesPage = ({
   reviewId,
 }: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Personas | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
@@ -23,7 +23,7 @@ export const ConfirmAuthorChoicesPage = ({
 
     const choices = yield* authorInvites.getAuthorChoicesToConfirm({ reviewId, orcidId: user.orcid })
 
-    const persona = yield* Personas.getPersona({ orcidId: user.orcid, persona: choices.persona })
+    const persona = yield* Prereviewers.getPersona({ orcidId: user.orcid, persona: choices.persona })
 
     return renderConfirmAuthorChoicesPage({ reviewId, persona, locale })
   }).pipe(

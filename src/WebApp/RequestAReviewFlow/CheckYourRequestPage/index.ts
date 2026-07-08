@@ -1,8 +1,8 @@
 import { Array, Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal } from '../../../types/index.ts'
@@ -25,7 +25,7 @@ export const CheckYourRequestPage: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestQueries | Personas.Personas | Preprints.Preprints | Locale
+  ReviewRequests.ReviewRequestQueries | Prereviewers.Personas | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.CheckYourRequestPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
@@ -38,7 +38,7 @@ export const CheckYourRequestPage: ({
       preprintId: preprint.id,
     }).pipe(
       Effect.bind('persona', ({ personaChoice }) =>
-        Personas.getPersona({ orcidId: user.orcid, persona: personaChoice }),
+        Prereviewers.getPersona({ orcidId: user.orcid, persona: personaChoice }),
       ),
     )
 

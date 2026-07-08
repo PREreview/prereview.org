@@ -2,7 +2,7 @@ import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { DatasetReviewQueries } from '../../../DatasetReviews/index.ts'
 import { Datasets } from '../../../Datasets/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
@@ -14,7 +14,7 @@ export const StartNowPage = ({
   invitationId,
 }: {
   invitationId: Uuid
-}): Effect.Effect<Response, never, Locale | Datasets | DatasetReviewQueries | Personas.Personas> =>
+}): Effect.Effect<Response, never, Locale | Datasets | DatasetReviewQueries | Prereviewers.Personas> =>
   Effect.gen(function* () {
     const locale = yield* Locale
     const user = yield* Effect.serviceOption(LoggedInUser)
@@ -25,8 +25,8 @@ export const StartNowPage = ({
 
     const { author, otherAuthors, dataset } = yield* Effect.all(
       {
-        author: Personas.getPersona(datasetReviewForInvite.author),
-        otherAuthors: Effect.forEach(datasetReviewForInvite.otherAuthors, Personas.getPersona, {
+        author: Prereviewers.getPersona(datasetReviewForInvite.author),
+        otherAuthors: Effect.forEach(datasetReviewForInvite.otherAuthors, Prereviewers.getPersona, {
           concurrency: 'inherit',
         }),
         dataset: datasets.getDataset(datasetReviewForInvite.dataset),

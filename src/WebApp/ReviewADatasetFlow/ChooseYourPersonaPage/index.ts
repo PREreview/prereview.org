@@ -2,7 +2,7 @@ import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
@@ -20,7 +20,7 @@ export const ChooseYourPersonaPage = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Personas.Personas
+  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Prereviewers.Personas
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -33,8 +33,8 @@ export const ChooseYourPersonaPage = ({
 
     const form = ChooseYourPersonaForm.fromPersona(currentPersona)
 
-    const publicPersona = yield* Personas.getPublicPersona(user.orcid)
-    const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
+    const publicPersona = yield* Prereviewers.getPublicPersona(user.orcid)
+    const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
 
     return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
   }).pipe(
@@ -63,7 +63,11 @@ export const ChooseYourPersonaSubmission = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Personas.Personas
+  | DatasetReviews.DatasetReviewCommands
+  | DatasetReviews.DatasetReviewQueries
+  | Locale
+  | LoggedInUser
+  | Prereviewers.Personas
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -92,8 +96,8 @@ export const ChooseYourPersonaSubmission = ({
       ),
       InvalidForm: Effect.fn(
         function* (form: ChooseYourPersonaForm.InvalidForm) {
-          const publicPersona = yield* Personas.getPublicPersona(user.orcid)
-          const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
+          const publicPersona = yield* Prereviewers.getPublicPersona(user.orcid)
+          const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
 
           return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
         },

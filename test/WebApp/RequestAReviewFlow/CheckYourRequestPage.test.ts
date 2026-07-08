@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, Tuple } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -54,7 +54,7 @@ describe('CheckYourRequestPage', () => {
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
             Layer.mock(
-              Personas.Personas,
+              Prereviewers.Personas,
               reviewRequest.personaChoice === 'public'
                 ? { getPublicPersona: () => Effect.succeed(publicPersona) }
                 : { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) },
@@ -83,7 +83,7 @@ describe('CheckYourRequestPage', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Personas.Personas, {}),
+            Layer.mock(Prereviewers.Personas, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -122,7 +122,7 @@ describe('CheckYourRequestPage', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Personas.Personas, {}),
+            Layer.mock(Prereviewers.Personas, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -163,7 +163,7 @@ describe('CheckYourRequestPage', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Personas.Personas, {}),
+            Layer.mock(Prereviewers.Personas, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           ]),
@@ -200,7 +200,7 @@ describe('CheckYourRequestPage', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Personas.Personas, {}),
+            Layer.mock(Prereviewers.Personas, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           ]),
@@ -222,7 +222,7 @@ describe('CheckYourRequestPage', () => {
       }).pipe(
         Effect.provide([
           Layer.succeed(Locale, locale),
-          Layer.mock(Personas.Personas, {}),
+          Layer.mock(Prereviewers.Personas, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),

@@ -1,9 +1,9 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
@@ -26,7 +26,7 @@ export const ChooseYourPersonaPage: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestQueries | Personas.Personas | Preprints.Preprints | Locale
+  ReviewRequests.ReviewRequestQueries | Prereviewers.Personas | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
@@ -38,8 +38,8 @@ export const ChooseYourPersonaPage: ({
 
     const { publicPersona, pseudonymPersona } = yield* Effect.all(
       {
-        publicPersona: Personas.getPublicPersona(user.orcid),
-        pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+        publicPersona: Prereviewers.getPublicPersona(user.orcid),
+        pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
       },
       { concurrency: 'inherit' },
     )
@@ -73,7 +73,7 @@ export const ChooseYourPersonaSubmission: ({
   never,
   | ReviewRequests.ReviewRequestCommands
   | ReviewRequests.ReviewRequestQueries
-  | Personas.Personas
+  | Prereviewers.Personas
   | Preprints.Preprints
   | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaSubmission')(
@@ -104,8 +104,8 @@ export const ChooseYourPersonaSubmission: ({
         Effect.gen(function* () {
           const { publicPersona, pseudonymPersona } = yield* Effect.all(
             {
-              publicPersona: Personas.getPublicPersona(user.orcid),
-              pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+              publicPersona: Prereviewers.getPublicPersona(user.orcid),
+              pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
             },
             { concurrency: 'inherit' },
           )

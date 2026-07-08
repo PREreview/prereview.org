@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import { CommunitySlack } from '../../ExternalInteractions/index.ts'
-import * as Personas from '../../Personas/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -13,7 +13,7 @@ export const NotifyCommunitySlack = Effect.fn(
 
     const { author, url } = yield* Effect.all(
       {
-        author: Personas.getPersona(datasetReview.author),
+        author: Prereviewers.getPersona(datasetReview.author),
         url: PublicUrl.forRoute(Routes.DatasetReview, { datasetReviewId: datasetReview.id }),
       },
       { concurrency: 'inherit' },

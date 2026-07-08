@@ -2,7 +2,7 @@ import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'
@@ -17,7 +17,7 @@ export const ChooseYourPersonaPage = ({
   reviewId,
 }: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Personas | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
@@ -27,8 +27,8 @@ export const ChooseYourPersonaPage = ({
 
     const form = ChooseYourPersonaForm.fromPersona(currentPersona)
 
-    const publicPersona = yield* Personas.getPublicPersona(user.orcid)
-    const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
+    const publicPersona = yield* Prereviewers.getPublicPersona(user.orcid)
+    const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
 
     return renderChooseYourPersonaPage({ reviewId, form, publicPersona, pseudonymPersona, locale })
   }).pipe(
@@ -47,7 +47,7 @@ export const ChooseYourPersonaSubmission = ({
 }: {
   body: UrlParams.UrlParams
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Personas | AuthorInvites> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const locale = yield* Locale
@@ -79,8 +79,8 @@ export const ChooseYourPersonaSubmission = ({
       ),
       InvalidForm: Effect.fnUntraced(
         function* (form: ChooseYourPersonaForm.InvalidForm) {
-          const publicPersona = yield* Personas.getPublicPersona(user.orcid)
-          const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
+          const publicPersona = yield* Prereviewers.getPublicPersona(user.orcid)
+          const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
 
           return renderChooseYourPersonaPage({ reviewId, form, publicPersona, pseudonymPersona, locale })
         },

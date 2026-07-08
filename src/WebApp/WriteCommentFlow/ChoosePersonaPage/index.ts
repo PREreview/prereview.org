@@ -1,7 +1,7 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
@@ -19,7 +19,7 @@ export const ChoosePersonaPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Personas.Personas | Locale
+  Comments.GetComment | Prereviewers.Personas | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -40,8 +40,8 @@ export const ChoosePersonaPage = ({
         Effect.andThen(
           Effect.all(
             {
-              publicPersona: Personas.getPublicPersona(user.orcid),
-              pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+              publicPersona: Prereviewers.getPublicPersona(user.orcid),
+              pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
             },
             { concurrency: 'inherit' },
           ),
@@ -59,8 +59,8 @@ export const ChoosePersonaPage = ({
         Effect.andThen(
           Effect.all(
             {
-              publicPersona: Personas.getPublicPersona(user.orcid),
-              pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+              publicPersona: Prereviewers.getPublicPersona(user.orcid),
+              pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
             },
             { concurrency: 'inherit' },
           ),
@@ -103,7 +103,7 @@ export const ChoosePersonaSubmission = ({
   | Comments.GetComment
   | Comments.HandleCommentCommand
   | Comments.GetNextExpectedCommandForUserOnAComment
-  | Personas.Personas
+  | Prereviewers.Personas
   | Locale
 > =>
   Effect.gen(function* () {
@@ -149,8 +149,8 @@ export const ChoosePersonaSubmission = ({
               Effect.andThen(
                 Effect.all(
                   {
-                    publicPersona: Personas.getPublicPersona(user.orcid),
-                    pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+                    publicPersona: Prereviewers.getPublicPersona(user.orcid),
+                    pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
                   },
                   { concurrency: 'inherit' },
                 ),

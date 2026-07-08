@@ -2,7 +2,7 @@ import { Array, Effect, Equal, Option, pipe } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
@@ -18,7 +18,7 @@ export const CheckYourReviewPage = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale | LoggedInUser | Personas.Personas
+  DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale | LoggedInUser | Prereviewers.Personas
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -32,7 +32,7 @@ export const CheckYourReviewPage = ({
     const review = yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
     const { authorPersona, dataset } = yield* Effect.all({
       authorPersona: Option.match(review.author.persona, {
-        onSome: persona => Effect.map(Personas.getPersona({ ...review.author, persona }), Option.some),
+        onSome: persona => Effect.map(Prereviewers.getPersona({ ...review.author, persona }), Option.some),
         onNone: () => Effect.succeedNone,
       }),
       dataset: Datasets.getDatasetTitle(review.dataset),

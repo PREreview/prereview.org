@@ -5,7 +5,7 @@ import * as _ from '../../../src/AuthorInvites/Workflows/SendAuthorInviteEmails.
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as fc from '../../fc.ts'
 
@@ -63,7 +63,7 @@ describe('SendAuthorInviteEmails', () => {
               }),
               Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) }),
               Layer.mock(Email.Email, {}),
-              Layer.mock(Personas.Personas, {
+              Layer.mock(Prereviewers.Personas, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
@@ -104,7 +104,7 @@ describe('SendAuthorInviteEmails', () => {
             }),
             Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) }),
             Layer.mock(Email.Email, {}),
-            Layer.mock(Personas.Personas, {
+            Layer.mock(Prereviewers.Personas, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -129,7 +129,7 @@ describe('SendAuthorInviteEmails', () => {
             }),
             Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) }),
             Layer.mock(Email.Email, {}),
-            Layer.mock(Personas.Personas, {
+            Layer.mock(Prereviewers.Personas, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -163,7 +163,7 @@ describe('SendAuthorInviteEmails', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getPublishedReview: () => error }),
           Layer.mock(Datasets.Datasets, {}),
           Layer.mock(Email.Email, {}),
-          Layer.mock(Personas.Personas, {}),
+          Layer.mock(Prereviewers.Personas, {}),
         ]),
       ),
   )

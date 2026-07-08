@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
-import * as Personas from '../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -43,7 +43,7 @@ describe('CheckPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provide(
             Layer.mock(
-              Personas.Personas,
+              Prereviewers.Personas,
               comment.persona === 'public'
                 ? { getPublicPersona: () => Effect.succeed(publicPersona) }
                 : { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) },
@@ -74,7 +74,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Personas.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -100,7 +100,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Personas.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -129,7 +129,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Personas.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -152,7 +152,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Personas.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -181,7 +181,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Personas.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -204,7 +204,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
-          Effect.provide(Layer.mock(Personas.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -221,7 +221,7 @@ describe('CheckPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-      Effect.provide(Layer.mock(Personas.Personas, {})),
+      Effect.provide(Layer.mock(Prereviewers.Personas, {})),
     ),
   )
 })

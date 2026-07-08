@@ -4,7 +4,7 @@ import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Workflows/CreateRecordOnZenodo.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as fc from '../../fc.ts'
@@ -36,7 +36,7 @@ describe('CreateRecordOnZenodo', () => {
               getDataForZenodoRecord: () => Effect.succeed(preview),
             }),
             Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
+            Layer.mock(Prereviewers.Personas, {
               getPublicPersona: () => Effect.succeed(publicPersona),
             }),
             Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
@@ -70,7 +70,7 @@ describe('CreateRecordOnZenodo', () => {
               getDataForZenodoRecord: () => Effect.succeed(preview),
             }),
             Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
+            Layer.mock(Prereviewers.Personas, {
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
             Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
@@ -109,7 +109,7 @@ describe('CreateRecordOnZenodo', () => {
             getDataForZenodoRecord: () => Effect.succeed(preview),
           }),
           Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -141,7 +141,7 @@ describe('CreateRecordOnZenodo', () => {
             getDataForZenodoRecord: () => Effect.succeed(preview),
           }),
           Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -177,7 +177,7 @@ describe('CreateRecordOnZenodo', () => {
             getDataForZenodoRecord: () => Effect.succeed(preview),
           }),
           Layer.mock(Datasets.Datasets, { getDatasetTitle: () => error }),
-          Layer.mock(Personas.Personas, {
+          Layer.mock(Prereviewers.Personas, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -202,9 +202,9 @@ describe('CreateRecordOnZenodo', () => {
             getDataForZenodoRecord: () => Effect.succeed(preview),
           }),
           Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-          Layer.mock(Personas.Personas, {
-            getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-            getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          Layer.mock(Prereviewers.Personas, {
+            getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
           }),
           Layer.mock(ZenodoRecords.ZenodoRecords, {
             createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
@@ -236,7 +236,7 @@ describe('CreateRecordOnZenodo', () => {
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getDataForZenodoRecord: () => error }),
           Layer.mock(Datasets.Datasets, {}),
-          Layer.mock(Personas.Personas, {}),
+          Layer.mock(Prereviewers.Personas, {}),
           Layer.mock(ZenodoRecords.ZenodoRecords, {}),
           Layer.succeed(PublicUrl, publicUrl),
         ]),

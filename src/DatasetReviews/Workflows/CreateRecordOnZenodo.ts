@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import * as Datasets from '../../Datasets/index.ts'
 import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
-import * as Personas from '../../Personas/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -15,8 +15,10 @@ export const CreateRecordOnZenodo = Effect.fn(
 
     const { author, otherAuthors, dataset, url } = yield* Effect.all(
       {
-        author: Personas.getPersona(datasetReview.author),
-        otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, { concurrency: 'inherit' }),
+        author: Prereviewers.getPersona(datasetReview.author),
+        otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
+          concurrency: 'inherit',
+        }),
         dataset: Datasets.getDatasetTitle(datasetReview.dataset),
         url: PublicUrl.forRoute(Routes.DatasetReview, { datasetReviewId }),
       },

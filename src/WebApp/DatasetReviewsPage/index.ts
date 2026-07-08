@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
-import * as Personas from '../../Personas/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createDatasetReviewsPage } from './DatasetReviewsPage.ts'
@@ -22,8 +22,8 @@ export const DatasetReviewsPage = Effect.fn(
 
               const { author, otherAuthors } = yield* Effect.all(
                 {
-                  author: Personas.getPersona(datasetReview.author),
-                  otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, {
+                  author: Prereviewers.getPersona(datasetReview.author),
+                  otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
                     concurrency: 'inherit',
                   }),
                 },

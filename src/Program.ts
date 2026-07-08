@@ -60,7 +60,7 @@ const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<Personas.Personas | Prereviews.Prereviews>(),
+      Effect.context<Prereviewers.Personas | Prereviews.Prereviews>(),
       Context.omit(Scope.Scope),
     )
     const fetch = yield* FetchHttpClient.Fetch
@@ -90,7 +90,7 @@ const createRecordOnZenodoForComment = Layer.effect(
         )
 
         const author = yield* Effect.catchTag(
-          Personas.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
+          Prereviewers.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
           'UnableToGetPersona',
           error => new Comments.UnableToAssignADoi({ cause: error }),
         )
@@ -200,7 +200,7 @@ export const Program = pipe(
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
   Layer.provide([AuthorInvites.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer]),
   Layer.provide(DatasetReviews.layer),
-  Layer.provide(Personas.layer),
+  Layer.provide(Prereviewers.layerPersonas),
   Layer.provide(Prereviewers.layer),
   Layer.provide(ContactEmailAddresses.layer),
   Layer.provide([

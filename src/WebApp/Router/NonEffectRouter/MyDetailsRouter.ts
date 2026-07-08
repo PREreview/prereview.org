@@ -11,7 +11,7 @@ import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
@@ -313,8 +313,8 @@ export const MyDetailsRouter = pipe(
         ),
         fetch: env.fetch,
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
-        getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
-        getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
+        getPublicPersona: EffectToFpts.toTaskEitherK(Prereviewers.getPublicPersona, env.runtime),
+        getPseudonymPersona: EffectToFpts.toTaskEitherK(Prereviewers.getPseudonymPersona, env.runtime),
         getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
           userOnboardingStore: env.users.userOnboardingStore,
           ...env.logger,
