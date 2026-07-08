@@ -117,15 +117,12 @@ export const createDatasetReviewsPage = ({
                           onSome: clubId =>
                             html`<span lang="en" dir="ltr"
                               >PREreview by ${displayAuthor(datasetReview.author)}
-                              ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0 ? 'et al.' : ''}
-                              of ${getClubName(clubId)}</span
+                              ${countAuthors(datasetReview) > 1 ? 'et al.' : ''} of ${getClubName(clubId)}</span
                             >`,
                           onNone: () =>
-                            t(
-                              datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
-                                ? 'prereviewTitleMultipleAuthors'
-                                : 'prereviewTitle',
-                            )({ author: displayAuthor(datasetReview.author) }),
+                            t(countAuthors(datasetReview) > 1 ? 'prereviewTitleMultipleAuthors' : 'prereviewTitle')({
+                              author: displayAuthor(datasetReview.author),
+                            }),
                         })}
                       </h3>
 
@@ -152,16 +149,11 @@ export const createDatasetReviewsPage = ({
                             >Read
                             <span class="visually-hidden"
                               >the PREreview by ${displayAuthor(datasetReview.author)}
-                              ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0 ? 'et al.' : ''}
-                              of ${getClubName(clubId)}</span
+                              ${countAuthors(datasetReview) > 1 ? 'et al.' : ''} of ${getClubName(clubId)}</span
                             ></span
                           >`,
                         onNone: () =>
-                          t(
-                            datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
-                              ? 'readPrereviewMultipleAuthors'
-                              : 'readPrereview',
-                          )({
+                          t(countAuthors(datasetReview) > 1 ? 'readPrereviewMultipleAuthors' : 'readPrereview')({
                             author: displayAuthor(datasetReview.author),
                             visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
                           }),
@@ -219,3 +211,6 @@ function formatList(
     rawHtml,
   )
 }
+
+const countAuthors = (datasetReview: DatasetReview) =>
+  1 + datasetReview.otherAuthors.length + datasetReview.anonymousAuthors
