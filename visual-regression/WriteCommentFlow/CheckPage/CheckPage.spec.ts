@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -51,12 +51,12 @@ test('content looks right with competing interests', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const publicPersona = new Personas.PublicPersona({
+const publicPersona = new Prereviewers.PublicPersona({
   name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 
-const pseudonymPersona = new Personas.PseudonymPersona({
+const pseudonymPersona = new Prereviewers.PseudonymPersona({
   pseudonym: Pseudonym('Orange Panda'),
 })
 

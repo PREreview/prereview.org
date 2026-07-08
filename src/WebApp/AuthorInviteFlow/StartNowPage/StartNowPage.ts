@@ -6,7 +6,7 @@ import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { renderDate } from '../../../time.ts'
@@ -19,8 +19,8 @@ export type ViewModel = Omit<
   'author' | 'otherAuthors' | 'clubId' | 'dataset' | 'questions' | 'competingInterests'
 > & {
   readonly invitationId: Uuid
-  readonly author: Personas.Persona
-  readonly otherAuthors: ReadonlyArray<Personas.Persona>
+  readonly author: Prereviewers.Persona
+  readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number
   readonly dataset: {
     readonly id: Datasets.DatasetId
@@ -137,7 +137,7 @@ const authorList = (datasetReview: ViewModel, locale: SupportedLocale) => {
   return formatList(locale)(list)
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

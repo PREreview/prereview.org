@@ -5,19 +5,19 @@ import * as Datasets from '../../../../src/Datasets/index.ts'
 import type { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ZenodoRecords/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
 import { html, plainText, rawHtml } from '../../../../src/html.ts'
-import * as Personas from '../../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../../src/Prereviewers/index.ts'
 import { Doi, Name, NonEmptyString, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
 
 const cases = [
   [
     'all questions answered',
     {
-      author: new Personas.PublicPersona({
+      author: new Prereviewers.PublicPersona({
         name: Name.Name('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: [
-        new Personas.PublicPersona({
+        new Prereviewers.PublicPersona({
           name: Name.Name('Arne Saknussemm'),
           orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
         }),
@@ -167,7 +167,7 @@ const cases = [
   [
     'all questions answered with details',
     {
-      author: new Personas.PublicPersona({
+      author: new Prereviewers.PublicPersona({
         name: Name.Name('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
@@ -349,7 +349,7 @@ const cases = [
   [
     'minimal questions answered',
     {
-      author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+      author: new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
       otherAuthors: [],
       anonymousAuthors: 0,
       dataset: new Datasets.DatasetTitle({

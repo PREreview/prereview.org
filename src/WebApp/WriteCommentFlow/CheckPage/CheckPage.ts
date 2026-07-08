@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { fixHeadingLevels, type Html, html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { type NonEmptyString, ProfileId, type Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -18,7 +18,7 @@ export const CheckPage = ({
   comment: Html
   commentId: Uuid.Uuid
   locale: SupportedLocale
-  persona: Personas.Persona
+  persona: Prereviewers.Persona
 }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
@@ -39,7 +39,7 @@ export const CheckPage = ({
               <div>
                 <dt>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</dt>
                 <dd>
-                  ${Personas.match(persona, {
+                  ${Prereviewers.matchPersona(persona, {
                     onPublic: persona =>
                       html` <a
                         href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

@@ -1,7 +1,7 @@
 import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type * as Personas from '../../../Personas/index.ts'
+import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -20,8 +20,8 @@ export const ChooseYourPersonaPage = ({
 }: {
   datasetReviewId: Uuid.Uuid
   form: ChooseYourPersonaForm.ChooseYourPersonaForm
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
   locale: SupportedLocale
 }) => {
   const hasAnError = form._tag === 'InvalidForm'

@@ -4,8 +4,8 @@ import type { Club, ClubId } from '../../src/Clubs/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as Personas from '../../src/Personas/index.ts'
 import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'
@@ -146,11 +146,11 @@ const prereview3 = new Prereviews.RecentPreprintPrereview({
 })
 
 const prereview4 = new Prereviews.RecentDatasetPrereview({
-  author: new Personas.PublicPersona({
+  author: new Prereviewers.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
     name: Name('Josiah Carberry'),
   }),
-  otherAuthors: [new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
+  otherAuthors: [new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
   anonymousAuthors: 1,
   dataset: new Datasets.DatasetTitle({
     id: new Datasets.DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),

@@ -5,7 +5,7 @@ import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type * as Personas from '../../../Personas/index.ts'
+import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import { authorInvitePersonaMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -25,8 +25,8 @@ export function personaForm({
 }: {
   form: PersonaForm
   inviteId: Uuid
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
   locale: SupportedLocale
 }) {
   const error = hasAnError(form)

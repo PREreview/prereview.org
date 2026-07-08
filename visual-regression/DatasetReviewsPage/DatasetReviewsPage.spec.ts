@@ -3,7 +3,7 @@ import { Array, Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as Personas from '../../src/Personas/index.ts'
+import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import { Doi, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import { Name } from '../../src/types/Name.ts'
 import * as _ from '../../src/WebApp/DatasetReviewsPage/DatasetReviewsPage.ts'
@@ -65,7 +65,7 @@ const dataset = new Datasets.Dataset({
 })
 
 const prereview1: _.DatasetReview = {
-  author: new Personas.PublicPersona({
+  author: new Prereviewers.PublicPersona({
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     name: Name('Josiah Carberry'),
   }),
@@ -130,9 +130,9 @@ const prereview1: _.DatasetReview = {
 }
 
 const prereview2: _.DatasetReview = {
-  author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+  author: new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
   otherAuthors: [
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       name: Name('Josiah Carberry'),
     }),

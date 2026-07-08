@@ -65,7 +65,6 @@ import {
 import type { Location } from '../src/location.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.ts'
-import * as Personas from '../src/Personas/index.ts'
 import {
   AdvancePreprintId,
   AfricarxivFigsharePreprintId,
@@ -116,6 +115,7 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
+import * as Prereviewers from '../src/Prereviewers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
@@ -1530,22 +1530,22 @@ export const ghostPage = (): fc.Arbitrary<GhostPage.GhostPage> =>
     locale: supportedLocale(),
   })
 
-export const publicPersona = (): fc.Arbitrary<Personas.PublicPersona> =>
+export const publicPersona = (): fc.Arbitrary<Prereviewers.PublicPersona> =>
   fc
     .record({
       orcidId: orcidId(),
       name: name(),
     })
-    .map(args => new Personas.PublicPersona(args))
+    .map(args => new Prereviewers.PublicPersona(args))
 
-export const pseudonymPersona = (): fc.Arbitrary<Personas.PseudonymPersona> =>
+export const pseudonymPersona = (): fc.Arbitrary<Prereviewers.PseudonymPersona> =>
   fc
     .record({
       pseudonym: pseudonym(),
     })
-    .map(args => new Personas.PseudonymPersona(args))
+    .map(args => new Prereviewers.PseudonymPersona(args))
 
-export const persona = (): fc.Arbitrary<Personas.Persona> => fc.oneof(publicPersona(), pseudonymPersona())
+export const persona = (): fc.Arbitrary<Prereviewers.Persona> => fc.oneof(publicPersona(), pseudonymPersona())
 
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({ orcid: userOrcid ?? orcidId() })

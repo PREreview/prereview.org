@@ -5,8 +5,8 @@ import * as Datasets from '../../Datasets/index.ts'
 import { type Html, html, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import type { RecentDatasetPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { reviewMatch } from '../../routes.ts'
@@ -181,7 +181,7 @@ const authorList = (datasetReview: RecentDatasetPrereview, locale: SupportedLoca
   return formatList(locale)(Array.map(list, name => html`<b dir="auto">${name}</b>`))
 }
 
-const displayPersona = Personas.match({
+const displayPersona = Prereviewers.matchPersona({
   onPublic: Struct.get('name'),
   onPseudonym: Struct.get('pseudonym'),
 })

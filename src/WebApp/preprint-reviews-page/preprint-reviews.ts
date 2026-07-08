@@ -7,9 +7,9 @@ import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import * as Personas from '../../Personas/index.ts'
 import type { RapidPrereview } from '../../PreprintReviews/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import type { PreprintPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
@@ -361,7 +361,7 @@ function showRapidPrereviews(
   `
 }
 
-const displayPersona = Personas.match({
+const displayPersona = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

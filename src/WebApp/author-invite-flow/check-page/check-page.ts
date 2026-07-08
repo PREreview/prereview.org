@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
@@ -13,7 +13,7 @@ export function checkPage({
   locale,
 }: {
   inviteId: Uuid
-  persona: Personas.Persona
+  persona: Prereviewers.Persona
   locale: SupportedLocale
 }) {
   return StreamlinePageResponse({
@@ -59,7 +59,7 @@ export function checkPage({
   })
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

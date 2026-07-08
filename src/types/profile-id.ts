@@ -1,5 +1,5 @@
 import { Data, Function, Match } from 'effect'
-import type * as Personas from '../Personas/index.ts'
+import type * as Prereviewers from '../Prereviewers/index.ts'
 import type { OrcidId } from './OrcidId.ts'
 import type { Pseudonym } from './Pseudonym.ts'
 
@@ -13,7 +13,7 @@ export class PseudonymProfileId extends Data.TaggedClass('PseudonymProfileId')<{
   pseudonym: Pseudonym
 }> {}
 
-export const forPersona = Match.typeTags<Personas.Persona, ProfileId>()({
+export const forPersona = Match.typeTags<Prereviewers.Persona, ProfileId>()({
   PublicPersona: ({ orcidId }) => forOrcid(orcidId),
   PseudonymPersona: ({ pseudonym }) => forPseudonym(pseudonym),
 })

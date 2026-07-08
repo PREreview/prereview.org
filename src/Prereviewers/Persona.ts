@@ -10,7 +10,7 @@ export class PublicPersona extends Data.TaggedClass('PublicPersona')<{
 
 export class PseudonymPersona extends Data.TaggedClass('PseudonymPersona')<{ pseudonym: Pseudonym.Pseudonym }> {}
 
-export const match: {
+export const matchPersona: {
   <A, B>(options: {
     readonly onPublic: (orcid: PublicPersona) => A
     readonly onPseudonym: (pseudonym: PseudonymPersona) => B

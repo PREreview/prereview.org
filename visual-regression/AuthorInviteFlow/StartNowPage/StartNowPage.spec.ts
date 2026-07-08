@@ -1,7 +1,7 @@
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { PseudonymPersona, PublicPersona } from '../../../src/Personas/index.ts'
+import { PseudonymPersona, PublicPersona } from '../../../src/Prereviewers/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'

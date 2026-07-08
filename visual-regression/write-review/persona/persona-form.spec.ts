@@ -2,8 +2,8 @@ import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../../src/form.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { Doi, Name, OrcidId, Pseudonym } from '../../../src/types/index.ts'
 import { personaForm } from '../../../src/WebApp/write-review/persona/persona-form.ts'
 import { expect, test } from '../../base.ts'
@@ -46,9 +46,9 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
-const publicPersona = new Personas.PublicPersona({
+const publicPersona = new Prereviewers.PublicPersona({
   name: Name.Name('Josiah Carberry'),
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
 })
 
-const pseudonymPersona = new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })
+const pseudonymPersona = new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })

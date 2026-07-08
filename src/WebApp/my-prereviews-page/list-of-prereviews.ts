@@ -5,8 +5,8 @@ import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import type { RecentDatasetPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../../routes.ts'
@@ -22,8 +22,8 @@ export type { Prereview } from './prereviews.ts'
 export interface ListOfPrereviews {
   readonly _tag: 'ListOfPrereviews'
   readonly prereviews: Array.NonEmptyReadonlyArray<Prereview>
-  readonly publicPersona: Personas.PublicPersona
-  readonly pseudonymPersona: Personas.PseudonymPersona
+  readonly publicPersona: Prereviewers.PublicPersona
+  readonly pseudonymPersona: Prereviewers.PseudonymPersona
 }
 
 export const ListOfPrereviews = (args: Omit<ListOfPrereviews, '_tag'>): ListOfPrereviews => ({
@@ -174,7 +174,7 @@ const authorList = (datasetReview: RecentDatasetPrereview, locale: SupportedLoca
   return formatList(locale)(Array.map(list, name => html`<b dir="auto">${name}</b>`))
 }
 
-const displayPersona = Personas.match({
+const displayPersona = Prereviewers.matchPersona({
   onPublic: Struct.get('name'),
   onPseudonym: Struct.get('pseudonym'),
 })

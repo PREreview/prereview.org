@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as Personas from '../../src/Personas/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
@@ -16,7 +16,7 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
-const publicPersona = new Personas.PublicPersona({
+const publicPersona = new Prereviewers.PublicPersona({
   name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })

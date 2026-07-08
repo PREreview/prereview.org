@@ -5,14 +5,14 @@ import * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
-  readonly author: Option.Option<Personas.Persona>
+  readonly author: Option.Option<Prereviewers.Persona>
   readonly dataset: Datasets.DatasetTitle
 }
 
@@ -451,7 +451,7 @@ export const CheckYourReviewPage = ({
   })
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

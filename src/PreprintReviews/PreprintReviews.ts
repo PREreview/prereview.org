@@ -1,6 +1,5 @@
 import { Array, Context, Effect, Layer, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
-import type * as Personas from '../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
@@ -9,7 +8,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 
 export interface RapidPrereview {
-  readonly author: Personas.Persona
+  readonly author: Prereviewers.Persona
   readonly questions: Omit<
     RapidPrereviewForAPreprint['questions'],
     'dataLink' | 'technicalComments' | 'editorialComments'

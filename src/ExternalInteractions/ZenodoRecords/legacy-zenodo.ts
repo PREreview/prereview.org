@@ -38,7 +38,6 @@ import {
 import { type ClubId, getClubByName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
-import type * as Personas from '../../Personas/index.ts'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -57,6 +56,7 @@ import {
   fromPreprintDoi,
   fromUrl,
 } from '../../Preprints/index.ts'
+import type * as Prereviewers from '../../Prereviewers/index.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as Prereview from '../../Prereviews/Prereview.ts'
@@ -498,7 +498,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
 
 export const addAuthorToRecordOnZenodo = (
   id: number,
-  persona: Personas.Persona,
+  persona: Prereviewers.Persona,
 ): RTE.ReaderTaskEither<ZenodoAuthenticatedEnv, 'unavailable', void> =>
   pipe(
     getDeposition(id),

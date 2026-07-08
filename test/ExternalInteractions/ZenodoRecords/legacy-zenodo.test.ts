@@ -27,8 +27,8 @@ import {
 import { getClubName, getClubNameAndFormerNames } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
-import type * as Personas from '../../../src/Personas/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import type * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import { reviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -4318,8 +4318,8 @@ describe('createRecordOnZenodo', () => {
             metadata: {
               creators: [
                 {
-                  name: (newPrereview.persona as Personas.PublicPersona).name,
-                  orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+                  name: (newPrereview.persona as Prereviewers.PublicPersona).name,
+                  orcid: (newPrereview.persona as Prereviewers.PublicPersona).orcidId,
                 },
               ],
               description: 'Description',
@@ -4341,8 +4341,8 @@ describe('createRecordOnZenodo', () => {
             metadata: {
               creators: [
                 {
-                  name: (newPrereview.persona as Personas.PublicPersona).name,
-                  orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+                  name: (newPrereview.persona as Prereviewers.PublicPersona).name,
+                  orcid: (newPrereview.persona as Prereviewers.PublicPersona).orcidId,
                 },
               ],
               description: 'Description',
@@ -4379,8 +4379,8 @@ describe('createRecordOnZenodo', () => {
                         title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                         creators: [
                           {
-                            name: (newPrereview.persona as Personas.PublicPersona).name,
-                            orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+                            name: (newPrereview.persona as Prereviewers.PublicPersona).name,
+                            orcid: (newPrereview.persona as Prereviewers.PublicPersona).orcidId,
                           },
                           ...match(newPrereview.otherAuthors.length)
                             .with(0, () => [])
@@ -4503,8 +4503,8 @@ ${newPrereview.review.toString()}`,
             metadata: {
               creators: [
                 {
-                  name: (newPrereview.persona as Personas.PublicPersona).name,
-                  orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+                  name: (newPrereview.persona as Prereviewers.PublicPersona).name,
+                  orcid: (newPrereview.persona as Prereviewers.PublicPersona).orcidId,
                 },
               ],
               description: 'Description',
@@ -4526,8 +4526,8 @@ ${newPrereview.review.toString()}`,
             metadata: {
               creators: [
                 {
-                  name: (newPrereview.persona as Personas.PublicPersona).name,
-                  orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+                  name: (newPrereview.persona as Prereviewers.PublicPersona).name,
+                  orcid: (newPrereview.persona as Prereviewers.PublicPersona).orcidId,
                 },
               ],
               description: 'Description',
@@ -4564,8 +4564,8 @@ ${newPrereview.review.toString()}`,
                         title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
                         creators: [
                           {
-                            name: (newPrereview.persona as Personas.PublicPersona).name,
-                            orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+                            name: (newPrereview.persona as Prereviewers.PublicPersona).name,
+                            orcid: (newPrereview.persona as Prereviewers.PublicPersona).orcidId,
                           },
                           ...match(newPrereview.otherAuthors.length)
                             .with(0, () => [])
@@ -4739,7 +4739,7 @@ ${newPrereview.review.toString()}`,
                         publication_type: 'peerreview',
                         title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                         creators: [
-                          { name: (newPrereview.persona as Personas.PseudonymPersona).pseudonym },
+                          { name: (newPrereview.persona as Prereviewers.PseudonymPersona).pseudonym },
                           ...match(newPrereview.otherAuthors.length)
                             .with(0, () => [])
                             .with(1, () => [{ name: '1 other author' }])
@@ -4906,7 +4906,7 @@ ${newPrereview.review.toString()}`,
                         publication_type: 'peerreview',
                         title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
                         creators: [
-                          { name: (newPrereview.persona as Personas.PseudonymPersona).pseudonym },
+                          { name: (newPrereview.persona as Prereviewers.PseudonymPersona).pseudonym },
                           ...match(newPrereview.otherAuthors.length)
                             .with(0, () => [])
                             .with(1, () => [{ name: '1 other author' }])

@@ -1,7 +1,7 @@
 import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type * as Personas from '../../../Personas/index.ts'
+import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -19,8 +19,8 @@ export const ChoosePersonaPage = ({
   commentId: Uuid.Uuid
   form: ChoosePersonaForm.ChoosePersonaForm
   locale: SupportedLocale
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,

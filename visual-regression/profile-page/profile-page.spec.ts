@@ -3,8 +3,8 @@ import { Doi } from 'doi-ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as Personas from '../../src/Personas/index.ts'
 import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import { Uuid } from '../../src/types/index.ts'
 import { Name } from '../../src/types/Name.ts'
@@ -157,11 +157,11 @@ const prereview3 = new Prereviews.RecentPreprintPrereview({
 })
 
 const prereview4 = new Prereviews.RecentDatasetPrereview({
-  author: new Personas.PublicPersona({
+  author: new Prereviewers.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
     name: Name('Josiah Carberry'),
   }),
-  otherAuthors: [new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
+  otherAuthors: [new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
   anonymousAuthors: 1,
   dataset: new Datasets.DatasetTitle({
     id: new Datasets.DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),
@@ -177,32 +177,32 @@ const prereview5 = new Prereviews.RecentDatasetPrereview({
   doi: Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('b589babb-9604-4c1e-abf9-5111be8dcc01'),
   club: '998f32b4-ced9-49f8-8042-ce8fe41e62ec',
-  author: new Personas.PublicPersona({
+  author: new Prereviewers.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
     name: Name('Miguel Oliveira, Jr.'),
   }),
   otherAuthors: [
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0003-4806-4946'),
       name: Name('Arthur Ronald Brasil Terto'),
     }),
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-9340-9977'),
       name: Name('Cleber Ataíde'),
     }),
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-2934-4734'),
       name: Name('Glayci Kelli Reis da Silva Xavier'),
     }),
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-0509-3555'),
       name: Name('Kyvia Fernanda Tenório da Silva'),
     }),
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-5425-5071'),
       name: Name('Marcelo Travassos da Silva'),
     }),
-    new Personas.PublicPersona({
+    new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-7547-3430'),
       name: Name('Pedro Ricardo Bin'),
     }),

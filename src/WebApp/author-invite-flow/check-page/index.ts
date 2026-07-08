@@ -21,7 +21,7 @@ import {
   getPersona,
   getPseudonymPersona,
 } from '../../../persona.ts'
-import type * as Personas from '../../../Personas/index.ts'
+import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   authorInviteDeclineMatch,
@@ -54,14 +54,14 @@ export interface AddAuthorToPrereviewEnv {
   addAuthorToPrereview: (
     prereview: number,
     author: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym },
-    persona: Personas.Persona,
+    persona: Prereviewers.Persona,
   ) => TE.TaskEither<'unavailable', void>
 }
 
 const addAuthorToPrereview = (
   prereview: number,
   author: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym },
-  persona: Personas.Persona,
+  persona: Prereviewers.Persona,
 ): RTE.ReaderTaskEither<AddAuthorToPrereviewEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ addAuthorToPrereview }) => addAuthorToPrereview(prereview, author, persona)),
@@ -176,7 +176,7 @@ const handlePublishForm = ({
 }: {
   invite: AssignedAuthorInvite
   inviteId: Uuid
-  persona: Personas.Persona
+  persona: Prereviewers.Persona
   user: User
   locale: SupportedLocale
 }) =>

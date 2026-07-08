@@ -11,7 +11,6 @@ import { type ContactEmailAddress, ContactEmailAddresses } from '../../../Contac
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -34,7 +33,7 @@ import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.t
 export interface NewPrereview {
   conduct: 'yes'
   otherAuthors: ReadonlyArray<{ name: Name; emailAddress: EmailAddress }>
-  persona: Personas.Persona
+  persona: Prereviewers.Persona
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
@@ -232,7 +231,7 @@ const showPublishForm = ({
 }: {
   form: CompletedForm
   preprint: PreprintTitle
-  persona: Personas.Persona
+  persona: Prereviewers.Persona
   locale: SupportedLocale
 }) => publishForm(preprint, form, persona, locale)
 

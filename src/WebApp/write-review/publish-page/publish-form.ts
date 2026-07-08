@@ -4,9 +4,9 @@ import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import {
   profileMatch,
   writeReviewAddAuthorsMatch,
@@ -34,7 +34,7 @@ import { backNav } from '../shared-elements.ts'
 export function publishForm(
   preprint: PreprintTitle,
   review: CompletedForm,
-  persona: Personas.Persona,
+  persona: Prereviewers.Persona,
   locale: SupportedLocale,
 ) {
   const t = translate(locale, 'write-review')
@@ -384,7 +384,7 @@ export function publishForm(
   })
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

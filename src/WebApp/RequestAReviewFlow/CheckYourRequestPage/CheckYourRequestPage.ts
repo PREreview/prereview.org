@@ -2,8 +2,8 @@ import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { profileMatch } from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
@@ -17,7 +17,7 @@ export function CheckYourRequestPage({
   locale,
 }: {
   preprint: PreprintId
-  reviewRequest: { persona: Personas.Persona; reviewRequestId: Uuid.Uuid }
+  reviewRequest: { persona: Prereviewers.Persona; reviewRequestId: Uuid.Uuid }
   locale: SupportedLocale
 }) {
   const t = translate(locale, 'request-review-flow')
@@ -63,7 +63,7 @@ export function CheckYourRequestPage({
   })
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

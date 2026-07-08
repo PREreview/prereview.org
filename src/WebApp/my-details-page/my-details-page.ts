@@ -9,7 +9,7 @@ import type { Languages } from '../../languages.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Location } from '../../location.ts'
 import type { OrcidToken } from '../../orcid-token.ts'
-import type * as Personas from '../../Personas/index.ts'
+import type * as Prereviewers from '../../Prereviewers/index.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
 import * as Routes from '../../routes.ts'
 import {
@@ -54,8 +54,8 @@ export function createPage({
   languages,
   requestedReviewNotifications,
 }: {
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
   locale: SupportedLocale
   userOnboarding: UserOnboarding
   orcidToken: Option.Option<OrcidToken>

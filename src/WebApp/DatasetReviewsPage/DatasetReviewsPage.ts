@@ -6,15 +6,15 @@ import * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import * as Personas from '../../Personas/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
-  readonly author: Personas.Persona
-  readonly otherAuthors: ReadonlyArray<Personas.Persona>
+  readonly author: Prereviewers.Persona
+  readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number
 }
 
@@ -195,7 +195,7 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
   return formatList(locale)(list)
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: ({ name }) => html`<bdi>${name}</bdi>`,
   onPseudonym: ({ pseudonym }) => html`<bdi>${pseudonym}</bdi>`,
 })

@@ -2,7 +2,6 @@ import { Effect, Schema, Struct } from 'effect'
 import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'
 import { Datasets } from '../../Datasets/index.ts'
 import { Email } from '../../ExternalInteractions/index.ts'
-import * as Personas from '../../Personas/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import { Temporal } from '../../types/index.ts'
 import type { Uuid } from '../../types/Uuid.ts'
@@ -40,7 +39,10 @@ export const SendAuthorInviteEmails = Effect.fn(
 
         yield* email.inviteAuthorToReview({
           invitationId: invitation.invitationId,
-          inviter: Personas.match(author, { onPublic: Struct.get('name'), onPseudonym: Struct.get('pseudonym') }),
+          inviter: Prereviewers.matchPersona(author, {
+            onPublic: Struct.get('name'),
+            onPseudonym: Struct.get('pseudonym'),
+          }),
           invitee: { name: invitation.name, emailAddress: invitation.emailAddress },
           subject: { language: dataset.title.language, title: dataset.title.text },
         })

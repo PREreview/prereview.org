@@ -1,5 +1,5 @@
 import { Either } from 'effect'
-import * as Personas from '../../../src/Personas/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -52,11 +52,11 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
 
 const reviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
-const publicPersona = new Personas.PublicPersona({
+const publicPersona = new Prereviewers.PublicPersona({
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   name: Name.Name('Josiah Carberry'),
 })
 
-const pseudonymPersona = new Personas.PseudonymPersona({
+const pseudonymPersona = new Prereviewers.PseudonymPersona({
   pseudonym: Pseudonym.Pseudonym('Orange Panda'),
 })

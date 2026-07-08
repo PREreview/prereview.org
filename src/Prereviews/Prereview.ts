@@ -5,9 +5,9 @@ import type { Orcid as OrcidId } from 'orcid-id-ts'
 import type { ClubId } from '../Clubs/index.ts'
 import type * as Datasets from '../Datasets/index.ts'
 import type { Html } from '../html.ts'
-import type * as Personas from '../Personas/index.ts'
 import type * as Preprints from '../Preprints/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
+import type * as Prereviewers from '../Prereviewers/index.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
 import type { NonEmptyString, Uuid } from '../types/index.ts'
@@ -61,8 +61,8 @@ export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPre
 }> {}
 
 export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrereview')<{
-  author: Personas.Persona
-  otherAuthors: ReadonlyArray<Personas.Persona>
+  author: Prereviewers.Persona
+  otherAuthors: ReadonlyArray<Prereviewers.Persona>
   anonymousAuthors: number
   club?: ClubId
   dataset: Datasets.DatasetTitle

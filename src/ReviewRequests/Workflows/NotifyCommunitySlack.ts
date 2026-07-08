@@ -1,6 +1,5 @@
 import { Effect, Match, Option, pipe, Struct } from 'effect'
 import { CommunitySlack } from '../../ExternalInteractions/index.ts'
-import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -19,7 +18,7 @@ export const NotifyCommunitySlack = Effect.fn(
         pipe(
           Prereviewers.getPersona(reviewRequest.author),
           Effect.andThen(
-            Personas.match({
+            Prereviewers.matchPersona({
               onPublic: Struct.get('name'),
               onPseudonym: Struct.get('pseudonym'),
             }),

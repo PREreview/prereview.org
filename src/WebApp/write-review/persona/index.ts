@@ -13,9 +13,9 @@ import {
   getPseudonymPersona,
   getPublicPersona,
 } from '../../../persona.ts'
-import type * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import { writeReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -86,8 +86,8 @@ const showPersonaForm = ({
   form: Form
   locale: SupportedLocale
   preprint: PreprintTitle
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
 }) =>
   personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, publicPersona, pseudonymPersona, locale)
 
@@ -101,8 +101,8 @@ const showPersonaErrorForm = ({
 }: {
   form: PersonaForm
   preprint: PreprintTitle
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
   originalForm: Form
   locale: SupportedLocale
 }) => personaForm(preprint, form, originalForm.reviewType, publicPersona, pseudonymPersona, locale)
@@ -121,8 +121,8 @@ const handlePersonaForm = ({
   locale: SupportedLocale
   preprint: PreprintTitle
   user: User
-  publicPersona: Personas.PublicPersona
-  pseudonymPersona: Personas.PseudonymPersona
+  publicPersona: Prereviewers.PublicPersona
+  pseudonymPersona: Prereviewers.PseudonymPersona
 }) =>
   pipe(
     RTE.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) }),

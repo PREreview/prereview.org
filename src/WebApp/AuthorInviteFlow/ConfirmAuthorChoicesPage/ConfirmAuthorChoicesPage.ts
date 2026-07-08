@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -12,7 +12,7 @@ export const renderConfirmAuthorChoicesPage = ({
   locale,
 }: {
   reviewId: Uuid.Uuid
-  persona: Personas.Persona
+  persona: Prereviewers.Persona
   locale: SupportedLocale
 }) => {
   const t = translate(locale, 'author-invite-flow')
@@ -53,7 +53,7 @@ export const renderConfirmAuthorChoicesPage = ({
   })
 }
 
-const displayAuthor = Personas.match({
+const displayAuthor = Prereviewers.matchPersona({
   onPublic: persona =>
     html`<a
       href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"

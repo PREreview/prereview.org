@@ -11,7 +11,6 @@ import type { Locale } from '../../../Context.ts'
 import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import * as Personas from '../../../Personas/index.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -495,7 +494,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                       authorInviteId,
                       newPrereview: {
                         ...newPrereview,
-                        author: Personas.match(newPrereview.persona, {
+                        author: Prereviewers.matchPersona(newPrereview.persona, {
                           onPublic: persona => persona.name,
                           onPseudonym: persona => persona.pseudonym,
                         }),

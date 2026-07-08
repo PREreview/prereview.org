@@ -41,7 +41,6 @@ import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
-import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
@@ -112,7 +111,7 @@ const createRecordOnZenodoForComment = Layer.effect(
             ZenodoRecords.createCommentOnZenodo({
               ...comment,
               comment: text,
-              author: Personas.match(author, {
+              author: Prereviewers.matchPersona(author, {
                 onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
                 onPseudonym: persona => ({ name: persona.pseudonym }),
               }),

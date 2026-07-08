@@ -5,8 +5,8 @@ import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type * as Personas from '../../../Personas/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
+import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import { writeReviewPersonaMatch, writeReviewReadyFullReviewMatch, writeReviewReviewMatch } from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -21,8 +21,8 @@ export const personaForm = (
   preprint: PreprintTitle,
   form: PersonaForm,
   reviewType: 'freeform' | 'questions' | undefined,
-  publicPersona: Personas.PublicPersona,
-  pseudonymPersona: Personas.PseudonymPersona,
+  publicPersona: Prereviewers.PublicPersona,
+  pseudonymPersona: Prereviewers.PseudonymPersona,
   locale: SupportedLocale,
 ) => {
   const error = hasAnError(form)

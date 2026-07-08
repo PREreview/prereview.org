@@ -1,7 +1,7 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -17,7 +17,7 @@ test('content looks right', async ({ showPage }) => {
   const response = _.CheckYourRequestPage({
     preprint,
     reviewRequest: {
-      persona: new Personas.PublicPersona({
+      persona: new Prereviewers.PublicPersona({
         name: Name('Josiah Carberry'),
         orcidId: OrcidId('0000-0002-1825-0097'),
       }),
@@ -35,7 +35,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
   const response = _.CheckYourRequestPage({
     preprint,
     reviewRequest: {
-      persona: new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') }),
+      persona: new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') }),
       reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
     },
     locale,

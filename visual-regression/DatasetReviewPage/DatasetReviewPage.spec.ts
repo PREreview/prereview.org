@@ -3,7 +3,7 @@ import { Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as Personas from '../../src/Personas/index.ts'
+import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import { Doi, Name, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/DatasetReviewPage/DatasetReviewPage.ts'
 import { expect, test } from '../base.ts'
@@ -23,7 +23,7 @@ test('content looks right with multiple authors', async ({ showPage }) => {
   const response = _.createDatasetReviewPage({
     datasetReview: {
       ...datasetReview,
-      otherAuthors: [new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })],
+      otherAuthors: [new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })],
       anonymousAuthors: 1,
     },
     locale: DefaultLocale,
@@ -49,7 +49,7 @@ test('content looks right when in a club', async ({ showPage }) => {
 })
 
 const datasetReview: _.DatasetReview = {
-  author: new Personas.PublicPersona({
+  author: new Prereviewers.PublicPersona({
     name: Name.Name('Josiah Carberry'),
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),

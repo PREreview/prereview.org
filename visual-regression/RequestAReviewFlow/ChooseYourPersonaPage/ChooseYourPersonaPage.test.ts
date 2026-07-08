@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
 import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
@@ -10,12 +10,12 @@ import * as ChooseYourPersonaForm from '../../../src/WebApp/RequestAReviewFlow/C
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
 import { expect, test } from '../../base.ts'
 
-const publicPersona = new Personas.PublicPersona({
+const publicPersona = new Prereviewers.PublicPersona({
   name: Name('Josiah Carberry'),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 
-const pseudonymPersona = new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })
+const pseudonymPersona = new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })
 
 const preprint = new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') })
 

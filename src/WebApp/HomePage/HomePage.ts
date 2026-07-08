@@ -6,8 +6,8 @@ import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
-import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
@@ -464,7 +464,7 @@ const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: Su
   return formatList(locale)(list)
 }
 
-const displayPersona = Personas.match({
+const displayPersona = Prereviewers.matchPersona({
   onPublic: Struct.get('name'),
   onPseudonym: Struct.get('pseudonym'),
 })
