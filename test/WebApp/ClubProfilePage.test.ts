@@ -41,8 +41,8 @@ describe('ClubProfilePage', () => {
           _tag: 'PageResponse',
           canonical: Routes.ClubProfile.href({ id: clubId }),
           status: StatusCodes.OK,
-          title: expect.plainTextContaining(getClubName(clubId)),
-          main: expect.htmlContaining(encode(getClubName(clubId))),
+          title: expect.plainTextContaining(getClubName(clubId).text),
+          main: expect.htmlContaining(encode(getClubName(clubId).text)),
           skipToLabel: 'main',
           js: [],
         })

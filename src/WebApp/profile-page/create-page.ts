@@ -3,6 +3,7 @@ import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import { getClubName } from '../../Clubs/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { profileMatch } from '../../routes.ts'
@@ -131,8 +132,10 @@ function renderContentForOrcidId(
                         clubs,
                         Array.map(
                           club =>
-                            html`<a href="${Routes.ClubProfile.href({ id: club })}" dir="auto"
-                              >${getClubName(club)}</a
+                            html`<a
+                              href="${Routes.ClubProfile.href({ id: club })}"
+                              ${languageAttributesFor(getClubName(club).language)}
+                              >${getClubName(club).text}</a
                             >`,
                         ),
                         formatList(locale),

@@ -71,8 +71,10 @@ export const declinePage = ({
                         ),
                         formatList(locale),
                       ),
-                      club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}" dir="auto"
-                        >${getClubName(review.club)}</a
+                      club: html`<a
+                        href="${Routes.ClubProfile.href({ id: review.club })}"
+                        ${languageAttributesFor(getClubName(review.club).language)}
+                        >${getClubName(review.club).text}</a
                       >`,
                       hide: text => html`<span class="visually-hidden">${text}</span>`,
                     })

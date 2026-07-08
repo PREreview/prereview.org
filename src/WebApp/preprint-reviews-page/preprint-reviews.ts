@@ -156,7 +156,9 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               .with([1, P.string], ([, club]) =>
                 t('prereviewByOneAuthorInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                  club: html`<bdi>${getClubName(club)}</bdi>`,
+                  club: html`<span ${languageAttributesFor(getClubName(club).language)}
+                    >${getClubName(club).text}</span
+                  >`,
                 }),
               )
               .with([1, undefined], () =>
@@ -165,7 +167,9 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
               .with([P.number, P.string], ([, club]) =>
                 t('prereviewByMultipleAuthorsInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                  club: html`<bdi>${getClubName(club)}</bdi>`,
+                  club: html`<span ${languageAttributesFor(getClubName(club).language)}
+                    >${getClubName(club).text}</span
+                  >`,
                 }),
               )
               .with([P.number, undefined], () =>
@@ -188,7 +192,9 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
                 review.club
                   ? t('authoredByInClub')({
                       authors,
-                      club: html`<bdi>${getClubName(review.club)}</bdi>`,
+                      club: html`<span ${languageAttributesFor(getClubName(review.club).language)}
+                        >${getClubName(review.club).text}</span
+                      >`,
                       visuallyHidden,
                     })
                   : t('authoredBy')({ authors, visuallyHidden }),
@@ -208,7 +214,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
             .with([1, P.string], ([, club]) =>
               t('readPrereviewByOneAuthorInClub')({
                 author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                club: html`<bdi>${getClubName(club)}</bdi>`,
+                club: html`<span ${languageAttributesFor(getClubName(club).language)}>${getClubName(club).text}</span>`,
                 visuallyHidden,
               }),
             )
@@ -221,7 +227,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
             .with([P.number, P.string], ([, club]) =>
               t('readPrereviewByMultipleAuthorsInClub')({
                 author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                club: html`<bdi>${getClubName(club)}</bdi>`,
+                club: html`<span ${languageAttributesFor(getClubName(club).language)}>${getClubName(club).text}</span>`,
                 visuallyHidden,
               }),
             )

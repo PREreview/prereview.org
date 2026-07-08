@@ -7,7 +7,7 @@ import { Uuid } from '../types/index.ts'
 const datasetReviewId = pipe(Args.text({ name: 'datasetReviewId' }), Args.withSchema(Uuid.UuidSchema))
 
 const clubId = Args.choice(
-  Array.map(Clubs.ClubIdSchema.literals, clubId => Tuple.make(Clubs.getClubName(clubId), clubId)),
+  Array.map(Clubs.ClubIdSchema.literals, clubId => Tuple.make(Clubs.getClubName(clubId).text, clubId)),
   { name: 'clubId' },
 )
 

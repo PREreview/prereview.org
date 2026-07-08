@@ -29,9 +29,9 @@ export function createPage({
   locale: SupportedLocale
 }) {
   return PageResponse({
-    title: plainText`${club.name}`,
+    title: plainText`${club.name.text}`,
     main: html`
-      <h1 dir="auto">${club.name}</h1>
+      <h1 ${languageAttributesFor(club.name.language)}>${club.name.text}</h1>
 
       ${pipe(
         Match.value(club.slug),
@@ -126,7 +126,9 @@ export function createPage({
       ${Array.match(prereviews, {
         onEmpty: () => html`
           <div class="inset">
-            <p>${translate(locale, 'club-profile-page', 'noResults')({ name: html`<bdi>${club.name}</bdi>` })}</p>
+            <p>
+              ${translate(locale, 'club-profile-page', 'noResults')({ name: html`<span ${languageAttributesFor(club.name.language)}>${club.name.text}</span>` })}
+            </p>
 
             <p>${translate(locale, 'club-profile-page', 'appearHere')()}</p>
           </div>

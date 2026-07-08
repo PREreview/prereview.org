@@ -59,7 +59,9 @@ export const WriteCommentPage = ({
                       ),
                       formatList(locale),
                     ),
-                    club: html`<bdi>${getClubName(prereview.club)}</bdi>`,
+                    club: html`<span ${languageAttributesFor(getClubName(prereview.club).language)}
+                      >${getClubName(prereview.club).text}</span
+                    >`,
                     hide: text => html`<span class="visually-hidden">${text}</span>`,
                   })
                 : t(

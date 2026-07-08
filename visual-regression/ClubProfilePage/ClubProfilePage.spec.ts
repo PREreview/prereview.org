@@ -38,7 +38,10 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 const club1 = {
-  name: Name('ASAPbio Cancer Biology Crowd'),
+  name: {
+    language: 'en',
+    text: Name('ASAPbio Cancer Biology Crowd'),
+  },
   slug: Slug('asapbio-cancer-biology'),
   description: {
     language: 'en',
@@ -62,7 +65,10 @@ const club1 = {
 } satisfies Club
 
 const club2 = {
-  name: Name('ASAPbio Cancer Biology Crowd'),
+  name: {
+    language: 'en',
+    text: Name('ASAPbio Cancer Biology Crowd'),
+  },
   slug: Slug('asapbio-cancer-biology'),
   description: {
     language: 'en',

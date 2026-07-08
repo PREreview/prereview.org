@@ -1,6 +1,7 @@
 import { Array, pipe, String, Tuple } from 'effect'
 import { ClubIdSchema, getClubName } from '../../Clubs/index.ts'
 import { html, rawHtml, type Html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 
@@ -11,7 +12,7 @@ export const addListOfClubs = (locale: SupportedLocale) => (text: Html) =>
         ClubIdSchema.literals,
         Array.map(clubId => Tuple.make(clubId, getClubName(clubId))),
         Array.sortWith(Tuple.getSecond, (a, b) =>
-          String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+          String.localeCompare(b.text, [locale, DefaultLocale], { sensitivity: 'base' })(a.text),
         ),
       )
 
@@ -20,7 +21,7 @@ export const addListOfClubs = (locale: SupportedLocale) => (text: Html) =>
           ${Array.map(clubs, ([id, name]) => {
             return html`
               <li>
-                <a href="${Routes.ClubProfile.href({ id })}">${name}</a>
+                <a href="${Routes.ClubProfile.href({ id })}" ${languageAttributesFor(name.language)}>${name.text}</a>
               </li>
             `
           })}

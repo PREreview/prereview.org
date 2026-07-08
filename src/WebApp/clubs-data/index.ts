@@ -17,7 +17,7 @@ const getClubs = (): ReadonlyArray<Club> =>
     ClubIdSchema.literals,
     Array.map(id => ({
       id,
-      name: getClubName(id),
+      name: getClubName(id).text,
       added: getClubAddedDate(id),
     })),
   )

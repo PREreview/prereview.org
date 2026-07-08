@@ -38,7 +38,7 @@ export const createDatasetReviewPage = ({
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”` })),
     description: Option.match(datasetReview.clubId, {
       onNone: () => plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
-      onSome: clubId => plainText`Authored by ${authorList(datasetReview, locale)} of ${getClubName(clubId)}`,
+      onSome: clubId => plainText`Authored by ${authorList(datasetReview, locale)} of ${getClubName(clubId).text}`,
     }),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
@@ -66,7 +66,11 @@ export const createDatasetReviewPage = ({
             onSome: clubId =>
               t('authoredByInClub')({
                 author: authorList(datasetReview, locale),
-                club: html`<a href="${Routes.ClubProfile.href({ id: clubId })}" dir="auto">${getClubName(clubId)}</a>`,
+                club: html`<a
+                  href="${Routes.ClubProfile.href({ id: clubId })}"
+                  ${languageAttributesFor(getClubName(clubId).language)}
+                  >${getClubName(clubId).text}</a
+                >`,
                 visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
               }),
           })}

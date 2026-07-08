@@ -734,7 +734,7 @@ describe('getPrereviewFromZenodo', () => {
               ? [
                   {
                     type: 'ResearchGroup',
-                    name: getClubName(club),
+                    name: getClubName(club).text,
                   },
                 ]
               : undefined,
@@ -1796,7 +1796,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                     contributors: [
                       {
                         type: 'ResearchGroup',
-                        name: getClubName(club),
+                        name: getClubName(club).text,
                       },
                     ],
                     creators: [{ name: 'Josiah Carberry' }],
@@ -2697,7 +2697,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'PREreviewer' }, ...otherAuthors],
                   contributors: [
                     {
-                      name: getClubName(club),
+                      name: getClubName(club).text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -2791,7 +2791,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'Josiah Carberry' }],
                   contributors: [
                     {
-                      name: getClubName(club),
+                      name: getClubName(club).text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -3002,7 +3002,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'PREreviewer' }],
                   contributors: [
                     {
-                      name: getClubName(club),
+                      name: getClubName(club).text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -3049,7 +3049,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'Josiah Carberry' }],
                   contributors: [
                     {
-                      name: getClubName(club),
+                      name: getClubName(club).text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -3268,7 +3268,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                     ? [
                         {
                           type: 'ResearchGroup',
-                          name: getClubName(club),
+                          name: getClubName(club).text,
                         },
                       ]
                     : undefined,

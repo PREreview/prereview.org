@@ -121,7 +121,9 @@ export const createDatasetReviewsPage = ({
                                 : 'prereviewTitleInClub',
                             )({
                               author: displayAuthor(datasetReview.author),
-                              club: html`<bdi>${getClubName(clubId)}</bdi>`,
+                              club: html`<span ${languageAttributesFor(getClubName(clubId).language)}
+                                >${getClubName(clubId).text}</span
+                              >`,
                             }),
                           onNone: () =>
                             t(countAuthors(datasetReview) > 1 ? 'prereviewTitleMultipleAuthors' : 'prereviewTitle')({
@@ -136,7 +138,9 @@ export const createDatasetReviewsPage = ({
                             t('prereviewAuthoredByInClub')({
                               author: authorList(datasetReview, locale),
                               visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
-                              club: html`<bdi>${getClubName(clubId)}</bdi>`,
+                              club: html`<span ${languageAttributesFor(getClubName(clubId).language)}
+                                >${getClubName(clubId).text}</span
+                              >`,
                             }),
                           onNone: () =>
                             t('prereviewAuthoredBy')({
@@ -157,7 +161,9 @@ export const createDatasetReviewsPage = ({
                           )({
                             author: displayAuthor(datasetReview.author),
                             visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
-                            club: html`<bdi>${getClubName(clubId)}</bdi>`,
+                            club: html`<span ${languageAttributesFor(getClubName(clubId).language)}
+                              >${getClubName(clubId).text}</span
+                            >`,
                           }),
                         onNone: () =>
                           t(countAuthors(datasetReview) > 1 ? 'readPrereviewMultipleAuthors' : 'readPrereview')({
