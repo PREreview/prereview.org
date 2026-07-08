@@ -29,8 +29,14 @@
   "prereviewTitle": {
     "message": "crwdns6490:0{author}crwdne6490:0"
   },
+  "prereviewTitleInClub": {
+    "message": "crwdns6725:0{author}crwdnd6725:0{club}crwdne6725:0"
+  },
   "prereviewTitleMultipleAuthors": {
     "message": "crwdns6635:0{author}crwdne6635:0"
+  },
+  "prereviewTitleMultipleAuthorsInClub": {
+    "message": "crwdns6727:0{author}crwdnd6727:0{club}crwdne6727:0"
   },
   "otherAuthors": {
     "message": "crwdns6637:0number={number}crwdne6637:0"
@@ -38,10 +44,19 @@
   "prereviewAuthoredBy": {
     "message": "crwdns6492:0{author}crwdne6492:0"
   },
+  "prereviewAuthoredByInClub": {
+    "message": "crwdns6729:0{author}crwdnd6729:0{club}crwdne6729:0"
+  },
   "readPrereview": {
     "message": "crwdns6494:0{author}crwdne6494:0"
   },
+  "readPrereviewInClub": {
+    "message": "crwdns6731:0{author}crwdnd6731:0{club}crwdne6731:0"
+  },
   "readPrereviewMultipleAuthors": {
     "message": "crwdns6639:0{author}crwdne6639:0"
+  },
+  "readPrereviewMultipleAuthorsInClub": {
+    "message": "crwdns6733:0{author}crwdnd6733:0{club}crwdne6733:0"
   }
 }

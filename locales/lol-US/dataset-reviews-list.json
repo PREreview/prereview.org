@@ -3,7 +3,10 @@
     "message": "crwdns6540:0{dataset}crwdne6540:0"
   },
   "reviewText": {
-    "message": "crwdns6542:0{reviewer}crwdnd6542:0{dataset}crwdne6542:0"
+    "message": "crwdns6723:0numberOfReviewers={numberOfReviewers}crwdnd6723:0reviewer={reviewer}crwdnd6723:0dataset={dataset}crwdnd6723:0reviewer={reviewer}crwdnd6723:0dataset={dataset}crwdne6723:0"
+  },
+  "reviewTextInClub": {
+    "message": "crwdns6735:0numberOfReviewers={numberOfReviewers}crwdnd6735:0reviewer={reviewer}crwdnd6735:0club={club}crwdnd6735:0dataset={dataset}crwdnd6735:0reviewer={reviewer}crwdnd6735:0club={club}crwdnd6735:0dataset={dataset}crwdne6735:0"
   },
   "otherAuthors": {
     "message": "crwdns6631:0number={number}crwdne6631:0"

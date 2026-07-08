@@ -5,6 +5,9 @@
   "authoredBy": {
     "message": "crwdns6500:0{author}crwdne6500:0"
   },
+  "authoredByInClub": {
+    "message": "crwdns6737:0{author}crwdnd6737:0{club}crwdne6737:0"
+  },
   "otherAuthors": {
     "message": "crwdns6633:0otherAuthors={otherAuthors}crwdne6633:0"
   },

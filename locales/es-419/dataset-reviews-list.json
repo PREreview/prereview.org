@@ -2,9 +2,6 @@
   "reviewTitle": {
     "message": "PREreview del {dataset}"
   },
-  "reviewText": {
-    "message": "{reviewer} revisó {dataset}"
-  },
   "otherAuthors": {
     "message": "{number, plural, one {# otro autor} other {# otros autores}}"
   },
