@@ -49,7 +49,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -93,7 +93,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
             getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
           }),
@@ -139,7 +139,7 @@ describe('DatasetReviewsPage', () => {
             getDataset: () => Effect.succeed(dataset),
           }),
         ),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
       ),
   )
@@ -184,7 +184,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -233,7 +233,7 @@ describe('DatasetReviewsPage', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -261,7 +261,7 @@ describe('DatasetReviewsPage', () => {
         }),
       ),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),
-      Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+      Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
       Effect.provideService(Locale, locale),
     ),
   )

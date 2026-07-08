@@ -26,7 +26,7 @@ export const ChooseYourPersonaPage: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestQueries | Prereviewers.Personas | Preprints.Preprints | Locale
+  ReviewRequests.ReviewRequestQueries | Prereviewers.Prereviewers | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
@@ -73,7 +73,7 @@ export const ChooseYourPersonaSubmission: ({
   never,
   | ReviewRequests.ReviewRequestCommands
   | ReviewRequests.ReviewRequestQueries
-  | Prereviewers.Personas
+  | Prereviewers.Prereviewers
   | Preprints.Preprints
   | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaSubmission')(

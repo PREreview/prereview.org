@@ -60,7 +60,7 @@ const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<Prereviewers.Personas | Prereviews.Prereviews>(),
+      Effect.context<Prereviewers.Prereviewers | Prereviews.Prereviews>(),
       Context.omit(Scope.Scope),
     )
     const fetch = yield* FetchHttpClient.Fetch
@@ -200,7 +200,6 @@ export const Program = pipe(
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
   Layer.provide([AuthorInvites.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer]),
   Layer.provide(DatasetReviews.layer),
-  Layer.provide(Prereviewers.layerPersonas),
   Layer.provide(Prereviewers.layer),
   Layer.provide(ContactEmailAddresses.layer),
   Layer.provide([

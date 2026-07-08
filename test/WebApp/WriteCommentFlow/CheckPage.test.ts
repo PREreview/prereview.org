@@ -43,7 +43,7 @@ describe('CheckPage', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provide(
             Layer.mock(
-              Prereviewers.Personas,
+              Prereviewers.Prereviewers,
               comment.persona === 'public'
                 ? { getPublicPersona: () => Effect.succeed(publicPersona) }
                 : { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) },
@@ -74,7 +74,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -100,7 +100,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -129,7 +129,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -152,7 +152,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -181,7 +181,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -204,7 +204,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -221,7 +221,7 @@ describe('CheckPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-      Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+      Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
     ),
   )
 })

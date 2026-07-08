@@ -29,7 +29,7 @@ describe('NotifyCommunitySlack', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
-            Layer.mock(Prereviewers.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+            Layer.mock(Prereviewers.Prereviewers, { getPublicPersona: () => Effect.succeed(publicPersona) }),
             Layer.succeed(PublicUrl, publicUrl),
           ]),
         ),
@@ -54,7 +54,7 @@ describe('NotifyCommunitySlack', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
-            Layer.mock(Prereviewers.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+            Layer.mock(Prereviewers.Prereviewers, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
             Layer.succeed(PublicUrl, publicUrl),
           ]),
         ),
@@ -82,7 +82,7 @@ describe('NotifyCommunitySlack', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => Effect.succeed(publishedReview),
           }),
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -105,7 +105,7 @@ describe('NotifyCommunitySlack', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => Effect.succeed(publishedReview),
           }),
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
             getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
           }),
@@ -140,7 +140,7 @@ describe('NotifyCommunitySlack', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => error,
           }),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
       ),

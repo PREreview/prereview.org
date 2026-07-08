@@ -61,7 +61,7 @@ describe('ChooseYourPersonaPage', () => {
             Effect.provide([
               Layer.succeed(Locale, locale),
               Layer.succeed(LoggedInUser, user),
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
@@ -87,7 +87,7 @@ describe('ChooseYourPersonaPage', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Prereviewers.Personas, {}),
+            Layer.mock(Prereviewers.Prereviewers, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -116,7 +116,7 @@ describe('ChooseYourPersonaPage', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Prereviewers.Personas, {}),
+            Layer.mock(Prereviewers.Prereviewers, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -146,7 +146,7 @@ describe('ChooseYourPersonaPage', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => new Queries.UnableToQuery({}) }),
@@ -173,7 +173,7 @@ describe('ChooseYourPersonaPage', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, {
             getPreprintTitle: () => new Preprints.PreprintIsUnavailable({}),
           }),
@@ -197,7 +197,7 @@ describe('ChooseYourPersonaPage', () => {
       }).pipe(
         Effect.provide([
           Layer.succeed(Locale, locale),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
@@ -268,7 +268,7 @@ describe('ChooseYourPersonaSubmission', () => {
             Effect.provide([
               Layer.succeed(Locale, locale),
               Layer.succeed(LoggedInUser, user),
-              Layer.mock(Prereviewers.Personas, {}),
+              Layer.mock(Prereviewers.Prereviewers, {}),
             ]),
           ),
       )
@@ -303,7 +303,7 @@ describe('ChooseYourPersonaSubmission', () => {
             Effect.provide([
               Layer.succeed(Locale, locale),
               Layer.succeed(LoggedInUser, user),
-              Layer.mock(Prereviewers.Personas, {}),
+              Layer.mock(Prereviewers.Prereviewers, {}),
               Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
               Layer.mock(ReviewRequests.ReviewRequestCommands, { choosePersona: () => error }),
               Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -353,7 +353,7 @@ describe('ChooseYourPersonaSubmission', () => {
             Effect.provide([
               Layer.succeed(Locale, locale),
               Layer.succeed(LoggedInUser, user),
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
@@ -389,7 +389,7 @@ describe('ChooseYourPersonaSubmission', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Prereviewers.Personas, {}),
+            Layer.mock(Prereviewers.Prereviewers, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -424,7 +424,7 @@ describe('ChooseYourPersonaSubmission', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
-            Layer.mock(Prereviewers.Personas, {}),
+            Layer.mock(Prereviewers.Prereviewers, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -460,7 +460,7 @@ describe('ChooseYourPersonaSubmission', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => new Queries.UnableToQuery({}) }),
@@ -487,7 +487,7 @@ describe('ChooseYourPersonaSubmission', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => new Preprints.PreprintIsUnavailable({}) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
@@ -509,7 +509,7 @@ describe('ChooseYourPersonaSubmission', () => {
       }).pipe(
         Effect.provide([
           Layer.succeed(Locale, locale),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),

@@ -43,7 +43,7 @@ describe('ChoosePersonaPage', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provide(
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -73,7 +73,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -99,7 +99,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -122,7 +122,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -151,7 +151,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -174,7 +174,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -191,7 +191,7 @@ describe('ChoosePersonaPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
-      Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+      Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
     ),
   )
 })
@@ -240,7 +240,7 @@ describe('ChoosePersonaSubmission', () => {
               Effect.provideService(Locale, locale),
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
               Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-              Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+              Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
               Effect.provideService(LoggedInUser, user),
             ),
         )
@@ -273,7 +273,7 @@ describe('ChoosePersonaSubmission', () => {
               Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
               Effect.provideService(Comments.HandleCommentCommand, () => error),
               Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-              Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+              Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
               Effect.provideService(LoggedInUser, user),
             ),
         )
@@ -319,7 +319,7 @@ describe('ChoosePersonaSubmission', () => {
             Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provide(
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
@@ -353,7 +353,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -382,7 +382,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -407,7 +407,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -439,7 +439,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -464,7 +464,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -486,7 +486,7 @@ describe('ChoosePersonaSubmission', () => {
         Effect.provideService(Comments.GetComment, shouldNotBeCalled),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
       ),
   )
 })

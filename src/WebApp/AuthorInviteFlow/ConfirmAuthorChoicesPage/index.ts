@@ -15,7 +15,7 @@ export const ConfirmAuthorChoicesPage = ({
   reviewId,
 }: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Personas | AuthorInvites> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Prereviewers | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale

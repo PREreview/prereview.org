@@ -31,7 +31,7 @@ describe('NotifyCommunitySlack', () => {
                 Layer.mock(CommunitySlack.CommunitySlack, {
                   sharePreprintReviewRequest: () => Effect.succeed(response),
                 }),
-                Layer.mock(Prereviewers.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+                Layer.mock(Prereviewers.Prereviewers, { getPublicPersona: () => Effect.succeed(publicPersona) }),
                 Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
                 Layer.mock(ReviewRequests.ReviewRequestCommands, {
                   recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
@@ -62,7 +62,7 @@ describe('NotifyCommunitySlack', () => {
                 Layer.mock(CommunitySlack.CommunitySlack, {
                   sharePreprintReviewRequest: () => Effect.succeed(response),
                 }),
-                Layer.mock(Prereviewers.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+                Layer.mock(Prereviewers.Prereviewers, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
                 Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
                 Layer.mock(ReviewRequests.ReviewRequestCommands, {
                   recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
@@ -91,7 +91,7 @@ describe('NotifyCommunitySlack', () => {
           }).pipe(
             Effect.provide([
               Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
-              Layer.mock(Prereviewers.Personas, {}),
+              Layer.mock(Prereviewers.Prereviewers, {}),
               Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
               Layer.mock(ReviewRequests.ReviewRequestCommands, {
                 recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
@@ -123,7 +123,7 @@ describe('NotifyCommunitySlack', () => {
         }).pipe(
           Effect.provide([
             Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -157,7 +157,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => error }),
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -191,7 +191,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -219,7 +219,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => error,
             getPseudonymPersona: () => error,
           }),
@@ -250,7 +250,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),

@@ -25,7 +25,7 @@ export const CheckYourRequestPage: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestQueries | Prereviewers.Personas | Preprints.Preprints | Locale
+  ReviewRequests.ReviewRequestQueries | Prereviewers.Prereviewers | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.CheckYourRequestPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn

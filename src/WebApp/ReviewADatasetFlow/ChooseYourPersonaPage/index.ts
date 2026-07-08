@@ -20,7 +20,7 @@ export const ChooseYourPersonaPage = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Prereviewers.Personas
+  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Prereviewers.Prereviewers
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -67,7 +67,7 @@ export const ChooseYourPersonaSubmission = ({
   | DatasetReviews.DatasetReviewQueries
   | Locale
   | LoggedInUser
-  | Prereviewers.Personas
+  | Prereviewers.Prereviewers
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser

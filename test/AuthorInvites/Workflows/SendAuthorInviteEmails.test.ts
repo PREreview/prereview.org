@@ -63,7 +63,7 @@ describe('SendAuthorInviteEmails', () => {
               }),
               Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) }),
               Layer.mock(Email.Email, {}),
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
@@ -104,7 +104,7 @@ describe('SendAuthorInviteEmails', () => {
             }),
             Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) }),
             Layer.mock(Email.Email, {}),
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -129,7 +129,7 @@ describe('SendAuthorInviteEmails', () => {
             }),
             Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) }),
             Layer.mock(Email.Email, {}),
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -163,7 +163,7 @@ describe('SendAuthorInviteEmails', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getPublishedReview: () => error }),
           Layer.mock(Datasets.Datasets, {}),
           Layer.mock(Email.Email, {}),
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )

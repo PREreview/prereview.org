@@ -53,7 +53,7 @@ describe('CheckYourReviewPage', () => {
               }),
             ),
             Effect.provide(
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
               }),
             ),
@@ -100,7 +100,7 @@ describe('CheckYourReviewPage', () => {
               }),
             ),
             Effect.provide(
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
             ),
@@ -145,7 +145,7 @@ describe('CheckYourReviewPage', () => {
                 getDatasetTitle: () => Effect.succeed(dataset),
               }),
             ),
-            Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+            Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
           ),
@@ -195,7 +195,7 @@ describe('CheckYourReviewPage', () => {
             }),
           ),
           Effect.provide(
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -242,7 +242,7 @@ describe('CheckYourReviewPage', () => {
             }),
           ),
           Effect.provide(
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
               getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
             }),
@@ -288,7 +288,7 @@ describe('CheckYourReviewPage', () => {
             }),
           ),
           Effect.provide(Layer.mock(Datasets.Datasets, {})),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -314,7 +314,7 @@ describe('CheckYourReviewPage', () => {
             }),
           ),
           Effect.provide(Layer.mock(Datasets.Datasets, {})),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -340,7 +340,7 @@ describe('CheckYourReviewPage', () => {
             }),
           ),
           Effect.provide(Layer.mock(Datasets.Datasets, {})),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -373,7 +373,7 @@ describe('CheckYourReviewPage', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
         ),
         Effect.provide(Layer.mock(Datasets.Datasets, {})),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),
@@ -401,7 +401,7 @@ describe('CheckYourReviewPage', () => {
           }),
         ),
         Effect.provide(Layer.mock(Datasets.Datasets, {})),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),
@@ -427,7 +427,7 @@ describe('CheckYourReviewPage', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new Queries.UnableToQuery({}) }),
         ),
         Effect.provide(Layer.mock(Datasets.Datasets, {})),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),

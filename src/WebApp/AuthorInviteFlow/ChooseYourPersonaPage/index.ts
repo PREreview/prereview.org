@@ -17,7 +17,7 @@ export const ChooseYourPersonaPage = ({
   reviewId,
 }: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Personas | AuthorInvites> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Prereviewers | AuthorInvites> =>
   Effect.gen(function* () {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
@@ -47,7 +47,7 @@ export const ChooseYourPersonaSubmission = ({
 }: {
   body: UrlParams.UrlParams
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Personas | AuthorInvites> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Prereviewers | AuthorInvites> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const locale = yield* Locale

@@ -33,7 +33,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -59,7 +59,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -77,7 +77,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -103,7 +103,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new ContactEmailAddressIsNotFound() }),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -137,7 +137,7 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -183,7 +183,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -220,7 +220,7 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
@@ -264,7 +264,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
@@ -286,7 +286,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
@@ -310,7 +310,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -321,7 +321,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -343,7 +343,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, {}),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -354,7 +354,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -379,7 +379,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, {}),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -390,7 +390,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -415,7 +415,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, {}),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -426,7 +426,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -448,7 +448,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, {}),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {}),
+          Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
       ),
   )
@@ -470,7 +470,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, newReview, user, publicPersona, pseudonymPersona, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas
+          ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
@@ -500,7 +500,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           LanguageDetection.layerCld,
-          Layer.mock(Prereviewers.Personas, {
+          Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),

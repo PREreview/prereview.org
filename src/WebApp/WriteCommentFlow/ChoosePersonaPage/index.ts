@@ -19,7 +19,7 @@ export const ChoosePersonaPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Prereviewers.Personas | Locale
+  Comments.GetComment | Prereviewers.Prereviewers | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -103,7 +103,7 @@ export const ChoosePersonaSubmission = ({
   | Comments.GetComment
   | Comments.HandleCommentCommand
   | Comments.GetNextExpectedCommandForUserOnAComment
-  | Prereviewers.Personas
+  | Prereviewers.Prereviewers
   | Locale
 > =>
   Effect.gen(function* () {

@@ -14,7 +14,7 @@ export const StartNowPage = ({
   invitationId,
 }: {
   invitationId: Uuid
-}): Effect.Effect<Response, never, Locale | Datasets | DatasetReviewQueries | Prereviewers.Personas> =>
+}): Effect.Effect<Response, never, Locale | Datasets | DatasetReviewQueries | Prereviewers.Prereviewers> =>
   Effect.gen(function* () {
     const locale = yield* Locale
     const user = yield* Effect.serviceOption(LoggedInUser)

@@ -1,8 +1,9 @@
-import { Context, Effect, Layer, Match, pipe } from 'effect'
+import { Context, Data, Effect, Layer, Match, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
+import { PseudonymPersona, PublicPersona, type Persona } from '../Personas/index.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type EmailAddress, type Name, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
@@ -17,11 +18,15 @@ import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './O
 import { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
 
+export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{ cause?: unknown }> {}
+
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
+    getPublicPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PublicPersona, UnableToGetPersona>
+    getPseudonymPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PseudonymPersona, UnableToGetPersona>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     isPseudonymInUse: Queries.FromStatefulQuery<typeof IsPseudonymInUse>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
@@ -47,7 +52,17 @@ export const {
   getContactDetails,
   isRegistered,
   isPseudonymInUse,
+  getPublicPersona,
+  getPseudonymPersona,
 } = Effect.serviceFunctions(Prereviewers)
+
+export const getPersona = pipe(
+  Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),
+  Match.withReturnType<Effect.Effect<Persona, UnableToGetPersona, Prereviewers>>(),
+  Match.when({ persona: 'public' }, ({ orcidId }) => getPublicPersona(orcidId)),
+  Match.when({ persona: 'pseudonym' }, ({ orcidId }) => getPseudonymPersona(orcidId)),
+  Match.exhaustive,
+)
 
 export const layer = Layer.effect(
   Prereviewers,
@@ -56,6 +71,8 @@ export const layer = Layer.effect(
     const contactEmailAddresses = yield* ContactEmailAddresses
 
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
+
+    const getPseudonym = yield* Queries.makeOnDemandQuery(GetPseudonym)
 
     const getAvailablePseudonym = yield* pipe(
       possiblePseudonyms,
@@ -99,7 +116,21 @@ export const layer = Layer.effect(
         ),
       ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
-      getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
+      getPublicPersona: orcidId =>
+        pipe(
+          orcidRecords.getName(orcidId),
+          Effect.mapBoth({
+            onSuccess: name => new PublicPersona({ name, orcidId }),
+            onFailure: error => new UnableToGetPersona({ cause: error }),
+          }),
+        ),
+      getPseudonymPersona: orcidId =>
+        pipe(
+          getPseudonym(orcidId),
+          Effect.mapError(error => new UnableToGetPersona({ cause: error })),
+          Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
+        ),
+      getPseudonym,
       isPseudonymInUse: yield* Queries.makeStatefulQuery(IsPseudonymInUse),
       countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),

@@ -38,7 +38,7 @@ export const {
 export const layer = Layer.effect(
   PreprintReviews,
   Effect.gen(function* () {
-    const personas = yield* Prereviewers.Personas
+    const personas = yield* Prereviewers.Prereviewers
 
     const getRapidPrereviewsForAPreprint = yield* Queries.makeOnDemandQuery(GetRapidPrereviewsForAPreprint)
 
@@ -54,7 +54,7 @@ export const layer = Layer.effect(
 
                   return { ...rapidPrereview, author: persona } satisfies RapidPrereview
                 },
-                Effect.provideService(Prereviewers.Personas, personas),
+                Effect.provideService(Prereviewers.Prereviewers, personas),
               ),
             ),
           ),

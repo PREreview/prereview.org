@@ -46,7 +46,7 @@ describe('ChooseYourPersonaPage', () => {
               }),
             ),
             Effect.provide(
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => Effect.succeed(publicPersona),
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
@@ -78,7 +78,7 @@ describe('ChooseYourPersonaPage', () => {
               }),
             ),
             Effect.provide(
-              Layer.mock(Prereviewers.Personas, {
+              Layer.mock(Prereviewers.Prereviewers, {
                 getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
                 getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
               }),
@@ -107,7 +107,7 @@ describe('ChooseYourPersonaPage', () => {
               checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
             }),
           ),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -131,7 +131,7 @@ describe('ChooseYourPersonaPage', () => {
               checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
             }),
           ),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -159,7 +159,7 @@ describe('ChooseYourPersonaPage', () => {
             checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewWasStartedByAnotherUser(),
           }),
         ),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),
@@ -186,7 +186,7 @@ describe('ChooseYourPersonaPage', () => {
             checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           }),
         ),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),
@@ -213,7 +213,7 @@ describe('ChooseYourPersonaPage', () => {
             checkIfUserCanChoosePersona: () => new Queries.UnableToQuery({}),
           }),
         ),
-        Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
       ),
@@ -248,7 +248,7 @@ describe('ChooseYourPersonaSubmission', () => {
                 getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
               }),
             ),
-            Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+            Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
           ),
@@ -286,7 +286,7 @@ describe('ChooseYourPersonaSubmission', () => {
                 getNextExpectedCommandForAUserOnADatasetReview: () => result,
               }),
             ),
-            Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+            Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
           ),
@@ -323,7 +323,7 @@ describe('ChooseYourPersonaSubmission', () => {
         }).pipe(
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { choosePersona: () => error })),
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
-          Effect.provide(Layer.mock(Prereviewers.Personas, {})),
+          Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -366,7 +366,7 @@ describe('ChooseYourPersonaSubmission', () => {
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
           Effect.provide(
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
@@ -408,7 +408,7 @@ describe('ChooseYourPersonaSubmission', () => {
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
           Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
           Effect.provide(
-            Layer.mock(Prereviewers.Personas, {
+            Layer.mock(Prereviewers.Prereviewers, {
               getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
               getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
             }),

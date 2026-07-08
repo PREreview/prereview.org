@@ -17,7 +17,7 @@ export const CheckPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Prereviewers.Personas | Locale
+  Comments.GetComment | Prereviewers.Prereviewers | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn

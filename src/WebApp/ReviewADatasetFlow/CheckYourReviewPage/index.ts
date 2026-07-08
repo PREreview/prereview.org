@@ -18,7 +18,7 @@ export const CheckYourReviewPage = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale | LoggedInUser | Prereviewers.Personas
+  DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale | LoggedInUser | Prereviewers.Prereviewers
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser

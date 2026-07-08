@@ -207,7 +207,6 @@ export interface Env {
     | LanguageDetection.LanguageDetection
     | OpenAlexWorks.OpenAlexWorks
     | OrcidOauth
-    | Prereviewers.Personas
     | PreprintReviews.PreprintReviews
     | Preprints.Preprints
     | Prereviewers.Prereviewers

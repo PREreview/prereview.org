@@ -63,7 +63,7 @@ export const writeReviewPublish = ({
     FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
-    EffectToFpts.EffectEnv<ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Personas>,
+    EffectToFpts.EffectEnv<ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers>,
   Response
 > =>
   pipe(
@@ -174,7 +174,7 @@ const handlePublishForm = ({
             match(form)
               .returnType<
                 RT.ReaderTask<
-                  EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Prereviewers.Personas>,
+                  EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Prereviewers.Prereviewers>,
                   Option.Option<LanguageCode>
                 >
               >()

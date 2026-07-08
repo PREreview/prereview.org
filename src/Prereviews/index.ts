@@ -71,7 +71,7 @@ export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Personas>(),
+      Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers>(),
       Context.omit(Scope.Scope),
     )
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
