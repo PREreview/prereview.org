@@ -62,6 +62,18 @@
     "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
     "description": "Error message shown when the user tries to complete the “Contact details” form and answers the question “What is your email address?” with an invalid email address."
   },
+  "verifyYourEmailAddress": {
+    "message": "Verify your email address",
+    "description": "Title of the page that says you need follow the link in the email we sent to verify the email address."
+  },
+  "followLinkInEmail": {
+    "message": "Please open the email we sent to {emailAddress} and follow the link. You’ll then be able to publish your request.",
+    "description": "Text shown alongside the title “Verify your email address” that explains what the user needs to do to verify their email address."
+  },
+  "closePageOnceVerified": {
+    "message": "Once your address is verified, you can close this page.",
+    "description": "Text shown alongside the title “Verify your email address” that explains what to do after verifying your email address."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?"
   },
