@@ -115,10 +115,14 @@ export const createDatasetReviewsPage = ({
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
                         ${Option.match(datasetReview.clubId, {
                           onSome: clubId =>
-                            html`<span lang="en" dir="ltr"
-                              >PREreview by ${displayAuthor(datasetReview.author)}
-                              ${countAuthors(datasetReview) > 1 ? 'et al.' : ''} of ${getClubName(clubId)}</span
-                            >`,
+                            t(
+                              countAuthors(datasetReview) > 1
+                                ? 'prereviewTitleMultipleAuthorsInClub'
+                                : 'prereviewTitleInClub',
+                            )({
+                              author: displayAuthor(datasetReview.author),
+                              club: html`<bdi>${getClubName(clubId)}</bdi>`,
+                            }),
                           onNone: () =>
                             t(countAuthors(datasetReview) > 1 ? 'prereviewTitleMultipleAuthors' : 'prereviewTitle')({
                               author: displayAuthor(datasetReview.author),
@@ -129,10 +133,11 @@ export const createDatasetReviewsPage = ({
                       <div class="byline">
                         ${Option.match(datasetReview.clubId, {
                           onSome: clubId =>
-                            html`<span lang="en" dir="ltr"
-                              ><span class="visually-hidden">Authored</span> by ${authorList(datasetReview, locale)} of
-                              ${getClubName(clubId)}</span
-                            >`,
+                            t('prereviewAuthoredByInClub')({
+                              author: authorList(datasetReview, locale),
+                              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                              club: html`<bdi>${getClubName(clubId)}</bdi>`,
+                            }),
                           onNone: () =>
                             t('prereviewAuthoredBy')({
                               author: authorList(datasetReview, locale),
@@ -145,13 +150,15 @@ export const createDatasetReviewsPage = ({
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
                       ${Option.match(datasetReview.clubId, {
                         onSome: clubId =>
-                          html`<span lang="en" dir="ltr"
-                            >Read
-                            <span class="visually-hidden"
-                              >the PREreview by ${displayAuthor(datasetReview.author)}
-                              ${countAuthors(datasetReview) > 1 ? 'et al.' : ''} of ${getClubName(clubId)}</span
-                            ></span
-                          >`,
+                          t(
+                            countAuthors(datasetReview) > 1
+                              ? 'readPrereviewMultipleAuthorsInClub'
+                              : 'readPrereviewInClub',
+                          )({
+                            author: displayAuthor(datasetReview.author),
+                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                            club: html`<bdi>${getClubName(clubId)}</bdi>`,
+                          }),
                         onNone: () =>
                           t(countAuthors(datasetReview) > 1 ? 'readPrereviewMultipleAuthors' : 'readPrereview')({
                             author: displayAuthor(datasetReview.author),

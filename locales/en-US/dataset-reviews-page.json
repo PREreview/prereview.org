@@ -39,9 +39,17 @@
     "message": "PREreview by {author}",
     "description": "Title for a dataset review by a single author."
   },
+  "prereviewTitleInClub": {
+    "message": "PREreview by {author} of {club}",
+    "description": "Title for a dataset review by a single author in a club."
+  },
   "prereviewTitleMultipleAuthors": {
     "message": "PREreview by {author} et al.",
     "description": "Title for a dataset review by multiple authors."
+  },
+  "prereviewTitleMultipleAuthorsInClub": {
+    "message": "PREreview by {author} et al. of {club}",
+    "description": "Title for a dataset review by multiple authors in a club."
   },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",
@@ -51,12 +59,24 @@
     "message": "<visuallyHidden>Authored</visuallyHidden> by {author}",
     "description": "Byline that shows the author of a dataset review."
   },
+  "prereviewAuthoredByInClub": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {author} of {club}",
+    "description": "Byline that shows the authors of a dataset review in a club."
+  },
   "readPrereview": {
     "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>",
     "description": "Text for the link that takes the user to a dataset review by a single author."
   },
+  "readPrereviewInClub": {
+    "message": "Read <visuallyHidden>the PREreview by {author} of {club}</visuallyHidden>",
+    "description": "Text for the link that takes the user to a dataset review by a single author in a club."
+  },
   "readPrereviewMultipleAuthors": {
     "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>",
     "description": "Text for the link that takes the user to a dataset review by multiple authors."
+  },
+  "readPrereviewMultipleAuthorsInClub": {
+    "message": "Read <visuallyHidden>the PREreview by {author} et al. of {club}</visuallyHidden>",
+    "description": "Text for the link that takes the user to a dataset review by multiple authors in a club."
   }
 }
