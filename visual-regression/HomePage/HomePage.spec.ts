@@ -124,29 +124,49 @@ const recentPrereview4 = new Prereviews.RecentDatasetPrereview({
   published: Temporal.PlainDate.from('2025-08-06'),
 })
 
-const recentPrereview5 = new Prereviews.RecentPreprintPrereview({
-  id: 10411168,
+const recentPrereview5 = new Prereviews.RecentDatasetPrereview({
+  doi: Doi('10.5281/zenodo.10779310'),
+  id: Uuid.Uuid('b589babb-9604-4c1e-abf9-5111be8dcc01'),
   club: '998f32b4-ced9-49f8-8042-ce8fe41e62ec',
-  reviewers: {
-    named: [
-      Name.Name('Miguel Oliveira, Jr.'),
-      Name.Name('Arthur Ronald Brasil Terto'),
-      Name.Name('Cleber Ataíde'),
-      Name.Name('Glayci Kelli Reis da Silva Xavier'),
-      Name.Name('Kyvia Fernanda Tenório da Silva'),
-      Name.Name('Marcelo Travassos da Silva'),
-      Name.Name('Pedro Ricardo Bin'),
-    ],
-    anonymous: 0,
-  },
+  author: new Personas.PublicPersona({
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+    name: Name.Name('Miguel Oliveira, Jr.'),
+  }),
+  otherAuthors: [
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0003-4806-4946'),
+      name: Name.Name('Arthur Ronald Brasil Terto'),
+    }),
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0002-9340-9977'),
+      name: Name.Name('Cleber Ataíde'),
+    }),
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0002-2934-4734'),
+      name: Name.Name('Glayci Kelli Reis da Silva Xavier'),
+    }),
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0002-0509-3555'),
+      name: Name.Name('Kyvia Fernanda Tenório da Silva'),
+    }),
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0002-5425-5071'),
+      name: Name.Name('Marcelo Travassos da Silva'),
+    }),
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0002-7547-3430'),
+      name: Name.Name('Pedro Ricardo Bin'),
+    }),
+  ],
+  anonymousAuthors: 1,
   published: Temporal.PlainDate.from('2023-12-20'),
-  fields: ['12', '33'],
-  subfields: ['1211', '3310', '1208'],
-  preprint: {
-    id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.7395') }),
+  dataset: new Datasets.DatasetTitle({
+    id: new Datasets.ScieloDatasetId({ value: Doi('10.48331/scielodata.4sp3xa') }),
     language: 'pt',
-    title: rawHtml('Traduções de sinais de pontuação desacompanhados em HQs'),
-  },
+    title: rawHtml(
+      'Data for: Reversão das recomendações emitidas pela Comissão Nacional de Incorporação de Tecnologias no SUS após Consultas Públicas',
+    ),
+  }),
 })
 
 const recentReviewRequest1 = {

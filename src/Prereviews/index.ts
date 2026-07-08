@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted, Scope, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { ClubId } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
@@ -296,6 +296,7 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
     author,
     otherAuthors,
     anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
+    club: Option.getOrUndefined(datasetReview.clubId),
     dataset,
     doi: datasetReview.doi,
     id: datasetReview.id,
