@@ -38,6 +38,51 @@
   "ifProblemPersistsContactUs": {
     "message": "crwdns5515:0crwdne5515:0"
   },
+  "contactDetails": {
+    "message": "crwdns6739:0crwdne6739:0"
+  },
+  "confirmEmailAddressFirst": {
+    "message": "crwdns6741:0crwdne6741:0"
+  },
+  "onlyUseToContactYou": {
+    "message": "crwdns6743:0crwdne6743:0"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "crwdns6745:0crwdne6745:0"
+  },
+  "whatIsYourEmailAddressErrorMissing": {
+    "message": "crwdns6747:0crwdne6747:0"
+  },
+  "whatIsYourEmailAddressErrorInvalid": {
+    "message": "crwdns6749:0{exampleEmailAddress}crwdne6749:0"
+  },
+  "verifyYourEmailAddress": {
+    "message": "crwdns6751:0crwdne6751:0"
+  },
+  "followLinkInEmail": {
+    "message": "crwdns6753:0{emailAddress}crwdne6753:0"
+  },
+  "closePageOnceVerified": {
+    "message": "crwdns6755:0crwdne6755:0"
+  },
+  "beNotifiedWhenReviewPublished": {
+    "message": "crwdns6757:0crwdne6757:0"
+  },
+  "canContactWhenReviewPublished": {
+    "message": "crwdns6759:0crwdne6759:0"
+  },
+  "canChangeContactWhenReviewPublished": {
+    "message": "crwdns6761:0crwdne6761:0"
+  },
+  "beNotifiedWhenReviewPublishedMissing": {
+    "message": "crwdns6763:0crwdne6763:0"
+  },
+  "beNotifiedWhenReviewPublishedYes": {
+    "message": "crwdns6765:0crwdne6765:0"
+  },
+  "beNotifiedWhenReviewPublishedNo": {
+    "message": "crwdns6767:0crwdne6767:0"
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "crwdns5517:0crwdne5517:0"
   },
