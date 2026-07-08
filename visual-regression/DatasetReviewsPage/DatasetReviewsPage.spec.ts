@@ -71,6 +71,7 @@ const prereview1: _.DatasetReview = {
   }),
   otherAuthors: [],
   anonymousAuthors: 0,
+  clubId: Option.some('4dbef4c4-3793-4a32-9837-3fa39a69188a'),
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
@@ -137,6 +138,7 @@ const prereview2: _.DatasetReview = {
     }),
   ],
   anonymousAuthors: 1,
+  clubId: Option.none(),
   doi: Doi.Doi('10.5281/zenodo.10779311'),
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {

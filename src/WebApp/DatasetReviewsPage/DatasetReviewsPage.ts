@@ -1,5 +1,6 @@
-import { Array, flow, identity, pipe } from 'effect'
+import { Array, flow, identity, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import { getClubName } from '../../Clubs/index.ts'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
@@ -11,7 +12,7 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'clubId' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
   readonly author: Personas.Persona
   readonly otherAuthors: ReadonlyArray<Personas.Persona>
   readonly anonymousAuthors: number
@@ -112,29 +113,58 @@ export const createDatasetReviewsPage = ({
                   <article aria-labelledby="prereview-${datasetReview.id}-title">
                     <header>
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
-                        ${t(
-                          datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
-                            ? 'prereviewTitleMultipleAuthors'
-                            : 'prereviewTitle',
-                        )({ author: displayAuthor(datasetReview.author) })}
+                        ${Option.match(datasetReview.clubId, {
+                          onSome: clubId =>
+                            html`<span lang="en" dir="ltr"
+                              >PREreview by ${displayAuthor(datasetReview.author)}
+                              ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0 ? 'et al.' : ''}
+                              of ${getClubName(clubId)}</span
+                            >`,
+                          onNone: () =>
+                            t(
+                              datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
+                                ? 'prereviewTitleMultipleAuthors'
+                                : 'prereviewTitle',
+                            )({ author: displayAuthor(datasetReview.author) }),
+                        })}
                       </h3>
 
                       <div class="byline">
-                        ${t('prereviewAuthoredBy')({
-                          author: authorList(datasetReview, locale),
-                          visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                        ${Option.match(datasetReview.clubId, {
+                          onSome: clubId =>
+                            html`<span lang="en" dir="ltr"
+                              ><span class="visually-hidden">Authored</span> by ${authorList(datasetReview, locale)} of
+                              ${getClubName(clubId)}</span
+                            >`,
+                          onNone: () =>
+                            t('prereviewAuthoredBy')({
+                              author: authorList(datasetReview, locale),
+                              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                            }),
                         })}
                       </div>
                     </header>
 
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
-                      ${t(
-                        datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
-                          ? 'readPrereviewMultipleAuthors'
-                          : 'readPrereview',
-                      )({
-                        author: displayAuthor(datasetReview.author),
-                        visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                      ${Option.match(datasetReview.clubId, {
+                        onSome: clubId =>
+                          html`<span lang="en" dir="ltr"
+                            >Read
+                            <span class="visually-hidden"
+                              >the PREreview by ${displayAuthor(datasetReview.author)}
+                              ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0 ? 'et al.' : ''}
+                              of ${getClubName(clubId)}</span
+                            ></span
+                          >`,
+                        onNone: () =>
+                          t(
+                            datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
+                              ? 'readPrereviewMultipleAuthors'
+                              : 'readPrereview',
+                          )({
+                            author: displayAuthor(datasetReview.author),
+                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
+                          }),
                       })}
                     </a>
                   </article>
