@@ -66,7 +66,7 @@ export const createDatasetReviewPage = ({
             onSome: clubId =>
               html`<span lang="en" dir="ltr"
                 ><span class="visually-hidden">Authored</span> by ${authorList(datasetReview, locale)} of
-                ${getClubName(clubId)}</span
+                <a href="${Routes.ClubProfile.href({ id: clubId })}" dir="auto">${getClubName(clubId)}</a></span
               >`,
           })}
         </div>
