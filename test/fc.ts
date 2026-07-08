@@ -162,6 +162,7 @@ export const {
   option,
   record,
   string,
+  stringMatching,
   tuple,
   uniqueArray,
   webUrl,

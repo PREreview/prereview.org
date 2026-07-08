@@ -36,7 +36,7 @@ describe('SlugSchema', () => {
 
     it.prop(
       'with a non-slug',
-      [fc.lorem()],
+      [fc.stringMatching(/[^a-z0-9-]/)],
       ([string]) => {
         const actual = Either.mapLeft(Schema.decodeEither(_.SlugSchema)(string), ArrayFormatter.formatErrorSync)
 
