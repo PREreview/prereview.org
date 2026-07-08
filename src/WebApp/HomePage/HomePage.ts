@@ -210,13 +210,18 @@ export const createPage = ({
                         <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
                           ${
                             prereview.club
-                              ? html`<span lang="en" dir="ltr"
-                                  >${authorList(prereview, locale)} of
-                                  <b dir="auto">${getClubName(prereview.club)}</b> reviewed
-                                  <cite ${languageAttributesFor(prereview.dataset.language)}
+                              ? translate(
+                                  locale,
+                                  'dataset-reviews-list',
+                                  'reviewTextInClub',
+                                )({
+                                  club: html`<b dir="auto">${getClubName(prereview.club)}</b>`,
+                                  numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
+                                  reviewer: authorList(prereview, locale),
+                                  dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
                                     >${prereview.dataset.title}</cite
-                                  ></span
-                                >`
+                                  >`,
+                                })
                               : translate(
                                   locale,
                                   'dataset-reviews-list',

@@ -7,6 +7,10 @@
     "message": "{numberOfReviewers, plural, one {{reviewer} reviewed {dataset}} other {{reviewer} reviewed {dataset}}}",
     "description": "Text of the review in a list."
   },
+  "reviewTextInClub": {
+    "message": "{numberOfReviewers, plural, one {{reviewer} of {club} reviewed {dataset}} other {{reviewer} of {club} reviewed {dataset}}}",
+    "description": "Text of the review by a club in a list."
+  },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",
     "description": "Text for the entry in the author list indicating the number of anonymous authors."
