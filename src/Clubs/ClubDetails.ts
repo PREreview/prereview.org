@@ -409,8 +409,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
           énfasis en la revisión por pares abierta (<span lang="en">Open Peer Review</span>). Un espacio para aprender,
           colaborar y transformar colectivamente la forma en que se valida el conocimiento en nuestra región.
         </p>
-      </div>
-    `,
+      `,
     },
     added: Temporal.PlainDate.from('2025-09-25'),
     leads: [
