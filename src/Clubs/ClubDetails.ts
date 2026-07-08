@@ -5,11 +5,12 @@ import { type Html, html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { Name } from '../types/Name.ts'
 import { OrcidId, OrcidIdEquivalence } from '../types/OrcidId.ts'
+import { Slug } from '../types/Slug.ts'
 import type { ClubId } from './ClubId.ts'
 
 export interface Club {
   readonly name: Name
-  readonly slug: Name
+  readonly slug: Slug
   readonly description: {
     readonly language: LanguageCode
     readonly text: Html
@@ -43,7 +44,7 @@ const getClubByCurrentName = (name: Name): Option.Option<ClubId> =>
 const getClubByFormerName = (name: Name): Option.Option<ClubId> =>
   pipe(Record.findFirst(formerNames, Array.contains(name)), Option.andThen(Tuple.getFirst))
 
-export const getClubBySlug = (slug: Name): Option.Option<ClubId> =>
+export const getClubBySlug = (slug: Slug): Option.Option<ClubId> =>
   Array.findFirst(Struct.keys(clubs), id => Equal.equals(clubs[id].slug, slug))
 
 export const isLeadFor = (orcid: OrcidId): ReadonlyArray<ClubId> =>
@@ -71,7 +72,7 @@ export const isAClubLead = (orcid: OrcidId): boolean =>
 const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   '13e21570-0d1a-47f0-b378-b8c20776496a': {
     name: Name('ASAPbio Cancer Biology Crowd'),
-    slug: Name('asapbio-cancer-biology'),
+    slug: Slug('asapbio-cancer-biology'),
     description: {
       language: 'en',
       text: html`
@@ -89,7 +90,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'd3e62606-0367-44b9-8d52-b75e0e7e5ba7': {
     name: Name('ASAPbio Cell Biology Crowd'),
-    slug: Name('asapbio-cell-biology'),
+    slug: Slug('asapbio-cell-biology'),
     description: {
       language: 'en',
       text: html` <p>The ASAPbio Cell Biology Crowd reviews preprints about cell and molecular biology.</p> `,
@@ -104,7 +105,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '2a6fde8a-ca6d-4647-a3ac-8d8fb4ae5f52': {
     name: Name('ASAPbio Immunology Crowd'),
-    slug: Name('asapbio-immunology'),
+    slug: Slug('asapbio-immunology'),
     description: {
       language: 'en',
       text: html` <p>The ASAPbio Immunology Crowd reviews preprints about cellular immunology.</p> `,
@@ -119,7 +120,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '901dba75-ecad-41b8-92b0-1aab56a96e54': {
     name: Name('ASAPbio Meta-Research Crowd'),
-    slug: Name('asapbio-meta-research'),
+    slug: Slug('asapbio-meta-research'),
     description: {
       language: 'en',
       text: html`
@@ -139,7 +140,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '8ee46f04-af8f-49f9-bc1c-1d3e2602672d': {
     name: Name('ASAPbio Microbiology Crowd'),
-    slug: Name('asapbio-microbiology'),
+    slug: Slug('asapbio-microbiology'),
     description: {
       language: 'en',
       text: html`
@@ -156,7 +157,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '3e820d44-fdb3-4cba-aeb6-ac03fb23108e': {
     name: Name('ASAPbio Metabolism Crowd'),
-    slug: Name('asapbio-metabolism'),
+    slug: Slug('asapbio-metabolism'),
     description: {
       language: 'en',
       text: html`
@@ -174,7 +175,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '317d0a13-5a10-44fc-9bcd-fb548e01e9cb': {
     name: Name('ASAPbio Neurobiology Crowd'),
-    slug: Name('asapbio-neurobiology'),
+    slug: Slug('asapbio-neurobiology'),
     description: {
       language: 'en',
       text: html`
@@ -190,7 +191,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '2dfeb178-dc0b-4970-9cdb-36b60250b3c4': {
     name: Name('Biophysics Probing Neuroscience Lab'),
-    slug: Name('bimsb-neuroscience'),
+    slug: Slug('bimsb-neuroscience'),
     description: {
       language: 'en',
       text: html`
@@ -210,7 +211,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '0bb49906-085d-41ad-9787-9355356e624b': {
     name: Name('Bio-Ed Preprint Review Community'),
-    slug: Name('bio-ed'),
+    slug: Slug('bio-ed'),
     description: {
       language: 'en',
       text: html`
@@ -226,7 +227,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '950e0757-d7ec-45b1-abbb-d171a03e5344': {
     name: Name('Open Science Community BioBío (OSCB)'),
-    slug: Name('biobio'),
+    slug: Slug('biobio'),
     description: {
       language: 'en',
       text: html`
@@ -256,7 +257,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '2eba66eb-cdf0-4aae-996d-f42e75e0ad94': {
     name: Name('Biomass and Biocatalysis Group'),
-    slug: Name('biomass-biocatalysis'),
+    slug: Slug('biomass-biocatalysis'),
     description: {
       language: 'en',
       text: html`
@@ -274,7 +275,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '7bff827e-bbaa-4ac9-8607-056643d8e16a': {
     name: Name('BioPeers SLU'),
-    slug: Name('biopeers-slu'),
+    slug: Slug('biopeers-slu'),
     description: {
       language: 'en',
       text: html`
@@ -297,7 +298,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'c8a72b87-cf45-42f0-aa75-a83a0d90eb5f': {
     name: Name('Biophysics Leipzig University'),
-    slug: Name('biophysics-leipzig'),
+    slug: Slug('biophysics-leipzig'),
     description: {
       language: 'en',
       text: html`
@@ -325,7 +326,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'd341790c-1757-4c10-82fe-70acc5f95fa4': {
     name: Name('Computational Biodiversity Science and Services'),
-    slug: Name('bios2'),
+    slug: Slug('bios2'),
     description: {
       language: 'en',
       text: html`
@@ -350,7 +351,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'e977f760-48ba-4541-bb9f-fdcaef4bd05d': {
     name: Name('IU Bloomington Biology'),
-    slug: Name('bloomington-biology'),
+    slug: Slug('bloomington-biology'),
     description: {
       language: 'en',
       text: html`
@@ -367,7 +368,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'b5041f10-289d-4d39-9c25-b4bea5ff3027': {
     name: Name('CARA: Critical Analysis of Research Articles Club'),
-    slug: Name('cara'),
+    slug: Slug('cara'),
     description: {
       language: 'en',
       text: html`
@@ -388,7 +389,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '07f0572c-aaee-4b93-b6ab-8bdc78644991': {
     name: Name('Club Comunidad Iberoamericana de Ciencia Abierta (CIbCA)'),
-    slug: Name('cibca'),
+    slug: Slug('cibca'),
     description: {
       language: 'es',
       text: html`
@@ -420,7 +421,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '490a8fe4-9cda-4e51-bf50-9307cba39997': {
     name: Name('DEVL Ecology & Evolution Club'),
-    slug: Name('devl-ecology-evolution'),
+    slug: Slug('devl-ecology-evolution'),
     description: {
       language: 'en',
       text: html`
@@ -442,7 +443,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'f26cbe5a-fb0a-43e9-9118-03cfa9aa601d': {
     name: Name('eLife Community Ambassadors'),
-    slug: Name('elife-ambassadors'),
+    slug: Slug('elife-ambassadors'),
     description: {
       language: 'en',
       text: html`
@@ -464,7 +465,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'a671af6b-f14a-4b72-b66d-a76b0e8623f7': {
     name: Name('EMERGE, A Matrix for Ethnographic Collaboration and Practice'),
-    slug: Name('emerge'),
+    slug: Slug('emerge'),
     description: {
       language: 'en',
       text: html`
@@ -485,7 +486,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '4dbef4c4-3793-4a32-9837-3fa39a69188a': {
     name: Name('Future of Research Communication and e-Scholarship (FORCE11)'),
-    slug: Name('force11'),
+    slug: Slug('force11'),
     description: {
       language: 'en',
       text: html`
@@ -511,7 +512,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '3701c505-32ea-4176-83b6-05714803a121': {
     name: Name('Etymos Analytica'),
-    slug: Name('etymos-analytica'),
+    slug: Slug('etymos-analytica'),
     description: {
       language: 'en',
       text: html`<p>A research consortium for students of Government Medical college.</p>`,
@@ -522,7 +523,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '206ef17f-c5f3-44d3-acee-ba9b1f8299e9': {
     name: Name('HHMI Transparent and Accountable Peer Review Training Program'),
-    slug: Name('hhmi-training-program'),
+    slug: Slug('hhmi-training-program'),
     description: {
       language: 'en',
       text: html`
@@ -545,7 +546,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '17248b36-7ba3-4fc2-b9c4-1edc10b57463': {
     name: Name('IIB-Mar del Plata Argentina'),
-    slug: Name('iib-mar-del-plata'),
+    slug: Slug('iib-mar-del-plata'),
     description: {
       language: 'es',
       text: html`
@@ -567,7 +568,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '2ff5d1d9-beef-4054-b311-cf0c40946767': {
     name: Name('Intersectional Feminist Club'),
-    slug: Name('intersectional-feminist'),
+    slug: Slug('intersectional-feminist'),
     description: {
       language: 'en',
       text: html`
@@ -591,7 +592,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '23256c4b-ad41-4c1e-a3de-0dd28ca5177f': {
     name: Name('JMIR Publications'),
-    slug: Name('jmir-publications'),
+    slug: Slug('jmir-publications'),
     description: {
       language: 'en',
       text: html`
@@ -631,7 +632,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'caee8a6e-eabc-4bcc-a579-05295a928688': {
     name: Name('Kone Consult Journal Club'),
-    slug: Name('kone-consult'),
+    slug: Slug('kone-consult'),
     description: {
       language: 'en',
       text: html`
@@ -654,7 +655,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '998f32b4-ced9-49f8-8042-ce8fe41e62ec': {
     name: Name('Language Club'),
-    slug: Name('language-club'),
+    slug: Slug('language-club'),
     description: {
       language: 'en',
       text: html`
@@ -677,7 +678,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'a50913a6-5c49-4ab0-8394-661b4224b06f': {
     name: Name('Biology of Marine Invertebrates & Friends'),
-    slug: Name('marine-invertebrates'),
+    slug: Slug('marine-invertebrates'),
     description: {
       language: 'en',
       text: html`
@@ -706,7 +707,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '46ed1601-a895-4703-9661-e06893017c5c': {
     name: Name('MLC Research Review Club'),
-    slug: Name('mlc-research'),
+    slug: Slug('mlc-research'),
     description: {
       language: 'en',
       text: html`
@@ -728,7 +729,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '0cb0b787-fd2c-4325-83fe-0ed28361fcc6': {
     name: Name('Neuroden'),
-    slug: Name('neuroden'),
+    slug: Slug('neuroden'),
     description: {
       language: 'en',
       text: html`
@@ -760,7 +761,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'f5e1bdba-2ccf-435c-9404-ff43f21d2397': {
     name: Name('Neuroscience Student Association at UTD'),
-    slug: Name('nsa-utd'),
+    slug: Slug('nsa-utd'),
     description: {
       language: 'en',
       text: html`
@@ -785,7 +786,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'a7933faf-6568-4884-87a1-483068a57a28': {
     name: Name('Open Box Science'),
-    slug: Name('open-box-science'),
+    slug: Slug('open-box-science'),
     description: {
       language: 'en',
       text: html`
@@ -812,7 +813,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '980658e9-e025-46ff-9cee-f46ff02fc3f8': {
     name: Name('Open Science Community Iraqi (OSCI)'),
-    slug: Name('open-science-community-iraqi'),
+    slug: Slug('open-science-community-iraqi'),
     description: {
       language: 'en',
       text: html`
@@ -835,7 +836,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '3c728f14-d22a-4704-8d16-203984c9b4bb': {
     name: Name('Open Science Community Uruguay (OSCU)'),
-    slug: Name('open-science-community-uruguay'),
+    slug: Slug('open-science-community-uruguay'),
     description: {
       language: 'en',
       text: html`
@@ -856,7 +857,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '25a3af44-1d6c-4605-a22f-97a47d051439': {
     name: Name('Open Scholarship Initiative at Simon Fraser University'),
-    slug: Name('osi-sfu'),
+    slug: Slug('osi-sfu'),
     description: {
       language: 'en',
       text: html`
@@ -879,7 +880,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'd7681876-2aaa-46eb-a7b7-7164e6f3b3ef': {
     name: Name('OxPlants Preprint Club'),
-    slug: Name('oxplants'),
+    slug: Slug('oxplants'),
     description: {
       language: 'en',
       text: html`
@@ -898,7 +899,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'f0c71aca-aa3f-4a64-934e-4013e6811049': {
     name: Name('PhD Program in Biomedical Sciences, University of Padua'),
-    slug: Name('padua-biomedical-sciences'),
+    slug: Slug('padua-biomedical-sciences'),
     description: {
       language: 'en',
       text: html`
@@ -920,7 +921,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '8b34f6be-b086-4e2c-878a-5c3b74218448': {
     name: Name('Parasitology and Infectious Diseases'),
-    slug: Name('parasitology-infectious-diseases'),
+    slug: Slug('parasitology-infectious-diseases'),
     description: {
       language: 'en',
       text: html`
@@ -946,7 +947,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '098981c2-aa2a-44ba-ba75-83e1b0b7fcb1': {
     name: Name('Physical Education Preprint & Review Club'),
-    slug: Name('physical-education'),
+    slug: Slug('physical-education'),
     description: {
       language: 'en',
       text: html`
@@ -974,7 +975,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'b18ebd46-b563-49fa-8dc0-033d8a8c6074': {
     name: Name('Plant Biotechnology Club'),
-    slug: Name('plant-biotechnology'),
+    slug: Slug('plant-biotechnology'),
     description: {
       language: 'en',
       text: html`
@@ -990,7 +991,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'b5f170f1-59e2-4f2b-8019-59aff327e9e0': {
     name: Name('Plant Pathology & Genomics Preprint Club'),
-    slug: Name('plant-pathology-genomics'),
+    slug: Slug('plant-pathology-genomics'),
     description: {
       language: 'en',
       text: html`
@@ -1009,7 +1010,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '4bfded37-5773-4cc0-a073-2ce05cdb939c': {
     name: Name('Proteostasis and Cancer Team INSERM U1242'),
-    slug: Name('prosac'),
+    slug: Slug('prosac'),
     description: {
       language: 'en',
       text: html`
@@ -1032,7 +1033,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'c485e5e6-3d53-4700-9734-e4ead74ee76d': {
     name: Name('Review & Curate Network (RCN)'),
-    slug: Name('review-curate-network'),
+    slug: Slug('review-curate-network'),
     description: {
       language: 'en',
       text: html`
@@ -1058,7 +1059,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '4f8076fc-2219-49fc-be5f-6682ca7cc009': {
     name: Name('Reviewing Dental Articles Club'),
-    slug: Name('reviewing-dental-articles-club'),
+    slug: Slug('reviewing-dental-articles-club'),
     description: {
       language: 'en',
       text: html`
@@ -1079,7 +1080,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '3f07d8f6-4fbf-47e6-849c-2c157b6535b6': {
     name: Name('RR\\ID Student Reviewer Club'),
-    slug: Name('rr-id-student-reviewer-club'),
+    slug: Slug('rr-id-student-reviewer-club'),
     description: {
       language: 'en',
       text: html`
@@ -1104,7 +1105,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'ed1dca96-74c0-46ff-b29f-c900fd543d6d': {
     name: Name('SFB1638 Membrane Remodelling'),
-    slug: Name('sfb1638'),
+    slug: Slug('sfb1638'),
     description: {
       language: 'en',
       text: html`
@@ -1127,7 +1128,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'e9a18a97-f895-4872-a75f-78823b5fc99a': {
     name: Name('SG Biofilms and Microbiome Club'),
-    slug: Name('sg-biofilms-microbiome'),
+    slug: Slug('sg-biofilms-microbiome'),
     description: {
       language: 'en',
       text: html`
@@ -1144,7 +1145,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '292651fd-e6d6-45e4-a46a-42912396a269': {
     name: Name('SNL Semantics'),
-    slug: Name('snl-semantics'),
+    slug: Slug('snl-semantics'),
     description: {
       language: 'en',
       text: html`
@@ -1170,7 +1171,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'd90a3f87-607e-4da0-9c50-6de6992e118d': {
     name: Name('SUN Bioinformatics Journal Club'),
-    slug: Name('sun-bioinformatics'),
+    slug: Slug('sun-bioinformatics'),
     description: {
       language: 'en',
       text: html`
@@ -1193,7 +1194,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '2c5334ae-e361-48c3-bcca-6810c2f33cb4': {
     name: Name('University of Surrey Microbiology Journal Club'),
-    slug: Name('surrey-microbiology'),
+    slug: Slug('surrey-microbiology'),
     description: {
       language: 'en',
       text: html`
@@ -1212,7 +1213,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'e1919a60-4875-4925-83b2-6b381543ed07': {
     name: Name('Translate Science'),
-    slug: Name('translate-science'),
+    slug: Slug('translate-science'),
     description: {
       language: 'en',
       text: html`
@@ -1232,7 +1233,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   'f0a5bcaf-8016-4c2e-92dd-b3a359329ead': {
     name: Name('TSL Preprint Club'),
-    slug: Name('tsl-preprint-club'),
+    slug: Slug('tsl-preprint-club'),
     description: {
       language: 'en',
       text: html`
@@ -1251,7 +1252,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   },
   '1013ab22-0917-4f34-adcb-7c8cf0eba463': {
     name: Name('ZMBP Preprint Club'),
-    slug: Name('zmbp-preprint-club'),
+    slug: Slug('zmbp-preprint-club'),
     description: {
       language: 'en',
       text: html`

@@ -11,6 +11,7 @@ import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { Slug } from '../../src/types/Slug.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 import { createPage } from '../../src/WebApp/ClubProfilePage/ClubProfilePage.ts'
 import { expect, test } from '../base.ts'
@@ -38,7 +39,7 @@ test('content looks right when empty', async ({ showPage }) => {
 
 const club1 = {
   name: Name('ASAPbio Cancer Biology Crowd'),
-  slug: Name('asapbio-cancer-biology'),
+  slug: Slug('asapbio-cancer-biology'),
   description: {
     language: 'en',
     text: html`
@@ -62,7 +63,7 @@ const club1 = {
 
 const club2 = {
   name: Name('ASAPbio Cancer Biology Crowd'),
-  slug: Name('asapbio-cancer-biology'),
+  slug: Slug('asapbio-cancer-biology'),
   description: {
     language: 'en',
     text: html`

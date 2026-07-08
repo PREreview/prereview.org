@@ -14,10 +14,10 @@ import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/in
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import { FieldIdSchema, isFieldId } from './types/field.ts'
 import { Iso639, ProfileId, Uuid } from './types/index.ts'
-import { NameSchema } from './types/Name.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { PseudonymC } from './types/Pseudonym.ts'
+import { SlugSchema } from './types/Slug.ts'
 import { UuidC } from './types/Uuid.ts'
 
 export interface Route<A extends { readonly [K in keyof A]: unknown }> {
@@ -139,7 +139,7 @@ const DatasetIdSchema = Schema.transform(
   },
 )
 
-const ClubIdFromSlugSchema = Schema.transformOrFail(NameSchema, Club.ClubIdSchema, {
+const ClubIdFromSlugSchema = Schema.transformOrFail(SlugSchema, Club.ClubIdSchema, {
   strict: true,
   decode: (slug, _, ast) =>
     ParseResult.fromOption(Club.getClubBySlug(slug), () => new ParseResult.Type(ast, slug, 'Unknown club slug')),

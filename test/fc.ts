@@ -130,6 +130,7 @@ import { type Name, NameSchema } from '../src/types/Name.ts'
 import { type NonEmptyString, NonEmptyStringSchema, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, OrcidIdSchema } from '../src/types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
+import { type Slug, SlugSchema } from '../src/types/Slug.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
 import { Uuid } from '../src/types/Uuid.ts'
@@ -1512,6 +1513,8 @@ export const nonEmptyTrimmedString = (): fc.Arbitrary<NonEmptyString> =>
     .filter(isNonEmptyString)
 
 export const name = (): fc.Arbitrary<Name> => Arbitrary.make(NameSchema)
+
+export const slug = (): fc.Arbitrary<Slug> => Arbitrary.make(SlugSchema)
 
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
   fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)

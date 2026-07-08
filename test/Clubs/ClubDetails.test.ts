@@ -3,6 +3,7 @@ import { Option } from 'effect'
 import * as _ from '../../src/Clubs/ClubDetails.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Slug } from '../../src/types/Slug.ts'
 import * as fc from '../fc.ts'
 
 describe('getClubByName', () => {
@@ -26,16 +27,16 @@ describe('getClubByName', () => {
 
 describe('getClubBySlug', () => {
   test.each([
-    [Name('asapbio-cancer-biology'), '13e21570-0d1a-47f0-b378-b8c20776496a'],
-    [Name('asapbio-neurobiology'), '317d0a13-5a10-44fc-9bcd-fb548e01e9cb'],
-    [Name('hhmi-training-program'), '206ef17f-c5f3-44d3-acee-ba9b1f8299e9'],
+    [Slug('asapbio-cancer-biology'), '13e21570-0d1a-47f0-b378-b8c20776496a'],
+    [Slug('asapbio-neurobiology'), '317d0a13-5a10-44fc-9bcd-fb548e01e9cb'],
+    [Slug('hhmi-training-program'), '206ef17f-c5f3-44d3-acee-ba9b1f8299e9'],
   ])('with a club slug (%s)', (slug, expected) => {
     const actual = _.getClubBySlug(slug)
 
     expect(actual).toStrictEqual(Option.some(expected))
   })
 
-  it.prop('with something else', [fc.name()], ([slug]) => {
+  it.prop('with something else', [fc.slug()], ([slug]) => {
     const actual = _.getClubBySlug(slug)
 
     expect(actual).toStrictEqual(Option.none())
