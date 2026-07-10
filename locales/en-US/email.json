@@ -29,6 +29,10 @@
   "beListedAsAuthorButton": {
     "message": "Be listed as an author"
   },
+  "chooseNotToBeListedIgnoring": {
+    "message": "You can also choose not to be listed by ignoring this email.",
+    "description": "Text in the email titled “Be listed as a PREreview author” that tells the recipient they can choose not to be listed."
+  },
   "chooseNotToBeListedGoingTo": {
     "message": "You can also choose not to be listed by ignoring this email or going to:"
   },

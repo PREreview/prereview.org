@@ -3,7 +3,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { type Html, html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
-import { DefaultLocale } from '../../../locales/index.ts'
+import { DefaultLocale, translate } from '../../../locales/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
 import { EmailAddress, type Name, type Uuid } from '../../../types/index.ts'
@@ -24,13 +24,15 @@ export const CreateEmail: (details: {
 }) {
   const locale = DefaultLocale
 
+  const t = translate(locale, 'email')
+
   const inviteUrl = yield* forRoute(Routes.AuthorInviteStartNow, { invitationId })
   const homePage = yield* forRoute(Routes.HomePage)
 
   return {
     from: { address: EmailAddress.EmailAddress('help@prereview.org'), name: 'PREreview' },
     to: { address: invitee.emailAddress, name: invitee.name },
-    subject: 'Be listed as a PREreview author',
+    subject: plainText(t('beListedAsAuthor')()).toString(),
     html: yield* mjmlToHtml(html`
       <mjml ${languageAttributesFor(locale)}>
         <mj-head>
@@ -41,41 +43,46 @@ export const CreateEmail: (details: {
         <mj-body>
           <mj-section>
             <mj-column>
-              <mj-text>Hi ${invitee.name},</mj-text>
-              <mj-text>
-                Thank you for contributing to a recent review of “<span ${languageAttributesFor(subject.language)}
-                  >${subject.title}</span
-                >” published on <a href="${homePage.href}">PREreview</a>!
+              <mj-text>${t('hiName')({ name: invitee.name })}</mj-text>
+              <mj-text
+                >${t('thanksContributingReview')({
+                  preprint: html`<span ${languageAttributesFor(subject.language)}>${subject.title}</span>`,
+                  prereview: html`<a href="${homePage.href}">PREreview</a>`,
+                })}
               </mj-text>
-              <mj-text>${inviter} has invited you to appear as an author on the PREreview.</mj-text>
-              <mj-button href="${inviteUrl.href}">Be listed as an author</mj-button>
-              <mj-text>You can also choose not to be listed by ignoring this email.</mj-text>
+              <mj-text>${t('authorHasInvitedYou')({ author: inviter })}</mj-text>
+              <mj-button href="${inviteUrl.href}">${t('beListedAsAuthorButton')()}</mj-button>
+              <mj-text>${t('chooseNotToBeListedIgnoring')()}</mj-text>
               <mj-text>
-                If you have any questions, please let us know at
-                <a href="mailto:help@prereview.org">help@prereview.org</a>.
+                ${t('haveAnyQuestions')({
+                  emailAddress: html`<a href="mailto:help@prereview.org">help@prereview.org</a>`,
+                })}
               </mj-text>
-              <mj-text>All the best,<br />PREreview</mj-text>
+              <mj-text>${t('allTheBest')()}<br />PREreview</mj-text>
             </mj-column>
           </mj-section>
         </mj-body>
       </mjml>
     `),
     text: plainText`
-Hi ${invitee.name},
+${t('hiName')({ name: invitee.name })}
 
-Thank you for contributing to a recent review of “${subject.title}” published on PREreview!
+${t('thanksContributingReview')({
+  preprint: subject.title,
+  prereview: 'PREreview',
+})}
 
-${inviter} has invited you to appear as an author on the PREreview.
+${t('authorHasInvitedYou')({ author: inviter })}
 
-You can be listed by going to:
+${t('beListedGoingTo')()}
 
   ${inviteUrl.href}
 
-You can also choose not to be listed by ignoring this email.
+${t('chooseNotToBeListedIgnoring')()}
 
-If you have any questions, please let us know at help@prereview.org.
+${t('haveAnyQuestions')({ emailAddress: 'help@prereview.org' })}
 
-All the best,
+${t('allTheBest')()}
 PREreview
 `
       .toString()
