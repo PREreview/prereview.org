@@ -19,7 +19,17 @@ const DiscoverLocales = Effect.gen(function* () {
 })
 
 const DetermineLocaleForLanguages = Effect.gen(function* () {
-  const languages = { en: 'en-US', es: 'es-419', pt: 'pt-BR' }
+  const locales = yield* Locales
+
+  const languages = Array.reduce(locales, Record.empty<string, string>(), (languages, locale) => {
+    if (locale === crowdinInContextLocale) {
+      return languages
+    }
+
+    const language = new Intl.Locale(locale).language
+
+    return { ...languages, [language]: locale }
+  })
 
   yield* Effect.logDebug('Determined locale for languages', { languages })
 
