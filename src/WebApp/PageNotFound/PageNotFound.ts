@@ -3,23 +3,20 @@ import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export const createPageNotFound = (locale: SupportedLocale): PageResponse =>
-  PageResponse({
+export function createPageNotFound(locale: SupportedLocale): PageResponse {
+  const t = translate(locale, 'page-not-found')
+
+  return PageResponse({
     status: StatusCodes.NotFound,
-    title: plainText(translate(locale, 'page-not-found', 'pageNotFoundTitle')()),
+    title: plainText(t('pageNotFoundTitle')()),
     main: html`
-      <h1>${translate(locale, 'page-not-found', 'pageNotFoundTitle')()}</h1>
+      <h1>${t('pageNotFoundTitle')()}</h1>
 
-      <p>${translate(locale, 'page-not-found', 'checkCorrect')()}</p>
+      <p>${t('checkCorrect')()}</p>
 
-      <p>${translate(locale, 'page-not-found', 'checkEntire')()}</p>
+      <p>${t('checkEntire')()}</p>
 
-      <p>
-        ${translate(
-          locale,
-          'page-not-found',
-          'contactUs',
-        )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}
-      </p>
+      <p>${t('contactUs')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}</p>
     `,
   })
+}
