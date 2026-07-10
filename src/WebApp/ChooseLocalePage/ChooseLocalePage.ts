@@ -1,7 +1,7 @@
 import { Array, type HashSet, pipe, String, Tuple } from 'effect'
 import { html, plainText } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
-import { DefaultLocale, type SupportedLocale, translate, type UserSelectableLocale } from '../../locales/index.ts'
+import { type SupportedLocale, translate, type UserSelectableLocale } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 
@@ -35,7 +35,7 @@ export const createChooseLocalePage = ({
               ),
               Array.sortWith(
                 ([, b]) => b,
-                (a, b) => String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a),
               ),
               Array.map(
                 ([code, name]) => html`

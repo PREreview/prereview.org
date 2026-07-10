@@ -2,7 +2,7 @@ import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effe
 import { format } from 'fp-ts-routing'
 import { type Html, type PlainText, html } from '../html.ts'
 import { languageAttributesFor } from '../Locales.ts'
-import { DefaultLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
+import { type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as Routes from '../routes.ts'
 import type { UserOnboarding } from '../user-onboarding.ts'
@@ -395,8 +395,7 @@ export const page = ({
                                     ),
                                     Array.sortWith(
                                       ([, b]) => b,
-                                      (a, b) =>
-                                        String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                      (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a),
                                     ),
                                     Array.map(
                                       ([code, name]) => html`
@@ -460,8 +459,7 @@ export const page = ({
                                 ),
                                 Array.sortWith(
                                   ([, b]) => b,
-                                  (a, b) =>
-                                    String.localeCompare(b, [locale, DefaultLocale], { sensitivity: 'base' })(a),
+                                  (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a),
                                 ),
                                 Array.map(
                                   ([code, name]) => html`
