@@ -7,6 +7,7 @@ import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
 import { ChampionsProgramPage } from '../ChampionsProgramPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../ClubProfilePage/index.ts'
+import { ClubsData } from '../clubs-data/index.ts'
 import { ClubsPage } from '../ClubsPage.ts'
 import { CodeOfConductPage } from '../CodeOfConductPage.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
@@ -529,9 +530,10 @@ const AuthRouter = HttpRouter.fromIterable([
   ),
 ])
 
-const DataRouter = HttpRouter.fromIterable([HttpRouter.makeRoute('GET', Routes.RequestsData, RequestsData)]).pipe(
-  HttpRouter.use(HttpMiddleware.requireScietyListToken),
-)
+const DataRouter = HttpRouter.fromIterable([
+  HttpRouter.makeRoute('GET', Routes.ClubsData, ClubsData),
+  HttpRouter.makeRoute('GET', Routes.RequestsData, RequestsData),
+]).pipe(HttpRouter.use(HttpMiddleware.requireScietyListToken))
 
 export const Router = pipe(
   HttpRouter.fromIterable([

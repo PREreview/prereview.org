@@ -80,6 +80,7 @@ export const Resources = '/resources'
 export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
+export const ClubsData = '/clubs-data'
 export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
 export const ChangeRequestedReviewNotifications = '/my-details/change-requested-review-notifications'
@@ -901,8 +902,6 @@ export const authorInvitePublishedMatch = pipe(
 )
 
 export const usersDataMatch = pipe(P.lit('users-data'), P.andThen(P.end))
-
-export const clubsDataMatch = pipe(P.lit('clubs-data'), P.andThen(P.end))
 
 export const reviewsDataMatch = pipe(P.lit('reviews-data'), P.andThen(P.end))
 

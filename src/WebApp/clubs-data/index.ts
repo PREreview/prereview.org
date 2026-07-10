@@ -1,10 +1,10 @@
+import { HttpServerResponse } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Function, pipe, Schema } from 'effect'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { Array, Effect, pipe, Schema } from 'effect'
 import { type ClubId, ClubIdSchema, getClubAddedDate, getClubName } from '../../Clubs/index.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
 import { Name } from '../../types/index.ts'
 import { PlainDateSchema } from '../../types/Temporal.ts'
-import type { ScietyListEnv } from '../sciety-list/index.ts'
 
 interface Club {
   id: ClubId
@@ -30,14 +30,11 @@ const ClubSchema = Schema.Struct({
 
 const ClubsSchema = Schema.Array(ClubSchema)
 
-const isAllowed = (authorizationHeader: string) =>
-  pipe(
-    RTE.ask<ScietyListEnv>(),
-    RTE.chainEitherK(env =>
-      Schema.decodeUnknownEither(Schema.TemplateLiteralParser('Bearer ', env.scietyListToken))(authorizationHeader),
-    ),
-    RTE.bimap(() => 'forbidden' as const, Function.constVoid),
-  )
-
-export const clubsData = (authorizationHeader: string): RTE.ReaderTaskEither<ScietyListEnv, 'forbidden', string> =>
-  pipe(authorizationHeader, isAllowed, RTE.map(getClubs), RTE.map(Schema.encodeSync(Schema.parseJson(ClubsSchema))))
+export const ClubsData = pipe(
+  getClubs(),
+  HttpServerResponse.schemaJson(ClubsSchema),
+  Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create clubs data list'), { error })),
+  Effect.catchTags({
+    HttpBodyError: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+  }),
+)

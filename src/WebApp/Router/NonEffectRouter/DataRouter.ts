@@ -11,7 +11,6 @@ import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import { clubsData } from '../../clubs-data/index.ts'
 import { reviewsData, type GetPrereviewsEnv } from '../../reviews-data/index.ts'
 import { scietyList, type ScietyListEnv } from '../../sciety-list/index.ts'
 import { usersData, type GetUsersEnv } from '../../users-data/index.ts'
@@ -19,10 +18,6 @@ import type { Env } from './index.ts'
 
 export const DataRouter = pipe(
   [
-    pipe(
-      Routes.clubsDataMatch.parser,
-      P.map(() => clubsData),
-    ),
     pipe(
       Routes.usersDataMatch.parser,
       P.map(() => usersData),
