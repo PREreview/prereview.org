@@ -3,7 +3,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { type Html, html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
-import { DefaultLocale, translate } from '../../../locales/index.ts'
+import { DefaultLocale, getLocaleForLanguage, isUserSelectableLanguage, translate } from '../../../locales/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
 import { EmailAddress, type Name, type Uuid } from '../../../types/index.ts'
@@ -22,7 +22,7 @@ export const CreateEmail: (details: {
   invitee,
   subject,
 }) {
-  const locale = DefaultLocale
+  const locale = isUserSelectableLanguage(subject.language) ? getLocaleForLanguage(subject.language) : DefaultLocale
 
   const t = translate(locale, 'email')
 

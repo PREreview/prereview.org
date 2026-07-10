@@ -1,4 +1,5 @@
 import { HashSet, type Option, Record } from 'effect'
+import type { LanguageCode } from 'iso-639-1'
 {{#each moduleNames}}
 import * as {{@key}} from './{{this}}/index.ts'
 {{/each}}
@@ -24,6 +25,9 @@ export const isSupportedLocale = (locale: string): locale is SupportedLocale =>
 
 export const isUserSelectableLocale = (locale: string): locale is UserSelectableLocale =>
   isSupportedLocale(locale) && locale !== '{{crowdinInContextLocale}}'
+
+export const isUserSelectableLanguage = (language: LanguageCode): language is UserSelectableLanguage =>
+  [{{#each languages}}'{{@key}}', {{/each}}].includes(language)
 
 export const getLocaleForLanguage = (language: UserSelectableLanguage): SupportedLocale => ({
 {{#each languages}}
