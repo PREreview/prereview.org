@@ -6,7 +6,6 @@ import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
 const crowdinInContextLocale = 'lol-US'
-const languages = { en: 'en-US', es: 'es-419', pt: 'pt-BR' }
 const assetsModules = ['html-editor', 'single-use-form']
 
 const DiscoverLocales = Effect.gen(function* () {
@@ -17,6 +16,14 @@ const DiscoverLocales = Effect.gen(function* () {
   yield* Effect.logDebug('Discovered locales', { locales })
 
   return locales
+})
+
+const DetermineLocaleForLanguages = Effect.gen(function* () {
+  const languages = { en: 'en-US', es: 'es-419', pt: 'pt-BR' }
+
+  yield* Effect.logDebug('Determined locale for languages', { languages })
+
+  return languages
 })
 
 const DiscoverSrcModules = Effect.gen(function* () {
@@ -36,6 +43,10 @@ const DiscoverSrcModules = Effect.gen(function* () {
 
 class Locales extends Effect.Service<Locales>()('Locales', {
   effect: DiscoverLocales,
+}) {}
+
+class Languages extends Effect.Service<Languages>()('Languages', {
+  effect: DetermineLocaleForLanguages,
 }) {}
 
 class SrcModules extends Effect.Service<SrcModules>()('SrcModules', {
@@ -155,6 +166,7 @@ const BuildSrcModule = Effect.fnUntraced(function* ({ module, target }: { module
 const BuildAssets = Effect.fnUntraced(function* (target: string) {
   const fileSystem = yield* FileSystem.FileSystem
   const locales = yield* Locales
+  const languages = yield* Languages
 
   yield* Effect.logDebug(`Compiling ${target}`)
 
@@ -176,6 +188,7 @@ const BuildAssets = Effect.fnUntraced(function* (target: string) {
 const BuildSrc = Effect.fnUntraced(function* (target: string) {
   const fileSystem = yield* FileSystem.FileSystem
   const locales = yield* Locales
+  const languages = yield* Languages
   const modules = yield* SrcModules.pipe(Effect.andThen(Array.filter(module => !assetsModules.includes(module))))
 
   yield* Effect.logDebug('Compile src')
@@ -285,6 +298,11 @@ const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency:
 )
 
 program.pipe(
-  Effect.provide(Layer.mergeAll(Locales.Default, SrcModules.Default).pipe(Layer.provideMerge(NodeContext.layer))),
+  Effect.provide(
+    Languages.Default.pipe(
+      Layer.provideMerge(Layer.mergeAll(Locales.Default, SrcModules.Default)),
+      Layer.provideMerge(NodeContext.layer),
+    ),
+  ),
   NodeRuntime.runMain,
 )
