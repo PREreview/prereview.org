@@ -3,19 +3,16 @@ import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export const createNoPermissionPage = (locale: SupportedLocale): PageResponse =>
-  PageResponse({
-    status: StatusCodes.Forbidden,
-    title: plainText(translate(locale, 'no-permission-page', 'noPermissionTitle')()),
-    main: html`
-      <h1>${translate(locale, 'no-permission-page', 'noPermissionTitle')()}</h1>
+export const createNoPermissionPage = (locale: SupportedLocale): PageResponse => {
+  const t = translate(locale, 'no-permission-page')
 
-      <p>
-        ${translate(
-          locale,
-          'no-permission-page',
-          'shouldHaveAccess',
-        )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}
-      </p>
+  return PageResponse({
+    status: StatusCodes.Forbidden,
+    title: plainText(t('noPermissionTitle')()),
+    main: html`
+      <h1>${t('noPermissionTitle')()}</h1>
+
+      <p>${t('shouldHaveAccess')({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>` })}</p>
     `,
   })
+}
