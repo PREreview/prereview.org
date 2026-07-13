@@ -570,6 +570,9 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
           The FORCE11 PREreview Club is part of the FORCE11 Community Engagement Committee, providing an ongoing way for
           people to become and stay engaged with FORCE11.
         </p>
+        <p>
+          Our club meets at 5PM UTC on each Wednesday of the third full week of the month in odd numbered months.
+        </p>
       `,
     },
     added: Temporal.PlainDate.from('2025-09-12'),
