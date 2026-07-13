@@ -69,6 +69,7 @@ export const AddToAClubSubmission: ({
     const locale = yield* Locale
     const user = yield* LoggedInUser
     const preprints = yield* Preprints
+    const preprintReviews = yield* PreprintReviews
 
     if (!featureFlags.canClubLeadsAddReviewsToClubs) {
       return yield* PageNotFound
@@ -85,14 +86,30 @@ export const AddToAClubSubmission: ({
     const form = AddToAClubForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fnUntraced(function* (form: AddToAClubForm.CompletedForm) {
+        if (form.addToClub === 'not-a-club-review') {
+          yield* preprintReviews.markReviewAsNotInAClub({ preprintId: preprint.id, orcidId: user.orcid })
+        } else {
+          yield* preprintReviews.addReviewToAClub({
+            preprintId: preprint.id,
+            orcidId: user.orcid,
+            clubId: form.addToClub,
+          })
+        }
+
+        return RedirectResponse({ location: format(Routes.writeReviewPublishMatch.formatter, { id: preprint.id }) })
+      }),
       InvalidForm: Effect.fnUntraced(function* (form: AddToAClubForm.InvalidForm) {
         return yield* Effect.succeed(renderAddToAClubPage({ clubs, form, locale, preprint }))
       }),
     })
   },
-  Effect.catchTags({
-    PreprintIsNotFound: () => PageNotFound,
-    PreprintIsUnavailable: () => HavingProblemsPage,
-  }),
+  (result, { preprintId }) =>
+    Effect.catchTags(result, {
+      PreprintIsNotFound: () => PageNotFound,
+      PreprintIsUnavailable: () => HavingProblemsPage,
+      PreprintReviewNotFound: () =>
+        Effect.succeed(RedirectResponse({ location: format(Routes.writeReviewMatch.formatter, { id: preprintId }) })),
+      UnableToHandleCommand: () => HavingProblemsPage,
+    }),
 )
