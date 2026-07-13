@@ -8,6 +8,7 @@ import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
+import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 
 export interface RapidPrereview {
@@ -35,6 +36,7 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
       Either.Either.Left<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
     >
     addReviewToAClub: ReturnType<typeof AddReviewToAClub>
+    markReviewAsNotInAClub: ReturnType<typeof MarkReviewAsNotInAClub>
   }
 >() {}
 
@@ -80,6 +82,7 @@ export const layer = Layer.effect(
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
       checkIfUserCanAddToAClub: CheckIfUserCanAddToAClub.CheckIfUserCanAddToAClub(formStore),
       addReviewToAClub: AddReviewToAClub(formStore),
+      markReviewAsNotInAClub: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
     }
   }),
 )
