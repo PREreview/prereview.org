@@ -4,6 +4,7 @@ import { KeyvStores } from '../keyv.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
+import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
@@ -33,6 +34,7 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
       Either.Either.Right<CheckIfUserCanAddToAClub.Result>,
       Either.Either.Left<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
     >
+    addReviewToAClub: ReturnType<typeof AddReviewToAClub>
   }
 >() {}
 
@@ -77,6 +79,7 @@ export const layer = Layer.effect(
       ),
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
       checkIfUserCanAddToAClub: CheckIfUserCanAddToAClub.CheckIfUserCanAddToAClub(formStore),
+      addReviewToAClub: AddReviewToAClub(formStore),
     }
   }),
 )
