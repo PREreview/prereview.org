@@ -1,4 +1,4 @@
-import { Schema } from 'effect'
+import { Data, Schema } from 'effect'
 
 export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>()(
   'FailedToNotifyCommunitySlack',
@@ -14,3 +14,5 @@ export class FailedToNotifyReviewRequesters extends Schema.TaggedError<FailedToN
   'FailedToNotifyReviewRequesters',
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
+
+export class PreprintReviewNotFound extends Data.TaggedError('PreprintReviewNotFound')<{ cause?: unknown }> {}

@@ -1,8 +1,9 @@
-import { Array, Context, Effect, Layer, pipe } from 'effect'
+import { Array, Context, Effect, type Either, Layer, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
+import type * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
@@ -25,6 +26,12 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
       typeof RecordEmailSentToNotifyPrereviewerOfAPrereview
     >
     hasAPrereviewerBeenNotifiedOfAReview: Queries.FromOnDemandQuery<typeof HasAPrereviewerBeenNotifiedOfAReview>
+    checkIfUserCanAddToAClub: (
+      input: CheckIfUserCanAddToAClub.Input,
+    ) => Effect.Effect<
+      Either.Either<CheckIfUserCanAddToAClub.Result>,
+      Either.Either.Left<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
+    >
   }
 >() {}
 
@@ -32,6 +39,7 @@ export const {
   getRapidPrereviewsForAPreprint,
   recordEmailSentToNotifyPrereviewerOfAPrereview,
   hasAPrereviewerBeenNotifiedOfAReview,
+  checkIfUserCanAddToAClub,
 } = Effect.serviceFunctions(PreprintReviews)
 
 export const layer = Layer.effect(
@@ -65,6 +73,7 @@ export const layer = Layer.effect(
         RecordEmailSentToNotifyPrereviewerOfAPrereview,
       ),
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
+      checkIfUserCanAddToAClub: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
     }
   }),
 )
