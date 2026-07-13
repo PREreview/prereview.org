@@ -1,4 +1,4 @@
-import { Data, type Either } from 'effect'
+import { Data, type Either, Option } from 'effect'
 import type { ClubId } from '../../../Clubs/index.ts'
 
 export type AddToAClubForm = EmptyForm | InvalidForm | CompletedForm
@@ -14,3 +14,8 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   addToClub: ClubId | 'not-a-club-review'
 }> {}
+
+export const fromChoice: (choice: Option.Option<ClubId | null>) => AddToAClubForm = Option.match({
+  onNone: () => new EmptyForm(),
+  onSome: choice => new CompletedForm({ addToClub: choice ?? 'not-a-club-review' }),
+})
