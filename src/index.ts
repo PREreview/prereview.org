@@ -115,6 +115,7 @@ pipe(
             canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
         ),
       ),
+      canClubLeadsAddReviewsToClubs: Config.withDefault(Config.boolean('CAN_CLUB_LEADS_ADD_REVIEWS_TO_CLUBS'), false),
       canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
       sendCoarNotifyMessages: Config.withDefault(
         Config.literal(true, false, 'sandbox')('SEND_COAR_NOTIFY_MESSAGES'),
