@@ -7,7 +7,7 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type Keyv from 'keyv'
 import { P, match } from 'ts-pattern'
-import { ClubIdSchema } from '../../Clubs/ClubId.ts'
+import { ClubIdSchema } from '../../Clubs/index.ts'
 import { RawHtmlC } from '../../html.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import {
