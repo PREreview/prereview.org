@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Equal, flow, Option, pipe, Record, Struct, Tuple } from 'effect'
+import { Array, Equal, flow, Option, pipe, type Record, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { type Html, html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
@@ -13,6 +13,7 @@ export interface Club {
     readonly language: LanguageCode
     readonly text: Name
   }
+  readonly formerNames?: Array.NonEmptyReadonlyArray<Name>
   readonly slug: Slug
   readonly description: {
     readonly language: LanguageCode
@@ -30,11 +31,10 @@ export const getClubName = (id: ClubId) => clubs[id].name
 
 export const getClubSlug = (id: ClubId) => clubs[id].slug
 
-export const getClubNameAndFormerNames = (id: ClubId): Array.NonEmptyReadonlyArray<string> =>
-  pipe(
-    Array.of(clubs[id].name.text),
-    Array.appendAll(Option.getOrElse(Record.get(formerNames, id as never), Array.empty)),
-  )
+export const getClubNameAndFormerNames = (id: ClubId): Array.NonEmptyReadonlyArray<Name> => [
+  clubs[id].name.text,
+  ...(clubs[id].formerNames ?? []),
+]
 
 export const getClubAddedDate = (id: ClubId) => clubs[id].added
 
@@ -48,7 +48,10 @@ const getClubByCurrentName = (name: Name): Option.Option<ClubId> =>
   )
 
 const getClubByFormerName = (name: Name): Option.Option<ClubId> =>
-  pipe(Record.findFirst(formerNames, Array.contains(name)), Option.andThen(Tuple.getFirst))
+  pipe(
+    Struct.keys(clubs),
+    Array.findFirst(id => Array.contains(clubs[id].formerNames ?? [], name)),
+  )
 
 export const getClubBySlug = (slug: Slug): Option.Option<ClubId> =>
   Array.findFirst(Struct.keys(clubs), id => Equal.equals(clubs[id].slug, slug))
@@ -597,6 +600,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       language: 'en',
       text: Name('HHMI Transparent and Accountable Peer Review Training Program'),
     },
+    formerNames: [Name('HHMI Transparent and Accountable Peer Review Training Pilot')],
     slug: Slug('hhmi-training-program'),
     description: {
       language: 'en',
@@ -1439,7 +1443,3 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     contact: EmailAddress('mauricio.contreras@zmbp.uni-tuebingen.de'),
   },
 }
-
-const formerNames = {
-  '206ef17f-c5f3-44d3-acee-ba9b1f8299e9': [Name('HHMI Transparent and Accountable Peer Review Training Pilot')],
-} satisfies Partial<Record.ReadonlyRecord<ClubId, Array.NonEmptyReadonlyArray<Name>>>
