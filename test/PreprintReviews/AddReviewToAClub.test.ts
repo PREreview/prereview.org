@@ -20,7 +20,7 @@ const preprintWithReviewClub = new BiorxivPreprintId({ value: Doi('10.1101/with-
 const clubId = '13e21570-0d1a-47f0-b378-b8c20776496a' satisfies ClubId
 const differentClubId = '980658e9-e025-46ff-9cee-f46ff02fc3f8' satisfies ClubId
 
-it.fails.effect.each<[string, _.Input, Either.Either<void, _.Error>, ClubId?]>([
+it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ClubId?]>([
   ['no review', { orcidId, preprintId: preprintWithNoReview, clubId }, Either.left(new PreprintReviewNotFound({}))],
   [
     'different ORCID iD',
