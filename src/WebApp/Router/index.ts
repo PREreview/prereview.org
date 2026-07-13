@@ -34,6 +34,7 @@ import { RequestsData } from '../RequestsData.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
+import * as ReviewAPreprintFlow from '../ReviewAPreprintFlow/index.ts'
 import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
 import { RobotsTxt } from '../RobotsTxt.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
@@ -139,6 +140,19 @@ const RequestAReviewFlowRouter = HttpRouter.fromIterable([
   MakeRoute('POST', Routes.RequestAReviewCheckYourRequest, RequestAReviewFlow.CheckYourRequestSubmission),
   MakeRoute('GET', Routes.RequestAReviewPublished, RequestAReviewFlow.PublishedPage),
 ])
+
+const ReviewAPreprintFlowRouter = HttpRouter.fromIterable([
+  MakeRoute('GET', Routes.ReviewAPreprintAddToAClub, ReviewAPreprintFlow.AddToAClubPage),
+  MakeRoute(
+    'POST',
+    Routes.ReviewAPreprintAddToAClub,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewAPreprintFlow.AddToAClubSubmission),
+    ),
+  ),
+]).pipe(HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn))
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
@@ -569,6 +583,7 @@ export const Router = pipe(
   HttpRouter.concat(DatasetReviewPages),
   HttpRouter.concat(MyDetailsRouter),
   HttpRouter.concat(RequestAReviewFlowRouter),
+  HttpRouter.concat(ReviewAPreprintFlowRouter),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(AuthorInviteFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),

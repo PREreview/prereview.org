@@ -249,6 +249,12 @@ export const RequestAReviewPublished = Route({
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
+export const ReviewAPreprintAddToAClub = Route({
+  path: '/preprints/:preprintId/write-a-prereview/add-to-club',
+  href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/write-a-prereview/add-to-club`,
+  schema: Schema.Struct({ preprintId: PreprintIdSchema }),
+})
+
 export const ReviewADataset = '/review-a-dataset'
 
 export const ReviewThisDataset = Route({
