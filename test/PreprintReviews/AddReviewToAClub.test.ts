@@ -27,9 +27,9 @@ it.fails.effect.each<[string, _.Input, Either.Either<void, _.Error>, ClubId?]>([
     { orcidId: differentOrcidId, preprintId: preprintWithReview, clubId },
     Either.left(new PreprintReviewNotFound({})),
   ],
-  ['not answered', { orcidId, preprintId: preprintWithReview, clubId }, Either.void],
+  ['not answered', { orcidId, preprintId: preprintWithReview, clubId }, Either.void, clubId],
   ['answered with no club', { orcidId, preprintId: preprintWithReviewNoClub, clubId }, Either.void, clubId],
-  ['answered with club', { orcidId, preprintId: preprintWithReviewClub, clubId }, Either.void],
+  ['answered with club', { orcidId, preprintId: preprintWithReviewClub, clubId }, Either.void, clubId],
   [
     'answered with different club',
     { orcidId, preprintId: preprintWithReviewClub, clubId: differentClubId },
@@ -45,7 +45,7 @@ it.fails.effect.each<[string, _.Input, Either.Either<void, _.Error>, ClubId?]>([
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
 
     const actualReturn = yield* Effect.either(_.AddReviewToAClub(formStore)(input))
-    const actualState = yield* Effect.promise(() => formStore.get(formKey(orcidId, preprintWithReview)))
+    const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
 
     expect(actualReturn).toStrictEqual(expectedReturn)
     if (expectedClub !== undefined) {
