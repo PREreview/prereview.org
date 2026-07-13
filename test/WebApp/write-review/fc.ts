@@ -247,6 +247,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
           alreadyWritten: alreadyWritten(),
           review: fc.html(),
           persona: personaType(),
+          club: fc.option(fc.clubId(), { nil: null }),
           moreAuthors: moreAuthors(),
           generativeAiIdeas: generativeAiIdeas(),
           competingInterests: competingInterests(),
@@ -307,6 +308,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         reviewType: fc.constant('questions'),
         generativeAiIdeas: generativeAiIdeas(),
       }),
+      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record({
           moreAuthors: fc.constant('yes'),
@@ -420,6 +422,7 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         reviewType: fc.constant('freeform'),
         generativeAiIdeas: generativeAiIdeas(),
       }),
+      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record({
           moreAuthors: fc.constant('yes'),

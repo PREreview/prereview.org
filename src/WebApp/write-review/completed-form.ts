@@ -1,6 +1,7 @@
 import { pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
+import { ClubIdSchema } from '../../Clubs/index.ts'
 import { RawHtmlC } from '../../html.ts'
 import { EmailAddressC } from '../../types/EmailAddress.ts'
 import { NameC } from '../../types/Name.ts'
@@ -16,6 +17,11 @@ export const CompletedFormC = pipe(
     persona: C.literal('public', 'pseudonym'),
     generativeAiIdeas: C.literal('yes', 'no'),
   }),
+  C.intersect(
+    C.partial({
+      club: C.literal(...ClubIdSchema.literals, null),
+    }),
+  ),
   C.intersect(
     C.sum('competingInterests')({
       yes: C.struct({

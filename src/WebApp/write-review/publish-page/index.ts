@@ -194,7 +194,7 @@ const handlePublishForm = ({
         RTE.map(({ language, persona, pseudonymPersona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
-          club: Option.none(),
+          club: Option.fromNullable(form.club),
           language,
           license: match(form.generativeAiIdeas)
             .with('yes', () => 'CC0-1.0' as const)
