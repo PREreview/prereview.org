@@ -1,12 +1,14 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
+import { getClubName } from '../../../Clubs/ClubDetails.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
+import * as Routes from '../../../routes.ts'
 import {
   profileMatch,
   writeReviewAddAuthorsMatch,
@@ -113,6 +115,23 @@ export function publishForm(
                         <dd>
                           <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
                             >${t('changeInvitedAuthors')(visuallyHidden)}</a
+                          >
+                        </dd>
+                      </div>
+                    `
+                  : ''
+              }
+              ${
+                review.club !== undefined
+                  ? html`
+                      <div>
+                        <dt><span lang="en" dir="ltr">Club</span></dt>
+                        <dd>
+                          ${review.club ? html`<span ${languageAttributesFor(getClubName(review.club).language)}>${getClubName(review.club).text}</span>` : html`<i><span lang="en" dir="ltr">Not in a club</span></i>`}
+                        </dd>
+                        <dd>
+                          <a href="${Routes.ReviewAPreprintAddToAClub.href({ preprintId: preprint.id })}"
+                            ><span lang="en" dir="ltr">Change <span class="visually-hidden">club</span></span></a
                           >
                         </dd>
                       </div>
