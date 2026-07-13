@@ -215,6 +215,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
         },
         { requiredKeys: ['alreadyWritten', 'reviewType'] },
       ),
+      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record(
           {
@@ -247,7 +248,6 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
           alreadyWritten: alreadyWritten(),
           review: fc.html(),
           persona: personaType(),
-          club: fc.option(fc.clubId(), { nil: null }),
           moreAuthors: moreAuthors(),
           generativeAiIdeas: generativeAiIdeas(),
           competingInterests: competingInterests(),
@@ -255,6 +255,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
         },
         { requiredKeys: ['alreadyWritten'] },
       ),
+      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record(
           {
