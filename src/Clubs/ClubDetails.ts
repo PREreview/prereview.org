@@ -1069,7 +1069,9 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     },
     added: Temporal.PlainDate.from('2026-02-24'),
     leads: [{ name: Name('Diptarup Mallick'), orcid: OrcidId('0009-0006-6065-9650') }],
-    contact: EmailAddress('diptarupmallick3@gmail.com'),
+
+    joinLink: new URL('mailto:diptarupmallick3@gmail.com'),
+
   },
   '098981c2-aa2a-44ba-ba75-83e1b0b7fcb1': {
     name: {
