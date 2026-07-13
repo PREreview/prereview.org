@@ -82,7 +82,7 @@ export const layer = Layer.effect(
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
       checkIfUserCanAddToAClub: CheckIfUserCanAddToAClub.CheckIfUserCanAddToAClub(formStore),
       addReviewToAClub: AddReviewToAClub(formStore),
-      markReviewAsNotInAClub: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      markReviewAsNotInAClub: MarkReviewAsNotInAClub(formStore),
     }
   }),
 )
