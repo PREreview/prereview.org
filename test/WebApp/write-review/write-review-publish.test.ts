@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
@@ -160,6 +160,7 @@ describe('writeReviewPublish', () => {
           conduct: 'yes',
           otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
           persona: newReview.persona === 'public' ? publicPersona : pseudonymPersona,
+          club: Option.none(),
           preprint: preprintTitle,
           review: expect.anything(),
           language: localeToIso6391(locale),
@@ -241,6 +242,7 @@ describe('writeReviewPublish', () => {
           conduct: 'yes',
           otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
           persona: newReview.persona === 'public' ? publicPersona : pseudonymPersona,
+          club: Option.none(),
           preprint: preprintTitle,
           review: expect.htmlContaining(newReview.review) as never,
           language: expect.anything(),
