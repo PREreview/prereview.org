@@ -4275,6 +4275,7 @@ describe('createRecordOnZenodo', () => {
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.publicPersona(),
+          club: fc.maybe(fc.clubId()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4387,6 +4388,10 @@ describe('createRecordOnZenodo', () => {
                             .with(1, () => [{ name: '1 other author' }])
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
+                        ...Option.match(newPrereview.club, {
+                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onNone: () => ({}),
+                        }),
                         license: match(newPrereview.license)
                           .with('CC-BY-4.0', () => 'cc-by-4.0')
                           .with('CC0-1.0', () => 'cc-zero')
@@ -4460,6 +4465,7 @@ ${newPrereview.review.toString()}`,
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.publicPersona(),
+          club: fc.maybe(fc.clubId()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4572,6 +4578,10 @@ ${newPrereview.review.toString()}`,
                             .with(1, () => [{ name: '1 other author' }])
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
+                        ...Option.match(newPrereview.club, {
+                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onNone: () => ({}),
+                        }),
                         license: match(newPrereview.license)
                           .with('CC-BY-4.0', () => 'cc-by-4.0')
                           .with('CC0-1.0', () => 'cc-zero')
@@ -4649,6 +4659,7 @@ ${newPrereview.review.toString()}`,
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.pseudonymPersona(),
+          club: fc.maybe(fc.clubId()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4745,6 +4756,10 @@ ${newPrereview.review.toString()}`,
                             .with(1, () => [{ name: '1 other author' }])
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
+                        ...Option.match(newPrereview.club, {
+                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onNone: () => ({}),
+                        }),
                         license: match(newPrereview.license)
                           .with('CC-BY-4.0', () => 'cc-by-4.0')
                           .with('CC0-1.0', () => 'cc-zero')
@@ -4816,6 +4831,7 @@ ${newPrereview.review.toString()}`,
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.pseudonymPersona(),
+          club: fc.maybe(fc.clubId()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4912,6 +4928,10 @@ ${newPrereview.review.toString()}`,
                             .with(1, () => [{ name: '1 other author' }])
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
+                        ...Option.match(newPrereview.club, {
+                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onNone: () => ({}),
+                        }),
                         license: match(newPrereview.license)
                           .with('CC-BY-4.0', () => 'cc-by-4.0')
                           .with('CC0-1.0', () => 'cc-zero')
@@ -4986,6 +5006,7 @@ ${newPrereview.review.toString()}`,
         conduct: fc.constant('yes'),
         otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
         persona: fc.persona(),
+        club: fc.maybe(fc.clubId()),
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),

@@ -35,7 +35,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { type ClubId, getClubByName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
+import { type ClubId, getClubByName, getClubName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import {
@@ -714,6 +714,10 @@ function createDepositMetadata(
                 .otherwise(() => []),
             ),
           ),
+          contributors: Option.match(newPrereview.club, {
+            onSome: club => [{ name: getClubName(club).text, type: 'ResearchGroup' }],
+            onNone: () => undefined,
+          }),
           language: Option.getOrUndefined(newPrereview.language),
           description: `<p><strong>This Zenodo record is a permanently preserved version of a ${
             newPrereview.structured ? 'Structured ' : ''

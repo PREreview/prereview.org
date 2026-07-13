@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Effect, Match, type Option, flow, pipe } from 'effect'
+import { Effect, Match, Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -7,6 +7,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
+import type { ClubId } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
@@ -34,6 +35,7 @@ export interface NewPrereview {
   conduct: 'yes'
   otherAuthors: ReadonlyArray<{ name: Name; emailAddress: EmailAddress }>
   persona: Prereviewers.Persona
+  club: Option.Option<ClubId>
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
@@ -192,6 +194,7 @@ const handlePublishForm = ({
         RTE.map(({ language, persona, pseudonymPersona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
+          club: Option.none(),
           language,
           license: match(form.generativeAiIdeas)
             .with('yes', () => 'CC0-1.0' as const)
