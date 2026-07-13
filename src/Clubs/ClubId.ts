@@ -59,3 +59,5 @@ export const ClubIdSchema = Schema.Literal(
   'f0a5bcaf-8016-4c2e-92dd-b3a359329ead', // TSL Preprint Club
   '1013ab22-0917-4f34-adcb-7c8cf0eba463', // ZMBP Preprint Club
 )
+
+export const isClubId = Schema.is(ClubIdSchema)
