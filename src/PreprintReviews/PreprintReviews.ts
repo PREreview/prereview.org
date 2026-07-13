@@ -1,9 +1,10 @@
 import { Array, Context, Effect, type Either, Layer, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
+import { KeyvStores } from '../keyv.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
-import type * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
+import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
@@ -29,7 +30,7 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
     checkIfUserCanAddToAClub: (
       input: CheckIfUserCanAddToAClub.Input,
     ) => Effect.Effect<
-      Either.Either<CheckIfUserCanAddToAClub.Result>,
+      Either.Either.Right<CheckIfUserCanAddToAClub.Result>,
       Either.Either.Left<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
     >
   }
@@ -46,6 +47,8 @@ export const layer = Layer.effect(
   PreprintReviews,
   Effect.gen(function* () {
     const personas = yield* Prereviewers.Prereviewers
+
+    const { formStore } = yield* KeyvStores
 
     const getRapidPrereviewsForAPreprint = yield* Queries.makeOnDemandQuery(GetRapidPrereviewsForAPreprint)
 
@@ -73,7 +76,7 @@ export const layer = Layer.effect(
         RecordEmailSentToNotifyPrereviewerOfAPrereview,
       ),
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
-      checkIfUserCanAddToAClub: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      checkIfUserCanAddToAClub: CheckIfUserCanAddToAClub.CheckIfUserCanAddToAClub(formStore),
     }
   }),
 )
