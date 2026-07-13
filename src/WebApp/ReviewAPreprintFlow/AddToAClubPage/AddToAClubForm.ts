@@ -1,7 +1,12 @@
-import { Data, type Either, Option } from 'effect'
-import type { ClubId } from '../../../Clubs/index.ts'
+import { UrlParams } from '@effect/platform'
+import { Data, Either, Option, pipe, Schema, Struct } from 'effect'
+import { ClubIdSchema, type ClubId } from '../../../Clubs/index.ts'
 
 export type AddToAClubForm = EmptyForm | InvalidForm | CompletedForm
+
+export type ValidForm = Exclude<AddToAClubForm, InvalidForm>
+
+export type SubmittedForm = Exclude<AddToAClubForm, EmptyForm>
 
 export class Missing extends Data.TaggedError('Missing') {}
 
@@ -15,7 +20,28 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   addToClub: ClubId | 'not-a-club-review'
 }> {}
 
-export const fromChoice: (choice: Option.Option<ClubId | null>) => AddToAClubForm = Option.match({
+export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
+  const addToClub = pipe(
+    Schema.decodeEither(AddToClubFieldSchema)(body),
+    Either.mapBoth({
+      onRight: Struct.get('addToClub'),
+      onLeft: () => new Missing(),
+    }),
+  )
+
+  return Either.match(addToClub, {
+    onRight: addToClub => new CompletedForm({ addToClub }),
+    onLeft: addToClub => new InvalidForm({ addToClub: Either.left(addToClub) }),
+  })
+}
+
+export const fromChoice: (choice: Option.Option<ClubId | null>) => ValidForm = Option.match({
   onNone: () => new EmptyForm(),
   onSome: choice => new CompletedForm({ addToClub: choice ?? 'not-a-club-review' }),
 })
+
+const AddToClubFieldSchema = UrlParams.schemaRecord(
+  Schema.Struct({
+    addToClub: Schema.Union(ClubIdSchema, Schema.Literal('not-a-club-review')),
+  }),
+)

@@ -151,6 +151,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2023-07-31'),
     leads: [
       { name: Name('Jay Patel'), orcid: OrcidId('0000-0003-1040-3607') },
+      { name: Name('Chris Wilkinson'), orcid: OrcidId('0000-0003-4921-6155') },
       { name: Name('Fallon Mody'), orcid: OrcidId('0000-0002-0596-7590') },
       { name: Name('Sandra Grinschgl'), orcid: OrcidId('0000-0001-6666-9426') },
     ],
@@ -1243,7 +1244,10 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-10-04'),
-    leads: [{ name: Name('Hildy Fong Baker'), orcid: OrcidId('0000-0002-3836-1966') }],
+    leads: [
+      { name: Name('Chris Wilkinson'), orcid: OrcidId('0000-0003-4921-6155') },
+      { name: Name('Hildy Fong Baker'), orcid: OrcidId('0000-0002-3836-1966') },
+    ],
     contact: EmailAddress('rrid@berkeley.edu'),
   },
   'ed1dca96-74c0-46ff-b29f-c900fd543d6d': {

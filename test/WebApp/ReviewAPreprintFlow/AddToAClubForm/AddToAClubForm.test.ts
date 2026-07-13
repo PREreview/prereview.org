@@ -1,7 +1,27 @@
+import { UrlParams } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
-import { Option } from 'effect'
+import { Either, Option } from 'effect'
 import type { ClubId } from '../../../../src/Clubs/index.ts'
 import * as _ from '../../../../src/WebApp/ReviewAPreprintFlow/AddToAClubPage/AddToAClubForm.ts'
+
+describe('fromBody', () => {
+  it.each<[string, UrlParams.Input, _.AddToAClubForm]>([
+    ['empty', {}, new _.InvalidForm({ addToClub: Either.left(new _.Missing()) })],
+    [
+      'valid club ID',
+      { addToClub: '2c5334ae-e361-48c3-bcca-6810c2f33cb4' },
+      new _.CompletedForm({ addToClub: '2c5334ae-e361-48c3-bcca-6810c2f33cb4' }),
+    ],
+    ['invalid club ID', { addToClub: 'not-a-club-id' }, new _.InvalidForm({ addToClub: Either.left(new _.Missing()) })],
+    ['not a club review', { addToClub: 'not-a-club-review' }, new _.CompletedForm({ addToClub: 'not-a-club-review' })],
+  ])('%s', (_name, input, expected) => {
+    const body = UrlParams.fromInput(input)
+
+    const actual = _.fromBody(body)
+
+    expect(actual).toStrictEqual(expected)
+  })
+})
 
 describe('fromChoice', () => {
   it.each<[string, Option.Option<ClubId | null>, _.AddToAClubForm]>([

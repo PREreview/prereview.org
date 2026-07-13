@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Array, Effect } from 'effect'
+import { Array, Effect, Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import { isLeadFor } from '../../../Clubs/index.ts'
 import { Locale } from '../../../Context.ts'
@@ -55,12 +55,44 @@ export const AddToAClubPage: ({
     }),
 )
 
-export const AddToAClubSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const AddToAClubSubmission: ({
   body,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   preprintId,
 }: {
   body: UrlParams.UrlParams
   preprintId: IndeterminatePreprintId
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Preprints | PreprintReviews> => HavingProblemsPage
+}) => Effect.Effect<Response, never, FeatureFlags | Locale | LoggedInUser | Preprints | PreprintReviews> = Effect.fn(
+  'ReviewAPreprintFlow.AddToAClubSubmission',
+)(
+  function* ({ body, preprintId }) {
+    const featureFlags = yield* FeatureFlags
+    const locale = yield* Locale
+    const user = yield* LoggedInUser
+    const preprints = yield* Preprints
+
+    if (!featureFlags.canClubLeadsAddReviewsToClubs) {
+      return yield* PageNotFound
+    }
+
+    const clubs = isLeadFor(user.orcid)
+
+    if (!Array.isNonEmptyReadonlyArray(clubs)) {
+      return yield* PageNotFound
+    }
+
+    const preprint = yield* preprints.getPreprintTitle(preprintId)
+
+    const form = AddToAClubForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: () => HavingProblemsPage,
+      InvalidForm: Effect.fnUntraced(function* (form: AddToAClubForm.InvalidForm) {
+        return yield* Effect.succeed(renderAddToAClubPage({ clubs, form, locale, preprint }))
+      }),
+    })
+  },
+  Effect.catchTags({
+    PreprintIsNotFound: () => PageNotFound,
+    PreprintIsUnavailable: () => HavingProblemsPage,
+  }),
+)
