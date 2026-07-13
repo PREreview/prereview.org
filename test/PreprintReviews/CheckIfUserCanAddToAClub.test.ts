@@ -19,7 +19,7 @@ const preprintWithReviewClub = new BiorxivPreprintId({ value: Doi('10.1101/with-
 
 const clubId = '13e21570-0d1a-47f0-b378-b8c20776496a' satisfies ClubId
 
-it.fails.effect.each<[string, _.Input, _.Result]>([
+it.effect.each<[string, _.Input, _.Result]>([
   ['no review', { orcidId, preprintId: preprintWithNoReview }, Either.left(new PreprintReviewNotFound({}))],
   [
     'different ORCID iD',
