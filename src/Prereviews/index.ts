@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { Clubs, getClubName, getClubSlug } from '../Clubs/index.ts'
+import { Clubs } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
@@ -71,7 +71,7 @@ export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers>(),
+      Effect.context<Clubs | DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers>(),
       Context.omit(Scope.Scope),
     )
     const clubs = yield* Clubs
@@ -300,15 +300,18 @@ export const layer = Layer.effect(
 )
 
 const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
+  const clubs = yield* Clubs
+
   const datasetReview = yield* DatasetReviews.getPublishedReview(id)
 
-  const { author, otherAuthors, dataset } = yield* Effect.all(
+  const { author, otherAuthors, dataset, club } = yield* Effect.all(
     {
       author: Prereviewers.getPersona(datasetReview.author),
       otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
         concurrency: 'inherit',
       }),
       dataset: Datasets.getDatasetTitle(datasetReview.dataset),
+      club: Effect.transposeOption(Option.map(datasetReview.clubId, id => clubs.getClubName(Uuid.Uuid(id)))),
     },
     { concurrency: 'inherit' },
   )
@@ -317,14 +320,7 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
     author,
     otherAuthors,
     anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
-    club: Option.getOrUndefined(
-      Option.map(datasetReview.clubId, id => ({
-        id: Uuid.Uuid(id),
-        name: getClubName(id).text,
-        language: getClubName(id).language,
-        slug: getClubSlug(id),
-      })),
-    ),
+    club: Option.getOrUndefined(club),
     dataset,
     doi: datasetReview.doi,
     id: datasetReview.id,
