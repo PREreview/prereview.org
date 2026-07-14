@@ -1,5 +1,5 @@
 import { Array, Either, Match, pipe, String, Struct } from 'effect'
-import { getClubName, type ClubId } from '../../../Clubs/index.ts'
+import type { ClubName } from '../../../Clubs/index.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
@@ -16,7 +16,7 @@ export const renderAddToAClubPage = ({
   locale,
   preprint,
 }: {
-  clubs: Array.NonEmptyReadonlyArray<ClubId>
+  clubs: Array.NonEmptyReadonlyArray<ClubName>
   form: AddToAClubForm.AddToAClubForm
   locale: SupportedLocale
   preprint: PreprintTitle
@@ -59,8 +59,7 @@ export const renderAddToAClubPage = ({
 
             <ol>
               ${pipe(
-                Array.map(clubs, clubId => ({ clubId, ...getClubName(clubId) })),
-                Array.sortWith(Struct.get('text'), (a, b) =>
+                Array.sortWith(clubs, Struct.get('name'), (a, b) =>
                   String.localeCompare(b, locale, { sensitivity: 'base' })(a),
                 ),
                 Array.map(
@@ -69,19 +68,19 @@ export const renderAddToAClubPage = ({
                       <label>
                         <input
                           name="addToClub"
-                          id="add-to-club-${club.clubId}"
+                          id="add-to-club-${club.id}"
                           type="radio"
-                          value="${club.clubId}"
+                          value="${club.id}"
                           ${pipe(
                             Match.value(form),
                             Match.when(
-                              { _tag: 'CompletedForm', addToClub: clubId => clubId === club.clubId },
+                              { _tag: 'CompletedForm', addToClub: clubId => clubId === club.id },
                               () => 'checked',
                             ),
                             Match.orElse(() => ''),
                           )}
                         />
-                        <span ${languageAttributesFor(club.language)}>${club.text}</span>
+                        <span ${languageAttributesFor(club.language)}>${club.name}</span>
                       </label>
                     </li>
                   `,
@@ -120,19 +119,18 @@ export const renderAddToAClubPage = ({
 }
 
 const toErrorItems =
-  (locale: SupportedLocale, clubs: Array.NonEmptyReadonlyArray<ClubId>) => (form: AddToAClubForm.InvalidForm) => html`
+  (locale: SupportedLocale, clubs: Array.NonEmptyReadonlyArray<ClubName>) => (form: AddToAClubForm.InvalidForm) => html`
     ${
       Either.isLeft(form.addToClub)
         ? html`
             <li>
               <a
                 href="#add-to-club-${pipe(
-                  Array.map(clubs, clubId => ({ clubId, ...getClubName(clubId) })),
-                  Array.sortWith(Struct.get('text'), (a, b) =>
+                  Array.sortWith(clubs, Struct.get('name'), (a, b) =>
                     String.localeCompare(b, locale, { sensitivity: 'base' })(a),
                   ),
                   Array.headNonEmpty,
-                  Struct.get('clubId'),
+                  Struct.get('id'),
                 )}"
               >
                 ${Match.valueTags(form.addToClub.left, {

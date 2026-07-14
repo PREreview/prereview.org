@@ -1,6 +1,7 @@
 import { UrlParams } from '@effect/platform'
 import { Data, Either, Option, pipe, Schema, Struct } from 'effect'
-import { ClubIdSchema, type ClubId } from '../../../Clubs/index.ts'
+import type { ClubId } from '../../../Clubs/index.ts'
+import { Uuid, UuidSchema } from '../../../types/Uuid.ts'
 
 export type AddToAClubForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -17,7 +18,7 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
-  addToClub: ClubId | 'not-a-club-review'
+  addToClub: Uuid | 'not-a-club-review'
 }> {}
 
 export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
@@ -37,11 +38,11 @@ export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
 
 export const fromChoice: (choice: Option.Option<ClubId | null>) => ValidForm = Option.match({
   onNone: () => new EmptyForm(),
-  onSome: choice => new CompletedForm({ addToClub: choice ?? 'not-a-club-review' }),
+  onSome: choice => new CompletedForm({ addToClub: choice ? Uuid(choice) : 'not-a-club-review' }),
 })
 
 const AddToClubFieldSchema = UrlParams.schemaRecord(
   Schema.Struct({
-    addToClub: Schema.Union(ClubIdSchema, Schema.Literal('not-a-club-review')),
+    addToClub: Schema.Union(UuidSchema, Schema.Literal('not-a-club-review')),
   }),
 )
