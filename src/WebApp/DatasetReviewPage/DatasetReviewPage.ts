@@ -1,7 +1,7 @@
 import { Array, flow, identity, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
-import { getClubName } from '../../Clubs/index.ts'
+import { getClubName, getClubSlug } from '../../Clubs/index.ts'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
@@ -67,7 +67,7 @@ export const createDatasetReviewPage = ({
               t('authoredByInClub')({
                 author: authorList(datasetReview, locale),
                 club: html`<a
-                  href="${Routes.ClubProfile.href({ id: clubId })}"
+                  href="${Routes.ClubProfile.href({ slug: getClubSlug(clubId) })}"
                   ${languageAttributesFor(getClubName(clubId).language)}
                   >${getClubName(clubId).text}</a
                 >`,

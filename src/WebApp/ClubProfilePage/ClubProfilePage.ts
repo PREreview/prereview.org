@@ -1,6 +1,6 @@
 import { Array, flow, Match, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Club, ClubId } from '../../Clubs/index.ts'
+import type { Club } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -25,12 +25,10 @@ export type ClubDetails = Omit<Club, 'leads'> & {
 
 export function createPage({
   club,
-  id,
   prereviews,
   locale,
 }: {
   club: ClubDetails
-  id: ClubId
   prereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview | Prereviews.RecentDatasetPrereview>
   locale: SupportedLocale
 }) {
@@ -228,7 +226,7 @@ export function createPage({
         `,
       })}
     `,
-    canonical: Routes.ClubProfile.href({ id }),
+    canonical: Routes.ClubProfile.href({ slug: club.slug }),
   })
 }
 

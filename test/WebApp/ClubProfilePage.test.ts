@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
-import { getClubName } from '../../src/Clubs/index.ts'
+import { getClubName, getClubSlug } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
 import { OrcidRecords } from '../../src/ExternalInteractions/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
@@ -35,13 +35,13 @@ describe('ClubProfilePage', () => {
         const getForClub = vi.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
 
         const actual = yield* pipe(
-          _.ClubProfilePage({ id: clubId }),
+          _.ClubProfilePage({ slug: getClubSlug(clubId) }),
           Effect.provide(Layer.mock(Prereviews.Prereviews, { getForClub })),
         )
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          canonical: Routes.ClubProfile.href({ id: clubId }),
+          canonical: Routes.ClubProfile.href({ slug: getClubSlug(clubId) }),
           status: StatusCodes.OK,
           title: expect.plainTextContaining(getClubName(clubId).text),
           main: expect.htmlContaining(encode(getClubName(clubId).text)),
@@ -61,7 +61,7 @@ describe('ClubProfilePage', () => {
     ([clubId, locale, name]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
-          _.ClubProfilePage({ id: clubId }),
+          _.ClubProfilePage({ slug: getClubSlug(clubId) }),
           Effect.provide(
             Layer.mock(Prereviews.Prereviews, { getForClub: () => new Prereviews.PrereviewsAreUnavailable() }),
           ),

@@ -70,7 +70,7 @@ export const isLeadFor = (orcid: OrcidId): ReadonlyArray<ClubId> =>
 export const isAClubLead = (orcid: OrcidId): boolean =>
   pipe(Struct.keys(clubs), Array.some(flow(id => clubs[id].leads, Array.contains(orcid))))
 
-const clubs: Record.ReadonlyRecord<ClubId, Club> = {
+export const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   '13e21570-0d1a-47f0-b378-b8c20776496a': {
     name: {
       language: 'en',

@@ -1,13 +1,12 @@
 import { UrlParams } from '@effect/platform'
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Array, Data, Match, Option, ParseResult, Record, Schema, Tuple, flow, identity, pipe } from 'effect'
+import { Array, Data, Match, Option, Record, Schema, Tuple, flow, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import { match, P as p } from 'ts-pattern'
-import * as Club from './Clubs/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import * as Preprints from './Preprints/index.ts'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.ts'
@@ -140,13 +139,6 @@ const DatasetIdSchema = Schema.transform(
   },
 )
 
-const ClubIdFromSlugSchema = Schema.transformOrFail(SlugSchema, Club.ClubIdSchema, {
-  strict: true,
-  decode: (slug, _, ast) =>
-    ParseResult.fromOption(Club.getClubBySlug(slug), () => new ParseResult.Type(ast, slug, 'Unknown club slug')),
-  encode: id => ParseResult.succeed(Club.getClubSlug(id)),
-})
-
 export const OrcidAuth = QueryRoute({
   path: '/orcid',
   schema: Schema.Union(
@@ -164,9 +156,9 @@ export const VerifyEmailAddress = QueryRoute({
 })
 
 export const ClubProfile = Route({
-  path: '/clubs/:id',
-  href: params => `/clubs/${Schema.encodeSync(ClubIdFromSlugSchema)(params.id)}`,
-  schema: Schema.Struct({ id: Schema.compose(Schema.String, ClubIdFromSlugSchema) }),
+  path: '/clubs/:slug',
+  href: params => `/clubs/${params.slug}`,
+  schema: Schema.Struct({ slug: SlugSchema }),
 })
 
 export const DatasetReviews = Route({

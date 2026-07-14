@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { ClubId } from '../../src/Clubs/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -19,7 +18,6 @@ import { expect, test } from '../base.ts'
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
     club: club1,
-    id,
     prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
     locale: DefaultLocale,
   })
@@ -30,7 +28,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when empty', async ({ showPage }) => {
-  const response = createPage({ club: club2, id, prereviews: [], locale: DefaultLocale })
+  const response = createPage({ club: club2, prereviews: [], locale: DefaultLocale })
 
   const content = await showPage(response)
 
@@ -82,8 +80,6 @@ const club2 = {
   added: Temporal.PlainDate.from('2025-02-03'),
   leads: [{ name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') }],
 } satisfies ClubDetails
-
-const id = '13e21570-0d1a-47f0-b378-b8c20776496a' satisfies ClubId
 
 const prereview1 = new Prereviews.RecentPreprintPrereview({
   id: 11062553,

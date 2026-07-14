@@ -3,12 +3,15 @@ import * as Clubs from '../../Clubs/index.ts'
 import { Locale } from '../../Context.ts'
 import { OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
+import type { Slug } from '../../types/Slug.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../PageNotFound/index.ts'
 import { createPage } from './ClubProfilePage.ts'
 
 export const ClubProfilePage = Effect.fn(
-  function* ({ id }: { id: Clubs.ClubId }) {
+  function* ({ slug }: { slug: Slug }) {
     const locale = yield* Locale
+    const id = yield* Clubs.getClubBySlug(slug)
 
     const { club, prereviews } = yield* Effect.all(
       {
@@ -31,7 +34,10 @@ export const ClubProfilePage = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    return createPage({ club, id, prereviews, locale })
+    return createPage({ club, prereviews, locale })
   },
-  Effect.catchTag('PrereviewsAreUnavailable', () => HavingProblemsPage),
+  Effect.catchTags({
+    NoSuchElementException: () => PageNotFound,
+    PrereviewsAreUnavailable: () => HavingProblemsPage,
+  }),
 )
