@@ -798,7 +798,14 @@ describe('getPrereviewFromZenodo', () => {
             new Prereviews.Prereview({
               addendum: rawHtml('<p>Some note.</p>'),
               authors: { named: [{ name: Name('PREreviewer') }], anonymous: expectedAnonymous },
-              club,
+              club: club
+                ? {
+                    id: Uuid.Uuid(club),
+                    name: getClubName(club).text,
+                    language: getClubName(club).language,
+                    slug: getClubSlug(club),
+                  }
+                : undefined,
               doi: Doi('10.5281/zenodo.1061864'),
               id,
               language: 'en',

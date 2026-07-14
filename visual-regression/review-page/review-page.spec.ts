@@ -6,6 +6,8 @@ import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/Preprints/index.
 import { Prereview } from '../../src/Prereviews/index.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Slug } from '../../src/types/Slug.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import type { Comment } from '../../src/WebApp/review-page/index.ts'
 import { createPage } from '../../src/WebApp/review-page/review-page.ts'
 import { expect, test } from '../base.ts'
@@ -46,7 +48,15 @@ test('content looks right when in a club', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
     locale: DefaultLocale,
-    review: { ...review, club: '206ef17f-c5f3-44d3-acee-ba9b1f8299e9' },
+    review: {
+      ...review,
+      club: {
+        id: Uuid('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
+        language: 'en',
+        name: Name('HHMI Transparent and Accountable Peer Review Training Program'),
+        slug: Slug('hhmi-training-program'),
+      },
+    },
     comments: [],
   })
 

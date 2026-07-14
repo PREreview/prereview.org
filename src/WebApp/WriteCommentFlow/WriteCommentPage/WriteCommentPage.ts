@@ -1,6 +1,5 @@
 import { Array, Boolean, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { getClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -59,9 +58,7 @@ export const WriteCommentPage = ({
                       ),
                       formatList(locale),
                     ),
-                    club: html`<span ${languageAttributesFor(getClubName(prereview.club).language)}
-                      >${getClubName(prereview.club).text}</span
-                    >`,
+                    club: html`<span ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</span>`,
                     hide: text => html`<span class="visually-hidden">${text}</span>`,
                   })
                 : t(

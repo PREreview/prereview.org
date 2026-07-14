@@ -20,7 +20,7 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
     named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
     anonymous: number
   }
-  club?: ClubId
+  club?: ClubName
   doi: Doi
   id: number
   language?: LanguageCode

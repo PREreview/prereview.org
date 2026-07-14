@@ -1,7 +1,6 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { getClubName, getClubSlug } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -72,9 +71,9 @@ export const declinePage = ({
                         formatList(locale),
                       ),
                       club: html`<a
-                        href="${Routes.ClubProfile.href({ slug: getClubSlug(review.club) })}"
-                        ${languageAttributesFor(getClubName(review.club).language)}
-                        >${getClubName(review.club).text}</a
+                        href="${Routes.ClubProfile.href({ slug: review.club.slug })}"
+                        ${languageAttributesFor(review.club.language)}
+                        >${review.club.name}</a
                       >`,
                       hide: text => html`<span class="visually-hidden">${text}</span>`,
                     })

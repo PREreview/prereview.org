@@ -809,7 +809,18 @@ function recordToPrereview(
           F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
           PreprintIsUnavailable | PreprintIsNotFound | 'text-unavailable'
         >(getAuthors(record) as never),
-        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
+        club: RTE.right(
+          pipe(
+            getReviewClub(record),
+            Option.map(id => ({
+              id: Uuid.Uuid(id),
+              name: getClubName(id).text,
+              language: getClubName(id).language,
+              slug: getClubSlug(id),
+            })),
+            Option.getOrUndefined,
+          ),
+        ),
         doi: RTE.right(record.metadata.doi),
         id: RTE.right(record.id),
         language: RTE.right(
