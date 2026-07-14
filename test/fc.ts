@@ -1347,6 +1347,28 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
 
 export const clubId = (): fc.Arbitrary<Clubs.ClubId> => constantFrom(...Clubs.ClubIdSchema.literals)
 
+export const clubDetails = (): fc.Arbitrary<Clubs.ClubDetails> =>
+  fc.record(
+    {
+      id: uuid(),
+      name: fc.record({
+        language: languageCode(),
+        text: name(),
+      }),
+      formerNames: nonEmptyArray(name()),
+      slug: slug(),
+      description: fc.record({
+        language: languageCode(),
+        text: html(),
+      }),
+      added: plainDate(),
+      leads: nonEmptyArray(orcidId()),
+      contact: emailAddress(),
+      joinLink: url(),
+    },
+    { requiredKeys: ['id', 'name', 'slug', 'description', 'added', 'leads'] },
+  )
+
 export const pseudonym = (): fc.Arbitrary<Pseudonym> => Arbitrary.make(PseudonymSchema)
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())

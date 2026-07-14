@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
-import { getClubName, getClubSlug } from '../../src/Clubs/index.ts'
+import { Clubs } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
 import { OrcidRecords } from '../../src/ExternalInteractions/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
@@ -14,7 +14,8 @@ describe('ClubProfilePage', () => {
   it.effect.prop(
     'when the data can be loaded',
     [
-      fc.clubId(),
+      fc.slug(),
+      fc.clubDetails(),
       fc.array(
         fc
           .record({
@@ -30,38 +31,41 @@ describe('ClubProfilePage', () => {
       fc.supportedLocale(),
       fc.name(),
     ],
-    ([clubId, prereviews, locale, name]) =>
+    ([slug, club, prereviews, locale, name]) =>
       Effect.gen(function* () {
         const getForClub = vi.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
 
         const actual = yield* pipe(
-          _.ClubProfilePage({ slug: getClubSlug(clubId) }),
+          _.ClubProfilePage({ slug }),
           Effect.provide(Layer.mock(Prereviews.Prereviews, { getForClub })),
         )
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          canonical: Routes.ClubProfile.href({ slug: getClubSlug(clubId) }),
+          canonical: Routes.ClubProfile.href({ slug: club.slug }),
           status: StatusCodes.OK,
-          title: expect.plainTextContaining(getClubName(clubId).text),
-          main: expect.htmlContaining(encode(getClubName(clubId).text)),
+          title: expect.plainTextContaining(club.name.text),
+          main: expect.htmlContaining(encode(club.name.text)),
           skipToLabel: 'main',
           js: [],
         })
-        expect(getForClub).toHaveBeenCalledWith(clubId)
+        expect(getForClub).toHaveBeenCalledWith(club.id)
       }).pipe(
-        Effect.provide(Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) })),
+        Effect.provide([
+          Layer.mock(Clubs, { getClubBySlug: () => Effect.succeed(club) }),
+          Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
+        ]),
         Effect.provideService(Locale, locale),
       ),
   )
 
   it.effect.prop(
     'when the PREreviews are unavailable',
-    [fc.clubId(), fc.supportedLocale(), fc.name()],
-    ([clubId, locale, name]) =>
+    [fc.slug(), fc.clubDetails(), fc.supportedLocale(), fc.name()],
+    ([slug, club, locale, name]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
-          _.ClubProfilePage({ slug: getClubSlug(clubId) }),
+          _.ClubProfilePage({ slug }),
           Effect.provide(
             Layer.mock(Prereviews.Prereviews, { getForClub: () => new Prereviews.PrereviewsAreUnavailable() }),
           ),
@@ -76,7 +80,10 @@ describe('ClubProfilePage', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) })),
+        Effect.provide([
+          Layer.mock(Clubs, { getClubBySlug: () => Effect.succeed(club) }),
+          Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
+        ]),
         Effect.provideService(Locale, locale),
       ),
   )

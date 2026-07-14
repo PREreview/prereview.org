@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { type ClubId, getClubName, getClubSlug } from '../Clubs/index.ts'
+import { getClubName, getClubSlug, isClubId } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
@@ -36,7 +36,7 @@ export class Prereviews extends Context.Tag('Prereviews')<
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>>
     getForClub: (
-      id: ClubId,
+      id: Uuid.Uuid,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
     getForProfile: (
@@ -118,6 +118,10 @@ export const layer = Layer.effect(
           yield* Effect.annotateCurrentSpan({ id })
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+          if (!isClubId(id)) {
+            return []
+          }
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(id), {
             fetch,

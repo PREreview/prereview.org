@@ -1,6 +1,6 @@
 import { Array, flow, Match, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Club } from '../../Clubs/index.ts'
+import type { ClubDetails as BaseClubDetails } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -19,7 +19,7 @@ import type { OrcidId } from '../../types/OrcidId.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export type ClubDetails = Omit<Club, 'leads'> & {
+export type ClubDetails = Omit<BaseClubDetails, 'leads'> & {
   readonly leads: Array.NonEmptyReadonlyArray<{ readonly name: Name; readonly orcid: OrcidId }>
 }
 
