@@ -43,6 +43,7 @@ export class Clubs extends Context.Tag('Clubs')<
   {
     listClubs: Effect.Effect<Array.NonEmptyReadonlyArray<ClubName>>
     getClubDetails: (clubId: Uuid) => Effect.Effect<ClubDetails, ClubNotFound>
+    getClubName: (clubId: Uuid) => Effect.Effect<ClubName, ClubNotFound>
     getClubByName: (name: Name) => Effect.Effect<ClubName, ClubNotFound>
     getClubBySlug: (slug: Slug) => Effect.Effect<ClubDetails, ClubNotFound>
     getClubsThatAPrereviewerLeads: (orcidId: OrcidId) => Effect.Effect<ReadonlyArray<ClubName>>
@@ -64,6 +65,11 @@ export const layer = (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
         })),
       ),
       getClubDetails: (clubId: Uuid) => Either.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
+      getClubName: (clubId: Uuid) =>
+        Either.andThen(
+          Either.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
+          club => ({ id: club.id, language: club.name.language, name: club.name.text, slug: club.slug }),
+        ),
       getClubByName: GetClubByName(clubs),
       getClubBySlug: GetClubBySlug(clubs),
       getClubsThatAPrereviewerLeads: flow(GetClubsThatAPrereviewerLeads(clubs), Effect.succeed),

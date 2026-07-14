@@ -35,7 +35,14 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { type ClubId, getClubByName, getClubName, getClubNameAndFormerNames, getClubSlug } from '../../Clubs/index.ts'
+import {
+  type ClubId,
+  type ClubName,
+  getClubByName,
+  getClubName,
+  getClubNameAndFormerNames,
+  getClubSlug,
+} from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import {
@@ -606,7 +613,7 @@ export const publishDepositionOnZenodo = (
   )
 
 export const createRecordOnZenodo: (
-  newPrereview: NewPrereview,
+  newPrereview: Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> },
 ) => RTE.ReaderTaskEither<
   PublicUrlEnv & ZenodoAuthenticatedEnv & GetPreprintSubjectsEnv & IsReviewRequestedEnv & L.LoggerEnv,
   'unavailable',
@@ -686,7 +693,7 @@ ${comment.comment.toString()}`,
 
 function createDepositMetadata(
   deposition: EmptyDeposition,
-  newPrereview: NewPrereview,
+  newPrereview: Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> },
   subjects: ReadonlyArray<{ id: URL; name: Name }>,
   requested: boolean,
 ) {
@@ -715,7 +722,7 @@ function createDepositMetadata(
             ),
           ),
           contributors: Option.match(newPrereview.club, {
-            onSome: club => [{ name: getClubName(club).text, type: 'ResearchGroup' }],
+            onSome: club => [{ name: club.name, type: 'ResearchGroup' }],
             onNone: () => undefined,
           }),
           language: Option.getOrUndefined(newPrereview.language),

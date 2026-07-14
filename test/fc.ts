@@ -1369,6 +1369,14 @@ export const clubDetails = (): fc.Arbitrary<Clubs.ClubDetails> =>
     { requiredKeys: ['id', 'name', 'slug', 'description', 'added', 'leads'] },
   )
 
+export const clubName = (): fc.Arbitrary<Clubs.ClubName> =>
+  fc.record({
+    id: uuid(),
+    language: languageCode(),
+    name: name(),
+    slug: slug(),
+  })
+
 export const pseudonym = (): fc.Arbitrary<Pseudonym> => Arbitrary.make(PseudonymSchema)
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())

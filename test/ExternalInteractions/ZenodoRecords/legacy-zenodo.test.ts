@@ -24,7 +24,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName, getClubNameAndFormerNames, getClubSlug } from '../../../src/Clubs/index.ts'
+import { type ClubName, getClubName, getClubNameAndFormerNames, getClubSlug } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -4305,11 +4305,11 @@ describe('createRecordOnZenodo', () => {
     it.effect.prop(
       'with a PREreview',
       [
-        fc.record<NewPrereview>({
+        fc.record<Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> }>({
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.publicPersona(),
-          club: fc.maybe(fc.clubId()),
+          club: fc.maybe(fc.clubName()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4423,7 +4423,7 @@ describe('createRecordOnZenodo', () => {
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
                         ...Option.match(newPrereview.club, {
-                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onSome: club => ({ contributors: [{ name: club.name, type: 'ResearchGroup' }] }),
                           onNone: () => ({}),
                         }),
                         license: match(newPrereview.license)
@@ -4495,11 +4495,11 @@ ${newPrereview.review.toString()}`,
     it.effect.prop(
       'with a Structured PREreview',
       [
-        fc.record<NewPrereview>({
+        fc.record<Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> }>({
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.publicPersona(),
-          club: fc.maybe(fc.clubId()),
+          club: fc.maybe(fc.clubName()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4613,7 +4613,7 @@ ${newPrereview.review.toString()}`,
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
                         ...Option.match(newPrereview.club, {
-                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onSome: club => ({ contributors: [{ name: club.name, type: 'ResearchGroup' }] }),
                           onNone: () => ({}),
                         }),
                         license: match(newPrereview.license)
@@ -4689,11 +4689,11 @@ ${newPrereview.review.toString()}`,
     it.effect.prop(
       'with a PREreview',
       [
-        fc.record<NewPrereview>({
+        fc.record<Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> }>({
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.pseudonymPersona(),
-          club: fc.maybe(fc.clubId()),
+          club: fc.maybe(fc.clubName()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4791,7 +4791,7 @@ ${newPrereview.review.toString()}`,
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
                         ...Option.match(newPrereview.club, {
-                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onSome: club => ({ contributors: [{ name: club.name, type: 'ResearchGroup' }] }),
                           onNone: () => ({}),
                         }),
                         license: match(newPrereview.license)
@@ -4861,11 +4861,11 @@ ${newPrereview.review.toString()}`,
     it.effect.prop(
       'with a Structured PREreview',
       [
-        fc.record<NewPrereview>({
+        fc.record<Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> }>({
           conduct: fc.constant('yes'),
           otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
           persona: fc.pseudonymPersona(),
-          club: fc.maybe(fc.clubId()),
+          club: fc.maybe(fc.clubName()),
           preprint: fc.preprintTitle(),
           review: fc.html(),
           language: fc.maybe(fc.languageCode()),
@@ -4963,7 +4963,7 @@ ${newPrereview.review.toString()}`,
                             .otherwise(number => [{ name: `${number} other authors` }]),
                         ],
                         ...Option.match(newPrereview.club, {
-                          onSome: club => ({ contributors: [{ name: getClubName(club).text, type: 'ResearchGroup' }] }),
+                          onSome: club => ({ contributors: [{ name: club.name, type: 'ResearchGroup' }] }),
                           onNone: () => ({}),
                         }),
                         license: match(newPrereview.license)
@@ -5036,11 +5036,11 @@ ${newPrereview.review.toString()}`,
   it.effect.prop(
     'Zenodo is unavailable',
     [
-      fc.record<NewPrereview>({
+      fc.record<Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> }>({
         conduct: fc.constant('yes'),
         otherAuthors: fc.array(fc.record({ name: fc.name(), emailAddress: fc.emailAddress() })),
         persona: fc.persona(),
-        club: fc.maybe(fc.clubId()),
+        club: fc.maybe(fc.clubName()),
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),

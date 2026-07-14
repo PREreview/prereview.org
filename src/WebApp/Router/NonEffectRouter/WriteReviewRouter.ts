@@ -1,4 +1,4 @@
-import { Array, Effect, flow, pipe, Redacted } from 'effect'
+import { Array, Effect, flow, Option, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -7,6 +7,7 @@ import type * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
+import { Clubs } from '../../../Clubs/index.ts'
 import type { Locale } from '../../../Context.ts'
 import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -478,7 +479,18 @@ export const WriteReviewRouter = pipe(
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
-    ZenodoRecords.createRecordOnZenodo(newPrereview),
+    EffectToFpts.toReaderTaskEither(
+      Effect.gen(function* () {
+        const clubs = yield* Clubs
+
+        const club = yield* Effect.transposeOption(
+          Option.map(newPrereview.club, id => clubs.getClubName(Uuid.Uuid(id))),
+        )
+
+        return { ...newPrereview, club }
+      }).pipe(Effect.catchTag('ClubNotFound', () => Effect.fail('unavailable' as const))),
+    ),
+    RTE.chainW(ZenodoRecords.createRecordOnZenodo),
     RTE.chainFirstW(([, review]) =>
       RTE.asksReaderTaskEitherW((env: EffectToFpts.EffectEnv<Locale | Email.Email>) =>
         pipe(

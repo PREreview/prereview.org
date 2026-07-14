@@ -30,6 +30,7 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LoggerEnv } from 'logger-fp-ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
+import type { Clubs } from '../../../Clubs/index.ts'
 import type { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { type EnabledLocales, Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
@@ -198,6 +199,7 @@ export interface Env {
   method: HttpMethod.HttpMethod
   fileSystem: FileSystem.FileSystem
   runtime: Runtime.Runtime<
+    | Clubs
     | CachingHttpClient.HttpCache
     | CommunitySlack.CommunitySlack
     | ContactEmailAddresses
