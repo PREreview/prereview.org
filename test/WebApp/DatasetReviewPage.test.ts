@@ -1,5 +1,6 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
+import { Clubs } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
@@ -20,8 +21,9 @@ describe('DatasetReviewPage', () => {
         fc.publishedDatasetReview({ author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }) }),
         fc.dataset(),
         fc.publicPersona(),
+        fc.clubName(),
       ],
-      ([locale, datasetReviewId, publishedReview, dataset, publicPersona]) =>
+      ([locale, datasetReviewId, publishedReview, dataset, publicPersona, club]) =>
         Effect.gen(function* () {
           const actual = yield* _.DatasetReviewPage({ datasetReviewId })
 
@@ -37,11 +39,18 @@ describe('DatasetReviewPage', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(
+              Clubs,
+              Option.match(publishedReview.clubId, {
+                onSome: () => ({ getClubName: () => Effect.succeed(club) }),
+                onNone: () => ({}),
+              }),
+            ),
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
-          ),
+          ]),
           Effect.provide(
             Layer.mock(Datasets.Datasets, {
               getDataset: () => Effect.succeed(dataset),
@@ -64,8 +73,9 @@ describe('DatasetReviewPage', () => {
         fc.publishedDatasetReview({ author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }) }),
         fc.dataset(),
         fc.pseudonymPersona(),
+        fc.clubName(),
       ],
-      ([locale, datasetReviewId, publishedReview, dataset, pseudonymPersona]) =>
+      ([locale, datasetReviewId, publishedReview, dataset, pseudonymPersona, club]) =>
         Effect.gen(function* () {
           const actual = yield* _.DatasetReviewPage({ datasetReviewId })
 
@@ -81,11 +91,18 @@ describe('DatasetReviewPage', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.mock(
+              Clubs,
+              Option.match(publishedReview.clubId, {
+                onSome: () => ({ getClubName: () => Effect.succeed(club) }),
+                onNone: () => ({}),
+              }),
+            ),
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
-          ),
+          ]),
           Effect.provide(
             Layer.mock(Datasets.Datasets, {
               getDataset: () => Effect.succeed(dataset),
@@ -131,11 +148,12 @@ describe('DatasetReviewPage', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(
+        Effect.provide([
+          Layer.mock(Clubs, {}),
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => Effect.succeed(publishedReview),
           }),
-        ),
+        ]),
         Effect.provide(
           Layer.mock(Datasets.Datasets, {
             getDataset: () => error,
@@ -167,11 +185,12 @@ describe('DatasetReviewPage', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(
+        Effect.provide([
+          Layer.mock(Clubs, {}),
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => Effect.succeed(publishedReview),
           }),
-        ),
+        ]),
         Effect.provide(
           Layer.mock(Datasets.Datasets, {
             getDataset: () => Effect.succeed(dataset),
@@ -200,11 +219,12 @@ describe('DatasetReviewPage', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(
+      Effect.provide([
+        Layer.mock(Clubs, {}),
         Layer.mock(DatasetReviews.DatasetReviewQueries, {
           getPublishedReview: () => new DatasetReviews.UnknownDatasetReview({}),
         }),
-      ),
+      ]),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),
       Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
       Effect.provideService(Locale, locale),
@@ -224,11 +244,12 @@ describe('DatasetReviewPage', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(
+      Effect.provide([
+        Layer.mock(Clubs, {}),
         Layer.mock(DatasetReviews.DatasetReviewQueries, {
           getPublishedReview: () => new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
         }),
-      ),
+      ]),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),
       Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
       Effect.provideService(Locale, locale),
@@ -248,11 +269,12 @@ describe('DatasetReviewPage', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(
+      Effect.provide([
+        Layer.mock(Clubs, {}),
         Layer.mock(DatasetReviews.DatasetReviewQueries, {
           getPublishedReview: () => new Queries.UnableToQuery({}),
         }),
-      ),
+      ]),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),
       Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
       Effect.provideService(Locale, locale),

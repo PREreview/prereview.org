@@ -1,5 +1,5 @@
 import { Effect, Option } from 'effect'
-import { getClubName, getClubSlug } from '../../Clubs/index.ts'
+import { Clubs } from '../../Clubs/index.ts'
 import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
@@ -11,16 +11,18 @@ import { createDatasetReviewPage } from './DatasetReviewPage.ts'
 
 export const DatasetReviewPage = Effect.fn(
   function* ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) {
+    const clubs = yield* Clubs
     const locale = yield* Locale
 
     const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
-    const { author, otherAuthors, dataset } = yield* Effect.all(
+    const { author, otherAuthors, dataset, club } = yield* Effect.all(
       {
         author: Prereviewers.getPersona(datasetReview.author),
         otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
           concurrency: 'inherit',
         }),
         dataset: Datasets.getDataset(datasetReview.dataset),
+        club: Effect.transposeOption(Option.map(datasetReview.clubId, id => clubs.getClubName(Uuid.Uuid(id)))),
       },
       { concurrency: 'inherit' },
     )
@@ -32,17 +34,13 @@ export const DatasetReviewPage = Effect.fn(
         otherAuthors,
         anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
         dataset: { id: dataset.id, title: dataset.title.text, language: dataset.title.language, url: dataset.url },
-        club: Option.map(datasetReview.clubId, id => ({
-          id: Uuid.Uuid(id),
-          name: getClubName(id).text,
-          language: getClubName(id).language,
-          slug: getClubSlug(id),
-        })),
+        club,
       },
       locale,
     })
   },
   Effect.catchTags({
+    ClubNotFound: () => HavingProblemsPage,
     DatasetIsNotFound: () => HavingProblemsPage,
     DatasetIsUnavailable: () => HavingProblemsPage,
     DatasetReviewHasNotBeenPublished: () => PageNotFound,
