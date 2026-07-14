@@ -1,8 +1,22 @@
 import type { HttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
+import {
+  type Array,
+  Context,
+  Duration,
+  Effect,
+  flow,
+  Layer,
+  Match,
+  Option,
+  pipe,
+  Record,
+  Redacted,
+  Scope,
+} from 'effect'
 import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
+import * as Clubs from './Clubs/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import { SessionStore } from './Context.ts'
@@ -237,6 +251,7 @@ export const Program = pipe(
       }),
     ),
   ]),
+  Layer.provide(Clubs.layer(Record.values(Clubs.clubs) as never as Array.NonEmptyReadonlyArray<Clubs.ClubDetails>)),
   Layer.provide([Email.layer, LanguageDetection.layerCld]),
   Layer.provide([
     CoarNotify.layer,

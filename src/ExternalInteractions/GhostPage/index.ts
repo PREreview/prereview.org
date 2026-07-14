@@ -1,4 +1,5 @@
 import { Context, Data, Effect, flow, identity, Layer, Scope } from 'effect'
+import { Clubs } from '../../Clubs/index.ts'
 import type { Locale } from '../../Context.ts'
 import type { Ghost } from '../../ExternalApis/index.ts'
 import type { Html } from '../../html.ts'
@@ -24,11 +25,14 @@ export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, i
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
+    const clubs = yield* Clubs
     const context = yield* Effect.andThen(Effect.context<Ghost.Ghost>(), Context.omit(Scope.Scope))
+
+    const listOfClubs = yield* clubs.listClubs
 
     return flow(
       getGhostIdAndLocaleForPage,
-      Effect.bind('html', ({ id, locale }) => Effect.andThen(getPage(id), addListOfClubs(locale))),
+      Effect.bind('html', ({ id, locale }) => Effect.andThen(getPage(id), addListOfClubs(locale, listOfClubs))),
       Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
       Effect.catchTag('GhostPageNotFound', 'GhostPageUnavailable', () => new PageIsUnavailable()),
       Effect.provide(context),
