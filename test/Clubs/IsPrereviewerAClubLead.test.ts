@@ -49,7 +49,7 @@ it.each<[string, _.Input, _.Result]>([
   ['2 clubs', orcidId2Clubs, true],
   ['0 clubs', orcidId0Clubs, false],
 ])('with a club name (%s)', (_name, input, expected) => {
-  const actual = _.IsPreviewerAClubLead(clubs)(input)
+  const actual = _.IsPrereviewerAClubLead(clubs)(input)
 
   expect(actual).toStrictEqual(expected)
 })

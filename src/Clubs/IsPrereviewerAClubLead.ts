@@ -6,7 +6,7 @@ export type Input = OrcidId
 
 export type Result = boolean
 
-export const IsPreviewerAClubLead =
+export const IsPrereviewerAClubLead =
   (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
   (input: Input): Result =>
     Array.some(clubs, club => Array.contains(club.leads, input))
