@@ -1,7 +1,6 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
-import { getClubName, getClubSlug } from '../../Clubs/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
@@ -133,9 +132,9 @@ function renderContentForOrcidId(
                         Array.map(
                           club =>
                             html`<a
-                              href="${Routes.ClubProfile.href({ slug: getClubSlug(club) })}"
-                              ${languageAttributesFor(getClubName(club).language)}
-                              >${getClubName(club).text}</a
+                              href="${Routes.ClubProfile.href({ slug: club.slug })}"
+                              ${languageAttributesFor(club.language)}
+                              >${club.name}</a
                             >`,
                         ),
                         formatList(locale),
