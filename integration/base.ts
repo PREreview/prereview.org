@@ -2115,6 +2115,16 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' }, 'credit-name': null },
       },
     })
+    fetch.get('http://api.orcid.test/v3.0/0000-0001-6478-3815/personal-details', {
+      body: {
+        name: { 'given-names': { value: 'Pablo' }, 'family-name': { value: 'Ranea-Robles' }, 'credit-name': null },
+      },
+    })
+    fetch.get('http://api.orcid.test/v3.0/0000-0001-9039-9219/personal-details', {
+      body: {
+        name: { 'given-names': { value: 'Jonathon' }, 'family-name': { value: 'Coates' }, 'credit-name': null },
+      },
+    })
 
     fetch.get('https://api.datacite.org/dois/10.5061%2Fdryad.wstqjq2n3', {
       body: {
