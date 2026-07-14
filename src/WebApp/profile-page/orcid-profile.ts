@@ -1,19 +1,19 @@
-import { Array, flow, identity, pipe } from 'effect'
+import { Effect, flow, identity, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { maybeGetAvatar } from '../../avatar.ts'
 import { maybeGetCareerStage } from '../../career-stage.ts'
-import { type ClubName, getClubName, getClubSlug, isLeadFor } from '../../Clubs/index.ts'
+import { type ClubName, Clubs } from '../../Clubs/index.ts'
 import { maybeIsOpenForRequests } from '../../is-open-for-requests.ts'
 import { maybeGetLanguages } from '../../languages.ts'
 import { maybeGetLocation } from '../../location.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { type SlackUser, maybeGetSlackUser } from '../../slack-user.ts'
 import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { OrcidProfileId } from '../../types/profile-id.ts'
-import { Uuid } from '../../types/Uuid.ts'
 import { getName } from './name.ts'
 import { type Prereviews, getPrereviews } from './prereviews.ts'
 
@@ -43,15 +43,17 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.apSW('location', maybeGetPublicLocation(profileId.orcid)),
     RTE.apSW('languages', maybeGetPublicLanguages(profileId.orcid)),
     RTE.apSW('avatar', maybeGetAvatar(profileId.orcid)),
-    RTE.let('orcid', () => profileId.orcid),
-    RTE.let('clubs', () =>
-      Array.map(isLeadFor(profileId.orcid), id => ({
-        id: Uuid(id),
-        name: getClubName(id).text,
-        language: getClubName(id).language,
-        slug: getClubSlug(id),
-      })),
+    RTE.apSW(
+      'clubs',
+      EffectToFpts.toReaderTaskEither(
+        Effect.gen(function* () {
+          const clubs = yield* Clubs
+
+          return yield* clubs.getClubsThatAPrereviewerLeads(profileId.orcid)
+        }),
+      ),
     ),
+    RTE.let('orcid', () => profileId.orcid),
     RTE.apSW('slackUser', maybeGetSlackUser(profileId.orcid)),
     RTE.apSW('isOpenForRequests', maybeIsPublicallyOpenForRequests(profileId.orcid)),
   ) satisfies RTE.ReaderTaskEither<any, any, OrcidProfile> // eslint-disable-line @typescript-eslint/no-explicit-any

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { Clubs } from '../../../src/Clubs/index.ts'
 import {
   PseudonymHasBeenReplaced,
   PseudonymInUse,
@@ -61,6 +62,7 @@ describe('profile', () => {
           fc.either(fc.constant('not-found'), fc.languages()),
           fc.either(fc.constant('not-found'), fc.slackUser()),
           fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
+          fc.array(fc.clubName()),
         ],
         ([
           locale,
@@ -74,6 +76,7 @@ describe('profile', () => {
           languages,
           slackUser,
           openForRequests,
+          clubs,
         ]) =>
           Effect.gen(function* () {
             const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
@@ -85,7 +88,7 @@ describe('profile', () => {
             const getLanguages = vi.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
             const getSlackUser = vi.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
             const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -120,7 +123,12 @@ describe('profile', () => {
             expect(getResearchInterests).toHaveBeenCalledWith(profile.orcid)
             expect(getSlackUser).toHaveBeenCalledWith(profile.orcid)
             expect(isOpenForRequests).toHaveBeenCalledWith(profile.orcid)
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -157,10 +165,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, avatar, prereviews]) =>
+        ([locale, profile, avatar, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -185,7 +194,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -222,10 +236,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, avatar, prereviews]) =>
+        ([locale, profile, avatar, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -250,7 +265,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -287,10 +307,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -316,7 +337,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -353,10 +379,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -381,7 +408,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -418,10 +450,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -446,7 +479,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -483,10 +521,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -511,7 +550,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -548,10 +592,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -576,7 +621,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -613,10 +663,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -641,7 +692,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -678,10 +734,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -706,7 +763,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
 
       it.effect.prop(
@@ -743,10 +805,11 @@ describe('profile', () => {
                 .map(args => new Prereviews.RecentDatasetPrereview(args)),
             ),
           ),
+          fc.array(fc.clubName()),
         ],
-        ([locale, profile, name, prereviews]) =>
+        ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -771,7 +834,12 @@ describe('profile', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+          }).pipe(
+            Effect.provide([
+              Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
+              Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }),
+            ]),
+          ),
       )
     })
 
@@ -780,7 +848,7 @@ describe('profile', () => {
       [fc.supportedLocale(), fc.orcidProfileId()],
       ([locale, profile]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
@@ -802,7 +870,12 @@ describe('profile', () => {
             status: StatusCodes.SeeOther,
             location: new URL(`https://orcid.org/${profile.orcid}`),
           })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(false) }))),
+        }).pipe(
+          Effect.provide([
+            Layer.mock(Clubs, {}),
+            Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(false) }),
+          ]),
+        ),
     )
   })
 
@@ -845,7 +918,7 @@ describe('profile', () => {
         ([locale, profile, prereviews]) =>
           Effect.gen(function* () {
             const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -873,7 +946,10 @@ describe('profile', () => {
             })
             expect(getPrereviews).toHaveBeenCalledWith(profile)
           }).pipe(
-            Effect.provide(Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()) })),
+            Effect.provide([
+              Layer.mock(Clubs, {}),
+              Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()) }),
+            ]),
           ),
       )
     })
@@ -881,10 +957,10 @@ describe('profile', () => {
 
   it.effect.prop(
     "when the PREreviews can't be loaded",
-    [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.name(), { nil: undefined })],
-    ([locale, profile, avatar, name]) =>
+    [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.name(), { nil: undefined }), fc.array(fc.clubName())],
+    ([locale, profile, avatar, name, clubs]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Prereviewers>()
+        const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.profile({ locale, profile })({
@@ -910,12 +986,13 @@ describe('profile', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(
+        Effect.provide([
+          Layer.mock(Clubs, { getClubsThatAPrereviewerLeads: () => Effect.succeed(clubs) }),
           Layer.mock(Prereviewers, {
             isRegistered: () => Effect.succeed(true),
             isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()),
           }),
-        ),
+        ]),
       ),
   )
 
@@ -924,7 +1001,7 @@ describe('profile', () => {
     [fc.supportedLocale(), fc.pseudonymProfileId()],
     ([locale, profile]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Prereviewers>()
+        const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.profile({ locale, profile })({
@@ -950,7 +1027,10 @@ describe('profile', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymNotInUse()) })),
+        Effect.provide([
+          Layer.mock(Clubs, {}),
+          Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymNotInUse()) }),
+        ]),
       ),
   )
 
@@ -959,7 +1039,7 @@ describe('profile', () => {
     [fc.supportedLocale(), fc.pseudonymProfileId(), fc.pseudonym()],
     ([locale, profile, replacedWith]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Prereviewers>()
+        const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.profile({ locale, profile })({
@@ -982,11 +1062,12 @@ describe('profile', () => {
           location: format(profileMatch.formatter, { profile: ProfileId.forPseudonym(replacedWith) }),
         })
       }).pipe(
-        Effect.provide(
+        Effect.provide([
+          Layer.mock(Clubs, {}),
           Layer.mock(Prereviewers, {
             isPseudonymInUse: () => Effect.succeed(new PseudonymHasBeenReplaced({ replacedWith })),
           }),
-        ),
+        ]),
       ),
   )
 })
