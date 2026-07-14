@@ -3348,7 +3348,14 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                 named: [{ name: Name('PREreviewer'), orcid: undefined }],
                 anonymous: expectedAnonymous,
               },
-              club,
+              club: club
+                ? {
+                    id: Uuid.Uuid(club),
+                    name: getClubName(club).text,
+                    language: getClubName(club).language,
+                    slug: getClubSlug(club),
+                  }
+                : undefined,
               id: 1061864,
               language: 'en',
               text: rawHtml('Some text'),

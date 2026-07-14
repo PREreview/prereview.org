@@ -861,7 +861,18 @@ function recordToPreprintPrereview(
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(getAuthors(record)),
-        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
+        club: RTE.right(
+          pipe(
+            getReviewClub(record),
+            Option.map(id => ({
+              id: Uuid.Uuid(id),
+              name: getClubName(id).text,
+              language: getClubName(id).language,
+              slug: getClubSlug(id),
+            })),
+            Option.getOrUndefined,
+          ),
+        ),
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(

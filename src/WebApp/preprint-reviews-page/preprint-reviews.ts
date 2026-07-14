@@ -3,7 +3,6 @@ import { isDoi, toUrl } from 'doi-ts'
 import { Array, flow, identity, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P, P as p } from 'ts-pattern'
-import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
@@ -153,23 +152,19 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
         <header>
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
             ${match([countAuthors(review), review.club])
-              .with([1, P.string], ([, club]) =>
+              .with([1, P.nonNullable], ([, club]) =>
                 t('prereviewByOneAuthorInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                  club: html`<span ${languageAttributesFor(getClubName(club).language)}
-                    >${getClubName(club).text}</span
-                  >`,
+                  club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                 }),
               )
               .with([1, undefined], () =>
                 t('prereviewByOneAuthor')({ author: html`<bdi>${review.authors.named[0].name}</bdi>` }),
               )
-              .with([P.number, P.string], ([, club]) =>
+              .with([P.number, P.nonNullable], ([, club]) =>
                 t('prereviewByMultipleAuthorsInClub')({
                   author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                  club: html`<span ${languageAttributesFor(getClubName(club).language)}
-                    >${getClubName(club).text}</span
-                  >`,
+                  club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                 }),
               )
               .with([P.number, undefined], () =>
@@ -192,9 +187,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
                 review.club
                   ? t('authoredByInClub')({
                       authors,
-                      club: html`<span ${languageAttributesFor(getClubName(review.club).language)}
-                        >${getClubName(review.club).text}</span
-                      >`,
+                      club: html`<span ${languageAttributesFor(review.club.language)}>${review.club.name}</span>`,
                       visuallyHidden,
                     })
                   : t('authoredBy')({ authors, visuallyHidden }),
@@ -211,10 +204,10 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           ${match([countAuthors(review), review.club])
-            .with([1, P.string], ([, club]) =>
+            .with([1, P.nonNullable], ([, club]) =>
               t('readPrereviewByOneAuthorInClub')({
                 author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                club: html`<span ${languageAttributesFor(getClubName(club).language)}>${getClubName(club).text}</span>`,
+                club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                 visuallyHidden,
               }),
             )
@@ -224,10 +217,10 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
                 visuallyHidden,
               }),
             )
-            .with([P.number, P.string], ([, club]) =>
+            .with([P.number, P.nonNullable], ([, club]) =>
               t('readPrereviewByMultipleAuthorsInClub')({
                 author: html`<bdi>${review.authors.named[0].name}</bdi>`,
-                club: html`<span ${languageAttributesFor(getClubName(club).language)}>${getClubName(club).text}</span>`,
+                club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                 visuallyHidden,
               }),
             )

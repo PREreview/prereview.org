@@ -2,7 +2,7 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid as OrcidId } from 'orcid-id-ts'
-import type { ClubId, ClubName } from '../Clubs/index.ts'
+import type { ClubName } from '../Clubs/index.ts'
 import type * as Datasets from '../Datasets/index.ts'
 import type { Html } from '../html.ts'
 import type * as Preprints from '../Preprints/index.ts'
@@ -76,7 +76,7 @@ export interface PreprintPrereview {
     named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
     anonymous: number
   }
-  club?: ClubId
+  club?: ClubName
   id: number
   language?: LanguageCode
   text: Html

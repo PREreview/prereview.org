@@ -8,6 +8,8 @@ import { PublicPersona } from '../../src/Prereviewers/index.ts'
 import type { PreprintPrereview } from '../../src/Prereviews/index.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Slug } from '../../src/types/Slug.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import { createPage } from '../../src/WebApp/preprint-reviews-page/preprint-reviews.ts'
 import { expect, test } from '../base.ts'
 
@@ -289,7 +291,12 @@ const prereview2 = {
     named: [{ name: Name('Alain Manuel Chaple Gil'), orcid: OrcidId('0000-0002-8571-4429') }],
     anonymous: 0,
   },
-  club: '4f8076fc-2219-49fc-be5f-6682ca7cc009',
+  club: {
+    id: Uuid('4f8076fc-2219-49fc-be5f-6682ca7cc009'),
+    name: Name('Reviewing Dental Articles Club'),
+    language: 'en',
+    slug: Slug('reviewing-dental-articles-club'),
+  },
   language: 'en',
   text: html`<p>
       The article addresses an important issue because it considers verifying the implementation of necessary programs
@@ -665,7 +672,12 @@ const prereview4 = {
     ],
     anonymous: 3,
   },
-  club: '206ef17f-c5f3-44d3-acee-ba9b1f8299e9',
+  club: {
+    id: Uuid('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
+    language: 'en',
+    name: Name('HHMI Transparent and Accountable Peer Review Training Program'),
+    slug: Slug('hhmi-training-program'),
+  },
   language: 'en',
   text: html`<p>
       The SARS-CoV-2 virus has experienced tremendous selective pressure over the course of the global pandemic with
@@ -751,7 +763,12 @@ const prereview5 = {
     ],
     anonymous: 0,
   },
-  club: '998f32b4-ced9-49f8-8042-ce8fe41e62ec',
+  club: {
+    id: Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec'),
+    language: 'en',
+    name: Name('Language Club'),
+    slug: Slug('language-club'),
+  },
   language: 'pt',
   text: html`<p><b>Introdução</b></p>
     <p>
