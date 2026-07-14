@@ -45,7 +45,7 @@ const clubs = [
   },
 ] satisfies Array.NonEmptyReadonlyArray<ClubDetails>
 
-it.fails.each<[string, Name, _.Result]>([
+it.each<[string, Name, _.Result]>([
   ['by name', clubName, Either.right({ id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text })],
   [
     'by former name',
