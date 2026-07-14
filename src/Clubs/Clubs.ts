@@ -41,7 +41,7 @@ export interface ClubName {
 export class Clubs extends Context.Tag('Clubs')<
   Clubs,
   {
-    listClubs: Effect.Effect<ReadonlyArray<ClubName>>
+    listClubs: Effect.Effect<Array.NonEmptyReadonlyArray<ClubName>>
     getClubDetails: (clubId: Uuid) => Effect.Effect<ClubDetails, ClubNotFound>
     getClubByName: (name: Name) => Effect.Effect<ClubName, ClubNotFound>
     getClubBySlug: (slug: Slug) => Effect.Effect<ClubDetails, ClubNotFound>
