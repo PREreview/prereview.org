@@ -42,7 +42,7 @@ export class Clubs extends Context.Tag('Clubs')<
     getClubDetails: (clubId: Uuid) => Effect.Effect<ClubDetails, ClubNotFound>
     getClubByName: (name: Name) => Effect.Effect<ClubName, ClubNotFound>
     getClubBySlug: (slug: Slug) => Effect.Effect<ClubName, ClubNotFound>
-    prereviewerIsLeadFor: (orcidId: OrcidId) => Effect.Effect<ReadonlyArray<ClubName>>
+    getClubsThatAPrereviewerLeads: (orcidId: OrcidId) => Effect.Effect<ReadonlyArray<ClubName>>
     isPrereviewerAClubLead: (orcidId: OrcidId) => Effect.Effect<boolean>
   }
 >() {}
@@ -75,7 +75,7 @@ export const layer = Layer.succeed(Clubs, {
       }),
       onFailure: () => new ClubNotFound(),
     }),
-  prereviewerIsLeadFor: (orcidId: OrcidId) =>
+  getClubsThatAPrereviewerLeads: (orcidId: OrcidId) =>
     Effect.succeed(
       Array.map(isLeadFor(orcidId), id => ({
         id: Uuid(id),
