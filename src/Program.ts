@@ -251,7 +251,18 @@ export const Program = pipe(
       }),
     ),
   ]),
-  Layer.provide(Clubs.layer(Record.values(Clubs.clubs) as never as Array.NonEmptyReadonlyArray<Clubs.ClubDetails>)),
+  Layer.provide(
+    Clubs.layer(
+      Record.collect(
+        Clubs.clubs,
+        (id, club) =>
+          ({
+            id: Uuid.Uuid(id),
+            ...club,
+          }) satisfies Clubs.ClubDetails,
+      ) as never as Array.NonEmptyReadonlyArray<Clubs.ClubDetails>,
+    ),
+  ),
   Layer.provide([Email.layer, LanguageDetection.layerCld]),
   Layer.provide([
     CoarNotify.layer,
