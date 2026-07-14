@@ -1,6 +1,6 @@
 import { Array, flow, identity, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { getClubName } from '../../Clubs/index.ts'
+import type { ClubName } from '../../Clubs/index.ts'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
@@ -12,10 +12,11 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset' | 'clubId'> & {
   readonly author: Prereviewers.Persona
   readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number
+  readonly club: Option.Option<ClubName>
 }
 
 export const createDatasetReviewsPage = ({
@@ -113,17 +114,15 @@ export const createDatasetReviewsPage = ({
                   <article aria-labelledby="prereview-${datasetReview.id}-title">
                     <header>
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
-                        ${Option.match(datasetReview.clubId, {
-                          onSome: clubId =>
+                        ${Option.match(datasetReview.club, {
+                          onSome: club =>
                             t(
                               countAuthors(datasetReview) > 1
                                 ? 'prereviewTitleMultipleAuthorsInClub'
                                 : 'prereviewTitleInClub',
                             )({
                               author: displayAuthor(datasetReview.author),
-                              club: html`<span ${languageAttributesFor(getClubName(clubId).language)}
-                                >${getClubName(clubId).text}</span
-                              >`,
+                              club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                             }),
                           onNone: () =>
                             t(countAuthors(datasetReview) > 1 ? 'prereviewTitleMultipleAuthors' : 'prereviewTitle')({
@@ -133,14 +132,12 @@ export const createDatasetReviewsPage = ({
                       </h3>
 
                       <div class="byline">
-                        ${Option.match(datasetReview.clubId, {
-                          onSome: clubId =>
+                        ${Option.match(datasetReview.club, {
+                          onSome: club =>
                             t('prereviewAuthoredByInClub')({
                               author: authorList(datasetReview, locale),
                               visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
-                              club: html`<span ${languageAttributesFor(getClubName(clubId).language)}
-                                >${getClubName(clubId).text}</span
-                              >`,
+                              club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                             }),
                           onNone: () =>
                             t('prereviewAuthoredBy')({
@@ -152,8 +149,8 @@ export const createDatasetReviewsPage = ({
                     </header>
 
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
-                      ${Option.match(datasetReview.clubId, {
-                        onSome: clubId =>
+                      ${Option.match(datasetReview.club, {
+                        onSome: club =>
                           t(
                             countAuthors(datasetReview) > 1
                               ? 'readPrereviewMultipleAuthorsInClub'
@@ -161,9 +158,7 @@ export const createDatasetReviewsPage = ({
                           )({
                             author: displayAuthor(datasetReview.author),
                             visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
-                            club: html`<span ${languageAttributesFor(getClubName(clubId).language)}
-                              >${getClubName(clubId).text}</span
-                            >`,
+                            club: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>`,
                           }),
                         onNone: () =>
                           t(countAuthors(datasetReview) > 1 ? 'readPrereviewMultipleAuthors' : 'readPrereview')({
