@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Equal, flow, Option, pipe, type Record, Struct } from 'effect'
+import { Array, flow, pipe, type Record, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { type Html, html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { Name } from '../types/Name.ts'
-import { OrcidId, OrcidIdEquivalence } from '../types/OrcidId.ts'
+import { OrcidId } from '../types/OrcidId.ts'
 import { Slug } from '../types/Slug.ts'
 import type { ClubId } from './ClubId.ts'
 
-export interface Club {
+interface Club {
   readonly name: {
     readonly language: LanguageCode
     readonly text: Name
@@ -25,47 +25,9 @@ export interface Club {
   readonly joinLink?: URL
 }
 
-export const getClubDetails = (id: ClubId) => clubs[id]
-
 export const getClubName = (id: ClubId) => clubs[id].name
 
 export const getClubSlug = (id: ClubId) => clubs[id].slug
-
-export const getClubNameAndFormerNames = (id: ClubId): Array.NonEmptyReadonlyArray<Name> => [
-  clubs[id].name.text,
-  ...(clubs[id].formerNames ?? []),
-]
-
-export const getClubAddedDate = (id: ClubId) => clubs[id].added
-
-export const getClubByName = (name: Name): Option.Option<ClubId> =>
-  Option.orElse(getClubByCurrentName(name), () => getClubByFormerName(name))
-
-const getClubByCurrentName = (name: Name): Option.Option<ClubId> =>
-  pipe(
-    Struct.keys(clubs),
-    Array.findFirst(id => Equal.equals(clubs[id].name.text, name)),
-  )
-
-const getClubByFormerName = (name: Name): Option.Option<ClubId> =>
-  pipe(
-    Struct.keys(clubs),
-    Array.findFirst(id => Array.contains(clubs[id].formerNames ?? [], name)),
-  )
-
-export const getClubBySlug = (slug: Slug): Option.Option<ClubId> =>
-  Array.findFirst(Struct.keys(clubs), id => Equal.equals(clubs[id].slug, slug))
-
-export const isLeadFor = (orcid: OrcidId): ReadonlyArray<ClubId> =>
-  pipe(
-    Struct.keys(clubs),
-    Array.filter(
-      flow(
-        id => clubs[id].leads,
-        Array.some(lead => OrcidIdEquivalence(lead, orcid)),
-      ),
-    ),
-  )
 
 export const isAClubLead = (orcid: OrcidId): boolean =>
   pipe(Struct.keys(clubs), Array.some(flow(id => clubs[id].leads, Array.contains(orcid))))
