@@ -7,7 +7,7 @@ import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId
 import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
-import { Name, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
+import { Name, OrcidId, Pseudonym, Slug, Uuid } from '../../src/types/index.ts'
 import { createPage } from '../../src/WebApp/HomePage/HomePage.ts'
 import { expect, test } from '../base.ts'
 
@@ -61,7 +61,12 @@ const recentPrereview1 = new Prereviews.RecentPreprintPrereview({
 
 const recentPrereview2 = new Prereviews.RecentPreprintPrereview({
   id: 10888905,
-  club: '4f8076fc-2219-49fc-be5f-6682ca7cc009',
+  club: {
+    id: Uuid.Uuid('4f8076fc-2219-49fc-be5f-6682ca7cc009'),
+    name: Name.Name('Reviewing Dental Articles Club'),
+    language: 'en',
+    slug: Slug.Slug('reviewing-dental-articles-club'),
+  },
   reviewers: { named: [Name.Name('Alain Manuel Chaple Gil')], anonymous: 0 },
   published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
@@ -127,7 +132,12 @@ const recentPrereview4 = new Prereviews.RecentDatasetPrereview({
 const recentPrereview5 = new Prereviews.RecentDatasetPrereview({
   doi: Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('b589babb-9604-4c1e-abf9-5111be8dcc01'),
-  club: '998f32b4-ced9-49f8-8042-ce8fe41e62ec',
+  club: {
+    id: Uuid.Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec'),
+    language: 'en',
+    name: Name.Name('Language Club'),
+    slug: Slug.Slug('language-club'),
+  },
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     name: Name.Name('Miguel Oliveira, Jr.'),

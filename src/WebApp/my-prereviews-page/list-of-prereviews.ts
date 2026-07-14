@@ -1,6 +1,5 @@
 import { Array, flow, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import { getClubName } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -121,9 +120,7 @@ export const toResponse = (
                             'dataset-reviews-list',
                             'reviewTextInClub',
                           )({
-                            club: html`<b ${languageAttributesFor(getClubName(prereview.club).language)}
-                              >${getClubName(prereview.club).text}</b
-                            >`,
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
                             numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
                             reviewer: authorList(prereview, locale),
                             dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}

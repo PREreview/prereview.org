@@ -1,6 +1,5 @@
 import { Array, flow, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import { getClubName } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { type Html, html, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -46,9 +45,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: Name | unde
                             'reviews-list',
                             'clubReviewText',
                           )({
-                            club: html`<b ${languageAttributesFor(getClubName(prereview.club).language)}
-                              >${getClubName(prereview.club).text}</b
-                            >`,
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
                             numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                             reviewers: pipe(
                               prereview.reviewers.named,
@@ -129,9 +126,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: Name | unde
                             'dataset-reviews-list',
                             'reviewTextInClub',
                           )({
-                            club: html`<b ${languageAttributesFor(getClubName(prereview.club).language)}
-                              >${getClubName(prereview.club).text}</b
-                            >`,
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
                             numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
                             reviewer: authorList(prereview, locale),
                             dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}

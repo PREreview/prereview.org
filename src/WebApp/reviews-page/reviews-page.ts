@@ -1,7 +1,6 @@
 import { Array, flow, Match, Number, Order, pipe, String, Struct, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
-import { getClubName } from '../../Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -44,9 +43,7 @@ export const createPage = (
                             'reviews-list',
                             'clubReviewText',
                           )({
-                            club: html`<b ${languageAttributesFor(getClubName(prereview.club).language)}
-                              >${getClubName(prereview.club).text}</b
-                            >`,
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
                             numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
                             reviewers: pipe(
                               prereview.reviewers.named,
@@ -125,9 +122,7 @@ export const createPage = (
                             'dataset-reviews-list',
                             'reviewTextInClub',
                           )({
-                            club: html`<b ${languageAttributesFor(getClubName(prereview.club).language)}
-                              >${getClubName(prereview.club).text}</b
-                            >`,
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
                             numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
                             reviewer: authorList(prereview, locale),
                             dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}

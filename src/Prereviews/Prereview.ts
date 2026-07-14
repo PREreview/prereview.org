@@ -2,7 +2,7 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid as OrcidId } from 'orcid-id-ts'
-import type { ClubId } from '../Clubs/index.ts'
+import type { ClubId, ClubName } from '../Clubs/index.ts'
 import type * as Datasets from '../Datasets/index.ts'
 import type { Html } from '../html.ts'
 import type * as Preprints from '../Preprints/index.ts'
@@ -49,7 +49,7 @@ export interface RecentPrereviews {
 
 export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPrereview')<{
   id: number
-  club?: ClubId
+  club?: ClubName
   reviewers: {
     named: Array.NonEmptyReadonlyArray<Name>
     anonymous: number
@@ -64,7 +64,7 @@ export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrere
   author: Prereviewers.Persona
   otherAuthors: ReadonlyArray<Prereviewers.Persona>
   anonymousAuthors: number
-  club?: ClubId
+  club?: ClubName
   dataset: Datasets.DatasetTitle
   doi: Doi
   id: Uuid.Uuid

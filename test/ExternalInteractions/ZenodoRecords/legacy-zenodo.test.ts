@@ -24,7 +24,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName, getClubNameAndFormerNames } from '../../../src/Clubs/index.ts'
+import { getClubName, getClubNameAndFormerNames, getClubSlug } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -1914,7 +1914,12 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 preprint: preprint1,
               }),
               new Prereviews.RecentPreprintPrereview({
-                club,
+                club: {
+                  id: Uuid.Uuid(club),
+                  name: getClubName(club).text,
+                  language: getClubName(club).language,
+                  slug: getClubSlug(club),
+                },
                 id: 1065236,
                 reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
                 published: new Temporal.PlainDate(2022, 7, 5),
@@ -2859,7 +2864,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.right([
             new Prereviews.RecentPreprintPrereview({
-              club,
+              club: {
+                id: Uuid.Uuid(club),
+                name: getClubName(club).text,
+                language: getClubName(club).language,
+                slug: getClubSlug(club),
+              },
               id: 1061864,
               reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
               fields: ['13', '11'],
@@ -2868,7 +2878,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
               preprint: preprint1,
             }),
             new Prereviews.RecentPreprintPrereview({
-              club,
+              club: {
+                id: Uuid.Uuid(club),
+                name: getClubName(club).text,
+                language: getClubName(club).language,
+                slug: getClubSlug(club),
+              },
               id: 1065236,
               reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
               fields: [],
@@ -3117,7 +3132,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.right([
             new Prereviews.RecentPreprintPrereview({
-              club,
+              club: {
+                id: Uuid.Uuid(club),
+                name: getClubName(club).text,
+                language: getClubName(club).language,
+                slug: getClubSlug(club),
+              },
               id: 1061864,
               reviewers: { named: [Name('PREreviewer')], anonymous: 0 },
               fields: [],

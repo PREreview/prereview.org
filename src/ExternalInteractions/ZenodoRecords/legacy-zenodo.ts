@@ -35,7 +35,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { type ClubId, getClubByName, getClubName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
+import { type ClubId, getClubByName, getClubName, getClubNameAndFormerNames, getClubSlug } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import {
@@ -461,7 +461,7 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
     ),
     RTE.bimap(
       () => 'unavailable' as const,
-      Array.filter(recentPrereview => recentPrereview._tag === 'DatasetReview' || recentPrereview.club === club),
+      Array.filter(recentPrereview => recentPrereview._tag === 'DatasetReview' || recentPrereview.club?.id === club),
     ),
   )
 
@@ -907,7 +907,18 @@ function recordToRecentPrereview(
     getReviewedPreprintId(record),
     RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
+        club: RTE.right(
+          pipe(
+            getReviewClub(record),
+            Option.map(id => ({
+              id: Uuid.Uuid(id),
+              name: getClubName(id).text,
+              language: getClubName(id).language,
+              slug: getClubSlug(id),
+            })),
+            Option.getOrUndefined,
+          ),
+        ),
         id: RTE.right(record.id),
         reviewers: RTE.right(
           pipe(getAuthors(record), Struct.evolve({ named: authors => Array.map(authors, Struct.get('name')) })),

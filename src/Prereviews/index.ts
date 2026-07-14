@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { ClubId } from '../Clubs/index.ts'
+import { type ClubId, getClubName, getClubSlug } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
@@ -13,7 +13,7 @@ import * as Prereviewers from '../Prereviewers/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { FieldId } from '../types/field.ts'
-import type { OrcidId, Uuid } from '../types/index.ts'
+import { type OrcidId, Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
 import {
@@ -298,7 +298,14 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
     author,
     otherAuthors,
     anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
-    club: Option.getOrUndefined(datasetReview.clubId),
+    club: Option.getOrUndefined(
+      Option.map(datasetReview.clubId, id => ({
+        id: Uuid.Uuid(id),
+        name: getClubName(id).text,
+        language: getClubName(id).language,
+        slug: getClubSlug(id),
+      })),
+    ),
     dataset,
     doi: datasetReview.doi,
     id: datasetReview.id,
