@@ -4,7 +4,7 @@ import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Prereviewers from '../../src/Prereviewers/index.ts'
-import { Doi, Name, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
+import { Doi, Name, NonEmptyString, OrcidId, Pseudonym, Slug, Uuid } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/DatasetReviewPage/DatasetReviewPage.ts'
 import { expect, test } from '../base.ts'
 
@@ -38,7 +38,12 @@ test('content looks right when in a club', async ({ showPage }) => {
   const response = _.createDatasetReviewPage({
     datasetReview: {
       ...datasetReview,
-      clubId: Option.some('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
+      club: Option.some({
+        id: Uuid.Uuid('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
+        language: 'en',
+        name: Name.Name('HHMI Transparent and Accountable Peer Review Training Program'),
+        slug: Slug.Slug('hhmi-training-program'),
+      }),
     },
     locale: DefaultLocale,
   })
@@ -55,7 +60,7 @@ const datasetReview: _.DatasetReview = {
   }),
   otherAuthors: [],
   anonymousAuthors: 0,
-  clubId: Option.none(),
+  club: Option.none(),
   dataset: {
     id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,

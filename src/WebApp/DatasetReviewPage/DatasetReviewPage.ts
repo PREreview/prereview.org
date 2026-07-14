@@ -1,7 +1,7 @@
 import { Array, flow, identity, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
-import { getClubName, getClubSlug } from '../../Clubs/index.ts'
+import type { ClubName } from '../../Clubs/index.ts'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
@@ -13,7 +13,7 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset' | 'clubId'> & {
   readonly author: Prereviewers.Persona
   readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number
@@ -23,6 +23,7 @@ export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'oth
     readonly title: Html
     readonly url: URL
   }
+  readonly club: Option.Option<ClubName>
 }
 
 export const createDatasetReviewPage = ({
@@ -36,9 +37,9 @@ export const createDatasetReviewPage = ({
 
   return PageResponse({
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”` })),
-    description: Option.match(datasetReview.clubId, {
+    description: Option.match(datasetReview.club, {
       onNone: () => plainText(t('authoredBy')({ author: authorList(datasetReview, locale), visuallyHidden: identity })),
-      onSome: clubId => plainText`Authored by ${authorList(datasetReview, locale)} of ${getClubName(clubId).text}`,
+      onSome: club => plainText`Authored by ${authorList(datasetReview, locale)} of ${club.name}`,
     }),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
@@ -57,19 +58,19 @@ export const createDatasetReviewPage = ({
         </h1>
 
         <div class="byline">
-          ${Option.match(datasetReview.clubId, {
+          ${Option.match(datasetReview.club, {
             onNone: () =>
               t('authoredBy')({
                 author: authorList(datasetReview, locale),
                 visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
               }),
-            onSome: clubId =>
+            onSome: club =>
               t('authoredByInClub')({
                 author: authorList(datasetReview, locale),
                 club: html`<a
-                  href="${Routes.ClubProfile.href({ slug: getClubSlug(clubId) })}"
-                  ${languageAttributesFor(getClubName(clubId).language)}
-                  >${getClubName(clubId).text}</a
+                  href="${Routes.ClubProfile.href({ slug: club.slug })}"
+                  ${languageAttributesFor(club.language)}
+                  >${club.name}</a
                 >`,
                 visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`,
               }),

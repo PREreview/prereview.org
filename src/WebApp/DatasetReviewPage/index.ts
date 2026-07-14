@@ -1,9 +1,10 @@
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
+import { getClubName, getClubSlug } from '../../Clubs/index.ts'
 import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import type { Uuid } from '../../types/index.ts'
+import { Uuid } from '../../types/index.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createDatasetReviewPage } from './DatasetReviewPage.ts'
@@ -31,6 +32,12 @@ export const DatasetReviewPage = Effect.fn(
         otherAuthors,
         anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
         dataset: { id: dataset.id, title: dataset.title.text, language: dataset.title.language, url: dataset.url },
+        club: Option.map(datasetReview.clubId, id => ({
+          id: Uuid.Uuid(id),
+          name: getClubName(id).text,
+          language: getClubName(id).language,
+          slug: getClubSlug(id),
+        })),
       },
       locale,
     })
