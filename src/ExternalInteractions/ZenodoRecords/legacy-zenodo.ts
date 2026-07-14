@@ -35,14 +35,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import {
-  type ClubId,
-  type ClubName,
-  getClubByName,
-  getClubName,
-  getClubNameAndFormerNames,
-  getClubSlug,
-} from '../../Clubs/index.ts'
+import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import {
@@ -91,6 +84,10 @@ export interface GetPreprintSubjectsEnv {
   getPreprintSubjects: (preprint: PreprintId) => T.Task<ReadonlyArray<{ id: URL; name: Name }>>
 }
 
+export interface GetClubByNameEnv {
+  getClubByName: (name: Name) => T.Task<Option.Option<ClubName>>
+}
+
 export interface IsReviewRequestedEnv {
   isReviewRequested: (preprint: PreprintId) => TE.TaskEither<'unavailable', boolean>
 }
@@ -102,6 +99,9 @@ const getPreprintSubjects = (
   preprint: PreprintId,
 ): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: Name }>> =>
   R.asks(({ getPreprintSubjects }) => getPreprintSubjects(preprint))
+
+const getClubByName = (name: Name): RT.ReaderTask<GetClubByNameEnv, Option.Option<ClubName>> =>
+  R.asks(({ getClubByName }) => getClubByName(name))
 
 const isReviewRequested = (preprint: PreprintId): RTE.ReaderTaskEither<IsReviewRequestedEnv, 'unavailable', boolean> =>
   R.asks(({ isReviewRequested }) => isReviewRequested(preprint))
@@ -418,14 +418,14 @@ export const getPrereviewsForUserFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
-export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
+export const getPrereviewsForClubFromZenodo = (club: ClubDetails) =>
   pipe(
     RTE.asks(
       ({ publicUrl }: PublicUrlEnv) =>
         new URLSearchParams({
           q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
             Array.map(
-              getClubNameAndFormerNames(club),
+              [club.name.text, ...(club.formerNames ?? [])],
               name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
             ),
             ' OR ',
@@ -468,7 +468,7 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
     ),
     RTE.bimap(
       () => 'unavailable' as const,
-      Array.filter(recentPrereview => recentPrereview._tag === 'DatasetReview' || recentPrereview.club?.id === club),
+      Array.filter(recentPrereview => recentPrereview._tag === 'DatasetReview' || recentPrereview.club?.id === club.id),
     ),
   )
 
@@ -785,7 +785,7 @@ export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
 function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
+  F.FetchEnv & GetClubByNameEnv & GetPreprintEnv & L.LoggerEnv,
   | 'text-not-found'
   | 'no reviewed preprint'
   | PreprintIsUnavailable
@@ -813,10 +813,10 @@ function recordToPrereview(
           pipe(Option.fromNullable(record.metadata.notes), Option.map(sanitizeHtml), Option.getOrUndefined),
         ),
         authors: RTE.right<
-          F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
+          F.FetchEnv & GetClubByNameEnv & GetPreprintEnv & L.LoggerEnv,
           PreprintIsUnavailable | PreprintIsNotFound | 'text-unavailable'
         >(getAuthors(record) as never),
-        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
+        club: RTE.rightReaderTask(pipe(getReviewClub(record), RT.map(Option.getOrUndefined))),
         doi: RTE.right(record.metadata.doi),
         id: RTE.right(record.id),
         language: RTE.right(
@@ -851,13 +851,17 @@ function recordToPrereview(
 
 function recordToPreprintPrereview(
   record: Record,
-): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, 'text-not-found' | 'text-unavailable', Prereview.PreprintPrereview> {
+): RTE.ReaderTaskEither<
+  F.FetchEnv & L.LoggerEnv & GetClubByNameEnv,
+  'text-not-found' | 'text-unavailable',
+  Prereview.PreprintPrereview
+> {
   return pipe(
     RTE.fromOption(() => 'text-not-found' as const)(getReviewUrl(record)),
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
-        authors: RTE.right(getAuthors(record)),
-        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
+        authors: RTE.right<F.FetchEnv & L.LoggerEnv & GetClubByNameEnv>(getAuthors(record) as never),
+        club: RTE.rightReaderTask(pipe(getReviewClub(record), RT.map(Option.getOrUndefined))),
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(
@@ -875,38 +879,45 @@ function recordToPreprintPrereview(
 function recordToScietyPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  L.LoggerEnv & GetPreprintIdEnv,
+  L.LoggerEnv & GetPreprintIdEnv & GetClubByNameEnv,
   'no reviewed preprint' | NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable,
   ScietyPrereview & ReviewsDataPrereview
 > {
   return pipe(
     RTE.of(record),
     RTE.bindW('preprintId', flow(getReviewedPreprintId, RTE.chainW(getPreprintId))),
-    RTE.map(review => ({
-      preprint: review.preprintId,
-      createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
-      doi: review.metadata.doi,
-      authors: Array.map(review.metadata.creators, creator => ({ ...creator, name: Name(creator.name) })),
-      language: pipe(
-        Option.fromNullable(review.metadata.language),
-        Option.filter(iso6393Validate),
-        Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
+    RTE.chainW(review =>
+      pipe(
+        RTE.rightReaderTask(
+          pipe(getReviewClub(record), RT.map(Option.match({ onSome: Struct.get('id'), onNone: () => undefined }))),
+        ),
+        RTE.map(club => ({
+          preprint: review.preprintId,
+          createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+          doi: review.metadata.doi,
+          authors: Array.map(review.metadata.creators, creator => ({ ...creator, name: Name(creator.name) })),
+          language: pipe(
+            Option.fromNullable(review.metadata.language),
+            Option.filter(iso6393Validate),
+            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
+          ),
+          type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
+          club,
+          live: record.metadata.keywords?.includes('Live Review') === true,
+          requested: record.metadata.keywords?.includes('Requested PREreview') === true,
+          domains: getReviewDomains(record),
+          fields: getReviewFields(record),
+          subfields: getReviewSubfields(record),
+        })),
       ),
-      type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
-      club: pipe(getReviewClub(record), Option.match({ onSome: Struct.get('id'), onNone: () => undefined })),
-      live: record.metadata.keywords?.includes('Live Review') === true,
-      requested: record.metadata.keywords?.includes('Requested PREreview') === true,
-      domains: getReviewDomains(record),
-      fields: getReviewFields(record),
-      subfields: getReviewSubfields(record),
-    })),
+    ),
   )
 }
 
 function recordToRecentPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  GetPreprintTitleEnv & L.LoggerEnv,
+  GetClubByNameEnv & GetPreprintTitleEnv & L.LoggerEnv,
   'no reviewed preprint' | PreprintIsUnavailable | PreprintIsNotFound,
   Prereview.RecentPreprintPrereview
 > {
@@ -914,7 +925,9 @@ function recordToRecentPrereview(
     getReviewedPreprintId(record),
     RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
+        club: RTE.rightReaderTask<GetClubByNameEnv & GetPreprintTitleEnv>(
+          pipe(getReviewClub(record), RT.map(Option.getOrUndefined)) as never,
+        ),
         id: RTE.right(record.id),
         reviewers: RTE.right(
           pipe(getAuthors(record), Struct.evolve({ named: authors => Array.map(authors, Struct.get('name')) })),
@@ -1018,13 +1031,13 @@ const getReviewSubfields = flow(
 
 const getReviewClub = flow(
   Option.liftNullable((record: Record) => record.metadata.contributors),
-  Option.flatMap(Array.findFirst(flow(Struct.get('name'), Name, getClubByName))),
-  Option.map(id => ({
-    id: Uuid.Uuid(id),
-    name: getClubName(id).text,
-    language: getClubName(id).language,
-    slug: getClubSlug(id),
-  })),
+  Option.map(Array.map(flow(Struct.get('name'), Name, getClubByName))),
+  Option.match({
+    onSome: RT.sequenceArray,
+    onNone: () => RT.of<GetClubByNameEnv, ReadonlyArray<Option.Option<ClubName>>>([]),
+  }),
+  RT.map(Array.getSomes),
+  RT.map(Array.head),
 )
 
 const getReviewUrl = flow(

@@ -1,8 +1,9 @@
 import { HttpServerResponse } from '@effect/platform'
-import { Array, Effect, pipe, Record, Redacted, type Runtime } from 'effect'
+import { Array, Effect, flow, Option, pipe, Record, Redacted, type Runtime } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { Clubs } from '../../../Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -45,6 +46,14 @@ export const DataRouter = pipe(
           scietyListToken: Redacted.value(env.scietyListToken),
           getPrereviews: withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
             fetch: env.fetch,
+            getClubByName: EffectToFpts.toTaskK(
+              flow(
+                getClubByName,
+                Effect.map(Option.some),
+                Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
+              ),
+              env.runtime,
+            ),
             getPreprintId: EffectToFpts.toTaskEitherK(Preprints.getPreprintId, env.runtime),
             zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
             zenodoUrl: env.zenodoApiConfig.origin,
@@ -105,3 +114,5 @@ export const DataRouter = pipe(
 ) as P.Parser<
   (env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, Runtime.Runtime.Context<Env['runtime']>>
 >
+
+const { getClubByName } = Effect.serviceFunctions(Clubs)

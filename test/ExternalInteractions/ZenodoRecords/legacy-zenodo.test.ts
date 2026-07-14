@@ -24,7 +24,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { type ClubName, getClubName, getClubNameAndFormerNames, getClubSlug } from '../../../src/Clubs/index.ts'
+import { type ClubName } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -268,6 +268,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -435,6 +436,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -586,6 +588,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           _.getRecentPrereviewsFromZenodo({ page })({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.left(error1))
@@ -623,6 +626,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 },
               })
               .fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
           getPreprintTitle: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           publicUrl: new URL('http://example.com'),
@@ -654,6 +658,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           _.getRecentPrereviewsFromZenodo({ page })({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
@@ -671,6 +676,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         _.getRecentPrereviewsFromZenodo({ page })({
           clock: SystemClock,
           fetch: shouldNotBeCalled,
+          getClubByName: shouldNotBeCalled,
           getPreprintTitle: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           publicUrl: new URL('http://example.com'),
@@ -688,7 +694,7 @@ describe('getPrereviewFromZenodo', () => {
     [
       fc.integer(),
       fc.preprint(),
-      fc.option(fc.clubId(), { nil: undefined }),
+      fc.option(fc.clubName(), { nil: undefined }),
       fc.boolean(),
       fc.boolean(),
       fc.boolean(),
@@ -734,7 +740,7 @@ describe('getPrereviewFromZenodo', () => {
               ? [
                   {
                     type: 'ResearchGroup',
-                    name: getClubName(club).text,
+                    name: club.name,
                   },
                 ]
               : undefined,
@@ -787,6 +793,7 @@ describe('getPrereviewFromZenodo', () => {
                   response: { body: 'Some text' },
                 })
                 .fetchHandler(...args),
+            getClubByName: club ? () => T.of(Option.some(club)) : shouldNotBeCalled,
             getPreprint,
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -798,14 +805,7 @@ describe('getPrereviewFromZenodo', () => {
             new Prereviews.Prereview({
               addendum: rawHtml('<p>Some note.</p>'),
               authors: { named: [{ name: Name('PREreviewer') }], anonymous: expectedAnonymous },
-              club: club
-                ? {
-                    id: Uuid.Uuid(club),
-                    name: getClubName(club).text,
-                    language: getClubName(club).language,
-                    slug: getClubSlug(club),
-                  }
-                : undefined,
+              club,
               doi: Doi('10.5281/zenodo.1061864'),
               id,
               language: 'en',
@@ -836,6 +836,7 @@ describe('getPrereviewFromZenodo', () => {
         _.getPrereviewFromZenodo(id)({
           clock: SystemClock,
           fetch: shouldNotBeCalled,
+          getClubByName: shouldNotBeCalled,
           getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           wasPrereviewRemoved,
@@ -862,6 +863,7 @@ describe('getPrereviewFromZenodo', () => {
                   status,
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -928,6 +930,7 @@ describe('getPrereviewFromZenodo', () => {
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: () => TE.right(preprint),
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -950,6 +953,7 @@ describe('getPrereviewFromZenodo', () => {
         _.getPrereviewFromZenodo(id)({
           clock: SystemClock,
           fetch: (...args) => fetch.fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
           getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           wasPrereviewRemoved: () => false,
@@ -1019,6 +1023,7 @@ describe('getPrereviewFromZenodo', () => {
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: () => TE.left(error),
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -1090,6 +1095,7 @@ describe('getPrereviewFromZenodo', () => {
                 status: StatusCodes.OK,
               })
               .fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
           getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           wasPrereviewRemoved: () => false,
@@ -1153,6 +1159,7 @@ describe('getPrereviewFromZenodo', () => {
                 status: StatusCodes.OK,
               })
               .fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
           getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           wasPrereviewRemoved: () => false,
@@ -1243,6 +1250,7 @@ describe('getPrereviewFromZenodo', () => {
                   status: StatusCodes.OK,
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -1308,6 +1316,7 @@ describe('getPrereviewFromZenodo', () => {
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -1376,6 +1385,7 @@ describe('getPrereviewFromZenodo', () => {
                   status: StatusCodes.OK,
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -1446,6 +1456,7 @@ describe('getPrereviewFromZenodo', () => {
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprint: () => TE.right(preprint),
             logger: () => IO.of(undefined),
             wasPrereviewRemoved: () => false,
@@ -1632,6 +1643,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                     },
                   })
                   .fetchHandler(...args),
+              getClubByName: shouldNotBeCalled,
               getPreprintTitle: id =>
                 match(id.value as unknown)
                   .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -1679,7 +1691,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         fc.pseudonymProfileId(),
         fc.preprintTitle(),
         fc.preprintTitle(),
-        fc.clubId(),
+        fc.clubName(),
         fc.oneof(
           fc.constant([0, []]),
           fc.constant([1, [{ name: '1 other author' }]]),
@@ -1803,7 +1815,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                     contributors: [
                       {
                         type: 'ResearchGroup',
-                        name: getClubName(club).text,
+                        name: club.name,
                       },
                     ],
                     creators: [{ name: 'Josiah Carberry' }],
@@ -1898,6 +1910,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                     },
                   })
                   .fetchHandler(...args),
+              getClubByName: club ? () => T.of(Option.some(club)) : shouldNotBeCalled,
               getPreprintTitle: id =>
                 match(id.value as unknown)
                   .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -1921,12 +1934,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 preprint: preprint1,
               }),
               new Prereviews.RecentPreprintPrereview({
-                club: {
-                  id: Uuid.Uuid(club),
-                  name: getClubName(club).text,
-                  language: getClubName(club).language,
-                  slug: getClubSlug(club),
-                },
+                club,
                 id: 1065236,
                 reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
                 published: new Temporal.PlainDate(2022, 7, 5),
@@ -2106,6 +2114,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -2161,6 +2170,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           _.getPrereviewsForProfileFromZenodo(profile)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
@@ -2393,6 +2403,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -2599,6 +2610,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -2654,6 +2666,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           _.getPrereviewsForUserFromZenodo(user)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
@@ -2671,7 +2684,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
     'when the PREreviews can be loaded',
     [
       fc.origin(),
-      fc.clubId(),
+      fc.clubDetails(),
       fc.preprintTitle(),
       fc.preprintTitle(),
       fc.oneof(
@@ -2709,7 +2722,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'PREreviewer' }, ...otherAuthors],
                   contributors: [
                     {
-                      name: getClubName(club).text,
+                      name: club.name.text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -2803,7 +2816,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'Josiah Carberry' }],
                   contributors: [
                     {
-                      name: getClubName(club).text,
+                      name: club.name.text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -2841,7 +2854,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   query: {
                     q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                       Array.map(
-                        getClubNameAndFormerNames(club),
+                        [club.name.text, ...(club.formerNames ?? [])],
                         name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
                       ),
                       ' OR ',
@@ -2857,6 +2870,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: () =>
+              T.of(Option.some({ id: club.id, name: club.name.text, language: club.name.language, slug: club.slug })),
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -2871,12 +2886,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.right([
             new Prereviews.RecentPreprintPrereview({
-              club: {
-                id: Uuid.Uuid(club),
-                name: getClubName(club).text,
-                language: getClubName(club).language,
-                slug: getClubSlug(club),
-              },
+              club: { id: club.id, name: club.name.text, language: club.name.language, slug: club.slug },
               id: 1061864,
               reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
               fields: ['13', '11'],
@@ -2885,12 +2895,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               preprint: preprint1,
             }),
             new Prereviews.RecentPreprintPrereview({
-              club: {
-                id: Uuid.Uuid(club),
-                name: getClubName(club).text,
-                language: getClubName(club).language,
-                slug: getClubSlug(club),
-              },
+              club: { id: club.id, name: club.name.text, language: club.name.language, slug: club.slug },
               id: 1065236,
               reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
               fields: [],
@@ -2903,7 +2908,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       }),
   )
 
-  it.effect.prop('when there are no Prereviews', [fc.origin(), fc.clubId()], ([publicUrl, club]) =>
+  it.effect.prop('when there are no Prereviews', [fc.origin(), fc.clubDetails()], ([publicUrl, club]) =>
     Effect.gen(function* () {
       const actual = yield* Effect.promise(
         _.getPrereviewsForClubFromZenodo(club)({
@@ -2915,7 +2920,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 query: {
                   q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                     Array.map(
-                      getClubNameAndFormerNames(club),
+                      [club.name.text, ...(club.formerNames ?? [])],
                       name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
                     ),
                     ' OR ',
@@ -2931,6 +2936,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 },
               })
               .fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
           getPreprintTitle: shouldNotBeCalled,
           clock: SystemClock,
           logger: () => IO.of(undefined),
@@ -2946,7 +2952,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
     'when the PREreviews cannot be loaded',
     [
       fc.origin(),
-      fc.clubId(),
+      fc.clubDetails(),
       fc.integer({
         min: 400,
         max: 599,
@@ -2959,7 +2965,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           query: {
             q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
               Array.map(
-                getClubNameAndFormerNames(club),
+                [club.name.text, ...(club.formerNames ?? [])],
                 name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
               ),
               ' OR ',
@@ -2976,6 +2982,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           _.getPrereviewsForClubFromZenodo(club)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl,
@@ -2991,7 +2998,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
     'when a preprint cannot be loaded',
     [
       fc.origin(),
-      fc.clubId(),
+      fc.clubDetails(),
       fc.preprintTitle(),
       fc.constantFrom(new PreprintIsNotFound({}), new PreprintIsUnavailable({})),
     ],
@@ -3024,7 +3031,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'PREreviewer' }],
                   contributors: [
                     {
-                      name: getClubName(club).text,
+                      name: club.name.text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -3071,7 +3078,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   creators: [{ name: 'Josiah Carberry' }],
                   contributors: [
                     {
-                      name: getClubName(club).text,
+                      name: club.name.text,
                       type: 'ResearchGroup',
                     },
                   ],
@@ -3109,7 +3116,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   query: {
                     q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                       Array.map(
-                        getClubNameAndFormerNames(club),
+                        [club.name.text, ...(club.formerNames ?? [])],
                         name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
                       ),
                       ' OR ',
@@ -3125,6 +3132,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: () =>
+              T.of(Option.some({ id: club.id, name: club.name.text, language: club.name.language, slug: club.slug })),
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -3139,12 +3148,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.right([
             new Prereviews.RecentPreprintPrereview({
-              club: {
-                id: Uuid.Uuid(club),
-                name: getClubName(club).text,
-                language: getClubName(club).language,
-                slug: getClubSlug(club),
-              },
+              club: { id: club.id, name: club.name.text, language: club.name.language, slug: club.slug },
               id: 1061864,
               reviewers: { named: [Name('PREreviewer')], anonymous: 0 },
               fields: [],
@@ -3159,7 +3163,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
   it.effect.prop(
     'when a review is not part of the club',
-    [fc.origin(), fc.clubId(), fc.preprintTitle(), fc.preprintTitle()],
+    [fc.origin(), fc.clubDetails(), fc.preprintTitle(), fc.preprintTitle()],
     ([publicUrl, club, preprint1, preprint2]) =>
       Effect.gen(function* () {
         const records: Records = {
@@ -3221,7 +3225,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   query: {
                     q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (${Array.join(
                       Array.map(
-                        getClubNameAndFormerNames(club),
+                        [club.name.text, ...(club.formerNames ?? [])],
                         name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
                       ),
                       ' OR ',
@@ -3237,6 +3241,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                   },
                 })
                 .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
             getPreprintTitle: id =>
               match(id.value as unknown)
                 .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -3258,7 +3263,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
     'when the PREreviews can be loaded',
     [
       fc.preprintId(),
-      fc.option(fc.clubId(), { nil: undefined }),
+      fc.option(fc.clubName(), { nil: undefined }),
       fc.oneof(
         fc.constant([0, []]),
         fc.constant([1, [{ name: '1 other author' }]]),
@@ -3295,7 +3300,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                     ? [
                         {
                           type: 'ResearchGroup',
-                          name: getClubName(club).text,
+                          name: club.name,
                         },
                       ]
                     : undefined,
@@ -3338,6 +3343,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                 .getOnce('http://example.com/review.html/content', { body: 'Some text' })
                 .fetchHandler(...args),
             logger: () => IO.of(undefined),
+            getClubByName: club ? () => T.of(Option.some(club)) : shouldNotBeCalled,
           }),
         )
 
@@ -3348,14 +3354,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                 named: [{ name: Name('PREreviewer'), orcid: undefined }],
                 anonymous: expectedAnonymous,
               },
-              club: club
-                ? {
-                    id: Uuid.Uuid(club),
-                    name: getClubName(club).text,
-                    language: getClubName(club).language,
-                    slug: getClubSlug(club),
-                  }
-                : undefined,
+              club,
               id: 1061864,
               language: 'en',
               text: rawHtml('Some text'),
@@ -3386,6 +3385,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             logger: () => IO.of(undefined),
+            getClubByName: shouldNotBeCalled,
           }),
         )
 
@@ -3461,6 +3461,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             logger: () => IO.of(undefined),
+            getClubByName: shouldNotBeCalled,
           }),
         )
 

@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { getClubName, getClubSlug, isClubId } from '../Clubs/index.ts'
+import { Clubs, getClubName, getClubSlug } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
@@ -74,12 +74,21 @@ export const layer = Layer.effect(
       Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers>(),
       Context.omit(Scope.Scope),
     )
+    const clubs = yield* Clubs
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
+
+    const getClubByName = yield* EffectToFpts.makeTaskK(
+      flow(
+        clubs.getClubByName,
+        Effect.map(Option.some),
+        Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
+      ),
+    )
 
     return {
       getFiveMostRecent: Effect.gen(function* () {
@@ -88,6 +97,7 @@ export const layer = Layer.effect(
         return yield* pipe(
           FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
             fetch,
+            getClubByName,
             getPreprintTitle,
             ...loggerEnv,
             publicUrl,
@@ -119,12 +129,11 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          if (!isClubId(id)) {
-            return []
-          }
+          const club = yield* clubs.getClubDetails(id)
 
-          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(id), {
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(club), {
             fetch,
+            getClubByName,
             getPreprintTitle,
             publicUrl,
             zenodoApiKey: Redacted.value(zenodoApi.key),
@@ -141,6 +150,7 @@ export const layer = Layer.effect(
             { concurrency: 'inherit' },
           ),
         ),
+        Effect.catchTag('ClubNotFound', () => Effect.succeed([])),
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
@@ -152,6 +162,7 @@ export const layer = Layer.effect(
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
             fetch,
+            getClubByName,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
             ...loggerEnv,
@@ -167,6 +178,7 @@ export const layer = Layer.effect(
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForProfileFromZenodo(profile), {
             fetch,
+            getClubByName,
             getPreprintTitle,
             publicUrl,
             zenodoApiKey: Redacted.value(zenodoApi.key),
@@ -200,6 +212,7 @@ export const layer = Layer.effect(
             ZenodoRecords.getPrereviewsForUserFromZenodo({ orcidId: user, pseudonym }),
             {
               fetch,
+              getClubByName,
               getPreprintTitle,
               publicUrl,
               zenodoApiKey: Redacted.value(zenodoApi.key),
@@ -229,6 +242,7 @@ export const layer = Layer.effect(
 
         return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
           fetch,
+          getClubByName,
           getPreprint,
           wasPrereviewRemoved,
           zenodoApiKey: Redacted.value(zenodoApi.key),
@@ -244,6 +258,7 @@ export const layer = Layer.effect(
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
             fetch,
+            getClubByName,
             getPreprintTitle,
             ...loggerEnv,
             publicUrl,
