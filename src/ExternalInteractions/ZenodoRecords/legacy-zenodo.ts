@@ -908,7 +908,7 @@ function recordToScietyPrereview(
         Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
       ),
       type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
-      club: pipe(getReviewClub(record), Option.getOrUndefined),
+      club: pipe(getReviewClub(record), Option.match({ onSome: Uuid.Uuid, onNone: () => undefined })),
       live: record.metadata.keywords?.includes('Live Review') === true,
       requested: record.metadata.keywords?.includes('Requested PREreview') === true,
       domains: getReviewDomains(record),

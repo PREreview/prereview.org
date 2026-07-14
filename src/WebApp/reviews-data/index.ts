@@ -2,7 +2,6 @@ import { Array, Either, flow, Function, Match, pipe, Schema, Tuple } from 'effec
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
-import * as Clubs from '../../Clubs/index.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { DomainIdSchema, type DomainId } from '../../types/domain.ts'
@@ -12,6 +11,7 @@ import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdSchema, type SubfieldId } from '../../types/subfield.ts'
+import { UuidSchema, type Uuid } from '../../types/Uuid.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
 
 export interface Prereview {
@@ -21,7 +21,7 @@ export interface Prereview {
   authors: ReadonlyArray<{ name: Name; orcid?: OrcidId }>
   language?: LanguageCode
   type: 'full' | 'structured'
-  club?: Clubs.ClubId
+  club?: Uuid
   live: boolean
   requested: boolean
   domains: ReadonlyArray<DomainId>
@@ -108,7 +108,7 @@ const PrereviewSchema = Schema.Struct({
   authors: Schema.Array(Schema.Struct({ author: Schema.String, authorType: Schema.Literal('public', 'pseudonym') })),
   language: Schema.optional(Iso639.Iso6391Schema),
   type: Schema.Literal('full', 'structured'),
-  club: Schema.optional(Clubs.ClubIdSchema),
+  club: Schema.optional(UuidSchema),
   live: Schema.Boolean,
   requested: Schema.Boolean,
   domains: Schema.Array(DomainIdSchema),
@@ -126,7 +126,7 @@ interface TransformedPrereview {
   authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
   language?: LanguageCode
   type: 'full' | 'structured'
-  club?: Clubs.ClubId
+  club?: Uuid
   live: boolean
   requested: boolean
   domains: ReadonlyArray<DomainId>
