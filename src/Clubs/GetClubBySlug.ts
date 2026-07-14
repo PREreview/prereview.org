@@ -1,11 +1,11 @@
 import { Array, Either, Equal, Option } from 'effect'
 import type { Slug } from '../types/Slug.ts'
-import type { ClubDetails, ClubName } from './Clubs.ts'
+import type { ClubDetails } from './Clubs.ts'
 import { ClubNotFound } from './Errors.ts'
 
 export type Input = Slug
 
-export type Result = Either.Either<ClubName, ClubNotFound>
+export type Result = Either.Either<ClubDetails, ClubNotFound>
 
 export const GetClubBySlug =
   (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
@@ -16,7 +16,7 @@ export const GetClubBySlug =
           return Option.none()
         }
 
-        return Option.some({ id: club.id, language: club.name.language, name: club.name.text, slug: club.slug })
+        return Option.some(club)
       }),
       () => new ClubNotFound(),
     )

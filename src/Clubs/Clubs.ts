@@ -44,7 +44,7 @@ export class Clubs extends Context.Tag('Clubs')<
     listClubs: Effect.Effect<ReadonlyArray<ClubName>>
     getClubDetails: (clubId: Uuid) => Effect.Effect<ClubDetails, ClubNotFound>
     getClubByName: (name: Name) => Effect.Effect<ClubName, ClubNotFound>
-    getClubBySlug: (slug: Slug) => Effect.Effect<ClubName, ClubNotFound>
+    getClubBySlug: (slug: Slug) => Effect.Effect<ClubDetails, ClubNotFound>
     getClubsThatAPrereviewerLeads: (orcidId: OrcidId) => Effect.Effect<ReadonlyArray<ClubName>>
     isPrereviewerAClubLead: (orcidId: OrcidId) => Effect.Effect<boolean>
   }
