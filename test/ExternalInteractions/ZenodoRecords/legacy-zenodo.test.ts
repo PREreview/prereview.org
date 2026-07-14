@@ -24,7 +24,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { type ClubName } from '../../../src/Clubs/index.ts'
+import type { ClubName } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -1910,7 +1910,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                     },
                   })
                   .fetchHandler(...args),
-              getClubByName: club ? () => T.of(Option.some(club)) : shouldNotBeCalled,
+              getClubByName: () => T.of(Option.some(club)),
               getPreprintTitle: id =>
                 match(id.value as unknown)
                   .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
