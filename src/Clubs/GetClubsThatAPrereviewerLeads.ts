@@ -11,6 +11,6 @@ export const GetClubsThatAPrereviewerLeads =
   (input: Input): Result =>
     Array.filterMap(clubs, club =>
       Array.contains(club.leads, input)
-        ? Option.some({ id: club.id, language: club.name.language, name: club.name.text })
+        ? Option.some({ id: club.id, language: club.name.language, name: club.name.text, slug: club.slug })
         : Option.none(),
     )

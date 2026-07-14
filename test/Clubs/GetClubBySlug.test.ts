@@ -30,7 +30,11 @@ const clubs = [
 ] satisfies Array.NonEmptyReadonlyArray<ClubDetails>
 
 it.each<[string, Slug, _.Result]>([
-  ['by slug', slug, Either.right({ id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text })],
+  [
+    'by slug',
+    slug,
+    Either.right({ id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text, slug: clubs[0].slug }),
+  ],
   ['by other slug', otherSlug, Either.left(new ClubNotFound())],
 ])('with a club name (%s)', (_name, input, expected) => {
   const actual = _.GetClubBySlug(clubs)(input)

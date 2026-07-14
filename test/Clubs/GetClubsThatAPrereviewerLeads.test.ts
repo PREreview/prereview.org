@@ -45,13 +45,17 @@ const clubs = [
 ] satisfies Array.NonEmptyReadonlyArray<ClubDetails>
 
 it.each<[string, _.Input, _.Result]>([
-  ['1 club', orcidId1Club, [{ id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text }]],
+  [
+    '1 club',
+    orcidId1Club,
+    [{ id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text, slug: clubs[0].slug }],
+  ],
   [
     '2 clubs',
     orcidId2Clubs,
     [
-      { id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text },
-      { id: clubs[1].id, language: clubs[1].name.language, name: clubs[1].name.text },
+      { id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text, slug: clubs[0].slug },
+      { id: clubs[1].id, language: clubs[1].name.language, name: clubs[1].name.text, slug: clubs[1].slug },
     ],
   ],
   ['0 clubs', orcidId0Clubs, []],

@@ -16,7 +16,7 @@ export const GetClubByName =
           return Option.none()
         }
 
-        return Option.some({ id: club.id, language: club.name.language, name: club.name.text })
+        return Option.some({ id: club.id, language: club.name.language, name: club.name.text, slug: club.slug })
       }),
       () => new ClubNotFound(),
     )

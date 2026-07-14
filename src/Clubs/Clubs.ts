@@ -35,6 +35,7 @@ export interface ClubName {
   readonly id: Uuid
   readonly language: LanguageCode
   readonly name: Name
+  readonly slug: Slug
 }
 
 export class Clubs extends Context.Tag('Clubs')<
@@ -59,6 +60,7 @@ export const layer = (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
           id: club.id,
           language: club.name.language,
           name: club.name.text,
+          slug: club.slug,
         })),
       ),
       getClubDetails: (clubId: Uuid) => Either.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
