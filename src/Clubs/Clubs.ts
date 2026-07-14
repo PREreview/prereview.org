@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer } from 'effect'
+import { Array, Context, Effect, Either, flow, Layer, Record, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
@@ -6,10 +6,12 @@ import type { Temporal } from '../types/index.ts'
 import type { Name } from '../types/Name.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Slug } from '../types/Slug.ts'
-import { Uuid } from '../types/Uuid.ts'
-import { getClubByName, getClubBySlug, getClubDetails, isAClubLead, isLeadFor } from './ClubDetails.ts'
-import { ClubIdSchema, isClubId } from './ClubId.ts'
+import type { Uuid } from '../types/Uuid.ts'
 import { ClubNotFound } from './Errors.ts'
+import { GetClubByName } from './GetClubByName.ts'
+import { GetClubBySlug } from './GetClubBySlug.ts'
+import { GetClubsThatAPrereviewerLeads } from './GetClubsThatAPrereviewerLeads.ts'
+import { IsPrereviewerAClubLead } from './IsPrereviewerAClubLead.ts'
 
 export interface ClubDetails {
   readonly id: Uuid
@@ -47,41 +49,22 @@ export class Clubs extends Context.Tag('Clubs')<
   }
 >() {}
 
-export const layer = Layer.succeed(Clubs, {
-  listClubs: Effect.succeed(
-    Array.map(ClubIdSchema.literals, id => ({
-      id: Uuid(id),
-      language: getClubDetails(id).name.language,
-      name: getClubDetails(id).name.text,
-    })),
-  ),
-  getClubDetails: (clubId: Uuid) =>
-    isClubId(clubId) ? Effect.succeed({ id: Uuid(clubId), ...getClubDetails(clubId) }) : new ClubNotFound(),
-  getClubByName: (name: Name) =>
-    Effect.mapBoth(getClubByName(name), {
-      onSuccess: id => ({
-        id: Uuid(id),
-        language: getClubDetails(id).name.language,
-        name: getClubDetails(id).name.text,
-      }),
-      onFailure: () => new ClubNotFound(),
-    }),
-  getClubBySlug: (slug: Slug) =>
-    Effect.mapBoth(getClubBySlug(slug), {
-      onSuccess: id => ({
-        id: Uuid(id),
-        language: getClubDetails(id).name.language,
-        name: getClubDetails(id).name.text,
-      }),
-      onFailure: () => new ClubNotFound(),
-    }),
-  getClubsThatAPrereviewerLeads: (orcidId: OrcidId) =>
-    Effect.succeed(
-      Array.map(isLeadFor(orcidId), id => ({
-        id: Uuid(id),
-        language: getClubDetails(id).name.language,
-        name: getClubDetails(id).name.text,
-      })),
-    ),
-  isPrereviewerAClubLead: (orcidId: OrcidId) => Effect.succeed(isAClubLead(orcidId)),
-})
+export const layer = (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
+  Layer.sync(Clubs, () => {
+    const clubsById = Record.fromEntries(clubs.map(club => Tuple.make(club.id, club)))
+
+    return {
+      listClubs: Effect.succeed(
+        Array.map(clubs, club => ({
+          id: club.id,
+          language: club.name.language,
+          name: club.name.text,
+        })),
+      ),
+      getClubDetails: (clubId: Uuid) => Either.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
+      getClubByName: GetClubByName(clubs),
+      getClubBySlug: GetClubBySlug(clubs),
+      getClubsThatAPrereviewerLeads: flow(GetClubsThatAPrereviewerLeads(clubs), Effect.succeed),
+      isPrereviewerAClubLead: flow(IsPrereviewerAClubLead(clubs), Effect.succeed),
+    }
+  })
