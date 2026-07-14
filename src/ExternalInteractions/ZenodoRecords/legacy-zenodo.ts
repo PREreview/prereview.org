@@ -809,18 +809,7 @@ function recordToPrereview(
           F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
           PreprintIsUnavailable | PreprintIsNotFound | 'text-unavailable'
         >(getAuthors(record) as never),
-        club: RTE.right(
-          pipe(
-            getReviewClub(record),
-            Option.map(id => ({
-              id: Uuid.Uuid(id),
-              name: getClubName(id).text,
-              language: getClubName(id).language,
-              slug: getClubSlug(id),
-            })),
-            Option.getOrUndefined,
-          ),
-        ),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         doi: RTE.right(record.metadata.doi),
         id: RTE.right(record.id),
         language: RTE.right(
@@ -861,18 +850,7 @@ function recordToPreprintPrereview(
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(getAuthors(record)),
-        club: RTE.right(
-          pipe(
-            getReviewClub(record),
-            Option.map(id => ({
-              id: Uuid.Uuid(id),
-              name: getClubName(id).text,
-              language: getClubName(id).language,
-              slug: getClubSlug(id),
-            })),
-            Option.getOrUndefined,
-          ),
-        ),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(
@@ -908,7 +886,7 @@ function recordToScietyPrereview(
         Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
       ),
       type: record.metadata.keywords?.includes('Structured PREreview') === true ? 'structured' : 'full',
-      club: pipe(getReviewClub(record), Option.match({ onSome: Uuid.Uuid, onNone: () => undefined })),
+      club: pipe(getReviewClub(record), Option.match({ onSome: Struct.get('id'), onNone: () => undefined })),
       live: record.metadata.keywords?.includes('Live Review') === true,
       requested: record.metadata.keywords?.includes('Requested PREreview') === true,
       domains: getReviewDomains(record),
@@ -929,18 +907,7 @@ function recordToRecentPrereview(
     getReviewedPreprintId(record),
     RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.right(
-          pipe(
-            getReviewClub(record),
-            Option.map(id => ({
-              id: Uuid.Uuid(id),
-              name: getClubName(id).text,
-              language: getClubName(id).language,
-              slug: getClubSlug(id),
-            })),
-            Option.getOrUndefined,
-          ),
-        ),
+        club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         id: RTE.right(record.id),
         reviewers: RTE.right(
           pipe(getAuthors(record), Struct.evolve({ named: authors => Array.map(authors, Struct.get('name')) })),
@@ -1045,6 +1012,12 @@ const getReviewSubfields = flow(
 const getReviewClub = flow(
   Option.liftNullable((record: Record) => record.metadata.contributors),
   Option.flatMap(Array.findFirst(flow(Struct.get('name'), Name, getClubByName))),
+  Option.map(id => ({
+    id: Uuid.Uuid(id),
+    name: getClubName(id).text,
+    language: getClubName(id).language,
+    slug: getClubSlug(id),
+  })),
 )
 
 const getReviewUrl = flow(
