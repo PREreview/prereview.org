@@ -20,7 +20,7 @@ export interface Club {
     readonly text: Html
   }
   readonly added: Temporal.PlainDate
-  readonly leads: Array.NonEmptyReadonlyArray<{ name: Name; orcid: OrcidId }>
+  readonly leads: Array.NonEmptyReadonlyArray<OrcidId>
   readonly contact?: EmailAddress
   readonly joinLink?: URL
 }
@@ -62,21 +62,13 @@ export const isLeadFor = (orcid: OrcidId): ReadonlyArray<ClubId> =>
     Array.filter(
       flow(
         id => clubs[id].leads,
-        Array.some(lead => OrcidIdEquivalence(lead.orcid, orcid)),
+        Array.some(lead => OrcidIdEquivalence(lead, orcid)),
       ),
     ),
   )
 
 export const isAClubLead = (orcid: OrcidId): boolean =>
-  pipe(
-    Struct.keys(clubs),
-    Array.some(
-      flow(
-        id => clubs[id].leads,
-        Array.some(lead => OrcidIdEquivalence(lead.orcid, orcid)),
-      ),
-    ),
-  )
+  pipe(Struct.keys(clubs), Array.some(flow(id => clubs[id].leads, Array.contains(orcid))))
 
 const clubs: Record.ReadonlyRecord<ClubId, Club> = {
   '13e21570-0d1a-47f0-b378-b8c20776496a': {
@@ -95,10 +87,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-07-31'),
-    leads: [
-      { name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') },
-      { name: Name('Garima Jain'), orcid: OrcidId('0000-0002-8079-9611') },
-    ],
+    leads: [OrcidId('0009-0003-2106-3270'), OrcidId('0000-0002-8079-9611')],
   },
   'd3e62606-0367-44b9-8d52-b75e0e7e5ba7': {
     name: {
@@ -111,11 +100,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       text: html` <p>The ASAPbio Cell Biology Crowd reviews preprints about cell and molecular biology.</p> `,
     },
     added: Temporal.PlainDate.from('2024-07-01'),
-    leads: [
-      { name: Name('Joseph Biggane'), orcid: OrcidId('0000-0002-7857-2450') },
-      { name: Name('Emmanuel Odame'), orcid: OrcidId('0000-0002-8818-3221') },
-      { name: Name('Debraj Manna'), orcid: OrcidId('0000-0002-1074-9459') },
-    ],
+    leads: [OrcidId('0000-0002-7857-2450'), OrcidId('0000-0002-8818-3221'), OrcidId('0000-0002-1074-9459')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   '2a6fde8a-ca6d-4647-a3ac-8d8fb4ae5f52': {
@@ -129,11 +114,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       text: html` <p>The ASAPbio Immunology Crowd reviews preprints about cellular immunology.</p> `,
     },
     added: Temporal.PlainDate.from('2024-07-01'),
-    leads: [
-      { name: Name('Rio Sugimura'), orcid: OrcidId('0000-0001-5701-3628') },
-      { name: Name('Yanyang Chen'), orcid: OrcidId('0000-0003-4665-9671') },
-      { name: Name('Alex To'), orcid: OrcidId('0000-0001-7872-228X') },
-    ],
+    leads: [OrcidId('0000-0001-5701-3628'), OrcidId('0000-0003-4665-9671'), OrcidId('0000-0001-7872-228X')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   '901dba75-ecad-41b8-92b0-1aab56a96e54': {
@@ -152,11 +133,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-07-31'),
-    leads: [
-      { name: Name('Jay Patel'), orcid: OrcidId('0000-0003-1040-3607') },
-      { name: Name('Fallon Mody'), orcid: OrcidId('0000-0002-0596-7590') },
-      { name: Name('Sandra Grinschgl'), orcid: OrcidId('0000-0001-6666-9426') },
-    ],
+    leads: [OrcidId('0000-0003-1040-3607'), OrcidId('0000-0002-0596-7590'), OrcidId('0000-0001-6666-9426')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   '8ee46f04-af8f-49f9-bc1c-1d3e2602672d': {
@@ -172,11 +149,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-07-01'),
-    leads: [
-      { name: Name('Corrado Nai'), orcid: OrcidId('0000-0002-6232-6634') },
-      { name: Name('Aneth David'), orcid: OrcidId('0000-0002-1633-297X') },
-      { name: Name('Femi Arogundade'), orcid: OrcidId('0000-0002-9222-1817') },
-    ],
+    leads: [OrcidId('0000-0002-6232-6634'), OrcidId('0000-0002-1633-297X'), OrcidId('0000-0002-9222-1817')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   '3e820d44-fdb3-4cba-aeb6-ac03fb23108e': {
@@ -195,10 +168,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-07-27'),
-    leads: [
-      { name: Name('Pablo Ranea-Robles'), orcid: OrcidId('0000-0001-6478-3815') },
-      { name: Name('Jonathon Coates'), orcid: OrcidId('0000-0001-9039-9219') },
-    ],
+    leads: [OrcidId('0000-0001-6478-3815'), OrcidId('0000-0001-9039-9219')],
   },
   '317d0a13-5a10-44fc-9bcd-fb548e01e9cb': {
     name: {
@@ -213,11 +183,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-07-31'),
-    leads: [
-      { name: Name('Bhargy Sharma'), orcid: OrcidId('0000-0003-2713-8563') },
-      { name: Name('Anna Oliveras'), orcid: OrcidId('0000-0002-5880-5245') },
-      { name: Name('Ryan John Cubero'), orcid: OrcidId('0000-0003-0002-1867') },
-    ],
+    leads: [OrcidId('0000-0003-2713-8563'), OrcidId('0000-0002-5880-5245'), OrcidId('0000-0003-0002-1867')],
   },
   '2dfeb178-dc0b-4970-9cdb-36b60250b3c4': {
     name: {
@@ -240,7 +206,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-07-25'),
-    leads: [{ name: Name('Anna Oliveras'), orcid: OrcidId('0000-0002-5880-5245') }],
+    leads: [OrcidId('0000-0002-5880-5245')],
   },
   '0bb49906-085d-41ad-9787-9355356e624b': {
     name: {
@@ -258,7 +224,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-05-14'),
-    leads: [{ name: Name('Josie L. Otto'), orcid: OrcidId('0009-0003-5210-9091') }],
+    leads: [OrcidId('0009-0003-5210-9091')],
     joinLink: new URL('https://forms.gle/3az7nTJGXjmQSKef7'),
   },
   '950e0757-d7ec-45b1-abbb-d171a03e5344': {
@@ -282,15 +248,15 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     },
     added: Temporal.PlainDate.from('2024-11-04'),
     leads: [
-      { name: Name('David Ramírez'), orcid: OrcidId('0000-0003-0002-1189') },
-      { name: Name('Carolina Quezada'), orcid: OrcidId('0000-0002-0260-5754') },
-      { name: Name('Jessica Valero-Rojas'), orcid: OrcidId('0000-0003-3391-256X') },
-      { name: Name('Carlos Zamora-Manzur'), orcid: OrcidId('0000-0001-7755-4077') },
-      { name: Name('Myleidi Vera'), orcid: OrcidId('0000-0002-8469-995X') },
-      { name: Name('Kevin J. Cobos'), orcid: OrcidId('0009-0000-5415-2964') },
-      { name: Name('Laura Pacheco'), orcid: OrcidId('0009-0007-6163-5172') },
-      { name: Name('Nicolás Riffo'), orcid: OrcidId('0000-0003-3433-2014') },
-      { name: Name('Diego Abarzúa'), orcid: OrcidId('0009-0007-7372-851X') },
+      OrcidId('0000-0003-0002-1189'),
+      OrcidId('0000-0002-0260-5754'),
+      OrcidId('0000-0003-3391-256X'),
+      OrcidId('0000-0001-7755-4077'),
+      OrcidId('0000-0002-8469-995X'),
+      OrcidId('0009-0000-5415-2964'),
+      OrcidId('0009-0007-6163-5172'),
+      OrcidId('0000-0003-3433-2014'),
+      OrcidId('0009-0007-7372-851X'),
     ],
     joinLink: new URL('https://forms.gle/AJPwDvBzBnCNSC5A7'),
   },
@@ -313,7 +279,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-10-05'),
-    leads: [{ name: Name('Ayla Sant’Ana da Silva'), orcid: OrcidId('0000-0001-8466-9390') }],
+    leads: [OrcidId('0000-0001-8466-9390')],
   },
   '7bff827e-bbaa-4ac9-8607-056643d8e16a': {
     name: {
@@ -336,10 +302,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-01-30'),
-    leads: [
-      { name: Name('Alyona Minina'), orcid: OrcidId('0000-0002-2619-1859') },
-      { name: Name('Alessia Suriano'), orcid: OrcidId('0009-0004-0588-6645') },
-    ],
+    leads: [OrcidId('0000-0002-2619-1859'), OrcidId('0009-0004-0588-6645')],
   },
   'c8a72b87-cf45-42f0-aa75-a83a0d90eb5f': {
     name: {
@@ -363,13 +326,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     `,
     },
     added: Temporal.PlainDate.from('2023-12-15'),
-    leads: [
-      { name: Name('Jenny Leopold'), orcid: OrcidId('0000-0002-4993-5136') },
-      {
-        name: Name('Benedikt Schwarze'),
-        orcid: OrcidId('0000-0002-5815-8703'),
-      },
-    ],
+    leads: [OrcidId('0000-0002-4993-5136'), OrcidId('0000-0002-5815-8703')],
     contact: EmailAddress('jenny.leopold@medizin.uni-leipzig.de'),
   },
   'd341790c-1757-4c10-82fe-70acc5f95fa4': {
@@ -394,10 +351,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-08-01'),
-    leads: [
-      { name: Name('Gracielle Higino'), orcid: OrcidId('0000-0003-2791-8383') },
-      { name: Name('Timothée Poisot'), orcid: OrcidId('0000-0002-0735-5184') },
-    ],
+    leads: [OrcidId('0000-0003-2791-8383'), OrcidId('0000-0002-0735-5184')],
     joinLink: new URL('https://tally.so/r/wdPM9d'),
   },
   'e977f760-48ba-4541-bb9f-fdcaef4bd05d': {
@@ -418,7 +372,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-03-24'),
-    leads: [{ name: Name('Alizée Malnoë'), orcid: OrcidId('0000-0002-8777-3174') }],
+    leads: [OrcidId('0000-0002-8777-3174')],
   },
   'b5041f10-289d-4d39-9c25-b4bea5ff3027': {
     name: {
@@ -442,7 +396,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-11-17'),
-    leads: [{ name: Name('Timo Betz'), orcid: OrcidId('0000-0002-1548-0655') }],
+    leads: [OrcidId('0000-0002-1548-0655')],
   },
   '07f0572c-aaee-4b93-b6ab-8bdc78644991': {
     name: {
@@ -472,10 +426,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-09-25'),
-    leads: [
-      { name: Name('Francisco Silva-Garcés'), orcid: OrcidId('0000-0002-2635-1293') },
-      { name: Name('Rosario Rogel-Salazar'), orcid: OrcidId('0000-0002-6018-0635') },
-    ],
+    leads: [OrcidId('0000-0002-2635-1293'), OrcidId('0000-0002-6018-0635')],
     joinLink: new URL('https://openlab.ec/club-cibca'),
   },
   '490a8fe4-9cda-4e51-bf50-9307cba39997': {
@@ -497,11 +448,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-06-15'),
-    leads: [
-      { name: Name('Fabricius M.C.B. Domingos'), orcid: OrcidId('0000-0003-2069-9317') },
-      { name: Name('Matheus M. A. Salles'), orcid: OrcidId('0000-0002-1177-9844') },
-      { name: Name('Júnior Nadalne'), orcid: OrcidId('0000-0002-2363-7106') },
-    ],
+    leads: [OrcidId('0000-0003-2069-9317'), OrcidId('0000-0002-1177-9844'), OrcidId('0000-0002-2363-7106')],
   },
   'f26cbe5a-fb0a-43e9-9118-03cfa9aa601d': {
     name: {
@@ -525,7 +472,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-05-13'),
-    leads: [{ name: Name('Elise Bateman'), orcid: OrcidId('0009-0008-9450-3341') }],
+    leads: [OrcidId('0009-0008-9450-3341')],
     contact: EmailAddress('community@elifesciences.org'),
   },
   'a671af6b-f14a-4b72-b66d-a76b0e8623f7': {
@@ -550,7 +497,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-01-27'),
-    leads: [{ name: Name('Marcel LaFlamme'), orcid: OrcidId('0000-0002-7489-4233') }],
+    leads: [OrcidId('0000-0002-7489-4233')],
   },
   '4dbef4c4-3793-4a32-9837-3fa39a69188a': {
     name: {
@@ -574,10 +521,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-09-12'),
-    leads: [
-      { name: Name('Jennifer Miller'), orcid: OrcidId('0000-0001-5459-6733') },
-      { name: Name('Akuma Ifeanyichukwu'), orcid: OrcidId('0000-0002-7010-9322') },
-    ],
+    leads: [OrcidId('0000-0001-5459-6733'), OrcidId('0000-0002-7010-9322')],
     joinLink: new URL(
       'https://docs.google.com/forms/d/e/1FAIpQLSfm0bn9zb5s-SGUbXtbtBvpivrXpz0mDEIESauypvl5h6cveA/viewform?usp=sharing&ouid=111181003877743877144',
     ),
@@ -593,7 +537,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       text: html`<p>A research consortium for students of Government Medical college.</p>`,
     },
     added: Temporal.PlainDate.from('2024-07-11'),
-    leads: [{ name: Name('Sidharth Narayanan'), orcid: OrcidId('0009-0004-6361-5050') }],
+    leads: [OrcidId('0009-0004-6361-5050')],
     joinLink: new URL('https://forms.gle/nc75moVyEVvJBRqNA'),
   },
   '206ef17f-c5f3-44d3-acee-ba9b1f8299e9': {
@@ -618,10 +562,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-11-14'),
-    leads: [
-      { name: Name('Anna Hatch'), orcid: OrcidId('0000-0002-2111-3237') },
-      { name: Name('Darian Carroll'), orcid: OrcidId('0000-0002-7815-8698') },
-    ],
+    leads: [OrcidId('0000-0002-2111-3237'), OrcidId('0000-0002-7815-8698')],
   },
   '17248b36-7ba3-4fc2-b9c4-1edc10b57463': {
     name: {
@@ -643,10 +584,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-11-13'),
-    leads: [
-      { name: Name('Ana María Laxalt'), orcid: OrcidId('0000-0002-8225-2441') },
-      { name: Name('Juan Martín D’Ambrosio'), orcid: OrcidId('0000-0003-2834-1838') },
-    ],
+    leads: [OrcidId('0000-0002-8225-2441'), OrcidId('0000-0003-2834-1838')],
   },
   '2ff5d1d9-beef-4054-b311-cf0c40946767': {
     name: {
@@ -670,7 +608,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-08-29'),
-    leads: [{ name: Name('Safieh Shah'), orcid: OrcidId('0000-0001-5358-9240') }],
+    leads: [OrcidId('0000-0001-5358-9240')],
     joinLink: new URL(
       'https://docs.google.com/forms/d/e/1FAIpQLSf3JWQg-B_cLuEe84sz3-GJj-J9wHf4CR2kno6i-Tcs6tb5Yg/viewform',
     ),
@@ -712,10 +650,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-07-11'),
-    leads: [
-      { name: Name('Surya Nedunchezhiyan'), orcid: OrcidId('0009-0008-3322-2327') },
-      { name: Name('Tiffany I. Leung'), orcid: OrcidId('0000-0002-6007-4023') },
-    ],
+    leads: [OrcidId('0009-0008-3322-2327'), OrcidId('0000-0002-6007-4023')],
     contact: EmailAddress('ed-support@jmir.org'),
   },
   'caee8a6e-eabc-4bcc-a579-05295a928688': {
@@ -741,7 +676,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-02-24'),
-    leads: [{ name: Name('Philip Hotor'), orcid: OrcidId('0009-0001-8347-0512') }],
+    leads: [OrcidId('0009-0001-8347-0512')],
     joinLink: new URL('https://forms.gle/VWGgEpYr6BEDLeYv9'),
   },
   '998f32b4-ced9-49f8-8042-ce8fe41e62ec': {
@@ -765,7 +700,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-09-20'),
-    leads: [{ name: Name('Miguel Oliveira, Jr.'), orcid: OrcidId('0000-0002-0866-0535') }],
+    leads: [OrcidId('0000-0002-0866-0535')],
     joinLink: new URL(
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
@@ -796,10 +731,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-02-09'),
-    leads: [
-      { name: Name('Luis Alberto Bezares Calderón'), orcid: OrcidId('0000-0001-6678-6876') },
-      { name: Name('Alexandra Kerbl'), orcid: OrcidId('0000-0002-9454-6359') },
-    ],
+    leads: [OrcidId('0000-0001-6678-6876'), OrcidId('0000-0002-9454-6359')],
     contact: EmailAddress('lab239@exeter.ac.uk'),
   },
   '46ed1601-a895-4703-9661-e06893017c5c': {
@@ -822,10 +754,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-02-13'),
-    leads: [
-      { name: Name('Tolulope Joseph Ogunniyi'), orcid: OrcidId('0000-0003-2582-4420') },
-      { name: Name('Gbenga Temitope Peter'), orcid: OrcidId('0009-0008-7768-0127') },
-    ],
+    leads: [OrcidId('0000-0003-2582-4420'), OrcidId('0009-0008-7768-0127')],
   },
   '0cb0b787-fd2c-4325-83fe-0ed28361fcc6': {
     name: {
@@ -849,16 +778,16 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     },
     added: Temporal.PlainDate.from('2024-10-11'),
     leads: [
-      { name: Name('Ryan Ram'), orcid: OrcidId('0009-0009-0072-4133') },
-      { name: Name('Santhosh Diravidamani'), orcid: OrcidId('0009-0003-1843-7171') },
-      { name: Name('Hardik Acharya'), orcid: OrcidId('0009-0005-6748-9888') },
-      { name: Name('Abbas Saifuddin'), orcid: OrcidId('0009-0003-9667-6207') },
-      { name: Name('Hamza Mustafa'), orcid: OrcidId('0009-0006-0344-5365') },
-      { name: Name('Ahmed Malik'), orcid: OrcidId('0009-0006-4040-9021') },
-      { name: Name('Anu'), orcid: OrcidId('0009-0005-8341-8545') },
-      { name: Name('Piyush Peddi'), orcid: OrcidId('0009-0008-1913-3360') },
-      { name: Name('Rajesh Karavadi'), orcid: OrcidId('0009-0005-8589-5628') },
-      { name: Name('Dhyaan Bannur'), orcid: OrcidId('0009-0009-3734-0758') },
+      OrcidId('0009-0009-0072-4133'),
+      OrcidId('0009-0003-1843-7171'),
+      OrcidId('0009-0005-6748-9888'),
+      OrcidId('0009-0003-9667-6207'),
+      OrcidId('0009-0006-0344-5365'),
+      OrcidId('0009-0006-4040-9021'),
+      OrcidId('0009-0005-8341-8545'),
+      OrcidId('0009-0008-1913-3360'),
+      OrcidId('0009-0005-8589-5628'),
+      OrcidId('0009-0009-3734-0758'),
     ],
     contact: EmailAddress('hsa230003@utdallas.edu'),
   },
@@ -883,10 +812,10 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     },
     added: Temporal.PlainDate.from('2024-02-09'),
     leads: [
-      { name: Name('Madison Jiang'), orcid: OrcidId('0009-0007-1653-0072') },
-      { name: Name('Safa Adookkattil'), orcid: OrcidId('0009-0000-1565-8583') },
-      { name: Name('Emma Unger'), orcid: OrcidId('0009-0000-6854-2621') },
-      { name: Name('Mohammad Khan'), orcid: OrcidId('0009-0007-7940-1964') },
+      OrcidId('0009-0007-1653-0072'),
+      OrcidId('0009-0000-1565-8583'),
+      OrcidId('0009-0000-6854-2621'),
+      OrcidId('0009-0007-7940-1964'),
     ],
     contact: EmailAddress('msj220001@utdallas.edu'),
   },
@@ -913,10 +842,10 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     },
     added: Temporal.PlainDate.from('2024-01-18'),
     leads: [
-      { name: Name('Kuan-lin Huang'), orcid: OrcidId('0000-0002-5537-5817') },
-      { name: Name('Chih-Chung (Jerry) Lin'), orcid: OrcidId('0000-0002-0335-9540') },
-      { name: Name('Eugenio Contreras Castillo'), orcid: OrcidId('0009-0001-2806-2874') },
-      { name: Name('Anna Salamero Boix'), orcid: OrcidId('0000-0002-9821-1396') },
+      OrcidId('0000-0002-5537-5817'),
+      OrcidId('0000-0002-0335-9540'),
+      OrcidId('0009-0001-2806-2874'),
+      OrcidId('0000-0002-9821-1396'),
     ],
     joinLink: new URL('https://join.slack.com/t/openboxscience/shared_invite/zt-1cjr8dt6c-hRnnCmmAG8JeRo1271O5aA'),
   },
@@ -943,7 +872,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-12-20'),
-    leads: [{ name: Name('Assist. Prof. Dr. Salwan M. Abdulateef'), orcid: OrcidId('0000-0002-7389-0003') }],
+    leads: [OrcidId('0000-0002-7389-0003')],
     contact: EmailAddress('ag.salwan.mahmood@uoanbar.edu.iq'),
   },
   '3c728f14-d22a-4704-8d16-203984c9b4bb': {
@@ -963,11 +892,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-12-12'),
-    leads: [
-      { name: Name('María Constanza Silvera'), orcid: OrcidId('0009-0006-1396-0432') },
-      { name: Name('Daniel Prieto'), orcid: OrcidId('0000-0001-8356-1708') },
-      { name: Name('Mateo Vidal Panario'), orcid: OrcidId('0009-0009-3980-7163') },
-    ],
+    leads: [OrcidId('0009-0006-1396-0432'), OrcidId('0000-0001-8356-1708'), OrcidId('0009-0009-3980-7163')],
     contact: EmailAddress('csilvera@fcien.edu.uy'),
   },
   '25a3af44-1d6c-4605-a22f-97a47d051439': {
@@ -993,7 +918,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-05-29'),
-    leads: [{ name: Name('Gracielle Higino'), orcid: OrcidId('0000-0003-2791-8383') }],
+    leads: [OrcidId('0000-0003-2791-8383')],
     joinLink: new URL('https://forms.cloud.microsoft/r/uNGaWJ5UeS'),
   },
   'd7681876-2aaa-46eb-a7b7-7164e6f3b3ef': {
@@ -1016,7 +941,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-11-04'),
-    leads: [{ name: Name('Kornelija Aleksejeva'), orcid: OrcidId('0009-0004-3328-1862') }],
+    leads: [OrcidId('0009-0004-3328-1862')],
   },
   'f0c71aca-aa3f-4a64-934e-4013e6811049': {
     name: {
@@ -1041,7 +966,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-10-06'),
-    leads: [{ name: Name('Domenico Azarnia Tehran'), orcid: OrcidId('0000-0001-8955-7240') }],
+    leads: [OrcidId('0000-0001-8955-7240')],
   },
   '8b34f6be-b086-4e2c-878a-5c3b74218448': {
     name: {
@@ -1069,7 +994,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-02-24'),
-    leads: [{ name: Name('Diptarup Mallick'), orcid: OrcidId('0009-0006-6065-9650') }],
+    leads: [OrcidId('0009-0006-6065-9650')],
     contact: EmailAddress('diptarupmallick3@gmail.com'),
   },
   '098981c2-aa2a-44ba-ba75-83e1b0b7fcb1': {
@@ -1100,7 +1025,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-04-02'),
-    leads: [{ name: Name('Carlos Herold Junior'), orcid: OrcidId('0000-0001-7962-274X') }],
+    leads: [OrcidId('0000-0001-7962-274X')],
     contact: EmailAddress('chjunior@uem.br'),
   },
   'b18ebd46-b563-49fa-8dc0-033d8a8c6074': {
@@ -1120,7 +1045,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-09-09'),
-    leads: [{ name: Name('Lessa Tchohou Fabrice'), orcid: OrcidId('0000-0002-5644-7632') }],
+    leads: [OrcidId('0000-0002-5644-7632')],
   },
   'b5f170f1-59e2-4f2b-8019-59aff327e9e0': {
     name: {
@@ -1139,10 +1064,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-10-08'),
-    leads: [
-      { name: Name('Ren Ujimatsu'), orcid: OrcidId('0009-0006-7429-6694') },
-      { name: Name('Aoi Kudoh'), orcid: OrcidId('0000-0002-2271-9193') },
-    ],
+    leads: [OrcidId('0009-0006-7429-6694'), OrcidId('0000-0002-2271-9193')],
   },
   '4bfded37-5773-4cc0-a073-2ce05cdb939c': {
     name: {
@@ -1168,7 +1090,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-07-24'),
-    leads: [{ name: Name('Elodie Lafont'), orcid: OrcidId('0000-0003-1978-7491') }],
+    leads: [OrcidId('0000-0003-1978-7491')],
   },
   'c485e5e6-3d53-4700-9734-e4ead74ee76d': {
     name: {
@@ -1193,10 +1115,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     `,
     },
     added: Temporal.PlainDate.from('2025-01-17'),
-    leads: [
-      { name: Name('Dine Roseline Dzekem'), orcid: OrcidId('0000-0002-8210-9258') },
-      { name: Name('Ogunniyi Tolulope'), orcid: OrcidId('0000-0003-2582-4420') },
-    ],
+    leads: [OrcidId('0000-0002-8210-9258'), OrcidId('0000-0003-2582-4420')],
     joinLink: new URL('https://chat.whatsapp.com/EwqcyyjUIR57BZMvwuwIET'),
   },
   '4f8076fc-2219-49fc-be5f-6682ca7cc009': {
@@ -1220,7 +1139,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-03-18'),
-    leads: [{ name: Name('Alain Manuel Chaple Gil'), orcid: OrcidId('0000-0002-8571-4429') }],
+    leads: [OrcidId('0000-0002-8571-4429')],
     contact: EmailAddress('alain.chaple@uautonoma.cl'),
   },
   '3f07d8f6-4fbf-47e6-849c-2c157b6535b6': {
@@ -1248,7 +1167,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-10-04'),
-    leads: [{ name: Name('Hildy Fong Baker'), orcid: OrcidId('0000-0002-3836-1966') }],
+    leads: [OrcidId('0000-0002-3836-1966')],
     contact: EmailAddress('rrid@berkeley.edu'),
   },
   'ed1dca96-74c0-46ff-b29f-c900fd543d6d': {
@@ -1271,11 +1190,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-03-23'),
-    leads: [
-      { name: Name('Barbora Turpin Knotkova'), orcid: OrcidId('0000-0002-9838-0501') },
-      { name: Name('Natalie Friemel'), orcid: OrcidId('0009-0002-4348-1396') },
-      { name: Name('Matteo Hofmann'), orcid: OrcidId('0009-0004-5033-4655') },
-    ],
+    leads: [OrcidId('0000-0002-9838-0501'), OrcidId('0009-0002-4348-1396'), OrcidId('0009-0004-5033-4655')],
   },
   'e9a18a97-f895-4872-a75f-78823b5fc99a': {
     name: {
@@ -1295,7 +1210,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-04-10'),
-    leads: [{ name: Name('Viduthalai Rasheedkhan Regina'), orcid: OrcidId('0000-0001-5457-8965') }],
+    leads: [OrcidId('0000-0001-5457-8965')],
   },
   '292651fd-e6d6-45e4-a46a-42912396a269': {
     name: {
@@ -1321,10 +1236,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-02-10'),
-    leads: [
-      { name: Name('Valentina Borghesani'), orcid: OrcidId('0000-0002-7909-8631') },
-      { name: Name('Gabriella Liuzzi'), orcid: OrcidId('0000-0001-8960-5601') },
-    ],
+    leads: [OrcidId('0000-0002-7909-8631'), OrcidId('0000-0001-8960-5601')],
   },
   'd90a3f87-607e-4da0-9c50-6de6992e118d': {
     name: {
@@ -1346,11 +1258,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-06-09'),
-    leads: [
-      { name: Name('Gian van der Spuy'), orcid: OrcidId('0000-0002-9067-5903') },
-      { name: Name('Elizna Maasdorp'), orcid: OrcidId('0000-0002-3402-169X') },
-      { name: Name('Abhinav Sharma'), orcid: OrcidId('0000-0002-6402-6993') },
-    ],
+    leads: [OrcidId('0000-0002-9067-5903'), OrcidId('0000-0002-3402-169X'), OrcidId('0000-0002-6402-6993')],
   },
   '2c5334ae-e361-48c3-bcca-6810c2f33cb4': {
     name: {
@@ -1372,7 +1280,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2024-11-13'),
-    leads: [{ name: Name('Kathleen Dunbar'), orcid: OrcidId('0009-0009-5970-9296') }],
+    leads: [OrcidId('0009-0009-5970-9296')],
   },
   'e1919a60-4875-4925-83b2-6b381543ed07': {
     name: {
@@ -1391,10 +1299,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2026-02-24'),
-    leads: [
-      { name: Name('Jennifer Miller'), orcid: OrcidId('0000-0001-5459-6733') },
-      { name: Name('Danny Chan'), orcid: OrcidId('0000-0002-8082-2316') },
-    ],
+    leads: [OrcidId('0000-0001-5459-6733'), OrcidId('0000-0002-8082-2316')],
     joinLink: new URL('https://nextcloud.translatescience.org/apps/forms/s/dqJYTY6HLYnKk6pDk6dpBi8g'),
   },
   'f0a5bcaf-8016-4c2e-92dd-b3a359329ead': {
@@ -1414,10 +1319,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2023-10-16'),
-    leads: [
-      { name: Name('Daniel Lüdke'), orcid: OrcidId('0000-0002-0064-0695') },
-      { name: Name('Andrés Posbeyikian'), orcid: OrcidId('0000-0002-9368-6659') },
-    ],
+    leads: [OrcidId('0000-0002-0064-0695'), OrcidId('0000-0002-9368-6659')],
   },
   '1013ab22-0917-4f34-adcb-7c8cf0eba463': {
     name: {
@@ -1440,7 +1342,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       `,
     },
     added: Temporal.PlainDate.from('2025-11-19'),
-    leads: [{ name: Name('Mauricio P. Contreras'), orcid: OrcidId('0000-0001-6002-0730') }],
+    leads: [OrcidId('0000-0001-6002-0730')],
     contact: EmailAddress('mauricio.contreras@zmbp.uni-tuebingen.de'),
   },
 }

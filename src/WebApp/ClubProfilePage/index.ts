@@ -16,7 +16,7 @@ export const ClubProfilePage = Effect.fn(
           pipe(
             Array.map(
               club.leads,
-              Effect.fnUntraced(function* ({ orcid }) {
+              Effect.fnUntraced(function* (orcid) {
                 const name = yield* OrcidRecords.getName(orcid)
 
                 return { name, orcid }

@@ -24,7 +24,7 @@ export interface ClubDetails {
     readonly text: Html
   }
   readonly added: Temporal.PlainDate
-  readonly leads: Array.NonEmptyReadonlyArray<{ name: Name; orcid: OrcidId }>
+  readonly leads: Array.NonEmptyReadonlyArray<OrcidId>
   readonly contact?: EmailAddress
   readonly joinLink?: URL
 }

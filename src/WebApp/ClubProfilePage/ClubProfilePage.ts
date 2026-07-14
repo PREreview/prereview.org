@@ -13,9 +13,15 @@ import * as Routes from '../../routes.ts'
 import { profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
+import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
+
+export type ClubDetails = Omit<Club, 'leads'> & {
+  readonly leads: Array.NonEmptyReadonlyArray<{ readonly name: Name; readonly orcid: OrcidId }>
+}
 
 export function createPage({
   club,
@@ -23,7 +29,7 @@ export function createPage({
   prereviews,
   locale,
 }: {
-  club: Club
+  club: ClubDetails
   id: ClubId
   prereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview | Prereviews.RecentDatasetPrereview>
   locale: SupportedLocale

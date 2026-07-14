@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import type { Club, ClubId } from '../../src/Clubs/index.ts'
+import type { ClubId } from '../../src/Clubs/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -13,7 +13,7 @@ import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import { Slug } from '../../src/types/Slug.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
-import { createPage } from '../../src/WebApp/ClubProfilePage/ClubProfilePage.ts'
+import { type ClubDetails, createPage } from '../../src/WebApp/ClubProfilePage/ClubProfilePage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
@@ -62,7 +62,7 @@ const club1 = {
   joinLink: new URL(
     'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
   ),
-} satisfies Club
+} satisfies ClubDetails
 
 const club2 = {
   name: {
@@ -81,7 +81,7 @@ const club2 = {
   },
   added: Temporal.PlainDate.from('2025-02-03'),
   leads: [{ name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') }],
-} satisfies Club
+} satisfies ClubDetails
 
 const id = '13e21570-0d1a-47f0-b378-b8c20776496a' satisfies ClubId
 
