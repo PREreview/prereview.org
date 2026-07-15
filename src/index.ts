@@ -3,6 +3,7 @@ import { ClusterWorkflowEngine, RunnerAddress } from '@effect/cluster'
 import { NodeSdk } from '@effect/opentelemetry'
 import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
+import { Temporal } from '@js-temporal/polyfill'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import {
@@ -27,6 +28,7 @@ import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } fro
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
+import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
 import { UserSelectableLocales } from './locales/index.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
@@ -36,7 +38,10 @@ import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
 import * as SlackOauth from './SlackOauth.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
-import { isPrereviewTeam } from './user.ts'
+import { Name } from './types/Name.ts'
+import { Slug } from './types/Slug.ts'
+import { Uuid } from './types/Uuid.ts'
+import { isPrereviewTeam, PrereviewTeam } from './user.ts'
 import * as WebApp from './WebApp/index.ts'
 import { IsUserBlocked } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 
@@ -83,9 +88,36 @@ const OpenTelemetry = Layer.unwrapEffect(
   ),
 )
 
+const ClubsData = Layer.unwrapEffect(
+  Effect.andThen(
+    Config.withDefault(Config.boolean('ADD_PREREVIEW_STAFF_CLUB'), false),
+    Boolean.match({
+      onTrue: () =>
+        Layer.succeed(Clubs.ClubsData, [
+          ...Clubs.DefaultClubs,
+          {
+            id: Uuid('df52ec81-2f3d-434a-99a4-c657ad1c2f41'),
+            name: {
+              language: 'en',
+              text: Name('PREreview Staff Club'),
+            },
+            slug: Slug('prereview-staff'),
+            description: {
+              language: 'en',
+              text: html` <p>A space for PREreview staff members to pretend they’re running a club.</p> `,
+            },
+            added: Temporal.PlainDate.from('2026-07-15'),
+            leads: PrereviewTeam,
+          },
+        ]),
+      onFalse: () => Clubs.layerDefaultClubs,
+    }),
+  ),
+)
+
 pipe(
   Program,
-  Layer.provide(Clubs.layerDefaultClubs),
+  Layer.provide(ClubsData),
   Layer.provide(OpenAiLanguageModel.modelWithTokenizer('gpt-4o')),
   Layer.provide(
     OpenAiClient.layerConfig({

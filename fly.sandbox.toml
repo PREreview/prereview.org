@@ -9,6 +9,7 @@ memory = "1gb"
 strategy = "bluegreen"
 
 [env]
+ADD_PREREVIEW_STAFF_CLUB = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"
 CAN_LOG_IN_AS_DEMO_USER = "true"
 ENVIRONMENT_LABEL = "sandbox"
