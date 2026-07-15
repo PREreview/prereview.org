@@ -6,9 +6,11 @@ import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import {
+  areAClubLead,
   areLoggedIn,
   canAddMultipleAuthors,
   canLogIn,
+  clubLeadsCanAddReviewsToClubs,
   expect,
   hasAVerifiedEmailAddress,
   hasAnUnverifiedEmailAddress,
@@ -1795,6 +1797,72 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ oauthSer
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t log you in')
 })
 
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(areAClubLead)
+  .extend(clubLeadsCanAddReviewsToClubs)('can add the review to your club', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await waitForNotBusy(page)
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add this review to your club')
+
+  await page.getByLabel('Psychoceramics Club').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+  await expect(page.getByRole('main')).toContainText('Club Psychoceramics Club')
+})
+
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(areAClubLead)
+  .extend(clubLeadsCanAddReviewsToClubs)('can choose not to add the review to your club', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await waitForNotBusy(page)
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add this review to your club')
+
+  await page.getByLabel('This isn’t a club review').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+  await expect(page.getByRole('main')).toContainText('Club Not in a club')
+})
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to give your email address',
   async ({ emails, javaScriptEnabled, page }) => {
@@ -2939,6 +3007,50 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Confirm that you are following the Code of Conduct' }).click()
 
     await expect(page.getByLabel('I’m following the Code of Conduct')).toBeFocused()
+  },
+)
+
+test
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(areAClubLead)
+  .extend(clubLeadsCanAddReviewsToClubs)(
+  'have to say whether to add the review to your club',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Add this review to your club' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+
+    await page.getByRole('link', { name: 'Select a club for the review' }).click()
+
+    await expect(page.getByLabel('Psychoceramics Club')).toBeFocused()
   },
 )
 

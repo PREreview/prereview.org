@@ -96,6 +96,7 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
+  canClubLeadsAddReviewsToClubs: (typeof FeatureFlags.FeatureFlags.Service)['canClubLeadsAddReviewsToClubs']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   showSpotlight: (typeof FeatureFlags.FeatureFlags.Service)['showSpotlight']
@@ -112,6 +113,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => Effect.succeed(false))
+  },
+  canClubLeadsAddReviewsToClubs: async ({}, use) => {
+    await use(false)
   },
   canLogInAsDemoUser: async ({}, use) => {
     await use(false)
@@ -2434,6 +2438,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         authorInviteStore,
         nodemailer,
         canAddMultipleAuthors,
+        canClubLeadsAddReviewsToClubs,
         canLogInAsDemoUser,
         showSpotlight,
         sqlClientLayer,
@@ -2472,6 +2477,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           CommunitySlack.layerShouldUpdateCommunitySlack(true),
           FeatureFlags.layer({
             canAddMultipleAuthors,
+            canClubLeadsAddReviewsToClubs,
             canLogInAsDemoUser,
             showSpotlight,
           }),
@@ -2690,6 +2696,28 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
+  },
+}
+
+export const areAClubLead: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'clubs'>> = {
+  clubs: async ({ clubs }, use) => {
+    await use([
+      ...clubs,
+      {
+        id: Uuid.Uuid('189f39d2-fd09-4f31-83f4-5e9e9785dbb7'),
+        name: {
+          language: 'en',
+          text: Name('Psychoceramics Club'),
+        },
+        slug: Slug('psychoceramics'),
+        description: {
+          language: 'en',
+          text: html`<p>A club for reviewing research about cracked pots.</p>`,
+        },
+        added: Temporal.PlainDate.from('2026-07-15'),
+        leads: [OrcidId('0000-0002-1825-0097')],
+      },
+    ])
   },
 }
 
@@ -3723,6 +3751,17 @@ export const canAddMultipleAuthors: Fixtures<
 > = {
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => Effect.succeed(true))
+  },
+}
+
+export const clubLeadsCanAddReviewsToClubs: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canClubLeadsAddReviewsToClubs'>,
+  Record<never, never>
+> = {
+  canClubLeadsAddReviewsToClubs: async ({}, use) => {
+    await use(true)
   },
 }
 
