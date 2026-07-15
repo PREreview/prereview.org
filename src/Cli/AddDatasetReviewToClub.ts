@@ -1,24 +1,30 @@
 import { Args, Command } from '@effect/cli'
-import { Array, Effect, pipe, Tuple } from 'effect'
-import * as Clubs from '../Clubs/index.ts'
+import { Effect, pipe } from 'effect'
+import { Clubs, isClubId } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import { Uuid } from '../types/index.ts'
+import { type Slug, SlugSchema } from '../types/Slug.ts'
 
 const datasetReviewId = pipe(Args.text({ name: 'datasetReviewId' }), Args.withSchema(Uuid.UuidSchema))
 
-const clubId = Args.choice(
-  Array.map(Clubs.ClubIdSchema.literals, clubId => Tuple.make(Clubs.getClubName(clubId).text, clubId)),
-  { name: 'clubId' },
-)
+const clubSlug = pipe(Args.text({ name: 'clubSlug' }), Args.withSchema(SlugSchema))
 
 const program = Effect.fnUntraced(function* ({
   datasetReviewId,
-  clubId,
+  clubSlug,
 }: {
   datasetReviewId: Uuid.Uuid
-  clubId: Clubs.ClubId
+  clubSlug: Slug
 }) {
-  yield* DatasetReviews.addReviewToAClub({ datasetReviewId, clubId })
+  const clubs = yield* Clubs
+
+  const club = yield* clubs.getClubBySlug(clubSlug)
+
+  if (!isClubId(club.id)) {
+    return yield* Effect.die('not a club ID')
+  }
+
+  yield* DatasetReviews.addReviewToAClub({ datasetReviewId, clubId: club.id })
 })
 
-export const AddDatasetReviewToClub = Command.make('add-dataset-review-to-club', { datasetReviewId, clubId }, program)
+export const AddDatasetReviewToClub = Command.make('add-dataset-review-to-club', { datasetReviewId, clubSlug }, program)
