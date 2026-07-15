@@ -106,8 +106,12 @@ export const writeReviewPublish = ({
               Effect.fnUntraced(function* ({ form }) {
                 const clubs = yield* Clubs
 
-                if (E.isLeft(form) || !form.right.club) {
+                if (E.isLeft(form)) {
                   return
+                }
+
+                if (typeof form.right.club !== 'string') {
+                  return form.right.club
                 }
 
                 return yield* clubs.getClubName(form.right.club)
