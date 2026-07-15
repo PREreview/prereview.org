@@ -35,9 +35,7 @@ it.effect.each<[string, _.Input, _.Result]>([
 
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
-    yield* Effect.promise(() =>
-      formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId as never })),
-    )
+    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
 
     const actualReturn = yield* Effect.either(_.CheckIfUserCanAddToAClub(formStore)(input))
 

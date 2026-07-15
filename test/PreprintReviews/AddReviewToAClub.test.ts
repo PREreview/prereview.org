@@ -51,9 +51,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, (Uuid | null)?]>(
 
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
-    yield* Effect.promise(() =>
-      formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId as never })),
-    )
+    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
 
     const actualReturn = yield* Effect.either(_.AddReviewToAClub(formStore, clubs)(input))
     const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
