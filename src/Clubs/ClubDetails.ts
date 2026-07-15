@@ -26,10 +26,6 @@ interface Club {
   readonly joinLink?: URL
 }
 
-export const getClubName = (id: ClubId) => clubs[id].name
-
-export const getClubSlug = (id: ClubId) => clubs[id].slug
-
 export const isAClubLead = (orcid: OrcidId): boolean =>
   pipe(Struct.keys(clubs), Array.some(flow(id => clubs[id].leads, Array.contains(orcid))))
 
