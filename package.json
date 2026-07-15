@@ -86,7 +86,7 @@
     "@types/turndown": "^5.0.6",
     "@typescript/analyze-trace": "^0.11.1",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
-    "@vitest/expect": "^4.1.9",
+    "@vitest/expect": "^4.1.10",
     "del-cli": "^7.0.0",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
@@ -119,7 +119,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.63.0",
     "vite": "^8.1.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
