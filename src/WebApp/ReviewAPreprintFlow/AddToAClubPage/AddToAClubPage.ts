@@ -80,7 +80,9 @@ export const renderAddToAClubPage = ({
                             Match.orElse(() => ''),
                           )}
                         />
-                        <span ${languageAttributesFor(club.language)}>${club.name}</span>
+                        <span lang="en" dir="ltr"
+                          >Add to <span ${languageAttributesFor(club.language)}>${club.name}</span></span
+                        >
                       </label>
                     </li>
                   `,

@@ -1823,7 +1823,7 @@ test
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add this review to your club')
 
-  await page.getByLabel('Psychoceramics Club').check()
+  await page.getByLabel('Add to Psychoceramics Club').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
@@ -3050,7 +3050,7 @@ test
 
     await page.getByRole('link', { name: 'Select a club for the review' }).click()
 
-    await expect(page.getByLabel('Psychoceramics Club')).toBeFocused()
+    await expect(page.getByLabel('Add to Psychoceramics Club')).toBeFocused()
   },
 )
 
