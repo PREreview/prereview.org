@@ -215,7 +215,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
         },
         { requiredKeys: ['alreadyWritten', 'reviewType'] },
       ),
-      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
+      fc.record({ club: fc.option(fc.uuid(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record(
           {
@@ -255,7 +255,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
         },
         { requiredKeys: ['alreadyWritten'] },
       ),
-      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
+      fc.record({ club: fc.option(fc.uuid(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record(
           {
@@ -309,7 +309,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         reviewType: fc.constant('questions'),
         generativeAiIdeas: generativeAiIdeas(),
       }),
-      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
+      fc.record({ club: fc.option(fc.uuid(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record({
           moreAuthors: fc.constant('yes'),
@@ -423,7 +423,7 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         reviewType: fc.constant('freeform'),
         generativeAiIdeas: generativeAiIdeas(),
       }),
-      fc.record({ club: fc.option(fc.clubId(), { nil: null }) }, { requiredKeys: [] }),
+      fc.record({ club: fc.option(fc.uuid(), { nil: null }) }, { requiredKeys: [] }),
       fc.oneof(
         fc.record({
           moreAuthors: fc.constant('yes'),

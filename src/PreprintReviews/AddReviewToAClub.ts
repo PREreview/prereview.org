@@ -1,5 +1,4 @@
 import { Array, Effect, pipe } from 'effect'
-import { isClubId } from '../Clubs/index.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import type { Keyv } from '../keyv.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -38,7 +37,7 @@ export const AddReviewToAClub = (
       return
     }
 
-    if (!isClubId(input.clubId) || !Array.contains(clubs, input.clubId)) {
+    if (!Array.contains(clubs, input.clubId)) {
       return yield* new Errors.UnknownClub()
     }
 

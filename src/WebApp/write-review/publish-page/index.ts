@@ -108,7 +108,7 @@ export const writeReviewPublish = ({
                   return
                 }
 
-                return yield* clubs.getClubName(Uuid(form.right.club))
+                return yield* clubs.getClubName(form.right.club)
               }),
             ),
           ),
