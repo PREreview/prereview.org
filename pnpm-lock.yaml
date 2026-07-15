@@ -285,8 +285,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       oauth2-mock-server:
-        specifier: ^9.0.0
-        version: 9.0.0
+        specifier: ^9.1.0
+        version: 9.1.0
       postcss:
         specifier: ^8.5.16
         version: 8.5.16
@@ -3800,8 +3800,8 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
-  oauth2-mock-server@9.0.0:
-    resolution: {integrity: sha512-fLOtud91LgWzKkx/vQY9DF6C0YPFdQFfPrpUKK4Czl44+BLA8i9bEBQElsFuOItmYKg15cEem1vUiWGBMSXo/g==}
+  oauth2-mock-server@9.1.0:
+    resolution: {integrity: sha512-1Aug6KQhD9IoxyCogFb0XQqovSOhkvOSRUz5Zm98o96H4omt1HEbUMxwzgwl7GO42eh+BqBH/uCbcKIxi4OBbg==}
     engines: {node: ^22.12 || ^24 || ^26}
     hasBin: true
 
@@ -9007,7 +9007,7 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  oauth2-mock-server@9.0.0:
+  oauth2-mock-server@9.1.0:
     dependencies:
       basic-auth: 2.0.1
       is-plain-obj: 4.1.0
