@@ -1,3 +1,4 @@
+/* eslint-disable no-comments/disallowComments */
 import { Context, Data, Effect, flow, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as C from 'io-ts/lib/Codec.js'
@@ -28,14 +29,13 @@ export const EnsureUserIsLoggedIn: Effect.Effect<User, UserIsNotLoggedIn> = Effe
 export class UserIsNotLoggedIn extends Data.TaggedError('UserIsNotLoggedIn') {}
 
 export const PrereviewTeam = [
-  OrcidId.OrcidId('0000-0001-8511-8689'),
-  OrcidId.OrcidId('0000-0002-1472-1824'),
-  OrcidId.OrcidId('0000-0002-3708-3546'),
-  OrcidId.OrcidId('0000-0002-5753-2556'),
-  OrcidId.OrcidId('0000-0002-6109-0367'),
-  OrcidId.OrcidId('0000-0002-6750-9341'),
-  OrcidId.OrcidId('0000-0003-4921-6155'),
-  OrcidId.OrcidId('0009-0009-4958-0871'),
+  OrcidId.OrcidId('0000-0001-8511-8689'), // Vanessa Fairhurst
+  OrcidId.OrcidId('0000-0001-9008-3302'), // María Sol Ruiz
+  OrcidId.OrcidId('0000-0002-1472-1824'), // Chad Sansing
+  OrcidId.OrcidId('0000-0002-5753-2556'), // Daniel Haarhoff
+  OrcidId.OrcidId('0000-0002-6109-0367'), // Daniela Saderi
+  OrcidId.OrcidId('0000-0002-9143-1011'), // María Pía Tavella
+  OrcidId.OrcidId('0000-0003-4921-6155'), // Chris Wilkinson
 ] as const
 
 export const isPrereviewTeam = (user?: User) => (user ? PrereviewTeam.includes(user.orcid) : false)
