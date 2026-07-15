@@ -1,35 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, flow, pipe, type Record, Struct } from 'effect'
-import type { LanguageCode } from 'iso-639-1'
-import { type Html, html } from '../html.ts'
+import { Array, flow, pipe, Record, Struct } from 'effect'
+import { html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { Name } from '../types/Name.ts'
 import { OrcidId } from '../types/OrcidId.ts'
 import { Slug } from '../types/Slug.ts'
+import { Uuid } from '../types/Uuid.ts'
 import type { ClubId } from './ClubId.ts'
-
-interface Club {
-  readonly name: {
-    readonly language: LanguageCode
-    readonly text: Name
-  }
-  readonly formerNames?: Array.NonEmptyReadonlyArray<Name>
-  readonly slug: Slug
-  readonly formerSlugs?: Array.NonEmptyReadonlyArray<Slug>
-  readonly description: {
-    readonly language: LanguageCode
-    readonly text: Html
-  }
-  readonly added: Temporal.PlainDate
-  readonly leads: Array.NonEmptyReadonlyArray<OrcidId>
-  readonly contact?: EmailAddress
-  readonly joinLink?: URL
-}
+import type { ClubDetails } from './index.ts'
 
 export const isAClubLead = (orcid: OrcidId): boolean =>
-  pipe(Struct.keys(clubs), Array.some(flow(id => clubs[id].leads, Array.contains(orcid))))
+  pipe(Struct.keys(clubsById), Array.some(flow(id => clubsById[id].leads, Array.contains(orcid))))
 
-export const clubs: Record.ReadonlyRecord<ClubId, Club> = {
+const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
   '13e21570-0d1a-47f0-b378-b8c20776496a': {
     name: {
       language: 'en',
@@ -1306,3 +1289,12 @@ export const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     contact: EmailAddress('mauricio.contreras@zmbp.uni-tuebingen.de'),
   },
 }
+
+export const clubs: Array.NonEmptyReadonlyArray<ClubDetails> = Record.collect(
+  clubsById,
+  (id, club) =>
+    ({
+      id: Uuid(id),
+      ...club,
+    }) satisfies ClubDetails,
+) as never as Array.NonEmptyReadonlyArray<ClubDetails>

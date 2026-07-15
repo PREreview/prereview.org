@@ -1,6 +1,6 @@
 import { NodeContext, NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { type Array, Config, Effect, Layer, pipe, Record } from 'effect'
+import { Config, Effect, Layer, pipe } from 'effect'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
@@ -32,14 +32,7 @@ pipe(
         ReviewRequest.commandsLayer,
       ),
       Layer.provide(ContactEmailAddresses.layer),
-      Layer.provideMerge(
-        Clubs.layer(
-          Record.collect(
-            Clubs.clubs,
-            (id, club) => ({ id: Uuid.Uuid(id), ...club }) satisfies Clubs.ClubDetails,
-          ) as never as Array.NonEmptyReadonlyArray<Clubs.ClubDetails>,
-        ),
-      ),
+      Layer.provideMerge(Clubs.layer(Clubs.clubs)),
       Layer.provide([
         LanguageDetection.layerCld,
         OrcidRecords.layer,
