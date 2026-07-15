@@ -238,7 +238,7 @@ export const Program = pipe(
       }),
     ),
   ]),
-  Layer.provide(Clubs.layer(Clubs.DefaultClubs)),
+  Layer.provide(Clubs.layer),
   Layer.provide([Email.layer, LanguageDetection.layerCld]),
   Layer.provide([
     CoarNotify.layer,

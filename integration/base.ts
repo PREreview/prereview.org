@@ -35,6 +35,7 @@ import {
 } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
+import * as Clubs from '../src/Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
@@ -2433,6 +2434,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             slackUserIdStore,
             userOnboardingStore,
           }),
+          Clubs.layerDefaultClubs,
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),
           Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),

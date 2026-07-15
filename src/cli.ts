@@ -32,8 +32,9 @@ pipe(
         ReviewRequest.commandsLayer,
       ),
       Layer.provide(ContactEmailAddresses.layer),
-      Layer.provideMerge(Clubs.layer(Clubs.DefaultClubs)),
+      Layer.provideMerge(Clubs.layer),
       Layer.provide([
+        Clubs.layerDefaultClubs,
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),

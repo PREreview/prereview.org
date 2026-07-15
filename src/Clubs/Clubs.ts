@@ -52,8 +52,12 @@ export class Clubs extends Context.Tag('Clubs')<
   }
 >() {}
 
-export const layer = (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
-  Layer.sync(Clubs, () => {
+export class ClubsData extends Context.Tag('ClubsData')<ClubsData, Array.NonEmptyReadonlyArray<ClubDetails>>() {}
+
+export const layer = Layer.effect(
+  Clubs,
+  Effect.gen(function* () {
+    const clubs = yield* ClubsData
     const clubsById = Record.fromEntries(clubs.map(club => Tuple.make(club.id, club)))
 
     return {
@@ -76,4 +80,5 @@ export const layer = (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
       getClubsThatAPrereviewerLeads: flow(GetClubsThatAPrereviewerLeads(clubs), Effect.succeed),
       isPrereviewerAClubLead: flow(IsPrereviewerAClubLead(clubs), Effect.succeed),
     }
-  })
+  }),
+)

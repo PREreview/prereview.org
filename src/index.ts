@@ -22,7 +22,7 @@ import {
 } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
-import { Clubs } from './Clubs/index.ts'
+import * as Clubs from './Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import { CommunitySlack } from './ExternalInteractions/index.ts'
@@ -85,6 +85,7 @@ const OpenTelemetry = Layer.unwrapEffect(
 
 pipe(
   Program,
+  Layer.provide(Clubs.layerDefaultClubs),
   Layer.provide(OpenAiLanguageModel.modelWithTokenizer('gpt-4o')),
   Layer.provide(
     OpenAiClient.layerConfig({
@@ -112,7 +113,7 @@ pipe(
         Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
         Config.map(canAddMultipleAuthors =>
           Effect.fnUntraced(function* (user) {
-            const clubs = yield* Clubs
+            const clubs = yield* Clubs.Clubs
 
             return (
               canAddMultipleAuthors &&
