@@ -70,6 +70,7 @@ import { Name } from '../src/types/Name.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
+import { Slug } from '../src/types/Slug.ts'
 import * as WebApp from '../src/WebApp/index.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
 
@@ -89,6 +90,7 @@ interface AppFixtures {
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: Keyv
+  clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
@@ -2338,6 +2340,29 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   isOpenForRequestsStore: async ({}, use) => {
     await use(new Keyv())
   },
+  clubs: async ({}, use) => {
+    await use([
+      {
+        id: Uuid.Uuid('3e820d44-fdb3-4cba-aeb6-ac03fb23108e'),
+        name: {
+          language: 'en',
+          text: Name('ASAPbio Metabolism Crowd'),
+        },
+        slug: Slug('asapbio-metabolism'),
+        description: {
+          language: 'en',
+          text: html`
+            <p>
+              The ASAPbio Metabolism Crowd reviews preprints about the regulation of metabolic homeostasis and
+              pathophysiology of metabolic diseases, from cell biology to integrative physiology.
+            </p>
+          `,
+        },
+        added: Temporal.PlainDate.from('2023-07-27'),
+        leads: [OrcidId('0000-0001-6478-3815'), OrcidId('0000-0001-9039-9219')],
+      },
+    ])
+  },
   isUserBlocked: async ({}, use) => {
     await use(() => false)
   },
@@ -2398,6 +2423,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         formStore,
         careerStageStore,
         isOpenForRequestsStore,
+        clubs,
         isUserBlocked,
         languagesStore,
         locationStore,
@@ -2434,7 +2460,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             slackUserIdStore,
             userOnboardingStore,
           }),
-          Clubs.layerDefaultClubs,
+          Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),
           Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
