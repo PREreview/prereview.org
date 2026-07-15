@@ -85,7 +85,7 @@ const publication = new Events.DatasetReviewWasPublished({
 
 const club = new Events.DatasetReviewWasAddedToAClub({
   datasetReviewId,
-  clubId: '13e21570-0d1a-47f0-b378-b8c20776496a',
+  clubId: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
 })
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([

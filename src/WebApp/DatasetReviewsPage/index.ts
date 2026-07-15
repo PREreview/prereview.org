@@ -4,7 +4,6 @@ import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import { Uuid } from '../../types/Uuid.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createDatasetReviewsPage } from './DatasetReviewsPage.ts'
@@ -29,7 +28,7 @@ export const DatasetReviewsPage = Effect.fn(
                   otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
                     concurrency: 'inherit',
                   }),
-                  club: Effect.transposeOption(Option.map(datasetReview.clubId, id => clubs.getClubName(Uuid(id)))),
+                  club: Effect.transposeOption(Option.map(datasetReview.clubId, clubs.getClubName)),
                 },
                 { concurrency: 'inherit' },
               )

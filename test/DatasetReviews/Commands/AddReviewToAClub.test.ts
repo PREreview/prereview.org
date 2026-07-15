@@ -26,15 +26,15 @@ const started = new Events.DatasetReviewWasStarted({
 
 const added = new Events.DatasetReviewWasAddedToAClub({
   datasetReviewId: input.datasetReviewId,
-  clubId: input.clubId as never,
+  clubId: input.clubId,
 })
 
 const addedDifferentClub = new Events.DatasetReviewWasAddedToAClub({
   datasetReviewId: input.datasetReviewId,
-  clubId: 'd3e62606-0367-44b9-8d52-b75e0e7e5ba7',
+  clubId: Uuid('d3e62606-0367-44b9-8d52-b75e0e7e5ba7'),
 })
 
-const clubs = [input.clubId, inputUnknownClub.clubId, Uuid(addedDifferentClub.clubId)]
+const clubs = [input.clubId, addedDifferentClub.clubId]
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new DatasetReviews.UnknownDatasetReview({}))],

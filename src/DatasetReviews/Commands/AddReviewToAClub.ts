@@ -1,5 +1,4 @@
 import { Array, Either, Option, Struct, type Types } from 'effect'
-import { isClubId, type ClubId } from '../../Clubs/index.ts'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/Uuid.ts'
@@ -14,7 +13,7 @@ export type Error = DatasetReviewHasAlreadyBeenAddedToAClub | UnknownClub | Unkn
 
 interface State {
   readonly started: boolean
-  readonly inClub: Option.Option<ClubId>
+  readonly inClub: Option.Option<Uuid>
 }
 
 const createFilter = (input: Input) =>
@@ -54,11 +53,11 @@ const decide =
         return Option.none()
       }
 
-      if (!isClubId(input.clubId) || !Array.contains(clubs, input.clubId)) {
+      if (!Array.contains(clubs, input.clubId)) {
         return yield* Either.left(new UnknownClub())
       }
 
-      return Option.some(new Events.DatasetReviewWasAddedToAClub(input as never))
+      return Option.some(new Events.DatasetReviewWasAddedToAClub(input))
     })
 
 export const AddReviewToAClub = (clubs: ReadonlyArray<Uuid>) =>

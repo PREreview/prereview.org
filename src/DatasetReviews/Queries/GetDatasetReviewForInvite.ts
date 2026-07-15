@@ -1,5 +1,4 @@
 import { Array, Either, HashMap, Match, MutableHashSet, Option, pipe } from 'effect'
-import type { ClubId } from '../../Clubs/index.ts'
 import type { DatasetId } from '../../Datasets/index.ts'
 import type * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
@@ -18,7 +17,7 @@ export interface DatasetReviewForInvite {
     persona: 'public' | 'pseudonym'
   }>
   anonymousAuthors: number
-  clubId: Option.Option<ClubId>
+  clubId: Option.Option<Uuid.Uuid>
   doi: Doi.Doi
   id: Uuid.Uuid
   published: Temporal.PlainDate
@@ -38,7 +37,7 @@ interface State {
       authorOrcidId: OrcidId.OrcidId
       authorPersona?: 'public' | 'pseudonym'
       invitedAuthors: MutableHashSet.MutableHashSet<Uuid.Uuid>
-      clubId?: ClubId
+      clubId?: Uuid.Uuid
       doi?: Doi.Doi
       published?: Temporal.PlainDate
       datasetId: DatasetId

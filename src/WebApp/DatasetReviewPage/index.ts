@@ -4,7 +4,7 @@ import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import { Uuid } from '../../types/index.ts'
+import type { Uuid } from '../../types/index.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createDatasetReviewPage } from './DatasetReviewPage.ts'
@@ -22,7 +22,7 @@ export const DatasetReviewPage = Effect.fn(
           concurrency: 'inherit',
         }),
         dataset: Datasets.getDataset(datasetReview.dataset),
-        club: Effect.transposeOption(Option.map(datasetReview.clubId, id => clubs.getClubName(Uuid.Uuid(id)))),
+        club: Effect.transposeOption(Option.map(datasetReview.clubId, clubs.getClubName)),
       },
       { concurrency: 'inherit' },
     )

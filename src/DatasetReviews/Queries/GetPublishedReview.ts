@@ -1,5 +1,4 @@
 import { Array, Either, MutableHashMap, MutableHashSet, Option, pipe, Struct, type Types } from 'effect'
-import type { ClubId } from '../../Clubs/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
@@ -10,7 +9,7 @@ export interface PublishedReview {
   author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
   otherAuthors?: Array<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>
   anonymousAuthors?: number
-  clubId: Option.Option<ClubId>
+  clubId: Option.Option<Uuid.Uuid>
   dataset: Datasets.DatasetId
   doi: Doi.Doi
   id: Uuid.Uuid

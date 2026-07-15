@@ -13,7 +13,7 @@ import * as Prereviewers from '../Prereviewers/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { FieldId } from '../types/field.ts'
-import { type OrcidId, Uuid } from '../types/index.ts'
+import type { OrcidId, Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
 import {
@@ -311,7 +311,7 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
         concurrency: 'inherit',
       }),
       dataset: Datasets.getDatasetTitle(datasetReview.dataset),
-      club: Effect.transposeOption(Option.map(datasetReview.clubId, id => clubs.getClubName(Uuid.Uuid(id)))),
+      club: Effect.transposeOption(Option.map(datasetReview.clubId, clubs.getClubName)),
     },
     { concurrency: 'inherit' },
   )

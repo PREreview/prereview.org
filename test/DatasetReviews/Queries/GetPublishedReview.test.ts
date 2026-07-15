@@ -260,7 +260,7 @@ const datasetReviewWasAssignedADoi2 = new DatasetReviews.DatasetReviewWasAssigne
 })
 const datasetReviewWasAddedToAClub = new DatasetReviews.DatasetReviewWasAddedToAClub({
   datasetReviewId,
-  clubId: '07f0572c-aaee-4b93-b6ab-8bdc78644991',
+  clubId: Uuid.Uuid('07f0572c-aaee-4b93-b6ab-8bdc78644991'),
 })
 const datasetReviewWasPublished1 = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId,

@@ -1708,7 +1708,7 @@ export const publishedDatasetReview = ({
 } = {}): fc.Arbitrary<DatasetReviews.PublishedReview> =>
   fc.record({
     author: author ?? fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') }),
-    clubId: maybe(clubId()),
+    clubId: maybe(uuid()),
     dataset: datasetId(),
     doi: doi(),
     id: uuid(),
