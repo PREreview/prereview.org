@@ -1,4 +1,5 @@
-import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, type Either, Layer, Option, pipe, Scope, Struct } from 'effect'
+import { Clubs } from '../../Clubs/index.ts'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -96,7 +97,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     >
     markDoiAsAssigned: CommandHandler<MarkDoiAsAssigned.Command, MarkDoiAsAssigned.Error>
     markDoiAsActivated: CommandHandler<MarkDoiAsActivated.Command, MarkDoiAsActivated.Error>
-    addReviewToAClub: Commands.FromCommand<typeof AddReviewToAClub>
+    addReviewToAClub: Commands.FromCommand<ReturnType<typeof AddReviewToAClub>>
     publishDatasetReview: CommandHandler<PublishDatasetReview.Command, PublishDatasetReview.Error>
     markDatasetReviewAsPublished: CommandHandler<
       MarkDatasetReviewAsPublished.Command,
@@ -142,196 +143,202 @@ export const {
   markDatasetReviewAsPublished,
 } = Effect.serviceFunctions(DatasetReviewCommands)
 
-const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, EventStore.EventStore> =
-  Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+const makeDatasetReviewCommands: Effect.Effect<
+  typeof DatasetReviewCommands.Service,
+  never,
+  Clubs | EventStore.EventStore
+> = Effect.gen(function* () {
+  const clubs = yield* Clubs
+  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleCommand = <
-      Filter extends Events.EventFilter,
-      State,
-      Command extends { datasetReviewId: Uuid.Uuid },
-      Error,
-    >(
-      createFilter: (datasetReviewId: Uuid.Uuid) => Filter,
-      foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, datasetReviewId: Uuid.Uuid) => State,
-      authorize: (command: Command) => (state: State) => boolean,
-      decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
-    ): CommandHandler<Command, Error> =>
-      Effect.fn(
-        function* (command) {
-          const filter = createFilter(command.datasetReviewId)
+  const clubIds = yield* Effect.andThen(clubs.listClubs, Array.map(Struct.get('id')))
 
-          const { events, lastKnownPosition } = yield* pipe(
-            EventStore.query(filter),
-            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
-          )
+  const handleCommand = <
+    Filter extends Events.EventFilter,
+    State,
+    Command extends { datasetReviewId: Uuid.Uuid },
+    Error,
+  >(
+    createFilter: (datasetReviewId: Uuid.Uuid) => Filter,
+    foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, datasetReviewId: Uuid.Uuid) => State,
+    authorize: (command: Command) => (state: State) => boolean,
+    decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
+  ): CommandHandler<Command, Error> =>
+    Effect.fn(
+      function* (command) {
+        const filter = createFilter(command.datasetReviewId)
 
-          yield* pipe(
-            Effect.succeed(foldState(events, command.datasetReviewId)),
-            Effect.filterOrElse(authorize(command), () => new NotAuthorizedToRunCommand({})),
-            Effect.andThen(decide(command)),
-            Effect.tap(
-              Option.match({
-                onNone: () => Effect.void,
-                onSome: event =>
-                  EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
-              }),
-            ),
-          )
-        },
-        Effect.catchTag(
-          'FailedToCommitEvent',
-          'FailedToGetEvents',
-          'NewEventsFound',
-          cause => new UnableToHandleCommand({ cause }),
-        ),
-        Effect.provide(context),
-      )
+        const { events, lastKnownPosition } = yield* pipe(
+          EventStore.query(filter),
+          Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
+        )
 
-    const allDatasetReviewEvents = (datasetReviewId: Uuid.Uuid) =>
-      Events.EventFilter({
-        types: Events.DatasetReviewEventTypes,
-        predicates: { datasetReviewId },
-      })
+        yield* pipe(
+          Effect.succeed(foldState(events, command.datasetReviewId)),
+          Effect.filterOrElse(authorize(command), () => new NotAuthorizedToRunCommand({})),
+          Effect.andThen(decide(command)),
+          Effect.tap(
+            Option.match({
+              onNone: () => Effect.void,
+              onSome: event =>
+                EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+            }),
+          ),
+        )
+      },
+      Effect.catchTag(
+        'FailedToCommitEvent',
+        'FailedToGetEvents',
+        'NewEventsFound',
+        cause => new UnableToHandleCommand({ cause }),
+      ),
+      Effect.provide(context),
+    )
 
-    return {
-      startDatasetReview: handleCommand(
-        allDatasetReviewEvents,
-        StartDatasetReview.foldState,
-        () => () => true,
-        StartDatasetReview.decide,
-      ),
-      rateTheQuality: handleCommand(
-        RateTheQuality.createFilter,
-        RateTheQuality.foldState,
-        RateTheQuality.authorize,
-        RateTheQuality.decide,
-      ),
-      answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
-        AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
-        AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
-        AnswerIfTheDatasetFollowsFairAndCarePrinciples.authorize,
-        AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
-      ),
-      answerIfTheDatasetHasDataCensoredOrDeleted: handleCommand(
-        AnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter,
-        AnswerIfTheDatasetHasDataCensoredOrDeleted.foldState,
-        AnswerIfTheDatasetHasDataCensoredOrDeleted.authorize,
-        AnswerIfTheDatasetHasDataCensoredOrDeleted.decide,
-      ),
-      answerIfTheDatasetHasEnoughMetadata: handleCommand(
-        AnswerIfTheDatasetHasEnoughMetadata.createFilter,
-        AnswerIfTheDatasetHasEnoughMetadata.foldState,
-        AnswerIfTheDatasetHasEnoughMetadata.authorize,
-        AnswerIfTheDatasetHasEnoughMetadata.decide,
-      ),
-      answerIfTheDatasetHasTrackedChanges: handleCommand(
-        AnswerIfTheDatasetHasTrackedChanges.createFilter,
-        AnswerIfTheDatasetHasTrackedChanges.foldState,
-        AnswerIfTheDatasetHasTrackedChanges.authorize,
-        AnswerIfTheDatasetHasTrackedChanges.decide,
-      ),
-      answerIfTheDatasetIsAppropriateForThisKindOfResearch: handleCommand(
-        AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.createFilter,
-        AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.foldState,
-        AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.authorize,
-        AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.decide,
-      ),
-      answerIfTheDatasetSupportsRelatedConclusions: handleCommand(
-        AnswerIfTheDatasetSupportsRelatedConclusions.createFilter,
-        AnswerIfTheDatasetSupportsRelatedConclusions.foldState,
-        AnswerIfTheDatasetSupportsRelatedConclusions.authorize,
-        AnswerIfTheDatasetSupportsRelatedConclusions.decide,
-      ),
-      answerIfTheDatasetIsDetailedEnough: handleCommand(
-        AnswerIfTheDatasetIsDetailedEnough.createFilter,
-        AnswerIfTheDatasetIsDetailedEnough.foldState,
-        AnswerIfTheDatasetIsDetailedEnough.authorize,
-        AnswerIfTheDatasetIsDetailedEnough.decide,
-      ),
-      answerIfTheDatasetIsErrorFree: handleCommand(
-        AnswerIfTheDatasetIsErrorFree.createFilter,
-        AnswerIfTheDatasetIsErrorFree.foldState,
-        AnswerIfTheDatasetIsErrorFree.authorize,
-        AnswerIfTheDatasetIsErrorFree.decide,
-      ),
-      answerIfTheDatasetMattersToItsAudience: handleCommand(
-        AnswerIfTheDatasetMattersToItsAudience.createFilter,
-        AnswerIfTheDatasetMattersToItsAudience.foldState,
-        AnswerIfTheDatasetMattersToItsAudience.authorize,
-        AnswerIfTheDatasetMattersToItsAudience.decide,
-      ),
-      answerIfTheDatasetIsReadyToBeShared: handleCommand(
-        AnswerIfTheDatasetIsReadyToBeShared.createFilter,
-        AnswerIfTheDatasetIsReadyToBeShared.foldState,
-        AnswerIfTheDatasetIsReadyToBeShared.authorize,
-        AnswerIfTheDatasetIsReadyToBeShared.decide,
-      ),
-      answerIfTheDatasetIsMissingAnything: handleCommand(
-        AnswerIfTheDatasetIsMissingAnything.createFilter,
-        AnswerIfTheDatasetIsMissingAnything.foldState,
-        AnswerIfTheDatasetIsMissingAnything.authorize,
-        AnswerIfTheDatasetIsMissingAnything.decide,
-      ),
-      choosePersona: handleCommand(
-        ChoosePersona.createFilter,
-        ChoosePersona.foldState,
-        ChoosePersona.authorize,
-        ChoosePersona.decide,
-      ),
-      answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
-      addInvitationToAppearToTheList: yield* Commands.makeCommand(AddInvitationToAppearToTheList),
-      removeInvitationToAppearFromTheList: yield* Commands.makeCommand(RemoveInvitationToAppearFromTheList),
-      declareCompetingInterests: handleCommand(
-        DeclareCompetingInterests.createFilter,
-        DeclareCompetingInterests.foldState,
-        DeclareCompetingInterests.authorize,
-        DeclareCompetingInterests.decide,
-      ),
-      declareFollowingCodeOfConduct: handleCommand(
-        DeclareFollowingCodeOfConduct.createFilter,
-        DeclareFollowingCodeOfConduct.foldState,
-        DeclareFollowingCodeOfConduct.authorize,
-        DeclareFollowingCodeOfConduct.decide,
-      ),
-      markRecordCreatedOnZenodo: handleCommand(
-        allDatasetReviewEvents,
-        MarkRecordCreatedOnZenodo.foldState,
-        () => () => true,
-        MarkRecordCreatedOnZenodo.decide,
-      ),
-      markRecordAsPublishedOnZenodo: handleCommand(
-        allDatasetReviewEvents,
-        MarkRecordAsPublishedOnZenodo.foldState,
-        () => () => true,
-        MarkRecordAsPublishedOnZenodo.decide,
-      ),
-      markDoiAsAssigned: handleCommand(
-        allDatasetReviewEvents,
-        MarkDoiAsAssigned.foldState,
-        () => () => true,
-        MarkDoiAsAssigned.decide,
-      ),
-      markDoiAsActivated: handleCommand(
-        allDatasetReviewEvents,
-        MarkDoiAsActivated.foldState,
-        () => () => true,
-        MarkDoiAsActivated.decide,
-      ),
-      addReviewToAClub: yield* Commands.makeCommand(AddReviewToAClub),
-      publishDatasetReview: handleCommand(
-        allDatasetReviewEvents,
-        PublishDatasetReview.foldState,
-        () => () => true,
-        PublishDatasetReview.decide,
-      ),
-      markDatasetReviewAsPublished: handleCommand(
-        allDatasetReviewEvents,
-        MarkDatasetReviewAsPublished.foldState,
-        () => () => true,
-        MarkDatasetReviewAsPublished.decide,
-      ),
-    }
-  })
+  const allDatasetReviewEvents = (datasetReviewId: Uuid.Uuid) =>
+    Events.EventFilter({
+      types: Events.DatasetReviewEventTypes,
+      predicates: { datasetReviewId },
+    })
+
+  return {
+    startDatasetReview: handleCommand(
+      allDatasetReviewEvents,
+      StartDatasetReview.foldState,
+      () => () => true,
+      StartDatasetReview.decide,
+    ),
+    rateTheQuality: handleCommand(
+      RateTheQuality.createFilter,
+      RateTheQuality.foldState,
+      RateTheQuality.authorize,
+      RateTheQuality.decide,
+    ),
+    answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
+      AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
+      AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
+      AnswerIfTheDatasetFollowsFairAndCarePrinciples.authorize,
+      AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
+    ),
+    answerIfTheDatasetHasDataCensoredOrDeleted: handleCommand(
+      AnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter,
+      AnswerIfTheDatasetHasDataCensoredOrDeleted.foldState,
+      AnswerIfTheDatasetHasDataCensoredOrDeleted.authorize,
+      AnswerIfTheDatasetHasDataCensoredOrDeleted.decide,
+    ),
+    answerIfTheDatasetHasEnoughMetadata: handleCommand(
+      AnswerIfTheDatasetHasEnoughMetadata.createFilter,
+      AnswerIfTheDatasetHasEnoughMetadata.foldState,
+      AnswerIfTheDatasetHasEnoughMetadata.authorize,
+      AnswerIfTheDatasetHasEnoughMetadata.decide,
+    ),
+    answerIfTheDatasetHasTrackedChanges: handleCommand(
+      AnswerIfTheDatasetHasTrackedChanges.createFilter,
+      AnswerIfTheDatasetHasTrackedChanges.foldState,
+      AnswerIfTheDatasetHasTrackedChanges.authorize,
+      AnswerIfTheDatasetHasTrackedChanges.decide,
+    ),
+    answerIfTheDatasetIsAppropriateForThisKindOfResearch: handleCommand(
+      AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.createFilter,
+      AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.foldState,
+      AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.authorize,
+      AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.decide,
+    ),
+    answerIfTheDatasetSupportsRelatedConclusions: handleCommand(
+      AnswerIfTheDatasetSupportsRelatedConclusions.createFilter,
+      AnswerIfTheDatasetSupportsRelatedConclusions.foldState,
+      AnswerIfTheDatasetSupportsRelatedConclusions.authorize,
+      AnswerIfTheDatasetSupportsRelatedConclusions.decide,
+    ),
+    answerIfTheDatasetIsDetailedEnough: handleCommand(
+      AnswerIfTheDatasetIsDetailedEnough.createFilter,
+      AnswerIfTheDatasetIsDetailedEnough.foldState,
+      AnswerIfTheDatasetIsDetailedEnough.authorize,
+      AnswerIfTheDatasetIsDetailedEnough.decide,
+    ),
+    answerIfTheDatasetIsErrorFree: handleCommand(
+      AnswerIfTheDatasetIsErrorFree.createFilter,
+      AnswerIfTheDatasetIsErrorFree.foldState,
+      AnswerIfTheDatasetIsErrorFree.authorize,
+      AnswerIfTheDatasetIsErrorFree.decide,
+    ),
+    answerIfTheDatasetMattersToItsAudience: handleCommand(
+      AnswerIfTheDatasetMattersToItsAudience.createFilter,
+      AnswerIfTheDatasetMattersToItsAudience.foldState,
+      AnswerIfTheDatasetMattersToItsAudience.authorize,
+      AnswerIfTheDatasetMattersToItsAudience.decide,
+    ),
+    answerIfTheDatasetIsReadyToBeShared: handleCommand(
+      AnswerIfTheDatasetIsReadyToBeShared.createFilter,
+      AnswerIfTheDatasetIsReadyToBeShared.foldState,
+      AnswerIfTheDatasetIsReadyToBeShared.authorize,
+      AnswerIfTheDatasetIsReadyToBeShared.decide,
+    ),
+    answerIfTheDatasetIsMissingAnything: handleCommand(
+      AnswerIfTheDatasetIsMissingAnything.createFilter,
+      AnswerIfTheDatasetIsMissingAnything.foldState,
+      AnswerIfTheDatasetIsMissingAnything.authorize,
+      AnswerIfTheDatasetIsMissingAnything.decide,
+    ),
+    choosePersona: handleCommand(
+      ChoosePersona.createFilter,
+      ChoosePersona.foldState,
+      ChoosePersona.authorize,
+      ChoosePersona.decide,
+    ),
+    answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
+    addInvitationToAppearToTheList: yield* Commands.makeCommand(AddInvitationToAppearToTheList),
+    removeInvitationToAppearFromTheList: yield* Commands.makeCommand(RemoveInvitationToAppearFromTheList),
+    declareCompetingInterests: handleCommand(
+      DeclareCompetingInterests.createFilter,
+      DeclareCompetingInterests.foldState,
+      DeclareCompetingInterests.authorize,
+      DeclareCompetingInterests.decide,
+    ),
+    declareFollowingCodeOfConduct: handleCommand(
+      DeclareFollowingCodeOfConduct.createFilter,
+      DeclareFollowingCodeOfConduct.foldState,
+      DeclareFollowingCodeOfConduct.authorize,
+      DeclareFollowingCodeOfConduct.decide,
+    ),
+    markRecordCreatedOnZenodo: handleCommand(
+      allDatasetReviewEvents,
+      MarkRecordCreatedOnZenodo.foldState,
+      () => () => true,
+      MarkRecordCreatedOnZenodo.decide,
+    ),
+    markRecordAsPublishedOnZenodo: handleCommand(
+      allDatasetReviewEvents,
+      MarkRecordAsPublishedOnZenodo.foldState,
+      () => () => true,
+      MarkRecordAsPublishedOnZenodo.decide,
+    ),
+    markDoiAsAssigned: handleCommand(
+      allDatasetReviewEvents,
+      MarkDoiAsAssigned.foldState,
+      () => () => true,
+      MarkDoiAsAssigned.decide,
+    ),
+    markDoiAsActivated: handleCommand(
+      allDatasetReviewEvents,
+      MarkDoiAsActivated.foldState,
+      () => () => true,
+      MarkDoiAsActivated.decide,
+    ),
+    addReviewToAClub: yield* Commands.makeCommand(AddReviewToAClub(clubIds)),
+    publishDatasetReview: handleCommand(
+      allDatasetReviewEvents,
+      PublishDatasetReview.foldState,
+      () => () => true,
+      PublishDatasetReview.decide,
+    ),
+    markDatasetReviewAsPublished: handleCommand(
+      allDatasetReviewEvents,
+      MarkDatasetReviewAsPublished.foldState,
+      () => () => true,
+      MarkDatasetReviewAsPublished.decide,
+    ),
+  }
+})
 
 export const commandsLayer = Layer.effect(DatasetReviewCommands, makeDatasetReviewCommands)

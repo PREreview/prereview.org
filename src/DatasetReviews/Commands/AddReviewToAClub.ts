@@ -1,16 +1,16 @@
 import { Array, Either, Option, Struct, type Types } from 'effect'
-import type { ClubId } from '../../Clubs/index.ts'
+import { isClubId, type ClubId } from '../../Clubs/index.ts'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/Uuid.ts'
-import { DatasetReviewHasAlreadyBeenAddedToAClub, UnknownDatasetReview } from '../Errors.ts'
+import { DatasetReviewHasAlreadyBeenAddedToAClub, UnknownClub, UnknownDatasetReview } from '../Errors.ts'
 
 export interface Input {
   readonly datasetReviewId: Uuid
-  readonly clubId: ClubId
+  readonly clubId: Uuid
 }
 
-export type Error = DatasetReviewHasAlreadyBeenAddedToAClub | UnknownDatasetReview
+export type Error = DatasetReviewHasAlreadyBeenAddedToAClub | UnknownClub | UnknownDatasetReview
 
 interface State {
   readonly started: boolean
@@ -38,29 +38,36 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return { started, inClub }
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
-  Either.gen(function* () {
-    if (!state.started) {
-      return yield* Either.left(new UnknownDatasetReview({}))
-    }
-
-    if (Option.isSome(state.inClub)) {
-      if (state.inClub.value !== input.clubId) {
-        return yield* Either.left(new DatasetReviewHasAlreadyBeenAddedToAClub())
+const decide =
+  (clubs: ReadonlyArray<Uuid>) =>
+  (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+    Either.gen(function* () {
+      if (!state.started) {
+        return yield* Either.left(new UnknownDatasetReview({}))
       }
 
-      return Option.none()
-    }
+      if (Option.isSome(state.inClub)) {
+        if (state.inClub.value !== input.clubId) {
+          return yield* Either.left(new DatasetReviewHasAlreadyBeenAddedToAClub())
+        }
 
-    return Option.some(new Events.DatasetReviewWasAddedToAClub(input))
+        return Option.none()
+      }
+
+      if (!isClubId(input.clubId) || !Array.contains(clubs, input.clubId)) {
+        return yield* Either.left(new UnknownClub())
+      }
+
+      return Option.some(new Events.DatasetReviewWasAddedToAClub(input as never))
+    })
+
+export const AddReviewToAClub = (clubs: ReadonlyArray<Uuid>) =>
+  Commands.Command({
+    name: 'DatasetReviews.addReviewToAClub',
+    createFilter,
+    foldState,
+    decide: decide(clubs),
   })
-
-export const AddReviewToAClub = Commands.Command({
-  name: 'DatasetReviews.addReviewToAClub',
-  createFilter,
-  foldState,
-  decide,
-})
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)

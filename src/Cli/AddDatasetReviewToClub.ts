@@ -1,6 +1,6 @@
 import { Args, Command } from '@effect/cli'
 import { Effect, pipe } from 'effect'
-import { Clubs, isClubId } from '../Clubs/index.ts'
+import { Clubs } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import { Uuid } from '../types/index.ts'
 import { type Slug, SlugSchema } from '../types/Slug.ts'
@@ -19,10 +19,6 @@ const program = Effect.fnUntraced(function* ({
   const clubs = yield* Clubs
 
   const club = yield* clubs.getClubBySlug(clubSlug)
-
-  if (!isClubId(club.id)) {
-    return yield* Effect.die('not a club ID')
-  }
 
   yield* DatasetReviews.addReviewToAClub({ datasetReviewId, clubId: club.id })
 })
