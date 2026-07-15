@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Array, Effect, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
+import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
@@ -45,7 +46,7 @@ describe('writeReviewAddAuthor', () => {
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
               body,
-              canAddMultipleAuthors: true,
+              canAddMultipleAuthors: T.of(true),
               id,
               locale,
               method: 'POST',
@@ -89,7 +90,7 @@ describe('writeReviewAddAuthor', () => {
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
               body,
-              canAddMultipleAuthors: true,
+              canAddMultipleAuthors: T.of(true),
               id,
               locale,
               method: 'POST',
@@ -130,7 +131,7 @@ describe('writeReviewAddAuthor', () => {
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
               body,
-              canAddMultipleAuthors: false,
+              canAddMultipleAuthors: T.of(false),
               id,
               locale,
               method: 'POST',
@@ -170,7 +171,7 @@ describe('writeReviewAddAuthor', () => {
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
               body,
-              canAddMultipleAuthors: false,
+              canAddMultipleAuthors: T.of(false),
               id,
               locale,
               method: 'POST',
@@ -199,7 +200,7 @@ describe('writeReviewAddAuthor', () => {
       fc.string(),
       fc.user(),
       fc.supportedLocale(),
-      fc.boolean(),
+      fc.boolean().map(T.of),
     ],
     ([id, preprintTitle, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
@@ -227,7 +228,7 @@ describe('writeReviewAddAuthor', () => {
       fc.string(),
       fc.user(),
       fc.supportedLocale(),
-      fc.boolean(),
+      fc.boolean().map(T.of),
       fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
     ],
     ([id, preprintTitle, body, method, user, locale, canAddMultipleAuthors, newReview]) =>
@@ -255,7 +256,7 @@ describe('writeReviewAddAuthor', () => {
 
   it.effect.prop(
     'when the preprint cannot be loaded',
-    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean()],
+    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean().map(T.of)],
     ([id, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
         const getPreprintTitle = vi.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
@@ -283,7 +284,7 @@ describe('writeReviewAddAuthor', () => {
 
   it.effect.prop(
     'when the preprint cannot be found',
-    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean()],
+    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean().map(T.of)],
     ([id, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
@@ -306,7 +307,14 @@ describe('writeReviewAddAuthor', () => {
 
   it.effect.prop(
     "when there isn't a session",
-    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale(), fc.boolean()],
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.anything(),
+      fc.string(),
+      fc.supportedLocale(),
+      fc.boolean().map(T.of),
+    ],
     ([id, preprintTitle, body, method, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(

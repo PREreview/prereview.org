@@ -22,7 +22,7 @@ import {
 } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
-import { isAClubLead } from './Clubs/index.ts'
+import { Clubs } from './Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import { CommunitySlack } from './ExternalInteractions/index.ts'
@@ -110,9 +110,15 @@ pipe(
     FeatureFlags.layerConfig({
       canAddMultipleAuthors: pipe(
         Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
-        Config.map(
-          canAddMultipleAuthors => user =>
-            canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
+        Config.map(canAddMultipleAuthors =>
+          Effect.fnUntraced(function* (user) {
+            const clubs = yield* Clubs
+
+            return (
+              canAddMultipleAuthors &&
+              (user ? isPrereviewTeam(user) || (yield* clubs.isPrereviewerAClubLead(user.orcid)) : false)
+            )
+          }),
         ),
       ),
       canClubLeadsAddReviewsToClubs: Config.withDefault(Config.boolean('CAN_CLUB_LEADS_ADD_REVIEWS_TO_CLUBS'), false),

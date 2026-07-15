@@ -266,7 +266,10 @@ export const WriteReviewRouter = pipe(
           (env: Env) =>
             writeReviewAddAuthor({
               body: env.body,
-              canAddMultipleAuthors: env.featureFlags.canAddMultipleAuthors(env.loggedInUser),
+              canAddMultipleAuthors: EffectToFpts.toTask(
+                env.featureFlags.canAddMultipleAuthors(env.loggedInUser),
+                env.runtime,
+              ),
               id,
               locale: env.locale,
               method: env.method,

@@ -108,7 +108,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(`http://localhost:${port}`)
   },
   canAddMultipleAuthors: async ({}, use) => {
-    await use(() => false)
+    await use(() => Effect.succeed(false))
   },
   canLogInAsDemoUser: async ({}, use) => {
     await use(false)
@@ -3694,7 +3694,7 @@ export const canAddMultipleAuthors: Fixtures<
   Record<never, never>
 > = {
   canAddMultipleAuthors: async ({}, use) => {
-    await use(() => true)
+    await use(() => Effect.succeed(true))
   },
 }
 

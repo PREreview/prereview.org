@@ -1,10 +1,11 @@
 import { Config, Context, Data, Effect, Layer, Struct } from 'effect'
+import type { Clubs } from './Clubs/index.ts'
 import type { User } from './user.ts'
 
 export class FeatureFlags extends Context.Tag('FeatureFlags')<
   FeatureFlags,
   {
-    canAddMultipleAuthors: (user?: User) => boolean
+    canAddMultipleAuthors: (user?: User) => Effect.Effect<boolean, never, Clubs>
     canClubLeadsAddReviewsToClubs: boolean
     canLogInAsDemoUser: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
@@ -14,7 +15,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
 >() {}
 
 const defaults = {
-  canAddMultipleAuthors: () => false,
+  canAddMultipleAuthors: () => Effect.succeed(false),
   canClubLeadsAddReviewsToClubs: false,
   canLogInAsDemoUser: false,
   sendCoarNotifyMessages: false,

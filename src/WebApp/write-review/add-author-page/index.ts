@@ -3,6 +3,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type * as T from 'fp-ts/lib/Task.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../../form.ts'
@@ -30,7 +31,7 @@ export const writeReviewAddAuthor = ({
   user,
 }: {
   body: unknown
-  canAddMultipleAuthors: boolean
+  canAddMultipleAuthors: T.Task<boolean>
   id: IndeterminatePreprintId
   locale: SupportedLocale
   method: string
@@ -47,7 +48,7 @@ export const writeReviewAddAuthor = ({
         pipe(
           RTE.Do,
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-          RTE.let('canAddMultipleAuthors', () => canAddMultipleAuthors),
+          RTE.apS('canAddMultipleAuthors', RTE.rightTask(canAddMultipleAuthors)),
           RTE.let('locale', () => locale),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
