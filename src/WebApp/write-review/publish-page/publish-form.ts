@@ -1,7 +1,7 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
-import { getClubName } from '../../../Clubs/index.ts'
+import type { ClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
@@ -36,6 +36,7 @@ import { backNav } from '../shared-elements.ts'
 export function publishForm(
   preprint: PreprintTitle,
   review: CompletedForm,
+  club: ClubName | null | undefined,
   persona: Prereviewers.Persona,
   locale: SupportedLocale,
 ) {
@@ -122,12 +123,12 @@ export function publishForm(
                   : ''
               }
               ${
-                review.club !== undefined
+                club !== undefined
                   ? html`
                       <div>
                         <dt><span lang="en" dir="ltr">Club</span></dt>
                         <dd>
-                          ${review.club ? html`<span ${languageAttributesFor(getClubName(review.club).language)}>${getClubName(review.club).text}</span>` : html`<i><span lang="en" dir="ltr">Not in a club</span></i>`}
+                          ${club ? html`<span ${languageAttributesFor(club.language)}>${club.name}</span>` : html`<i><span lang="en" dir="ltr">Not in a club</span></i>`}
                         </dd>
                         <dd>
                           <a href="${Routes.ReviewAPreprintAddToAClub.href({ preprintId: preprint.id })}"

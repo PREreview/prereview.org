@@ -62,6 +62,7 @@ test("content looks right when it's freeform", async ({ showPage }) => {
       competingInterests: 'no',
       conduct: 'yes',
     },
+    undefined,
     publicPersona,
     locale,
   )
@@ -84,6 +85,7 @@ test('content looks right when generative AI was used', async ({ showPage }) => 
       competingInterests: 'no',
       conduct: 'yes',
     },
+    undefined,
     publicPersona,
     locale,
   )
@@ -109,6 +111,7 @@ test("content looks right when there's competing interests", async ({ showPage }
       ),
       conduct: 'yes',
     },
+    undefined,
     publicPersona,
     locale,
   )
@@ -136,6 +139,7 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       competingInterests: 'no',
       conduct: 'yes',
     },
+    undefined,
     publicPersona,
     locale,
   )
@@ -175,6 +179,7 @@ test("content looks right when it's questions", async ({ showPage }) => {
       competingInterests: 'no',
       conduct: 'yes',
     },
+    undefined,
     publicPersona,
     locale,
   )
@@ -224,6 +229,7 @@ test("content looks right when it's questions with details", async ({ showPage }
       competingInterests: 'no',
       conduct: 'yes',
     },
+    undefined,
     publicPersona,
     locale,
   )

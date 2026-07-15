@@ -7,7 +7,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import type { ClubId } from '../../../Clubs/index.ts'
+import { type ClubId, type ClubName, Clubs } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
@@ -21,6 +21,7 @@ import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
 import type { Name } from '../../../types/Name.ts'
+import { Uuid } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
@@ -64,7 +65,9 @@ export const writeReviewPublish = ({
     FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
-    EffectToFpts.EffectEnv<ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers>,
+    EffectToFpts.EffectEnv<
+      Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+    >,
   Response
 > =>
   pipe(
@@ -95,6 +98,20 @@ export const writeReviewPublish = ({
               ),
             ),
           ),
+          RTE.bindW(
+            'club',
+            EffectToFpts.toReaderTaskEitherK(
+              Effect.fnUntraced(function* ({ form }) {
+                const clubs = yield* Clubs
+
+                if (E.isLeft(form) || !form.right.club) {
+                  return
+                }
+
+                return yield* clubs.getClubName(Uuid(form.right.club))
+              }),
+            ),
+          ),
           RTE.matchEW(
             error =>
               RT.of(
@@ -114,6 +131,7 @@ export const writeReviewPublish = ({
 const decideNextStep = (state: {
   contactEmailAddress?: ContactEmailAddress
   form: E.Either<unknown, CompletedForm>
+  club: ClubName | null | undefined
   originalForm: Form
   preprint: PreprintTitle
   user: User
@@ -228,15 +246,17 @@ const handlePublishForm = ({
 
 const showPublishForm = ({
   form,
+  club,
   preprint,
   persona,
   locale,
 }: {
   form: CompletedForm
+  club: ClubName | null | undefined
   preprint: PreprintTitle
   persona: Prereviewers.Persona
   locale: SupportedLocale
-}) => publishForm(preprint, form, persona, locale)
+}) => publishForm(preprint, form, club, persona, locale)
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(
