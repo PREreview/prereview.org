@@ -7,7 +7,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import { type ClubId, type ClubName, Clubs } from '../../../Clubs/index.ts'
+import { type ClubName, Clubs } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
@@ -36,7 +36,7 @@ export interface NewPrereview {
   conduct: 'yes'
   otherAuthors: ReadonlyArray<{ name: Name; emailAddress: EmailAddress }>
   persona: Prereviewers.Persona
-  club: Option.Option<ClubId>
+  club: Option.Option<Uuid>
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
@@ -212,7 +212,7 @@ const handlePublishForm = ({
         RTE.map(({ language, persona, pseudonymPersona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
-          club: Option.fromNullable(form.club),
+          club: Option.map(Option.fromNullable(form.club), Uuid),
           language,
           license: match(form.generativeAiIdeas)
             .with('yes', () => 'CC0-1.0' as const)

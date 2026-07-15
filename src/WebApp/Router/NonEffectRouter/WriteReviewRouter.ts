@@ -483,9 +483,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
       Effect.gen(function* () {
         const clubs = yield* Clubs
 
-        const club = yield* Effect.transposeOption(
-          Option.map(newPrereview.club, id => clubs.getClubName(Uuid.Uuid(id))),
-        )
+        const club = yield* Effect.transposeOption(Option.map(newPrereview.club, clubs.getClubName))
 
         return { ...newPrereview, club }
       }).pipe(Effect.catchTag('ClubNotFound', () => Effect.fail('unavailable' as const))),
