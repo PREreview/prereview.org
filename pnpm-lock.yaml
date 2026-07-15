@@ -68,8 +68,8 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2
       cdigit:
-        specifier: ^4.0.3
-        version: 4.0.3
+        specifier: ^4.0.4
+        version: 4.0.4
       cld:
         specifier: ^2.10.1
         version: 2.10.1
@@ -2239,8 +2239,8 @@ packages:
     resolution: {integrity: sha512-wljhAjDDIv/hM2FzgJnYQg90AWmZMNtESCjTeLH680qTzdo0nErlCxOmgzgX4ZsZAtIvqHyD87ES8QyriXB+BQ==}
     engines: {node: '>=18'}
 
-  cdigit@4.0.3:
-    resolution: {integrity: sha512-aIo/nqwMmrVQ45IdSwsZ3dZzy254qc7h6UbqiQSR1cBCX+/bR6xIAlc2Zm4IShb7g/KDkn5dji5+mGugnzCO8g==}
+  cdigit@4.0.4:
+    resolution: {integrity: sha512-dJxSzIpt9TTkrj2mhKThHtFLmG6SxglgkAg/YFl5YfSs/p4aHi4NdLj5t31454hUx70EiOSmhu4kbc/eT+0t5g==}
     hasBin: true
 
   chai@6.2.2:
@@ -2314,6 +2314,10 @@ packages:
   commander@14.0.3:
     resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
     engines: {node: '>=20'}
+
+  commander@15.0.0:
+    resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
+    engines: {node: '>=22.12.0'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -7022,9 +7026,9 @@ snapshots:
 
   case-anything@3.1.2: {}
 
-  cdigit@4.0.3:
+  cdigit@4.0.4:
     dependencies:
-      commander: 14.0.3
+      commander: 15.0.0
 
   chai@6.2.2: {}
 
@@ -7107,6 +7111,8 @@ snapshots:
   commander@12.1.0: {}
 
   commander@14.0.3: {}
+
+  commander@15.0.0: {}
 
   commander@2.20.3: {}
 
