@@ -1,19 +1,19 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, flow, pipe, Record, Struct } from 'effect'
+import { Array, flow, Struct } from 'effect'
 import { html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { Name } from '../types/Name.ts'
 import { OrcidId } from '../types/OrcidId.ts'
 import { Slug } from '../types/Slug.ts'
 import { Uuid } from '../types/Uuid.ts'
-import type { ClubId } from './ClubId.ts'
 import type { ClubDetails } from './index.ts'
 
 export const isAClubLead = (orcid: OrcidId): boolean =>
-  pipe(Struct.keys(clubsById), Array.some(flow(id => clubsById[id].leads, Array.contains(orcid))))
+  Array.some(clubs, flow(Struct.get('leads'), Array.contains(orcid)))
 
-const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
-  '13e21570-0d1a-47f0-b378-b8c20776496a': {
+export const clubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
+  {
+    id: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
     name: {
       language: 'en',
       text: Name('ASAPbio Cancer Biology Crowd'),
@@ -31,7 +31,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-07-31'),
     leads: [OrcidId('0009-0003-2106-3270'), OrcidId('0000-0002-8079-9611')],
   },
-  'd3e62606-0367-44b9-8d52-b75e0e7e5ba7': {
+  {
+    id: Uuid('d3e62606-0367-44b9-8d52-b75e0e7e5ba7'),
     name: {
       language: 'en',
       text: Name('ASAPbio Cell Biology Crowd'),
@@ -45,7 +46,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-7857-2450'), OrcidId('0000-0002-8818-3221'), OrcidId('0000-0002-1074-9459')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
-  '2a6fde8a-ca6d-4647-a3ac-8d8fb4ae5f52': {
+  {
+    id: Uuid('2a6fde8a-ca6d-4647-a3ac-8d8fb4ae5f52'),
     name: {
       language: 'en',
       text: Name('ASAPbio Immunology Crowd'),
@@ -59,7 +61,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0001-5701-3628'), OrcidId('0000-0003-4665-9671'), OrcidId('0000-0001-7872-228X')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
-  '901dba75-ecad-41b8-92b0-1aab56a96e54': {
+  {
+    id: Uuid('901dba75-ecad-41b8-92b0-1aab56a96e54'),
     name: {
       language: 'en',
       text: Name('ASAPbio Meta-Research Crowd'),
@@ -78,7 +81,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0003-1040-3607'), OrcidId('0000-0002-0596-7590'), OrcidId('0000-0001-6666-9426')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
-  '8ee46f04-af8f-49f9-bc1c-1d3e2602672d': {
+  {
+    id: Uuid('8ee46f04-af8f-49f9-bc1c-1d3e2602672d'),
     name: {
       language: 'en',
       text: Name('ASAPbio Microbiology Crowd'),
@@ -94,7 +98,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-6232-6634'), OrcidId('0000-0002-1633-297X'), OrcidId('0000-0002-9222-1817')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
-  '3e820d44-fdb3-4cba-aeb6-ac03fb23108e': {
+  {
+    id: Uuid('3e820d44-fdb3-4cba-aeb6-ac03fb23108e'),
     name: {
       language: 'en',
       text: Name('ASAPbio Metabolism Crowd'),
@@ -112,7 +117,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-07-27'),
     leads: [OrcidId('0000-0001-6478-3815'), OrcidId('0000-0001-9039-9219')],
   },
-  '317d0a13-5a10-44fc-9bcd-fb548e01e9cb': {
+  {
+    id: Uuid('317d0a13-5a10-44fc-9bcd-fb548e01e9cb'),
     name: {
       language: 'en',
       text: Name('ASAPbio Neurobiology Crowd'),
@@ -127,7 +133,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-07-31'),
     leads: [OrcidId('0000-0003-2713-8563'), OrcidId('0000-0002-5880-5245'), OrcidId('0000-0003-0002-1867')],
   },
-  '2dfeb178-dc0b-4970-9cdb-36b60250b3c4': {
+  {
+    id: Uuid('2dfeb178-dc0b-4970-9cdb-36b60250b3c4'),
     name: {
       language: 'en',
       text: Name('Biophysics Probing Neuroscience Lab'),
@@ -150,7 +157,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2024-07-25'),
     leads: [OrcidId('0000-0002-5880-5245')],
   },
-  '0bb49906-085d-41ad-9787-9355356e624b': {
+  {
+    id: Uuid('0bb49906-085d-41ad-9787-9355356e624b'),
     name: {
       language: 'en',
       text: Name('Bio-Ed Preprint Review Community'),
@@ -169,7 +177,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0003-5210-9091')],
     joinLink: new URL('https://forms.gle/3az7nTJGXjmQSKef7'),
   },
-  '950e0757-d7ec-45b1-abbb-d171a03e5344': {
+  {
+    id: Uuid('950e0757-d7ec-45b1-abbb-d171a03e5344'),
     name: {
       language: 'en',
       text: Name('Open Science Community BioBío (OSCB)'),
@@ -202,7 +211,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     ],
     joinLink: new URL('https://forms.gle/AJPwDvBzBnCNSC5A7'),
   },
-  '2eba66eb-cdf0-4aae-996d-f42e75e0ad94': {
+  {
+    id: Uuid('2eba66eb-cdf0-4aae-996d-f42e75e0ad94'),
     name: {
       language: 'en',
       text: Name('Biomass and Biocatalysis Group'),
@@ -223,7 +233,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-10-05'),
     leads: [OrcidId('0000-0001-8466-9390')],
   },
-  '7bff827e-bbaa-4ac9-8607-056643d8e16a': {
+  {
+    id: Uuid('7bff827e-bbaa-4ac9-8607-056643d8e16a'),
     name: {
       language: 'en',
       text: Name('BioPeers SLU'),
@@ -246,7 +257,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-01-30'),
     leads: [OrcidId('0000-0002-2619-1859'), OrcidId('0009-0004-0588-6645')],
   },
-  'c8a72b87-cf45-42f0-aa75-a83a0d90eb5f': {
+  {
+    id: Uuid('c8a72b87-cf45-42f0-aa75-a83a0d90eb5f'),
     name: {
       language: 'en',
       text: Name('Biophysics Leipzig University'),
@@ -271,7 +283,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-4993-5136'), OrcidId('0000-0002-5815-8703')],
     contact: EmailAddress('jenny.leopold@medizin.uni-leipzig.de'),
   },
-  'd341790c-1757-4c10-82fe-70acc5f95fa4': {
+  {
+    id: Uuid('d341790c-1757-4c10-82fe-70acc5f95fa4'),
     name: {
       language: 'en',
       text: Name('Computational Biodiversity Science and Services'),
@@ -296,7 +309,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0003-2791-8383'), OrcidId('0000-0002-0735-5184')],
     joinLink: new URL('https://tally.so/r/wdPM9d'),
   },
-  'e977f760-48ba-4541-bb9f-fdcaef4bd05d': {
+  {
+    id: Uuid('e977f760-48ba-4541-bb9f-fdcaef4bd05d'),
     name: {
       language: 'en',
       text: Name('IU Bloomington Biology'),
@@ -316,7 +330,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-03-24'),
     leads: [OrcidId('0000-0002-8777-3174')],
   },
-  'b5041f10-289d-4d39-9c25-b4bea5ff3027': {
+  {
+    id: Uuid('b5041f10-289d-4d39-9c25-b4bea5ff3027'),
     name: {
       language: 'en',
       text: Name('CARA: Critical Analysis of Research Articles Club'),
@@ -340,7 +355,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-11-17'),
     leads: [OrcidId('0000-0002-1548-0655')],
   },
-  '07f0572c-aaee-4b93-b6ab-8bdc78644991': {
+  {
+    id: Uuid('07f0572c-aaee-4b93-b6ab-8bdc78644991'),
     name: {
       language: 'es',
       text: Name('Club Comunidad Iberoamericana de Ciencia Abierta (CIbCA)'),
@@ -371,7 +387,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-2635-1293'), OrcidId('0000-0002-6018-0635')],
     joinLink: new URL('https://openlab.ec/club-cibca'),
   },
-  '490a8fe4-9cda-4e51-bf50-9307cba39997': {
+  {
+    id: Uuid('490a8fe4-9cda-4e51-bf50-9307cba39997'),
     name: {
       language: 'en',
       text: Name('DEVL Ecology & Evolution Club'),
@@ -392,7 +409,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2026-06-15'),
     leads: [OrcidId('0000-0003-2069-9317'), OrcidId('0000-0002-1177-9844'), OrcidId('0000-0002-2363-7106')],
   },
-  'f26cbe5a-fb0a-43e9-9118-03cfa9aa601d': {
+  {
+    id: Uuid('f26cbe5a-fb0a-43e9-9118-03cfa9aa601d'),
     name: {
       language: 'en',
       text: Name('eLife Community Ambassadors'),
@@ -417,7 +435,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0008-9450-3341')],
     contact: EmailAddress('community@elifesciences.org'),
   },
-  'a671af6b-f14a-4b72-b66d-a76b0e8623f7': {
+  {
+    id: Uuid('a671af6b-f14a-4b72-b66d-a76b0e8623f7'),
     name: {
       language: 'en',
       text: Name('EMERGE, A Matrix for Ethnographic Collaboration and Practice'),
@@ -441,7 +460,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-01-27'),
     leads: [OrcidId('0000-0002-7489-4233')],
   },
-  '4dbef4c4-3793-4a32-9837-3fa39a69188a': {
+  {
+    id: Uuid('4dbef4c4-3793-4a32-9837-3fa39a69188a'),
     name: {
       language: 'en',
       text: Name('Future of Research Communication and e-Scholarship (FORCE11)'),
@@ -468,7 +488,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
       'https://docs.google.com/forms/d/e/1FAIpQLSfm0bn9zb5s-SGUbXtbtBvpivrXpz0mDEIESauypvl5h6cveA/viewform?usp=sharing&ouid=111181003877743877144',
     ),
   },
-  '3701c505-32ea-4176-83b6-05714803a121': {
+  {
+    id: Uuid('3701c505-32ea-4176-83b6-05714803a121'),
     name: {
       language: 'en',
       text: Name('Etymos Analytica'),
@@ -482,7 +503,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0004-6361-5050')],
     joinLink: new URL('https://forms.gle/nc75moVyEVvJBRqNA'),
   },
-  '206ef17f-c5f3-44d3-acee-ba9b1f8299e9': {
+  {
+    id: Uuid('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
     name: {
       language: 'en',
       text: Name('HHMI Transparent and Accountable Peer Review Training Program'),
@@ -507,7 +529,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-11-14'),
     leads: [OrcidId('0000-0002-2111-3237'), OrcidId('0000-0002-7815-8698')],
   },
-  '17248b36-7ba3-4fc2-b9c4-1edc10b57463': {
+  {
+    id: Uuid('17248b36-7ba3-4fc2-b9c4-1edc10b57463'),
     name: {
       language: 'es',
       text: Name('IIB-Mar del Plata Argentina'),
@@ -529,7 +552,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2024-11-13'),
     leads: [OrcidId('0000-0002-8225-2441'), OrcidId('0000-0003-2834-1838')],
   },
-  '2ff5d1d9-beef-4054-b311-cf0c40946767': {
+  {
+    id: Uuid('2ff5d1d9-beef-4054-b311-cf0c40946767'),
     name: {
       language: 'en',
       text: Name('Intersectional Feminist Club'),
@@ -556,7 +580,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
       'https://docs.google.com/forms/d/e/1FAIpQLSf3JWQg-B_cLuEe84sz3-GJj-J9wHf4CR2kno6i-Tcs6tb5Yg/viewform',
     ),
   },
-  '23256c4b-ad41-4c1e-a3de-0dd28ca5177f': {
+  {
+    id: Uuid('23256c4b-ad41-4c1e-a3de-0dd28ca5177f'),
     name: {
       language: 'en',
       text: Name('JMIR Publications'),
@@ -596,7 +621,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0008-3322-2327'), OrcidId('0000-0002-6007-4023')],
     contact: EmailAddress('ed-support@jmir.org'),
   },
-  'caee8a6e-eabc-4bcc-a579-05295a928688': {
+  {
+    id: Uuid('caee8a6e-eabc-4bcc-a579-05295a928688'),
     name: {
       language: 'en',
       text: Name('Kone Consult Journal Club'),
@@ -622,7 +648,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0001-8347-0512')],
     joinLink: new URL('https://forms.gle/VWGgEpYr6BEDLeYv9'),
   },
-  '998f32b4-ced9-49f8-8042-ce8fe41e62ec': {
+  {
+    id: Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec'),
     name: {
       language: 'en',
       text: Name('Language Club'),
@@ -648,7 +675,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
   },
-  'a50913a6-5c49-4ab0-8394-661b4224b06f': {
+  {
+    id: Uuid('a50913a6-5c49-4ab0-8394-661b4224b06f'),
     name: {
       language: 'en',
       text: Name('Biology of Marine Invertebrates & Friends'),
@@ -677,7 +705,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0001-6678-6876'), OrcidId('0000-0002-9454-6359')],
     contact: EmailAddress('lab239@exeter.ac.uk'),
   },
-  '46ed1601-a895-4703-9661-e06893017c5c': {
+  {
+    id: Uuid('46ed1601-a895-4703-9661-e06893017c5c'),
     name: {
       language: 'en',
       text: Name('MLC Research Review Club'),
@@ -699,7 +728,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2026-02-13'),
     leads: [OrcidId('0000-0003-2582-4420'), OrcidId('0009-0008-7768-0127')],
   },
-  '0cb0b787-fd2c-4325-83fe-0ed28361fcc6': {
+  {
+    id: Uuid('0cb0b787-fd2c-4325-83fe-0ed28361fcc6'),
     name: {
       language: 'en',
       text: Name('Neuroden'),
@@ -734,7 +764,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     ],
     contact: EmailAddress('hsa230003@utdallas.edu'),
   },
-  'f5e1bdba-2ccf-435c-9404-ff43f21d2397': {
+  {
+    id: Uuid('f5e1bdba-2ccf-435c-9404-ff43f21d2397'),
     name: {
       language: 'en',
       text: Name('Neuroscience Student Association at UTD'),
@@ -762,7 +793,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     ],
     contact: EmailAddress('msj220001@utdallas.edu'),
   },
-  'a7933faf-6568-4884-87a1-483068a57a28': {
+  {
+    id: Uuid('a7933faf-6568-4884-87a1-483068a57a28'),
     name: {
       language: 'en',
       text: Name('Open Box Science'),
@@ -792,7 +824,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     ],
     joinLink: new URL('https://join.slack.com/t/openboxscience/shared_invite/zt-1cjr8dt6c-hRnnCmmAG8JeRo1271O5aA'),
   },
-  '980658e9-e025-46ff-9cee-f46ff02fc3f8': {
+  {
+    id: Uuid('980658e9-e025-46ff-9cee-f46ff02fc3f8'),
     name: {
       language: 'en',
       text: Name('Open Science Community Iraqi (OSCI)'),
@@ -818,7 +851,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-7389-0003')],
     contact: EmailAddress('ag.salwan.mahmood@uoanbar.edu.iq'),
   },
-  '3c728f14-d22a-4704-8d16-203984c9b4bb': {
+  {
+    id: Uuid('3c728f14-d22a-4704-8d16-203984c9b4bb'),
     name: {
       language: 'en',
       text: Name('Open Science Community Uruguay (OSCU)'),
@@ -838,7 +872,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0006-1396-0432'), OrcidId('0000-0001-8356-1708'), OrcidId('0009-0009-3980-7163')],
     contact: EmailAddress('csilvera@fcien.edu.uy'),
   },
-  '25a3af44-1d6c-4605-a22f-97a47d051439': {
+  {
+    id: Uuid('25a3af44-1d6c-4605-a22f-97a47d051439'),
     name: {
       language: 'en',
       text: Name('Open Scholarship Initiative at Simon Fraser University'),
@@ -864,7 +899,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0003-2791-8383')],
     joinLink: new URL('https://forms.cloud.microsoft/r/uNGaWJ5UeS'),
   },
-  'd7681876-2aaa-46eb-a7b7-7164e6f3b3ef': {
+  {
+    id: Uuid('d7681876-2aaa-46eb-a7b7-7164e6f3b3ef'),
     name: {
       language: 'en',
       text: Name('OxPlants Preprint Club'),
@@ -886,7 +922,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2024-11-04'),
     leads: [OrcidId('0009-0004-3328-1862')],
   },
-  'f0c71aca-aa3f-4a64-934e-4013e6811049': {
+  {
+    id: Uuid('f0c71aca-aa3f-4a64-934e-4013e6811049'),
     name: {
       language: 'en',
       text: Name('PhD Program in Biomedical Sciences, University of Padua'),
@@ -911,7 +948,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-10-06'),
     leads: [OrcidId('0000-0001-8955-7240')],
   },
-  '8b34f6be-b086-4e2c-878a-5c3b74218448': {
+  {
+    id: Uuid('8b34f6be-b086-4e2c-878a-5c3b74218448'),
     name: {
       language: 'en',
       text: Name('Parasitology and Infectious Diseases'),
@@ -940,7 +978,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0009-0006-6065-9650')],
     contact: EmailAddress('diptarupmallick3@gmail.com'),
   },
-  '098981c2-aa2a-44ba-ba75-83e1b0b7fcb1': {
+  {
+    id: Uuid('098981c2-aa2a-44ba-ba75-83e1b0b7fcb1'),
     name: {
       language: 'en',
       text: Name('Physical Education Preprint & Review Club'),
@@ -971,7 +1010,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0001-7962-274X')],
     contact: EmailAddress('chjunior@uem.br'),
   },
-  'b18ebd46-b563-49fa-8dc0-033d8a8c6074': {
+  {
+    id: Uuid('b18ebd46-b563-49fa-8dc0-033d8a8c6074'),
     name: {
       language: 'en',
       text: Name('Plant Biotechnology Club'),
@@ -990,7 +1030,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-09-09'),
     leads: [OrcidId('0000-0002-5644-7632')],
   },
-  'b5f170f1-59e2-4f2b-8019-59aff327e9e0': {
+  {
+    id: Uuid('b5f170f1-59e2-4f2b-8019-59aff327e9e0'),
     name: {
       language: 'en',
       text: Name('Plant Pathology & Genomics Preprint Club'),
@@ -1009,7 +1050,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-10-08'),
     leads: [OrcidId('0009-0006-7429-6694'), OrcidId('0000-0002-2271-9193')],
   },
-  '4bfded37-5773-4cc0-a073-2ce05cdb939c': {
+  {
+    id: Uuid('4bfded37-5773-4cc0-a073-2ce05cdb939c'),
     name: {
       language: 'en',
       text: Name('Proteostasis and Cancer Team INSERM U1242'),
@@ -1035,7 +1077,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2024-07-24'),
     leads: [OrcidId('0000-0003-1978-7491')],
   },
-  'c485e5e6-3d53-4700-9734-e4ead74ee76d': {
+  {
+    id: Uuid('c485e5e6-3d53-4700-9734-e4ead74ee76d'),
     name: {
       language: 'en',
       text: Name('Review & Curate Network (RCN)'),
@@ -1061,7 +1104,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-8210-9258'), OrcidId('0000-0003-2582-4420')],
     joinLink: new URL('https://chat.whatsapp.com/EwqcyyjUIR57BZMvwuwIET'),
   },
-  '4f8076fc-2219-49fc-be5f-6682ca7cc009': {
+  {
+    id: Uuid('4f8076fc-2219-49fc-be5f-6682ca7cc009'),
     name: {
       language: 'en',
       text: Name('Reviewing Dental Articles Club'),
@@ -1085,7 +1129,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-8571-4429')],
     contact: EmailAddress('alain.chaple@uautonoma.cl'),
   },
-  '3f07d8f6-4fbf-47e6-849c-2c157b6535b6': {
+  {
+    id: Uuid('3f07d8f6-4fbf-47e6-849c-2c157b6535b6'),
     name: {
       language: 'en',
       text: Name('RR\\ID Student Reviewer Club'),
@@ -1113,7 +1158,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0002-3836-1966')],
     contact: EmailAddress('rrid@berkeley.edu'),
   },
-  'ed1dca96-74c0-46ff-b29f-c900fd543d6d': {
+  {
+    id: Uuid('ed1dca96-74c0-46ff-b29f-c900fd543d6d'),
     name: {
       language: 'en',
       text: Name('SFB1638 Membrane Remodelling'),
@@ -1135,7 +1181,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2026-03-23'),
     leads: [OrcidId('0000-0002-9838-0501'), OrcidId('0009-0002-4348-1396'), OrcidId('0009-0004-5033-4655')],
   },
-  'e9a18a97-f895-4872-a75f-78823b5fc99a': {
+  {
+    id: Uuid('e9a18a97-f895-4872-a75f-78823b5fc99a'),
     name: {
       language: 'en',
       text: Name('SG Biofilms and Microbiome Club'),
@@ -1155,7 +1202,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2024-04-10'),
     leads: [OrcidId('0000-0001-5457-8965')],
   },
-  '292651fd-e6d6-45e4-a46a-42912396a269': {
+  {
+    id: Uuid('292651fd-e6d6-45e4-a46a-42912396a269'),
     name: {
       language: 'en',
       text: Name('SNL Semantics'),
@@ -1181,7 +1229,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-02-10'),
     leads: [OrcidId('0000-0002-7909-8631'), OrcidId('0000-0001-8960-5601')],
   },
-  'd90a3f87-607e-4da0-9c50-6de6992e118d': {
+  {
+    id: Uuid('d90a3f87-607e-4da0-9c50-6de6992e118d'),
     name: {
       language: 'en',
       text: Name('SUN Bioinformatics Journal Club'),
@@ -1203,7 +1252,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2025-06-09'),
     leads: [OrcidId('0000-0002-9067-5903'), OrcidId('0000-0002-3402-169X'), OrcidId('0000-0002-6402-6993')],
   },
-  '2c5334ae-e361-48c3-bcca-6810c2f33cb4': {
+  {
+    id: Uuid('2c5334ae-e361-48c3-bcca-6810c2f33cb4'),
     name: {
       language: 'en',
       text: Name('University of Surrey Microbiology Journal Club'),
@@ -1225,7 +1275,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2024-11-13'),
     leads: [OrcidId('0009-0009-5970-9296')],
   },
-  'e1919a60-4875-4925-83b2-6b381543ed07': {
+  {
+    id: Uuid('e1919a60-4875-4925-83b2-6b381543ed07'),
     name: {
       language: 'en',
       text: Name('Translate Science'),
@@ -1245,7 +1296,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0001-5459-6733'), OrcidId('0000-0002-8082-2316')],
     joinLink: new URL('https://nextcloud.translatescience.org/apps/forms/s/dqJYTY6HLYnKk6pDk6dpBi8g'),
   },
-  'f0a5bcaf-8016-4c2e-92dd-b3a359329ead': {
+  {
+    id: Uuid('f0a5bcaf-8016-4c2e-92dd-b3a359329ead'),
     name: {
       language: 'en',
       text: Name('TSL Preprint Club'),
@@ -1264,7 +1316,8 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     added: Temporal.PlainDate.from('2023-10-16'),
     leads: [OrcidId('0000-0002-0064-0695'), OrcidId('0000-0002-9368-6659')],
   },
-  '1013ab22-0917-4f34-adcb-7c8cf0eba463': {
+  {
+    id: Uuid('1013ab22-0917-4f34-adcb-7c8cf0eba463'),
     name: {
       language: 'en',
       text: Name('ZMBP Preprint Club'),
@@ -1288,13 +1341,4 @@ const clubsById: Record.ReadonlyRecord<ClubId, Omit<ClubDetails, 'id'>> = {
     leads: [OrcidId('0000-0001-6002-0730')],
     contact: EmailAddress('mauricio.contreras@zmbp.uni-tuebingen.de'),
   },
-}
-
-export const clubs: Array.NonEmptyReadonlyArray<ClubDetails> = Record.collect(
-  clubsById,
-  (id, club) =>
-    ({
-      id: Uuid(id),
-      ...club,
-    }) satisfies ClubDetails,
-) as never as Array.NonEmptyReadonlyArray<ClubDetails>
+]
