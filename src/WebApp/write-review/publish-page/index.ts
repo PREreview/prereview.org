@@ -23,7 +23,7 @@ import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
 import type { Name } from '../../../types/Name.ts'
-import { Uuid } from '../../../types/Uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
@@ -247,7 +247,7 @@ const handlePublishForm = ({
         RTE.map(({ language, persona, pseudonymPersona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
-          club: Option.map(Option.fromNullable(form.club), Uuid),
+          club: Option.fromNullable(form.club),
           language,
           license: match(form.generativeAiIdeas)
             .with('yes', () => 'CC0-1.0' as const)

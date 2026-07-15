@@ -1,6 +1,6 @@
 import { UrlParams } from '@effect/platform'
 import { Data, Either, Option, pipe, Schema, Struct } from 'effect'
-import { Uuid, UuidSchema } from '../../../types/Uuid.ts'
+import { type Uuid, UuidSchema } from '../../../types/Uuid.ts'
 
 export type AddToAClubForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -37,7 +37,7 @@ export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
 
 export const fromChoice: (choice: Option.Option<Uuid | null>) => ValidForm = Option.match({
   onNone: () => new EmptyForm(),
-  onSome: choice => new CompletedForm({ addToClub: choice ? Uuid(choice) : 'not-a-club-review' }),
+  onSome: choice => new CompletedForm({ addToClub: choice ?? 'not-a-club-review' }),
 })
 
 const AddToClubFieldSchema = UrlParams.schemaRecord(

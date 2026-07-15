@@ -4,7 +4,7 @@ import type { PreprintId } from '../Preprints/index.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import { Uuid } from '../types/Uuid.ts'
+import type { Uuid } from '../types/Uuid.ts'
 import { getForm } from '../WebApp/write-review/form.ts' // eslint-disable-line import/no-internal-modules
 import * as Errors from './Errors.ts'
 
@@ -35,5 +35,5 @@ export const CheckIfUserCanAddToAClub = (
       return Option.none()
     }
 
-    return Option.some(form.club ? Uuid(form.club) : null)
+    return Option.some(form.club)
   })
