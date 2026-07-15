@@ -8,7 +8,7 @@ import { Slug } from '../types/Slug.ts'
 import { Uuid } from '../types/Uuid.ts'
 import type { ClubDetails } from './index.ts'
 
-export const clubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
+export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   {
     id: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
     name: {

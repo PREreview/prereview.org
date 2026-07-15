@@ -32,7 +32,7 @@ pipe(
         ReviewRequest.commandsLayer,
       ),
       Layer.provide(ContactEmailAddresses.layer),
-      Layer.provideMerge(Clubs.layer(Clubs.clubs)),
+      Layer.provideMerge(Clubs.layer(Clubs.DefaultClubs)),
       Layer.provide([
         LanguageDetection.layerCld,
         OrcidRecords.layer,
