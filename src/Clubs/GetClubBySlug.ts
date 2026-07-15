@@ -12,7 +12,7 @@ export const GetClubBySlug =
   (input: Input): Result =>
     Either.fromOption(
       Array.findFirst(clubs, club => {
-        if (!Equal.equals(club.slug, input)) {
+        if (!Equal.equals(club.slug, input) && !Array.contains(club.formerSlugs ?? [], input)) {
           return Option.none()
         }
 

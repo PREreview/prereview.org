@@ -10,6 +10,7 @@ import { PlainDate } from '../../src/types/Temporal.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 
 const slug = Slug('superheroes-club')
+const formerSlug = Slug('bad-guys-club')
 const otherSlug = Slug('sidekicks-club')
 
 const clubs = [
@@ -27,10 +28,27 @@ const clubs = [
     added: PlainDate.from('2024-01-02'),
     leads: [OrcidId('0000-0002-1825-0097')],
   },
+  {
+    id: Uuid('a0b77186-b242-44ed-a969-49eca634d701'),
+    name: {
+      language: 'en',
+      text: Name('Villains Club'),
+    },
+    formerNames: [Name('Bad Guys Club')],
+    slug: Slug('superheroes-club'),
+    formerSlugs: [formerSlug],
+    description: {
+      language: 'en',
+      text: html`<p>Some text.</p>`,
+    },
+    added: PlainDate.from('2024-01-02'),
+    leads: [OrcidId('0000-0002-1825-0097')],
+  },
 ] satisfies Array.NonEmptyReadonlyArray<ClubDetails>
 
 it.each<[string, Slug, _.Result]>([
   ['by slug', slug, Either.right(clubs[0])],
+  ['by former slug', formerSlug, Either.right(clubs[1])],
   ['by other slug', otherSlug, Either.left(new ClubNotFound())],
 ])('with a club name (%s)', (_name, input, expected) => {
   const actual = _.GetClubBySlug(clubs)(input)

@@ -2,7 +2,6 @@ import { HttpRouter, HttpServerError, HttpServerRequest } from '@effect/platform
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import { getClubSlug } from '../../Clubs/index.ts'
 import { Locale } from '../../Context.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { ArxivPreprintId, BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../../Preprints/index.ts'
@@ -105,10 +104,6 @@ export const LegacyRouter = HttpRouter.fromIterable([
     ),
   ),
   MakeRoute('/blog', movedPermanently('https://content.prereview.org/')),
-  MakeRoute(
-    '/clubs/hhmi-training-pilot',
-    movedPermanently(Routes.ClubProfile.href({ slug: getClubSlug('206ef17f-c5f3-44d3-acee-ba9b1f8299e9') })),
-  ),
   MakeRoute('/coc', movedPermanently(Routes.CodeOfConduct)),
   MakeRoute('/communities', movedPermanently(Routes.Clubs)),
   MakeRoute(

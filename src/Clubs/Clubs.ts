@@ -21,6 +21,7 @@ export interface ClubDetails {
   }
   readonly formerNames?: Array.NonEmptyReadonlyArray<Name>
   readonly slug: Slug
+  readonly formerSlugs?: Array.NonEmptyReadonlyArray<Slug>
   readonly description: {
     readonly language: LanguageCode
     readonly text: Html

@@ -15,6 +15,7 @@ interface Club {
   }
   readonly formerNames?: Array.NonEmptyReadonlyArray<Name>
   readonly slug: Slug
+  readonly formerSlugs?: Array.NonEmptyReadonlyArray<Slug>
   readonly description: {
     readonly language: LanguageCode
     readonly text: Html
@@ -509,6 +510,7 @@ export const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     },
     formerNames: [Name('HHMI Transparent and Accountable Peer Review Training Pilot')],
     slug: Slug('hhmi-training-program'),
+    formerSlugs: [Slug('hhmi-training-pilot')],
     description: {
       language: 'en',
       text: html`
