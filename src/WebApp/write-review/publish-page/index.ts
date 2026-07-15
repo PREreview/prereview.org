@@ -10,12 +10,14 @@ import { P, match } from 'ts-pattern'
 import { type ClubName, Clubs } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
+import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
+import * as Routes from '../../../routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../../../types/index.ts'
@@ -66,7 +68,7 @@ export const writeReviewPublish = ({
     PublishPrereviewEnv &
     AddToSessionEnv &
     EffectToFpts.EffectEnv<
-      Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+      Clubs | ContactEmailAddresses | FeatureFlags | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
     >,
   Response
 > =>
@@ -112,6 +114,30 @@ export const writeReviewPublish = ({
               }),
             ),
           ),
+          RTE.apSW(
+            'canClubLeadsAddReviewsToClubs',
+            EffectToFpts.toReaderTaskEither(
+              Effect.gen(function* () {
+                const featureFlags = yield* FeatureFlags
+
+                return featureFlags.canClubLeadsAddReviewsToClubs
+              }),
+            ),
+          ),
+          RTE.bindW(
+            'isClubLead',
+            EffectToFpts.toReaderTaskEitherK(
+              Effect.fnUntraced(function* ({ canClubLeadsAddReviewsToClubs, user }) {
+                const clubs = yield* Clubs
+
+                if (!canClubLeadsAddReviewsToClubs) {
+                  return
+                }
+
+                return yield* clubs.isPrereviewerAClubLead(user.orcid)
+              }),
+            ),
+          ),
           RTE.matchEW(
             error =>
               RT.of(
@@ -132,6 +158,8 @@ const decideNextStep = (state: {
   contactEmailAddress?: ContactEmailAddress
   form: E.Either<unknown, CompletedForm>
   club: ClubName | null | undefined
+  canClubLeadsAddReviewsToClubs: boolean
+  isClubLead: boolean | undefined
   originalForm: Form
   preprint: PreprintTitle
   user: User
@@ -142,6 +170,9 @@ const decideNextStep = (state: {
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
       ({ originalForm, preprint }) =>
         RT.of(RedirectResponse({ location: nextFormPath({ form: originalForm, preprintId: preprint.id }) })),
+    )
+    .with({ canClubLeadsAddReviewsToClubs: true, isClubLead: true, club: P.optional(undefined) }, () =>
+      RT.of(RedirectResponse({ location: Routes.ReviewAPreprintAddToAClub.href({ preprintId: state.preprint.id }) })),
     )
     .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
       RT.of(

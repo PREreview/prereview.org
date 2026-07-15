@@ -7,8 +7,10 @@ import { merge } from 'ts-deepmerge'
 import { Clubs } from '../../../src/Clubs/index.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
+import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Routes from '../../../src/routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { localeToIso6391 } from '../../../src/types/iso639.ts'
@@ -20,6 +22,57 @@ import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewPublish', () => {
+  it.effect.prop(
+    'when the user needs to say if the review is in their club',
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.string(),
+      fc.completedForm({ club: fc.constant(undefined) }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.either(fc.constant(new ContactEmailAddressIsNotFound()), fc.contactEmailAddress()),
+    ],
+    ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress]) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
+        >()
+        const formStore = new Keyv()
+        yield* Effect.promise(() =>
+          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+        )
+
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user })({
+            addToSession: shouldNotBeCalled,
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: Routes.ReviewAPreprintAddToAClub.href({ preprintId: preprintTitle.id }),
+        })
+      }).pipe(
+        Effect.provide([
+          Layer.mock(Clubs, { isPrereviewerAClubLead: () => Effect.succeed(true) }),
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+          FeatureFlags.layer({ canClubLeadsAddReviewsToClubs: true }),
+          LanguageDetection.layerCld,
+          Layer.mock(Prereviewers.Prereviewers, {}),
+        ]),
+      ),
+  )
+
   it.effect.prop(
     'when the user needs to verify their email address',
     [
@@ -35,7 +88,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress, club]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -62,6 +119,7 @@ describe('writeReviewPublish', () => {
           // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -82,7 +140,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, club]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -109,6 +171,7 @@ describe('writeReviewPublish', () => {
           // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new ContactEmailAddressIsNotFound() }),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -145,7 +208,11 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -192,6 +259,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
@@ -231,7 +299,11 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
@@ -276,6 +348,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
@@ -299,7 +372,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
@@ -323,6 +400,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -335,7 +413,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -357,6 +439,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, {}),
           Layer.mock(ContactEmailAddresses, {}),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -369,7 +452,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -394,6 +481,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, {}),
           Layer.mock(ContactEmailAddresses, {}),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -406,7 +494,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -431,6 +523,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, {}),
           Layer.mock(ContactEmailAddresses, {}),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -443,7 +536,11 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -465,6 +562,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, {}),
           Layer.mock(ContactEmailAddresses, {}),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
         ]),
@@ -499,7 +597,11 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<
-          Clubs | ContactEmailAddresses | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+          | Clubs
+          | ContactEmailAddresses
+          | FeatureFlags.FeatureFlags
+          | LanguageDetection.LanguageDetection
+          | Prereviewers.Prereviewers
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
@@ -529,6 +631,7 @@ describe('writeReviewPublish', () => {
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
+          FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
