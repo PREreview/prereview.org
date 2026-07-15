@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, flow, Struct } from 'effect'
+import type { Array } from 'effect'
 import { html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { Name } from '../types/Name.ts'
@@ -7,9 +7,6 @@ import { OrcidId } from '../types/OrcidId.ts'
 import { Slug } from '../types/Slug.ts'
 import { Uuid } from '../types/Uuid.ts'
 import type { ClubDetails } from './index.ts'
-
-export const isAClubLead = (orcid: OrcidId): boolean =>
-  Array.some(clubs, flow(Struct.get('leads'), Array.contains(orcid)))
 
 export const clubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   {
