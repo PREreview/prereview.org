@@ -1,4 +1,5 @@
-import { Array, Context, Effect, type Either, Layer, pipe } from 'effect'
+import { Array, Context, Effect, type Either, Layer, pipe, Struct } from 'effect'
+import { Clubs } from '../Clubs/index.ts'
 import * as Commands from '../Commands.ts'
 import { KeyvStores } from '../keyv.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
@@ -50,11 +51,14 @@ export const {
 export const layer = Layer.effect(
   PreprintReviews,
   Effect.gen(function* () {
+    const clubs = yield* Clubs
     const personas = yield* Prereviewers.Prereviewers
 
     const { formStore } = yield* KeyvStores
 
     const getRapidPrereviewsForAPreprint = yield* Queries.makeOnDemandQuery(GetRapidPrereviewsForAPreprint)
+
+    const clubIds = yield* Effect.andThen(clubs.listClubs, Array.map(Struct.get('id')))
 
     return {
       getRapidPrereviewsForAPreprint: id =>
@@ -81,7 +85,7 @@ export const layer = Layer.effect(
       ),
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
       checkIfUserCanAddToAClub: CheckIfUserCanAddToAClub.CheckIfUserCanAddToAClub(formStore),
-      addReviewToAClub: AddReviewToAClub(formStore),
+      addReviewToAClub: AddReviewToAClub(formStore, clubIds),
       markReviewAsNotInAClub: MarkReviewAsNotInAClub(formStore),
     }
   }),

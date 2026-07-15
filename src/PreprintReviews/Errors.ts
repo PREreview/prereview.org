@@ -16,3 +16,5 @@ export class FailedToNotifyReviewRequesters extends Schema.TaggedError<FailedToN
 ) {}
 
 export class PreprintReviewNotFound extends Data.TaggedError('PreprintReviewNotFound')<{ cause?: unknown }> {}
+
+export class UnknownClub extends Data.TaggedError('UnknownClub') {}

@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Array, Effect, pipe } from 'effect'
 import { isClubId } from '../Clubs/index.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import type { Keyv } from '../keyv.ts'
@@ -15,14 +15,13 @@ export interface Input {
   clubId: Uuid
 }
 
-export type Error = Errors.PreprintReviewNotFound | UnableToHandleCommand
+export type Error = Errors.PreprintReviewNotFound | Errors.UnknownClub | UnableToHandleCommand
 
-export const AddReviewToAClub = (formStore: Keyv<unknown>): ((input: Input) => Effect.Effect<void, Error>) =>
+export const AddReviewToAClub = (
+  formStore: Keyv<unknown>,
+  clubs: ReadonlyArray<Uuid>,
+): ((input: Input) => Effect.Effect<void, Error>) =>
   Effect.fn('PreprintReviews.addReviewToAClub')(function* (input) {
-    if (!isClubId(input.clubId)) {
-      return yield* new UnableToHandleCommand({ cause: 'not a club ID' })
-    }
-
     const form = yield* pipe(
       FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),
       Effect.catchIf(
@@ -37,6 +36,10 @@ export const AddReviewToAClub = (formStore: Keyv<unknown>): ((input: Input) => E
 
     if (form.club === input.clubId) {
       return
+    }
+
+    if (!isClubId(input.clubId) || !Array.contains(clubs, input.clubId)) {
+      return yield* new Errors.UnknownClub()
     }
 
     yield* pipe(

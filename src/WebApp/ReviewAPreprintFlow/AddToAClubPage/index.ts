@@ -1,7 +1,7 @@
 import type { UrlParams } from '@effect/platform'
 import { Array, Effect, Match } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Clubs, isClubId } from '../../../Clubs/index.ts'
+import { Clubs } from '../../../Clubs/index.ts'
 import { Locale } from '../../../Context.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { PreprintReviews } from '../../../PreprintReviews/index.ts'
@@ -90,10 +90,6 @@ export const AddToAClubSubmission: ({
           if (form.addToClub === 'not-a-club-review') {
             yield* preprintReviews.markReviewAsNotInAClub({ preprintId: preprint.id, orcidId: user.orcid })
           } else {
-            if (!isClubId(form.addToClub)) {
-              return yield* HavingProblemsPage
-            }
-
             yield* preprintReviews.addReviewToAClub({
               preprintId: preprint.id,
               orcidId: user.orcid,
@@ -115,5 +111,6 @@ export const AddToAClubSubmission: ({
         PreprintReviewNotFound: () =>
           Effect.succeed(RedirectResponse({ location: format(Routes.writeReviewMatch.formatter, { id: preprintId }) })),
         UnableToHandleCommand: () => HavingProblemsPage,
+        UnknownClub: () => HavingProblemsPage,
       }),
   )

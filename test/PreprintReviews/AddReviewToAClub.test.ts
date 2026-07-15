@@ -2,7 +2,7 @@ import { expect, it } from '@effect/vitest'
 import { Effect, Either } from 'effect'
 import { Keyv } from '../../src/keyv.ts'
 import * as _ from '../../src/PreprintReviews/AddReviewToAClub.ts'
-import { PreprintReviewNotFound } from '../../src/PreprintReviews/index.ts'
+import { PreprintReviewNotFound, UnknownClub } from '../../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -19,8 +19,11 @@ const preprintWithReviewClub = new BiorxivPreprintId({ value: Doi('10.1101/with-
 
 const clubId = Uuid('13e21570-0d1a-47f0-b378-b8c20776496a')
 const differentClubId = Uuid('980658e9-e025-46ff-9cee-f46ff02fc3f8')
+const unknownClubId = Uuid('17248b36-7ba3-4fc2-b9c4-1edc10b57463')
 
-it.effect.each<[string, _.Input, Either.Either<void, _.Error>, Uuid?]>([
+const clubs = [clubId, differentClubId]
+
+it.effect.each<[string, _.Input, Either.Either<void, _.Error>, (Uuid | null)?]>([
   ['no review', { orcidId, preprintId: preprintWithNoReview, clubId }, Either.left(new PreprintReviewNotFound({}))],
   [
     'different ORCID iD',
@@ -29,6 +32,12 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, Uuid?]>([
   ],
   ['not answered', { orcidId, preprintId: preprintWithReview, clubId }, Either.void, clubId],
   ['answered with no club', { orcidId, preprintId: preprintWithReviewNoClub, clubId }, Either.void, clubId],
+  [
+    'answered with unknown club',
+    { orcidId, preprintId: preprintWithReviewNoClub, clubId: unknownClubId },
+    Either.left(new UnknownClub()),
+    null,
+  ],
   ['answered with club', { orcidId, preprintId: preprintWithReviewClub, clubId }, Either.void, clubId],
   [
     'answered with different club',
@@ -46,7 +55,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, Uuid?]>([
       formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId as never })),
     )
 
-    const actualReturn = yield* Effect.either(_.AddReviewToAClub(formStore)(input))
+    const actualReturn = yield* Effect.either(_.AddReviewToAClub(formStore, clubs)(input))
     const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
 
     expect(actualReturn).toStrictEqual(expectedReturn)
