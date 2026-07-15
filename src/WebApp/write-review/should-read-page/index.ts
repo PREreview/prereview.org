@@ -15,7 +15,7 @@ import { NonEmptyStringC } from '../../../types/NonEmptyString.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
+import { type Form, type FormStoreEnv, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { type ShouldReadForm, shouldReadForm } from './should-read-form.ts'
 
 export const writeReviewShouldRead = ({
@@ -106,7 +106,7 @@ const handleShouldReadForm = ({
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ shouldRead: P.any }, form => shouldReadForm(preprint, form, locale))
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) }),
     ),
   )
 

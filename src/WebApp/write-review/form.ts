@@ -1,5 +1,6 @@
 import { isDoi } from 'doi-ts'
 import { flow, identity, pipe } from 'effect'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
@@ -98,39 +99,57 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form) =>
+export const nextFormPath = ({ form, preprintId }: { form: Form; preprintId: PreprintId }) =>
   match(form)
-    .with(
-      { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
-      () => writeReviewReviewTypeMatch,
+    .with({ alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) }, () =>
+      format(writeReviewReviewTypeMatch.formatter, { id: preprintId }),
     )
-    .with({ alreadyWritten: 'yes', generativeAiIdeas: P.optional(undefined) }, () => writeReviewUseOfAiMatch)
-    .with(
-      { reviewType: 'questions', introductionMatches: P.optional(undefined) },
-      () => writeReviewIntroductionMatchesMatch,
+    .with({ alreadyWritten: 'yes', generativeAiIdeas: P.optional(undefined) }, () =>
+      format(writeReviewUseOfAiMatch.formatter, { id: preprintId }),
     )
-    .with(
-      { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
-      () => writeReviewMethodsAppropriateMatch,
+    .with({ reviewType: 'questions', introductionMatches: P.optional(undefined) }, () =>
+      format(writeReviewIntroductionMatchesMatch.formatter, { id: preprintId }),
     )
-    .with({ reviewType: 'questions', resultsSupported: P.optional(undefined) }, () => writeReviewResultsSupportedMatch)
-    .with({ reviewType: 'questions', dataPresentation: P.optional(undefined) }, () => writeReviewDataPresentationMatch)
-    .with(
-      { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
-      () => writeReviewFindingsNextStepsMatch,
+    .with({ reviewType: 'questions', methodsAppropriate: P.optional(undefined) }, () =>
+      format(writeReviewMethodsAppropriateMatch.formatter, { id: preprintId }),
     )
-    .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
-    .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () => writeReviewLanguageEditingMatch)
-    .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () => writeReviewShouldReadMatch)
-    .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () => writeReviewReadyFullReviewMatch)
-    .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
-    .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
-    .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-    .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-    .with({ generativeAiIdeas: P.optional(undefined) }, () => writeReviewUseOfAiMatch)
-    .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
-    .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
-    .otherwise(() => writeReviewPublishMatch)
+    .with({ reviewType: 'questions', resultsSupported: P.optional(undefined) }, () =>
+      format(writeReviewResultsSupportedMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: 'questions', dataPresentation: P.optional(undefined) }, () =>
+      format(writeReviewDataPresentationMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: 'questions', findingsNextSteps: P.optional(undefined) }, () =>
+      format(writeReviewFindingsNextStepsMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: 'questions', novel: P.optional(undefined) }, () =>
+      format(writeReviewNovelMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () =>
+      format(writeReviewLanguageEditingMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () =>
+      format(writeReviewShouldReadMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () =>
+      format(writeReviewReadyFullReviewMatch.formatter, { id: preprintId }),
+    )
+    .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () =>
+      format(writeReviewReviewMatch.formatter, { id: preprintId }),
+    )
+    .with({ persona: P.optional(undefined) }, () => format(writeReviewPersonaMatch.formatter, { id: preprintId }))
+    .with({ moreAuthors: P.optional(undefined) }, () => format(writeReviewAuthorsMatch.formatter, { id: preprintId }))
+    .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () =>
+      format(writeReviewAuthorsMatch.formatter, { id: preprintId }),
+    )
+    .with({ generativeAiIdeas: P.optional(undefined) }, () =>
+      format(writeReviewUseOfAiMatch.formatter, { id: preprintId }),
+    )
+    .with({ competingInterests: P.optional(undefined) }, () =>
+      format(writeReviewCompetingInterestsMatch.formatter, { id: preprintId }),
+    )
+    .with({ conduct: P.optional(undefined) }, () => format(writeReviewConductMatch.formatter, { id: preprintId }))
+    .otherwise(() => format(writeReviewPublishMatch.formatter, { id: preprintId }))
 
 export const FormC = pipe(
   C.partial({

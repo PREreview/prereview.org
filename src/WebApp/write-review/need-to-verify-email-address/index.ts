@@ -25,7 +25,7 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import { type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
+import { type FormStoreEnv, getForm, nextFormPath } from '../form.ts'
 import { needToVerifyEmailAddressMessage } from './need-to-verify-email-address-message.ts'
 
 export const writeReviewNeedToVerifyEmailAddress = ({
@@ -88,9 +88,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
                   >
                 >()
                 .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
-                  RT.of(
-                    RedirectResponse({ location: format(nextFormMatch(state.form).formatter, { id: preprint.id }) }),
-                  ),
+                  RT.of(RedirectResponse({ location: nextFormPath({ form: state.form, preprintId: preprint.id }) })),
                 )
                 .with(
                   { contactEmailAddress: { _tag: 'UnverifiedContactEmailAddress' }, method: 'POST' },

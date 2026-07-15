@@ -5,7 +5,7 @@ import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
-import { nextFormMatch, type Form } from '../form.ts'
+import { nextFormPath, type Form } from '../form.ts'
 
 const cite = (lang: PreprintTitle['language']) => (text: Html) =>
   html`<cite ${languageAttributesFor(lang)}>${text}</cite>`
@@ -29,7 +29,7 @@ export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: Support
         )({ preprintTitle: preprint.title, cite: cite(preprint.language) })}
       </p>
 
-      <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
+      <a href="${nextFormPath({ form, preprintId: preprint.id })}" role="button" draggable="false"
         >${t('forms', 'continueButton')()}</a
       >
     `,

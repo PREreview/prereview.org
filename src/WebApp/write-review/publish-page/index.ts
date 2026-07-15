@@ -27,7 +27,7 @@ import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { AddToSessionEnv } from '../../session.ts'
 import { type CompletedForm, CompletedFormC } from '../completed-form.ts'
-import { type Form, type FormStoreEnv, deleteForm, getForm, nextFormMatch, saveForm } from '../form.ts'
+import { type Form, type FormStoreEnv, deleteForm, getForm, nextFormPath, saveForm } from '../form.ts'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.ts'
 import { failureMessage } from './failure-message.ts'
 import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.ts'
@@ -141,7 +141,7 @@ const decideNextStep = (state: {
     .with(
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
       ({ originalForm, preprint }) =>
-        RT.of(RedirectResponse({ location: format(nextFormMatch(originalForm).formatter, { id: preprint.id }) })),
+        RT.of(RedirectResponse({ location: nextFormPath({ form: originalForm, preprintId: preprint.id }) })),
     )
     .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
       RT.of(

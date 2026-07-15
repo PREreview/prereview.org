@@ -13,7 +13,7 @@ import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../../routes.ts
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
+import { type Form, type FormStoreEnv, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { authorsForm } from './authors-form.ts'
 
 export const writeReviewAuthors = ({
@@ -122,9 +122,7 @@ const handleAuthorsForm = ({
           .with({ moreAuthors: 'yes' }, () =>
             RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
           )
-          .otherwise(form =>
-            RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
-          ),
+          .otherwise(form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) })),
     ),
   )
 

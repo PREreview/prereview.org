@@ -16,7 +16,7 @@ import { NonEmptyStringC } from '../../../types/NonEmptyString.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
+import { type Form, type FormStoreEnv, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { pasteReviewForm } from './paste-review-form.ts'
 import { template } from './template.ts'
 import { turndown } from './turndown.ts'
@@ -142,7 +142,7 @@ const handleWriteReviewForm = ({
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ review: P.any }, form => writeReviewForm(preprint, form, locale))
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) }),
     ),
   )
 
@@ -178,7 +178,7 @@ const handlePasteReviewForm = ({
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ review: P.any }, form => pasteReviewForm(preprint, form, locale))
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) }),
     ),
   )
 

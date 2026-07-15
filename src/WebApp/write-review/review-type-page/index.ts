@@ -18,7 +18,7 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, createForm, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
+import { type Form, type FormStoreEnv, createForm, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { ownPreprintPage } from '../own-preprint-page.ts'
 import { ensureUserIsNotAnAuthor } from '../user-is-author.ts'
 import { reviewTypeForm } from './review-type-form.ts'
@@ -151,7 +151,7 @@ const handleReviewTypeForm = ({
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ reviewType: P.any }, form => reviewTypeForm(preprint, form, locale))
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) }),
     ),
   )
 

@@ -18,7 +18,7 @@ import type { User } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
+import { type FormStoreEnv, getForm, nextFormPath } from '../form.ts'
 import { enterEmailAddressPage } from './enter-email-address-page.ts'
 
 export const writeReviewEnterEmailAddress = ({
@@ -78,9 +78,7 @@ export const writeReviewEnterEmailAddress = ({
             state =>
               match(state)
                 .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, state =>
-                  RT.of(
-                    RedirectResponse({ location: format(nextFormMatch(state.form).formatter, { id: preprint.id }) }),
-                  ),
+                  RT.of(RedirectResponse({ location: nextFormPath({ form: state.form, preprintId: preprint.id }) })),
                 )
                 .with(
                   {

@@ -13,7 +13,7 @@ import { writeReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type PageResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { getForm, nextFormMatch, saveForm, updateForm, type Form, type FormStoreEnv } from '../form.ts'
+import { getForm, nextFormPath, saveForm, updateForm, type Form, type FormStoreEnv } from '../form.ts'
 import { useOfAiForm, type UseOfAiForm } from './use-of-ai-form.ts'
 
 export const writeReviewUseOfAi = ({
@@ -156,7 +156,7 @@ const handleUseOfAiForm = ({
             showUseOfAiErrorForm(preprint, form.moreAuthors, locale, form.alreadyWritten),
           )
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) }),
     ),
   )
 

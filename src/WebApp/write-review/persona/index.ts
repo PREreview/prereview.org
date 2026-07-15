@@ -20,7 +20,7 @@ import { writeReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
+import { type Form, type FormStoreEnv, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { type PersonaForm, personaForm } from './persona-form.ts'
 
 export const writeReviewPersona = ({
@@ -150,7 +150,7 @@ const handlePersonaForm = ({
             }),
           )
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      form => RedirectResponse({ location: nextFormPath({ form, preprintId: preprint.id }) }),
     ),
   )
 

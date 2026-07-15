@@ -15,7 +15,7 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
+import { type Form, type FormStoreEnv, getForm, nextFormPath } from '../form.ts'
 import { addAuthorsForm } from './add-authors-form.ts'
 
 export const writeReviewAddAuthors = ({
@@ -83,5 +83,5 @@ export const writeReviewAddAuthors = ({
 
 const handleAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
   RedirectResponse({
-    location: format(nextFormMatch(form).formatter, { id: preprint.id }),
+    location: nextFormPath({ form, preprintId: preprint.id }),
   })
