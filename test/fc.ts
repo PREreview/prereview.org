@@ -36,7 +36,7 @@ import type {
   OpenAuthorInvite,
 } from '../src/author-invite.ts'
 import type { CareerStage } from '../src/career-stage.ts'
-import * as Clubs from '../src/Clubs/index.ts'
+import type * as Clubs from '../src/Clubs/index.ts'
 import * as Comments from '../src/Comments/index.ts'
 import {
   type ContactEmailAddress,
@@ -1344,8 +1344,6 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
     accessToken: nonEmptyString(),
     scopes: hashSet(nonEmptyString()),
   })
-
-export const clubId = (): fc.Arbitrary<Clubs.ClubId> => constantFrom(...Clubs.ClubIdSchema.literals)
 
 export const clubDetails = (): fc.Arbitrary<Clubs.ClubDetails> =>
   fc.record(
