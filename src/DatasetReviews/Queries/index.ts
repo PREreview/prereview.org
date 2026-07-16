@@ -1,4 +1,4 @@
-import { Array, Context, Effect, type Either, Layer, Scope } from 'effect'
+import { Array, Context, Effect, Layer, Scope } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
@@ -40,67 +40,69 @@ import { GetZenodoRecordId } from './GetZenodoRecordId.ts'
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
-    checkIfReviewIsBeingPublished: Query<
+    checkIfReviewIsBeingPublished: Queries.Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsBeingPublished>,
       Errors.UnknownDatasetReview
     >
-    checkIfUserCanRateTheQuality: Query<
+    checkIfUserCanRateTheQuality: Queries.Query<
       (input: CheckIfUserCanRateTheQuality.Input) => CheckIfUserCanRateTheQuality.Result
     >
-    checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Query<
+    checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Result
     >
-    checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: Query<
+    checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.Result
     >
-    checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: Query<
+    checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.Result
     >
-    checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: Query<
+    checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.Result
     >
-    checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: Query<
+    checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Result
     >
-    checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions: Query<
+    checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.Result
     >
-    checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: Query<
+    checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.Result
     >
-    checkIfUserCanAnswerIfTheDatasetIsErrorFree: Query<
+    checkIfUserCanAnswerIfTheDatasetIsErrorFree: Queries.Query<
       (input: CheckIfUserCanAnswerIfTheDatasetIsErrorFree.Input) => CheckIfUserCanAnswerIfTheDatasetIsErrorFree.Result
     >
-    checkIfUserCanAnswerIfTheDatasetMattersToItsAudience: Query<
+    checkIfUserCanAnswerIfTheDatasetMattersToItsAudience: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.Result
     >
-    checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: Query<
+    checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.Result
     >
-    checkIfUserCanAnswerIfTheDatasetIsMissingAnything: Query<
+    checkIfUserCanAnswerIfTheDatasetIsMissingAnything: Queries.Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Result
     >
-    checkIfUserCanChoosePersona: Query<(input: CheckIfUserCanChoosePersona.Input) => CheckIfUserCanChoosePersona.Result>
+    checkIfUserCanChoosePersona: Queries.Query<
+      (input: CheckIfUserCanChoosePersona.Input) => CheckIfUserCanChoosePersona.Result
+    >
     checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview: Queries.FromOnDemandQuery<
       typeof CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview
     >
@@ -110,46 +112,40 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList: Queries.FromOnDemandQuery<
       typeof CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList
     >
-    checkIfUserCanDeclareCompetingInterests: Query<
+    checkIfUserCanDeclareCompetingInterests: Queries.Query<
       (input: CheckIfUserCanDeclareCompetingInterests.Input) => CheckIfUserCanDeclareCompetingInterests.Result
     >
-    checkIfUserCanDeclareFollowingCodeOfConduct: Query<
+    checkIfUserCanDeclareFollowingCodeOfConduct: Queries.Query<
       (input: CheckIfUserCanDeclareFollowingCodeOfConduct.Input) => CheckIfUserCanDeclareFollowingCodeOfConduct.Result
     >
     areThereMultipleAuthorsOnAReview: Queries.FromOnDemandQuery<typeof AreThereMultipleAuthorsOnAReview>
-    findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
-    findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
-    getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
-    getNextExpectedCommandForAUserOnADatasetReview: Query<
+    findInProgressReviewForADataset: Queries.Query<ReturnType<typeof FindInProgressReviewForADataset>>
+    findPublishedReviewsForADataset: Queries.Query<ReturnType<typeof FindPublishedReviewsForADataset>>
+    getAuthor: Queries.Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
+    getNextExpectedCommandForAUserOnADatasetReview: Queries.Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetNextExpectedCommandForAUserOnADatasetReview>,
       Errors.UnknownDatasetReview
     >
     getListOfInvitationsToAppearOnADatasetReview: Queries.FromOnDemandQuery<
       typeof GetListOfInvitationsToAppearOnADatasetReview
     >
-    getPreviewForAReviewReadyToBePublished: Query<
+    getPreviewForAReviewReadyToBePublished: Queries.Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPreviewForAReviewReadyToBePublished>,
       Errors.UnknownDatasetReview
     >
     getPublishedReview: Queries.FromOnDemandQuery<typeof GetPublishedReview>
-    getPublishedReviewDetails: Query<
+    getPublishedReviewDetails: Queries.Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedReviewDetails>,
       Errors.UnknownDatasetReview
     >
     getDataForZenodoRecord: Queries.FromOnDemandQuery<typeof GetDataForZenodoRecord>
-    getZenodoRecordId: Query<
+    getZenodoRecordId: Queries.Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetZenodoRecordId>,
       Errors.UnknownDatasetReview
     >
     getDatasetReviewForInvite: Queries.FromStatefulQuery<typeof GetDatasetReviewForInvite>
   }
 >() {}
-
-type Query<F extends (...args: never) => unknown, E = never> = (
-  ...args: Parameters<F>
-) => ReturnType<F> extends Either.Either<infer R, infer L>
-  ? Effect.Effect<R, Queries.UnableToQuery | E | Exclude<L, { _tag: 'UnexpectedSequenceOfEvents' }>>
-  : Effect.Effect<ReturnType<F>, Queries.UnableToQuery | E>
 
 export const {
   checkIfReviewIsBeingPublished,

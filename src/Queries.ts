@@ -7,8 +7,8 @@ import * as EventStore from './EventStore.ts'
 export type Query<F extends (...args: never) => unknown, E = never> = (
   ...args: Parameters<F>
 ) => ReturnType<F> extends Either.Either<infer R, infer L>
-  ? Effect.Effect<R, UnableToQuery | E | L>
-  : Effect.Effect<ReturnType<F>, UnableToQuery | E>
+  ? Effect.Effect<R, UnableToQuery | Exclude<E | L, UnexpectedSequenceOfEvents>>
+  : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
 /** @deprecated */
 export type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
@@ -120,7 +120,10 @@ export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, 
 export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Error>(
   name: string,
   createFilter: (input: Input) => Filter,
-  query: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, input: Input) => Either.Either<Result, Error>,
+  query: (
+    events: ReadonlyArray<Events.EventsForFilter<Filter>>,
+    input: Input,
+  ) => Either.Either<Result, UnexpectedSequenceOfEvents | Error>,
 ): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore
@@ -139,7 +142,7 @@ export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Erro
           Effect.withSpan('query'),
         )
       },
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
     )
   })
 
