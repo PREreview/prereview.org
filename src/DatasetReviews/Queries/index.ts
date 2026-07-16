@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Option, Scope, Struct } from 'effect'
+import { Array, Context, Effect, Layer, Scope } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
@@ -200,20 +200,10 @@ const makeDatasetReviewQueries: Effect.Effect<
   const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return {
-    checkIfReviewIsBeingPublished: Effect.fn(
-      function* (datasetReviewId) {
-        const events = yield* Effect.andThen(
-          EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          }),
-          Option.match({ onNone: Array.empty, onSome: Struct.get('events') }),
-        )
-
-        return yield* CheckIfReviewIsBeingPublished(events)
-      },
-      Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new Queries.UnableToQuery({ cause })),
-      Effect.provide(context),
+    checkIfReviewIsBeingPublished: yield* Queries.makeQuery(
+      'DatasetReviewQueries.checkIfReviewIsBeingPublished',
+      (datasetReviewId: Uuid.Uuid) => ({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
+      CheckIfReviewIsBeingPublished,
     ),
     checkIfUserCanRateTheQuality: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfUserCanRateTheQuality',
