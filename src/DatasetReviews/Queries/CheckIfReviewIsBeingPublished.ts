@@ -1,4 +1,5 @@
 import { Array, Either, type Types } from 'effect'
+import * as Queries from '../../Queries.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 
@@ -6,10 +7,10 @@ export const CheckIfReviewIsBeingPublished = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
 ): Either.Either<
   void,
-  Errors.DatasetReviewHasBeenPublished | Errors.DatasetReviewIsInProgress | Errors.UnexpectedSequenceOfEvents
+  Errors.DatasetReviewHasBeenPublished | Errors.DatasetReviewIsInProgress | Queries.UnexpectedSequenceOfEvents
 > => {
   if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
-    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {

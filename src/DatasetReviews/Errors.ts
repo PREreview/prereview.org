@@ -98,6 +98,4 @@ export class FailedToMarkDatasetReviewAsPublished extends Schema.TaggedError<Fai
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
 
-export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
-
 export class UnknownDatasetReview extends Data.TaggedError('UnknownDatasetReview')<{ cause?: unknown }> {}

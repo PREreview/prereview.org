@@ -4,6 +4,7 @@ import { Array, Either, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetAuthor.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
@@ -58,7 +59,7 @@ describe('GetAuthor', () => {
       ([events]) => {
         const actual = _.GetAuthor(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
+        expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
       },
       {
         fastCheck: {

@@ -5,6 +5,7 @@ import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.t
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import * as Events from '../../../src/Events.ts'
+import * as Queries from '../../../src/Queries.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
@@ -572,7 +573,7 @@ describe('GetDataForZenodoRecord', () => {
 
         const actual = query(events, datasetReviewId)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
+        expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
       },
       {
         fastCheck: {

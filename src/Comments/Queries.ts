@@ -1,4 +1,5 @@
 import { Array, Data, Either, Equal, Option, pipe, Record } from 'effect'
+import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { InputForCommentZenodoRecord } from './Context.ts'
@@ -122,7 +123,7 @@ export const GetNextExpectedCommandForUserOnAComment =
 
 export const buildInputForCommentZenodoRecord = (
   events: ReadonlyArray<CommentEvent>,
-): Either.Either<InputForCommentZenodoRecord, UnexpectedSequenceOfEvents> => {
+): Either.Either<InputForCommentZenodoRecord, Queries.UnexpectedSequenceOfEvents> => {
   const authorId = pipe(
     events,
     Array.findLast(event => event._tag === 'CommentWasStarted'),
@@ -151,11 +152,10 @@ export const buildInputForCommentZenodoRecord = (
 
   return Either.fromOption(
     Option.all({ authorId, prereviewId, persona, comment, competingInterests }),
-    () => new UnexpectedSequenceOfEvents(),
+    () => new Queries.UnexpectedSequenceOfEvents({}),
   )
 }
 
-export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents') {}
 export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOfADoi') {}
 
 export const GetACommentInNeedOfADoi = (

@@ -169,7 +169,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   )
 
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
-    onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
+    onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         author: {

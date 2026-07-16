@@ -1,5 +1,6 @@
 import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
+import * as Queries from '../../Queries.ts'
 import type { OrcidId } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import * as Errors from '../Errors.ts'
@@ -55,16 +56,16 @@ export const GetPreviewForAReviewReadyToBePublished = (
   | Errors.DatasetReviewNotReadyToBePublished
   | Errors.DatasetReviewIsBeingPublished
   | Errors.DatasetReviewHasBeenPublished
-  | Errors.UnexpectedSequenceOfEvents
+  | Queries.UnexpectedSequenceOfEvents
 > => {
   const started = Option.getOrUndefined(Array.findLast(events, hasTag('DatasetReviewWasStarted')))
 
   if (!started) {
-    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   if (!hasEvent(events, 'DatasetReviewWasStarted')) {
-    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   if (hasEvent(events, 'DatasetReviewWasPublished')) {

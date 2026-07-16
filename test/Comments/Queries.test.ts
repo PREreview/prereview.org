@@ -3,6 +3,7 @@ import { Doi } from 'doi-ts'
 import { Array, Either, Option } from 'effect'
 import * as _ from '../../src/Comments/Queries.ts'
 import * as Comments from '../../src/Comments/index.ts'
+import * as Queries from '../../src/Queries.ts'
 import { html } from '../../src/html.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Uuid } from '../../src/types/index.ts'
@@ -346,7 +347,7 @@ describe('buildInputForCommentZenodoRecord', () => {
   ])('returns an UnexpectedSequenceOfEvents when %s', (_name, events) => {
     const actual = _.buildInputForCommentZenodoRecord([...events, publicationOfCommentWasRequested])
 
-    expect(actual).toStrictEqual(Either.left(new _.UnexpectedSequenceOfEvents()))
+    expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
   })
 })
 
