@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Scope } from 'effect'
+import { Array, Context, Effect, Layer, Option, Scope, Struct } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
@@ -41,8 +41,7 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
     checkIfReviewIsBeingPublished: Queries.Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsBeingPublished>,
-      Errors.UnknownDatasetReview
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsBeingPublished>
     >
     checkIfUserCanRateTheQuality: Queries.Query<
       (input: CheckIfUserCanRateTheQuality.Input) => CheckIfUserCanRateTheQuality.Result
@@ -203,16 +202,16 @@ const makeDatasetReviewQueries: Effect.Effect<
   return {
     checkIfReviewIsBeingPublished: Effect.fn(
       function* (datasetReviewId) {
-        const { events } = yield* Effect.flatten(
+        const events = yield* Effect.andThen(
           EventStore.query({
             types: DatasetReviewEventTypes,
             predicates: { datasetReviewId },
           }),
+          Option.match({ onNone: Array.empty, onSome: Struct.get('events') }),
         )
 
         return yield* CheckIfReviewIsBeingPublished(events)
       },
-      Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
       Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),

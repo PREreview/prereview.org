@@ -7,8 +7,15 @@ export const CheckIfReviewIsBeingPublished = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
 ): Either.Either<
   void,
-  Errors.DatasetReviewHasBeenPublished | Errors.DatasetReviewIsInProgress | Queries.UnexpectedSequenceOfEvents
+  | Errors.UnknownDatasetReview
+  | Errors.DatasetReviewHasBeenPublished
+  | Errors.DatasetReviewIsInProgress
+  | Queries.UnexpectedSequenceOfEvents
 > => {
+  if (Array.isEmptyReadonlyArray(events)) {
+    return Either.left(new Errors.UnknownDatasetReview({}))
+  }
+
   if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
     return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }

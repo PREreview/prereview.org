@@ -64,10 +64,18 @@ describe('CheckIfReviewIsBeingPublished', () => {
     )
   })
 
+  describe('when there are no events', () => {
+    it('returns an error', () => {
+      const actual = _.CheckIfReviewIsBeingPublished([])
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnknownDatasetReview({})))
+    })
+  })
+
   describe('when it has not been started', () => {
     it.prop(
       'returns an error',
-      [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+      [fc.nonEmptyArray(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
       ([events]) => {
         const actual = _.CheckIfReviewIsBeingPublished(events)
 
@@ -75,10 +83,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
       },
       {
         fastCheck: {
-          examples: [
-            [[]], // no events
-            [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
-          ],
+          examples: [[[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]]],
         },
       },
     )
