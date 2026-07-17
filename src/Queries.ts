@@ -10,9 +10,6 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
   ? Effect.Effect<R, UnableToQuery | Exclude<E | L, UnexpectedSequenceOfEvents>>
   : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
-/** @deprecated */
-export type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FromOnDemandQuery<T extends OnDemandQuery<ReadonlyArray<any>, any, any>> = [T] extends [
   OnDemandQuery<infer Input, infer Result, infer Error>,
@@ -143,30 +140,5 @@ export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Erro
         )
       },
       Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
-    )
-  })
-
-/** @deprecated */
-export const makeSimpleQuery = <Filter extends Events.EventFilter, Result>(
-  name: string,
-  filter: Filter,
-  query: (events: ReadonlyArray<Events.EventsForFilter<Filter>>) => Result,
-): Effect.Effect<() => Effect.Effect<Result, UnableToQuery>, never, EventStore.EventStore> =>
-  Effect.gen(function* () {
-    const eventStore = yield* EventStore.EventStore
-
-    return Effect.fn(name)(
-      function* () {
-        const events = yield* pipe(
-          eventStore.query(filter),
-          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-        )
-
-        return yield* pipe(
-          Effect.sync(() => query(events)),
-          Effect.withSpan('query'),
-        )
-      },
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
     )
   })
