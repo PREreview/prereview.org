@@ -4,8 +4,10 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Array, Console, Data, Effect, Layer, Match, Option, ParseResult, Schema, pipe } from 'effect'
 import type { NonEmptyReadonlyArray } from 'effect/Array'
 import path from 'path'
-import { Event, type EventTypes } from '../src/Events.ts'
+import { ContactAddressImported, Event, type EventTypes } from '../src/Events.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import { Uuid } from '../src/types/Uuid.ts'
 
 const SensitiveDataStoreStub = Layer.succeed(SensitiveDataStore.SensitiveDataStore, {
   get: () => Effect.succeedNone,
@@ -60,6 +62,43 @@ interface Rule {
   }
   permittedPrecedingEvents: PermittedPrecedingEvents
 }
+
+interface Example {
+  name?: string
+  expectation: 'pass' | 'fail'
+  sequence: NonEmptyReadonlyArray<Event>
+}
+
+const examples: ReadonlyArray<Example> = [
+  {
+    expectation: 'pass',
+    sequence: [
+      new ContactAddressImported({
+        contactAddressId: Uuid('0881ba38-af64-4ab9-920d-f7593c6abfb7'),
+        emailAddress: Option.none(),
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        verificationStatus: 'verified',
+      }),
+    ],
+  },
+  {
+    expectation: 'fail',
+    sequence: [
+      new ContactAddressImported({
+        contactAddressId: Uuid('0881ba38-af64-4ab9-920d-f7593c6abfb7'),
+        emailAddress: Option.none(),
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        verificationStatus: 'verified',
+      }),
+      new ContactAddressImported({
+        contactAddressId: Uuid('0881ba38-af64-4ab9-920d-f7593c6abfb7'),
+        emailAddress: Option.none(),
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        verificationStatus: 'verified',
+      }),
+    ],
+  },
+]
 
 const allRules: Partial<Record<EventType, Rule | NonEmptyReadonlyArray<Rule>>> = {
   ContactAddressImported: {
@@ -206,6 +245,10 @@ const sanityCheck = (rows: ReadonlyArray<typeof EventRow.Type>): void => {
     }
   })
 }
+
+Array.forEach(examples, example => {
+  sanityCheck(Array.map(example.sequence, (event, i) => ({ position: i + 1, event })))
+})
 
 const program = pipe(
   SqlClient.SqlClient,
