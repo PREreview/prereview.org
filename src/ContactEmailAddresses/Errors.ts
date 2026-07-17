@@ -13,7 +13,3 @@ export class ContactEmailAddressHasAlreadyBeenVerified extends Data.TaggedError(
 export class AcceptedInvitationIsNotFound extends Data.TaggedError('AcceptedInvitationIsNotFound') {}
 
 export class ContactAddressIdHasAlreadyBeenUsed extends Data.TaggedError('ContactAddressIdHasAlreadyBeenUsed') {}
-
-export class DetailsDoNotMatchExistingContactAddress extends Data.TaggedError(
-  'DetailsDoNotMatchExistingContactAddress',
-) {}
