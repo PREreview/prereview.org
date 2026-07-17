@@ -1,7 +1,20 @@
 /* eslint-disable import/no-internal-modules */
 import { SqlClient } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Array, Console, Data, Effect, Layer, Match, Option, ParseResult, Schema, pipe } from 'effect'
+import {
+  Array,
+  Console,
+  Data,
+  Effect,
+  Either,
+  Inspectable,
+  Layer,
+  Match,
+  Option,
+  ParseResult,
+  Schema,
+  pipe,
+} from 'effect'
 import type { NonEmptyReadonlyArray } from 'effect/Array'
 import path from 'path'
 import { ContactAddressImported, Event, type EventTypes } from '../src/Events.ts'
@@ -205,9 +218,11 @@ const getPertinentPrecedingEvents = (
   })
 }
 
-const sanityCheck = (rows: ReadonlyArray<typeof EventRow.Type>): void => {
+const sanityCheck = (
+  rows: ReadonlyArray<typeof EventRow.Type>,
+): Either.Either<void, Array.NonEmptyReadonlyArray<string>> => {
   if (!Array.isNonEmptyReadonlyArray(rows)) {
-    return
+    return Either.void
   }
 
   const row = Array.lastNonEmpty(rows)
@@ -215,9 +230,11 @@ const sanityCheck = (rows: ReadonlyArray<typeof EventRow.Type>): void => {
 
   const rulesForType = allRules[row.event._tag]
   if (!rulesForType) {
-    return
+    return Either.void
   }
   const rules = Array.ensure(rulesForType)
+  const failures: Array<string> = []
+
   rules.forEach(rule => {
     const pertinentPrecedingEvents = getPertinentPrecedingEvents(row.event, previousRows, rule.pertinentEventFilter)
     const isPermitted = Match.valueTags(rule.permittedPrecedingEvents, {
@@ -234,20 +251,24 @@ const sanityCheck = (rows: ReadonlyArray<typeof EventRow.Type>): void => {
       },
     })
     if (!isPermitted) {
-      console.log(
-        row.position,
-        row.event._tag,
-        'should be preceded by one of',
-        rule.permittedPrecedingEvents,
-        'is preceded by',
-        pertinentPrecedingEvents,
+      failures.push(
+        `${row.position} ${row.event._tag} should be preceded by one of ${Inspectable.toStringUnknown(rule.permittedPrecedingEvents)} is preceded by ${Inspectable.toStringUnknown(pertinentPrecedingEvents)}`,
       )
     }
   })
+
+  return Array.match(failures, { onEmpty: () => Either.void, onNonEmpty: Either.left })
 }
 
-Array.forEach(examples, example => {
-  sanityCheck(Array.map(example.sequence, (event, i) => ({ position: i + 1, event })))
+Array.forEach(examples, (example, i) => {
+  const exampleNumber = i + 1
+  const actualResult = sanityCheck(Array.map(example.sequence, (event, i) => ({ position: i + 1, event })))
+
+  if (example.expectation === 'pass' && Either.isLeft(actualResult)) {
+    console.log(`Example ${exampleNumber} expected to pass but failed: ${actualResult.left.join(', ')}`)
+  } else if (example.expectation === 'fail' && Either.isRight(actualResult)) {
+    console.log(`Example ${exampleNumber} expected to fail but passed`)
+  }
 })
 
 const program = pipe(
@@ -266,7 +287,18 @@ const program = pipe(
   ),
   Effect.andThen(Schema.decodeUnknown(Schema.Array(EventRow))),
   Effect.tap(rows => Console.log(`Loaded ${rows.length} events`)),
-  Effect.andThen(rows => Array.forEach(rows, (row, i) => sanityCheck(Array.take(rows, i + 1)))),
+  Effect.andThen(rows => Array.map(rows, (row, i) => sanityCheck(Array.take(rows, i + 1)))),
+  Effect.andThen(results =>
+    Effect.gen(function* () {
+      const failures = Array.flatten(Array.getLefts(results))
+
+      if (Array.isEmptyReadonlyArray(failures)) {
+        return
+      }
+
+      yield* Effect.forEach(failures, failure => Console.log(failure))
+    }),
+  ),
   Effect.provide(
     Layer.mergeAll(
       LibsqlClient.layer({ url: `file:${path.resolve(import.meta.dirname, '..', 'data', 'events.db')}` }),
