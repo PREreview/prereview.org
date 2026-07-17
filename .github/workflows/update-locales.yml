@@ -38,6 +38,16 @@ jobs:
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
 
+      - name: 'Remove files not in the source'
+        run: |
+          find locales -mindepth 2 -type f -name '*.json' ! -path 'locales/en-US/*' -print0 | while IFS= read -r -d '' file; do
+            rel="${file#locales/}"
+            source_file="locales/en-US/${rel#*/}"
+            if [ ! -f "$source_file" ]; then
+              rm "$file"
+            fi
+          done
+
       - name: 'Remove empty files'
         run: grep --files-with-matches --recursive --null "^{}" locales | xargs --no-run-if-empty -0 rm
 
