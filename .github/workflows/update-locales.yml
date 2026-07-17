@@ -34,11 +34,9 @@ jobs:
           download_translations: true
           export_only_approved: true
           push_translations: false
+          user: auto
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
-
-      - name: 'Restore file ownership'
-        run: sudo chown -R $USER:$USER locales
 
       - name: 'Remove empty files'
         run: grep --files-with-matches --recursive --null "^{}" locales | xargs --no-run-if-empty -0 rm
