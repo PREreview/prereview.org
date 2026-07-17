@@ -71,7 +71,7 @@ export type Error =
 
 export type Result = Either.Either<PublishedReview, Error>
 
-export const createFilter = (datasetReviewId: Input) =>
+const createFilter = (datasetReviewId: Input) =>
   Events.EventFilter([
     {
       types: Events.DatasetReviewEventTypes,

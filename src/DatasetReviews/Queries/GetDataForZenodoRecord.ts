@@ -56,7 +56,7 @@ export type Error =
   | Errors.UnknownDatasetReview
   | Queries.UnexpectedSequenceOfEvents
 
-export const createFilter = (datasetReviewId: Input) =>
+const createFilter = (datasetReviewId: Input) =>
   Events.EventFilter({
     types: Events.DatasetReviewEventTypes,
     predicates: { datasetReviewId },
