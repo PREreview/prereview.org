@@ -94,10 +94,17 @@ const rules: Partial<Record<EventType, Rule>> = {
   },
   EmailToVerifyContactAddressSent: {
     pertinentEventFilter: {
-      types: ['ContactAddressImported', 'ContactAddressRecorded'],
+      types: [
+        'ContactAddressImported',
+        'ContactAddressRecorded',
+        'EmailToVerifyContactAddressSent',
+        'ContactAddressVerified',
+      ],
       matchingFields: ['contactAddressId'],
     },
-    permittedPrecedingEvents: new LastPrecedingEvent({ types: ['ContactAddressImported', 'ContactAddressRecorded'] }),
+    permittedPrecedingEvents: new LastPrecedingEvent({
+      types: ['ContactAddressImported', 'ContactAddressRecorded', 'EmailToVerifyContactAddressSent'],
+    }),
   },
   AuthorInviteEmailAddressChosenAsContactAddress: {
     pertinentEventFilter: {
