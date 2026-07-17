@@ -1,7 +1,8 @@
 /* eslint-disable import/no-internal-modules */
 import { SqlClient, type SqlError } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Console, Data, Effect, Layer, Match, ParseResult, Schema, pipe } from 'effect'
+import { Array, Console, Data, Effect, Layer, Match, ParseResult, Schema, pipe } from 'effect'
+import type { NonEmptyReadonlyArray } from 'effect/Array'
 import path from 'path'
 import { Event, type EventTypes } from '../src/Events.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -60,7 +61,7 @@ interface Rule {
   permittedPrecedingEvents: PermittedPrecedingEvents
 }
 
-const rules: Partial<Record<EventType, Rule>> = {
+const allRules: Partial<Record<EventType, Rule | NonEmptyReadonlyArray<Rule>>> = {
   ContactAddressImported: {
     pertinentEventFilter: {
       types: [
@@ -173,34 +174,40 @@ const getPertinentPrecedingEvents = (
 
 const sanityCheck = (row: typeof EventRow.Type): Effect.Effect<void, SqlError.SqlError, SqlClient.SqlClient> =>
   Effect.gen(function* () {
-    const rule = rules[row.event._tag]
-    if (!rule) {
+    const rulesForType = allRules[row.event._tag]
+    if (!rulesForType) {
       return
     }
-    const pertinentPrecedingEvents = yield* getPertinentPrecedingEvents(row, rule.pertinentEventFilter)
-    const isPermitted = Match.valueTags(rule.permittedPrecedingEvents, {
-      NoPrecedingEvents: () => pertinentPrecedingEvents.length === 0,
-      FullSequence: ({ sequences }) =>
-        sequences.some(
-          seq =>
-            seq.length === pertinentPrecedingEvents.length &&
-            seq.every((type, i) => type === pertinentPrecedingEvents[i]),
-        ),
-      LastPrecedingEvent: ({ types }) => {
-        const last = pertinentPrecedingEvents.at(-1)
-        return last !== undefined && types.includes(last)
-      },
-    })
-    if (!isPermitted) {
-      console.log(
-        row.position,
-        row.event._tag,
-        'should be preceded by one of',
-        rule.permittedPrecedingEvents,
-        'is preceded by',
-        pertinentPrecedingEvents,
-      )
-    }
+    const rules = Array.ensure(rulesForType)
+    yield* Effect.forEach(
+      rules,
+      Effect.fnUntraced(function* (rule) {
+        const pertinentPrecedingEvents = yield* getPertinentPrecedingEvents(row, rule.pertinentEventFilter)
+        const isPermitted = Match.valueTags(rule.permittedPrecedingEvents, {
+          NoPrecedingEvents: () => pertinentPrecedingEvents.length === 0,
+          FullSequence: ({ sequences }) =>
+            sequences.some(
+              seq =>
+                seq.length === pertinentPrecedingEvents.length &&
+                seq.every((type, i) => type === pertinentPrecedingEvents[i]),
+            ),
+          LastPrecedingEvent: ({ types }) => {
+            const last = pertinentPrecedingEvents.at(-1)
+            return last !== undefined && types.includes(last)
+          },
+        })
+        if (!isPermitted) {
+          console.log(
+            row.position,
+            row.event._tag,
+            'should be preceded by one of',
+            rule.permittedPrecedingEvents,
+            'is preceded by',
+            pertinentPrecedingEvents,
+          )
+        }
+      }),
+    )
   })
 
 const program = pipe(
