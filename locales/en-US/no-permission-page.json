@@ -1,8 +1,10 @@
 {
   "noPermissionTitle": {
-    "message": "You do not have permission to view this page"
+    "message": "You do not have permission to view this page",
+    "description": "Title of the page that is shown when a user does not have permission to view a page."
   },
   "shouldHaveAccess": {
-    "message": "If you think you should have access, please <contact>get in touch</contact>."
+    "message": "If you think you should have access, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the heading “You do not have permission to view this page”."
   }
 }

@@ -1,8 +1,10 @@
 {
   "havingProblemsTitle": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Title of the page that is shown when we’re unable to show a page."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   }
 }

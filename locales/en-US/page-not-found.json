@@ -1,14 +1,18 @@
 {
   "pageNotFoundTitle": {
-    "message": "Page not found"
+    "message": "Page not found",
+    "description": "Title of the page that is shown when the web address a user has gone to does not exist."
   },
   "checkCorrect": {
-    "message": "If you typed the web address, check it is correct."
+    "message": "If you typed the web address, check it is correct.",
+    "description": "Text shown alongside the heading “Page not found”."
   },
   "checkEntire": {
-    "message": "If you pasted the web address, check you copied the entire address."
+    "message": "If you pasted the web address, check you copied the entire address.",
+    "description": "Text shown alongside the heading “Page not found”."
   },
   "contactUs": {
-    "message": "If the web address is correct or you selected a link or button, please <contact>get in touch</contact>."
+    "message": "If the web address is correct or you selected a link or button, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the heading “Page not found”."
   }
 }
