@@ -1,53 +1,70 @@
 {
   "anonymous": {
-    "message": "Anonymous"
+    "message": "Anonymous",
+    "description": "Name used for a PREreviewer who doesn’t have a public name on their ORCID record."
   },
   "prereviewsTitle": {
-    "message": "PREreviews"
+    "message": "PREreviews",
+    "description": "Title of the section that lists the PREreviews published by the PREreviewer."
   },
   "noResults": {
-    "message": "{name} hasn’t published a PREreview yet."
+    "message": "{name} hasn’t published a PREreview yet.",
+    "description": "Message shown when the PREreviewer hasn’t published any PREreviews."
   },
   "noResultsAnonymous": {
-    "message": "This person hasn’t published a PREreview yet."
+    "message": "This person hasn’t published a PREreview yet.",
+    "description": "Message shown when the PREreviewer hasn’t published any PREreviews."
   },
   "appearHere": {
-    "message": "When they do, it’ll appear here."
+    "message": "When they do, it’ll appear here.",
+    "description": "Message shown alongside the text “{name} hasn’t published a PREreview yet.”"
   },
   "slackName": {
-    "message": "Slack Community name"
+    "message": "Slack Community name",
+    "description": "Label for the Slack Community name of the PREreviewer."
   },
   "careerStage": {
-    "message": "Career stage"
+    "message": "Career stage",
+    "description": "Label for the career stage of the PREreviewer."
   },
   "careerStageEarly": {
-    "message": "Early"
+    "message": "Early",
+    "description": "Text shown when the PREreviewer has chosen the early career stage option."
   },
   "careerStageMid": {
-    "message": "Mid"
+    "message": "Mid",
+    "description": "Text shown when the PREreviewer has chosen the mid career stage option."
   },
   "careerStageLate": {
-    "message": "Late"
+    "message": "Late",
+    "description": "Text shown when the PREreviewer has chosen the late career stage option."
   },
   "researchInterests": {
-    "message": "Research interests"
+    "message": "Research interests",
+    "description": "Label for the research interests of the PREreviewer."
   },
   "location": {
-    "message": "Location"
+    "message": "Location",
+    "description": "Label for the location of the PREreviewer."
   },
   "languages": {
-    "message": "Languages"
+    "message": "Languages",
+    "description": "Label for the languages spoken by the PREreviewer."
   },
   "clubs": {
-    "message": "Clubs"
+    "message": "Clubs",
+    "description": "Label for the clubs the PREreviewer is a lead for."
   },
   "openForRequests": {
-    "message": "{name} is happy to take requests for a PREreview."
+    "message": "{name} is happy to take requests for a PREreview.",
+    "description": "Message shown when the PREreviewer is happy to take requests for a PREreview."
   },
   "openForRequestsAnonymous": {
-    "message": "This person is happy to take requests for a PREreview."
+    "message": "This person is happy to take requests for a PREreview.",
+    "description": "Message shown when the PREreviewer is happy to take requests for a PREreview."
   },
   "contactSlack": {
-    "message": "They can be contacted on our <link>Slack Community</link>."
+    "message": "They can be contacted on our <link>Slack Community</link>.",
+    "description": "Message shown alongside the text “This person is happy to take requests for a PREreview.”"
   }
 }
