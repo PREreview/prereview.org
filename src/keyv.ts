@@ -1,5 +1,5 @@
 import KeyvRedis from '@keyv/redis'
-import { Context, Effect, flow, Layer, Option, pipe, Record } from 'effect'
+import { Context, Effect, flow, Layer, pipe, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -46,13 +46,9 @@ export class KeyvStores extends Context.Tag('KeyvStores')<
 export const keyvStoresLayer = Layer.effect(
   KeyvStores,
   Effect.gen(function* () {
-    const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
+    const redis = yield* DataStoreRedis
 
-    const createKeyvStore = () =>
-      Option.match(maybeRedis, {
-        onSome: redis => new KeyvRedis(redis).on('error', () => undefined),
-        onNone: () => new Map(),
-      })
+    const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
     return {
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
