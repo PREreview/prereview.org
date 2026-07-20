@@ -1,5 +1,6 @@
 {
   "codeOfConduct": {
-    "message": "Code of Conduct"
+    "message": "Code of Conduct",
+    "description": "Title of the page that contains our Code of Conduct."
   }
 }

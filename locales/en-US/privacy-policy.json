@@ -1,5 +1,6 @@
 {
   "privacyPolicy": {
-    "message": "Privacy Policy"
+    "message": "Privacy Policy",
+    "description": "Title of the page that contains our Privacy Policy."
   }
 }

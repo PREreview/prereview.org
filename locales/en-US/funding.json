@@ -1,5 +1,6 @@
 {
   "howWeFunded": {
-    "message": "How we’re funded"
+    "message": "How we’re funded",
+    "description": "Title of the page that describes how PREreview is funded."
   }
 }

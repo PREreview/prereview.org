@@ -1,5 +1,6 @@
 {
   "resources": {
-    "message": "Resources"
+    "message": "Resources",
+    "description": "Title of the page that contains free and openly licensed resources and materials."
   }
 }

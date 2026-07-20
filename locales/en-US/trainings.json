@@ -1,5 +1,6 @@
 {
   "trainings": {
-    "message": "Trainings"
+    "message": "Trainings",
+    "description": "Title of the page that describes trainings that PREreview provide."
   }
 }

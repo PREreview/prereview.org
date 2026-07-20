@@ -1,5 +1,6 @@
 {
   "clubs": {
-    "message": "Clubs"
+    "message": "Clubs",
+    "description": "Title of the page that describes what PREreview clubs are."
   }
 }

@@ -1,5 +1,6 @@
 {
   "howToUse": {
-    "message": "How to use PREreview"
+    "message": "How to use PREreview",
+    "description": "Title of the page that describes how to use the PREreview site."
   }
 }
