@@ -155,6 +155,12 @@
   "imageTypeError": {
     "message": "O arquivo selecionado deve ser AVIF, HEIC, JPG, PNG ou WebP"
   },
+  "imageSizeError": {
+    "message": "O arquivo selecionado deve ser menor que {size, number} MB"
+  },
+  "youCanUploadAvatar": {
+    "message": "Você pode enviar uma foto ou imagem para usar como sua imagem de perfil. O arquivo selecionado deve ter menos de {size, number}&nbsp;MB."
+  },
   "whereWillItShow": {
     "message": "Onde irá aparecer?"
   },
