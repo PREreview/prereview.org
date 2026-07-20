@@ -1,51 +1,66 @@
 {
   "titleSuccess": {
-    "message": "Success"
+    "message": "Success",
+    "description": "Label that is shown alongside a message saying that an action was successful."
   },
   "titleImportant": {
-    "message": "Important"
+    "message": "Important",
+    "description": "Label that is shown alongside a message that requires the user’s attention."
   },
   "titleAccessDenied": {
-    "message": "Access denied"
+    "message": "Access denied",
+    "description": "Label that is shown alongside a message saying that the user does not have permission to do something."
   },
   "messageLogInBlocked": {
-    "message": "You are not allowed to log in."
+    "message": "You are not allowed to log in.",
+    "description": "Message shown when a user is blocked from logging in."
   },
   "messageLoggedOut": {
-    "message": "You have been logged out."
+    "message": "You have been logged out.",
+    "description": "Message shown when a user has logged out."
   },
   "messageLoggedIn": {
-    "message": "You have been logged in."
+    "message": "You have been logged in.",
+    "description": "Message shown when a user has logged in."
   },
   "messageLoggedInDemoUser": {
     "message": "You have been logged in as a demo user.",
     "description": "Message shown when you have logged in as a special user for demonstration purposes."
   },
   "messageVerifyEmail": {
-    "message": "We’re sending you an email. Please open it and follow the link to verify your address."
+    "message": "We’re sending you an email. Please open it and follow the link to verify your address.",
+    "description": "Message shown when a user has requested to verify their email address."
   },
   "messageVerifyEmailResend": {
-    "message": "We’ve sent you a new email."
+    "message": "We’ve sent you a new email.",
+    "description": "Message shown when a user has requested to resend the verification email."
   },
   "messageEmailVerified": {
-    "message": "Your email address has been verified."
+    "message": "Your email address has been verified.",
+    "description": "Message shown when a user has successfully verified their email address."
   },
   "messageOrcidConnected": {
-    "message": "Your ORCID record has been connected."
+    "message": "Your ORCID record has been connected.",
+    "description": "Message shown when a user has successfully connected their ORCID record."
   },
   "messageOrcidDisconnected": {
-    "message": "Your ORCID record has been disconnected."
+    "message": "Your ORCID record has been disconnected.",
+    "description": "Message shown when a user has successfully disconnected their ORCID record."
   },
   "messageSlackConnected": {
-    "message": "Your Community Slack account has been connected."
+    "message": "Your Community Slack account has been connected.",
+    "description": "Message shown when a user has successfully connected their Community Slack account."
   },
   "messageSlackDisconnected": {
-    "message": "Your Community Slack account has been disconnected."
+    "message": "Your Community Slack account has been disconnected.",
+    "description": "Message shown when a user has successfully disconnected their Community Slack account."
   },
   "messageAvatarChanged": {
-    "message": "Your avatar has been changed."
+    "message": "Your avatar has been changed.",
+    "description": "Message shown when a user has successfully changed their avatar."
   },
   "messageAvatarRemoved": {
-    "message": "Your avatar has been removed."
+    "message": "Your avatar has been removed.",
+    "description": "Message shown when a user has successfully removed their avatar."
   }
 }
