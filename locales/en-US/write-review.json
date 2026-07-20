@@ -426,6 +426,18 @@
   "theyHaveReadAndApproved": {
     "message": "They have read and approved the PREreview"
   },
+  "club": {
+    "message": "Club",
+    "description": "Label for the club that the user has chosen to add the review to, or the text “Not in a club”."
+  },
+  "changeClub": {
+    "message": "Change <visuallyHidden>your club</visuallyHidden>",
+    "description": "Link that allows the user to change the club that the review will be added to."
+  },
+  "noClub": {
+    "message": "Not in a club",
+    "description": "Text shown alongside the label “Club” when the user has chosen not to add the review to a club."
+  },
   "useOfAi": {
     "message": "Use of Artificial Intelligence (AI)"
   },

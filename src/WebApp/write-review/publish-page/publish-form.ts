@@ -126,13 +126,13 @@ export function publishForm(
                 club !== undefined
                   ? html`
                       <div>
-                        <dt><span lang="en" dir="ltr">Club</span></dt>
+                        <dt>${t('club')()}</dt>
                         <dd>
-                          ${club ? html`<span ${languageAttributesFor(club.language)}>${club.name}</span>` : html`<i><span lang="en" dir="ltr">Not in a club</span></i>`}
+                          ${club ? html`<span ${languageAttributesFor(club.language)}>${club.name}</span>` : html`<i>${t('noClub')()}</i>`}
                         </dd>
                         <dd>
                           <a href="${Routes.ReviewAPreprintAddToAClub.href({ preprintId: preprint.id })}"
-                            ><span lang="en" dir="ltr">Change <span class="visually-hidden">club</span></span></a
+                            >${t('changeClub')(visuallyHidden)}</a
                           >
                         </dd>
                       </div>
