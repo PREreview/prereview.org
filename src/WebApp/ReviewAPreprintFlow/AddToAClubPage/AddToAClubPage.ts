@@ -26,7 +26,7 @@ export const renderAddToAClubPage = ({
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Add this review to your club', errorPrefix(locale, hasAnError), plainText),
+    title: pipe('Is this a club review?', errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.ReviewAPreprintAddToAClub.href({ preprintId: preprint.id })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale, clubs), errorSummary(locale)) : ''}
@@ -34,6 +34,7 @@ export const renderAddToAClubPage = ({
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
           <fieldset
             role="group"
+            aria-describedby="add-to-club-tip"
             ${rawHtml(
               form._tag === 'InvalidForm' && Either.isLeft(form.addToClub)
                 ? 'aria-invalid="true" aria-errormessage="add-to-club-error"'
@@ -41,8 +42,14 @@ export const renderAddToAClubPage = ({
             )}
           >
             <legend>
-              <h1><span lang="en" dir="ltr">Add this review to your club</span></h1>
+              <h1><span lang="en" dir="ltr">Is this a club review?</span></h1>
             </legend>
+
+            <p id="add-to-club-tip" role="note">
+              <span lang="en" dir="ltr"
+                >${clubs.length === 1 ? 'As you’re a club lead, we can add the review to your club.' : 'As you’re a club lead, we can add the review to one of your clubs.'}</span
+              >
+            </p>
 
             ${
               form._tag === 'InvalidForm' && Either.isLeft(form.addToClub)

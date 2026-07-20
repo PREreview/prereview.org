@@ -1821,7 +1821,7 @@ test
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add this review to your club')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Is this a club review?')
 
   await page.getByLabel('Add to Psychoceramics Club').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1854,7 +1854,7 @@ test
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add this review to your club')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Is this a club review?')
 
   await page.getByLabel('This isn’t a club review').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -3043,10 +3043,7 @@ test
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByRole('group', { name: 'Add this review to your club' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
+    await expect(page.getByRole('group', { name: 'Is this a club review?' })).toHaveAttribute('aria-invalid', 'true')
 
     await page.getByRole('link', { name: 'Select a club for the review' }).click()
 
