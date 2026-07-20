@@ -26,7 +26,7 @@ export const renderAddToAClubPage = ({
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Is this a club review?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('isClubReview')(), errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.ReviewAPreprintAddToAClub.href({ preprintId: preprint.id })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale, clubs), errorSummary(locale)) : ''}
@@ -42,14 +42,10 @@ export const renderAddToAClubPage = ({
             )}
           >
             <legend>
-              <h1><span lang="en" dir="ltr">Is this a club review?</span></h1>
+              <h1>${t('isClubReview')()}</h1>
             </legend>
 
-            <p id="add-to-club-tip" role="note">
-              <span lang="en" dir="ltr"
-                >${clubs.length === 1 ? 'As you’re a club lead, we can add the review to your club.' : 'As you’re a club lead, we can add the review to one of your clubs.'}</span
-              >
-            </p>
+            <p id="add-to-club-tip" role="note">${t('asLeadCanAddToClub')({ numberOfClubs: clubs.length })}</p>
 
             ${
               form._tag === 'InvalidForm' && Either.isLeft(form.addToClub)
@@ -57,7 +53,7 @@ export const renderAddToAClubPage = ({
                     <div class="error-message" id="add-to-club-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.addToClub.left, {
-                        Missing: () => html`<span lang="en" dir="ltr">Select a club for the review</span>`,
+                        Missing: () => t('isClubReviewError')(),
                       })}
                     </div>
                   `
@@ -87,9 +83,7 @@ export const renderAddToAClubPage = ({
                             Match.orElse(() => ''),
                           )}
                         />
-                        <span lang="en" dir="ltr"
-                          >Add to <span ${languageAttributesFor(club.language)}>${club.name}</span></span
-                        >
+                        ${t('addToClub')({ clubName: html`<span ${languageAttributesFor(club.language)}>${club.name}</span>` })}
                       </label>
                     </li>
                   `,
@@ -111,7 +105,7 @@ export const renderAddToAClubPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span lang="en" dir="ltr">This isn’t a club review</span>
+                  ${t('notClubReview')()}
                 </label>
               </li>
             </ol>
@@ -143,7 +137,7 @@ const toErrorItems =
                 )}"
               >
                 ${Match.valueTags(form.addToClub.left, {
-                  Missing: () => html`<span lang="en" dir="ltr">Select a club for the review</span>`,
+                  Missing: () => translate(locale, 'write-review', 'isClubReviewError')(),
                 })}
               </a>
             </li>

@@ -426,6 +426,26 @@
   "theyHaveReadAndApproved": {
     "message": "They have read and approved the PREreview"
   },
+  "isClubReview": {
+    "message": "Is this a club review?",
+    "description": "Label the question where the user can add the review to a club."
+  },
+  "asLeadCanAddToClub": {
+    "message": "{numberOfClubs, plural, one {As you’re a club lead, we can add the review to your club.} other {As you’re a club lead, we can add the review to one of your clubs.}}",
+    "description": "Text that appears alongside the question “Is this a club review?” when the user is a lead of one or more clubs."
+  },
+  "isClubReviewError": {
+    "message": "Select a club for the review",
+    "description": "Error message that appears when the user submits the “Is this a club review?” question without selecting an option."
+  },
+  "addToClub": {
+    "message": "Add to {clubName}",
+    "description": "Label for an option to the “Is this a club review?” question that allows the user to add the review to a club."
+  },
+  "notClubReview": {
+    "message": "This isn’t a club review",
+    "description": "Label for the option to the “Is this a club review?” question that indicates the review is not to be added to a club."
+  },
   "club": {
     "message": "Club",
     "description": "Label for the club that the user has chosen to add the review to, or the text “Not in a club”."
