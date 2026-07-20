@@ -422,6 +422,30 @@
   "theyHaveReadAndApproved": {
     "message": "crwdns4404:0crwdne4404:0"
   },
+  "isClubReview": {
+    "message": "crwdns6777:0crwdne6777:0"
+  },
+  "asLeadCanAddToClub": {
+    "message": "crwdns6779:0numberOfClubs={numberOfClubs}crwdne6779:0"
+  },
+  "isClubReviewError": {
+    "message": "crwdns6781:0crwdne6781:0"
+  },
+  "addToClub": {
+    "message": "crwdns6783:0{clubName}crwdne6783:0"
+  },
+  "notClubReview": {
+    "message": "crwdns6785:0crwdne6785:0"
+  },
+  "club": {
+    "message": "crwdns6771:0crwdne6771:0"
+  },
+  "changeClub": {
+    "message": "crwdns6773:0crwdne6773:0"
+  },
+  "noClub": {
+    "message": "crwdns6775:0crwdne6775:0"
+  },
   "useOfAi": {
     "message": "crwdns5016:0crwdne5016:0"
   },
