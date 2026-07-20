@@ -224,11 +224,11 @@
     "description": "Error message shown when the user selects a file of an unsupported type for the “Upload an avatar” form."
   },
   "imageSizeError": {
-    "message": "The selected file must be smaller than {size, number} MB",
+    "message": "The selected file must be smaller than {size}",
     "description": "Error message shown when the user selects a file that is too large for the “Upload an avatar” form."
   },
   "youCanUploadAvatar": {
-    "message": "You can upload a photo or image to use as your avatar. The selected file must be smaller than {size, number} MB.",
+    "message": "You can upload a photo or image to use as your avatar. The selected file must be smaller than {size}.",
     "description": "Text shown alongside the heading “Upload an avatar”."
   },
   "whereWillItShow": {

@@ -17,6 +17,8 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
   const error = hasAnError(form)
   const t = translate(locale, 'my-details')
 
+  const size = (5).toLocaleString(locale, { style: 'unit', unit: 'megabyte' })
+
   return PageResponse({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('uploadAnAvatar')(), errorPrefix(locale, error), plainText),
@@ -45,7 +47,10 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
                                   ${Match.valueTags(form.avatar.left, {
                                     MissingE: () => t('selectImageError')(),
                                     WrongTypeE: () => t('imageTypeError')(),
-                                    TooBigE: () => t('imageSizeError')({ size: 5 }),
+                                    TooBigE: () =>
+                                      t('imageSizeError')({
+                                        size,
+                                      }),
                                   })}
                                 </a>
                               </li>
@@ -61,7 +66,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
           <div ${rawHtml(E.isLeft(form.avatar) ? 'class="error"' : '')}>
             <h1><label for="avatar">${t('uploadAnAvatar')()}</label></h1>
 
-            <p id="avatar-tip" role="note">${t('youCanUploadAvatar')({ size: 5 })}</p>
+            <p id="avatar-tip" role="note">${t('youCanUploadAvatar')({ size })}</p>
 
             <details>
               <summary>${t('whereWillItShow')()}</summary>
@@ -79,7 +84,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
                       ${Match.valueTags(form.avatar.left, {
                         MissingE: () => t('selectImageError')(),
                         WrongTypeE: () => t('imageTypeError')(),
-                        TooBigE: () => t('imageSizeError')({ size: 5 }),
+                        TooBigE: () => t('imageSizeError')({ size }),
                       })}
                     </div>
                   `
