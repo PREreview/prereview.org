@@ -1,70 +1,91 @@
 {
   "myDetails": {
-    "message": "My details"
+    "message": "My details",
+    "description": "Title of the page where a PREreviewer can see and edit their profile details."
   },
   "welcomeToPrereview": {
-    "message": "Welcome to PREreview! You can use this page to help authors, editors, and other PREreviewers learn more about your interests, work, and review activity."
+    "message": "Welcome to PREreview! You can use this page to help authors, editors, and other PREreviewers learn more about your interests, work, and review activity.",
+    "description": "Message shown to a PREreviewer when they first visit their profile page."
   },
   "onlyYouCanSee": {
-    "message": "Only you can see this page. You have two profile pages that everyone can see:"
+    "message": "Only you can see this page. You have two profile pages that everyone can see:",
+    "description": "Text shown to explain the visibility of their profile pages."
   },
   "viewPublicProfile": {
-    "message": "View public profile"
+    "message": "View public profile",
+    "description": "Link text to view the PREreviewer’s public profile page."
   },
   "viewPseudonymProfile": {
-    "message": "View pseudonym profile"
+    "message": "View pseudonym profile",
+    "description": "Link text to view the PREreviewer’s pseudonym profile page."
   },
   "name": {
-    "message": "Name"
+    "message": "Name",
+    "description": "Label for the name of the PREreviewer."
   },
   "pseudonym": {
-    "message": "PREreview pseudonym"
+    "message": "PREreview pseudonym",
+    "description": "Label for the PREreviewer’s PREreview pseudonym."
   },
   "orcidRecord": {
-    "message": "ORCID record"
+    "message": "ORCID record",
+    "description": "Label for the connection to the PREreviewer’s ORCID record."
   },
   "connected": {
-    "message": "Connected"
+    "message": "Connected",
+    "description": "Label for if the PREreviewer has connected their ORCID record."
   },
   "connectOrcidRecord": {
-    "message": "Connect ORCID record"
+    "message": "Connect ORCID record",
+    "description": "Link text to connect the PREreviewer’s ORCID record."
   },
   "disconnectOrcidRecord": {
-    "message": "Disconnect <visuallyHidden>ORCID record</visuallyHidden>"
+    "message": "Disconnect <visuallyHidden>ORCID record</visuallyHidden>",
+    "description": "Link text to disconnect the PREreviewer’s ORCID record."
   },
   "avatar": {
-    "message": "Avatar"
+    "message": "Avatar",
+    "description": "Label for the avatar of the PREreviewer."
   },
   "uploadAvatar": {
-    "message": "Upload avatar"
+    "message": "Upload avatar",
+    "description": "Link text to upload an avatar for the PREreviewer."
   },
   "changeAvatar": {
-    "message": "Change <visuallyHidden>avatar</visuallyHidden>"
+    "message": "Change <visuallyHidden>avatar</visuallyHidden>",
+    "description": "Link text to change the avatar of the PREreviewer."
   },
   "removeAvatar": {
-    "message": "Remove <visuallyHidden>avatar</visuallyHidden>"
+    "message": "Remove <visuallyHidden>avatar</visuallyHidden>",
+    "description": "Link text to remove the avatar of the PREreviewer."
   },
   "slackCommunityName": {
     "message": "Slack Community name",
-    "description": "Label for showing the name the user is using on the Community Slack"
+    "description": "Label for showing the name the user is using on the Community Slack."
   },
   "connectSlack": {
-    "message": "Connect Slack account"
+    "message": "Connect Slack account",
+    "description": "Link text to connect the PREreviewer’s Slack account."
   },
   "disconnectSlack": {
-    "message": "Disconnect <visuallyHidden>Slack account</visuallyHidden>"
+    "message": "Disconnect <visuallyHidden>Slack account</visuallyHidden>",
+    "description": "Link text to disconnect the PREreviewer’s Slack account."
   },
   "emailAddress": {
-    "message": "Email address"
+    "message": "Email address",
+    "description": "Label for the email address of the PREreviewer."
   },
   "enterEmailAddress": {
-    "message": "Enter email address"
+    "message": "Enter email address",
+    "description": "Link text to enter the email address of the PREreviewer."
   },
   "unverified": {
-    "message": "Unverified"
+    "message": "Unverified",
+    "description": "Label indicating that the PREreviewer’s email address is unverified."
   },
   "changeEmailAddress": {
-    "message": "Change <visuallyHidden>email address</visuallyHidden>"
+    "message": "Change <visuallyHidden>email address</visuallyHidden>",
+    "description": "Link text to change the email address of the PREreviewer."
   },
   "requestedReviewNotifications": {
     "message": "Requested review notifications",
@@ -84,131 +105,171 @@
   },
   "openReviewRequests": {
     "message": "Open for review requests",
-    "description": "Label for if the user is open to receiving review requests"
+    "description": "Label for if the user is open to receiving review requests."
   },
   "enterPreferenceReviewRequests": {
-    "message": "Enter preference for review requests"
+    "message": "Enter preference for review requests",
+    "description": "Link text to enter the user’s preference for receiving review requests."
   },
   "changePreferenceReviewRequests": {
-    "message": "Change <visuallyHidden>preference for review requests</visuallyHidden>"
+    "message": "Change <visuallyHidden>preference for review requests</visuallyHidden>",
+    "description": "Link text to change the user’s preference for receiving review requests."
   },
   "setPreferenceReviewRequestsVisibility": {
-    "message": "Set <visuallyHidden>preference-for-review-requests</visuallyHidden> visibility"
+    "message": "Set <visuallyHidden>preference-for-review-requests</visuallyHidden> visibility",
+    "description": "Link text to set the visibility of the user’s preference for receiving review requests."
   },
   "yes": {
-    "message": "Yes"
+    "message": "Yes",
+    "description": "Label for if the user agrees to something."
   },
   "no": {
-    "message": "No"
+    "message": "No",
+    "description": "Label for if the user does not agree to something."
   },
   "shownPublic": {
-    "message": "Shown on your public profile"
+    "message": "Shown on your public profile",
+    "description": "Label for if the user’s information is shown on their public profile."
   },
   "restricted": {
-    "message": "Only visible to PREreview"
+    "message": "Only visible to PREreview",
+    "description": "Label for if the user’s information is only visible to PREreview."
   },
   "careerStage": {
-    "message": "Career stage"
+    "message": "Career stage",
+    "description": "Label for the career stage of the PREreviewer."
   },
   "enterCareerStage": {
-    "message": "Enter career stage"
+    "message": "Enter career stage",
+    "description": "Link text to enter the user’s career stage."
   },
   "changeCareerStage": {
-    "message": "Change <visuallyHidden>career stage</visuallyHidden>"
+    "message": "Change <visuallyHidden>career stage</visuallyHidden>",
+    "description": "Link text to change the user’s career stage."
   },
   "setCareerStageVisibility": {
-    "message": "Set <visuallyHidden>career-stage</visuallyHidden> visibility"
+    "message": "Set <visuallyHidden>career-stage</visuallyHidden> visibility",
+    "description": "Link text to set the visibility of the user’s career stage."
   },
   "early": {
-    "message": "Early"
+    "message": "Early",
+    "description": "Option for the “Enter career stage” question."
   },
   "mid": {
-    "message": "Mid"
+    "message": "Mid",
+    "description": "Option for the “Enter career stage” question."
   },
   "late": {
-    "message": "Late"
+    "message": "Late",
+    "description": "Option for the “Enter career stage” question."
   },
   "researchInterests": {
-    "message": "Research interests"
+    "message": "Research interests",
+    "description": "Label for the research interests of the PREreviewer."
   },
   "enterResearchInterests": {
     "message": "Enter research interests",
-    "description": "Link text to where the user will type in their research interests"
+    "description": "Link text to where the user will type in their research interests."
   },
   "changeResearchInterests": {
-    "message": "Change <visuallyHidden>research interests</visuallyHidden>"
+    "message": "Change <visuallyHidden>research interests</visuallyHidden>",
+    "description": "Link text to change the user’s research interests."
   },
   "setResearchInterestsVisibility": {
-    "message": "Set <visuallyHidden>research-interests</visuallyHidden> visibility"
+    "message": "Set <visuallyHidden>research-interests</visuallyHidden> visibility",
+    "description": "Link text to set the visibility of the user’s research interests."
   },
   "location": {
-    "message": "Location"
+    "message": "Location",
+    "description": "Label for the location of the PREreviewer."
   },
   "enterLocation": {
-    "message": "Enter location"
+    "message": "Enter location",
+    "description": "Link text to where the user will type in their location."
   },
   "changeLocation": {
-    "message": "Change <visuallyHidden>location</visuallyHidden>"
+    "message": "Change <visuallyHidden>location</visuallyHidden>",
+    "description": "Link text to change the user’s location."
   },
   "setLocationVisibility": {
-    "message": "Set <visuallyHidden>location</visuallyHidden> visibility"
+    "message": "Set <visuallyHidden>location</visuallyHidden> visibility",
+    "description": "Link text to set the visibility of the user’s location."
   },
   "languages": {
-    "message": "Languages"
+    "message": "Languages",
+    "description": "Label for the languages spoken by the PREreviewer."
   },
   "enterLanguages": {
-    "message": "Enter languages"
+    "message": "Enter languages",
+    "description": "Link text to where the user will type in their languages."
   },
   "changeLanguages": {
-    "message": "Change <visuallyHidden>languages</visuallyHidden>"
+    "message": "Change <visuallyHidden>languages</visuallyHidden>",
+    "description": "Link text to change the user’s languages."
   },
   "setLanguagesVisibility": {
-    "message": "Set <visuallyHidden>languages</visuallyHidden> visibility"
+    "message": "Set <visuallyHidden>languages</visuallyHidden> visibility",
+    "description": "Link text to set the visibility of the user’s languages."
   },
   "uploadAnAvatar": {
-    "message": "Upload an avatar"
+    "message": "Upload an avatar",
+    "description": "Title of the page where a PREreviewer can upload an avatar to use on their profile."
   },
   "selectImageError": {
-    "message": "Select an image"
+    "message": "Select an image",
+    "description": "Error message shown when the user tries to complete the “Upload an avatar” form without selecting an image."
   },
   "imageTypeError": {
-    "message": "The selected file must be a AVIF, HEIC, JPG, PNG or WebP"
+    "message": "The selected file must be a AVIF, HEIC, JPG, PNG or WebP",
+    "description": "Error message shown when the user selects a file of an unsupported type for the “Upload an avatar” form."
   },
   "imageSizeError": {
-    "message": "The selected file must be smaller than {size, number} MB"
+    "message": "The selected file must be smaller than {size, number} MB",
+    "description": "Error message shown when the user selects a file that is too large for the “Upload an avatar” form."
   },
   "youCanUploadAvatar": {
-    "message": "You can upload a photo or image to use as your avatar. The selected file must be smaller than {size, number} MB."
+    "message": "You can upload a photo or image to use as your avatar. The selected file must be smaller than {size, number} MB.",
+    "description": "Text shown alongside the heading “Upload an avatar”."
   },
   "whereWillItShow": {
-    "message": "Where will it show?"
+    "message": "Where will it show?",
+    "description": "Heading for the section that explains where the avatar will be shown."
   },
   "showOnPublicProfile": {
-    "message": "We’ll show your avatar on your public profile."
+    "message": "We’ll show your avatar on your public profile.",
+    "description": "Text shown alongside the heading “Where will it show?”"
   },
   "removeYourAvatar": {
-    "message": "Remove your avatar"
+    "message": "Remove your avatar",
+    "description": "Title of the page where a PREreviewer can remove their avatar from their profile."
   },
   "removeAvatarFromProfile": {
-    "message": "We’ll remove your avatar from your profile."
+    "message": "We’ll remove your avatar from your profile.",
+    "description": "Text shown alongside the heading “Remove your avatar”."
   },
   "canUploadNewOne": {
-    "message": "You will be able to upload a new one at any time."
+    "message": "You will be able to upload a new one at any time.",
+    "description": "Text shown alongside the heading “Remove your avatar”."
   },
   "removeAvatarButton": {
-    "message": "Remove avatar"
+    "message": "Remove avatar",
+    "description": "Button to remove the avatar from the PREreviewer’s profile."
   },
   "whatCareerStage": {
-    "message": "What career stage are you at?"
+    "message": "What career stage are you at?",
+    "description": "Heading for the page that asks the PREreviewer what career stage they are at."
   },
   "selectCareerStageError": {
-    "message": "Select which career stage you are at"
+    "message": "Select which career stage you are at",
+    "description": "Error message shown when the user tries to complete the form “What career stage are you at?” without selecting an option."
   },
   "preferNotToSay": {
-    "message": "Prefer not to say"
+    "message": "Prefer not to say",
+    "description": "Option for the “What career stage are you at?” question."
   },
   "seeCareerStage": {
-    "message": "Who can see your career stage?"
+    "message": "Who can see your career stage?",
+    "description": "Heading for the page that asks the PREreviewer who can see their career stage."
   },
   "everyone": {
     "message": "Everyone"
@@ -235,16 +296,20 @@
     "message": "We won’t share them with anyone else."
   },
   "whatEmailAddress": {
-    "message": "What is your email address?"
+    "message": "What is your email address?",
+    "description": "Heading for the page that asks the PREreviewer what their email address is."
   },
   "enterEmailAddressError": {
-    "message": "Enter your email address"
+    "message": "Enter your email address",
+    "description": "Error message shown when the user tries to complete the form “What is your email address?” without entering a value."
   },
   "enterEmailAddressFormatError": {
-    "message": "Enter an email address in the correct format, like name@example.com"
+    "message": "Enter an email address in the correct format, like name@example.com",
+    "description": "Error message shown when the user completes the form “What is your email address?” with an invalid email address."
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
-    "message": "We’ll only use this to contact you about your account and PREreviews."
+    "message": "We’ll only use this to contact you about your account and PREreviews.",
+    "description": "Text shown alongside the heading “What is your email address?”"
   },
   "receiveRequestedReviewNotifications": {
     "message": "Would you like to be notified when a requested PREreview is published?",
@@ -255,30 +320,39 @@
     "description": "Error message shown when the user tries to complete the form “Would you like to be notified when a requested PREreview is published?” without selecting a value."
   },
   "whatLanguages": {
-    "message": "What languages can you review in?"
+    "message": "What languages can you review in?",
+    "description": "Heading for the page that asks the PREreviewer what languages they can review in."
   },
   "seeLanguages": {
-    "message": "Who can see your languages?"
+    "message": "Who can see your languages?",
+    "description": "Heading for the page that asks the PREreviewer who can see the languages they can review in."
   },
   "whereBased": {
-    "message": "Where are you based?"
+    "message": "Where are you based?",
+    "description": "Heading for the page that asks the PREreviewer where they are based."
   },
   "seeLocation": {
-    "message": "Who can see your location?"
+    "message": "Who can see your location?",
+    "description": "Heading for the page that asks the PREreviewer who can see where they are based."
   },
   "happyTakeRequests": {
-    "message": "Are you happy to take requests for a PREreview?"
+    "message": "Are you happy to take requests for a PREreview?",
+    "description": "Heading for the page that asks the PREreviewer if they are happy to take requests for a PREreview."
   },
   "selectHappyTakeRequestsError": {
-    "message": "Select yes if you are happy to take requests for a PREreview"
+    "message": "Select yes if you are happy to take requests for a PREreview",
+    "description": "Error message shown when the user tries to complete the form “Are you happy to take requests for a PREreview?” without selecting an option."
   },
   "seeHappyTakeRequests": {
-    "message": "Who can see if you are open for review requests?"
+    "message": "Who can see if you are open for review requests?",
+    "description": "Heading for the page that asks the PREreviewer who can see if they are open for review requests."
   },
   "whatResearchInterests": {
-    "message": "What are your research interests?"
+    "message": "What are your research interests?",
+    "description": "Heading for the page that asks the PREreviewer what their research interests are."
   },
   "seeWhatResearchInterests": {
-    "message": "Who can see your research interests?"
+    "message": "Who can see your research interests?",
+    "description": "Heading for the page that asks the PREreviewer who can see their research interests."
   }
 }
