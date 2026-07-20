@@ -1,17 +1,22 @@
 {
   "temporaryTitle": {
-    "message": "Sorry, we’ve removed this page for now"
+    "message": "Sorry, we’ve removed this page for now",
+    "description": "Title of the page that is shown when a page has been temporarily removed."
   },
   "permanentlyTitle": {
-    "message": "Sorry, we’ve taken this page down"
+    "message": "Sorry, we’ve taken this page down",
+    "description": "Title of the page that is shown when a page has been permanently removed."
   },
   "temporaryMessage": {
-    "message": "We’re making changes to PREreview and have removed this page for now."
+    "message": "We’re making changes to PREreview and have removed this page for now.",
+    "description": "Text shown alongside the heading “Sorry, we’ve removed this page for now”."
   },
   "permanentlyMessage": {
-    "message": "We’re making changes to PREreview and have removed this page."
+    "message": "We’re making changes to PREreview and have removed this page.",
+    "description": "Text shown alongside the heading “Sorry, we’ve taken this page down”."
   },
   "getInTouch": {
-    "message": "If you have any questions or you selected a link or button, please <link>get in touch</link>."
+    "message": "If you have any questions or you selected a link or button, please <link>get in touch</link>.",
+    "description": "Text shown alongside the heading “Sorry, we’ve removed this page for now” or “Sorry, we’ve taken this page down”."
   }
 }
