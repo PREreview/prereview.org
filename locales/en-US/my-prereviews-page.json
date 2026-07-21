@@ -1,32 +1,42 @@
 {
   "myPrereviews": {
-    "message": "My PREreviews"
+    "message": "My PREreviews",
+    "description": "Heading for the page showing the PREreviews authored by the user."
   },
   "onlyYouCanSee": {
-    "message": "Only you can see this page. You have two profile pages that everyone can see:"
+    "message": "Only you can see this page. You have two profile pages that everyone can see:",
+    "description": "Text shown to explain the visibility of their profile pages."
   },
   "viewPublicProfile": {
-    "message": "View public profile"
+    "message": "View public profile",
+    "description": "Link to view the user’s public profile."
   },
   "viewPseudonymProfile": {
-    "message": "View pseudonym profile"
+    "message": "View pseudonym profile",
+    "description": "Link to view the user’s pseudonym profile."
   },
   "notPublished": {
-    "message": "You haven’t published a PREreview yet."
+    "message": "You haven’t published a PREreview yet.",
+    "description": "Text shown when the user has not published any PREreviews."
   },
   "appearHere": {
-    "message": "When you do, it’ll appear here."
+    "message": "When you do, it’ll appear here.",
+    "description": "Text shown when the user has not published any PREreviews."
   },
   "reviewAPreprint": {
-    "message": "Review a preprint"
+    "message": "Review a preprint",
+    "description": "Button to the page where the user can start a PREreview."
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading of the page when we’re unable to show the user’s PREreviews."
   },
   "unableToShow": {
-    "message": "We’re unable to show your PREreviews now."
+    "message": "We’re unable to show your PREreviews now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   }
 }
