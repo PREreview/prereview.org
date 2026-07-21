@@ -188,26 +188,8 @@
   "everyone": {
     "message": "Todos"
   },
-  "showOnPublic": {
-    "message": "Mostraremos em seu perfil público."
-  },
-  "showThemOnPublic": {
-    "message": "Mostraremos em seu perfil público."
-  },
-  "saySoOnPublic": {
-    "message": "Informaremos isso no seu perfil público."
-  },
   "onlyPrereview": {
     "message": "Somente PREreview"
-  },
-  "noOneElseKnow": {
-    "message": "Não compartilharemos essa informação com mais ninguém."
-  },
-  "willNotShare": {
-    "message": "Não compartilharemos com mais ninguém."
-  },
-  "willNotShareThem": {
-    "message": "Não compartilharemos com mais ninguém."
   },
   "whatEmailAddress": {
     "message": "Qual é seu endereço de e-mail?"

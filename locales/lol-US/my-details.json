@@ -168,10 +168,10 @@
     "message": "crwdns5860:0crwdne5860:0"
   },
   "imageSizeError": {
-    "message": "crwdns5862:0size={size}crwdne5862:0"
+    "message": "crwdns6827:0{size}crwdne6827:0"
   },
   "youCanUploadAvatar": {
-    "message": "crwdns5263:0size={size}crwdne5263:0"
+    "message": "crwdns6829:0{size}crwdne6829:0"
   },
   "whereWillItShow": {
     "message": "crwdns5265:0crwdne5265:0"
@@ -206,26 +206,38 @@
   "everyone": {
     "message": "crwdns5369:0crwdne5369:0"
   },
-  "showOnPublic": {
-    "message": "crwdns5371:0crwdne5371:0"
+  "everyoneCareerStageTip": {
+    "message": "crwdns6831:0crwdne6831:0"
   },
-  "showThemOnPublic": {
-    "message": "crwdns5393:0crwdne5393:0"
+  "everyoneLocationTip": {
+    "message": "crwdns6833:0crwdne6833:0"
   },
-  "saySoOnPublic": {
-    "message": "crwdns5395:0crwdne5395:0"
+  "everyoneLanguagesTip": {
+    "message": "crwdns6835:0crwdne6835:0"
+  },
+  "everyoneResearchInterestsTip": {
+    "message": "crwdns6837:0crwdne6837:0"
+  },
+  "everyoneOpenForRequestsTip": {
+    "message": "crwdns6839:0crwdne6839:0"
   },
   "onlyPrereview": {
     "message": "crwdns5373:0crwdne5373:0"
   },
-  "noOneElseKnow": {
-    "message": "crwdns5397:0crwdne5397:0"
+  "onlyPrereviewOpenForRequestsTip": {
+    "message": "crwdns6841:0crwdne6841:0"
   },
-  "willNotShare": {
-    "message": "crwdns5375:0crwdne5375:0"
+  "onlyPrereviewCareerStageTip": {
+    "message": "crwdns6843:0crwdne6843:0"
   },
-  "willNotShareThem": {
-    "message": "crwdns5399:0crwdne5399:0"
+  "onlyPrereviewLocationTip": {
+    "message": "crwdns6845:0crwdne6845:0"
+  },
+  "onlyPrereviewLanguagesTip": {
+    "message": "crwdns6847:0crwdne6847:0"
+  },
+  "onlyPrereviewResearchInterestsTip": {
+    "message": "crwdns6849:0crwdne6849:0"
   },
   "whatEmailAddress": {
     "message": "crwdns5868:0crwdne5868:0"
