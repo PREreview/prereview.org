@@ -1,53 +1,70 @@
 {
   "connectOrcidRecord": {
-    "message": "Connect your ORCID record"
+    "message": "Connect your ORCID record",
+    "description": "Title for the page where users can connect their PREreview profile to their ORCID record."
   },
   "canConnect": {
-    "message": "You can connect your PREreview profile to your ORCID record."
+    "message": "You can connect your PREreview profile to your ORCID record.",
+    "description": "Text shown alongside the heading “Connect your ORCID record”."
   },
   "willAddPrereviews": {
-    "message": "We’ll add your PREreviews to your ORCID record."
+    "message": "We’ll add your PREreviews to your ORCID record.",
+    "description": "Text shown alongside the heading “Connect your ORCID record”."
   },
   "beforeYouStart": {
-    "message": "Before you start"
+    "message": "Before you start",
+    "description": "Heading for the section that explains what users need to know before connecting their ORCID record."
   },
   "sendYouToOrcid": {
-    "message": "We’ll send you to ORCID, where they will ask you to log in and grant PREreview access to your record there. You may have already done these steps, and ORCID will return you to PREreview."
+    "message": "We’ll send you to ORCID, where they will ask you to log in and grant PREreview access to your record there. You may have already done these steps, and ORCID will return you to PREreview.",
+    "description": "Text shown alongside the heading “Before you start” explaining the process of connecting the PREreview profile to the ORCID record."
   },
   "cannotConnectRecord": {
-    "message": "Sorry, we can’t connect your record"
+    "message": "Sorry, we can’t connect your record",
+    "description": "Heading for the page shown when the user has denied PREreview access to their ORCID record."
   },
   "youDeniedAccess": {
-    "message": "You have denied PREreview access to your ORCID record."
+    "message": "You have denied PREreview access to your ORCID record.",
+    "description": "Text shown alongside the heading “Sorry, we can’t connect your record”."
   },
   "tryAgain": {
-    "message": "Please try again."
+    "message": "Please try again.",
+    "description": "Text shown alongside the heading “Sorry, we can’t connect your record”."
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading for the page shown when there are issues connecting the ORCID record."
   },
   "unableToConnect": {
-    "message": "We’re unable to connect your record right now."
+    "message": "We’re unable to connect your record right now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "unableToDisconnect": {
-    "message": "We’re unable to disconnect your record right now."
+    "message": "We’re unable to disconnect your record right now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "disconnectOrcidRecord": {
-    "message": "Disconnect your ORCID record"
+    "message": "Disconnect your ORCID record",
+    "description": "Title for the page where users can disconnect their PREreview profile from their ORCID record."
   },
   "canDisconnect": {
-    "message": "You can disconnect your PREreview profile from your ORCID record."
+    "message": "You can disconnect your PREreview profile from your ORCID record.",
+    "description": "Text shown alongside the heading “Disconnect your ORCID record”."
   },
   "stopAddingPrereviews": {
-    "message": "We’ll stop adding new PREreviews to your ORCID record."
+    "message": "We’ll stop adding new PREreviews to your ORCID record.",
+    "description": "Text shown alongside the heading “Disconnect your ORCID record”."
   },
   "canReconnect": {
-    "message": "You will be able to reconnect it at any time."
+    "message": "You will be able to reconnect it at any time.",
+    "description": "Text shown alongside the heading “Disconnect your ORCID record”."
   },
   "disconnectRecordButton": {
-    "message": "Disconnect record"
+    "message": "Disconnect record",
+    "description": "Button on the “Disconnect your ORCID record” page that disconnects the user’s PREreview profile from their ORCID record."
   }
 }
