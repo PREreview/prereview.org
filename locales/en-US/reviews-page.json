@@ -1,56 +1,74 @@
 {
   "title": {
-    "message": "Recent PREreviews"
+    "message": "Recent PREreviews",
+    "description": "Heading for the page showing PREreviews."
   },
   "titleWithDetails": {
-    "message": "Recent PREreviews ({details})"
+    "message": "Recent PREreviews ({details})",
+    "description": "Heading for the page showing PREreviews, with details about the filter applied."
   },
   "pageNumber": {
-    "message": "page {page, number}"
+    "message": "page {page, number}",
+    "description": "Label for the page number in the list of PREreviews."
   },
   "skipResults": {
-    "message": "Skip to results"
+    "message": "Skip to results",
+    "description": "Link to skip the page header and go directly to the list of PREreviews."
   },
   "filterTitle": {
-    "message": "Filter"
+    "message": "Filter",
+    "description": "Heading for the section showing the filters for the list of PREreviews."
   },
   "filterTitleAuthorLabel": {
-    "message": "Keyword, title or author"
+    "message": "Keyword, title or author",
+    "description": "Label for the text field to filter the list of PREreviews by keyword, title or author."
   },
   "filterLanguageLabel": {
-    "message": "Language"
+    "message": "Language",
+    "description": "Label for the dropdown to filter the list of PREreviews by language."
   },
   "filterLanguageAny": {
-    "message": "Any"
+    "message": "Any",
+    "description": "Option in the dropdown to filter the list of PREreviews by language."
   },
   "filterFieldLabel": {
-    "message": "Field"
+    "message": "Field",
+    "description": "Label for the dropdown to filter the list of PREreviews by field."
   },
   "filterFieldAny": {
-    "message": "Any"
+    "message": "Any",
+    "description": "Option in the dropdown to filter the list of PREreviews by field."
   },
   "filterButton": {
-    "message": "Filter results"
+    "message": "Filter results",
+    "description": "Button to apply the filters to the list of PREreviews."
   },
   "pagerNewer": {
-    "message": "Newer"
+    "message": "Newer",
+    "description": "Label for the link to the page containing newer PREreviews."
   },
   "pagerOlder": {
-    "message": "Older"
+    "message": "Older",
+    "description": "Label for the link to the page containing older PREreviews."
   },
   "noResults": {
-    "message": "No PREreviews have been published yet."
+    "message": "No PREreviews have been published yet.",
+    "description": "Text shown when there are no PREreviews to show."
   },
   "appearHere": {
-    "message": "When they do, they’ll appear here."
+    "message": "When they do, they’ll appear here.",
+    "description": "Text shown when there are no PREreviews to show, indicating that they will appear here once published."
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading of the page when we’re unable to show the list of PREreviews."
   },
   "unableToShow": {
-    "message": "We’re unable to show this page of recent PREreviews now."
+    "message": "We’re unable to show this page of recent PREreviews now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   }
 }
