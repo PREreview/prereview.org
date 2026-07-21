@@ -135,7 +135,7 @@
     "message": "You’ll be able to see your request on our <listOfRequestsLink>list of requests</listOfRequestsLink> and <communitySlackLink>Community Slack</communitySlackLink> shortly."
   },
   "youCanRequestAPrereview": {
-    "message": " You can request a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report."
+    "message": "You can request a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report."
   },
   "beforeYouStart": {
     "message": "Before you start"
