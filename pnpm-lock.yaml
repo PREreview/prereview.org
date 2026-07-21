@@ -172,13 +172,13 @@ importers:
         version: 0.41.0(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4)(ioredis@5.11.1))(@effect/platform@0.96.2(effect@3.21.4))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4)(ioredis@5.11.1))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4)
       '@effect/vitest':
         specifier: ^0.29.0
-        version: 0.29.0(effect@3.21.4)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
+        version: 0.29.0(effect@3.21.4)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.7.0(jiti@2.6.1))
       '@fast-check/vitest':
         specifier: ^0.4.1
-        version: 0.4.1(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
+        version: 0.4.1(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       '@fullhuman/postcss-purgecss':
         specifier: ^8.0.0
         version: 8.0.0(postcss@8.5.16)
@@ -225,8 +225,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       '@types/node':
-        specifier: ^24.13.2
-        version: 24.13.2
+        specifier: ^24.13.3
+        version: 24.13.3
       '@types/nodemailer':
         specifier: ^8.0.0
         version: 8.0.0
@@ -280,7 +280,7 @@ importers:
         version: 4.7.9
       html-validate:
         specifier: ^11.5.5
-        version: 11.5.5(@vitest/expect@4.1.10)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
+        version: 11.5.5(@vitest/expect@4.1.10)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       iso-639-3:
         specifier: ^2.2.0
         version: 2.2.0
@@ -343,10 +343,10 @@ importers:
         version: 8.63.0(eslint@10.7.0(jiti@2.6.1))(typescript@6.0.3)
       vite:
         specifier: ^8.1.5
-        version: 8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)
+        version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)
       vitest:
         specifier: ^4.1.10
-        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
 
 packages:
 
@@ -1799,8 +1799,8 @@ packages:
   '@types/mjml@5.0.0':
     resolution: {integrity: sha512-z6P0yjEOVOz6cZVyD3vkPSifzVH0fa9M8BFM8Jl9HtpeFkBJyCZHRLPx1uFnkZijgAYmtO/JfSbp4EF1fNwsXQ==}
 
-  '@types/node@24.13.2':
-    resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
+  '@types/node@24.13.3':
+    resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
 
   '@types/nodemailer@8.0.0':
     resolution: {integrity: sha512-fyf8jWULsCo0d0BuoQ75i6IeoHs47qcqxWc7yUdUcV0pOZGjUTTOvwdG1PRXUDqN/8A64yQdQdnA2pZgcdi+cA==}
@@ -5759,10 +5759,10 @@ snapshots:
     dependencies:
       effect: 3.21.4
 
-  '@effect/vitest@0.29.0(effect@3.21.4)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
+  '@effect/vitest@0.29.0(effect@3.21.4)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
     dependencies:
       effect: 3.21.4
-      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
 
   '@effect/workflow@0.18.2(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4)(ioredis@5.11.1))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4)':
     dependencies:
@@ -5915,10 +5915,10 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fast-check/vitest@0.4.1(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
+  '@fast-check/vitest@0.4.1(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
     dependencies:
       fast-check: 3.23.2
-      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
 
   '@fullhuman/postcss-purgecss@8.0.0(postcss@8.5.16)':
     dependencies:
@@ -6553,7 +6553,7 @@ snapshots:
 
   '@types/cookie-signature@1.1.2':
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
 
   '@types/deep-eql@4.0.2': {}
 
@@ -6582,13 +6582,13 @@ snapshots:
     dependencies:
       '@types/mjml-core': 5.0.0
 
-  '@types/node@24.13.2':
+  '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
 
   '@types/nodemailer@8.0.0':
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
 
   '@types/pegjs@0.10.6': {}
 
@@ -6604,7 +6604,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
 
   '@typescript-eslint/eslint-plugin@8.63.0(@typescript-eslint/parser@8.63.0(eslint@10.7.0(jiti@2.6.1))(typescript@6.0.3))(eslint@10.7.0(jiti@2.6.1))(typescript@6.0.3)':
     dependencies:
@@ -6818,13 +6818,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.10(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.10(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -8040,7 +8040,7 @@ snapshots:
 
   html-tags@5.1.0: {}
 
-  html-validate@11.5.5(@vitest/expect@4.1.10)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))):
+  html-validate@11.5.5(@vitest/expect@4.1.10)(vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))):
     dependencies:
       '@html-validate/stylish': 6.0.0
       '@sidvind/better-ajv-errors': 7.0.0(ajv@8.20.0)
@@ -8050,7 +8050,7 @@ snapshots:
       semver: 7.8.5
     optionalDependencies:
       '@vitest/expect': 4.1.10
-      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
 
   htmlnano@3.3.2(cssnano@7.1.9(postcss@8.5.16))(postcss@8.5.21)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3):
     dependencies:
@@ -10655,7 +10655,7 @@ snapshots:
 
   valid-data-url@3.0.1: {}
 
-  vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0):
+  vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -10663,17 +10663,17 @@ snapshots:
       rolldown: 1.1.5
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
       esbuild: 0.28.1
       fsevents: 2.3.3
       jiti: 2.6.1
       terser: 5.46.1
       yaml: 2.9.0
 
-  vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)):
+  vitest@4.1.10(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.10(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -10690,11 +10690,11 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.1.5(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
     transitivePeerDependencies:
       - msw
 
