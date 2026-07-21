@@ -12,6 +12,7 @@ import {
   Chunk,
   Effect,
   flow,
+  identity,
   Layer,
   Logger,
   LogLevel,
@@ -24,6 +25,14 @@ import {
   String,
 } from 'effect'
 import path from 'path'
+
+const NormalizedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, {
+  strict: true,
+  decode: String.replaceAll(/\s+/g, ' '),
+  encode: identity,
+})
+
+const TextSchema = Schema.compose(NormalizedWhitespaceSchema, Schema.NonEmptyTrimmedString)
 
 const ListResponse = <A, I, R>(resultSchema: Schema.Schema<A, I, R>) =>
   Schema.Struct({
@@ -89,29 +98,29 @@ const KeywordIdFromUrlSchema = Schema.transformOrFail(Schema.URL, KeywordIdSchem
 
 const DomainSchema = Schema.Struct({
   id: DomainIdFromUrlSchema,
-  display_name: Schema.NonEmptyTrimmedString,
+  display_name: TextSchema,
 })
 
 const FieldSchema = Schema.Struct({
   id: FieldIdFromUrlSchema,
-  display_name: Schema.NonEmptyTrimmedString,
-  display_name_alternatives: Schema.Array(Schema.NonEmptyTrimmedString),
-  description: Schema.NonEmptyTrimmedString,
-  domain: Schema.Struct({ id: DomainIdFromUrlSchema, display_name: Schema.NonEmptyTrimmedString }),
+  display_name: TextSchema,
+  display_name_alternatives: Schema.Array(TextSchema),
+  description: TextSchema,
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema, display_name: TextSchema }),
 })
 
 const SubfieldSchema = Schema.Struct({
   id: SubfieldIdFromUrlSchema,
-  display_name: Schema.NonEmptyTrimmedString,
-  display_name_alternatives: Schema.Array(Schema.NonEmptyTrimmedString),
-  description: Schema.optional(Schema.NonEmptyTrimmedString),
-  domain: Schema.Struct({ id: DomainIdFromUrlSchema, display_name: Schema.NonEmptyTrimmedString }),
-  field: Schema.Struct({ id: FieldIdFromUrlSchema, display_name: Schema.NonEmptyTrimmedString }),
+  display_name: TextSchema,
+  display_name_alternatives: Schema.Array(TextSchema),
+  description: Schema.optional(TextSchema),
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema, display_name: TextSchema }),
+  field: Schema.Struct({ id: FieldIdFromUrlSchema, display_name: TextSchema }),
 })
 
 const TopicSchema = Schema.Struct({
   id: TopicIdFromUrlSchema,
-  display_name: Schema.NonEmptyTrimmedString,
+  display_name: TextSchema,
   domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
   field: Schema.Struct({ id: FieldIdFromUrlSchema }),
   subfield: Schema.Struct({ id: SubfieldIdFromUrlSchema }),
@@ -119,28 +128,28 @@ const TopicSchema = Schema.Struct({
 
 const KeywordSchema = Schema.Struct({
   id: KeywordIdFromUrlSchema,
-  display_name: Schema.NonEmptyTrimmedString,
+  display_name: TextSchema,
 })
 
 const LocaleFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
-    message: Schema.NonEmptyTrimmedString,
-    description: Schema.optional(Schema.NonEmptyTrimmedString),
+    message: TextSchema,
+    description: Schema.optional(TextSchema),
   }),
 })
 
 const DomainTypesFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
-    name: Schema.NonEmptyTrimmedString,
+    name: TextSchema,
   }),
 })
 
 const FieldTypesFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
-    name: Schema.NonEmptyTrimmedString,
+    name: TextSchema,
     domain: DomainIdSchema,
   }),
 })
@@ -148,7 +157,7 @@ const FieldTypesFileSchema = Schema.Record({
 const SubfieldTypesFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
-    name: Schema.NonEmptyTrimmedString,
+    name: TextSchema,
     domain: DomainIdSchema,
     field: FieldIdSchema,
   }),
@@ -157,7 +166,7 @@ const SubfieldTypesFileSchema = Schema.Record({
 const TopicTypesFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
-    name: Schema.NonEmptyTrimmedString,
+    name: TextSchema,
     domain: DomainIdSchema,
     field: FieldIdSchema,
     subfield: SubfieldIdSchema,
@@ -167,7 +176,7 @@ const TopicTypesFileSchema = Schema.Record({
 const KeywordTypesFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
-    name: Schema.NonEmptyTrimmedString,
+    name: TextSchema,
   }),
 })
 
