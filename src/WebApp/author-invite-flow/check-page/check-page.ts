@@ -17,7 +17,7 @@ export function checkPage({
   locale: SupportedLocale
 }) {
   return StreamlinePageResponse({
-    title: plainText`${translate(locale, 'author-invite-flow', 'checkTitle')()}`,
+    title: plainText`${translate(locale, 'author-invite-flow', 'checkYourDetails')()}`,
     main: html`
       <single-use-form>
         <form method="post" action="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" novalidate>

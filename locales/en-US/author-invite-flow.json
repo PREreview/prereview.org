@@ -1,7 +1,4 @@
 {
-  "checkTitle": {
-    "message": "Check your details"
-  },
   "checkYourDetails": {
     "message": "Check your details",
     "description": "Title of the page where the user can check the details to be added to the PREreview."
