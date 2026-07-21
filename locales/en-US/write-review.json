@@ -1,430 +1,567 @@
 {
   "prereviewOf": {
-    "message": "PREreview of “{preprintTitle}”"
+    "message": "PREreview of “{preprintTitle}”",
+    "description": "Part of the page title for the review-a-preprint flow."
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading for the page that appears when there is a problem publishing a PREreview."
   },
   "ownPreprint": {
-    "message": "Sorry, you can’t review your own preprint"
+    "message": "Sorry, you can’t review your own preprint",
+    "description": "Heading for the page that appears when a user attempts to review their own preprint."
   },
   "unableToPublish": {
-    "message": "We were unable to publish your PREreview. We saved your work."
+    "message": "We were unable to publish your PREreview. We saved your work.",
+    "description": "Text that appears alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later by coming back to this page."
+    "message": "Please try again later by coming back to this page.",
+    "description": "Text that appears alongside the heading “Sorry, we’re having problems”."
   },
   "ifNotAuthor": {
-    "message": "If you’re not an author, please <contact>get in touch</contact>."
+    "message": "If you’re not an author, please <contact>get in touch</contact>.",
+    "description": "Text that appears alongside the heading “Sorry, you can’t review your own preprint”."
   },
   "getInTouch": {
-    "message": "If this problem persists, please <contact>get in touch</contact>."
+    "message": "If this problem persists, please <contact>get in touch</contact>.",
+    "description": "Text that appears alongside the heading “Sorry, we’re having problems”."
   },
   "enterTheirName": {
-    "message": "Enter their name"
+    "message": "Enter their name",
+    "description": "Label for the name input on the “Add an author” form."
   },
   "enterTheirEmail": {
-    "message": "Enter their email address"
+    "message": "Enter their email address",
+    "description": "Label for the email input on the “Add an author” form."
   },
   "invalidEmail": {
-    "message": "Enter an email address in the correct format, like name@example.com"
+    "message": "Enter an email address in the correct format, like name@example.com",
+    "description": "Error message that appears when the user submits the “Add an author” form with an invalid email address."
   },
   "addAuthor": {
-    "message": "Add an author"
+    "message": "Add an author",
+    "description": "Title of the form that allows the user to add an author to the PREreview."
   },
   "enterNamesAndEmailAddress": {
-    "message": "Enter names and email address of the other authors"
+    "message": "Enter names and email address of the other authors",
+    "description": "Title for the form that allows the user to enter the names and email addresses of the other authors of the PREreview"
   },
   "enterNamesAndEmailAddressTip": {
-    "message": "Put each author on their own line."
+    "message": "Put each author on their own line.",
+    "description": "Text shown alongside the “Enter names and email address of the other authors” heading."
   },
   "namesAndEmailAddressInvalidFormat": {
-    "message": "Enter the author names and email addresses in the correct format"
+    "message": "Enter the author names and email addresses in the correct format",
+    "description": "Error message that appears when the user submits the “Enter names and email address of the other authors” form with an invalid format."
   },
   "namesAndEmailAddressMissing": {
-    "message": "Enter the author names and email addresses"
+    "message": "Enter the author names and email addresses",
+    "description": "Error message that appears when the user submits the “Enter names and email address of the other authors” form without entering any names or email addresses."
   },
   "nameInputLabel": {
-    "message": "Name"
+    "message": "Name",
+    "description": "Label for the name input on the “Add an author” form."
   },
   "theyWillChooseTheirName": {
-    "message": "They will be able to choose their published name."
+    "message": "They will be able to choose their published name.",
+    "description": "Text shown alongside the “Name” label on the “Add an author” form."
   },
   "emailAddress": {
-    "message": "Email address"
+    "message": "Email address",
+    "description": "Label for the email input on the “Add an author” form."
   },
   "useOfEmail": {
-    "message": "We’ll only use this to contact them about this PREreview."
+    "message": "We’ll only use this to contact them about this PREreview.",
+    "description": "Text shown alongside the “Email address” label on the “Add an author” form."
   },
   "howWouldYouLikeToStart": {
-    "message": "How would you like to start your PREreview?"
+    "message": "How would you like to start your PREreview?",
+    "description": "Heading for the page that asks the user how they would like to start their PREreview."
   },
   "selectHowToStart": {
-    "message": "Select how you would like to start your PREreview"
+    "message": "Select how you would like to start your PREreview",
+    "description": "Error message that appears when the user submits the “How would you like to start your PREreview?” page without selecting an option."
   },
   "withPrompts": {
-    "message": "With prompts"
+    "message": "With prompts",
+    "description": "Option for the “How would you like to start your PREreview?” question to create a Structured PREreview."
   },
   "withTemplate": {
-    "message": "With a template"
+    "message": "With a template",
+    "description": "Option for the “How would you like to start your PREreview?” question to use a template."
   },
   "alreadyWritten": {
-    "message": "I’ve already written the review"
+    "message": "I’ve already written the review",
+    "description": "Option for the “How would you like to start your PREreview?” question to paste an existing review."
   },
   "weWillAskQuestions": {
-    "message": "We’ll ask questions about the preprint to create a structured review."
+    "message": "We’ll ask questions about the preprint to create a structured review.",
+    "description": "Text that appears alongside the “With prompts” option for the “How would you like to start your PREreview?” question."
   },
   "weWillTemplate": {
-    "message": "We’ll offer a basic template, but you can review it your way."
+    "message": "We’ll offer a basic template, but you can review it your way.",
+    "description": "Text that appears alongside the “With a template” option for the “How would you like to start your PREreview?” question."
   },
   "pasteYourReview": {
-    "message": "Paste your PREreview"
+    "message": "Paste your PREreview",
+    "description": "Heading for the page that allows the user to paste an existing review."
   },
   "writeYourReview": {
-    "message": "Write your PREreview"
+    "message": "Write your PREreview",
+    "description": "Heading for the page that allows the user to write a new review."
   },
   "selectTheNameError": {
-    "message": "Select the name that you would like to use"
+    "message": "Select the name that you would like to use",
+    "description": "Error message that appears when the user submits the “What name would you like to use?” form without selecting an option."
   },
   "youCanChooseBetweenNames": {
-    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym."
+    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
+    "description": "Text that appears alongside the heading “What name would you like to use?”."
   },
   "whatIsAPseudonym": {
-    "message": "What is a PREreview pseudonym?"
+    "message": "What is a PREreview pseudonym?",
+    "description": "Heading for the section that explains what a PREreview pseudonym is."
   },
   "pseudonymIsA": {
-    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’"
+    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
+    "description": "Text following the “What is a PREreview pseudonym?” heading explaining what a PREreview pseudonym is."
   },
   "pseudonymAccountability": {
-    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
+    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability.",
+    "description": "Text following the “What is a PREreview pseudonym?” heading explaining why you might choose to use a PREreview pseudonym."
   },
   "linkToOrcidId": {
-    "message": "We’ll link your PREreview to your ORCID iD."
+    "message": "We’ll link your PREreview to your ORCID iD.",
+    "description": "Text that accompanies the public persona choice for the question “What name would you like to use?”."
   },
   "linkToPseudonym": {
-    "message": "We’ll only link your PREreview to others that also use your pseudonym."
+    "message": "We’ll only link your PREreview to others that also use your pseudonym.",
+    "description": "Text that accompanies the pseudonym choice for the question “What name would you like to use?”."
   },
   "pasteYourReviewError": {
-    "message": "Paste your PREreview"
+    "message": "Paste your PREreview",
+    "description": "Error message that appears when the user submits the “Paste your PREreview” form without entering any text."
   },
   "enterYourReviewError": {
-    "message": "Enter your PREreview"
+    "message": "Enter your PREreview",
+    "description": "Error message that appears when the user submits the “Enter your PREreview” form without entering any text."
   },
   "copyAndPasteReview": {
-    "message": "Copy your PREreview and paste it here. We’ll do our best to preserve how it looks."
+    "message": "Copy your PREreview and paste it here. We’ll do our best to preserve how it looks.",
+    "description": "Text shown alongside the heading “Paste your PREreview” explaining that the user can copy and paste their review into the text area."
   },
   "writeReviewSupport": {
-    "message": "We want to support you in contributing high-quality feedback on PREreview. Check out our <link>tips and resources for reviewers</link>."
+    "message": "We want to support you in contributing high-quality feedback on PREreview. Check out our <link>tips and resources for reviewers</link>.",
+    "description": "Text shown alongside the heading “Write your PREreview” explaining that the user can check out tips and resources for reviewers."
   },
   "goodBehaviorExamples": {
-    "message": "Examples of good reviewer behavior"
+    "message": "Examples of good reviewer behavior",
+    "description": "Heading for the section alongside the “Write your PREreview” heading that explains what good reviewer behavior looks like."
   },
   "goodBehaviorRespectful": {
-    "message": "Being respectful of the authors and their work."
+    "message": "Being respectful of the authors and their work.",
+    "description": "A behavior shown in the “Examples of good reviewer behavior” list for the “Write your PREreview” form."
   },
   "goodBehaviorHumble": {
-    "message": "Being humble and aware of how you would like to receive feedback from others."
+    "message": "Being humble and aware of how you would like to receive feedback from others.",
+    "description": "A behavior shown in the “Examples of good reviewer behavior” list for the “Write your PREreview” form."
   },
   "goodBehaviorActionable": {
-    "message": "Giving clear, constructive, and actionable feedback that can improve the preprint."
+    "message": "Giving clear, constructive, and actionable feedback that can improve the preprint.",
+    "description": "A behavior shown in the “Examples of good reviewer behavior” list for the “Write your PREreview” form."
   },
   "reviewSectionsExamples": {
-    "message": "Examples of helpful review sections"
+    "message": "Examples of helpful review sections",
+    "description": "Heading for the section alongside the “Write your PREreview” heading that provides examples of helpful review sections."
   },
   "beginSummary": {
-    "message": "Begin with a summary of the research and how it contributes to the field of study."
+    "message": "Begin with a summary of the research and how it contributes to the field of study.",
+    "description": "A step shown in the “Examples of helpful review sections” list for the “Write your PREreview” form."
   },
   "sharePositiveFeedback": {
-    "message": "Next, share your positive feedback, including the approach’s strengths and results."
+    "message": "Next, share your positive feedback, including the approach’s strengths and results.",
+    "description": "A step shown in the “Examples of helpful review sections” list for the “Write your PREreview” form."
   },
   "shareConcerns": {
-    "message": "Finally, share major and minor concerns and related clear, constructive, and actionable suggestions for addressing them."
+    "message": "Finally, share major and minor concerns and related clear, constructive, and actionable suggestions for addressing them.",
+    "description": "A step shown in the “Examples of helpful review sections” list for the “Write your PREreview” form."
   },
   "writeAShortSummary": {
-    "message": "Write a short summary of the research’s main findings and how this work has moved the field forward."
+    "message": "Write a short summary of the research’s main findings and how this work has moved the field forward.",
+    "description": "The opening part of the “Write your PREreview” template."
   },
   "majorIssues": {
-    "message": "Major issues"
+    "message": "Major issues",
+    "description": "Heading for the section of the “Write your PREreview” template that asks the user to list major issues with the preprint."
   },
   "listSignificantConcerns": {
-    "message": "List significant concerns about the research, if there are any."
+    "message": "List significant concerns about the research, if there are any.",
+    "description": "Text shown alongside the “Major issues” heading in the “Write your PREreview” template."
   },
   "minorIssues": {
-    "message": "Minor issues"
+    "message": "Minor issues",
+    "description": "Heading for the section of the “Write your PREreview” template that asks the user to list minor issues with the preprint."
   },
   "listFlowConcerns": {
-    "message": "List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research."
+    "message": "List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research.",
+    "description": "Text shown alongside the “Minor issues” heading in the “Write your PREreview” template."
   },
   "addedAuthorCount": {
     "message": "{authorCount, plural, one {You have added # other author} other {You have added # other authors}}",
     "description": "Text showing how many other authors have been added to the PREreview."
   },
   "authorNumber": {
-    "message": "Author {number, number}"
+    "message": "Author {number, number}",
+    "description": "Label for the author number in the list of authors on the PREreview."
   },
   "changeAuthorDetailsLink": {
-    "message": "Change <visuallyHidden>{name}’s details</visuallyHidden>"
+    "message": "Change <visuallyHidden>{name}’s details</visuallyHidden>",
+    "description": "Link that allows the user to change the details of an author on the PREreview."
   },
   "removeAuthor": {
-    "message": "Remove <visuallyHidden>{name}</visuallyHidden>"
+    "message": "Remove <visuallyHidden>{name}</visuallyHidden>",
+    "description": "Link that allows the user to remove an author from the PREreview."
   },
   "name": {
-    "message": "Name"
+    "message": "Name",
+    "description": "Label for the name of an author on the PREreview."
   },
   "addAnotherAuthor": {
-    "message": "Add another author"
+    "message": "Add another author",
+    "description": "Link that allows the user to add another author to the PREreview."
   },
   "no": {
-    "message": "No"
+    "message": "No",
+    "description": "Label for a negative answer to a question."
   },
   "yes": {
-    "message": "Yes"
+    "message": "Yes",
+    "description": "Label for a positive answer to a question."
   },
   "enterName": {
-    "message": "Enter their name"
+    "message": "Enter their name",
+    "description": "Error message that appears when the user submits the “Add an author” form without entering a name."
   },
   "enterEmail": {
-    "message": "Enter their email address"
+    "message": "Enter their email address",
+    "description": "Error message that appears when the user submits the “Add an author” form without entering an email address."
   },
   "changeAuthorDetailsHeading": {
-    "message": "Change {name}’s details"
+    "message": "Change {name}’s details",
+    "description": "Link to change an author’s details."
   },
   "ableToChoseName": {
-    "message": "They will be able to choose their published name."
+    "message": "They will be able to choose their published name.",
+    "description": "Text shown alongside the “Add an author” heading."
   },
   "prereviewPublishedTitle": {
-    "message": "PREreview published"
+    "message": "PREreview published",
+    "description": "Heading for the page that appears after the user has published their PREreview."
   },
   "yourDoi": {
-    "message": "Your DOI"
+    "message": "Your DOI",
+    "description": "Label for the DOI of the PREreview on the “PREreview published” page."
   },
   "whatHappensNext": {
     "message": "What happens next",
-    "description": "Heading for details of what happens next and when; the user has completed their task and has no further actions to take."
+    "description": "Heading for details of what happens next and when on the “PREreview published” page; the user has completed their task and has no further actions to take."
   },
   "whereYouCanSeeYourPrereview": {
-    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our <communitySlack>Community Slack</communitySlack>."
+    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our <communitySlack>Community Slack</communitySlack>.",
+    "description": "Text that appears alongside the heading “What happens next” explaining where the user can see their PREreview."
   },
   "whereYouCanSeeYourPrereviewSciety": {
-    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our <communitySlack>Community Slack</communitySlack> and <sciety>Sciety</sciety>."
+    "message": "You’ll be able to see your PREreview shortly. It’ll also appear on our <communitySlack>Community Slack</communitySlack> and <sciety>Sciety</sciety>.",
+    "description": "Text that appears alongside the heading “What happens next” explaining where the user can see their PREreview."
   },
   "opensInNewTab": {
-    "message": "opens in a new tab"
+    "message": "opens in a new tab",
+    "description": "Text that appears alongside a link where it will open in a new tab."
   },
   "letUsKnowAuthorDetails": {
-    "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}."
+    "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}.",
+    "description": "Text that appears alongside the heading “What happens next” explaining that the user can let PREreview know the other authors’ details."
   },
   "sentEmailsToAuthors": {
-    "message": "We’ve sent emails to the other authors, inviting them to appear."
+    "message": "We’ve sent emails to the other authors, inviting them to appear.",
+    "description": "Text that appears alongside the heading “What happens next” explaining that PREreview has sent emails to the other authors."
   },
   "shareYourReview": {
-    "message": "Share your review"
+    "message": "Share your review",
+    "description": "Heading for the section on the “PREreview published” page that explains how the user can share their PREreview."
   },
   "letAuthorsKnow": {
-    "message": "Please let the authors know that you published your review. They may have contact details on the preprint."
+    "message": "Please let the authors know that you published your review. They may have contact details on the preprint.",
+    "description": "Text that appears alongside the heading “Share your review” on the “PREreview published” page."
   },
   "letCommunityKnow": {
-    "message": "Also, why not let the wider community know:"
+    "message": "Also, why not let the wider community know:",
+    "description": "Text that appears alongside the heading “Share your review” on the “PREreview published” page."
   },
   "shareOnBluesky": {
-    "message": "Share it on Bluesky"
+    "message": "Share it on Bluesky",
+    "description": "Button that allows the user to share their PREreview on Bluesky on the “PREreview published” page."
   },
   "shareOnBlueskyMessage": {
     "message": "I’ve just published a #PreprintReview of {preprintTitle} on {prereviewHandle}",
     "description": "Suggested message to share on Bluesky after publishing a PREreview."
   },
   "shareOnLinkedin": {
-    "message": "Share it on LinkedIn"
+    "message": "Share it on LinkedIn",
+    "description": "Button that allows the user to share their PREreview on LinkedIn on the “PREreview published” page."
   },
   "listOnSciety": {
-    "message": "List it on Sciety"
+    "message": "List it on Sciety",
+    "description": "Button that allows the user to list their PREreview on Sciety on the “PREreview published” page."
   },
   "howItWent": {
-    "message": "Let us know how it went"
+    "message": "Let us know how it went",
+    "description": "Heading for the section on the “PREreview published” page that explains how the user can provide feedback about their experience on PREreview."
   },
   "scheduleAnInterview": {
-    "message": "<link>Schedule an interview</link> with our product team to discuss your experience on PREreview. We gladly compensate interviewees in appreciation for their help!"
+    "message": "<link>Schedule an interview</link> with our product team to discuss your experience on PREreview. We gladly compensate interviewees in appreciation for their help!",
+    "description": "Text that appears alongside the heading “Let us know how it went” on the “PREreview published” page."
   },
   "feedbackSurvey": {
     "message": "You can also share your feedback about PREreview.org with us by completing a <link>brief anonymous survey</link>.",
-    "description": "Prompt containing a link that takes you to a form where you can share feedback about PREreview.org (what worked well on the site, what didn’t, etc.)."
+    "description": "Prompt that appears alongside the heading “Let us know how it went” on the “PREreview published” page, containing a link that takes you to a form where you can share feedback about PREreview.org (what worked well on the site, what didn’t, etc.)."
   },
   "backToPreprint": {
-    "message": "Back to preprint"
+    "message": "Back to preprint",
+    "description": "Link that takes the user back to the preprint page."
   },
   "publishTitle": {
-    "message": "Publish your PREreview of “{preprintTitle}”"
+    "message": "Publish your PREreview of “{preprintTitle}”",
+    "description": "Heading for the page that allows the user to publish their PREreview."
   },
   "checkPrereview": {
-    "message": "Check your PREreview"
+    "message": "Check your PREreview",
+    "description": "Heading for the page that allows the user to check their PREreview before publishing."
   },
   "preprintDetails": {
-    "message": "Preprint details"
+    "message": "Preprint details",
+    "description": "Heading for the section on the “Check your PREreview” page that shows the details of the preprint."
   },
   "preprintTitle": {
-    "message": "Title"
+    "message": "Title",
+    "description": "Label for the title of the preprint in the “Preprint details” section on the “Check your PREreview” page."
   },
   "preprintServer": {
-    "message": "Preprint server"
+    "message": "Preprint server",
+    "description": "Label for the preprint server in the “Preprint details” section on the “Check your PREreview” page."
   },
   "authorDetails": {
-    "message": "Author details"
+    "message": "Author details",
+    "description": "Heading for the section on the “Check your PREreview” page that shows the details of the authors of the preprint."
   },
   "yourDetails": {
-    "message": "Your details"
+    "message": "Your details",
+    "description": "Heading for the section on the “Check your PREreview” page that shows the details of the user."
   },
   "yourPublishedName": {
-    "message": "Your published name"
+    "message": "Your published name",
+    "description": "Label for the published name of the user in the “Your details” section on the “Check your PREreview” page."
   },
   "publishedName": {
-    "message": "Published name"
+    "message": "Published name",
+    "description": "Label for the published name of the user in the “Author details” section on the “Check your PREreview” page."
   },
   "changeName": {
-    "message": "Change <visuallyHidden>name</visuallyHidden>"
+    "message": "Change <visuallyHidden>name</visuallyHidden>",
+    "description": "Link that allows the user to change their published name on the “Check your PREreview” page."
   },
   "invitedAuthors": {
-    "message": "{number, plural, one {Invited author} other {Invited authors}}"
+    "message": "{number, plural, one {Invited author} other {Invited authors}}",
+    "description": "Label for the invited authors of the preprint in the “Author details” section on the “Check your PREreview” page."
   },
   "changeInvitedAuthors": {
-    "message": "Change <visuallyHidden>invited authors</visuallyHidden>"
+    "message": "Change <visuallyHidden>invited authors</visuallyHidden>",
+    "description": "Link that allows the user to change the invited authors on the “Check your PREreview” page."
   },
   "changeCompetingInterests": {
-    "message": "Change <visuallyHidden>competing interests</visuallyHidden>"
+    "message": "Change <visuallyHidden>competing interests</visuallyHidden>",
+    "description": "Link that allows the user to change their competing interests on the “Check your PREreview” page."
   },
   "changePrereview": {
-    "message": "Change <visuallyHidden>PREreview</visuallyHidden>"
+    "message": "Change <visuallyHidden>PREreview</visuallyHidden>",
+    "description": "Link that allows the user to change their PREreview text on the “Check your PREreview” page."
   },
   "yourReview": {
-    "message": "Your review"
+    "message": "Your review",
+    "description": "Heading for the section on the “Check your PREreview” page that shows the text of the PREreview."
   },
   "doesIntroductionExplain": {
-    "message": "Does the introduction explain the objective of the research presented in the preprint?"
+    "message": "Does the introduction explain the objective of the research presented in the preprint?",
+    "description": "Question that asks the user if the introduction explains the objective of the research presented in the preprint."
   },
   "changeIfIntroExplains": {
-    "message": "Change <visuallyHidden>if the introduction explains the objective of the research presented in the preprint</visuallyHidden>"
+    "message": "Change <visuallyHidden>if the introduction explains the objective of the research presented in the preprint</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Does the introduction explain the objective of the research presented in the preprint?” on the “Check your PREreview” page."
   },
   "methodsWellSuited": {
-    "message": "Are the methods well-suited for this research?"
+    "message": "Are the methods well-suited for this research?",
+    "description": "Question that asks the user if the methods are well-suited for the research presented in the preprint."
   },
   "changeMethodsWellSuited": {
-    "message": "Change <visuallyHidden>if the methods are well-suited for this research</visuallyHidden>"
+    "message": "Change <visuallyHidden>if the methods are well-suited for this research</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Are the methods well-suited for this research?” on the “Check your PREreview” page."
   },
   "conclusionsSupported": {
-    "message": "Are the conclusions supported by the data?"
+    "message": "Are the conclusions supported by the data?",
+    "description": "Question that asks the user if the conclusions are supported by the data presented in the preprint."
   },
   "changeConclusionsSupported": {
-    "message": "Change <visuallyHidden>if the conclusions are supported by the data</visuallyHidden>"
+    "message": "Change <visuallyHidden>if the conclusions are supported by the data</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Are the conclusions supported by the data?” on the “Check your PREreview” page."
   },
   "dataPresentationWellSuited": {
-    "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
+    "message": "Are the data presentations, including visualizations, well-suited to represent the data?",
+    "description": "Question that asks the user if the data presentations, including visualizations, are well-suited to represent the data presented in the preprint."
   },
   "changeDataPresentationWellSuited": {
-    "message": "Change <visuallyHidden>if the data presentations are well-suited to represent the data?</visuallyHidden>"
+    "message": "Change <visuallyHidden>if the data presentations are well-suited to represent the data?</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Are the data presentations, including visualizations, well-suited to represent the data?” on the “Check your PREreview” page."
   },
   "clearDiscussion": {
-    "message": "How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?"
+    "message": "How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?",
+    "description": "Question that asks the user how clearly the authors discuss, explain, and interpret their findings and potential next steps for the research presented in the preprint."
   },
   "changeClearDiscussion": {
-    "message": "Change <visuallyHidden>how clearly the authors discuss their findings and next steps</visuallyHidden>"
+    "message": "Change <visuallyHidden>how clearly the authors discuss their findings and next steps</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” on the “Check your PREreview” page."
   },
   "advanceKnowledge": {
-    "message": "Is the preprint likely to advance academic knowledge?"
+    "message": "Is the preprint likely to advance academic knowledge?",
+    "description": "Question that asks the user if the preprint is likely to advance academic knowledge."
   },
   "changeAdvanceKnowledge": {
-    "message": "Change <visuallyHidden>if the preprint is likely to advance academic knowledge</visuallyHidden>"
+    "message": "Change <visuallyHidden>if the preprint is likely to advance academic knowledge</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Is the preprint likely to advance academic knowledge?” on the “Check your PREreview” page."
   },
   "benefitFromEditing": {
-    "message": "Would it benefit from language editing?"
+    "message": "Would it benefit from language editing?",
+    "description": "Question that asks the user if the preprint would benefit from language editing."
   },
   "changeBenefitFromEditing": {
-    "message": "Change <visuallyHidden>if it would benefit from language editing</visuallyHidden>"
+    "message": "Change <visuallyHidden>if it would benefit from language editing</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Would it benefit from language editing?” on the “Check your PREreview” page."
   },
   "wouldRecommend": {
-    "message": "Would you recommend this preprint to others?"
+    "message": "Would you recommend this preprint to others?",
+    "description": "Question that asks the user if they would recommend this preprint to others."
   },
   "changeWouldRecommend": {
-    "message": "Change <visuallyHidden>if you would recommend this preprint to others</visuallyHidden>"
+    "message": "Change <visuallyHidden>if you would recommend this preprint to others</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Would you recommend this preprint to others?” on the “Check your PREreview” page."
   },
   "readyForAttention": {
-    "message": "Is it ready for attention from an editor, publisher or broader audience?"
+    "message": "Is it ready for attention from an editor, publisher or broader audience?",
+    "description": "Question that asks the user if the preprint is ready for attention from an editor, publisher or broader audience."
   },
   "changeReadyForAttention": {
-    "message": "Change <visuallyHidden>it it is ready for attention from an editor, publisher or broader audience</visuallyHidden>"
+    "message": "Change <visuallyHidden>it it is ready for attention from an editor, publisher or broader audience</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Is it ready for attention from an editor, publisher or broader audience?” on the “Check your PREreview” page."
   },
   "nowPublish": {
-    "message": "Now publish your PREreview"
+    "message": "Now publish your PREreview",
+    "description": "Heading for the section to publish the PREreview after checking their answers."
   },
   "weWillAssignLicense": {
-    "message": "We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a {licenseLink} license."
+    "message": "We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a {licenseLink} license.",
+    "description": "Text shown alongside the heading “Now publish your PREreview” explaining what will happen when the user publishes their PREreview."
   },
   "publishButton": {
-    "message": "Publish PREreview"
+    "message": "Publish PREreview",
+    "description": "Button that allows the user to publish their PREreview on the “Check your PREreview” page."
   },
   "selectYesToRemove": {
-    "message": "Select yes if you want to remove {authorName}"
+    "message": "Select yes if you want to remove {authorName}",
+    "description": "Error message that appears when the user submits the “Are you sure you want to remove {authorName}?” form without selecting an option."
   },
   "sureYouWantToRemove": {
-    "message": "Are you sure you want to remove {authorName}?"
+    "message": "Are you sure you want to remove {authorName}?",
+    "description": "Heading for the page that asks the user if they are sure they want to remove an author from the PREreview."
   },
   "yesRemove": {
-    "message": "Yes, remove {authorName}"
+    "message": "Yes, remove {authorName}",
+    "description": "Label for an option to the “Are you sure you want to remove {authorName}?” question."
   },
   "writeAPrereview": {
-    "message": "Write a PREreview"
+    "message": "Write a PREreview",
+    "description": "Title for the page where a user can start the review-a-preprint flow."
   },
   "authoredBy": {
-    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}"
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}",
+    "description": "Text for a preprint showing its authors."
   },
   "posted": {
-    "message": "Posted"
+    "message": "Posted",
+    "description": "Label for the date a preprint was posted."
   },
   "server": {
-    "message": "Server"
+    "message": "Server",
+    "description": "Label for the preprint server where the preprint is published."
   },
   "itemId": {
-    "message": "Item ID"
+    "message": "Item ID",
+    "description": "Label for the unique identifier of a preprint on PhilSci-Archive."
   },
   "youCanWriteAPrereview": {
-    "message": "You can write a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report."
+    "message": "You can write a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report.",
+    "description": "Text that appears alongside the heading “Write a PREreview” explaining what a PREreview is."
   },
   "beforeStartHeading": {
-    "message": "Before you start"
+    "message": "Before you start",
+    "description": "Heading for the section that contains information about what the user needs to know before starting a PREreview."
   },
   "orcidLogIn": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsOrcidHeading": {
-    "message": "What is an ORCID iD?"
+    "message": "What is an ORCID iD?",
+    "description": "Heading for the explanation of what an ORCID iD is."
   },
   "whatIsOrcid": {
-    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "description": "Text following the heading “What is an ORCID iD?” explaining what an ORCID iD is."
   },
   "asYouHaveAlreadyStarted": {
-    "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry on."
+    "message": "As you’ve already started a PREreview of <cite>{preprintTitle}</cite>, we’ll take you to the next step so you can carry on.",
+    "description": "Message shown alongside the title “Write a PREreview when the user has already started a PREreview of the preprint."
   },
   "selectYesIfYouReviewedWithSomeoneElse": {
-    "message": "Select yes if you reviewed the preprint with someone else"
+    "message": "Select yes if you reviewed the preprint with someone else",
+    "description": "Error message that appears when the user submits the “Did you review this preprint with anyone else?” question without selecting an option."
   },
   "confirmOtherAuthorsHaveReadAndApproved": {
-    "message": "Confirm that the other authors have read and approved the PREreview"
+    "message": "Confirm that the other authors have read and approved the PREreview",
+    "description": "Error message that appears when the user submits the “Did you review this preprint with anyone else?” question and selects “Yes” but does not confirm that the other authors have read and approved the PREreview."
   },
   "didYouReviewWithAnyoneElse": {
-    "message": "Did you review this preprint with anyone else?"
+    "message": "Did you review this preprint with anyone else?",
+    "description": "Question that asks the user if they reviewed the preprint with anyone else."
   },
   "thisCanIncludePeopleWho": {
-    "message": "This can include people who contributed to the discussion or wrote the review."
+    "message": "This can include people who contributed to the discussion or wrote the review.",
+    "description": "Text that appears alongside the question “Did you review this preprint with anyone else?” explaining who can be included as other authors."
   },
   "noIReviewedAlone": {
-    "message": "No, I reviewed it alone"
+    "message": "No, I reviewed it alone",
+    "description": "Label for the option to the question “Did you review this preprint with anyone else?” that indicates the user reviewed the preprint alone."
   },
   "yesButDoNotWantToBeListed": {
-    "message": "Yes, but they don’t want to be listed as authors"
+    "message": "Yes, but they don’t want to be listed as authors",
+    "description": "Label for the option to the question “Did you review this preprint with anyone else?” that indicates the other authors do not want to be listed."
   },
   "yesAndWantToBeListed": {
-    "message": "Yes, and some or all want to be listed as authors"
+    "message": "Yes, and some or all want to be listed as authors",
+    "description": "Label for the option to the question “Did you review this preprint with anyone else?” that indicates the other authors want to be listed."
   },
   "theyHaveReadAndApproved": {
-    "message": "They have read and approved the PREreview"
+    "message": "They have read and approved the PREreview",
+    "description": "Label for confirming that the other authors have read and approved the PREreview when selecting the “Yes, and some or all want to be listed as authors” option to the question “Did you review this preprint with anyone else?”."
   },
   "isClubReview": {
     "message": "Is this a club review?",
@@ -459,527 +596,699 @@
     "description": "Text shown alongside the label “Club” when the user has chosen not to add the review to a club."
   },
   "useOfAi": {
-    "message": "Use of Artificial Intelligence (AI)"
+    "message": "Use of Artificial Intelligence (AI)",
+    "description": "Heading for the section that contains the user’s use of AI on the PREreview."
   },
   "useOfAiShort": {
-    "message": "Use of AI"
+    "message": "Use of AI",
+    "description": "Heading for the section that contains the user’s use of AI on the “Check your review” page."
   },
   "discloseAiIdeas": {
-    "message": "We ask all reviewers to disclose the use of AI that helped them generate new ideas for their PREreview. Examples of generative AI tools are ChatGPT and Gemini."
+    "message": "We ask all reviewers to disclose the use of AI that helped them generate new ideas for their PREreview. Examples of generative AI tools are ChatGPT and Gemini.",
+    "description": "Text that appears alongside the heading “Use of Artificial Intelligence (AI)” explaining that the user should disclose any use of AI that helped them generate new ideas for their PREreview."
   },
   "aiEditing": {
-    "message": "You don’t need to declare AI tools used purely for language editing or accessibility needs, as long as the ideas in your PREreview are your own."
+    "message": "You don’t need to declare AI tools used purely for language editing or accessibility needs, as long as the ideas in your PREreview are your own.",
+    "description": "Text that appears alongside the heading “Use of Artificial Intelligence (AI)” explaining that the user does not need to declare AI tools used purely for language editing or accessibility needs."
   },
   "understandHowCreated": {
-    "message": "We ask this to help readers understand how the review was created: whether it is human feedback, machine feedback, or a mix of both. We may remove any review with ideas entirely generated by AI."
+    "message": "We ask this to help readers understand how the review was created: whether it is human feedback, machine feedback, or a mix of both. We may remove any review with ideas entirely generated by AI.",
+    "description": "Text that appears alongside the heading “Use of Artificial Intelligence (AI)” explaining why we ask the question and what might happen."
   },
   "didYouUseAi": {
-    "message": "Did you use AI to generate ideas for this review?"
+    "message": "Did you use AI to generate ideas for this review?",
+    "description": "Question that asks the user if they used AI to generate ideas for their PREreview."
   },
   "didAuthorsUseAi": {
-    "message": "Did you, or any of the other authors, use AI to generate ideas for this review?"
+    "message": "Did you, or any of the other authors, use AI to generate ideas for this review?",
+    "description": "Question that asks the user if they or any of the other authors used AI to generate ideas for their PREreview."
   },
   "selectYesIfUsedAi": {
-    "message": "Select yes if you used AI to generate ideas for this review"
+    "message": "Select yes if you used AI to generate ideas for this review",
+    "description": "Error message shown when the user tries to submit the “Did you use AI to generate ideas for this review?” form without selecting an option."
   },
   "selectYesIfAuthorsUsedAi": {
-    "message": "Select yes if you, or any of the other authors, used AI to generate ideas for this review"
+    "message": "Select yes if you, or any of the other authors, used AI to generate ideas for this review",
+    "description": "Error message shown when the user tries to submit the “Did you, or any of the other authors, use AI to generate ideas for this review?” form without selecting an option."
   },
   "aiIdeasStatement": {
-    "message": "The author declares that they used generative AI to come up with new ideas for their review."
+    "message": "The author declares that they used generative AI to come up with new ideas for their review.",
+    "description": "Statement added to the PREreview when the author answers Yes to the question “Did you use AI to generate ideas for this review?”."
   },
   "aiIdeasAuthorsStatement": {
-    "message": "The authors declare that they used generative AI to come up with new ideas for their review."
+    "message": "The authors declare that they used generative AI to come up with new ideas for their review.",
+    "description": "Statement added to the PREreview when the authors answer Yes to the question “Did you, or any of the other authors, use AI to generate ideas for this review?”."
   },
   "noAiIdeasStatement": {
     "message": "The author declares that they did not use generative AI to come up with new ideas for their review.",
-    "description": "Statement added to a review when the author declared that they didn't use a tool like ChatGPT to come up with ideas for their review."
+    "description": "Statement added to the PREreview when the author answers “No” to the question “Did you use AI to generate ideas for this review?”."
   },
   "noAiIdeasAuthorsStatement": {
     "message": "The authors declare that they did not use generative AI to come up with new ideas for their review.",
-    "description": "Statement added to a review when the authors declared that they didn't use a tool like ChatGPT to come up with ideas for their review."
+    "description": "Statement added to the PREreview when the authors answer “No” to the question “Did you, or any of the other authors, use AI to generate ideas for this review?”."
   },
   "changeUseOfAi": {
-    "message": "Change <visuallyHidden>use of AI</visuallyHidden>"
+    "message": "Change <visuallyHidden>use of AI</visuallyHidden>",
+    "description": "Link that allows the user to change their answer to the question “Did you use AI to generate ideas for this review?” on the “Check your PREreview” page."
   },
   "whatNameToUse": {
-    "message": "What name would you like to use?"
+    "message": "What name would you like to use?",
+    "description": "Heading for the page that asks the user what name they would like to use for their PREreview."
   },
   "competingInterests": {
-    "message": "Competing interests"
+    "message": "Competing interests",
+    "description": "Heading for the section that contains the user’s competing interests on the “Check your comment” page."
   },
   "competingInterestsNo": {
-    "message": "The author declares that they have no competing interests."
+    "message": "The author declares that they have no competing interests.",
+    "description": "Statement added to a review when there is one author and they declared that they don't have any competing interests."
   },
   "competingInterestsAuthorsNo": {
-    "message": "The authors declare that they have no competing interests."
+    "message": "The authors declare that they have no competing interests.",
+    "description": "Statement added to a review when there are multiple authors and they declared that they don't have any competing interests."
   },
   "selectYesIfCompetingInterest": {
-    "message": "Select yes if you have any competing interests"
+    "message": "Select yes if you have any competing interests",
+    "description": "Error message shown when the user tries to submit the “Do you have any competing interests?” form without selecting an option."
   },
   "selectYesIfAuthorsCompetingInterest": {
-    "message": "Select yes if you, or any of the other authors, have any competing interests"
+    "message": "Select yes if you, or any of the other authors, have any competing interests",
+    "description": "Error message shown when the user tries to submit the “Do you, or any of the other authors, have any competing interests?” form without selecting an option."
   },
   "competingInterestDetails": {
-    "message": "Enter details of your competing interests"
+    "message": "Enter details of your competing interests",
+    "description": "Error message shown when the user tries to submit the “Do you have any competing interests?” form with a “Yes” answer but without entering details."
   },
   "authorsCompetingInterestDetails": {
-    "message": "Enter details of the competing interests"
+    "message": "Enter details of the competing interests",
+    "description": "Error message shown when the user tries to submit the “Do you, or any of the other authors, have any competing interests?” form with a “Yes” answer but without entering details."
   },
   "doYouHaveCompetingInterests": {
-    "message": "Do you have any competing interests?"
+    "message": "Do you have any competing interests?",
+    "description": "Title for the page where a user can declare any competing interests they may have."
   },
   "doAuthorsHaveCompetingInterests": {
-    "message": "Do you, or any of the other authors, have any competing interests?"
+    "message": "Do you, or any of the other authors, have any competing interests?",
+    "description": "Title for the page where a user can declare any competing interests they, or any of the other authors, may have."
   },
   "discloseCompetingInterests": {
-    "message": "We ask all reviewers to disclose any competing interests that could influence their review of the preprint."
+    "message": "We ask all reviewers to disclose any competing interests that could influence their review of the preprint.",
+    "description": "Text that appears alongside the heading “Do you have any competing interests?” explaining that the user should disclose any competing interests that could influence their review of the preprint."
   },
   "whatIsCompetingInterest": {
-    "message": "A competing interest is anything that could interfere with the objectivity of a PREreview."
+    "message": "A competing interest is anything that could interfere with the objectivity of a PREreview.",
+    "description": "Information provided about the question “Do you have any competing interests?”."
   },
   "competingInterestsMatter": {
-    "message": "Competing interests matter because they can introduce perceived or actual bias in the evaluation of the preprint. Declaring them is crucial for ensuring transparency and maintaining the integrity of the review process."
+    "message": "Competing interests matter because they can introduce perceived or actual bias in the evaluation of the preprint. Declaring them is crucial for ensuring transparency and maintaining the integrity of the review process.",
+    "description": "Information provided about the question “Do you have any competing interests?”."
   },
   "example": {
-    "message": "Example"
+    "message": "Example",
+    "description": "Heading for the an example."
   },
   "examples": {
-    "message": "Examples"
+    "message": "Examples",
+    "description": "Heading for the list of examples."
   },
   "conflictPersonalRelationship": {
-    "message": "You have a personal relationship with the author."
+    "message": "You have a personal relationship with the author.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "conflictRivalOfAuthor": {
-    "message": "You are a rival or competitor of the author."
+    "message": "You are a rival or competitor of the author.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "conflictRecentlyWorkedTogether": {
-    "message": "You have recently worked with the author."
+    "message": "You have recently worked with the author.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "conflictCollaborateWithAuthor": {
-    "message": "You collaborate with the author."
+    "message": "You collaborate with the author.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "conflictPublishedTogether": {
-    "message": "You have published with the author in the last five years."
+    "message": "You have published with the author in the last five years.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "conflictHoldGrantTogether": {
-    "message": "You hold a grant with the author."
+    "message": "You hold a grant with the author.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "whatAreThey": {
-    "message": "What are they?"
+    "message": "What are they?",
+    "description": "Label for the input for providing details having selected the “Yes” option for the “Do you have any competing interests?” question."
   },
   "confirmCodeOfConduct": {
-    "message": "Confirm that you are following the Code of Conduct"
+    "message": "Confirm that you are following the Code of Conduct",
+    "description": "Error message shown when a user tries to submit the “Code of Conduct” form without ticking the “I’m following the Code of Conduct” checkbox."
   },
   "codeOfConduct": {
-    "message": "Code of Conduct"
+    "message": "Code of Conduct",
+    "description": "Title for the page where a user can confirm that they are following the Code of Conduct."
   },
   "expectYouToAbideByCodeOfConduct": {
-    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>."
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
+    "description": "Information provided for the “Code of Conduct” form."
   },
   "examplesOfExpectedBehavior": {
-    "message": "Examples of expected behaviors"
+    "message": "Examples of expected behaviors",
+    "description": "Heading for the list of examples of expected behaviors for the “Code of Conduct” form."
   },
   "expectedBehaviorLanguage": {
-    "message": "Using welcoming and inclusive language."
+    "message": "Using welcoming and inclusive language.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorFeedback": {
-    "message": "Providing feedback that is constructive, i.e. useful, to the receiver."
+    "message": "Providing feedback that is constructive, i.e. useful, to the receiver.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorRespect": {
-    "message": "Being respectful of differing viewpoints and experiences."
+    "message": "Being respectful of differing viewpoints and experiences.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorGracefulAcceptance": {
-    "message": "Gracefully accepting constructive criticism."
+    "message": "Gracefully accepting constructive criticism.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorBestOfCommunity": {
-    "message": "Focusing on what is best for the community."
+    "message": "Focusing on what is best for the community.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorEmpathy": {
-    "message": "Showing empathy towards other community members."
+    "message": "Showing empathy towards other community members.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "examplesOfUnacceptableBehavior": {
-    "message": "Examples of unacceptable behaviors"
+    "message": "Examples of unacceptable behaviors",
+    "description": "Heading for the list of examples of unacceptable behaviors for the “Code of Conduct” form."
   },
   "unacceptableBehaviorTrollingEtc": {
-    "message": "Trolling, insulting or derogatory comments, and personal or political attacks."
+    "message": "Trolling, insulting or derogatory comments, and personal or political attacks.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorUnconstructive": {
-    "message": "Providing unconstructive or disruptive feedback on PREreview."
+    "message": "Providing unconstructive or disruptive feedback on PREreview.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorHarassment": {
-    "message": "Public or private harassment."
+    "message": "Public or private harassment.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorPublishingConfidentialInformation": {
-    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission."
+    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorSexualizedLanguage": {
-    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
+    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorReviewingOwnPreprint": {
-    "message": "Reviewing your own preprint."
+    "message": "Reviewing your own preprint.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorInappropriate": {
-    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."
+    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "iAmFollowingCodeOfConduct": {
-    "message": "I’m following the Code of Conduct"
+    "message": "I’m following the Code of Conduct",
+    "description": "Label for the checkbox in the “Code of Conduct” form."
   },
   "contactDetails": {
-    "message": "Contact details"
+    "message": "Contact details",
+    "description": "Title for the page where a user can provide their contact details."
   },
   "enterEmailAddressError": {
-    "message": "Enter your email address"
+    "message": "Enter your email address",
+    "description": "Error message shown when the user tries to submit the “Contact details” form without entering an email address."
   },
   "enterEmailAddressFormatError": {
-    "message": "Enter an email address in the correct format, like name@example.com"
+    "message": "Enter an email address in the correct format, like name@example.com",
+    "description": "Error message shown when the user tries to submit the “Contact details” form with an invalid email address."
   },
   "confirmEmailAddress": {
-    "message": "We’re ready to publish your PREreview, but we need to confirm your email address first."
+    "message": "We’re ready to publish your PREreview, but we need to confirm your email address first.",
+    "description": "Text that appears alongside the “Contact details” title explaining that the user needs to confirm their email address before they can publish their PREreview."
   },
   "onlyUseContact": {
-    "message": "We’ll only use this to contact you about your account and PREreviews."
+    "message": "We’ll only use this to contact you about your account and PREreviews.",
+    "description": "Text that appears alongside the “Contact details” title explaining how the user’s email address will be used."
   },
   "whatIsYourEmail": {
-    "message": "What is your email address?"
+    "message": "What is your email address?",
+    "description": "Label for the input field for the user’s email address on the “Contact details” form."
   },
   "verifyEmailAddress": {
-    "message": "Verify your email address"
+    "message": "Verify your email address",
+    "description": "Title for the page after the “Contact details” form."
   },
   "howToVerifyEmailAddress": {
-    "message": "Please open the email we sent to {emailAddress} and follow the link. You’ll then be able to publish your PREreview."
+    "message": "Please open the email we sent to {emailAddress} and follow the link. You’ll then be able to publish your PREreview.",
+    "description": "Text that appears alongside the title “Verify your email address” and explains what the user needs to do next."
   },
   "onceEmailAddressVerified": {
-    "message": "Once your address is verified, you can close this page."
+    "message": "Once your address is verified, you can close this page.",
+    "description": "Text that appears alongside the title “Verify your email address” and informs the user that they can close the page once their email address is verified."
   },
   "resendEmailButton": {
-    "message": "Resend email"
+    "message": "Resend email",
+    "description": "Label for the button that sends the verification email again on the “Verify your email address” page."
   },
   "selectIntroductionExplains": {
-    "message": "Select if the introduction explains the objective of the research presented in the preprint"
+    "message": "Select if the introduction explains the objective of the research presented in the preprint",
+    "description": "Error message shown when the user tries to submit the “Does the introduction explain the objective of the research presented in the preprint?” form without selecting an option."
   },
   "clearlyExplainsTip": {
-    "message": "It clearly explains the objective."
+    "message": "It clearly explains the objective.",
+    "description": "Label for an option to the “Does the introduction explain the objective of the research presented in the preprint?” question."
   },
   "howIntroductionExplains": {
-    "message": "How does the introduction explain the objective? (optional)"
+    "message": "How does the introduction explain the objective? (optional)",
+    "description": "Label for the textbox to explain the “It clearly explains the objective” answer to the “Does the introduction explain the objective of the research presented in the preprint?” question."
   },
   "partly": {
-    "message": "Partly"
+    "message": "Partly",
+    "description": "Label for an option to a question."
   },
   "partlyTip": {
-    "message": "It mentions, but doesn’t fully explain, the objective."
+    "message": "It mentions, but doesn’t fully explain, the objective.",
+    "description": "Text shown alongside the “Partly” option to the “Does the introduction explain the objective of the research presented in the preprint?” question."
   },
   "partlyHow": {
-    "message": "How does the introduction only partly explain the objective? (optional)"
+    "message": "How does the introduction only partly explain the objective? (optional)",
+    "description": "Label for the textbox to explain the ““Partly” answer to the “Does the introduction explain the objective of the research presented in the preprint?” question."
   },
   "doesNotExplain": {
-    "message": "It doesn’t mention or explain the objective."
+    "message": "It doesn’t mention or explain the objective.",
+    "description": "Label for an option to the “Does the introduction explain the objective of the research presented in the preprint?” question."
   },
   "doesNotExplainHow": {
-    "message": "How does the introduction not explain the objective? (optional)"
+    "message": "How does the introduction not explain the objective? (optional)",
+    "description": "Label for the textbox to explain the “It doesn’t mention or explain the objective” answer to the “Does the introduction explain the objective of the research presented in the preprint?” question."
   },
   "selectMethodsWellSuited": {
-    "message": "Select if the methods are well-suited for this research"
+    "message": "Select if the methods are well-suited for this research",
+    "description": "Error message shown when the user tries to submit the “Are the methods well-suited for this research?” form without selecting an option."
   },
   "selectClearDiscussion": {
-    "message": "Select how clearly the authors discuss their findings and next steps"
+    "message": "Select how clearly the authors discuss their findings and next steps",
+    "description": "Error message shown when the user tries to submit the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” form without selecting an option."
   },
   "methodsHighlyAppropriate": {
-    "message": "Highly appropriate"
+    "message": "Highly appropriate",
+    "description": "Label for an option to the “Are the methods well-suited for this research?” question."
   },
   "methodsHighlyAppropriateTip": {
-    "message": "They follow best practices throughout the research. They are rigorously executed and provide a robust foundation for drawing valid conclusions."
+    "message": "They follow best practices throughout the research. They are rigorously executed and provide a robust foundation for drawing valid conclusions.",
+    "description": "Text shown alongside the “Highly appropriate” option to the “Are the methods well-suited for this research?” question."
   },
   "methodsHighlyAppropriateHow": {
-    "message": "Why are they highly appropriate? (optional)"
+    "message": "Why are they highly appropriate? (optional)",
+    "description": "Label for the textbox to explain the “Highly appropriate” answer to the “Are the methods well-suited for this research?” question."
   },
   "methodsSomewhatAppropriate": {
-    "message": "Somewhat appropriate"
+    "message": "Somewhat appropriate",
+    "description": "Label for an option to the “Are the methods well-suited for this research?” question."
   },
   "methodsSomewhatAppropriateTip": {
-    "message": "They follow best practices through most, but not all, of the research. They are well executed and provide a good foundation for drawing valid conclusions."
+    "message": "They follow best practices through most, but not all, of the research. They are well executed and provide a good foundation for drawing valid conclusions.",
+    "description": "Text shown alongside the “Somewhat appropriate” option to the “Are the methods well-suited for this research?” question."
   },
   "methodsSomewhatAppropriateWhy": {
-    "message": "Why are they somewhat appropriate? (optional)"
+    "message": "Why are they somewhat appropriate? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat appropriate” answer to the “Are the methods well-suited for this research?” question."
   },
   "methodsNeitherAppropriateNorInappropriate": {
-    "message": "Neither appropriate nor inappropriate"
+    "message": "Neither appropriate nor inappropriate",
+    "description": "Label for an option to the “Are the methods well-suited for this research?” question."
   },
   "methodsNeitherAppropriateNorInappropriateTip": {
-    "message": "They do not always follow best practices but give a reasonable basis for answering the research question."
+    "message": "They do not always follow best practices but give a reasonable basis for answering the research question.",
+    "description": "Text shown alongside the “Neither appropriate nor inappropriate” option to the “Are the methods well-suited for this research?” question."
   },
   "methodsNeitherAppropriateNorInappropriateWhy": {
-    "message": "Why are they neither appropriate nor inappropriate? (optional)"
+    "message": "Why are they neither appropriate nor inappropriate? (optional)",
+    "description": "Label for the textbox to explain the “Neither appropriate nor inappropriate” answer to the “Are the methods well-suited for this research?” question."
   },
   "methodsSomewhatInappropriate": {
-    "message": "Somewhat inappropriate"
+    "message": "Somewhat inappropriate",
+    "description": "Label for an option to the “Are the methods well-suited for this research?” question."
   },
   "methodsSomewhatInappropriateTip": {
-    "message": "They have certain flaws or deviations from best practices that limit the value of the information and insights they share."
+    "message": "They have certain flaws or deviations from best practices that limit the value of the information and insights they share.",
+    "description": "Text shown alongside the “Somewhat inappropriate” option to the “Are the methods well-suited for this research?” question."
   },
   "methodsSomewhatInappropriateWhy": {
-    "message": "Why are they somewhat inappropriate? (optional)"
+    "message": "Why are they somewhat inappropriate? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat inappropriate” answer to the “Are the methods well-suited for this research?” question."
   },
   "methodsHighlyInappropriate": {
-    "message": "Highly inappropriate"
+    "message": "Highly inappropriate",
+    "description": "Label for an option to the “Are the methods well-suited for this research?” question."
   },
   "methodsHighlyInappropriateTip": {
-    "message": "They are fundamentally flawed, invalid, or inconsistent with best practices."
+    "message": "They are fundamentally flawed, invalid, or inconsistent with best practices.",
+    "description": "Text shown alongside the “Highly inappropriate” option to the “Are the methods well-suited for this research?” question."
   },
   "methodsHighlyInappropriateWhy": {
-    "message": "Why are they highly inappropriate? (optional)"
+    "message": "Why are they highly inappropriate? (optional)",
+    "description": "Label for the textbox to explain the “Highly inappropriate” answer to the “Are the methods well-suited for this research?” question."
   },
   "selectConclusionsSupported": {
-    "message": "Select if the conclusions are supported by the data"
+    "message": "Select if the conclusions are supported by the data",
+    "description": "Error message shown when the user tries to submit the “Are the conclusions supported by the data?” form without selecting an option."
   },
   "conclusionsHighlySupported": {
-    "message": "Highly supported"
+    "message": "Highly supported",
+    "description": "Label for an option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsHighlySupportedTip": {
-    "message": "The conclusions are consistently thorough and provide a realistic interpretation of the data without overreaching or drawing conclusions not reflected in the results."
+    "message": "The conclusions are consistently thorough and provide a realistic interpretation of the data without overreaching or drawing conclusions not reflected in the results.",
+    "description": "Text shown alongside the “Highly supported” option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsHighlySupportedWhy": {
-    "message": "Why are they highly supported? (optional)"
+    "message": "Why are they highly supported? (optional)",
+    "description": "Label for the textbox to explain the “Highly supported” answer to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsSomewhatSupported": {
-    "message": "Somewhat supported"
+    "message": "Somewhat supported",
+    "description": "Label for an option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsSomewhatSupportedTip": {
-    "message": "The conclusions are mostly, but not always, thorough. They provide a reasonable interpretation of the data without overreaching or adding interpretations not reflected in the results."
+    "message": "The conclusions are mostly, but not always, thorough. They provide a reasonable interpretation of the data without overreaching or adding interpretations not reflected in the results.",
+    "description": "Text shown alongside the “Somewhat supported” option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsSomewhatSupportedWhy": {
-    "message": "Why are they somewhat supported? (optional)"
+    "message": "Why are they somewhat supported? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat supported” answer to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsNeitherSupportedNorUnsupported": {
-    "message": "Neither supported nor unsupported"
+    "message": "Neither supported nor unsupported",
+    "description": "Label for an option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsNeitherSupportedNorUnsupportedTip": {
-    "message": "No conclusions have been drawn about the data, or those presented are reasonable but not well explained or justified by the authors."
+    "message": "No conclusions have been drawn about the data, or those presented are reasonable but not well explained or justified by the authors.",
+    "description": "Text shown alongside the “Neither supported nor unsupported” option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsNeitherSupportedNorUnsupportedWhy": {
-    "message": "Why are they neither supported nor unsupported? (optional)"
+    "message": "Why are they neither supported nor unsupported? (optional)",
+    "description": "Label for the textbox to explain the “Neither supported nor unsupported” answer to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsSomewhatUnsupported": {
-    "message": "Somewhat unsupported"
+    "message": "Somewhat unsupported",
+    "description": "Label for an option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsSomewhatUnsupportedTip": {
-    "message": "The conclusions do not entirely address the data, or the conclusions overgeneralize and are not well-supported by the data."
+    "message": "The conclusions do not entirely address the data, or the conclusions overgeneralize and are not well-supported by the data.",
+    "description": "Text shown alongside the “Somewhat unsupported” option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsSomewhatUnsupportedWhy": {
-    "message": "Why are they somewhat unsupported? (optional)"
+    "message": "Why are they somewhat unsupported? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat unsupported” answer to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsHighlyUnsupported": {
-    "message": "Highly unsupported"
+    "message": "Highly unsupported",
+    "description": "Label for an option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsHighlyUnsupportedTip": {
-    "message": "The conclusions do not follow from the data and are unsupported or contradicted by it."
+    "message": "The conclusions do not follow from the data and are unsupported or contradicted by it.",
+    "description": "Text shown alongside the “Highly unsupported” option to the “Are the conclusions supported by the data?” question."
   },
   "conclusionsHighlyUnsupportedWhy": {
-    "message": "Why are they highly unsupported? (optional)"
+    "message": "Why are they highly unsupported? (optional)",
+    "description": "Label for the textbox to explain the “Highly unsupported” answer to the “Are the conclusions supported by the data?” question."
   },
   "veryClearly": {
-    "message": "Very clearly"
+    "message": "Very clearly",
+    "description": "Label for an option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "veryClearlyTip": {
-    "message": "They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation of their findings and potential next steps."
+    "message": "They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation of their findings and potential next steps.",
+    "description": "Text shown alongside the “Very clearly” option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "veryClearlyHow": {
-    "message": "How is it very clear? (optional)"
+    "message": "How is it very clear? (optional)",
+    "description": "Label for the textbox to explain the “Very clearly” answer to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "somewhatClearly": {
-    "message": "Somewhat clearly"
+    "message": "Somewhat clearly",
+    "description": "Label for an option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "somewhatClearlyTip": {
-    "message": "They provide clear and insightful discussion, explanation, and interpretation of their findings and potential next steps."
+    "message": "They provide clear and insightful discussion, explanation, and interpretation of their findings and potential next steps.",
+    "description": "Text shown alongside the “Somewhat clearly” option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "somewhatClearlyHow": {
-    "message": "How is it somewhat clear? (optional)"
+    "message": "How is it somewhat clear? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat clearly” answer to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "neitherClearlyNorUnclearly": {
-    "message": "Neither clearly nor unclearly"
+    "message": "Neither clearly nor unclearly",
+    "description": "Label for an option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "neitherClearlyNorUnclearlyTip": {
-    "message": "They mention their findings or potential next steps, but do not address or explain them."
+    "message": "They mention their findings or potential next steps, but do not address or explain them.",
+    "description": "Text shown alongside the “Neither clearly nor unclearly” option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "neitherClearlyNorUnclearlyHow": {
-    "message": "How is it neither clear nor unclear? (optional)"
+    "message": "How is it neither clear nor unclear? (optional)",
+    "description": "Label for the textbox to explain the “Neither clearly nor unclearly” answer to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "somewhatUnclearly": {
-    "message": "Somewhat unclearly"
+    "message": "Somewhat unclearly",
+    "description": "Label for an option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "somewhatUnclearlyTip": {
-    "message": "They provide confusing or contradictory discussion, explanation, or interpretation of their findings and potential next steps."
+    "message": "They provide confusing or contradictory discussion, explanation, or interpretation of their findings and potential next steps.",
+    "description": "Text shown alongside the “Somewhat unclearly” option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "somewhatUnclearlyHow": {
-    "message": "How is it somewhat unclear? (optional)"
+    "message": "How is it somewhat unclear? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat unclearly” answer to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "veryUnclearly": {
-    "message": "Very unclearly"
+    "message": "Very unclearly",
+    "description": "Label for an option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "veryUnclearlyTip": {
-    "message": "They provide incorrect or unfounded discussion, explanation, or interpretation of their findings and potential next steps."
+    "message": "They provide incorrect or unfounded discussion, explanation, or interpretation of their findings and potential next steps.",
+    "description": "Text shown alongside the “Very unclearly” option to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "veryUnclearlyHow": {
-    "message": "How is it very unclear? (optional)"
+    "message": "How is it very unclear? (optional)",
+    "description": "Label for the textbox to explain the “Very unclearly” answer to the “How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?” question."
   },
   "selectAdvanceKnowledge": {
-    "message": "Select if the preprint is likely to advance academic knowledge"
+    "message": "Select if the preprint is likely to advance academic knowledge",
+    "description": "Error message shown when the user tries to submit the “Is the preprint likely to advance academic knowledge?” form without selecting an option."
   },
   "advanceKnowledgeHighlyLikely": {
-    "message": "Highly likely"
+    "message": "Highly likely",
+    "description": "Label for an option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeHighlyLikelyTip": {
-    "message": "The preprint offers significant contributions that substantially advance or confirm understanding of the subject matter."
+    "message": "The preprint offers significant contributions that substantially advance or confirm understanding of the subject matter.",
+    "description": "Text shown alongside the “Highly likely” option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeHighlyLikelyWhy": {
-    "message": "Why is it highly likely? (optional)"
+    "message": "Why is it highly likely? (optional)",
+    "description": "Label for the textbox to explain the “Highly likely” answer to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeSomewhatLikely": {
-    "message": "Somewhat likely"
+    "message": "Somewhat likely",
+    "description": "Label for an option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeSomewhatLikelyTip": {
-    "message": "The preprint contributes several noteworthy advancements or confirmations."
+    "message": "The preprint contributes several noteworthy advancements or confirmations.",
+    "description": "Text shown alongside the “Somewhat likely” option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeSomewhatLikelyWhy": {
-    "message": "Why is it somewhat likely? (optional)"
+    "message": "Why is it somewhat likely? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat likely” answer to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeModeratelyLikely": {
-    "message": "Moderately likely"
+    "message": "Moderately likely",
+    "description": "Label for an option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeModeratelyLikelyTip": {
-    "message": "The preprint contributes only a few advancements or confirmations to the existing body of knowledge."
+    "message": "The preprint contributes only a few advancements or confirmations to the existing body of knowledge.",
+    "description": "Text shown alongside the “Moderately likely” option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeModeratelyLikelyWhy": {
-    "message": "Why is it moderately likely? (optional)"
+    "message": "Why is it moderately likely? (optional)",
+    "description": "Label for the textbox to explain the “Moderately likely” answer to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeNotLikely": {
-    "message": "Not likely"
+    "message": "Not likely",
+    "description": "Label for an option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeNotLikelyTip": {
-    "message": "The preprint offers no significant advancements or confirmations, though its research and conclusions may be sound."
+    "message": "The preprint offers no significant advancements or confirmations, though its research and conclusions may be sound.",
+    "description": "Text shown alongside the “Not likely” option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeNotLikelyWhy": {
-    "message": "Why is it not likely? (optional)"
+    "message": "Why is it not likely? (optional)",
+    "description": "Label for the textbox to explain the “Not likely” answer to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeNotAtAllLikely": {
-    "message": "Not at all likely"
+    "message": "Not at all likely",
+    "description": "Label for an option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeNotAtAllLikelyTip": {
-    "message": "The preprint offers no significant advancements or confirmations because of its flaws."
+    "message": "The preprint offers no significant advancements or confirmations because of its flaws.",
+    "description": "Text shown alongside the “Not at all likely” option to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "advanceKnowledgeNotAtAllLikelyWhy": {
-    "message": "Why is it not at all likely? (optional)"
+    "message": "Why is it not at all likely? (optional)",
+    "description": "Label for the textbox to explain the “Not at all likely” answer to the “Is the preprint likely to advance academic knowledge?” question."
   },
   "selectBenefitFromEditing": {
-    "message": "Select yes if it would benefit from language editing"
+    "message": "Select yes if it would benefit from language editing",
+    "description": "Error message shown when the user tries to submit the “Would it benefit from language editing?” form without selecting an option."
   },
   "benefitFromEditingNoTip": {
-    "message": "There may be minor language issues, but they do not impact clarity or understanding."
+    "message": "There may be minor language issues, but they do not impact clarity or understanding.",
+    "description": "Text shown alongside the “No” option to the “Would it benefit from language editing?” question."
   },
   "benefitFromEditingNoWhy": {
-    "message": "Why wouldn’t it? (optional)"
+    "message": "Why wouldn’t it? (optional)",
+    "description": "Label for the textbox to explain the “No” answer to the “Would it benefit from language editing?” question."
   },
   "benefitFromEditingYesTip": {
-    "message": "Grammatical errors, confusing phrasing, or unclear expressions may hinder comprehension."
+    "message": "Grammatical errors, confusing phrasing, or unclear expressions may hinder comprehension.",
+    "description": "Text shown alongside the “Yes” option to the “Would it benefit from language editing?” question."
   },
   "benefitFromEditingYesWhy": {
-    "message": "Why would it? (optional)"
+    "message": "Why would it? (optional)",
+    "description": "Label for the textbox to explain the “Yes” answer to the “Would it benefit from language editing?” question."
   },
   "selectWouldRecommend": {
-    "message": "Select yes if you would recommend this preprint to others"
+    "message": "Select yes if you would recommend this preprint to others",
+    "description": "Error message shown when the user tries to submit the “Would you recommend this preprint to others?” form without selecting an option."
   },
   "wouldRecommendYes": {
-    "message": "Yes, it’s of high quality"
+    "message": "Yes, it’s of high quality",
+    "description": "Label for an option to the “Would you recommend this preprint to others?” question."
   },
   "wouldRecommendYesHow": {
-    "message": "How is it of high quality? (optional)"
+    "message": "How is it of high quality? (optional)",
+    "description": "Label for the textbox to explain the “Yes, it’s of high quality” answer to the “Would you recommend this preprint to others?” question."
   },
   "wouldRecommendYesImproved": {
-    "message": "Yes, but it needs to be improved"
+    "message": "Yes, but it needs to be improved",
+    "description": "Label for an option to the “Would you recommend this preprint to others?” question."
   },
   "wouldRecommendYesImprovedWhy": {
-    "message": "What needs to be improved? (optional)"
+    "message": "What needs to be improved? (optional)",
+    "description": "Label for the textbox to explain the “Yes, but it needs to be improved” answer to the “Would you recommend this preprint to others?” question."
   },
   "wouldRecommendNo": {
-    "message": "No, it’s of low quality or is majorly flawed"
+    "message": "No, it’s of low quality or is majorly flawed",
+    "description": "Label for an option to the “Would you recommend this preprint to others?” question."
   },
   "wouldRecommendNoWhy": {
-    "message": "Why wouldn’t you recommend it? (optional)"
+    "message": "Why wouldn’t you recommend it? (optional)",
+    "description": "Label for the textbox to explain the “No, it’s of low quality or is majorly flawed” answer to the “Would you recommend this preprint to others?” question."
   },
   "selectReadyForAttention": {
-    "message": "Select yes if it is ready for attention from an editor, publisher or broader audience"
+    "message": "Select yes if it is ready for attention from an editor, publisher or broader audience",
+    "description": "Error message shown when the user tries to submit the “Is it ready for attention from an editor, publisher or broader audience?” form without selecting an option."
   },
   "readyForAttentionYes": {
-    "message": "Yes, as it is"
+    "message": "Yes, as it is",
+    "description": "Label for an option to the “Is it ready for attention from an editor, publisher or broader audience?” question."
   },
   "readyForAttentionYesWhy": {
-    "message": "Why is it ready? (optional)"
+    "message": "Why is it ready? (optional)",
+    "description": "Label for the textbox to explain the “Yes, as it is” answer to the “Is it ready for attention from an editor, publisher or broader audience?” question."
   },
   "readyForAttentionMinorChanges": {
-    "message": "Yes, after minor changes"
+    "message": "Yes, after minor changes",
+    "description": "Label for an option to the “Is it ready for attention from an editor, publisher or broader audience?” question."
   },
   "readyForAttentionMinorChangesWhy": {
-    "message": "What needs tweaking? (optional)"
+    "message": "What needs tweaking? (optional)",
+    "description": "Label for the textbox to explain the “Yes, after minor changes” answer to the “Is it ready for attention from an editor, publisher or broader audience?” question."
   },
   "readyForAttentionNo": {
-    "message": "No, it needs a major revision"
+    "message": "No, it needs a major revision",
+    "description": "Label for an option to the “Is it ready for attention from an editor, publisher or broader audience?” question."
   },
   "readyForAttentionNoWhy": {
-    "message": "What needs to change? (optional)"
+    "message": "What needs to change? (optional)",
+    "description": "Label for the textbox to explain the “No, it needs a major revision” answer to the “Is it ready for attention from an editor, publisher or broader audience?” question."
   },
   "areTheDataPresentationsWellSuited": {
-    "message": "Are the data presentations, including visualizations, well-suited to represent the data?"
+    "message": "Are the data presentations, including visualizations, well-suited to represent the data?",
+    "description": "Question that asks the reviewer to evaluate whether the data presentations, including visualizations, are well-suited to represent the data."
   },
   "selectIfDataPresentationsWellSuited": {
-    "message": "Select if the data presentations are well-suited to represent the data?"
+    "message": "Select if the data presentations are well-suited to represent the data?",
+    "description": "Error message shown when the user tries to submit the “Are the data presentations, including visualizations, well-suited to represent the data?” form without selecting an option."
   },
   "highlyAppropriateAndClear": {
-    "message": "Highly appropriate and clear"
+    "message": "Highly appropriate and clear",
+    "description": "Label for an option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "highlyAppropriateAndClearTip": {
-    "message": "They thoroughly follow accessibility best practices and effectively communicate the results and key patterns in the data, making it very easy to comprehend or interpret the data."
+    "message": "They thoroughly follow accessibility best practices and effectively communicate the results and key patterns in the data, making it very easy to comprehend or interpret the data.",
+    "description": "Text shown alongside the “Highly appropriate and clear” option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "highlyAppropriateAndClearWhy": {
-    "message": "Why are they highly appropriate and clear? (optional)"
+    "message": "Why are they highly appropriate and clear? (optional)",
+    "description": "Label for the textbox to explain the “Highly appropriate and clear” answer to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "somewhatAppropriate": {
-    "message": "Somewhat appropriate and clear"
+    "message": "Somewhat appropriate and clear",
+    "description": "Label for an option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "somewhatAppropriateTip": {
-    "message": "They follow accessibility best practices and well communicate the results and main patterns in the data, making it easy to comprehend or interpret the data effectively."
+    "message": "They follow accessibility best practices and well communicate the results and main patterns in the data, making it easy to comprehend or interpret the data effectively.",
+    "description": "Text shown alongside the “Somewhat appropriate and clear” option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "somewhatAppropriateWhy": {
-    "message": "Why are they somewhat appropriate and clear? (optional)"
+    "message": "Why are they somewhat appropriate and clear? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat appropriate and clear” answer to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "neitherAppropriateOrClear": {
-    "message": "Neither appropriate and clear nor inappropriate and unclear"
+    "message": "Neither appropriate and clear nor inappropriate and unclear",
+    "description": "Label for an option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "neitherAppropriateOrClearTip": {
-    "message": "They follow some elements of accessibility best practices and communicate the results and patterns. However, the presentations chosen are not the best or clearest ones to use for this kind of data."
+    "message": "They follow some elements of accessibility best practices and communicate the results and patterns. However, the presentations chosen are not the best or clearest ones to use for this kind of data.",
+    "description": "Text shown alongside the “Neither appropriate and clear nor inappropriate and unclear” option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "neitherAppropriateOrClearWhy": {
-    "message": "Why are they neither appropriate and clear nor inappropriate and unclear? (optional)"
+    "message": "Why are they neither appropriate and clear nor inappropriate and unclear? (optional)",
+    "description": "Label for the textbox to explain the “Neither appropriate and clear nor inappropriate and unclear” answer to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "somewhatInappropriate": {
-    "message": "Somewhat inappropriate or unclear"
+    "message": "Somewhat inappropriate or unclear",
+    "description": "Label for an option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "somewhatInappropriateTip": {
-    "message": "They don’t follow accessibility best practices, and contain minor inaccuracies, ambiguities, or omissions, making it slightly challenging to comprehend or interpret the data effectively."
+    "message": "They don’t follow accessibility best practices, and contain minor inaccuracies, ambiguities, or omissions, making it slightly challenging to comprehend or interpret the data effectively.",
+    "description": "Text shown alongside the “Somewhat inappropriate or unclear” option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "somewhatInappropriateWhy": {
-    "message": "Why are they somewhat inappropriate or unclear? (optional)"
+    "message": "Why are they somewhat inappropriate or unclear? (optional)",
+    "description": "Label for the textbox to explain the “Somewhat inappropriate or unclear” answer to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "highlyInappropriate": {
-    "message": "Highly inappropriate or unclear"
+    "message": "Highly inappropriate or unclear",
+    "description": "Label for an option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "highlyInappropriateTip": {
-    "message": "They present major accessibility barriers, and lack proper labeling, appropriate scales, or relevant contextual information, making it very challenging to comprehend or interpret the data effectively."
+    "message": "They present major accessibility barriers, and lack proper labeling, appropriate scales, or relevant contextual information, making it very challenging to comprehend or interpret the data effectively.",
+    "description": "Text shown alongside the “Highly inappropriate or unclear” option to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "highlyInappropriateWhy": {
-    "message": "Why are they highly inappropriate or unclear? (optional)"
+    "message": "Why are they highly inappropriate or unclear? (optional)",
+    "description": "Label for the textbox to explain the “Highly inappropriate or unclear” answer to the “Are the data presentations, including visualizations, well-suited to represent the data?” question."
   },
   "iDoNotKnow": {
-    "message": "I don’t know"
+    "message": "I don’t know",
+    "description": "Label for an option to a question."
   }
 }
