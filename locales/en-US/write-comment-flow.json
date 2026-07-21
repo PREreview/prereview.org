@@ -1,242 +1,322 @@
 {
   "writeCommentTitle": {
-    "message": "Write a comment"
+    "message": "Write a comment",
+    "description": "Title for the page where a user can write a comment on a PREreview."
   },
   "backToPrereview": {
-    "message": "Back to PREreview"
+    "message": "Back to PREreview",
+    "description": "Link that takes the user back to the PREreview page."
   },
   "youCanWrite": {
-    "message": "You can write a comment on this PREreview of {preprint}."
+    "message": "You can write a comment on this PREreview of {preprint}.",
+    "description": "Text that appears alongside the title “Write a comment”."
   },
   "beforeStartHeading": {
-    "message": "Before you start"
+    "message": "Before you start",
+    "description": "Heading for the section that contains information about what the user needs to know before starting a comment."
   },
   "orcidLogIn": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsOrcidHeading": {
-    "message": "What is an ORCID iD?"
+    "message": "What is an ORCID iD?",
+    "description": "Heading for the explanation of what an ORCID iD is."
   },
   "whatIsOrcid": {
-    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name."
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "description": "Text following the heading “What is an ORCID iD?” explaining what an ORCID iD is."
   },
   "reloadPageButton": {
-    "message": "Reload page"
+    "message": "Reload page",
+    "description": "Button that reloads the page so that the user can check if a task has completed."
   },
   "carryOnMessage": {
-    "message": "As you’ve already started a comment on this PREreview of {preprint}, we’ll take you to the next step so you can carry on."
+    "message": "As you’ve already started a comment on this PREreview of {preprint}, we’ll take you to the next step so you can carry on.",
+    "description": "Message shown alongside the title “Write a comment” when the user has already started a comment of the PREreview."
   },
   "enterYourCommentTitle": {
-    "message": "Write your comment"
+    "message": "Write your comment",
+    "description": "Title for the page where a user can write their comment on a PREreview."
   },
   "errorEnterComment": {
-    "message": "Enter your comment"
+    "message": "Enter your comment",
+    "description": "Error message shown when the user tries to submit the “Write your comment” form without entering a comment."
   },
   "whatNameTitle": {
-    "message": "What name would you like to use?"
+    "message": "What name would you like to use?",
+    "description": "Label for the question about the name the user would like to use."
   },
   "errorSelectName": {
-    "message": "Select the name that you would like to use"
+    "message": "Select the name that you would like to use",
+    "description": "Error message shown when the user tries submit the “What name would you like to use?” form without selecting a name."
   },
   "whichNameTip": {
-    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym."
+    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
+    "description": "Information provided about the question “What name would you like to use?”."
   },
   "whatIsPseudonym": {
-    "message": "What is a PREreview pseudonym?"
+    "message": "What is a PREreview pseudonym?",
+    "description": "Heading for the explanation of what a PREreview pseudonym is."
   },
   "whatIsPseudonymDefinition": {
-    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}’."
+    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}’.",
+    "description": "Text following the “What is a PREreview pseudonym?” heading explaining what a PREreview pseudonym is."
   },
   "whatIsPseudonymAccountability": {
-    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
+    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability.",
+    "description": "Text following the “What is a PREreview pseudonym?” heading explaining why you might choose to use a PREreview pseudonym."
   },
   "linkToOrcidId": {
-    "message": "We’ll link your comment to your ORCID iD."
+    "message": "We’ll link your comment to your ORCID iD.",
+    "description": "Text that accompanies the public persona choice for the question “What name would you like to use?”."
   },
   "linkToPseudonym": {
-    "message": "We’ll only link your comment to others that also use your pseudonym."
+    "message": "We’ll only link your comment to others that also use your pseudonym.",
+    "description": "Text that accompanies the pseudonym choice for the question “What name would you like to use?”."
   },
   "competingInterestsTitle": {
-    "message": "Do you have any competing interests?"
+    "message": "Do you have any competing interests?",
+    "description": "Title for the page where a user can declare any competing interests they may have."
   },
   "errorCompetingInterests": {
-    "message": "Select yes if you have any competing interests"
+    "message": "Select yes if you have any competing interests",
+    "description": "Error message shown when the user tries to submit the “Do you have any competing interests?” form without selecting an option."
   },
   "errorCompetingInterestsDetails": {
-    "message": "Enter details of your competing interests"
+    "message": "Enter details of your competing interests",
+    "description": "Error message shown when the user tries to submit the “Do you have any competing interests?” form with a “yes” answer but without entering details."
   },
   "competingInterestsTip": {
-    "message": "A competing interest is anything that could interfere with the objectivity of the comment on a PREreview."
+    "message": "A competing interest is anything that could interfere with the objectivity of the comment on a PREreview.",
+    "description": "Information provided about the question “Do you have any competing interests?”."
   },
   "examplesCompetingInterests": {
-    "message": "Examples"
+    "message": "Examples",
+    "description": "Heading for the list of examples of competing interests."
   },
   "competingInterestsRelationship": {
-    "message": "You have a personal relationship with the author of the preprint."
+    "message": "You have a personal relationship with the author of the preprint.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsCompetitor": {
-    "message": "You are a rival or competitor of the author of the preprint."
+    "message": "You are a rival or competitor of the author of the preprint.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsWorkedWith": {
-    "message": "You have recently worked with the author of the preprint."
+    "message": "You have recently worked with the author of the preprint.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsWorkPlace": {
-    "message": "You work at the same place the author of the preprint works."
+    "message": "You work at the same place the author of the preprint works.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsCollaborate": {
-    "message": "You collaborate with the author of the preprint."
+    "message": "You collaborate with the author of the preprint.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsPublishedWith": {
-    "message": "You have published with the author of the preprint in the last five years."
+    "message": "You have published with the author of the preprint in the last five years.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsGrantWith": {
-    "message": "You hold a grant with the author of the preprint or have other financial ties."
+    "message": "You hold a grant with the author of the preprint or have other financial ties.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsCommenter": {
-    "message": "Any of these same criteria hold true between you and another commenter who has already published a comment on this preprint."
+    "message": "Any of these same criteria hold true between you and another commenter who has already published a comment on this preprint.",
+    "description": "A competing interest shown in the list of examples for the question “Do you have any competing interests?”."
   },
   "competingInterestsNo": {
-    "message": "No"
+    "message": "No",
+    "description": "Option for the “Do you have any competing interests?” question."
   },
   "competingInterestsYes": {
-    "message": "Yes"
+    "message": "Yes",
+    "description": "Option for the “Do you have any competing interests?” question."
   },
   "competingInterestsDetailsTitle": {
-    "message": "What are they?"
+    "message": "What are they?",
+    "description": "Label for the input for providing details having selected the “Yes” option for the “Do you have any competing interests?” question."
   },
   "codeOfConductTitle": {
-    "message": "Code of Conduct"
+    "message": "Code of Conduct",
+    "description": "Title for the page where a user can confirm that they are following the Code of Conduct."
   },
   "errorFollowingCodeOfConduct": {
-    "message": "Confirm that you are following the Code of Conduct"
+    "message": "Confirm that you are following the Code of Conduct",
+    "description": "Error message shown when a user tries to submit the “Code of Conduct” form without ticking the “I’m following the Code of Conduct” checkbox."
   },
   "codeOfConductTip": {
-    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>."
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
+    "description": "Information provided for the “Code of Conduct” form."
   },
   "examplesExpectedBehaviors": {
-    "message": "Examples of expected behaviors"
+    "message": "Examples of expected behaviors",
+    "description": "Heading for the list of examples of expected behaviors for the “Code of Conduct” form."
   },
   "expectedBehaviorLanguage": {
-    "message": "Using welcoming and inclusive language."
+    "message": "Using welcoming and inclusive language.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorConstructive": {
-    "message": "Providing feedback that is constructive, i.e. useful, to the receiver."
+    "message": "Providing feedback that is constructive, i.e. useful, to the receiver.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorRespectful": {
-    "message": "Being respectful of differing viewpoints and experiences."
+    "message": "Being respectful of differing viewpoints and experiences.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorGraceful": {
-    "message": "Gracefully accepting constructive criticism."
+    "message": "Gracefully accepting constructive criticism.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorCommunity": {
-    "message": "Focusing on what is best for the community."
+    "message": "Focusing on what is best for the community.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "expectedBehaviorEmpathy": {
-    "message": "Showing empathy towards other community members."
+    "message": "Showing empathy towards other community members.",
+    "description": "An expected behavior shown in the “Examples of expected behaviors” list for the “Code of Conduct” form."
   },
   "examplesUnacceptableBehaviors": {
-    "message": "Examples of unacceptable behaviors"
+    "message": "Examples of unacceptable behaviors",
+    "description": "Heading for the list of examples of unacceptable behaviors for the “Code of Conduct” form."
   },
   "unacceptableBehaviorAttacks": {
-    "message": "Trolling, insulting or derogatory comments, and personal or political attacks."
+    "message": "Trolling, insulting or derogatory comments, and personal or political attacks.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorUnconstructive": {
-    "message": "Providing unconstructive or disruptive feedback on PREreview."
+    "message": "Providing unconstructive or disruptive feedback on PREreview.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorHarassment": {
-    "message": "Public or private harassment."
+    "message": "Public or private harassment.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorConfidential": {
-    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission."
+    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorSexual": {
-    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
+    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "unacceptableBehaviorOther": {
-    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."
+    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting.",
+    "description": "An unacceptable behavior shown in the “Examples of unacceptable behaviors” list for the “Code of Conduct” form."
   },
   "followingCodeOfConduct": {
-    "message": "I’m following the Code of Conduct"
+    "message": "I’m following the Code of Conduct",
+    "description": "Label for the checkbox in the “Code of Conduct” form."
   },
   "contactDetailsTitle": {
-    "message": "Contact details"
+    "message": "Contact details",
+    "description": "Title for the page where a user can provide their contact details."
   },
   "errorEnterEmailAddress": {
-    "message": "Enter your email address"
+    "message": "Enter your email address",
+    "description": "Error message shown when the user tries to submit the “Contact details” form without entering an email address."
   },
   "errorEnterValidEmailAddress": {
-    "message": "Enter an email address in the correct format, like name@example.com"
+    "message": "Enter an email address in the correct format, like name@example.com",
+    "description": "Error message shown when the user tries to submit the “Contact details” form with an invalid email address."
   },
   "needToConfirmEmailAddress": {
-    "message": "We’re ready to publish your comment, but we need to confirm your email address first."
+    "message": "We’re ready to publish your comment, but we need to confirm your email address first.",
+    "description": "Text that appears alongside the “Contact details” title explaining that the user needs to confirm their email address before they can publish their comment."
   },
   "emailAddressUse": {
-    "message": "We’ll only use this to contact you about your account and what you publish."
+    "message": "We’ll only use this to contact you about your account and what you publish.",
+    "description": "Text that appears alongside the “Contact details” title explaining how the user’s email address will be used."
   },
   "whatIsYourEmailAddressTitle": {
-    "message": "What is your email address?"
+    "message": "What is your email address?",
+    "description": "Label for the input field for the user’s email address on the “Contact details” form."
   },
   "verifyEmailAddressTitle": {
-    "message": "Verify your email address"
+    "message": "Verify your email address",
+    "description": "Title for the page after the “Contact details” form."
   },
   "howToVerifyEmailAddress": {
-    "message": "Please open the email we sent to {emailAddress} and follow the link. You’ll then be able to publish your comment."
+    "message": "Please open the email we sent to {emailAddress} and follow the link. You’ll then be able to publish your comment.",
+    "description": "Text that appears alongside the title “Verify your email address” and explains what the user needs to do next."
   },
   "onceEmailAddressVerified": {
-    "message": "Once your address is verified, you can close this page."
+    "message": "Once your address is verified, you can close this page.",
+    "description": "Text that appears alongside the title “Verify your email address” and informs the user that they can close the page once their email address is verified."
   },
   "checkTitle": {
-    "message": "Check your comment"
+    "message": "Check your comment",
+    "description": "Title for the page where a user can check their comment before publishing."
   },
   "checkYourDetailsHeading": {
-    "message": "Your details"
+    "message": "Your details",
+    "description": "Heading for the section that contains the user’s details on the “Check your comment” page."
   },
   "publishedNameHeading": {
-    "message": "Published name"
+    "message": "Published name",
+    "description": "Heading for the section that contains the user’s published name on the “Check your comment” page."
   },
   "changeName": {
-    "message": "Change <visuallyHidden>name</visuallyHidden>"
+    "message": "Change <visuallyHidden>name</visuallyHidden>",
+    "description": "Link for the user to change their published name on the “Check your comment” page."
   },
   "competingInterestsHeading": {
-    "message": "Competing interests"
+    "message": "Competing interests",
+    "description": "Heading for the section that contains the user’s competing interests on the “Check your comment” page."
   },
   "changeCompetingInterests": {
-    "message": "Change <visuallyHidden>competing interests</visuallyHidden>"
+    "message": "Change <visuallyHidden>competing interests</visuallyHidden>",
+    "description": "Link for the user to change their competing interests on the “Check your comment” page."
   },
   "noCompetingInterests": {
-    "message": "The author of this comment declares that they have no competing interests."
+    "message": "The author of this comment declares that they have no competing interests.",
+    "description": "Text that appears alongside the “Competing interests” heading when the user has declared no competing interests on the “Check your comment” page."
   },
   "checkYourCommentHeading": {
-    "message": "Your comment"
+    "message": "Your comment",
+    "description": "Heading for the section that contains the user’s comment on the “Check your comment” page."
   },
   "changeComment": {
-    "message": "Change <visuallyHidden>comment</visuallyHidden>"
+    "message": "Change <visuallyHidden>comment</visuallyHidden>",
+    "description": "Link for the user to change their comment on the “Check your comment” page."
   },
   "nowPublishHeading": {
-    "message": "Now publish your comment"
+    "message": "Now publish your comment",
+    "description": "Heading for the section to publish the comment after checking their answers."
   },
   "nowPublishMessage": {
-    "message": "We will assign your comment a DOI (a permanent identifier) and make it publicly available under a <license>CC BY 4.0 license</license>."
+    "message": "We will assign your comment a DOI (a permanent identifier) and make it publicly available under a <license>CC BY 4.0 license</license>.",
+    "description": "Text shown alongside the heading “Now publish your comment” explaining what will happen when the user publishes their comment."
   },
   "publishButton": {
-    "message": "Publish comment"
+    "message": "Publish comment",
+    "description": "Button that publishes the comment."
   },
   "publishingTitle": {
-    "message": "We’re publishing your comment"
+    "message": "We’re publishing your comment",
+    "description": "Title for the page that appears after the user clicks the “Publish comment” button."
   },
   "publishingSeeShortlyMessage": {
-    "message": "You’ll be able to see your comment shortly."
+    "message": "You’ll be able to see your comment shortly.",
+    "description": "Text that appears alongside the title “We’re publishing your comment” explaining that the user will be able to see their comment shortly."
   },
   "publishedTitle": {
-    "message": "Comment published"
+    "message": "Comment published",
+    "description": "Title for the page that appears after the user’s comment has been published."
   },
   "publishedYourDoi": {
-    "message": "Your DOI {doi}"
+    "message": "Your DOI {doi}",
+    "description": "Label for the DOI of the published comment."
   },
   "publishedHappensNextHeading": {
-    "message": "What happens next"
+    "message": "What happens next",
+    "description": "Heading for the section that explains what will happen now the comment is published."
   },
   "publishedSeeShortlyMessage": {
-    "message": "You’ll be able to see your comment shortly."
+    "message": "You’ll be able to see your comment shortly.",
+    "description": "Text that appears alongside the heading “What happens next” explaining that the user will be able to see their comment shortly."
   }
 }
