@@ -1,20 +1,26 @@
 {
   "clubLeads": {
-    "message": "Club leads"
+    "message": "Club leads",
+    "description": "Label for the list of club leads."
   },
   "contactClub": {
-    "message": "Contact the club"
+    "message": "Contact the club",
+    "description": "Button to contact the club."
   },
   "joinClub": {
-    "message": "Join the club"
+    "message": "Join the club",
+    "description": "Button to join the club."
   },
   "prereviews": {
-    "message": "PREreviews"
+    "message": "PREreviews",
+    "description": "Heading for the section showing the club’s PREreviews."
   },
   "noResults": {
-    "message": "{name} hasn’t published a PREreview yet."
+    "message": "{name} hasn’t published a PREreview yet.",
+    "description": "Text shown when the club has not published any PREreviews."
   },
   "appearHere": {
-    "message": "When they do, it’ll appear here."
+    "message": "When they do, it’ll appear here.",
+    "description": "Text that follows the message “{name} hasn’t published a PREreview yet.” when the club has not published any PREreviews."
   }
 }
