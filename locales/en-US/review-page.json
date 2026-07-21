@@ -1,77 +1,98 @@
 {
   "reviewTitle": {
-    "message": "PREreview of {preprint}"
+    "message": "PREreview of {preprint}",
+    "description": "Title of the page that shows a PREreview for a preprint."
   },
   "structuredReviewTitle": {
-    "message": "Structured PREreview of {preprint}"
+    "message": "Structured PREreview of {preprint}",
+    "description": "Title of the page that shows a Structured PREreview for a preprint."
   },
   "requestedPrereview": {
-    "message": "Requested PREreview"
+    "message": "Requested PREreview",
+    "description": "Label shown when the PREreview was requested by someone."
   },
   "liveReview": {
-    "message": "Live Review"
+    "message": "Live Review",
+    "description": "Label shown when the PREreview is a Live Review."
   },
   "otherReviewsLink": {
-    "message": "See other reviews"
+    "message": "See other reviews",
+    "description": "Link to the page that shows all PREreviews for the preprint."
   },
   "readPreprintLink": {
-    "message": "Read the preprint"
+    "message": "Read the preprint",
+    "description": "Link to the preprint on the preprint server."
   },
   "reviewAuthors": {
-    "message": "<hide>Authored</hide> by {authors}"
+    "message": "<hide>Authored</hide> by {authors}",
+    "description": "Text showing the authors of the PREreview."
   },
   "clubReviewAuthors": {
-    "message": "<hide>Authored</hide> by {authors} of {club}"
+    "message": "<hide>Authored</hide> by {authors} of {club}",
+    "description": "Text showing the authors of the PREreview and their club."
   },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {# other author} other {# other authors}}",
     "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "published": {
-    "message": "Published"
+    "message": "Published",
+    "description": "Label for the date when the PREreview was published."
   },
   "license": {
-    "message": "License"
+    "message": "License",
+    "description": "Label for the license of the PREreview."
   },
   "licenseCcZero10": {
     "message": "CC0 1.0 Universal",
     "description": "Name of the license (https://creativecommons.org/publicdomain/zero/1.0/)."
   },
   "licenseCcBy40": {
-    "message": "Attribution 4.0 International"
+    "message": "Attribution 4.0 International",
+    "description": "Name of the license (https://creativecommons.org/licenses/by/4.0/)."
   },
   "addendumTitle": {
-    "message": "Addendum"
+    "message": "Addendum",
+    "description": "Heading for the section showing additions and corrections for a PREreview."
   },
   "commentsTitle": {
-    "message": "Comments"
+    "message": "Comments",
+    "description": "Heading for the section showing comments on the PREreview."
   },
   "noComments": {
-    "message": "No comments have been published yet."
+    "message": "No comments have been published yet.",
+    "description": "Text shown when there are no comments on the PREreview."
   },
   "commentItemTitle": {
     "message": "{authors, plural, one {Comment by {author}} other {Comment by {author} et al.}}",
     "description": "Title for a comment on the review."
   },
   "commentItemAuthors": {
-    "message": "<hide>Authored</hide> by {authors}"
+    "message": "<hide>Authored</hide> by {authors}",
+    "description": "Text showing the authors of the comment."
   },
   "writeCommentButton": {
-    "message": "Write a comment"
+    "message": "Write a comment",
+    "description": "Button to write a comment on the PREreview."
   },
   "prereviewRemoved": {
-    "message": "PREreview removed"
+    "message": "PREreview removed",
+    "description": "Heading of the page that is shown when a PREreview has been removed."
   },
   "weHaveRemoved": {
-    "message": "We’ve removed this PREreview."
+    "message": "We’ve removed this PREreview.",
+    "description": "Text shown alongside the heading “PREreview removed”."
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading of the page when we’re unable to show the PREreview."
   },
   "unableToShow": {
-    "message": "We’re unable to show the PREreview now."
+    "message": "We’re unable to show the PREreview now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   }
 }
