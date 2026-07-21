@@ -68,9 +68,6 @@
   "whereYouCanSeeYourRequest": {
     "message": "Você poderá ver seu pedido em nossa <listOfRequestsLink>lista de solicitações</listOfRequestsLink> e <communitySlackLink>Community Slack</communitySlackLink> em breve."
   },
-  "youCanRequestAPrereview": {
-    "message": " Você pode solicitar uma avaliação PREreview de {preprintTitle}. Uma avaliação PREreview é uma avaliação de um preprint e pode variar de algumas frases a um parecer extenso, semelhante a um parecer de avaliação por pares realizado por periódicos."
-  },
   "beforeYouStart": {
     "message": "Antes de começar"
   },
