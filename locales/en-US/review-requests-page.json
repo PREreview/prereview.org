@@ -1,44 +1,58 @@
 {
   "title": {
-    "message": "Recent review requests"
+    "message": "Recent review requests",
+    "description": "Heading for the page showing review requests."
   },
   "titleWithDetails": {
-    "message": "Recent review requests ({details})"
+    "message": "Recent review requests ({details})",
+    "description": "Heading for the page showing review requests, with details about the filter applied."
   },
   "pageNumber": {
-    "message": "page {page, number}"
+    "message": "page {page, number}",
+    "description": "Label for the page number in the list of review requests."
   },
   "skipResults": {
-    "message": "Skip to results"
+    "message": "Skip to results",
+    "description": "Link to skip the page header and go directly to the list of review requests."
   },
   "filterTitle": {
-    "message": "Filter"
+    "message": "Filter",
+    "description": "Heading for the section showing the filters for the list of review requests."
   },
   "filterLanguageLabel": {
-    "message": "Language"
+    "message": "Language",
+    "description": "Label for the dropdown to filter the list of review requests by language."
   },
   "filterLanguageAny": {
-    "message": "Any"
+    "message": "Any",
+    "description": "Option in the dropdown to filter the list of review requests by language."
   },
   "filterFieldLabel": {
-    "message": "Field"
+    "message": "Field",
+    "description": "Label for the dropdown to filter the list of review requests by field."
   },
   "filterFieldAny": {
-    "message": "Any"
+    "message": "Any",
+    "description": "Option in the dropdown to filter the list of review requests by field."
   },
   "filterButton": {
-    "message": "Filter results"
+    "message": "Filter results",
+    "description": "Button to apply the filters to the list of review requests."
   },
   "pagerNewer": {
-    "message": "Newer"
+    "message": "Newer",
+    "description": "Label for the link to the page containing newer review requests."
   },
   "pagerOlder": {
-    "message": "Older"
+    "message": "Older",
+    "description": "Label for the link to the page containing older review requests."
   },
   "noResults": {
-    "message": "No review requests have been published yet."
+    "message": "No review requests have been published yet.",
+    "description": "Text shown when there are no review requests to show."
   },
   "appearHere": {
-    "message": "When they do, they’ll appear here."
+    "message": "When they do, they’ll appear here.",
+    "description": "Text shown when there are no review requests to show, indicating that they will appear here once published."
   }
 }
