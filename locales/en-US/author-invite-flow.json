@@ -40,7 +40,8 @@
     "description": "Text that appears alongside the heading “What happens next”."
   },
   "yourDoi": {
-    "message": "Your DOI"
+    "message": "Your DOI",
+    "description": "Label for the DOI of the PREreview that has been updated."
   },
   "closeWindowOrSeePrereview": {
     "message": "You can close this window, or <link>see the PREreview</link>.",
