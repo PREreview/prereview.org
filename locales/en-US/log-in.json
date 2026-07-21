@@ -1,20 +1,26 @@
 {
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading of the page when we’re unable to log the user in due to a technical problem."
   },
   "cannotLogYouIn": {
-    "message": "Sorry, we can’t log you in"
+    "message": "Sorry, we can’t log you in",
+    "description": "Heading of the page when the user has denied PREreview access to their details on ORCID."
   },
   "unableToLogYouIn": {
-    "message": "We’re unable to log you in right now."
+    "message": "We’re unable to log you in right now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "youDeniedAccess": {
-    "message": "You have denied PREreview access to your ORCID iD."
+    "message": "You have denied PREreview access to your ORCID iD.",
+    "description": "Text shown alongside the heading “Sorry, we can’t log you in” when the user has denied PREreview access to their details on ORCID."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgain": {
-    "message": "Please try again."
+    "message": "Please try again.",
+    "description": "Text shown alongside the heading “Sorry, we can’t log you in”."
   }
 }
