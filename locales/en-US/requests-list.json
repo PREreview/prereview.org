@@ -1,14 +1,18 @@
 {
   "requestTitle": {
-    "message": "Review request for {preprint}"
+    "message": "Review request for {preprint}",
+    "description": "Title of the review request in a list."
   },
   "requestText": {
-    "message": "A review was requested for {preprint}"
+    "message": "A review was requested for {preprint}",
+    "description": "Text of the review request in a list."
   },
   "requestPublished": {
-    "message": "Request published"
+    "message": "Request published",
+    "description": "Label for the date that the review request was published."
   },
   "requestServer": {
-    "message": "Preprint server"
+    "message": "Preprint server",
+    "description": "Label for the preprint server where the preprint is published."
   }
 }
