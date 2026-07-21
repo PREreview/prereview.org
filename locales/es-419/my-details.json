@@ -167,12 +167,6 @@
   "imageTypeError": {
     "message": "El archivo seleccionado debe ser AVIF, HEIC, JPG, PNG o WebP"
   },
-  "imageSizeError": {
-    "message": "El archivo seleccionado debe ser menor de {size, number} MB"
-  },
-  "youCanUploadAvatar": {
-    "message": "Puedes subir una foto o imagen para usar como tu avatar. El archivo seleccionado debe ser menor que {size, number} MB."
-  },
   "whereWillItShow": {
     "message": "¿Dónde se mostrará?"
   },
