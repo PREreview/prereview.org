@@ -1,41 +1,54 @@
 {
   "loading": {
-    "message": "Loading"
+    "message": "Loading",
+    "description": "Message shown when the HTML editor is loading."
   },
   "bold": {
-    "message": "Bold"
+    "message": "Bold",
+    "description": "Button to make text bold."
   },
   "italic": {
-    "message": "Italic"
+    "message": "Italic",
+    "description": "Button to make text italic."
   },
   "subscript": {
-    "message": "Subscript"
+    "message": "Subscript",
+    "description": "Button to make text subscript."
   },
   "superscript": {
-    "message": "Superscript"
+    "message": "Superscript",
+    "description": "Button to make text superscript."
   },
   "link": {
-    "message": "Link"
+    "message": "Link",
+    "description": "Button to insert a link."
   },
   "headingLevel1": {
-    "message": "Heading level 1"
+    "message": "Heading level 1",
+    "description": "Button to format text as heading level 1."
   },
   "headingLevel2": {
-    "message": "Heading level 2"
+    "message": "Heading level 2",
+    "description": "Button to format text as heading level 2."
   },
   "headingLevel3": {
-    "message": "Heading level 3"
+    "message": "Heading level 3",
+    "description": "Button to format text as heading level 3."
   },
   "bulletedList": {
-    "message": "Bulleted list"
+    "message": "Bulleted list",
+    "description": "Button to create a bulleted list."
   },
   "numberedList": {
-    "message": "Numbered list"
+    "message": "Numbered list",
+    "description": "Button to create a numbered list."
   },
   "formatting": {
-    "message": "Formatting"
+    "message": "Formatting",
+    "description": "Label for the formatting toolbar."
   },
   "enterAUrl": {
-    "message": "Enter a URL"
+    "message": "Enter a URL",
+    "description": "Text alongside the input field for entering a URL having pressed the “Link” button."
   }
 }
