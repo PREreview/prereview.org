@@ -1,69 +1,87 @@
 {
   "prereviewsOf": {
-    "message": "PREreviews of {preprint}"
+    "message": "PREreviews of {preprint}",
+    "description": "Title of the page that shows the PREreviews for a preprint."
   },
   "preprintDetails": {
     "message": "Preprint details",
     "description": "Heading for details of a preprint, such as its title and abstract."
   },
   "abstractHeading": {
-    "message": "Abstract"
+    "message": "Abstract",
+    "description": "Heading for the abstract of a preprint."
   },
   "posted": {
-    "message": "Posted"
+    "message": "Posted",
+    "description": "Label for the date a preprint was posted."
   },
   "server": {
-    "message": "Server"
+    "message": "Server",
+    "description": "Label for the preprint server where the preprint is published."
   },
   "itemId": {
-    "message": "Item ID"
+    "message": "Item ID",
+    "description": "Label for the unique identifier of a preprint on PhilSci-Archive."
   },
   "readPreprint": {
-    "message": "Read the preprint"
+    "message": "Read the preprint",
+    "description": "Button to read the preprint on the preprint server."
   },
   "prereviews": {
     "message": "{number, plural, one {# PREreview} other {# PREreviews}}",
     "description": "Heading for the section showing the PREreviews for the preprint."
   },
   "writeAPrereview": {
-    "message": "Write a PREreview"
+    "message": "Write a PREreview",
+    "description": "Button to write a PREreview for the preprint."
   },
   "requestAPrereview": {
-    "message": "Request a PREreview"
+    "message": "Request a PREreview",
+    "description": "Button to request a PREreview for the preprint."
   },
   "prereviewByOneAuthor": {
-    "message": "PREreview by {author}"
+    "message": "PREreview by {author}",
+    "description": "Heading for a PREreview by a single author."
   },
   "prereviewByOneAuthorInClub": {
-    "message": "PREreview by {author} of {club}"
+    "message": "PREreview by {author} of {club}",
+    "description": "Heading for a PREreview by a single author in a club."
   },
   "prereviewByMultipleAuthors": {
-    "message": "PREreview by {author} et al."
+    "message": "PREreview by {author} et al.",
+    "description": "Heading for a PREreview by multiple authors."
   },
   "prereviewByMultipleAuthorsInClub": {
-    "message": "PREreview by {author} et al. of {club}"
+    "message": "PREreview by {author} et al. of {club}",
+    "description": "Heading for a PREreview by multiple authors in a club."
   },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",
     "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "authoredBy": {
-    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}"
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}",
+    "description": "Text for a PREreview showing its authors."
   },
   "authoredByInClub": {
-    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors} of {club}"
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors} of {club}",
+    "description": "Text for a PREreview showing its authors and club."
   },
   "readPrereviewByOneAuthor": {
-    "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>"
+    "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>",
+    "description": "Link to read a PREreview by a single author."
   },
   "readPrereviewByOneAuthorInClub": {
-    "message": "Read <visuallyHidden>the PREreview by {author} of {club}</visuallyHidden>"
+    "message": "Read <visuallyHidden>the PREreview by {author} of {club}</visuallyHidden>",
+    "description": "Link to read a PREreview by a single author in a club."
   },
   "readPrereviewByMultipleAuthors": {
-    "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>"
+    "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>",
+    "description": "Link to read a PREreview by multiple authors."
   },
   "readPrereviewByMultipleAuthorsInClub": {
-    "message": "Read <visuallyHidden>the PREreview by {author} et al. of {club}</visuallyHidden>"
+    "message": "Read <visuallyHidden>the PREreview by {author} et al. of {club}</visuallyHidden>",
+    "description": "Link to read a PREreview by multiple authors in a club."
   },
   "rapidPrereviews": {
     "message": "{number, plural, one {# Rapid PREreview} other {# Rapid PREreviews}}",
@@ -136,12 +154,15 @@
     "message": "Is sufficient detail provided to allow reproduction of the study?"
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading of the page that is shown when there is a problem showing the preprint and its PREreviews."
   },
   "unableToShow": {
-    "message": "We’re unable to show the preprint and its PREreviews now."
+    "message": "We’re unable to show the preprint and its PREreviews now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   }
 }

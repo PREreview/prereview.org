@@ -1,12 +1,15 @@
 {
   "main": {
-    "message": "Skip to main content"
+    "message": "Skip to main content",
+    "description": "Link that takes the user straight to the main content of the page."
   },
   "form": {
-    "message": "Skip to form"
+    "message": "Skip to form",
+    "description": "Link that takes the user straight to the main content on the page when it is a form."
   },
   "prereview": {
-    "message": "Skip to PREreview"
+    "message": "Skip to PREreview",
+    "description": "Link that takes the user straight to the PREreview on the page."
   },
   "preprintDetails": {
     "message": "Skip to preprint details",
