@@ -1,21 +1,26 @@
 {
   "reviewTitle": {
-    "message": "PREreview of {preprint}"
+    "message": "PREreview of {preprint}",
+    "description": "Title of the review in a list."
   },
   "reviewText": {
-    "message": "{numberOfReviewers, plural, one {{reviewers} reviewed {preprint}} other {{reviewers} reviewed {preprint}}}"
+    "message": "{numberOfReviewers, plural, one {{reviewers} reviewed {preprint}} other {{reviewers} reviewed {preprint}}}",
+    "description": "Text of the review in a list."
   },
   "clubReviewText": {
-    "message": "{numberOfReviewers, plural, one {{reviewers} of {club} reviewed {preprint}} other {{reviewers} of {club} reviewed {preprint}}}"
+    "message": "{numberOfReviewers, plural, one {{reviewers} of {club} reviewed {preprint}} other {{reviewers} of {club} reviewed {preprint}}}",
+    "description": "Text of the review by a club in a list."
   },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",
     "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "reviewPublished": {
-    "message": "Review published"
+    "message": "Review published",
+    "description": "Label for the date that the review was published."
   },
   "reviewServer": {
-    "message": "Preprint server"
+    "message": "Preprint server",
+    "description": "Label for the preprint server where the preprint is published."
   }
 }
