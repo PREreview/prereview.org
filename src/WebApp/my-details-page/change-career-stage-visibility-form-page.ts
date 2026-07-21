@@ -35,7 +35,7 @@ export const createFormPage = ({ careerStage, locale }: { careerStage: CareerSta
                 ${translate(locale, 'my-details', 'everyone')()}
               </label>
               <p id="career-stage-visibility-tip-public" role="note">
-                ${translate(locale, 'my-details', 'showOnPublic')()}
+                ${translate(locale, 'my-details', 'everyoneCareerStageTip')()}
               </p>
             </li>
             <li>
@@ -53,7 +53,7 @@ export const createFormPage = ({ careerStage, locale }: { careerStage: CareerSta
                 ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>
               <p id="career-stage-visibility-tip-restricted" role="note">
-                ${translate(locale, 'my-details', 'willNotShare')()}
+                ${translate(locale, 'my-details', 'onlyPrereviewCareerStageTip')()}
               </p>
             </li>
           </ol>

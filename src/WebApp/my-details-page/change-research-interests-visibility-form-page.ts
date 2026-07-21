@@ -41,7 +41,7 @@ export const createFormPage = ({
                 ${translate(locale, 'my-details', 'everyone')()}
               </label>
               <p id="research-interests-visibility-tip-public" role="note">
-                ${translate(locale, 'my-details', 'showThemOnPublic')()}
+                ${translate(locale, 'my-details', 'everyoneResearchInterestsTip')()}
               </p>
             </li>
             <li>
@@ -59,7 +59,7 @@ export const createFormPage = ({
                 ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>
               <p id="research-interests-visibility-tip-restricted" role="note">
-                ${translate(locale, 'my-details', 'willNotShareThem')()}
+                ${translate(locale, 'my-details', 'onlyPrereviewResearchInterestsTip')()}
               </p>
             </li>
           </ol>

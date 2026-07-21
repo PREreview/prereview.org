@@ -35,7 +35,7 @@ export const createFormPage = ({ locale, location }: { locale: SupportedLocale; 
                 ${translate(locale, 'my-details', 'everyone')()}
               </label>
               <p id="location-visibility-tip-public" role="note">
-                ${translate(locale, 'my-details', 'showOnPublic')()}
+                ${translate(locale, 'my-details', 'everyoneLocationTip')()}
               </p>
             </li>
             <li>
@@ -53,7 +53,7 @@ export const createFormPage = ({ locale, location }: { locale: SupportedLocale; 
                 ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>
               <p id="location-visibility-tip-restricted" role="note">
-                ${translate(locale, 'my-details', 'willNotShare')()}
+                ${translate(locale, 'my-details', 'onlyPrereviewLocationTip')()}
               </p>
             </li>
           </ol>

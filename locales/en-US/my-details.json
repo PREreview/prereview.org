@@ -272,28 +272,52 @@
     "description": "Heading for the page that asks the PREreviewer who can see their career stage."
   },
   "everyone": {
-    "message": "Everyone"
+    "message": "Everyone",
+    "description": "Option for the “Who can see your ...” questions."
   },
-  "showOnPublic": {
-    "message": "We’ll show it on your public profile."
+  "everyoneCareerStageTip": {
+    "message": "We’ll show it on your public profile.",
+    "description": "Text shown alongside the “Everyone” option for the “Who can see your career stage?” question."
   },
-  "showThemOnPublic": {
-    "message": "We’ll show them on your public profile."
+  "everyoneLocationTip": {
+    "message": "We’ll show it on your public profile.",
+    "description": "Text shown alongside the “Everyone” option for the “Who can see your location?” question."
   },
-  "saySoOnPublic": {
-    "message": "We’ll say so on your public profile."
+  "everyoneLanguagesTip": {
+    "message": "We’ll show them on your public profile.",
+    "description": "Text shown alongside the “Everyone” option for the “Who can see your languages?” question."
+  },
+  "everyoneResearchInterestsTip": {
+    "message": "We’ll show them on your public profile.",
+    "description": "Text shown alongside the “Everyone” option for the “Who can see your research interests?” question."
+  },
+  "everyoneOpenForRequestsTip": {
+    "message": "We’ll say so on your public profile.",
+    "description": "Text shown alongside the “Everyone” option for the “Who can see if you are open for review requests?” question."
   },
   "onlyPrereview": {
-    "message": "Only PREreview"
+    "message": "Only PREreview",
+    "description": "Option for the “Who can see your ...” questions."
   },
-  "noOneElseKnow": {
-    "message": "We won’t let anyone else know."
+  "onlyPrereviewOpenForRequestsTip": {
+    "message": "We won’t let anyone else know.",
+    "description": "Text shown alongside the “Only PREreview” option for the “Who can see if you are open for review requests?” question."
   },
-  "willNotShare": {
-    "message": "We won’t share it with anyone else."
+  "onlyPrereviewCareerStageTip": {
+    "message": "We won’t share it with anyone else.",
+    "description": "Text shown alongside the “Only PREreview” option for the “Who can see your career stage?” question."
   },
-  "willNotShareThem": {
-    "message": "We won’t share them with anyone else."
+  "onlyPrereviewLocationTip": {
+    "message": "We won’t share it with anyone else.",
+    "description": "Text shown alongside the “Only PREreview” option for the “Who can see your location?” question."
+  },
+  "onlyPrereviewLanguagesTip": {
+    "message": "We won’t share them with anyone else.",
+    "description": "Text shown alongside the “Only PREreview” option for the “Who can see your languages?” question."
+  },
+  "onlyPrereviewResearchInterestsTip": {
+    "message": "We won’t share them with anyone else.",
+    "description": "Text shown alongside the “Only PREreview” option for the “Who can see your research interests?” question."
   },
   "whatEmailAddress": {
     "message": "What is your email address?",
