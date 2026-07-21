@@ -1,5 +1,6 @@
 {
   "working": {
-    "message": "Please wait, we’re working on it."
+    "message": "Please wait, we’re working on it.",
+    "description": "Message shown when the user has submitted a form where the button can only be clicked once."
   }
 }
