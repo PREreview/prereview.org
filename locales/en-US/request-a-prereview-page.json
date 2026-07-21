@@ -1,169 +1,222 @@
 {
   "requestTitle": {
-    "message": "Which preprint would you like reviewed?"
+    "message": "Which preprint would you like reviewed?",
+    "description": "Heading of the page where a user can request a PREreview for a preprint."
   },
   "useDoiUrl": {
-    "message": "Use the preprint DOI or URL."
+    "message": "Use the preprint DOI or URL.",
+    "description": "Text shown alongside the heading “Which preprint would you like reviewed?”."
   },
   "whatIsDoi": {
-    "message": "What is a DOI?"
+    "message": "What is a DOI?",
+    "description": "Heading for an explanation of what a DOI is."
   },
   "whatIsDoiText": {
-    "message": "A <doi>DOI</doi> is a unique identifier that you can find on many preprints. For example, {example} or {exampleUrl}."
+    "message": "A <doi>DOI</doi> is a unique identifier that you can find on many preprints. For example, {example} or {exampleUrl}.",
+    "description": "Text following the heading “What is a DOI?” that explains what a DOI is and gives examples of what a DOI looks like."
   },
   "errorEnterPreprint": {
-    "message": "Enter the preprint DOI or URL"
+    "message": "Enter the preprint DOI or URL",
+    "description": "Error message shown when the user tries to complete the form “Which preprint would you like reviewed?” without entering a value."
   },
   "doNotKnowPreprint": {
-    "message": "Sorry, we don’t know this preprint"
+    "message": "Sorry, we don’t know this preprint",
+    "description": "Title of the page following the form “Which preprint would you like reviewed?” when we don’t recognize the preprint DOI or URL."
   },
   "notAPreprint": {
-    "message": "Sorry, we only support preprints"
+    "message": "Sorry, we only support preprints",
+    "description": "Title of the page following the form “Which preprint would you like reviewed?” when the DOI or URL entered is not a preprint."
   },
   "unsupportedDoiTitle": {
-    "message": "Sorry, we don’t support this DOI"
+    "message": "Sorry, we don’t support this DOI",
+    "description": "Title of the page following the form “Which preprint would you like reviewed?” when we recognize the DOI format but don’t support the server it’s from."
   },
   "unsupportedUrlTitle": {
-    "message": "Sorry, we don’t support this URL"
+    "message": "Sorry, we don’t support this URL",
+    "description": "Title of the page following the form “Which preprint would you like reviewed?” when we can’t work out the preprint DOI from the URL."
   },
   "doiCouldBeAdvance": {
-    "message": "We think the DOI {doi} could be an Advance preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an Advance preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeAfricarxiv": {
-    "message": "We think the DOI {doi} could be an AfricArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an AfricArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeArcadiaScience": {
-    "message": "We think the DOI {doi} could be an Arcadia Science preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an Arcadia Science preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeArxiv": {
-    "message": "We think the DOI {doi} could be an arXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an arXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeAuthorea": {
-    "message": "We think the DOI {doi} could be an Authorea preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an Authorea preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeBiorxiv": {
-    "message": "We think the DOI {doi} could be a bioRxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a bioRxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeBiorxivMedrxiv": {
-    "message": "We think the DOI {doi} could be a bioRxiv or medRxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a bioRxiv or medRxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeChemrxiv": {
-    "message": "We think the DOI {doi} could be a ChemRxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a ChemRxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeCurvenote": {
-    "message": "We think the DOI {doi} could be a Curvenote preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Curvenote preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeEartharxiv": {
-    "message": "We think the DOI {doi} could be an EarthArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an EarthArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeEcoevorxiv": {
-    "message": "We think the DOI {doi} could be an EcoEvoRxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an EcoEvoRxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeEdarxiv": {
-    "message": "We think the DOI {doi} could be an EdArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an EdArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeEngrxiv": {
-    "message": "We think the DOI {doi} could be an engrXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an engrXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeJmir": {
     "message": "We think the DOI {doi} could be a JMIR preprint, but we can’t find any details.",
     "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeJxiv": {
-    "message": "We think the DOI {doi} could be a Jxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Jxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeLifecycleJournal": {
-    "message": "We think the DOI {doi} could be a Lifecycle Journal preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Lifecycle Journal preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeMedrxiv": {
-    "message": "We think the DOI {doi} could be a medRxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a medRxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeMetaarxiv": {
-    "message": "We think the DOI {doi} could be a MetaArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a MetaArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeNeurolibre": {
-    "message": "We think the DOI {doi} could be a NeuroLibre preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a NeuroLibre preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeOsf": {
-    "message": "We think the DOI {doi} could be an OSF preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an OSF preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeOsfLifecycleJournal": {
-    "message": "We think the DOI {doi} could be an OSF or Lifecycle Journal preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an OSF or Lifecycle Journal preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBePreprintsorg": {
-    "message": "We think the DOI {doi} could be a Preprints.org preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Preprints.org preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBePsyarxiv": {
-    "message": "We think the DOI {doi} could be a PsyArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a PsyArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBePsycharchives": {
-    "message": "We think the DOI {doi} could be a PsychArchives preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a PsychArchives preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeResearchSquare": {
-    "message": "We think the DOI {doi} could be a Research Square preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Research Square preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeScielo": {
-    "message": "We think the DOI {doi} could be a SciELO preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a SciELO preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeScienceOpen": {
-    "message": "We think the DOI {doi} could be a ScienceOpen preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a ScienceOpen preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeSocarxiv": {
-    "message": "We think the DOI {doi} could be a SocArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a SocArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeSsrn": {
-    "message": "We think the DOI {doi} could be an SSRN preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be an SSRN preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeTechrxiv": {
-    "message": "We think the DOI {doi} could be a TechRxiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a TechRxiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeVerixiv": {
-    "message": "We think the DOI {doi} could be a VeriXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a VeriXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeUmsida": {
     "message": "We think the DOI {doi} could be an UMSIDA preprint, but we can’t find any details.",
     "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeZenodo": {
-    "message": "We think the DOI {doi} could be a Zenodo preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Zenodo preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiCouldBeZenodoAfricarxiv": {
-    "message": "We think the DOI {doi} could be a Zenodo or AfricArXiv preprint, but we can’t find any details."
+    "message": "We think the DOI {doi} could be a Zenodo or AfricArXiv preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "urlCouldBePhilsci": {
-    "message": "We think the URL {url} could be a PhilSci-Archive preprint, but we can’t find any details."
+    "message": "We think the URL {url} could be a PhilSci-Archive preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "checkCorrectDoi": {
-    "message": "If you typed the DOI, check it is correct."
+    "message": "If you typed the DOI, check it is correct.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "checkCorrectUrl": {
-    "message": "If you typed the URL, check it is correct."
+    "message": "If you typed the URL, check it is correct.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "checkPastedDoi": {
-    "message": "If you pasted the DOI, check you copied the entire address."
+    "message": "If you pasted the DOI, check you copied the entire address.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "checkPastedUrl": {
-    "message": "If you pasted the URL, check you copied the entire address."
+    "message": "If you pasted the URL, check you copied the entire address.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "doiIsCorrect": {
-    "message": "If the DOI is correct, please <contact>get in touch</contact>."
+    "message": "If the DOI is correct, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "urlIsCorrect": {
-    "message": "If the URL is correct, please <contact>get in touch</contact>."
+    "message": "If the URL is correct, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
   "supportPreprintsFrom": {
-    "message": "We support preprints from {servers}."
+    "message": "We support preprints from {servers}.",
+    "description": "Text shown alongside the titles “Sorry, we don’t support this DOI”, “Sorry, we don’t support this URL” and “Sorry, we only support preprints”."
   },
   "isAPreprint": {
-    "message": "If this is a preprint, please <contact>get in touch</contact>."
+    "message": "If this is a preprint, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the title “Sorry, we only support preprints."
   },
   "doiContactUs": {
-    "message": "If this DOI is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
+    "message": "If this DOI is for a preprint on a server we don’t support, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the title “Sorry, we don’t support this DOI”."
   },
   "urlContactUs": {
-    "message": "If this URL is for a preprint on a server we don’t support, please <contact>get in touch</contact>."
+    "message": "If this URL is for a preprint on a server we don’t support, please <contact>get in touch</contact>.",
+    "description": "Text shown alongside the title “Sorry, we don’t support this URL”."
   },
   "tryDoi": {
-    "message": "Otherwise, if the preprint has a DOI, please try using that instead."
+    "message": "Otherwise, if the preprint has a DOI, please try using that instead.",
+    "description": "Text shown alongside the title “Sorry, we don’t support this URL”."
   }
 }
