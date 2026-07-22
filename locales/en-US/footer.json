@@ -88,11 +88,11 @@
     "description": "Text of the link to PREreview’s GitHub profile."
   },
   "zenodo": {
-    "message": "PREreviews are available in our <community>Zenodo Community</community> and the <api>Zenodo API</api>.",
+    "message": "PREreviews are available in our <community>Zenodo Community</community> and the <api>Zenodo API</api>.",
     "description": "Text that describes where PREreviews are available on Zenodo."
   },
   "copyright": {
-    "message": "All content is available under a Creative Commons <link>Attribution 4.0 International license</link>, except where otherwise stated.",
+    "message": "All content is available under a Creative Commons <link>Attribution 4.0 International license</link>, except where otherwise stated.",
     "description": "Text that describes the copyright license for content on PREreview.org."
   }
 }

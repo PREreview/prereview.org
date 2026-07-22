@@ -116,15 +116,15 @@
     "description": "Error message that appears when the user submits the “What name would you like to use?” form without selecting an option."
   },
   "youCanChooseBetweenNames": {
-    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
+    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
     "description": "Text that appears alongside the heading “What name would you like to use?”."
   },
   "whatIsAPseudonym": {
-    "message": "What is a PREreview pseudonym?",
+    "message": "What is a PREreview pseudonym?",
     "description": "Heading for the section that explains what a PREreview pseudonym is."
   },
   "pseudonymIsA": {
-    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
+    "message": "A <term>PREreview pseudonym</term> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
     "description": "Text following the “What is a PREreview pseudonym?” heading explaining what a PREreview pseudonym is."
   },
   "pseudonymAccountability": {
@@ -132,7 +132,7 @@
     "description": "Text following the “What is a PREreview pseudonym?” heading explaining why you might choose to use a PREreview pseudonym."
   },
   "linkToOrcidId": {
-    "message": "We’ll link your PREreview to your ORCID iD.",
+    "message": "We’ll link your PREreview to your ORCID iD.",
     "description": "Text that accompanies the public persona choice for the question “What name would you like to use?”."
   },
   "linkToPseudonym": {
@@ -280,7 +280,7 @@
     "description": "Text that appears alongside a link where it will open in a new tab."
   },
   "letUsKnowAuthorDetails": {
-    "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}.",
+    "message": "Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the PREreview. Our email address is {mailtoHelp}.",
     "description": "Text that appears alongside the heading “What happens next” explaining that the user can let PREreview know the other authors’ details."
   },
   "sentEmailsToAuthors": {
@@ -516,15 +516,15 @@
     "description": "Heading for the section that contains information about what the user needs to know before starting a PREreview."
   },
   "orcidLogIn": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
     "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsOrcidHeading": {
-    "message": "What is an ORCID iD?",
+    "message": "What is an ORCID iD?",
     "description": "Heading for the explanation of what an ORCID iD is."
   },
   "whatIsOrcid": {
-    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
     "description": "Text following the heading “What is an ORCID iD?” explaining what an ORCID iD is."
   },
   "asYouHaveAlreadyStarted": {
@@ -740,15 +740,15 @@
     "description": "Label for the input for providing details having selected the “Yes” option for the “Do you have any competing interests?” question."
   },
   "confirmCodeOfConduct": {
-    "message": "Confirm that you are following the Code of Conduct",
-    "description": "Error message shown when a user tries to submit the “Code of Conduct” form without ticking the “I’m following the Code of Conduct” checkbox."
+    "message": "Confirm that you are following the Code of Conduct",
+    "description": "Error message shown when a user tries to submit the “Code of Conduct” form without ticking the “I’m following the Code of Conduct” checkbox."
   },
   "codeOfConduct": {
     "message": "Code of Conduct",
     "description": "Title for the page where a user can confirm that they are following the Code of Conduct."
   },
   "expectYouToAbideByCodeOfConduct": {
-    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
     "description": "Information provided for the “Code of Conduct” form."
   },
   "examplesOfExpectedBehavior": {
