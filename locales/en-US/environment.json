@@ -1,14 +1,18 @@
 {
   "devName": {
-    "message": "Dev"
+    "message": "Dev",
+    "description": "Label for the local development environment."
   },
   "devText": {
-    "message": "Local development"
+    "message": "Local development",
+    "description": "Text for the local development environment."
   },
   "sandboxName": {
-    "message": "Sandbox"
+    "message": "Sandbox",
+    "description": "Label for the sandbox environment."
   },
   "sandboxText": {
-    "message": "This version is a sandbox."
+    "message": "This version is a sandbox.",
+    "description": "Text for the sandbox environment."
   }
 }
