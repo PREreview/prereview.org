@@ -68,8 +68,8 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2
       cdigit:
-        specifier: ^4.0.4
-        version: 4.0.4
+        specifier: ^5.0.1
+        version: 5.0.1
       cld:
         specifier: ^2.10.1
         version: 2.10.1
@@ -2233,8 +2233,8 @@ packages:
     resolution: {integrity: sha512-wljhAjDDIv/hM2FzgJnYQg90AWmZMNtESCjTeLH680qTzdo0nErlCxOmgzgX4ZsZAtIvqHyD87ES8QyriXB+BQ==}
     engines: {node: '>=18'}
 
-  cdigit@4.0.4:
-    resolution: {integrity: sha512-dJxSzIpt9TTkrj2mhKThHtFLmG6SxglgkAg/YFl5YfSs/p4aHi4NdLj5t31454hUx70EiOSmhu4kbc/eT+0t5g==}
+  cdigit@5.0.1:
+    resolution: {integrity: sha512-AW6HKtdmEM50gj5QSg2z9MiG3qyL3z0czyQvV0yJ1fJKgBtp+GmvEbFi6LIQCzwuQmTyjxgCXC92SMF2hsKWFw==}
     hasBin: true
 
   chai@6.2.2:
@@ -7029,7 +7029,7 @@ snapshots:
 
   case-anything@3.1.2: {}
 
-  cdigit@4.0.4:
+  cdigit@5.0.1:
     dependencies:
       commander: 15.0.0
 
