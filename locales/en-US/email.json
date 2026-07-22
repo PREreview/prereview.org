@@ -1,43 +1,55 @@
 {
   "verifyEmailAddressTitle": {
-    "message": "Verify your email address on PREreview"
+    "message": "Verify your email address on PREreview",
+    "description": "The title of the email sent to a user when they need to verify their email address."
   },
   "hiName": {
-    "message": "Hi {name},"
+    "message": "Hi {name},",
+    "description": "Greeting in an email."
   },
   "verifyEmailAddressWithButton": {
-    "message": "Please verify your email address on PREreview:"
+    "message": "Please verify your email address on PREreview:",
+    "description": "Text in the email titled “Verify your email address on PREreview” that tells the recipient to verify their email address by pressing the button below."
   },
   "verifyEmailAddressGoingTo": {
-    "message": "Please verify your email address on PREreview by going to {link}"
+    "message": "Please verify your email address on PREreview by going to {link}",
+    "description": "Text in the email titled “Verify your email address on PREreview” that tells the recipient to verify their email address by going to the provided link."
   },
   "verifyEmailAddressButton": {
-    "message": "Verify email address"
+    "message": "Verify email address",
+    "description": "Button in the email titled “Verify your email address on PREreview” that verifies the recipient’s email address."
   },
   "beListedAsAuthor": {
-    "message": "Be listed as a PREreview author"
+    "message": "Be listed as a PREreview author",
+    "description": "The title of the email sent to a user when they have been invited to be listed as an author on a PREreview."
   },
   "thanksContributingReview": {
-    "message": "Thank you for contributing to a recent review of “{preprint}” published on {prereview}!"
+    "message": "Thank you for contributing to a recent review of “{preprint}” published on {prereview}!",
+    "description": "Text in the email titled “Be listed as a PREreview author” thanking the recipient for contributing to a recent review."
   },
   "authorHasInvitedYou": {
-    "message": "{author} has invited you to appear as an author on the PREreview."
+    "message": "{author} has invited you to appear as an author on the PREreview.",
+    "description": "Text in the email titled “Be listed as a PREreview author” informing the recipient that they have been invited to appear as an author."
   },
   "beListedGoingTo": {
-    "message": "You can be listed by going to:"
+    "message": "You can be listed by going to:",
+    "description": "Text in the email titled “Be listed as a PREreview author” that tells the recipient they can be listed by going to the provided link."
   },
   "beListedAsAuthorButton": {
-    "message": "Be listed as an author"
+    "message": "Be listed as an author",
+    "description": "Button in the email titled “Be listed as a PREreview author” that allows the recipient to be listed as an author."
   },
   "chooseNotToBeListedIgnoring": {
     "message": "You can also choose not to be listed by ignoring this email.",
     "description": "Text in the email titled “Be listed as a PREreview author” that tells the recipient they can choose not to be listed."
   },
   "chooseNotToBeListedGoingTo": {
-    "message": "You can also choose not to be listed by ignoring this email or going to:"
+    "message": "You can also choose not to be listed by ignoring this email or going to:",
+    "description": "Text in the email titled “Be listed as a PREreview author” that tells the recipient they can choose not to be listed by going to the provided link."
   },
   "chooseNotToBeListedLink": {
-    "message": "You can also choose not to be listed by <link>declining this invitation</link> or ignoring this email."
+    "message": "You can also choose not to be listed by <link>declining this invitation</link> or ignoring this email.",
+    "description": "Text in the email titled “Be listed as a PREreview author” that tells the recipient they can choose not to be listed by following the link to decline the invitation or ignoring the email."
   },
   "acknowledgeReviewRequestTitle": {
     "message": "Review requested from the PREreview community",
@@ -56,10 +68,12 @@
     "description": "Text in the email titled “Review requested from the PREreview community”."
   },
   "haveAnyQuestions": {
-    "message": "If you have any questions, please let us know at {emailAddress}."
+    "message": "If you have any questions, please let us know at {emailAddress}.",
+    "description": "Text in an email providing our contact email address."
   },
   "allTheBest": {
-    "message": "All the best,"
+    "message": "All the best,",
+    "description": "Closing of an email, followed by the sender's name."
   },
   "footerIntro": {
     "message": "PREreview is a platform, resource center, and convener.",
