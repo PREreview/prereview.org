@@ -88,70 +88,92 @@
     "description": "Heading for the section showing the Rapid PREreviews for the preprint."
   },
   "whereCanRapidPrereview": {
-    "message": "Where can I fill out a Rapid PREreview?"
+    "message": "Where can I fill out a Rapid PREreview?",
+    "description": "Heading for the section explaining where to fill out a Rapid PREreview for a preprint."
   },
   "rapidReplacedWith": {
-    "message": "We’ve recently replaced Rapid PREreviews with <link>Structured PREreviews</link>."
+    "message": "We’ve recently replaced Rapid PREreviews with <link>Structured PREreviews</link>.",
+    "description": "Text shown alongside the heading “Where can I fill out a Rapid PREreview?” to explain that Rapid PREreviews have been replaced."
   },
   "writeStructuredPrereview": {
-    "message": "You can <link>write a Structured PREreview</link> now."
+    "message": "You can <link>write a Structured PREreview</link> now.",
+    "description": "Text shown alongside the heading “Where can I fill out a Rapid PREreview?” to explain that Structured PREreviews are now available."
   },
   "updatingRapidPrereviews": {
-    "message": "We’ll be updating older Rapid PREreviews like these soon."
+    "message": "We’ll be updating older Rapid PREreviews like these soon.",
+    "description": "Text shown alongside the heading “Where can I fill out a Rapid PREreview?” to explain that older Rapid PREreviews will be updated."
   },
   "aggregatedRapidPreviews": {
-    "message": "Aggregated Rapid PREreviews"
+    "message": "Aggregated Rapid PREreviews",
+    "description": "Heading for the section showing the aggregated Rapid PREreviews for the preprint."
   },
   "question": {
-    "message": "Question"
+    "message": "Question",
+    "description": "Label for the questions in a Rapid PREreview."
   },
   "yes": {
-    "message": "Yes"
+    "message": "Yes",
+    "description": "Answer to a question in a Rapid PREreview where the answer is affirmative."
   },
   "unsure": {
-    "message": "Unsure"
+    "message": "Unsure",
+    "description": "Answer to a question in a Rapid PREreview where the answer is uncertain."
   },
   "na": {
-    "message": "N/A"
+    "message": "N/A",
+    "description": "Answer to a question in a Rapid PREreview where the answer is not applicable."
   },
   "no": {
-    "message": "No"
+    "message": "No",
+    "description": "Answer to a question in a Rapid PREreview where the answer is negative."
   },
   "rapidAvailableCode": {
-    "message": "Is the code used in the manuscript available?"
+    "message": "Is the code used in the manuscript available?",
+    "description": "Question in a Rapid PREreview asking whether the code used in the manuscript is available."
   },
   "rapidAvailableData": {
-    "message": "Are the data used in the manuscript available?"
+    "message": "Are the data used in the manuscript available?",
+    "description": "Question in a Rapid PREreview asking whether the data used in the manuscript are available."
   },
   "rapidCoherent": {
-    "message": "Are the principal conclusions supported by the data and analysis?"
+    "message": "Are the principal conclusions supported by the data and analysis?",
+    "description": "Question in a Rapid PREreview asking whether the principal conclusions are supported by the data and analysis."
   },
   "rapidEthics": {
-    "message": "Have the authors adequately discussed ethical concerns?"
+    "message": "Have the authors adequately discussed ethical concerns?",
+    "description": "Question in a Rapid PREreview asking whether the authors have adequately discussed ethical concerns."
   },
   "rapidFuture": {
-    "message": "Are the results likely to lead to future research?"
+    "message": "Are the results likely to lead to future research?",
+    "description": "Question in a Rapid PREreview asking whether the results are likely to lead to future research."
   },
   "rapidLimitations": {
-    "message": "Does the manuscript discuss limitations?"
+    "message": "Does the manuscript discuss limitations?",
+    "description": "Question in a Rapid PREreview asking whether the manuscript discusses limitations."
   },
   "rapidMethods": {
-    "message": "Are the methods and statistics appropriate for the analysis?"
+    "message": "Are the methods and statistics appropriate for the analysis?",
+    "description": "Question in a Rapid PREreview asking whether the methods and statistics are appropriate for the analysis."
   },
   "rapidNewData": {
-    "message": "Does the manuscript include new data?"
+    "message": "Does the manuscript include new data?",
+    "description": "Question in a Rapid PREreview asking whether the manuscript includes new data."
   },
   "rapidNovel": {
-    "message": "Are the findings novel?"
+    "message": "Are the findings novel?",
+    "description": "Question in a Rapid PREreview asking whether the findings are novel."
   },
   "rapidPeerReview": {
-    "message": "Do you recommend this manuscript for peer review?"
+    "message": "Do you recommend this manuscript for peer review?",
+    "description": "Question in a Rapid PREreview asking whether the reviewer recommends the manuscript for peer review."
   },
   "rapidRecommend": {
-    "message": "Would you recommend this manuscript to others?"
+    "message": "Would you recommend this manuscript to others?",
+    "description": "Question in a Rapid PREreview asking whether the reviewer would recommend the manuscript to others."
   },
   "rapidReproducibility": {
-    "message": "Is sufficient detail provided to allow reproduction of the study?"
+    "message": "Is sufficient detail provided to allow reproduction of the study?",
+    "description": "Question in a Rapid PREreview asking whether sufficient detail is provided to allow reproduction of the study."
   },
   "havingProblems": {
     "message": "Sorry, we’re having problems",
