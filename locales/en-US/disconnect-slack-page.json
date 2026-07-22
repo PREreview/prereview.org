@@ -1,26 +1,34 @@
 {
   "disconnectSlackAccount": {
-    "message": "Disconnect your Community Slack Account"
+    "message": "Disconnect your Community Slack Account",
+    "description": "Title for the page where users can disconnect their PREreview profile from their Community Slack account."
   },
   "youCanDisconnect": {
-    "message": "You can disconnect your PREreview profile from your account on the PREreview Community Slack."
+    "message": "You can disconnect your PREreview profile from your account on the PREreview Community Slack.",
+    "description": "Text shown alongside the heading “Disconnect your Community Slack Account”."
   },
   "removeOrcidId": {
-    "message": "We’ll remove your ORCID iD from your Slack profile."
+    "message": "We’ll remove your ORCID iD from your Slack profile.",
+    "description": "Text shown alongside the heading “Disconnect your Community Slack Account”."
   },
   "canReconnect": {
-    "message": "You will be able to reconnect it at any time."
+    "message": "You will be able to reconnect it at any time.",
+    "description": "Text shown alongside the heading “Disconnect your Community Slack Account”."
   },
   "disconnectAccountButton": {
-    "message": "Disconnect account"
+    "message": "Disconnect account",
+    "description": "Button on the “Disconnect your Community Slack Account” page that disconnects the user’s PREreview profile from their Community Slack account."
   },
   "havingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading for the page shown when there are issues disconnecting the Community Slack account."
   },
   "unableToDisconnect": {
-    "message": "We’re unable to disconnect your account right now."
+    "message": "We’re unable to disconnect your account right now.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "tryAgainLater": {
-    "message": "Please try again later."
+    "message": "Please try again later.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   }
 }
