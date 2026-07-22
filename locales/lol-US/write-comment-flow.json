@@ -12,19 +12,19 @@
     "message": "crwdns4180:0crwdne4180:0"
   },
   "orcidLogIn": {
-    "message": "crwdns4182:0crwdne4182:0"
+    "message": "crwdns6853:0crwdne6853:0"
   },
   "whatIsOrcidHeading": {
-    "message": "crwdns4184:0crwdne4184:0"
+    "message": "crwdns6855:0crwdne6855:0"
   },
   "whatIsOrcid": {
-    "message": "crwdns4186:0crwdne4186:0"
+    "message": "crwdns6857:0crwdne6857:0"
   },
   "reloadPageButton": {
     "message": "crwdns4194:0crwdne4194:0"
   },
   "carryOnMessage": {
-    "message": "crwdns4196:0{preprint}crwdne4196:0"
+    "message": "crwdns6859:0{preprint}crwdne6859:0"
   },
   "enterYourCommentTitle": {
     "message": "crwdns5824:0crwdne5824:0"
@@ -39,19 +39,19 @@
     "message": "crwdns5830:0crwdne5830:0"
   },
   "whichNameTip": {
-    "message": "crwdns5449:0crwdne5449:0"
+    "message": "crwdns6861:0crwdne6861:0"
   },
   "whatIsPseudonym": {
-    "message": "crwdns4210:0crwdne4210:0"
+    "message": "crwdns6863:0crwdne6863:0"
   },
   "whatIsPseudonymDefinition": {
-    "message": "crwdns4212:0{pseudonym}crwdne4212:0"
+    "message": "crwdns6865:0{pseudonym}crwdne6865:0"
   },
   "whatIsPseudonymAccountability": {
     "message": "crwdns4214:0crwdne4214:0"
   },
   "linkToOrcidId": {
-    "message": "crwdns4216:0crwdne4216:0"
+    "message": "crwdns6867:0crwdne6867:0"
   },
   "linkToPseudonym": {
     "message": "crwdns4218:0crwdne4218:0"
@@ -108,10 +108,10 @@
     "message": "crwdns5838:0crwdne5838:0"
   },
   "errorFollowingCodeOfConduct": {
-    "message": "crwdns5840:0crwdne5840:0"
+    "message": "crwdns6869:0crwdne6869:0"
   },
   "codeOfConductTip": {
-    "message": "crwdns4256:0crwdne4256:0"
+    "message": "crwdns6871:0crwdne6871:0"
   },
   "examplesExpectedBehaviors": {
     "message": "crwdns4258:0crwdne4258:0"
@@ -156,7 +156,7 @@
     "message": "crwdns4284:0crwdne4284:0"
   },
   "followingCodeOfConduct": {
-    "message": "crwdns4286:0crwdne4286:0"
+    "message": "crwdns6873:0crwdne6873:0"
   },
   "contactDetailsTitle": {
     "message": "crwdns5842:0crwdne5842:0"
@@ -216,7 +216,7 @@
     "message": "crwdns4306:0crwdne4306:0"
   },
   "nowPublishMessage": {
-    "message": "crwdns4308:0crwdne4308:0"
+    "message": "crwdns6875:0crwdne6875:0"
   },
   "publishButton": {
     "message": "crwdns4310:0crwdne4310:0"

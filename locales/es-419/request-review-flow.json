@@ -2,9 +2,6 @@
   "checkYourRequest": {
     "message": "Verificar tu solicitud"
   },
-  "back": {
-    "message": "Volver"
-  },
   "yourDetails": {
     "message": "Tus detalles"
   },
@@ -47,20 +44,8 @@
   "selectNameYouWouldLikeToUse": {
     "message": "Seleccionar el nombre que te gustaría usar"
   },
-  "chooseBetweenOrcidNameAndPseudonym": {
-    "message": "Puedes elegir entre el nombre en tu registro ORCID o tu seudónimo de PREreview."
-  },
-  "whatIsAPrereviewPseudonym": {
-    "message": "¿Qué es un seudónimo de PREreview?"
-  },
-  "prereviewPseudonymExplainer": {
-    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes utilizar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}.’"
-  },
   "whyUseAPseudonym": {
     "message": "Puedes contribuir a la revisión abierta de preprints utilizando tu seudónimo sin temor a represalias o censuras que pudieran ocurrir al usar tu nombre verdadero. Sin embargo, aún usando un seudónimo existe cierto grado de responsabilidad."
-  },
-  "weWillLinkRequestToYourOrcid": {
-    "message": "Vincularemos tu solicitud a tu ORCID iD."
   },
   "weWillLinkRequestToOthersThatUseYourPseudonym": {
     "message": "Solo vincularemos tu solicitud a otras que también usen tu seudónimo."
@@ -76,17 +61,5 @@
   },
   "beforeYouStart": {
     "message": "Antes de iniciar"
-  },
-  "weWillAskYouToLogInWithYourOrcid": {
-    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un iD, puedes crear uno."
-  },
-  "whatIsAnOrcid": {
-    "message": "¿Qué es un ORCID iD?"
-  },
-  "orcidExplainer": {
-    "message": "Un <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> es un identificador único que te distingue de todas las demás personas con el mismo nombre o un nombre similar."
-  },
-  "asYouHaveAlreadyStarted": {
-    "message": "Como ya has comenzado, te llevaremos al siguiente paso para que puedas continuar."
   }
 }

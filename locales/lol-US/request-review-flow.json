@@ -2,9 +2,6 @@
   "checkYourRequest": {
     "message": "crwdns5491:0crwdne5491:0"
   },
-  "back": {
-    "message": "crwdns5493:0crwdne5493:0"
-  },
   "yourDetails": {
     "message": "crwdns5495:0crwdne5495:0"
   },
@@ -93,19 +90,19 @@
     "message": "crwdns5523:0crwdne5523:0"
   },
   "chooseBetweenOrcidNameAndPseudonym": {
-    "message": "crwdns5559:0crwdne5559:0"
+    "message": "crwdns6901:0crwdne6901:0"
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "crwdns5527:0crwdne5527:0"
+    "message": "crwdns6903:0crwdne6903:0"
   },
   "prereviewPseudonymExplainer": {
-    "message": "crwdns6596:0{pseudonym}crwdne6596:0"
+    "message": "crwdns6905:0{pseudonym}crwdne6905:0"
   },
   "whyUseAPseudonym": {
     "message": "crwdns5531:0crwdne5531:0"
   },
   "weWillLinkRequestToYourOrcid": {
-    "message": "crwdns5533:0crwdne5533:0"
+    "message": "crwdns6907:0crwdne6907:0"
   },
   "weWillLinkRequestToOthersThatUseYourPseudonym": {
     "message": "crwdns6598:0crwdne6598:0"
@@ -126,15 +123,15 @@
     "message": "crwdns5545:0crwdne5545:0"
   },
   "weWillAskYouToLogInWithYourOrcid": {
-    "message": "crwdns5547:0crwdne5547:0"
+    "message": "crwdns6909:0crwdne6909:0"
   },
   "whatIsAnOrcid": {
-    "message": "crwdns5549:0crwdne5549:0"
+    "message": "crwdns6911:0crwdne6911:0"
   },
   "orcidExplainer": {
-    "message": "crwdns5551:0crwdne5551:0"
+    "message": "crwdns6913:0crwdne6913:0"
   },
   "asYouHaveAlreadyStarted": {
-    "message": "crwdns5555:0crwdne5555:0"
+    "message": "crwdns6915:0crwdne6915:0"
   }
 }

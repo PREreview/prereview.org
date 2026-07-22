@@ -11,20 +11,8 @@
   "beforeStartHeading": {
     "message": "Antes de comenzar"
   },
-  "orcidLogIn": {
-    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un ORCID iD, puedes crear uno."
-  },
-  "whatIsOrcidHeading": {
-    "message": "¿Qué es un ORCID iD?"
-  },
-  "whatIsOrcid": {
-    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las demás personas con el mismo nombre o similar."
-  },
   "reloadPageButton": {
     "message": "Recargar página"
-  },
-  "carryOnMessage": {
-    "message": "Como ya has comenzado un comentario en este PREreview del {preprint}, te llevaremos al siguiente paso para que puedas continuar.{preprint}."
   },
   "enterYourCommentTitle": {
     "message": "Escribir tu comentario"
@@ -38,20 +26,8 @@
   "errorSelectName": {
     "message": "Seleccionar el nombre que te gustaría usar"
   },
-  "whichNameTip": {
-    "message": "Puedes elegir entre el nombre en tu registro ORCID o tu seudónimo de PREreview."
-  },
-  "whatIsPseudonym": {
-    "message": "¿Qué es un seudónimo de PREreview?"
-  },
-  "whatIsPseudonymDefinition": {
-    "message": "Un <term>seudónimo de PREreview</term> es un nombre alternativo que puedes usar en lugar de tu nombre verdadero. Es único y combina en forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}’."
-  },
   "whatIsPseudonymAccountability": {
     "message": "Puedes contribuir a la revisión abierta de preprints utilizando tu seudónimo sin temor a las represalias o censuras que pudieran ocurrir al usar tu nombre verdadero. Sin embargo, aún con el uso de un seudónimo existe cierto grado de responsabilidad."
-  },
-  "linkToOrcidId": {
-    "message": "Vincularemos tu comentario a tu ORCID iD."
   },
   "linkToPseudonym": {
     "message": "Solo vincularemos tu comentario a otros que también usen tu seudónimo."
@@ -107,12 +83,6 @@
   "codeOfConductTitle": {
     "message": "Código de conducta"
   },
-  "errorFollowingCodeOfConduct": {
-    "message": "Confirma que te adhieres al Código de Conducta"
-  },
-  "codeOfConductTip": {
-    "message": "Como integrante de nuestra comunidad, esperamos que cumplas con el <link>Código de conducta de PREreview</link>."
-  },
   "examplesExpectedBehaviors": {
     "message": "Ejemplos de conducta esperada"
   },
@@ -154,9 +124,6 @@
   },
   "unacceptableBehaviorOther": {
     "message": "Otra conducta que podría razonablemente considerarse inapropiada en un entorno profesional."
-  },
-  "followingCodeOfConduct": {
-    "message": "Estoy cumpliendo con el Código de conducta"
   },
   "contactDetailsTitle": {
     "message": "Datos de contacto"
@@ -214,9 +181,6 @@
   },
   "nowPublishHeading": {
     "message": "Ahora publica tu comentario"
-  },
-  "nowPublishMessage": {
-    "message": "Asignaremos a tu comentario un DOI (un identificador permanente) y lo pondremos a disposición del público bajo una <license>licencia CC BY 4.0</license>."
   },
   "publishButton": {
     "message": "Publicar comentario"

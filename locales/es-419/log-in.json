@@ -8,9 +8,6 @@
   "unableToLogYouIn": {
     "message": "No podemos iniciar sesión por el momento."
   },
-  "youDeniedAccess": {
-    "message": "Has denegado a PREreview el acceso a tu ORCID iD."
-  },
   "tryAgainLater": {
     "message": "Favor de intentar de nuevo más tarde."
   },

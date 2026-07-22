@@ -74,20 +74,8 @@
   "youCanWriteAPrereview": {
     "message": "Puedes escribir una PREreview de {dataset}. Te haremos preguntas sobre el conjunto de datos para crear una revisión estructurada."
   },
-  "asYouHaveAlreadyStarted": {
-    "message": "Como ya has comenzado una PREreview de {dataset}, te llevaremos al siguiente paso para que puedas continuar."
-  },
   "beforeStart": {
     "message": "Antes de comenzar"
-  },
-  "orcidIdLogIn": {
-    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un ORCID iD, puedes crear uno."
-  },
-  "whatIsOrcidIdHeading": {
-    "message": "¿Qué es un ORCID iD?"
-  },
-  "whatIsOrcidId": {
-    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las personas con el mismo nombre o con nombre similar."
   },
   "checkYourPrereview": {
     "message": "Revisa tu PREreview"
@@ -173,9 +161,6 @@
   "codeOfConduct": {
     "message": "Código de conducta"
   },
-  "codeOfConductTip": {
-    "message": "Como integrante de nuestra comunidad, esperamos que sigas el <link>Código de conducta de PREreview</link>."
-  },
   "examplesExpectedBehaviors": {
     "message": "Ejemplos de conducta esperada"
   },
@@ -220,12 +205,6 @@
   },
   "exampleInappropriateConduct": {
     "message": "Cualquier otra conducta que razonablemente podría considerarse inapropiada en un entorno profesional."
-  },
-  "confirmCodeOfConduct": {
-    "message": "Confirma que cumples con el Código de Conducta"
-  },
-  "followingCodeOfConduct": {
-    "message": "Estoy cumpliendo el Código de Conducta"
   },
   "yourReview": {
     "message": "Tu revisión"
@@ -698,20 +677,8 @@
   "selectNameYouWouldLikeToUse": {
     "message": "Selecciona el nombre que te gustaría usar"
   },
-  "youCanChooseOrcidOrPseudonym": {
-    "message": "Puedes elegir entre el nombre en tu historial de ORCID o tu seudónimo de PREreview."
-  },
-  "whatIsAPrereviewPseudonym": {
-    "message": "¿Qué es un seudónimo de PREreview?"
-  },
-  "prereviewPseudonymExplainer": {
-    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes utilizar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}.’"
-  },
   "whyUseAPseudonym": {
     "message": "Al usar tu seudónimo, puedes contribuir a la revisión abierta de conjuntos de datos sin miedo a represalias o prejuicios que podrían ocurrir al usar tu nombre real. Sin embargo, el uso de un seudónimo mantiene cierto grado de responsabilidad."
-  },
-  "weWillLinkToYourOrcid": {
-    "message": "Vincularemos tu PREreview a tu ORCID iD."
   },
   "weWillOnlyLinkToYourPseudonym": {
     "message": "Solo vincularemos tu PREreview a otras que también usen tu seudónimo."

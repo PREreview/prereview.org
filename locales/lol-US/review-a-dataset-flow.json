@@ -75,19 +75,19 @@
     "message": "crwdns6162:0{dataset}crwdne6162:0"
   },
   "asYouHaveAlreadyStarted": {
-    "message": "crwdns6156:0{dataset}crwdne6156:0"
+    "message": "crwdns6879:0{dataset}crwdne6879:0"
   },
   "beforeStart": {
     "message": "crwdns6164:0crwdne6164:0"
   },
   "orcidIdLogIn": {
-    "message": "crwdns6166:0crwdne6166:0"
+    "message": "crwdns6881:0crwdne6881:0"
   },
   "whatIsOrcidIdHeading": {
-    "message": "crwdns6168:0crwdne6168:0"
+    "message": "crwdns6883:0crwdne6883:0"
   },
   "whatIsOrcidId": {
-    "message": "crwdns6170:0crwdne6170:0"
+    "message": "crwdns6885:0crwdne6885:0"
   },
   "checkYourPrereview": {
     "message": "crwdns5994:0crwdne5994:0"
@@ -174,7 +174,7 @@
     "message": "crwdns6348:0crwdne6348:0"
   },
   "codeOfConductTip": {
-    "message": "crwdns6350:0crwdne6350:0"
+    "message": "crwdns6887:0crwdne6887:0"
   },
   "examplesExpectedBehaviors": {
     "message": "crwdns6352:0crwdne6352:0"
@@ -222,10 +222,10 @@
     "message": "crwdns6380:0crwdne6380:0"
   },
   "confirmCodeOfConduct": {
-    "message": "crwdns6382:0crwdne6382:0"
+    "message": "crwdns6889:0crwdne6889:0"
   },
   "followingCodeOfConduct": {
-    "message": "crwdns6384:0crwdne6384:0"
+    "message": "crwdns6891:0crwdne6891:0"
   },
   "yourReview": {
     "message": "crwdns6018:0crwdne6018:0"
@@ -702,19 +702,19 @@
     "message": "crwdns6096:0crwdne6096:0"
   },
   "youCanChooseOrcidOrPseudonym": {
-    "message": "crwdns6098:0crwdne6098:0"
+    "message": "crwdns6893:0crwdne6893:0"
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "crwdns6100:0crwdne6100:0"
+    "message": "crwdns6895:0crwdne6895:0"
   },
   "prereviewPseudonymExplainer": {
-    "message": "crwdns6562:0{pseudonym}crwdne6562:0"
+    "message": "crwdns6897:0{pseudonym}crwdne6897:0"
   },
   "whyUseAPseudonym": {
     "message": "crwdns6114:0crwdne6114:0"
   },
   "weWillLinkToYourOrcid": {
-    "message": "crwdns6108:0crwdne6108:0"
+    "message": "crwdns6899:0crwdne6899:0"
   },
   "weWillOnlyLinkToYourPseudonym": {
     "message": "crwdns6110:0crwdne6110:0"
