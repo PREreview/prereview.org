@@ -100,7 +100,7 @@
     "description": "Message shown alongside the title “Review a dataset” when the user hasn’t already started a PREreview of the dataset."
   },
   "asYouHaveAlreadyStarted": {
-    "message": "As you’ve already started a PREreview of {dataset}, we’ll take you to the next step so you can carry on.",
+    "message": "As you’ve already started a PREreview of {dataset}, we’ll take you to the next step so you can carry on.",
     "description": "Message shown alongside the title “Review a dataset” when the user has already started a PREreview of the dataset."
   },
   "beforeStart": {
@@ -108,15 +108,15 @@
     "description": "Heading for the section that contains information about what the user needs to know before starting a PREreview of the dataset."
   },
   "orcidIdLogIn": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
     "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsOrcidIdHeading": {
-    "message": "What is an ORCID iD?",
+    "message": "What is an ORCID iD?",
     "description": "Heading for the explanation of what an ORCID iD is."
   },
   "whatIsOrcidId": {
-    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
     "description": "Text following the heading “What is an ORCID iD?” explaining what an ORCID iD is."
   },
   "checkYourPrereview": {
@@ -232,7 +232,7 @@
     "description": "Title of the page that asks you to confirm you’re following the Code of Conduct."
   },
   "codeOfConductTip": {
-    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
     "description": "Text shown alongside the title “Code of Conduct”."
   },
   "examplesExpectedBehaviors": {
@@ -296,11 +296,11 @@
     "description": "Example of an unacceptable behavior according to the Code of Conduct."
   },
   "confirmCodeOfConduct": {
-    "message": "Confirm that you are following the Code of Conduct",
+    "message": "Confirm that you are following the Code of Conduct",
     "description": "Error message shown when the user tries to complete the form to confirm they’re following the Code of Conduct without confirming it."
   },
   "followingCodeOfConduct": {
-    "message": "I’m following the Code of Conduct",
+    "message": "I’m following the Code of Conduct",
     "description": "Label for the checkbox to confirm that the user is following the Code of Conduct."
   },
   "yourReview": {
@@ -936,15 +936,15 @@
     "description": "Error message shown when the user tries to continue without selecting a name to use."
   },
   "youCanChooseOrcidOrPseudonym": {
-    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
+    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
     "description": "Information provided about the question “What name would you like to use?”."
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "What is a PREreview pseudonym?",
+    "message": "What is a PREreview pseudonym?",
     "description": "Heading for the explanation of what a PREreview pseudonym is."
   },
   "prereviewPseudonymExplainer": {
-    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
+    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
     "description": "Explanation of what a PREreview pseudonym is."
   },
   "whyUseAPseudonym": {
@@ -952,7 +952,7 @@
     "description": "Explanation of why one might want to use a pseudonym."
   },
   "weWillLinkToYourOrcid": {
-    "message": "We’ll link your PREreview to your ORCID iD.",
+    "message": "We’ll link your PREreview to your ORCID iD.",
     "description": "Text that accompanies the public persona choice for the question “What name would you like to use?”."
   },
   "weWillOnlyLinkToYourPseudonym": {

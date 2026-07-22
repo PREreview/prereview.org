@@ -120,15 +120,15 @@
     "description": "Error message shown when the user tries submit the “What name would you like to use?” form without selecting a name."
   },
   "chooseBetweenOrcidNameAndPseudonym": {
-    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
+    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
     "description": "Text shown alongside the question “What name would you like to use?” that explains the user can choose between their ORCID name and their PREreview pseudonym."
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "What is a PREreview pseudonym?",
+    "message": "What is a PREreview pseudonym?",
     "description": "Heading for the section that explains what a PREreview pseudonym is."
   },
   "prereviewPseudonymExplainer": {
-    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
+    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
     "description": "Text following the “What is a PREreview pseudonym?” heading explaining what a PREreview pseudonym is."
   },
   "whyUseAPseudonym": {
@@ -136,7 +136,7 @@
     "description": "Text explaining why a user might want to use a PREreview pseudonym."
   },
   "weWillLinkRequestToYourOrcid": {
-    "message": "We’ll link your request to your ORCID iD.",
+    "message": "We’ll link your request to your ORCID iD.",
     "description": "Text that accompanies the public persona choice for the question “What name would you like to use?”."
   },
   "weWillLinkRequestToOthersThatUseYourPseudonym": {
@@ -164,19 +164,19 @@
     "description": "Heading for the section on the “Request a PREreview” page that explains what the user needs to know before they start their request."
   },
   "weWillAskYouToLogInWithYourOrcid": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
     "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsAnOrcid": {
-    "message": "What is an ORCID iD?",
-    "description": "Heading for the section that explains what an ORCID iD is."
+    "message": "What is an ORCID iD?",
+    "description": "Heading for the section that explains what an ORCID iD is."
   },
   "orcidExplainer": {
-    "message": "An <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> is a unique identifier that distinguishes you from everyone with the same or similar name.",
-    "description": "Text following the “What is an ORCID iD?” heading explaining what an ORCID iD is."
+    "message": "An <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "description": "Text following the “What is an ORCID iD?” heading explaining what an ORCID iD is."
   },
   "asYouHaveAlreadyStarted": {
-    "message": "As you’ve already started, we’ll take you to the next step so you can carry on.",
+    "message": "As you’ve already started, we’ll take you to the next step so you can carry on.",
     "description": "Text shown alongside the heading “Before you start” that explains that the user has already started their request for a PREreview."
   }
 }

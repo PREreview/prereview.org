@@ -12,7 +12,7 @@
     "description": "Text shown alongside the heading “Sorry, we’re having problems”."
   },
   "youDeniedAccess": {
-    "message": "You have denied PREreview access to your ORCID iD.",
+    "message": "You have denied PREreview access to your ORCID iD.",
     "description": "Text shown alongside the heading “Sorry, we can’t log you in” when the user has denied PREreview access to their details on ORCID."
   },
   "tryAgainLater": {
