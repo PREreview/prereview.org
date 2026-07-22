@@ -86,20 +86,8 @@
   "selectTheNameError": {
     "message": "Seleccionar el nombre que te gustaría usar"
   },
-  "youCanChooseBetweenNames": {
-    "message": "Puedes elegir entre el nombre en tu registro ORCID o tu seudónimo de PREreview."
-  },
-  "whatIsAPseudonym": {
-    "message": "¿Qué es un seudónimo de PREreview?"
-  },
-  "pseudonymIsA": {
-    "message": "Un <term>seudónimo de PREreview</term> es un nombre alternativo que puedes usar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}’."
-  },
   "pseudonymAccountability": {
     "message": "Usando tu seudónimo, puedes contribuir a la revisión abierta de preprints sin temer a las represalias o censura que podría ocurrir al usar tu nombre verdadero. Sin embargo, aún el uso de un seudónimo mantiene cierto grado de responsabilidad."
-  },
-  "linkToOrcidId": {
-    "message": "Vincularemos tu PREreview a tu ORCID iD."
   },
   "linkToPseudonym": {
     "message": "Solo vincularemos tu PREreview a otros que también usen tu seudónimo."
@@ -208,9 +196,6 @@
   },
   "opensInNewTab": {
     "message": "se abre en una nueva pestaña"
-  },
-  "letUsKnowAuthorDetails": {
-    "message": "Por favor haznos saber los detalles de los/as otros/as autores/as(nombres e iDs de ORCID), y los/as agregaremos al PREreview. Nuestra dirección de correo electrónico es {mailtoHelp}."
   },
   "sentEmailsToAuthors": {
     "message": "Hemos enviado correos electrónicos a los/las otros/as autores/as, invitándolos/as a figurar en el PREreview."
@@ -386,15 +371,6 @@
   "beforeStartHeading": {
     "message": "Antes de comenzar"
   },
-  "orcidLogIn": {
-    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un iD, puedes crear uno."
-  },
-  "whatIsOrcidHeading": {
-    "message": "¿Qué es un ORCID iD?"
-  },
-  "whatIsOrcid": {
-    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de otros/as con tu mismo nombre o uno similar."
-  },
   "asYouHaveAlreadyStarted": {
     "message": "Como ya has comenzado una PREreview de <cite>{preprintTitle}</cite>, te llevaremos al siguiente paso para que puedas continuar."
   },
@@ -530,14 +506,8 @@
   "whatAreThey": {
     "message": "¿Cuáles son?"
   },
-  "confirmCodeOfConduct": {
-    "message": "Confirma que te adhieres al Código de Conducta"
-  },
   "codeOfConduct": {
     "message": "Código de Conducta"
-  },
-  "expectYouToAbideByCodeOfConduct": {
-    "message": "Como integrante de nuestra comunidad, esperamos que sigas el <link>Código de conducta de PREreview</link>."
   },
   "examplesOfExpectedBehavior": {
     "message": "Ejemplos de conducta esperada"

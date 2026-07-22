@@ -86,20 +86,8 @@
   "selectTheNameError": {
     "message": "Selecione o nome que deseja usar"
   },
-  "youCanChooseBetweenNames": {
-    "message": "Você pode escolher entre o nome no seu registro ORCID ou seu pseudônimo PREreview."
-  },
-  "whatIsAPseudonym": {
-    "message": "O que é um pseudônimo PREreview?"
-  },
-  "pseudonymIsA": {
-    "message": "Um <term>pseudônimo PREreview</term> é um nome alternativo que você pode usar em vez do seu nome real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{pseudonym}.’"
-  },
   "pseudonymAccountability": {
     "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem temer represálias ou julgamentos, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
-  },
-  "linkToOrcidId": {
-    "message": "Vincularemos sua avaliação PREreview ao seu ORCID iD."
   },
   "linkToPseudonym": {
     "message": "Vincularemos sua avaliação PREreview apenas a outras que também usam seu pseudônimo."
@@ -205,9 +193,6 @@
   },
   "opensInNewTab": {
     "message": "abre em uma nova aba"
-  },
-  "letUsKnowAuthorDetails": {
-    "message": "Por favor, informe os dados dos outros autores (nomes e ORCID iDs), e nós os adicionaremos à avaliação PREreview. Nosso endereço de e-mail é {mailtoHelp}."
   },
   "sentEmailsToAuthors": {
     "message": "Enviamos e-mails aos outros autores, convidando-os a aparecer."
@@ -371,15 +356,6 @@
   "beforeStartHeading": {
     "message": "Antes de começar"
   },
-  "orcidLogIn": {
-    "message": "Vamos pedir que você faça login com seu ORCID iD. Se você não tiver um iD, pode criar um."
-  },
-  "whatIsOrcidHeading": {
-    "message": "O que é um ORCID iD?"
-  },
-  "whatIsOrcid": {
-    "message": "Um <link>ORCID iD</link> é um identificador único que diferencia você de outras pessoas com o mesmo nome ou nome semelhante."
-  },
   "asYouHaveAlreadyStarted": {
     "message": "Como você já começou uma avaliação PREreview de <cite>{preprintTitle}</cite>, vamos para a próxima etapa para que possa continuar."
   },
@@ -509,14 +485,8 @@
   "whatAreThey": {
     "message": "Quais são eles?"
   },
-  "confirmCodeOfConduct": {
-    "message": "Confirme que você está seguindo o Código de Conduta"
-  },
   "codeOfConduct": {
     "message": "Código de Conduta"
-  },
-  "expectYouToAbideByCodeOfConduct": {
-    "message": "Como membro da nossa comunidade, esperamos que você respeite o <link>Código de Conduta da PREreview</link>."
   },
   "iAmFollowingCodeOfConduct": {
     "message": "Estou seguindo o Código de Conduta"

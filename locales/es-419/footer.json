@@ -64,11 +64,5 @@
   },
   "contactGitHub": {
     "message": "{handle} en GitHub"
-  },
-  "zenodo": {
-    "message": "Hay PREreviews disponibles en nuestra <community>Comunidad Zenodo</community> y en la <api>API de Zenodo</api>."
-  },
-  "copyright": {
-    "message": "Todo el contenido está disponible bajo una licencia de Creative Commons <link>Atribución 4.0 Internacional</link>, salvo que se indique lo contrario."
   }
 }

@@ -87,19 +87,19 @@
     "message": "crwdns5186:0crwdne5186:0"
   },
   "youCanChooseBetweenNames": {
-    "message": "crwdns5451:0crwdne5451:0"
+    "message": "crwdns6955:0crwdne6955:0"
   },
   "whatIsAPseudonym": {
-    "message": "crwdns5190:0crwdne5190:0"
+    "message": "crwdns6957:0crwdne6957:0"
   },
   "pseudonymIsA": {
-    "message": "crwdns5192:0{pseudonym}crwdne5192:0"
+    "message": "crwdns6959:0{pseudonym}crwdne6959:0"
   },
   "pseudonymAccountability": {
     "message": "crwdns5194:0crwdne5194:0"
   },
   "linkToOrcidId": {
-    "message": "crwdns5196:0crwdne5196:0"
+    "message": "crwdns6961:0crwdne6961:0"
   },
   "linkToPseudonym": {
     "message": "crwdns5198:0crwdne5198:0"
@@ -210,7 +210,7 @@
     "message": "crwdns3970:0crwdne3970:0"
   },
   "letUsKnowAuthorDetails": {
-    "message": "crwdns3972:0{mailtoHelp}crwdne3972:0"
+    "message": "crwdns6963:0{mailtoHelp}crwdne6963:0"
   },
   "sentEmailsToAuthors": {
     "message": "crwdns3974:0crwdne3974:0"
@@ -387,13 +387,13 @@
     "message": "crwdns4828:0crwdne4828:0"
   },
   "orcidLogIn": {
-    "message": "crwdns4830:0crwdne4830:0"
+    "message": "crwdns6965:0crwdne6965:0"
   },
   "whatIsOrcidHeading": {
-    "message": "crwdns4832:0crwdne4832:0"
+    "message": "crwdns6967:0crwdne6967:0"
   },
   "whatIsOrcid": {
-    "message": "crwdns4834:0crwdne4834:0"
+    "message": "crwdns6969:0crwdne6969:0"
   },
   "asYouHaveAlreadyStarted": {
     "message": "crwdns4434:0{preprintTitle}crwdne4434:0"
@@ -423,28 +423,28 @@
     "message": "crwdns4404:0crwdne4404:0"
   },
   "isClubReview": {
-    "message": "crwdns6777:0crwdne6777:0"
+    "message": "crwdns6923:0crwdne6923:0"
   },
   "asLeadCanAddToClub": {
-    "message": "crwdns6779:0numberOfClubs={numberOfClubs}crwdne6779:0"
+    "message": "crwdns6925:0numberOfClubs={numberOfClubs}crwdne6925:0"
   },
   "isClubReviewError": {
-    "message": "crwdns6781:0crwdne6781:0"
+    "message": "crwdns6927:0crwdne6927:0"
   },
   "addToClub": {
     "message": "crwdns6783:0{clubName}crwdne6783:0"
   },
   "notClubReview": {
-    "message": "crwdns6785:0crwdne6785:0"
+    "message": "crwdns6929:0crwdne6929:0"
   },
   "club": {
     "message": "crwdns6771:0crwdne6771:0"
   },
   "changeClub": {
-    "message": "crwdns6773:0crwdne6773:0"
+    "message": "crwdns6931:0crwdne6931:0"
   },
   "noClub": {
-    "message": "crwdns6775:0crwdne6775:0"
+    "message": "crwdns6933:0crwdne6933:0"
   },
   "useOfAi": {
     "message": "crwdns5016:0crwdne5016:0"
@@ -555,13 +555,13 @@
     "message": "crwdns4432:0crwdne4432:0"
   },
   "confirmCodeOfConduct": {
-    "message": "crwdns4454:0crwdne4454:0"
+    "message": "crwdns6971:0crwdne6971:0"
   },
   "codeOfConduct": {
     "message": "crwdns4456:0crwdne4456:0"
   },
   "expectYouToAbideByCodeOfConduct": {
-    "message": "crwdns4458:0crwdne4458:0"
+    "message": "crwdns6973:0crwdne6973:0"
   },
   "examplesOfExpectedBehavior": {
     "message": "crwdns6566:0crwdne6566:0"

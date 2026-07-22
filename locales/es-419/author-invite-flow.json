@@ -41,15 +41,6 @@
   "invitedToAppear": {
     "message": "Has sido invitado/a a figurar como autor/a en esta PREreview."
   },
-  "weWillAskYouToLogInWithYourOrcid": {
-    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un iD, puedes crear uno."
-  },
-  "whatIsAnOrcid": {
-    "message": "¿Qué es un ORCID iD?"
-  },
-  "orcidExplainer": {
-    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las personas con el mismo nombre o nombre similar."
-  },
   "beforeYouStart": {
     "message": "Antes de iniciar"
   },
@@ -58,9 +49,6 @@
   },
   "youCanDecline": {
     "message": "Puedes rechazar esta invitación y seguir siendo autor/a anónimo/a."
-  },
-  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
-    "message": "Como ya has comenzado, te llevaremos al siguiente paso para que puedas continuar."
   },
   "sorryHavingProblems": {
     "message": "Lo sentimos, estamos teniendo problemas"
@@ -122,23 +110,11 @@
   "whatNameWouldYouLikeToUse": {
     "message": "¿Qué nombre te gustaría usar?"
   },
-  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
-    "message": "Puedes elegir entre el nombre en tu registro ORCID o tu seudónimo de PREreview."
-  },
-  "whatIsAPrereviewPseudonym": {
-    "message": "¿Qué es un seudónimo de PREreview?"
-  },
-  "pseudonymExplainer": {
-    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes usar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{userPseudonym}’."
-  },
   "whyUseAPseudonym": {
     "message": "Al usar tu seudónimo, puedes contribuir a la revisión abierta de un preprint sin temor a represalias o censuras que pueden ocurrir al usar tu nombre verdadero. Sin embargo, aún el uso de un seudónimo mantiene cierto grado de responsabilidad."
   },
   "selectTheNameYouWouldLikeToUse": {
     "message": "Selecciona el nombre que deseas usar"
-  },
-  "weWillLinkYourPrereviewToYourOrcid": {
-    "message": "Vincularemos tu PREreview a tu identificador ORCID."
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
     "message": "Solo vincularemos tu PREreview con otras que también usen tu seudónimo."

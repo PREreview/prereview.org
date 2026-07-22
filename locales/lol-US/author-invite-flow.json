@@ -42,13 +42,13 @@
     "message": "crwdns5562:0crwdne5562:0"
   },
   "weWillAskYouToLogInWithYourOrcid": {
-    "message": "crwdns5564:0crwdne5564:0"
+    "message": "crwdns6939:0crwdne6939:0"
   },
   "whatIsAnOrcid": {
-    "message": "crwdns5566:0crwdne5566:0"
+    "message": "crwdns6941:0crwdne6941:0"
   },
   "orcidExplainer": {
-    "message": "crwdns5568:0crwdne5568:0"
+    "message": "crwdns6943:0crwdne6943:0"
   },
   "beforeYouStart": {
     "message": "crwdns5572:0crwdne5572:0"
@@ -60,7 +60,7 @@
     "message": "crwdns5582:0crwdne5582:0"
   },
   "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
-    "message": "crwdns5439:0crwdne5439:0"
+    "message": "crwdns6945:0crwdne6945:0"
   },
   "sorryHavingProblems": {
     "message": "crwdns4721:0crwdne4721:0"
@@ -123,13 +123,13 @@
     "message": "crwdns4803:0crwdne4803:0"
   },
   "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
-    "message": "crwdns5453:0crwdne5453:0"
+    "message": "crwdns6947:0crwdne6947:0"
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "crwdns5443:0crwdne5443:0"
+    "message": "crwdns6949:0crwdne6949:0"
   },
   "pseudonymExplainer": {
-    "message": "crwdns5445:0{userPseudonym}crwdne5445:0"
+    "message": "crwdns6951:0{userPseudonym}crwdne6951:0"
   },
   "whyUseAPseudonym": {
     "message": "crwdns4811:0crwdne4811:0"
@@ -138,7 +138,7 @@
     "message": "crwdns4813:0crwdne4813:0"
   },
   "weWillLinkYourPrereviewToYourOrcid": {
-    "message": "crwdns5447:0crwdne5447:0"
+    "message": "crwdns6953:0crwdne6953:0"
   },
   "weWillOnlyLinkToOtherPseudonymPrereviews": {
     "message": "crwdns4817:0crwdne4817:0"
