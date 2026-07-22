@@ -41,7 +41,7 @@
   },
   "prereviewTitleInClub": {
     "message": "PREreview by {author} of {club}",
-    "description": "Title for a dataset review by a single author in a club."
+    "description": "Title for a dataset review by a single author in a Club."
   },
   "prereviewTitleMultipleAuthors": {
     "message": "PREreview by {author} et al.",
@@ -49,7 +49,7 @@
   },
   "prereviewTitleMultipleAuthorsInClub": {
     "message": "PREreview by {author} et al. of {club}",
-    "description": "Title for a dataset review by multiple authors in a club."
+    "description": "Title for a dataset review by multiple authors in a Club."
   },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",
@@ -61,7 +61,7 @@
   },
   "prereviewAuthoredByInClub": {
     "message": "<visuallyHidden>Authored</visuallyHidden> by {author} of {club}",
-    "description": "Byline that shows the authors of a dataset review in a club."
+    "description": "Byline that shows the authors of a dataset review in a Club."
   },
   "readPrereview": {
     "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>",
@@ -69,7 +69,7 @@
   },
   "readPrereviewInClub": {
     "message": "Read <visuallyHidden>the PREreview by {author} of {club}</visuallyHidden>",
-    "description": "Text for the link that takes the user to a dataset review by a single author in a club."
+    "description": "Text for the link that takes the user to a dataset review by a single author in a Club."
   },
   "readPrereviewMultipleAuthors": {
     "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>",
@@ -77,6 +77,6 @@
   },
   "readPrereviewMultipleAuthorsInClub": {
     "message": "Read <visuallyHidden>the PREreview by {author} et al. of {club}</visuallyHidden>",
-    "description": "Text for the link that takes the user to a dataset review by multiple authors in a club."
+    "description": "Text for the link that takes the user to a dataset review by multiple authors in a Club."
   }
 }

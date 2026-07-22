@@ -9,7 +9,7 @@
   },
   "authoredByInClub": {
     "message": "<visuallyHidden>Authored</visuallyHidden> by {author} of {club}",
-    "description": "Byline that shows the author of the dataset review in a club."
+    "description": "Byline that shows the author of the dataset review in a Club."
   },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {# other author} other {# other authors}}",

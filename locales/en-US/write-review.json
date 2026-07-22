@@ -564,36 +564,36 @@
     "description": "Label for confirming that the other authors have read and approved the PREreview when selecting the “Yes, and some or all want to be listed as authors” option to the question “Did you review this preprint with anyone else?”."
   },
   "isClubReview": {
-    "message": "Is this a club review?",
-    "description": "Label the question where the user can add the review to a club."
+    "message": "Is this a Club review?",
+    "description": "Label the question where the user can add the review to a Club."
   },
   "asLeadCanAddToClub": {
-    "message": "{numberOfClubs, plural, one {As you’re a club lead, we can add the review to your club.} other {As you’re a club lead, we can add the review to one of your clubs.}}",
-    "description": "Text that appears alongside the question “Is this a club review?” when the user is a lead of one or more clubs."
+    "message": "{numberOfClubs, plural, one {As you’re a Club lead, we can add the review to your Club.} other {As you’re a Club lead, we can add the review to one of your Clubs.}}",
+    "description": "Text that appears alongside the question “Is this a Club review?” when the user is a lead of one or more Clubs."
   },
   "isClubReviewError": {
-    "message": "Select a club for the review",
-    "description": "Error message that appears when the user submits the “Is this a club review?” question without selecting an option."
+    "message": "Select a Club for the review",
+    "description": "Error message that appears when the user submits the “Is this a Club review?” question without selecting an option."
   },
   "addToClub": {
     "message": "Add to {clubName}",
-    "description": "Label for an option to the “Is this a club review?” question that allows the user to add the review to a club."
+    "description": "Label for an option to the “Is this a Club review?” question that allows the user to add the review to a Club."
   },
   "notClubReview": {
-    "message": "This isn’t a club review",
-    "description": "Label for the option to the “Is this a club review?” question that indicates the review is not to be added to a club."
+    "message": "This isn’t a Club review",
+    "description": "Label for the option to the “Is this a Club review?” question that indicates the review is not to be added to a Club."
   },
   "club": {
     "message": "Club",
-    "description": "Label for the club that the user has chosen to add the review to, or the text “Not in a club”."
+    "description": "Label for the Club that the user has chosen to add the review to, or the text “Not in a Club”."
   },
   "changeClub": {
-    "message": "Change <visuallyHidden>your club</visuallyHidden>",
-    "description": "Link that allows the user to change the club that the review will be added to."
+    "message": "Change <visuallyHidden>your Club</visuallyHidden>",
+    "description": "Link that allows the user to change the Club that the review will be added to."
   },
   "noClub": {
-    "message": "Not in a club",
-    "description": "Text shown alongside the label “Club” when the user has chosen not to add the review to a club."
+    "message": "Not in a Club",
+    "description": "Text shown alongside the label “Club” when the user has chosen not to add the review to a Club."
   },
   "useOfAi": {
     "message": "Use of Artificial Intelligence (AI)",

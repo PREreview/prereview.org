@@ -45,7 +45,7 @@
   },
   "prereviewByOneAuthorInClub": {
     "message": "PREreview by {author} of {club}",
-    "description": "Heading for a PREreview by a single author in a club."
+    "description": "Heading for a PREreview by a single author in a Club."
   },
   "prereviewByMultipleAuthors": {
     "message": "PREreview by {author} et al.",
@@ -53,7 +53,7 @@
   },
   "prereviewByMultipleAuthorsInClub": {
     "message": "PREreview by {author} et al. of {club}",
-    "description": "Heading for a PREreview by multiple authors in a club."
+    "description": "Heading for a PREreview by multiple authors in a Club."
   },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",
@@ -65,7 +65,7 @@
   },
   "authoredByInClub": {
     "message": "<visuallyHidden>Authored</visuallyHidden> by {authors} of {club}",
-    "description": "Text for a PREreview showing its authors and club."
+    "description": "Text for a PREreview showing its authors and Club."
   },
   "readPrereviewByOneAuthor": {
     "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>",
@@ -73,7 +73,7 @@
   },
   "readPrereviewByOneAuthorInClub": {
     "message": "Read <visuallyHidden>the PREreview by {author} of {club}</visuallyHidden>",
-    "description": "Link to read a PREreview by a single author in a club."
+    "description": "Link to read a PREreview by a single author in a Club."
   },
   "readPrereviewByMultipleAuthors": {
     "message": "Read <visuallyHidden>the PREreview by {author} et al.</visuallyHidden>",
@@ -81,7 +81,7 @@
   },
   "readPrereviewByMultipleAuthorsInClub": {
     "message": "Read <visuallyHidden>the PREreview by {author} et al. of {club}</visuallyHidden>",
-    "description": "Link to read a PREreview by multiple authors in a club."
+    "description": "Link to read a PREreview by multiple authors in a Club."
   },
   "rapidPrereviews": {
     "message": "{number, plural, one {# Rapid PREreview} other {# Rapid PREreviews}}",

@@ -9,7 +9,7 @@
   },
   "clubReviewText": {
     "message": "{numberOfReviewers, plural, one {{reviewers} of {club} reviewed {preprint}} other {{reviewers} of {club} reviewed {preprint}}}",
-    "description": "Text of the review by a club in a list."
+    "description": "Text of the review by a Club in a list."
   },
   "otherAuthors": {
     "message": "{number, plural, one {# other author} other {# other authors}}",

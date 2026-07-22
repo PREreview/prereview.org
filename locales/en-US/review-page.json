@@ -29,7 +29,7 @@
   },
   "clubReviewAuthors": {
     "message": "<hide>Authored</hide> by {authors} of {club}",
-    "description": "Text showing the authors of the PREreview and their club."
+    "description": "Text showing the authors of the PREreview and their Club."
   },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {# other author} other {# other authors}}",

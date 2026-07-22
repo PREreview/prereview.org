@@ -53,7 +53,7 @@
   },
   "clubs": {
     "message": "Clubs",
-    "description": "Label for the clubs the PREreviewer is a lead for."
+    "description": "Label for the Clubs the PREreviewer is a lead for."
   },
   "openForRequests": {
     "message": "{name} is happy to take requests for a PREreview.",
