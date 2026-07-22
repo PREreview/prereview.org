@@ -1802,7 +1802,7 @@ test
   .extend(areLoggedIn)
   .extend(hasAVerifiedEmailAddress)
   .extend(areAClubLead)
-  .extend(clubLeadsCanAddReviewsToClubs)('can add the review to your club', async ({ page }) => {
+  .extend(clubLeadsCanAddReviewsToClubs)('can add the review to your Club', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
@@ -1821,7 +1821,7 @@ test
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Is this a club review?')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Is this a Club review?')
 
   await page.getByLabel('Add to Psychoceramics Club').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1835,7 +1835,7 @@ test
   .extend(areLoggedIn)
   .extend(hasAVerifiedEmailAddress)
   .extend(areAClubLead)
-  .extend(clubLeadsCanAddReviewsToClubs)('can choose not to add the review to your club', async ({ page }) => {
+  .extend(clubLeadsCanAddReviewsToClubs)('can choose not to add the review to your Club', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('With a template').check()
@@ -1854,13 +1854,13 @@ test
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Is this a club review?')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Is this a Club review?')
 
-  await page.getByLabel('This isn’t a club review').check()
+  await page.getByLabel('This isn’t a Club review').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
-  await expect(page.getByRole('main')).toContainText('Club Not in a club')
+  await expect(page.getByRole('main')).toContainText('Club Not in a Club')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
@@ -3016,7 +3016,7 @@ test
   .extend(hasAVerifiedEmailAddress)
   .extend(areAClubLead)
   .extend(clubLeadsCanAddReviewsToClubs)(
-  'have to say whether to add the review to your club',
+  'have to say whether to add the review to your Club',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -3043,9 +3043,9 @@ test
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByRole('group', { name: 'Is this a club review?' })).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByRole('group', { name: 'Is this a Club review?' })).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'Select a club for the review' }).click()
+    await page.getByRole('link', { name: 'Select a Club for the review' }).click()
 
     await expect(page.getByLabel('Add to Psychoceramics Club')).toBeFocused()
   },

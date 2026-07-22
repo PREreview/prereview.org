@@ -5,7 +5,7 @@ import { RecordC, RecordsC } from 'zenodo-ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { expect, test } from './base.ts'
 
-test('can find and view a club', async ({ fetch, page, port }) => {
+test('can find and view a Club', async ({ fetch, page, port }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7820084', {
       body: RecordC.encode({

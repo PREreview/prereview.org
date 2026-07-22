@@ -621,7 +621,7 @@ test('can find and view comments to a review', async ({ fetch, page }) => {
   await expect(page.getByRole('article', { name: 'Comments', exact: true })).toContainText('some comment text')
 })
 
-test("can find and view a review that's part of a club", async ({ fetch, page }) => {
+test("can find and view a review that's part of a Club", async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,
@@ -782,7 +782,7 @@ test('can view a recent review', async ({ fetch, page }) => {
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
-test("can view a recent review that's part of a club", async ({ fetch, page }) => {
+test("can view a recent review that's part of a Club", async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,
@@ -956,7 +956,7 @@ test('can view an older review', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page.getByRole('main')).toContainText('Addendum Some change.')
 })
 
-test("can view an older review that's part of a club", async ({ fetch, page }) => {
+test("can view an older review that's part of a Club", async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,
