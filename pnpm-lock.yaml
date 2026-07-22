@@ -196,7 +196,7 @@ importers:
         version: 1.58.2
       '@prettier/plugin-xml':
         specifier: ^3.4.2
-        version: 3.4.2(prettier@3.9.4)
+        version: 3.4.2(prettier@3.9.6)
       '@tiptap/core':
         specifier: ^3.28.0
         version: 3.28.0(@tiptap/pm@3.28.0)
@@ -300,23 +300,23 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(postcss@8.5.16)
       prettier:
-        specifier: ^3.9.4
-        version: 3.9.4
+        specifier: ^3.9.6
+        version: 3.9.6
       prettier-plugin-embed:
         specifier: ^0.5.1
         version: 0.5.1
       prettier-plugin-organize-imports:
         specifier: ^4.3.0
-        version: 4.3.0(prettier@3.9.4)(typescript@6.0.3)
+        version: 4.3.0(prettier@3.9.6)(typescript@6.0.3)
       prettier-plugin-sh:
         specifier: ^0.18.1
-        version: 0.18.1(prettier@3.9.4)
+        version: 0.18.1(prettier@3.9.6)
       prettier-plugin-sql:
         specifier: ^0.20.0
-        version: 0.20.0(prettier@3.9.4)
+        version: 0.20.0(prettier@3.9.6)
       prettier-plugin-toml:
         specifier: ^2.0.6
-        version: 2.0.6(prettier@3.9.4)
+        version: 2.0.6(prettier@3.9.6)
       remixicon:
         specifier: ^4.9.1
         version: 4.9.1
@@ -4449,8 +4449,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.3
 
-  prettier@3.9.4:
-    resolution: {integrity: sha512-yWG/o/4oJfo036EKAfK6ACAoDOfHeRHx4tuxkfBZiauURiaSmYwlpOr5LQqKtIkRD2z1PLteme2WoxEnj4tHTg==}
+  prettier@3.9.6:
+    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6292,10 +6292,10 @@ snapshots:
     dependencies:
       playwright: 1.58.2
 
-  '@prettier/plugin-xml@3.4.2(prettier@3.9.4)':
+  '@prettier/plugin-xml@3.4.2(prettier@3.9.6)':
     dependencies:
       '@xml-tools/parser': 1.0.11
-      prettier: 3.9.4
+      prettier: 3.9.6
 
   '@reteps/dockerfmt@0.5.2': {}
 
@@ -9913,31 +9913,31 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  prettier-plugin-organize-imports@4.3.0(prettier@3.9.4)(typescript@6.0.3):
+  prettier-plugin-organize-imports@4.3.0(prettier@3.9.6)(typescript@6.0.3):
     dependencies:
-      prettier: 3.9.4
+      prettier: 3.9.6
       typescript: 6.0.3
 
-  prettier-plugin-sh@0.18.1(prettier@3.9.4):
+  prettier-plugin-sh@0.18.1(prettier@3.9.6):
     dependencies:
       '@reteps/dockerfmt': 0.5.2
-      prettier: 3.9.4
+      prettier: 3.9.6
       sh-syntax: 0.5.8
 
-  prettier-plugin-sql@0.20.0(prettier@3.9.4):
+  prettier-plugin-sql@0.20.0(prettier@3.9.6):
     dependencies:
       jsox: 1.2.125
       node-sql-parser: 5.4.0
-      prettier: 3.9.4
+      prettier: 3.9.6
       sql-formatter: 15.7.2
       tslib: 2.8.1
 
-  prettier-plugin-toml@2.0.6(prettier@3.9.4):
+  prettier-plugin-toml@2.0.6(prettier@3.9.6):
     dependencies:
       '@taplo/lib': 0.5.0
-      prettier: 3.9.4
+      prettier: 3.9.6
 
-  prettier@3.9.4: {}
+  prettier@3.9.6: {}
 
   promise-limit@2.7.0: {}
 
