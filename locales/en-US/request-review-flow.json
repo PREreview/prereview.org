@@ -1,39 +1,51 @@
 {
   "checkYourRequest": {
-    "message": "Check your request"
+    "message": "Check your request",
+    "description": "Title of the page where the user can check their request before publishing it."
   },
   "yourDetails": {
-    "message": "Your details"
+    "message": "Your details",
+    "description": "Heading for the section on the “Check your request” page that shows the user’s details."
   },
   "publishedName": {
-    "message": "Published name"
+    "message": "Published name",
+    "description": "Label for the name on the “Check your request” page that will be published alongside the request."
   },
   "changeName": {
-    "message": "Change <visuallyHidden>name</visuallyHidden>"
+    "message": "Change <visuallyHidden>name</visuallyHidden>",
+    "description": "Link that allows the user to change their name on the “Check your request” page."
   },
   "nowPublishYourRequest": {
-    "message": "Now publish your request"
+    "message": "Now publish your request",
+    "description": "Heading for the section on the “Check your request” page that allows the user to publish their request."
   },
   "weWillShareYourRequest": {
-    "message": "We’ll share your request with the PREreview community."
+    "message": "We’ll share your request with the PREreview community.",
+    "description": "Text shown alongside the heading “Now publish your request” that explains what will happen when the user publishes their request."
   },
   "requestPrereview": {
-    "message": "Request PREreview"
+    "message": "Request PREreview",
+    "description": "Label for the button that publishes the user’s request for a PREreview."
   },
   "requestAPrereview": {
-    "message": "Request a PREreview"
+    "message": "Request a PREreview",
+    "description": "Title of the page that allows the user to request a PREreview of a preprint."
   },
   "sorryWeAreHavingProblems": {
-    "message": "Sorry, we’re having problems"
+    "message": "Sorry, we’re having problems",
+    "description": "Heading of the page that is shown when there is a problem publishing the user’s request for a PREreview."
   },
   "unableToPublishYourWorkWasSaved": {
-    "message": "We were unable to publish your request for a PREreview. We saved your work."
+    "message": "We were unable to publish your request for a PREreview. We saved your work.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems” that explains that the user’s request for a PREreview could not be published, but their work was saved."
   },
   "pleaseTryAgainLater": {
-    "message": "Please try again later by coming back to this page."
+    "message": "Please try again later by coming back to this page.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems” that advises the user to try again later."
   },
   "ifProblemPersistsContactUs": {
-    "message": "If this problem persists, please <mailtoHelp>get in touch</mailtoHelp>."
+    "message": "If this problem persists, please <mailtoHelp>get in touch</mailtoHelp>.",
+    "description": "Text shown alongside the heading “Sorry, we’re having problems” that advises the user to contact support if the problem persists."
   },
   "contactDetails": {
     "message": "Contact details",
@@ -96,57 +108,75 @@
     "description": "Label for the negative option to the question “Would you like to be notified when a PREreview is published?”."
   },
   "whatNameWouldYouLikeToUse": {
-    "message": "What name would you like to use?"
+    "message": "What name would you like to use?",
+    "description": "Label for the question about the name the user would like to use."
   },
   "backToPreprint": {
-    "message": "Back to preprint"
+    "message": "Back to preprint",
+    "description": "Label for the link that takes the user back to the preprint page."
   },
   "selectNameYouWouldLikeToUse": {
-    "message": "Select the name that you would like to use"
+    "message": "Select the name that you would like to use",
+    "description": "Error message shown when the user tries submit the “What name would you like to use?” form without selecting a name."
   },
   "chooseBetweenOrcidNameAndPseudonym": {
-    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym."
+    "message": "You can choose between the name on your ORCID record or your PREreview pseudonym.",
+    "description": "Text shown alongside the question “What name would you like to use?” that explains the user can choose between their ORCID name and their PREreview pseudonym."
   },
   "whatIsAPrereviewPseudonym": {
-    "message": "What is a PREreview pseudonym?"
+    "message": "What is a PREreview pseudonym?",
+    "description": "Heading for the section that explains what a PREreview pseudonym is."
   },
   "prereviewPseudonymExplainer": {
-    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’"
+    "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
+    "description": "Text following the “What is a PREreview pseudonym?” heading explaining what a PREreview pseudonym is."
   },
   "whyUseAPseudonym": {
-    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
+    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability.",
+    "description": "Text explaining why a user might want to use a PREreview pseudonym."
   },
   "weWillLinkRequestToYourOrcid": {
-    "message": "We’ll link your request to your ORCID iD."
+    "message": "We’ll link your request to your ORCID iD.",
+    "description": "Text that accompanies the public persona choice for the question “What name would you like to use?”."
   },
   "weWillLinkRequestToOthersThatUseYourPseudonym": {
-    "message": "We’ll only link your request to others that also use your pseudonym."
+    "message": "We’ll only link your request to others that also use your pseudonym.",
+    "description": "Text that accompanies the pseudonymous persona choice for the question “What name would you like to use?”."
   },
   "requestPublished": {
-    "message": "Request published"
+    "message": "Request published",
+    "description": "Title of the page that confirms the user’s request for a PREreview has been published."
   },
   "whatHappensNext": {
-    "message": "What happens next"
+    "message": "What happens next",
+    "description": "Heading for the section on the “Request published” page that explains what happens now the request is published."
   },
   "whereYouCanSeeYourRequest": {
-    "message": "You’ll be able to see your request on our <listOfRequestsLink>list of requests</listOfRequestsLink> and <communitySlackLink>Community Slack</communitySlackLink> shortly."
+    "message": "You’ll be able to see your request on our <listOfRequestsLink>list of requests</listOfRequestsLink> and <communitySlackLink>Community Slack</communitySlackLink> shortly.",
+    "description": "Text shown alongside the heading “What happens next” that explains where the user can see their request for a PREreview."
   },
   "youCanRequestAPrereview": {
-    "message": "You can request a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report."
+    "message": "You can request a PREreview of {preprintTitle}. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a journal-organized peer-review report.",
+    "description": "Text shown alongside the heading “Request a PREreview” that explains what a PREreview is."
   },
   "beforeYouStart": {
-    "message": "Before you start"
+    "message": "Before you start",
+    "description": "Heading for the section on the “Request a PREreview” page that explains what the user needs to know before they start their request."
   },
   "weWillAskYouToLogInWithYourOrcid": {
-    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one."
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "description": "Text shown alongside the heading “Before you start”."
   },
   "whatIsAnOrcid": {
-    "message": "What is an ORCID iD?"
+    "message": "What is an ORCID iD?",
+    "description": "Heading for the section that explains what an ORCID iD is."
   },
   "orcidExplainer": {
-    "message": "An <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> is a unique identifier that distinguishes you from everyone with the same or similar name."
+    "message": "An <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "description": "Text following the “What is an ORCID iD?” heading explaining what an ORCID iD is."
   },
   "asYouHaveAlreadyStarted": {
-    "message": "As you’ve already started, we’ll take you to the next step so you can carry on."
+    "message": "As you’ve already started, we’ll take you to the next step so you can carry on.",
+    "description": "Text shown alongside the heading “Before you start” that explains that the user has already started their request for a PREreview."
   }
 }
