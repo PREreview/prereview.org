@@ -2782,6 +2782,12 @@ skip-link {
         inset-block-start: 84%;
         inset-inline: 0;
       }
+
+      &:dir(rtl) {
+        &::after {
+          transform: rotateY(180deg);
+        }
+      }
     }
   }
 
