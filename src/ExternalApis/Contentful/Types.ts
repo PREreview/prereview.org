@@ -9,6 +9,7 @@ export const ContentfulId = Schema.String.pipe(Schema.brand(ContentfulIdBrand))
 
 export class Entry extends Schema.Class<Entry>('Entry')({
   sys: Schema.Struct({
+    id: ContentfulId,
     contentType: Schema.Struct({
       sys: Schema.Struct({
         type: Schema.Literal('Link'),
