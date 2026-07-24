@@ -177,23 +177,27 @@ const getSpotlightBanner: Effect.Effect<
   never,
   HttpServerRequest.HttpServerRequest
 > = Effect.gen(function* () {
-  const cookies = yield* HttpServerRequest.schemaCookies(
-    Schema.Struct({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': Schema.BooleanFromString }),
-  ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': false })))
+  const spotlightBanner = new SpotlightBanner({
+    id: '19ku1fGWddXyrFone7Pu62',
+    title: plainText`Matchmaking experiment`,
+    description: html`Check out our experiment for suggestions about what to review next!`,
+    callToAction: {
+      text: plainText`Find preprints to review`,
+      url: new URL('https://matchmaking-experiment.prereview.org/'),
+    },
+  })
 
-  if (cookies['dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62']) {
+  const cookies = yield* HttpServerRequest.schemaCookies(
+    Schema.Struct({
+      'dismiss-spotlight-banner': Schema.propertySignature(Schema.BooleanFromString).pipe(
+        Schema.fromKey(`dismiss-spotlight-banner-${spotlightBanner.id}`),
+      ),
+    }),
+  ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-spotlight-banner': false })))
+
+  if (cookies['dismiss-spotlight-banner']) {
     return Option.none()
   }
 
-  return Option.some(
-    new SpotlightBanner({
-      id: '19ku1fGWddXyrFone7Pu62',
-      title: plainText`Matchmaking experiment`,
-      description: html`Check out our experiment for suggestions about what to review next!`,
-      callToAction: {
-        text: plainText`Find preprints to review`,
-        url: new URL('https://matchmaking-experiment.prereview.org/'),
-      },
-    }),
-  )
+  return Option.some(spotlightBanner)
 })
