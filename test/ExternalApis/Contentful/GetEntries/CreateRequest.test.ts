@@ -28,7 +28,7 @@ describe('CreateRequest', () => {
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(params)
 
-      expect(actual.headers['accept']).toStrictEqual('application/json')
+      expect(actual.headers['accept']).toStrictEqual('application/vnd.contentful.delivery.v1+json')
     }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
   )
 

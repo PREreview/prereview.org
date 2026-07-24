@@ -9,7 +9,7 @@ export const CreateRequest = Effect.fnUntraced(function* (urlParams: UrlParams.I
     HttpClientRequest.get(
       `https://cdn.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
     ),
-    HttpClientRequest.acceptJson,
+    HttpClientRequest.accept('application/vnd.contentful.delivery.v1+json'),
     HttpClientRequest.bearerToken(config.accessToken),
     HttpClientRequest.setUrlParams(urlParams),
   )
