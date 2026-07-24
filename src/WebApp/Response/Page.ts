@@ -1,6 +1,7 @@
 import { match } from 'ts-pattern'
-import { html, plainText } from '../../html.ts'
+import { html } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
+import type { SpotlightBanner } from '../../SpotlightBanners/index.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
 import { showNotificationBanner } from '../notification-banner.ts'
 import type { Page } from '../page.ts'
@@ -16,7 +17,7 @@ export const toPage = ({
   pageUrls,
   response,
   isLoggedIn,
-  showSpotlight = false,
+  spotlightBanner,
 }: {
   locale: SupportedLocale
   message?: (typeof FlashMessageSchema.literals)[number]
@@ -24,7 +25,7 @@ export const toPage = ({
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
   pageUrls?: PageUrls
   isLoggedIn: boolean
-  showSpotlight?: boolean
+  spotlightBanner?: SpotlightBanner
 }): Page =>
   response._tag === 'TwoUpPageResponse'
     ? {
@@ -47,7 +48,8 @@ export const toPage = ({
           <main id="prereviews">
             <h1 class="visually-hidden">${response.h1}</h1>
 
-            ${showSpotlight ? spotlight : ''} ${message ? showFlashMessage(message, locale) : ''} ${response.main}
+            ${spotlightBanner ? showSpotlightBanner(spotlightBanner) : ''}
+            ${message ? showFlashMessage(message, locale) : ''} ${response.main}
           </main>
         `,
         skipLinks: [
@@ -56,7 +58,7 @@ export const toPage = ({
         ],
         js: [
           ...(message ? (['notification-banner.js'] as const) : []),
-          ...(showSpotlight ? (['spotlight-banner.js'] as const) : []),
+          ...(spotlightBanner ? (['spotlight-banner.js'] as const) : []),
         ],
         pageUrls,
         type: 'two-up',
@@ -71,7 +73,7 @@ export const toPage = ({
           ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
           <main id="${response.skipToLabel}">
-            ${showSpotlight ? spotlight : ''}${message ? showFlashMessage(message, locale) : ''}${response.main}
+            ${spotlightBanner ? showSpotlightBanner(spotlightBanner) : ''}${message ? showFlashMessage(message, locale) : ''}${response.main}
           </main>
         `,
         skipLinks: [
@@ -81,23 +83,13 @@ export const toPage = ({
         current: response.current,
         js: response.js.concat(
           ...(message ? (['notification-banner.js'] as const) : []),
-          ...(showSpotlight ? (['spotlight-banner.js'] as const) : []),
+          ...(spotlightBanner ? (['spotlight-banner.js'] as const) : []),
         ),
         pageUrls,
         type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
         isLoggedIn,
         userOnboarding,
       }
-
-const spotlight = showSpotlightBanner({
-  id: '19ku1fGWddXyrFone7Pu62',
-  title: plainText`Matchmaking experiment`,
-  description: html`Check out our experiment for suggestions about what to review next!`,
-  callToAction: {
-    text: plainText`Find preprints to review`,
-    url: new URL('https://matchmaking-experiment.prereview.org/'),
-  },
-})
 
 function showFlashMessage(message: (typeof FlashMessageSchema.literals)[number], locale: SupportedLocale) {
   return match(message)

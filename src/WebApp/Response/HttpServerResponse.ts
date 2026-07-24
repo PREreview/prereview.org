@@ -3,9 +3,11 @@ import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema,
 import { EnabledLocales, FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
+import { html, plainText } from '../../html.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
+import { SpotlightBanner } from '../../SpotlightBanners/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { OrcidLocale, Uuid } from '../../types/index.ts'
 import { UserOnboardingService } from '../../user-onboarding.ts'
@@ -93,6 +95,18 @@ export const toHttpServerResponse = (
         ? (yield* FeatureFlags.showSpotlight) && !cookies['dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62']
         : false
 
+    const spotlightBanner = showSpotlight
+      ? new SpotlightBanner({
+          id: '19ku1fGWddXyrFone7Pu62',
+          title: plainText`Matchmaking experiment`,
+          description: html`Check out our experiment for suggestions about what to review next!`,
+          callToAction: {
+            text: plainText`Find preprints to review`,
+            url: new URL('https://matchmaking-experiment.prereview.org/'),
+          },
+        })
+      : undefined
+
     return yield* pipe(
       templatePage(
         toPage({
@@ -102,7 +116,7 @@ export const toHttpServerResponse = (
           response,
           userOnboarding: Option.getOrUndefined(userOnboarding),
           isLoggedIn: Option.isSome(user),
-          showSpotlight,
+          spotlightBanner,
         }),
       ).toString(),
       HttpServerResponse.html,
