@@ -15,6 +15,7 @@ test('banner looks right', async ({ showPage }) => {
           text: plainText`Find preprints to review`,
           url: new URL('https://matchmaking-experiment.prereview.org/'),
         },
+        theme: 'product',
       }),
       js: ['spotlight-banner.js'],
     }),

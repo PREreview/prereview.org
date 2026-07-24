@@ -20,6 +20,7 @@ it.effect.each([
         text: plainText('Find preprints to review'),
         url: new URL('https://matchmaking-experiment.prereview.org/'),
       },
+      theme: 'product',
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>

@@ -33,6 +33,7 @@ export const EntryToSpotlightBanner = Schema.transformOrFail(Schema.typeSchema(S
         text: entry.fields.callToAction,
         url: entry.fields.link,
       },
+      theme: 'product' as const,
     }),
   encode: (spotlightBanner, _, ast) =>
     ParseResult.fail(
