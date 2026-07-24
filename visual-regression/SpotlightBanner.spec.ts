@@ -8,6 +8,7 @@ test('banner looks right', async ({ showPage }) => {
     PageResponse({
       title: plainText`Spotlight Banner`,
       main: _.showSpotlightBanner({
+        id: '19ku1fGWddXyrFone7Pu62',
         title: plainText`Matchmaking experiment`,
         description: html`Check out our experiment for suggestions about what to review next!`,
         callToAction: {

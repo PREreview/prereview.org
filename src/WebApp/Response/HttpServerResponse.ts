@@ -85,12 +85,12 @@ export const toHttpServerResponse = (
     })
 
     const cookies = yield* HttpServerRequest.schemaCookies(
-      Schema.Struct({ 'dismiss-matchmaking-spotlight': Schema.BooleanFromString }),
-    ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-matchmaking-spotlight': false })))
+      Schema.Struct({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': Schema.BooleanFromString }),
+    ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': false })))
 
     const showSpotlight =
       response._tag === 'PageResponse' && response.current === 'home'
-        ? (yield* FeatureFlags.showSpotlight) && !cookies['dismiss-matchmaking-spotlight']
+        ? (yield* FeatureFlags.showSpotlight) && !cookies['dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62']
         : false
 
     return yield* pipe(

@@ -4,6 +4,12 @@ export class SpotlightBanner extends HTMLElement {
   static element = 'spotlight-banner' as const
 
   connectedCallback() {
+    const id = this.dataset['spotlightBannerId']
+
+    if (typeof id !== 'string') {
+      return
+    }
+
     const button = document.createElement('button')
     button.type = 'button'
     button.classList.add('dismiss')
@@ -12,7 +18,7 @@ export class SpotlightBanner extends HTMLElement {
     button.addEventListener('click', () => {
       this.remove()
 
-      document.cookie = `dismiss-matchmaking-spotlight=true; max-age=${Duration.toSeconds('8 weeks')}; Path=/;`
+      document.cookie = `dismiss-spotlight-banner-${id}=true; max-age=${Duration.toSeconds('8 weeks')}; Path=/;`
     })
 
     this.append(button)

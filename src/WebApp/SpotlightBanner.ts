@@ -1,8 +1,8 @@
 import { html } from '../html.ts'
 import type { SpotlightBanner } from '../SpotlightBanners/index.ts'
 
-export const showSpotlightBanner = ({ title, description, callToAction }: Omit<SpotlightBanner, 'id'>) => html`
-  <spotlight-banner>
+export const showSpotlightBanner = ({ id, title, description, callToAction }: SpotlightBanner) => html`
+  <spotlight-banner data-spotlight-banner-id="${id}">
     <div>
       <h2>${title}</h2>
       <div>${description}</div>
