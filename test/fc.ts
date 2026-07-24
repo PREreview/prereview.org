@@ -46,6 +46,7 @@ import {
 import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as Events from '../src/Events.ts'
+import { type ContentfulConfig, ContentfulId } from '../src/ExternalApis/Contentful/index.ts'
 import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.ts'
 import type { GhostPage } from '../src/ExternalInteractions/index.ts'
 import type { CrossrefPreprintId } from '../src/ExternalInteractions/PreprintData/Crossref/PreprintId.ts'
@@ -1551,6 +1552,15 @@ export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<No
 export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...ISO6391.getAllCodes())
 
 export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
+
+export const contentfulId = (): fc.Arbitrary<ContentfulId> => Arbitrary.make(ContentfulId)
+
+export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service> =>
+  fc.record({
+    accessToken: redacted(fc.string()),
+    environmentId: contentfulId(),
+    spaceId: contentfulId(),
+  })
 
 export const ghostPage = (): fc.Arbitrary<GhostPage.GhostPage> =>
   fc.record({
