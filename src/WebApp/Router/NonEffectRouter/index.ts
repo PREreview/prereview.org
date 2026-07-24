@@ -55,6 +55,7 @@ import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.
 import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { SlackOauth } from '../../../SlackOauth.ts'
+import type { SpotlightBanners } from '../../../SpotlightBanners/index.ts'
 import type { GenerateUuid } from '../../../types/Uuid.ts'
 import { LoggedInUser, SessionId, type User } from '../../../user.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
@@ -214,6 +215,7 @@ export interface Env {
     | Prereviewers.Prereviewers
     | Prereviews.Prereviews
     | PublicUrl
+    | SpotlightBanners
     | TemplatePage
     | ReviewRequests.ReviewRequests
     | ReviewRequests.ReviewRequestCommands

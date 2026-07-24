@@ -1,6 +1,7 @@
 import { FileSystem, HttpServer, Multipart } from '@effect/platform'
 import { flow, Layer, Option, pipe } from 'effect'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
+import { SpotlightBanners } from '../SpotlightBanners/index.ts'
 import { Router } from './Router/index.ts'
 import * as TemplatePage from './TemplatePage.ts'
 
@@ -23,5 +24,5 @@ export const layer = pipe(
   HttpServer.serve(flow(HttpMiddleware.logger, HttpMiddleware.annotateLogsWithRequestId)),
   HttpServer.withLogAddress,
   Layer.provide(HttpMiddleware.logStopped),
-  Layer.provide(TemplatePage.layer),
+  Layer.provide([TemplatePage.layer, SpotlightBanners.layer]),
 )

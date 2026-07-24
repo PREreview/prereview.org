@@ -3,11 +3,10 @@ import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema,
 import { EnabledLocales, FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
-import { html, plainText } from '../../html.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
-import { SpotlightBanner } from '../../SpotlightBanners/index.ts'
+import { type SpotlightBanner, SpotlightBanners } from '../../SpotlightBanners/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { OrcidLocale, Uuid } from '../../types/index.ts'
 import { UserOnboardingService } from '../../user-onboarding.ts'
@@ -30,6 +29,7 @@ export const toHttpServerResponse = (
   | FeatureFlags.FeatureFlags
   | HttpServerRequest.HttpServerRequest
   | EnabledLocales
+  | SpotlightBanners
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -175,17 +175,11 @@ function generateAuthorizationRequestUrl({
 const getSpotlightBanner: Effect.Effect<
   Option.Option<SpotlightBanner>,
   never,
-  HttpServerRequest.HttpServerRequest
+  HttpServerRequest.HttpServerRequest | SpotlightBanners
 > = Effect.gen(function* () {
-  const spotlightBanner = new SpotlightBanner({
-    id: '19ku1fGWddXyrFone7Pu62',
-    title: plainText`Matchmaking experiment`,
-    description: html`Check out our experiment for suggestions about what to review next!`,
-    callToAction: {
-      text: plainText`Find preprints to review`,
-      url: new URL('https://matchmaking-experiment.prereview.org/'),
-    },
-  })
+  const spotlightBanners = yield* SpotlightBanners
+
+  const spotlightBanner = yield* Effect.flatten(spotlightBanners.getCurrentBanner)
 
   const cookies = yield* HttpServerRequest.schemaCookies(
     Schema.Struct({
@@ -200,4 +194,4 @@ const getSpotlightBanner: Effect.Effect<
   }
 
   return Option.some(spotlightBanner)
-})
+}).pipe(Effect.orElseSucceed(() => Option.none()))

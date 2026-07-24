@@ -1,12 +1,13 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, HashSet, Redacted } from 'effect'
+import { Effect, HashSet, Layer, Redacted } from 'effect'
 import { EnabledLocales, Locale } from '../../../src/Context.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as OrcidOauth from '../../../src/OrcidOauth.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
+import { SpotlightBanners } from '../../../src/SpotlightBanners/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/Router/LegacyRouter.ts'
 import { TemplatePage } from '../../../src/WebApp/TemplatePage.ts'
@@ -87,7 +88,7 @@ describe('LegacyRouter', () => {
         OrcidOauth.layer({ url: new URL('http://orcid.test'), clientId: 'id', clientSecret: Redacted.make('secret') }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
-      Effect.provide(FeatureFlags.layerDefaults),
+      Effect.provide([FeatureFlags.layerDefaults, Layer.mock(SpotlightBanners, {})]),
     ),
   )
 
@@ -133,7 +134,7 @@ describe('LegacyRouter', () => {
         }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
-      Effect.provide(FeatureFlags.layerDefaults),
+      Effect.provide([FeatureFlags.layerDefaults, Layer.mock(SpotlightBanners, {})]),
     ),
   )
 
@@ -164,7 +165,7 @@ describe('LegacyRouter', () => {
         }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
-      Effect.provide(FeatureFlags.layerDefaults),
+      Effect.provide([FeatureFlags.layerDefaults, Layer.mock(SpotlightBanners, {})]),
     ),
   )
 })
