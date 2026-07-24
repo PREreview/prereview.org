@@ -86,26 +86,12 @@ export const toHttpServerResponse = (
         ),
     })
 
-    const cookies = yield* HttpServerRequest.schemaCookies(
-      Schema.Struct({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': Schema.BooleanFromString }),
-    ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': false })))
+    const showSpotlight = yield* FeatureFlags.showSpotlight
 
-    const showSpotlight =
-      response._tag === 'PageResponse' && response.current === 'home'
-        ? (yield* FeatureFlags.showSpotlight) && !cookies['dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62']
-        : false
-
-    const spotlightBanner = showSpotlight
-      ? new SpotlightBanner({
-          id: '19ku1fGWddXyrFone7Pu62',
-          title: plainText`Matchmaking experiment`,
-          description: html`Check out our experiment for suggestions about what to review next!`,
-          callToAction: {
-            text: plainText`Find preprints to review`,
-            url: new URL('https://matchmaking-experiment.prereview.org/'),
-          },
-        })
-      : undefined
+    const spotlightBanner = yield* Effect.if(
+      showSpotlight && response._tag === 'PageResponse' && response.current === 'home',
+      { onTrue: () => getSpotlightBanner, onFalse: () => Effect.succeedNone },
+    )
 
     return yield* pipe(
       templatePage(
@@ -116,7 +102,7 @@ export const toHttpServerResponse = (
           response,
           userOnboarding: Option.getOrUndefined(userOnboarding),
           isLoggedIn: Option.isSome(user),
-          spotlightBanner,
+          spotlightBanner: Option.getOrUndefined(spotlightBanner),
         }),
       ).toString(),
       HttpServerResponse.html,
@@ -185,3 +171,29 @@ function generateAuthorizationRequestUrl({
     return new URL(`${orcidOauth.authorizeUrl}?${UrlParams.toString(query)}`)
   })
 }
+
+const getSpotlightBanner: Effect.Effect<
+  Option.Option<SpotlightBanner>,
+  never,
+  HttpServerRequest.HttpServerRequest
+> = Effect.gen(function* () {
+  const cookies = yield* HttpServerRequest.schemaCookies(
+    Schema.Struct({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': Schema.BooleanFromString }),
+  ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62': false })))
+
+  if (cookies['dismiss-spotlight-banner-19ku1fGWddXyrFone7Pu62']) {
+    return Option.none()
+  }
+
+  return Option.some(
+    new SpotlightBanner({
+      id: '19ku1fGWddXyrFone7Pu62',
+      title: plainText`Matchmaking experiment`,
+      description: html`Check out our experiment for suggestions about what to review next!`,
+      callToAction: {
+        text: plainText`Find preprints to review`,
+        url: new URL('https://matchmaking-experiment.prereview.org/'),
+      },
+    }),
+  )
+})

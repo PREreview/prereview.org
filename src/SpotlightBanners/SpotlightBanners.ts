@@ -1,6 +1,7 @@
 import { Context, Effect, Layer } from 'effect'
-import { UnableToQuery } from '../Queries.ts'
+import { html, plainText } from '../html.ts'
 import type { GetCurrentBanner } from './GetCurrentBanner/index.ts'
+import { SpotlightBanner } from './Types.ts'
 
 export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
   SpotlightBanners,
@@ -15,7 +16,17 @@ export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
     this,
     Effect.sync(() => {
       return {
-        getCurrentBanner: new UnableToQuery({ cause: 'not implemented' }),
+        getCurrentBanner: Effect.succeedSome(
+          new SpotlightBanner({
+            id: '19ku1fGWddXyrFone7Pu62',
+            title: plainText`Matchmaking experiment`,
+            description: html`Check out our experiment for suggestions about what to review next!`,
+            callToAction: {
+              text: plainText`Find preprints to review`,
+              url: new URL('https://matchmaking-experiment.prereview.org/'),
+            },
+          }),
+        ),
       }
     }),
   )
