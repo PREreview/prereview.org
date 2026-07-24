@@ -1,6 +1,7 @@
-import { Context, Effect, Layer } from 'effect'
-import { ContentfulIsUnavailable } from './Errors.ts'
-import type { GetEntries } from './GetEntries/index.ts'
+import type { HttpClient } from '@effect/platform'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { ContentfulConfig } from './ContentfulConfig.ts'
+import { GetEntries } from './GetEntries/index.ts'
 
 export class Contentful extends Context.Tag('Contentful')<
   Contentful,
@@ -15,9 +16,14 @@ export class Contentful extends Context.Tag('Contentful')<
 >() {
   static readonly layer = Layer.effect(
     this,
-    Effect.sync(() => {
+    Effect.gen(function* () {
+      const context = yield* Effect.andThen(
+        Effect.context<ContentfulConfig | HttpClient.HttpClient>(),
+        Context.omit(Scope.Scope),
+      )
+
       return {
-        getEntries: () => new ContentfulIsUnavailable({ cause: 'not implemented' }),
+        getEntries: flow(GetEntries, Effect.provide(context)),
       }
     }),
   )
