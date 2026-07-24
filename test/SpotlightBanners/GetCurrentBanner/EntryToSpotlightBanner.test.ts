@@ -10,7 +10,7 @@ import { SpotlightBanner } from '../../../src/SpotlightBanners/index.ts'
 
 it.effect.each([
   {
-    response: 'single-banner',
+    response: 'banners',
     index: 0,
     expected: new SpotlightBanner({
       id: '19ku1fGWddXyrFone7Pu62',
@@ -21,6 +21,20 @@ it.effect.each([
         url: new URL('https://matchmaking-experiment.prereview.org/'),
       },
       theme: 'product',
+    }),
+  },
+  {
+    response: 'banners',
+    index: 1,
+    expected: new SpotlightBanner({
+      id: '7Qm2xVJc9LpRtaN4eYk8Hs',
+      title: plainText('Review-a-thon (14–18 September, 2026)'),
+      description: rawHtml('Gather your community to review preprints or datasets together and win a prize!'),
+      callToAction: {
+        text: plainText('Register your Club'),
+        url: new URL('https://prereview.org/clubs'),
+      },
+      theme: 'community',
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>

@@ -1,4 +1,4 @@
-import { ParseResult, Schema } from 'effect'
+import { ParseResult, Schema, String } from 'effect'
 import { ContentfulId, Entry } from '../../ExternalApis/Contentful/index.ts'
 import { SpotlightBanner } from '../Types.ts'
 
@@ -19,6 +19,7 @@ const SpotlightBannerEntry = Schema.Struct({
     text: Schema.String,
     callToAction: Schema.String,
     link: Schema.String,
+    theme: Schema.Literal('Community', 'Product'),
   }),
 })
 
@@ -33,7 +34,7 @@ export const EntryToSpotlightBanner = Schema.transformOrFail(Schema.typeSchema(S
         text: entry.fields.callToAction,
         url: entry.fields.link,
       },
-      theme: 'product' as const,
+      theme: String.toLowerCase(entry.fields.theme),
     }),
   encode: (spotlightBanner, _, ast) =>
     ParseResult.fail(
