@@ -2837,6 +2837,11 @@ spotlight-banner {
   row-gap: var(--space-m);
   border-block: var(--width-divider-wide) solid transparent;
 
+  &.community {
+    background-color: var(--color-blue-90);
+    color: var(--color-white);
+  }
+
   &.product {
     background-color: var(--color-purple-600);
     color: var(--color-white);

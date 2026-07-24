@@ -25,5 +25,5 @@ export class SpotlightBanner extends Schema.Class<SpotlightBanner>('SpotlightBan
     text: PlainTextSchema,
     url: Schema.URL,
   }),
-  theme: Schema.Literal('product'),
+  theme: Schema.Literal('community', 'product'),
 }) {}
