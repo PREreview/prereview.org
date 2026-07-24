@@ -1,5 +1,5 @@
 import { match } from 'ts-pattern'
-import { html } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
 import { showNotificationBanner } from '../notification-banner.ts'
@@ -90,9 +90,12 @@ export const toPage = ({
       }
 
 const spotlight = showSpotlightBanner({
-  title: html`Matchmaking experiment`,
-  text: html`Check out our experiment for suggestions about what to review next!`,
-  cta: { text: html`Find preprints to review`, link: new URL('https://matchmaking-experiment.prereview.org/') },
+  title: plainText`Matchmaking experiment`,
+  description: html`Check out our experiment for suggestions about what to review next!`,
+  callToAction: {
+    text: plainText`Find preprints to review`,
+    url: new URL('https://matchmaking-experiment.prereview.org/'),
+  },
 })
 
 function showFlashMessage(message: (typeof FlashMessageSchema.literals)[number], locale: SupportedLocale) {
