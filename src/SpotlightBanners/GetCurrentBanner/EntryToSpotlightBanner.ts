@@ -1,5 +1,7 @@
 import { ParseResult, Schema, String } from 'effect'
 import { ContentfulId, Entry } from '../../ExternalApis/Contentful/index.ts'
+import { languageAttributesFor } from '../../Locales.ts'
+import { DefaultLocale } from '../../locales/index.ts'
 import { SpotlightBanner } from '../Types.ts'
 
 const SpotlightBannerEntry = Schema.Struct({
@@ -13,6 +15,7 @@ const SpotlightBannerEntry = Schema.Struct({
         id: Schema.Literal(ContentfulId.make('banner')),
       }),
     }),
+    locale: Schema.Literal(DefaultLocale),
   }),
   fields: Schema.Struct({
     title: Schema.String,
@@ -28,10 +31,10 @@ export const EntryToSpotlightBanner = Schema.transformOrFail(Schema.typeSchema(S
   decode: entry =>
     ParseResult.succeed({
       id: entry.sys.id,
-      title: entry.fields.title,
-      description: entry.fields.text,
+      title: `<span ${languageAttributesFor(entry.sys.locale).toString()}>${entry.fields.title}</span>`,
+      description: `<span ${languageAttributesFor(entry.sys.locale).toString()}>${entry.fields.text}</span>`,
       callToAction: {
-        text: entry.fields.callToAction,
+        text: `<span ${languageAttributesFor(entry.sys.locale).toString()}>${entry.fields.callToAction}</span>`,
         url: entry.fields.link,
       },
       theme: String.toLowerCase(entry.fields.theme),

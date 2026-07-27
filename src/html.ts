@@ -115,7 +115,7 @@ export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = f
       'mtr',
       'annotation',
       'semantics',
-      ...(trusted ? ['img', 'table', 'colgroup', 'col', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
+      ...(trusted ? ['img', 'span', 'table', 'colgroup', 'col', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
     ],
     allowedAttributes: {
       '*': ['dir', 'displaystyle', 'lang', 'mathvariant', ...(trusted ? ['id'] : [])],

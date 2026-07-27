@@ -1,5 +1,5 @@
 import { Context, Effect, Layer } from 'effect'
-import { html, plainText } from '../html.ts'
+import { html } from '../html.ts'
 import type { GetCurrentBanner } from './GetCurrentBanner/index.ts'
 import { SpotlightBanner } from './Types.ts'
 
@@ -19,10 +19,12 @@ export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
         getCurrentBanner: Effect.succeedSome(
           new SpotlightBanner({
             id: '19ku1fGWddXyrFone7Pu62',
-            title: plainText`Matchmaking experiment`,
-            description: html`Check out our experiment for suggestions about what to review next!`,
+            title: html`<span lang="en" dir="ltr">Matchmaking experiment</span> `,
+            description: html`<span lang="en" dir="ltr"
+              >Check out our experiment for suggestions about what to review next!</span
+            >`,
             callToAction: {
-              text: plainText`Find preprints to review`,
+              text: html`<span lang="en" dir="ltr">Find preprints to review</span>`,
               url: new URL('https://matchmaking-experiment.prereview.org/'),
             },
             theme: 'product',

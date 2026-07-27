@@ -17,6 +17,7 @@ export class Entry extends Schema.Class<Entry>('Entry')({
         id: ContentfulId,
       }),
     }),
+    locale: Schema.NonEmptyString,
   }),
   fields: Schema.Record({ key: ContentfulId, value: NonEmptyStringSchema }),
 }) {}

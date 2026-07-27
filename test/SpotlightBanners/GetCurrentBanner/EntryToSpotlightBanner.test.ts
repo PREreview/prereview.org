@@ -4,7 +4,7 @@ import { expect, it } from '@effect/vitest'
 import { Array, Effect, pipe, Schema, Struct } from 'effect'
 import { URL } from 'url'
 import { Entries } from '../../../src/ExternalApis/Contentful/index.ts'
-import { plainText, rawHtml } from '../../../src/html.ts'
+import { rawHtml } from '../../../src/html.ts'
 import * as _ from '../../../src/SpotlightBanners/GetCurrentBanner/EntryToSpotlightBanner.ts'
 import { SpotlightBanner } from '../../../src/SpotlightBanners/index.ts'
 
@@ -14,10 +14,12 @@ it.effect.each([
     index: 0,
     expected: new SpotlightBanner({
       id: '19ku1fGWddXyrFone7Pu62',
-      title: plainText('Matchmaking experiment'),
-      description: rawHtml('Check out our experiment for suggestions about what to review next!'),
+      title: rawHtml('<span lang="en-US" dir="ltr">Matchmaking experiment</span>'),
+      description: rawHtml(
+        '<span lang="en-US" dir="ltr">Check out our experiment for suggestions about what to review next!</span>',
+      ),
       callToAction: {
-        text: plainText('Find preprints to review'),
+        text: rawHtml('<span lang="en-US" dir="ltr">Find preprints to review</span>'),
         url: new URL('https://matchmaking-experiment.prereview.org/'),
       },
       theme: 'product',
@@ -28,10 +30,12 @@ it.effect.each([
     index: 1,
     expected: new SpotlightBanner({
       id: '7Qm2xVJc9LpRtaN4eYk8Hs',
-      title: plainText('Review-a-thon (14–18 September, 2026)'),
-      description: rawHtml('Gather your community to review preprints or datasets together and win a prize!'),
+      title: rawHtml('<span lang="en-US" dir="ltr">Review-a-thon (14–18 September, 2026)</span>'),
+      description: rawHtml(
+        '<span lang="en-US" dir="ltr">Gather your community to review preprints or datasets together and win a prize!</span>',
+      ),
       callToAction: {
-        text: plainText('Register your Club'),
+        text: rawHtml('<span lang="en-US" dir="ltr">Register your Club</span>'),
         url: new URL('https://prereview.org/clubs'),
       },
       theme: 'community',
