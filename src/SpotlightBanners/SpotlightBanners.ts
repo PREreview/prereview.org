@@ -1,8 +1,7 @@
-import { Context, Effect, Layer } from 'effect'
+import { Context, Effect, Layer, Scope } from 'effect'
 import type { Locale } from '../Context.ts'
-import { html } from '../html.ts'
-import type { GetCurrentBanner } from './GetCurrentBanner/index.ts'
-import { SpotlightBanner } from './Types.ts'
+import type { Contentful } from '../ExternalApis/Contentful/index.ts'
+import { GetCurrentBanner } from './GetCurrentBanner/index.ts'
 
 export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
   SpotlightBanners,
@@ -16,22 +15,11 @@ export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
 >() {
   static readonly layer = Layer.effect(
     this,
-    Effect.sync(() => {
+    Effect.gen(function* () {
+      const context = yield* Effect.andThen(Effect.context<Contentful>(), Context.omit(Scope.Scope))
+
       return {
-        getCurrentBanner: Effect.succeedSome(
-          new SpotlightBanner({
-            id: '19ku1fGWddXyrFone7Pu62',
-            title: html`<span lang="en" dir="ltr">Matchmaking experiment</span> `,
-            description: html`<span lang="en" dir="ltr"
-              >Check out our experiment for suggestions about what to review next!</span
-            >`,
-            callToAction: {
-              text: html`<span lang="en" dir="ltr">Find preprints to review</span>`,
-              url: new URL('https://matchmaking-experiment.prereview.org/'),
-            },
-            theme: 'product',
-          }),
-        ),
+        getCurrentBanner: Effect.provide(GetCurrentBanner, context),
       }
     }),
   )

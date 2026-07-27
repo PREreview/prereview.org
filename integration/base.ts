@@ -41,7 +41,7 @@ import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
-import { ContentfulConfig, ContentfulId } from '../src/ExternalApis/Contentful/index.ts'
+import { ContentfulConfig, ContentfulId, type Entries } from '../src/ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
@@ -3774,10 +3774,34 @@ export const clubLeadsCanAddReviewsToClubs: Fixtures<
 export const showSpotlight: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'showSpotlight'>,
+  Pick<AppFixtures, 'fetch' | 'showSpotlight'>,
   Record<never, never>
 > = {
-  showSpotlight: async ({}, use) => {
+  showSpotlight: async ({ fetch }, use) => {
+    fetch.get({
+      url: 'https://cdn.contentful.com/spaces/spaceId/environments/environmentId/entries',
+      query: { content_type: 'banner', limit: 1, order: 'sys.createdAt' },
+      response: {
+        body: {
+          items: [
+            {
+              sys: {
+                id: '19ku1fGWddXyrFone7Pu62',
+                contentType: { sys: { type: 'Link', linkType: 'ContentType', id: 'banner' } },
+              },
+              fields: {
+                title: { 'en-US': 'Matchmaking experiment' },
+                text: { 'en-US': 'Check out our experiment for suggestions about what to review next!' },
+                callToAction: { 'en-US': 'Find preprints to review' },
+                link: { 'en-US': 'https://matchmaking-experiment.prereview.org/' },
+                theme: { 'en-US': 'Product' },
+              },
+            },
+          ],
+        } satisfies typeof Entries.Encoded,
+      },
+    })
+
     await use(true)
   },
 }
