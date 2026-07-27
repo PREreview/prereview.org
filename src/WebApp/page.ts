@@ -113,6 +113,15 @@ export const page = ({
                     }
                     document.documentElement.lang = window.jipt.target_language
                     document.documentElement.dir = window.jipt.target_language === 'arb' ? 'rtl' : 'ltr'
+                    document.documentElement.querySelectorAll('.locale').forEach(element => {
+                      element.innerText =
+                        new Intl.DisplayNames(window.jipt.target_language, {
+                          type: 'language',
+                          languageDisplay: 'standard',
+                          style: 'narrow',
+                        }).of(window.jipt.target_language.split('-')[0] ?? window.jipt.target_language) ??
+                        window.jipt.target_language
+                    })
                   }, 1000)
                 </script>
                 <script type="text/javascript" src="https://cdn.crowdin.com/jipt/jipt.js"></script>
