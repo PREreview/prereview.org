@@ -12,6 +12,7 @@ import * as DatasetReviews from './DatasetReviews/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
+import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
   CoarNotify,
   Crossref,
@@ -242,6 +243,7 @@ export const Program = pipe(
   Layer.provide([Email.layer, LanguageDetection.layerCld]),
   Layer.provide([
     CoarNotify.layer,
+    Layer.provide(Contentful.layer, CachingHttpClient.layer('10 seconds')),
     Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
     Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
     Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),

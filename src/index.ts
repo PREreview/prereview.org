@@ -25,6 +25,7 @@ import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
+import { ContentfulConfig, ContentfulId } from './ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -164,6 +165,11 @@ pipe(
       showSpotlight: Config.withDefault(Config.boolean('SHOW_SPOTLIGHT'), false),
     }),
     PostgresClientLayer,
+    ContentfulConfig.layerConfig({
+      accessToken: Config.redacted('CONTENTFUL_ACCESS_TOKEN'),
+      environmentId: Config.succeed(ContentfulId.make('master')),
+      spaceId: Config.succeed(ContentfulId.make('dapbmjoaf8gb')),
+    }),
     Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
     Layer.effect(
       Slack.SlackApi,

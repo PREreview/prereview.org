@@ -41,6 +41,7 @@ import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
+import { ContentfulConfig, ContentfulId } from '../src/ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
@@ -2484,6 +2485,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           Nodemailer.layerTransporter(nodemailer),
           Layer.succeed(IsUserBlocked, isUserBlocked),
           Layer.succeed(FetchHttpClient.Fetch, fetch.fetchHandler),
+          ContentfulConfig.layer({
+            accessToken: Redacted.make('CONTENTFUL_ACCESS_TOKEN'),
+            environmentId: ContentfulId.make('environmentId'),
+            spaceId: ContentfulId.make('spaceId'),
+          }),
           Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),
           Layer.succeed(Slack.SlackApi, { apiToken: Redacted.make('') }),
           Layer.succeed(Cloudinary.CloudinaryApi, {
