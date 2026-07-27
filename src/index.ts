@@ -162,7 +162,7 @@ pipe(
         false,
       ),
       useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
-      showSpotlight: Config.withDefault(Config.boolean('SHOW_SPOTLIGHT'), false),
+      showSpotlight: Config.withDefault(Config.boolean('SHOW_SPOTLIGHT'), true),
     }),
     PostgresClientLayer,
     ContentfulConfig.layerConfig({
