@@ -10,7 +10,7 @@ import { SpotlightBanner } from '../../../src/SpotlightBanners/index.ts'
 
 it.effect.each([
   {
-    response: 'banners',
+    response: 'banners-without-locales',
     index: 0,
     expected: new SpotlightBanner({
       id: '19ku1fGWddXyrFone7Pu62',
@@ -26,7 +26,7 @@ it.effect.each([
     }),
   },
   {
-    response: 'banners',
+    response: 'banners-without-locales',
     index: 1,
     expected: new SpotlightBanner({
       id: '7Qm2xVJc9LpRtaN4eYk8Hs',
@@ -53,5 +53,22 @@ it.effect.each([
     )
 
     expect(actual).toStrictEqual(expected)
+  }).pipe(Effect.provide(NodeFileSystem.layer)),
+)
+
+it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/Samples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
+      Effect.andThen(Struct.get('items')),
+      Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
+      Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
+    )
+
+    actual.forEach(result => {
+      expect(result).toMatchObject({ _tag: 'Left' })
+    })
   }).pipe(Effect.provide(NodeFileSystem.layer)),
 )

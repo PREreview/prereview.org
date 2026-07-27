@@ -19,7 +19,13 @@ export class Entry extends Schema.Class<Entry>('Entry')({
     }),
     locale: Schema.NonEmptyString,
   }),
-  fields: Schema.Record({ key: ContentfulId, value: NonEmptyStringSchema }),
+  fields: Schema.Record({
+    key: ContentfulId,
+    value: Schema.Union(
+      NonEmptyStringSchema,
+      Schema.Record({ key: NonEmptyStringSchema, value: NonEmptyStringSchema }),
+    ),
+  }),
 }) {}
 
 export class Entries extends Schema.Class<Entries>('Entries')({

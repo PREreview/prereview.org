@@ -19,21 +19,11 @@
         "locale": "en-US"
       },
       "fields": {
-        "title": {
-          "en-US": "Matchmaking experiment"
-        },
-        "text": {
-          "en-US": "Check out our experiment for suggestions about what to review next!"
-        },
-        "callToAction": {
-          "en-US": "Find preprints to review"
-        },
-        "link": {
-          "en-US": "https://matchmaking-experiment.prereview.org/"
-        },
-        "theme": {
-          "en-US": "Product"
-        }
+        "title": "Matchmaking experiment",
+        "text": "Check out our experiment for suggestions about what to review next!",
+        "callToAction": "Find preprints to review",
+        "link": "https://matchmaking-experiment.prereview.org/",
+        "theme": "Product"
       }
     },
     {
@@ -51,21 +41,11 @@
         "locale": "en-US"
       },
       "fields": {
-        "title": {
-          "en-US": "Review-a-thon (14–18 September, 2026)"
-        },
-        "text": {
-          "en-US": "Gather your community to review preprints or datasets together and win a prize!"
-        },
-        "callToAction": {
-          "en-US": "Register your Club"
-        },
-        "link": {
-          "en-US": "https://prereview.org/clubs"
-        },
-        "theme": {
-          "en-US": "Community"
-        }
+        "title": "Review-a-thon (14–18 September, 2026)",
+        "text": "Gather your community to review preprints or datasets together and win a prize!",
+        "callToAction": "Register your Club",
+        "link": "https://prereview.org/clubs",
+        "theme": "Community"
       }
     }
   ]
