@@ -15,8 +15,7 @@
         "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
         "publishedVersion": 7,
         "revision": 2,
-        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "banner" } },
-        "locale": "en-US"
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "banner" } }
       },
       "fields": {
         "title": {

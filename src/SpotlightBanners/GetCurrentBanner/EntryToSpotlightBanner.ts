@@ -2,7 +2,6 @@ import { Effect, Option, ParseResult, Record, Schema, String } from 'effect'
 import { Locale } from '../../Context.ts'
 import { ContentfulId, Entry } from '../../ExternalApis/Contentful/index.ts'
 import { languageAttributesFor } from '../../Locales.ts'
-import { DefaultLocale } from '../../locales/index.ts'
 import { SpotlightBanner } from '../Types.ts'
 
 const SpotlightBannerEntry = Schema.Struct({
@@ -16,7 +15,6 @@ const SpotlightBannerEntry = Schema.Struct({
         id: Schema.Literal(ContentfulId.make('banner')),
       }),
     }),
-    locale: Schema.Literal(DefaultLocale),
   }),
   fields: Schema.Struct({
     title: Schema.Struct(
