@@ -17,7 +17,7 @@ it.effect.each<{
   expected: SpotlightBanner
 }>([
   {
-    response: 'banners-without-locales',
+    response: 'banners',
     index: 0,
     locale: 'en-US',
     expected: new SpotlightBanner({
@@ -32,7 +32,7 @@ it.effect.each<{
     }),
   },
   {
-    response: 'banners-without-locales',
+    response: 'banners',
     index: 0,
     locale: 'es-419',
     expected: new SpotlightBanner({
@@ -49,7 +49,7 @@ it.effect.each<{
     }),
   },
   {
-    response: 'banners-without-locales',
+    response: 'banners',
     index: 1,
     locale: 'en-US',
     expected: new SpotlightBanner({
@@ -80,7 +80,7 @@ it.effect.each<{
   }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, locale)])),
 )
 
-it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
+it.effect.each([['banners-without-locales']])("can't parse a record (%s)", ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
