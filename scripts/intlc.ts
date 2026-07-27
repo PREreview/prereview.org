@@ -6,7 +6,7 @@ import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
 const crowdinInContextLocale = 'lol'
-const assetsModules = ['html-editor', 'single-use-form']
+const assetsModules = ['html-editor', 'single-use-form', 'spotlight-banner']
 
 const DiscoverLocales = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem

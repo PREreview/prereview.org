@@ -1,0 +1,6 @@
+{
+  "dismiss": {
+    "message": "Dismiss",
+    "description": "Button to close the spotlight banner and stop it from appearing again."
+  }
+}

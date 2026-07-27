@@ -1,19 +1,26 @@
 import { Duration } from 'effect'
+import { getLocale } from './dom.ts'
+
+const translateDep = import('./locales/index.ts')
 
 export class SpotlightBanner extends HTMLElement {
   static element = 'spotlight-banner' as const
 
-  connectedCallback() {
+  async connectedCallback() {
     const id = this.dataset['spotlightBannerId']
 
     if (typeof id !== 'string') {
       return
     }
 
+    const { translate } = await translateDep
+
+    const locale = getLocale(this)
+
     const button = document.createElement('button')
     button.type = 'button'
     button.classList.add('dismiss')
-    button.innerText = 'Dismiss'
+    button.innerText = translate(locale, 'spotlight-banner', 'dismiss')()
 
     button.addEventListener('click', () => {
       this.remove()
