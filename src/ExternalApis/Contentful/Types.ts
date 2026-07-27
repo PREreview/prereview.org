@@ -5,7 +5,7 @@ const ContentfulIdBrand: unique symbol = Symbol.for('ContentfulId')
 
 export type ContentfulId = typeof ContentfulId.Type
 
-export const ContentfulId = Schema.String.pipe(Schema.brand(ContentfulIdBrand))
+export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
 
 export class Entry extends Schema.Class<Entry>('Entry')({
   sys: Schema.Struct({
