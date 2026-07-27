@@ -25,7 +25,7 @@
     "@opentelemetry/sdk-trace-base": "^2.9.0",
     "@opentelemetry/sdk-trace-node": "^2.9.0",
     "case-anything": "^3.1.2",
-    "cdigit": "^4.0.4",
+    "cdigit": "^5.0.1",
     "cld": "^2.10.1",
     "clock-ts": "^0.1.2",
     "cloudinary": "^2.10.0",
