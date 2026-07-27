@@ -1,4 +1,4 @@
-import { DefaultLocale, isSupportedLocale, type SupportedLocale } from './locales/index.ts'
+import { CrowdinInContextLocale, DefaultLocale, isSupportedLocale, type SupportedLocale } from './locales/index.ts'
 
 export function preventDefault(event: Event) {
   event.preventDefault()
@@ -38,6 +38,10 @@ export function getLang(element: HTMLElement): string {
 }
 
 export function getLocale(element: HTMLElement): SupportedLocale {
+  if ('jipt' in window) {
+    return CrowdinInContextLocale
+  }
+
   const lang = getLang(element)
 
   return isSupportedLocale(lang) ? lang : DefaultLocale
