@@ -18,11 +18,11 @@ export type Translations = {[K in keyof typeof translations['{{defaultLocale}}']
 {{#each realLocales}}
   & (K extends keyof typeof translations['{{this}}'] ? Parameters<typeof translations['{{this}}'][K]> : [])
 {{/each}}
-> extends [] ? () => {{#if html}}Html{{else}}string{{/if}} : (x: Types.Simplify<{}
+> extends [] ? () => {{#if html}}Html{{else}}HTMLSpanElement{{/if}} : (x: Types.Simplify<{}
 {{#each realLocales}}
   & (K extends keyof typeof translations['{{this}}'] ? Parameters<typeof translations['{{this}}'][K]> extends [] ? {} : Parameters<typeof translations['{{this}}'][K]>[0] : {})
 {{/each}}
->) => {{#if html}}Html{{else}}string{{/if}}
+>) => {{#if html}}Html{{else}}HTMLSpanElement{{/if}}
 }
 
 
@@ -33,9 +33,29 @@ export const translate{{moduleName}} =
     if (key in translations[locale]) {
       // @ts-ignore
       {{#if html}}return args => html`<span>${(translations[locale][key](args))}</span>`
-      {{else}}return translations[locale][key]{{/if}}
+      {{else}}
+        return args => {
+          const element = document.createElement('span')
+
+          // @ts-ignore
+          element.innerText = translations[locale][key](args)
+
+          return element
+        }
+      {{/if}}
     }
     // @ts-ignore
     {{#if html}}return args => html`<span lang="{{defaultLocale}}" dir="{{defaultLocaleDir}}">${(translations['{{defaultLocale}}'][key](args))}</span>`
-    {{else}}return translations['{{defaultLocale}}'][key]{{/if}}
+    {{else}}
+      return args => {
+        const element = document.createElement('span')
+        element.lang = '{{defaultLocale}}'
+        element.dir = '{{defaultLocaleDir}}'
+
+        // @ts-ignore
+        element.innerText = translations['{{defaultLocale}}'][key](args)
+
+        return element
+      }
+    {{/if}}
   }

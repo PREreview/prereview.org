@@ -23,9 +23,7 @@ export class SingleUseForm extends HTMLElement {
 
       const status = document.createElement('div')
       status.classList.add('submitting', 'visually-hidden')
-      const statusText = document.createElement('span')
-      statusText.textContent = translate(locale, 'single-use-form', 'working')()
-      status.append(statusText)
+      status.append(translate(locale, 'single-use-form', 'working')())
       this.append(status)
 
       setTimeout(() => {

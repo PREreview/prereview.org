@@ -53,9 +53,7 @@ export class HtmlEditor extends HTMLElement {
 
     const status = document.createElement('div')
     status.classList.add('loading', 'visually-hidden')
-    const statusText = document.createElement('span')
-    statusText.textContent = translate(locale, 'html-editor', 'loading')()
-    status.append(statusText)
+    status.append(translate(locale, 'html-editor', 'loading')())
     this.append(status)
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
@@ -75,7 +73,7 @@ export class HtmlEditor extends HTMLElement {
 
     const toolbar = document.createElement('editor-toolbar')
     toolbar.setAttribute('aria-controls', textArea.id)
-    toolbar.setAttribute('aria-label', translate(locale, 'html-editor', 'formatting')())
+    toolbar.setAttribute('aria-label', translate(locale, 'html-editor', 'formatting')().innerText)
 
     const formatting = document.createElement('div')
     formatting.setAttribute('role', 'group')
@@ -219,7 +217,7 @@ export class HtmlEditor extends HTMLElement {
         return
       }
 
-      const href = window.prompt(translate(locale, 'html-editor', 'enterAUrl')())
+      const href = window.prompt(translate(locale, 'html-editor', 'enterAUrl')().innerText)
 
       if (typeof href !== 'string' || href === '') {
         return
@@ -352,21 +350,18 @@ function fetchSvg(path: string) {
     })
 }
 
-async function createButton(label: string, icon: string) {
+async function createButton(label: HTMLSpanElement, icon: string) {
   const button = document.createElement('button')
   button.type = 'button'
   button.setAttribute('aria-pressed', 'false')
   button.setAttribute('aria-disabled', 'true')
-
-  const wrapper = document.createElement('span')
-  wrapper.innerText = label
-  button.append(wrapper)
+  button.append(label)
 
   try {
     const svg = await fetchSvg(icon)
     svg.setAttribute('aria-hidden', 'true')
     button.append(svg)
-    wrapper.classList.add('visually-hidden')
+    label.classList.add('visually-hidden')
   } catch {
     // Do nothing
   }

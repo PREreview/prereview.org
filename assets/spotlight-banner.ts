@@ -20,7 +20,7 @@ export class SpotlightBanner extends HTMLElement {
     const button = document.createElement('button')
     button.type = 'button'
     button.classList.add('dismiss')
-    button.innerText = translate(locale, 'spotlight-banner', 'dismiss')()
+    button.append(translate(locale, 'spotlight-banner', 'dismiss')())
 
     button.addEventListener('click', () => {
       this.remove()
