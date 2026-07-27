@@ -95,10 +95,10 @@ describe('constructPageUrls', () => {
           {
             fastCheck: {
               examples: [
-                [['lol-US', 'http://example.com', '/', 'http://example.com/'], '/anything'],
-                [['lol-US', 'http://example.com', '/about', 'http://example.com/about'], '/anything'],
-                [['lol-US', 'http://example.com', '/reviews?page=2', 'http://example.com/reviews?page=2'], '/anything'],
-                [['lol-US', 'http://example.com', '/?foo=bar baz', 'http://example.com/?foo=bar%20baz'], '/anything'],
+                [['lol', 'http://example.com', '/', 'http://example.com/'], '/anything'],
+                [['lol', 'http://example.com', '/about', 'http://example.com/about'], '/anything'],
+                [['lol', 'http://example.com', '/reviews?page=2', 'http://example.com/reviews?page=2'], '/anything'],
+                [['lol', 'http://example.com', '/?foo=bar baz', 'http://example.com/?foo=bar%20baz'], '/anything'],
               ],
             },
           },
@@ -234,7 +234,7 @@ describe('constructPageUrls', () => {
         {
           fastCheck: {
             examples: [
-              ['lol-US', ['http://example.com', '/', 'http://example.com/']],
+              ['lol', ['http://example.com', '/', 'http://example.com/']],
               ['en-US', ['http://example.com', '/about', 'http://example.com/about']],
               ['pt-BR', ['http://example.com', '/reviews?page=2', 'http://example.com/reviews?page=2']],
               ['es-419', ['http://example.com', '/?foo=bar baz', 'http://example.com/?foo=bar%20baz']],

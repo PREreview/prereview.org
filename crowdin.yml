@@ -4,3 +4,6 @@ base_path: locales
 files:
   - source: /en-US/*.json
     translation: /%locale%/%original_file_name%
+    languages_mapping:
+      locale:
+        lol: lol

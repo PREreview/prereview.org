@@ -5,7 +5,7 @@ import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, String, Tup
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
-const crowdinInContextLocale = 'lol-US'
+const crowdinInContextLocale = 'lol'
 const assetsModules = ['html-editor', 'single-use-form']
 
 const DiscoverLocales = Effect.gen(function* () {

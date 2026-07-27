@@ -24,7 +24,7 @@ describe('detectLocale', () => {
     }).pipe(Effect.provideService(EnabledLocales, UserSelectableLocales)),
   )
 
-  it.effect.each<[string]>([[''], [' '], ['foo'], ['is'], ['lol-US']])('finds no match for "%s"', ([input]) =>
+  it.effect.each<[string]>([[''], [' '], ['foo'], ['is'], ['lol']])('finds no match for "%s"', ([input]) =>
     Effect.gen(function* () {
       const actual = yield* _.detectLocale(input)
 
