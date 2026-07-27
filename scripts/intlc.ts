@@ -5,6 +5,7 @@ import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, String, Tup
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
+const defaultLocaleDir = new Intl.Locale(defaultLocale).getTextInfo().direction
 const crowdinInContextLocale = 'lol'
 const assetsModules = ['html-editor', 'single-use-form', 'spotlight-banner']
 
@@ -144,6 +145,7 @@ const BuildAssetsModule = Effect.fnUntraced(function* ({ module, target }: { mod
 
   const rendered = template({
     defaultLocale,
+    defaultLocaleDir,
     locales,
     realLocales: Array.filter(locales, locale => locale !== crowdinInContextLocale),
     moduleName: pascalCase(module),
@@ -164,6 +166,7 @@ const BuildSrcModule = Effect.fnUntraced(function* ({ module, target }: { module
 
   const rendered = template({
     defaultLocale,
+    defaultLocaleDir,
     locales,
     html: true,
     realLocales: Array.filter(locales, locale => locale !== crowdinInContextLocale),
