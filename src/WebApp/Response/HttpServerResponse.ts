@@ -175,7 +175,7 @@ function generateAuthorizationRequestUrl({
 const getSpotlightBanner: Effect.Effect<
   Option.Option<SpotlightBanner>,
   never,
-  HttpServerRequest.HttpServerRequest | SpotlightBanners
+  HttpServerRequest.HttpServerRequest | SpotlightBanners | Locale
 > = Effect.gen(function* () {
   const spotlightBanners = yield* SpotlightBanners
 

@@ -1,17 +1,40 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '@effect/vitest'
-import { Array, Effect, pipe, Schema, Struct } from 'effect'
+import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { URL } from 'url'
+import { Locale } from '../../../src/Context.ts'
 import { Entries } from '../../../src/ExternalApis/Contentful/index.ts'
 import { rawHtml } from '../../../src/html.ts'
+import { DefaultLocale, type SupportedLocale } from '../../../src/locales/index.ts'
 import * as _ from '../../../src/SpotlightBanners/GetCurrentBanner/EntryToSpotlightBanner.ts'
 import { SpotlightBanner } from '../../../src/SpotlightBanners/index.ts'
 
-it.effect.each([
+it.effect.each<{
+  response: string
+  index: number
+  locale: SupportedLocale
+  expected: SpotlightBanner
+}>([
   {
     response: 'banners-without-locales',
     index: 0,
+    locale: 'en-US',
+    expected: new SpotlightBanner({
+      id: '19ku1fGWddXyrFone7Pu62',
+      title: rawHtml('<span>Matchmaking experiment</span>'),
+      description: rawHtml('<span>Check out our experiment for suggestions about what to review next!</span>'),
+      callToAction: {
+        text: rawHtml('<span>Find preprints to review</span>'),
+        url: new URL('https://matchmaking-experiment.prereview.org/'),
+      },
+      theme: 'product',
+    }),
+  },
+  {
+    response: 'banners-without-locales',
+    index: 0,
+    locale: 'es-419',
     expected: new SpotlightBanner({
       id: '19ku1fGWddXyrFone7Pu62',
       title: rawHtml('<span lang="en-US" dir="ltr">Matchmaking experiment</span>'),
@@ -28,20 +51,21 @@ it.effect.each([
   {
     response: 'banners-without-locales',
     index: 1,
+    locale: 'en-US',
     expected: new SpotlightBanner({
       id: '7Qm2xVJc9LpRtaN4eYk8Hs',
-      title: rawHtml('<span lang="en-US" dir="ltr">Review-a-thon (14–18 September, 2026)</span>'),
+      title: rawHtml('<span>Review-a-thon (14–18 September, 2026)</span>'),
       description: rawHtml(
-        '<span lang="en-US" dir="ltr">Gather your community to review preprints or datasets together and win a prize!</span>',
+        '<span>Gather your community to review preprints or datasets together and win a prize!</span>',
       ),
       callToAction: {
-        text: rawHtml('<span lang="en-US" dir="ltr">Register your Club</span>'),
+        text: rawHtml('<span>Register your Club</span>'),
         url: new URL('https://prereview.org/clubs'),
       },
       theme: 'community',
     }),
   },
-])('can parse a record ($response $index)', ({ response, index, expected }) =>
+])('can parse a record ($response $index $locale)', ({ response, index, locale, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -53,7 +77,7 @@ it.effect.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide(NodeFileSystem.layer)),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, locale)])),
 )
 
 it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
@@ -70,5 +94,5 @@ it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
     actual.forEach(result => {
       expect(result).toMatchObject({ _tag: 'Left' })
     })
-  }).pipe(Effect.provide(NodeFileSystem.layer)),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
 )

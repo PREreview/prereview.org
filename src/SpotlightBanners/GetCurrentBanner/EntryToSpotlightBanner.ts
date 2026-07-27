@@ -1,4 +1,5 @@
-import { ParseResult, Schema, String } from 'effect'
+import { Effect, ParseResult, Schema, String } from 'effect'
+import { Locale } from '../../Context.ts'
 import { ContentfulId, Entry } from '../../ExternalApis/Contentful/index.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale } from '../../locales/index.ts'
@@ -29,15 +30,19 @@ const SpotlightBannerEntry = Schema.Struct({
 export const EntryToSpotlightBanner = Schema.transformOrFail(Schema.typeSchema(SpotlightBannerEntry), SpotlightBanner, {
   strict: true,
   decode: entry =>
-    ParseResult.succeed({
-      id: entry.sys.id,
-      title: `<span ${languageAttributesFor(entry.sys.locale).toString()}>${entry.fields.title}</span>`,
-      description: `<span ${languageAttributesFor(entry.sys.locale).toString()}>${entry.fields.text}</span>`,
-      callToAction: {
-        text: `<span ${languageAttributesFor(entry.sys.locale).toString()}>${entry.fields.callToAction}</span>`,
-        url: entry.fields.link,
-      },
-      theme: String.toLowerCase(entry.fields.theme),
+    Effect.gen(function* () {
+      const locale = yield* Locale
+
+      return {
+        id: entry.sys.id,
+        title: `<span ${locale !== entry.sys.locale ? languageAttributesFor(entry.sys.locale).toString() : ''}>${entry.fields.title}</span>`,
+        description: `<span ${locale !== entry.sys.locale ? languageAttributesFor(entry.sys.locale).toString() : ''}>${entry.fields.text}</span>`,
+        callToAction: {
+          text: `<span ${locale !== entry.sys.locale ? languageAttributesFor(entry.sys.locale).toString() : ''}>${entry.fields.callToAction}</span>`,
+          url: entry.fields.link,
+        },
+        theme: String.toLowerCase(entry.fields.theme),
+      }
     }),
   encode: (spotlightBanner, _, ast) =>
     ParseResult.fail(

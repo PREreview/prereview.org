@@ -1,4 +1,5 @@
 import { Context, Effect, Layer } from 'effect'
+import type { Locale } from '../Context.ts'
 import { html } from '../html.ts'
 import type { GetCurrentBanner } from './GetCurrentBanner/index.ts'
 import { SpotlightBanner } from './Types.ts'
@@ -8,7 +9,8 @@ export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
   {
     getCurrentBanner: Effect.Effect<
       Effect.Effect.Success<typeof GetCurrentBanner>,
-      Effect.Effect.Error<typeof GetCurrentBanner>
+      Effect.Effect.Error<typeof GetCurrentBanner>,
+      Locale
     >
   }
 >() {
