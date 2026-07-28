@@ -144,7 +144,7 @@
     "description": "Error message shown when the user submits the “What email address should we use?” form, selects the “A different one” option, and doesn’t enter an email address."
   },
   "enterAnEmailAddressInTheCorrectFormat": {
-    "message": "Enter an email address in the correct format, like name@example.com",
+    "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
     "description": "Error message shown when the user submits the “What email address should we use?” form, selects the “A different one” option, and enters an invalid an email address."
   },
   "verifyYourEmailAddress": {

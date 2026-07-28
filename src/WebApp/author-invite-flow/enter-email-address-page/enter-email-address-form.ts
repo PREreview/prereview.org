@@ -110,8 +110,11 @@ export function enterEmailAddressForm({
                               <div class="error-message" id="other-email-address-error">
                                 <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                                 ${Match.valueTags(form.otherEmailAddress.left, {
-                                  MissingE: t('enterYourEmailAddress'),
-                                  InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
+                                  MissingE: () => t('enterYourEmailAddress')(),
+                                  InvalidE: () =>
+                                    t('enterAnEmailAddressInTheCorrectFormat')({
+                                      exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                                    }),
                                 })}
                               </div>
                             `
@@ -177,8 +180,11 @@ const toErrorItems = (locale: SupportedLocale) => (form: EnterEmailAddressForm) 
             <li>
               <a href="#other-email-address">
                 ${Match.valueTags(form.otherEmailAddress.left, {
-                  MissingE: t('enterYourEmailAddress'),
-                  InvalidE: t('enterAnEmailAddressInTheCorrectFormat'),
+                  MissingE: () => t('enterYourEmailAddress')(),
+                  InvalidE: () =>
+                    t('enterAnEmailAddressInTheCorrectFormat')({
+                      exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                    }),
                 })}
               </a>
             </li>

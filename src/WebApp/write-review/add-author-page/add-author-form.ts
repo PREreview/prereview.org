@@ -90,8 +90,12 @@ export function addAuthorForm({
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.emailAddress.left, {
-                      MissingE: t('write-review', 'enterTheirEmail'),
-                      InvalidE: t('write-review', 'invalidEmail'),
+                      MissingE: () => t('write-review', 'enterTheirEmail')(),
+                      InvalidE: () =>
+                        t(
+                          'write-review',
+                          'invalidEmail',
+                        )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
                     })}
                   </div>
                 `
@@ -151,8 +155,11 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddAuthorForm) => html`
           <li>
             <a href="#email-address">
               ${Match.valueTags(form.emailAddress.left, {
-                MissingE: translate(locale)('write-review', 'enterTheirEmail'),
-                InvalidE: translate(locale)('write-review', 'invalidEmail'),
+                MissingE: () => translate(locale)('write-review', 'enterTheirEmail')(),
+                InvalidE: () =>
+                  translate(locale)('write-review', 'invalidEmail')({
+                    exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                  }),
               })}
             </a>
           </li>

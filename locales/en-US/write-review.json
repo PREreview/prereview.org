@@ -36,7 +36,7 @@
     "description": "Label for the email input on the “Add an author” form."
   },
   "invalidEmail": {
-    "message": "Enter an email address in the correct format, like name@example.com",
+    "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
     "description": "Error message that appears when the user submits the “Add an author” form with an invalid email address."
   },
   "addAuthor": {
@@ -824,7 +824,7 @@
     "description": "Error message shown when the user tries to submit the “Contact details” form without entering an email address."
   },
   "enterEmailAddressFormatError": {
-    "message": "Enter an email address in the correct format, like name@example.com",
+    "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
     "description": "Error message shown when the user tries to submit the “Contact details” form with an invalid email address."
   },
   "confirmEmailAddress": {

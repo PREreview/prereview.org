@@ -40,7 +40,10 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
                               <a href="#email-address">
                                 ${Match.valueTags(form.emailAddress.left, {
                                   MissingE: () => t('enterEmailAddressError')(),
-                                  InvalidE: () => t('enterEmailAddressFormatError')(),
+                                  InvalidE: () =>
+                                    t('enterEmailAddressFormatError')({
+                                      exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                                    }),
                                 })}
                               </a>
                             </li>
@@ -65,7 +68,10 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.emailAddress.left, {
                       MissingE: () => t('enterEmailAddressError')(),
-                      InvalidE: () => t('enterEmailAddressFormatError')(),
+                      InvalidE: () =>
+                        t('enterEmailAddressFormatError')({
+                          exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                        }),
                     })}
                   </div>
                 `

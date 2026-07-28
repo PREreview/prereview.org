@@ -48,7 +48,11 @@ export const EnterEmailAddressPage = ({
                                     translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
                                   ),
                                   Match.tag('Invalid', () =>
-                                    translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
+                                    translate(
+                                      locale,
+                                      'write-comment-flow',
+                                      'errorEnterValidEmailAddress',
+                                    )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
                                   ),
                                   Match.exhaustive,
                                 )}
@@ -85,7 +89,11 @@ export const EnterEmailAddressPage = ({
                       Match.value(form.emailAddress.left),
                       Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')()),
                       Match.tag('Invalid', () =>
-                        translate(locale, 'write-comment-flow', 'errorEnterValidEmailAddress')(),
+                        translate(
+                          locale,
+                          'write-comment-flow',
+                          'errorEnterValidEmailAddress',
+                        )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
                       ),
                       Match.exhaustive,
                     )}

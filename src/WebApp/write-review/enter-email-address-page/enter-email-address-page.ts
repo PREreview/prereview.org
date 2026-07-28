@@ -55,7 +55,10 @@ export const enterEmailAddressPage = (
                               <a href="#email-address">
                                 ${Match.valueTags(form.emailAddress.left, {
                                   MissingE: () => t('enterEmailAddressError')(),
-                                  InvalidE: () => t('enterEmailAddressFormatError')(),
+                                  InvalidE: () =>
+                                    t('enterEmailAddressFormatError')({
+                                      exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                                    }),
                                 })}
                               </a>
                             </li>
@@ -84,7 +87,10 @@ export const enterEmailAddressPage = (
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.emailAddress.left, {
                       MissingE: () => t('enterEmailAddressError')(),
-                      InvalidE: () => t('enterEmailAddressFormatError')(),
+                      InvalidE: () =>
+                        t('enterEmailAddressFormatError')({
+                          exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
+                        }),
                     })}
                   </div>
                 `

@@ -328,7 +328,7 @@
     "description": "Error message shown when the user tries to complete the form “What is your email address?” without entering a value."
   },
   "enterEmailAddressFormatError": {
-    "message": "Enter an email address in the correct format, like name@example.com",
+    "message": "Enter an email address in the correct format, like {exampleEmailAddress}",
     "description": "Error message shown when the user completes the form “What is your email address?” with an invalid email address."
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
