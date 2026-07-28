@@ -76,6 +76,7 @@ export default defineConfig([
         {
           allow: [
             'ExternalApis/Contentful/index.ts',
+            'ExternalInteractions/ContentfulPages/index.ts',
             'fp-ts/lib/!(Array|boolean|Eq|function|Identity|NonEmptyArray|Option|Ord|Ordering|Predicate|ReadonlyArray|ReadonlyNonEmptyArray|ReadonlyRecord|ReadonlySet|ReadonlyTuple|Refinement|string).js',
             'io-ts/lib/*',
             'iso-639-3/to-*.json',
