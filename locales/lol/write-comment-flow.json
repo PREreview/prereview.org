@@ -165,7 +165,7 @@
     "message": "crwdns5844:0crwdne5844:0"
   },
   "errorEnterValidEmailAddress": {
-    "message": "crwdns5846:0crwdne5846:0"
+    "message": "crwdns6989:0{exampleEmailAddress}crwdne6989:0"
   },
   "needToConfirmEmailAddress": {
     "message": "crwdns4332:0crwdne4332:0"

@@ -27,7 +27,7 @@
     "message": "crwdns3902:0crwdne3902:0"
   },
   "invalidEmail": {
-    "message": "crwdns3904:0crwdne3904:0"
+    "message": "crwdns6995:0{exampleEmailAddress}crwdne6995:0"
   },
   "addAuthor": {
     "message": "crwdns3906:0crwdne3906:0"
@@ -618,7 +618,7 @@
     "message": "crwdns5235:0crwdne5235:0"
   },
   "enterEmailAddressFormatError": {
-    "message": "crwdns5237:0crwdne5237:0"
+    "message": "crwdns6997:0{exampleEmailAddress}crwdne6997:0"
   },
   "confirmEmailAddress": {
     "message": "crwdns5239:0crwdne5239:0"

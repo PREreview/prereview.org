@@ -246,7 +246,7 @@
     "message": "crwdns5870:0crwdne5870:0"
   },
   "enterEmailAddressFormatError": {
-    "message": "crwdns5872:0crwdne5872:0"
+    "message": "crwdns6993:0{exampleEmailAddress}crwdne6993:0"
   },
   "usedToContactYouAboutYourAccountAndPrereviews": {
     "message": "crwdns5407:0crwdne5407:0"

@@ -108,7 +108,7 @@
     "message": "crwdns4793:0crwdne4793:0"
   },
   "enterAnEmailAddressInTheCorrectFormat": {
-    "message": "crwdns4795:0crwdne4795:0"
+    "message": "crwdns6991:0{exampleEmailAddress}crwdne6991:0"
   },
   "verifyYourEmailAddress": {
     "message": "crwdns4797:0crwdne4797:0"
