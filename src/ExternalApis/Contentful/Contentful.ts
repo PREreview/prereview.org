@@ -1,9 +1,8 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { ContentfulConfig } from './ContentfulConfig.ts'
-import { ContentfulIsUnavailable } from './Errors.ts'
 import { GetEntries } from './GetEntries/index.ts'
-import type { GetEntry } from './GetEntry/index.ts'
+import { GetEntry } from './GetEntry/index.ts'
 
 export class Contentful extends Context.Tag('Contentful')<
   Contentful,
@@ -32,7 +31,7 @@ export class Contentful extends Context.Tag('Contentful')<
       )
 
       return {
-        getEntry: () => new ContentfulIsUnavailable({ cause: 'not implemented' }),
+        getEntry: flow(GetEntry, Effect.provide(context)),
         getEntries: flow(GetEntries, Effect.provide(context)),
       }
     }),
