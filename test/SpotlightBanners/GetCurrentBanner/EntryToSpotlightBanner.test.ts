@@ -69,7 +69,7 @@ it.effect.each<{
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/Samples/${response}.json`)),
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
       Effect.andThen(Struct.get('items')),
       Effect.andThen(Array.get(index)),
@@ -84,7 +84,7 @@ it.effect.each([['banners-without-locales']])("can't parse a record (%s)", ([res
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/Samples/${response}.json`)),
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
       Effect.andThen(Struct.get('items')),
       Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),

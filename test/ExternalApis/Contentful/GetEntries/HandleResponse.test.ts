@@ -11,7 +11,7 @@ describe('HandleResponse', () => {
         'decodes the response',
         [
           fc.httpClientResponse({
-            body: fc.fileInDirectory('test/ExternalApis/Contentful/Samples'),
+            body: fc.fileInDirectory('test/ExternalApis/Contentful/GetEntries/Samples'),
             status: fc.constant(StatusCodes.OK),
           }),
         ],
