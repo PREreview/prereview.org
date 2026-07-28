@@ -32,7 +32,17 @@ const NormalizedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, 
   encode: identity,
 })
 
-const TextSchema = Schema.compose(NormalizedWhitespaceSchema, Schema.NonEmptyTrimmedString)
+const NormalizeApostrophesSchema = Schema.transform(Schema.String, Schema.Trim, {
+  strict: true,
+  decode: String.replaceAll(/(?<=\p{L})'(?=\p{L}|\s+\p{L})/gu, '’'),
+  encode: identity,
+})
+
+const TextSchema = pipe(
+  NormalizedWhitespaceSchema,
+  Schema.compose(NormalizeApostrophesSchema),
+  Schema.compose(Schema.NonEmptyTrimmedString),
+)
 
 const ListResponse = <A, I, R>(resultSchema: Schema.Schema<A, I, R>) =>
   Schema.Struct({

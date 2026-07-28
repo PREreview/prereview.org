@@ -1,7 +1,7 @@
 {
   "slogan": {
     "message": "Open preprint reviews. For <swoosh>all</swoosh> researchers.",
-    "description": "Tagline used on the homepage. 'Open preprint reviews' in the 'open to the community' sense."
+    "description": "Tagline used on the homepage. “Open preprint reviews” in the “open to the community” sense."
   },
   "heroText": {
     "message": "Provide and receive constructive feedback on preprints from an international community of your peers.",
@@ -105,6 +105,6 @@
   },
   "fundersTitle": {
     "message": "Funders",
-    "description": "Title of the section that lists PREreview's funders."
+    "description": "Title of the section that lists PREreview’s funders."
   }
 }

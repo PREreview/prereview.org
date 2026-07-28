@@ -661,11 +661,11 @@
   },
   "competingInterestsNo": {
     "message": "The author declares that they have no competing interests.",
-    "description": "Statement added to a review when there is one author and they declared that they don't have any competing interests."
+    "description": "Statement added to a review when there is one author and they declared that they don’t have any competing interests."
   },
   "competingInterestsAuthorsNo": {
     "message": "The authors declare that they have no competing interests.",
-    "description": "Statement added to a review when there are multiple authors and they declared that they don't have any competing interests."
+    "description": "Statement added to a review when there are multiple authors and they declared that they don’t have any competing interests."
   },
   "selectYesIfCompetingInterest": {
     "message": "Select yes if you have any competing interests",
