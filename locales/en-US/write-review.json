@@ -309,11 +309,11 @@
   },
   "shareOnLinkedin": {
     "message": "Share it on LinkedIn",
-    "description": "Button that allows the user to share their PREreview on LinkedIn on the “PREreview published” page."
+    "description": "Button on the “PREreview published” page that allows the user to share their PREreview on LinkedIn."
   },
   "listOnSciety": {
     "message": "List it on Sciety",
-    "description": "Button that allows the user to list their PREreview on Sciety on the “PREreview published” page."
+    "description": "Button on the “PREreview published” page that allows the user to add the preprint that has been reviewed to their list of preprints on Sciety."
   },
   "howItWent": {
     "message": "Let us know how it went",
