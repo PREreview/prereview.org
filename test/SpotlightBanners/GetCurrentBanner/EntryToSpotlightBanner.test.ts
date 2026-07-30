@@ -1,6 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '@effect/vitest'
+import resolveResponse from 'contentful-resolve-response'
 import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { URL } from 'url'
 import { Locale } from '../../../src/Context.ts'
@@ -70,7 +71,8 @@ it.effect.each<{
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
+      Effect.map(ResolveEntries),
+      Effect.andThen(Schema.decodeUnknown(Entries)),
       Effect.andThen(Struct.get('items')),
       Effect.andThen(Array.get(index)),
       Effect.andThen(Schema.decodeUnknown(_.EntryToSpotlightBanner)),
@@ -80,19 +82,28 @@ it.effect.each<{
   }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, locale)])),
 )
 
-it.effect.each([['banners-without-locales']])("can't parse a record (%s)", ([response]) =>
-  Effect.gen(function* () {
-    const actual = yield* pipe(
-      FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
-      Effect.andThen(Struct.get('items')),
-      Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
-      Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
-    )
+it.effect.each([['banners-without-locales', 'pages-assets', 'pages-assets-single-locale']])(
+  "can't parse a record (%s)",
+  ([response]) =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        FileSystem.FileSystem,
+        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
+        Effect.map(ResolveEntries),
+        Effect.andThen(Schema.decodeUnknown(Entries)),
+        Effect.andThen(Struct.get('items')),
+        Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
+        Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
+      )
 
-    actual.forEach(result => {
-      expect(result).toMatchObject({ _tag: 'Left' })
-    })
-  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
+      actual.forEach(result => {
+        expect(result).toMatchObject({ _tag: 'Left' })
+      })
+    }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
 )
+
+const ResolveEntries = (response: string) => {
+  const body = JSON.parse(response)
+
+  return { ...body, items: resolveResponse(body) }
+}
