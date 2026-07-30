@@ -1,6 +1,12 @@
 import { Schema } from 'effect'
 import { NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
 
+const ProtocolRelativeUrl = Schema.transform(Schema.String.pipe(Schema.pattern(/^\/\//)), Schema.URL, {
+  strict: true,
+  decode: value => `https:${value}`,
+  encode: url => url.replace(/^[A-z][A-z0-9+.-]*:\/\//, '//'),
+})
+
 const ContentfulIdBrand: unique symbol = Symbol.for('ContentfulId')
 
 export type ContentfulId = typeof ContentfulId.Type
@@ -40,13 +46,13 @@ class Asset extends Schema.Class<Asset>('Asset')({
     ),
     file: Schema.Union(
       Schema.Struct({
-        url: Schema.URL,
+        url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
         details: Schema.Struct({ image: Schema.Struct({ width: Schema.Int, height: Schema.Int }) }),
       }),
       Schema.Record({
         key: NonEmptyStringSchema,
         value: Schema.Struct({
-          url: Schema.URL,
+          url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
           details: Schema.Struct({ image: Schema.Struct({ width: Schema.Int, height: Schema.Int }) }),
         }),
       }),
