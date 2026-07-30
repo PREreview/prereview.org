@@ -6,6 +6,12 @@ declare namespace Intl {
   }
 }
 
+declare module 'contentful-resolve-response' {
+  declare const resolveResponse: (response: unknown) => Array<unknown>
+
+  export default resolveResponse
+}
+
 declare module 'postcss-font-display' {
   import type { PluginCreator } from 'postcss'
 

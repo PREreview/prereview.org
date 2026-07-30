@@ -507,7 +507,7 @@ export const httpClientResponse = ({
     })
     .map(({ request, response }) =>
       Object.defineProperties(HttpClientResponse.fromWeb(request, response), {
-        [fc.toStringMethod]: { value: () => fc.stringify({ request, response }) },
+        [fc.toStringMethod]: { value: () => fc.stringify({ request, response: response.clone() }) },
       }),
     )
 

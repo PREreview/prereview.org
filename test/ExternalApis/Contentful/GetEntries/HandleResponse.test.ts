@@ -19,6 +19,10 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.either(_.HandleResponse(response))
 
+            if (Either.isLeft(actual)) {
+              console.error(actual.left)
+            }
+
             expect(actual).toStrictEqual(Either.right(expect.anything()))
           }),
       )
