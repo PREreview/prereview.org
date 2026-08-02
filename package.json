@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@csstools/postcss-global-data": "^4.0.0",
-    "@effect/language-service": "^0.87.0",
+    "@effect/language-service": "^0.87.1",
     "@effect/sql-libsql": "^0.42.0",
     "@effect/vitest": "^0.30.0",
     "@eslint/js": "^10.0.1",
