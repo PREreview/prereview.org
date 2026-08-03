@@ -12,5 +12,6 @@ export const CreateRequest = Effect.fnUntraced(function* (urlParams: UrlParams.I
     HttpClientRequest.accept('application/vnd.contentful.delivery.v1+json'),
     HttpClientRequest.bearerToken(config.accessToken),
     HttpClientRequest.setUrlParams(urlParams),
+    HttpClientRequest.setUrlParam('locale', '*'),
   )
 })

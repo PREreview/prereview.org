@@ -40,23 +40,14 @@ class Asset extends Schema.Class<Asset>('Asset')({
     locale: Schema.optional(Schema.NonEmptyString),
   }),
   fields: Schema.Struct({
-    title: Schema.Union(
-      NonEmptyStringSchema,
-      Schema.Record({ key: NonEmptyStringSchema, value: NonEmptyStringSchema }),
-    ),
-    file: Schema.Union(
-      Schema.Struct({
+    title: Schema.Record({ key: NonEmptyStringSchema, value: NonEmptyStringSchema }),
+    file: Schema.Record({
+      key: NonEmptyStringSchema,
+      value: Schema.Struct({
         url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
         details: Schema.Struct({ image: Schema.Struct({ width: Schema.Int, height: Schema.Int }) }),
       }),
-      Schema.Record({
-        key: NonEmptyStringSchema,
-        value: Schema.Struct({
-          url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
-          details: Schema.Struct({ image: Schema.Struct({ width: Schema.Int, height: Schema.Int }) }),
-        }),
-      }),
-    ),
+    }),
   }),
 }) {}
 
@@ -80,14 +71,10 @@ export class Entry extends Schema.Class<Entry>('Entry')({
         id: ContentfulId,
       }),
     }),
-    locale: Schema.optional(Schema.NonEmptyString),
   }),
   fields: Schema.Record({
     key: ContentfulId,
-    value: Schema.Union(
-      Schema.Union(NonEmptyStringSchema, Document),
-      Schema.Record({ key: NonEmptyStringSchema, value: Schema.Union(NonEmptyStringSchema, Document) }),
-    ),
+    value: Schema.Record({ key: NonEmptyStringSchema, value: Schema.Union(NonEmptyStringSchema, Document) }),
   }),
 }) {}
 

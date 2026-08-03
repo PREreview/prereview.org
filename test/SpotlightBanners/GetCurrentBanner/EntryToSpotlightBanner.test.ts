@@ -82,24 +82,22 @@ it.effect.each<{
   }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, locale)])),
 )
 
-it.effect.each([['banners-without-locales', 'pages-assets', 'pages-assets-single-locale']])(
-  "can't parse a record (%s)",
-  ([response]) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-        Effect.map(ResolveEntries),
-        Effect.andThen(Schema.decodeUnknown(Entries)),
-        Effect.andThen(Struct.get('items')),
-        Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
-        Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
-      )
+it.effect.each([['pages-assets']])("can't parse a record (%s)", ([response]) =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
+      Effect.map(ResolveEntries),
+      Effect.andThen(Schema.decodeUnknown(Entries)),
+      Effect.andThen(Struct.get('items')),
+      Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
+      Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
+    )
 
-      actual.forEach(result => {
-        expect(result).toMatchObject({ _tag: 'Left' })
-      })
-    }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
+    actual.forEach(result => {
+      expect(result).toMatchObject({ _tag: 'Left' })
+    })
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
 )
 
 const ResolveEntries = (response: string) => {

@@ -15,7 +15,6 @@ export const GetCurrentBanner: Effect.Effect<
   const { items } = yield* contentful.getEntries({
     content_type: 'banner',
     limit: 1,
-    locale: '*',
     order: 'sys.createdAt',
   })
 

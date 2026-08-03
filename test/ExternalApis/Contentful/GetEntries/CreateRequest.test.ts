@@ -1,3 +1,4 @@
+import { UrlParams } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer, Redacted } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Contentful/GetEntries/CreateRequest.ts'
@@ -20,7 +21,7 @@ describe('CreateRequest', () => {
       expect(actual.url).toStrictEqual(
         `https://cdn.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
       )
-      expect(actual.urlParams).toStrictEqual(params)
+      expect(actual.urlParams).toStrictEqual(UrlParams.set(params, 'locale', '*'))
     }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
   )
 
