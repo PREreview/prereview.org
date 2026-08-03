@@ -14,23 +14,23 @@ export type ContentfulId = typeof ContentfulId.Type
 export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
 
 class Text extends Schema.Class<Text>('Text')({
-  nodeType: Schema.tag('text'),
+  _tag: Schema.propertySignature(Schema.transformLiteral('text', 'Text')).pipe(Schema.fromKey('nodeType')),
   value: NonEmptyStringSchema,
 }) {}
 
 class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
-  nodeType: Schema.tag('hyperlink'),
+  _tag: Schema.propertySignature(Schema.transformLiteral('hyperlink', 'Hyperlink')).pipe(Schema.fromKey('nodeType')),
   data: Schema.Struct({ uri: NonEmptyStringSchema }),
   content: Schema.NonEmptyArray(Text),
 }) {}
 
 class Heading1 extends Schema.Class<Heading1>('Heading1')({
-  nodeType: Schema.tag('heading-1'),
+  _tag: Schema.propertySignature(Schema.transformLiteral('heading-1', 'Heading1')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Text),
 }) {}
 
 class Paragraph extends Schema.Class<Paragraph>('Paragraph')({
-  nodeType: Schema.tag('paragraph'),
+  _tag: Schema.propertySignature(Schema.transformLiteral('paragraph', 'Paragraph')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Schema.Union(Text, Hyperlink)),
 }) {}
 
@@ -52,12 +52,14 @@ class Asset extends Schema.Class<Asset>('Asset')({
 }) {}
 
 class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAssetBlock')({
-  nodeType: Schema.tag('embedded-asset-block'),
+  _tag: Schema.propertySignature(Schema.transformLiteral('embedded-asset-block', 'EmbeddedAssetBlock')).pipe(
+    Schema.fromKey('nodeType'),
+  ),
   data: Schema.Struct({ target: Asset }),
 }) {}
 
 class Document extends Schema.Class<Document>('Document')({
-  nodeType: Schema.tag('document'),
+  _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Schema.Union(Heading1, Paragraph, EmbeddedAssetBlock)),
 }) {}
 
