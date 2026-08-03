@@ -51,6 +51,7 @@ export const DatasetReviewsPage = Effect.fn(
     return createDatasetReviewsPage({ dataset, datasetReviews, locale })
   },
   Effect.catchTags({
+    ClubNotFound: () => HavingProblemsPage,
     DatasetIsNotFound: () => PageNotFound,
     DatasetIsUnavailable: () => HavingProblemsPage,
     DatasetReviewHasNotBeenPublished: () => HavingProblemsPage,
