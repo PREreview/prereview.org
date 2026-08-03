@@ -38,6 +38,7 @@ export const ClubProfilePage = Effect.fn(
   },
   Effect.catchTags({
     ClubNotFound: () => PageNotFound,
+    NameIsNotAvailable: () => HavingProblemsPage,
     PrereviewsAreUnavailable: () => HavingProblemsPage,
   }),
 )
