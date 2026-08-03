@@ -43,7 +43,7 @@ import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
 
-const MakeRoute = <A, E, R>(
+const MakeRoute = <A, E extends HttpServerError.RequestError, R>(
   method: HttpMethod.HttpMethod,
   route: Routes.Route<A>,
   handler: (a: A) => Effect.Effect<Response.Response, E, R>,
@@ -64,7 +64,7 @@ const MakeRoute = <A, E, R>(
 const MakeQueryRoute = <
   A extends { readonly [K in keyof A]: unknown },
   I extends { readonly [K in keyof I]: string | ReadonlyArray<string> },
-  E,
+  E extends HttpServerError.RequestError,
   R,
 >(
   method: HttpMethod.HttpMethod,
@@ -86,7 +86,7 @@ const MakeQueryRoute = <
     ),
   )
 
-const MakeStaticRoute = <E, R>(
+const MakeStaticRoute = <E extends HttpServerError.RequestError, R>(
   method: HttpMethod.HttpMethod,
   path: `/${string}`,
   handler: Effect.Effect<Response.Response, E, R>,
