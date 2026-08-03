@@ -2,6 +2,12 @@
   "clubLeads": {
     "message": "Dirigentes del club"
   },
+  "contactClub": {
+    "message": "Contacta con el Club"
+  },
+  "joinClub": {
+    "message": "Únete al Club"
+  },
   "prereviews": {
     "message": "PREreviews"
   },

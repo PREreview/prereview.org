@@ -5,6 +5,9 @@
   "authoredBy": {
     "message": "<visuallyHidden>Escrita</visuallyHidden> por {author}"
   },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>Redactada</visuallyHidden> por {author} del {club}"
+  },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {# otro autor} other {# otros autores}}"
   },
