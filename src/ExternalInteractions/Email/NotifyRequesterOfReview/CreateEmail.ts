@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
@@ -7,7 +7,7 @@ import * as Routes from '../../../routes.ts'
 import { EmailAddress, type Name } from '../../../types/index.ts'
 
 export interface Requester {
-  readonly name: Name.Name
+  readonly name: Option.Option<Name.Name>
   readonly emailAddress: EmailAddress.EmailAddress
 }
 
@@ -25,14 +25,22 @@ export const CreateEmail: (details: {
 
   return {
     from: { name: 'PREreview', address: EmailAddress.EmailAddress('help@prereview.org') },
-    to: { name: requester.name, address: requester.emailAddress },
+    to: Option.match(requester.name, {
+      onSome: name => ({ name, address: requester.emailAddress }),
+      onNone: () => requester.emailAddress,
+    }),
     subject: 'Review published on PREreview',
     html: yield* mjmlToHtml(html`
       <mjml>
         <mj-body>
           <mj-section>
             <mj-column>
-              <mj-text>Hi ${requester.name},</mj-text>
+              <mj-text
+                >${Option.match(requester.name, {
+                  onSome: name => html`Hi ${name},`,
+                  onNone: () => 'Hi,',
+                })}</mj-text
+              >
               <mj-text>${review.author} has published a review of “${review.preprint.title}” on PREreview.</mj-text>
               <mj-button href="${reviewUrl.href}">Read the review</mj-button>
               <mj-text
@@ -46,7 +54,10 @@ export const CreateEmail: (details: {
       </mjml>
     `),
     text: `
-Hi ${requester.name},
+${Option.match(requester.name, {
+  onSome: name => `Hi ${name},`,
+  onNone: () => 'Hi,',
+})}
 
 ${review.author} has published a review of “${plainText(review.preprint.title).toString()}” on PREreview.
 

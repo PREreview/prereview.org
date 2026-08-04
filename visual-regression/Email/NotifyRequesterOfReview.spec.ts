@@ -1,4 +1,4 @@
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import * as _ from '../../src/ExternalInteractions/Email/NotifyRequesterOfReview/CreateEmail.ts'
 import { html } from '../../src/html.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
@@ -18,6 +18,16 @@ test('HTML looks right', async ({ page }) => {
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
 
+test('HTML looks right without names', async ({ page }) => {
+  const email = await Effect.runPromise(
+    Effect.provide(_.CreateEmail({ requester: requesterWithoutName, review }), Layer.succeed(PublicUrl, publicUrl)),
+  )
+
+  await page.setContent(email.html.toString())
+
+  await expect(page).toHaveScreenshot({ fullPage: true })
+})
+
 test('text looks right', { tag: '@text' }, async () => {
   const email = await Effect.runPromise(
     Effect.provide(_.CreateEmail({ requester, review }), Layer.succeed(PublicUrl, publicUrl)),
@@ -26,8 +36,21 @@ test('text looks right', { tag: '@text' }, async () => {
   expect(`${email.text}\n`).toMatchSnapshot()
 })
 
+test('text looks right without names', { tag: '@text' }, async () => {
+  const email = await Effect.runPromise(
+    Effect.provide(_.CreateEmail({ requester: requesterWithoutName, review }), Layer.succeed(PublicUrl, publicUrl)),
+  )
+
+  expect(`${email.text}\n`).toMatchSnapshot()
+})
+
 const requester = {
-  name: Name('Josiah Carberry'),
+  name: Option.some(Name('Josiah Carberry')),
+  emailAddress: EmailAddress('jcarberry@example.com'),
+} satisfies _.Requester
+
+const requesterWithoutName = {
+  name: Option.none(),
   emailAddress: EmailAddress('jcarberry@example.com'),
 } satisfies _.Requester
 

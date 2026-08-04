@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Match, pipe } from 'effect'
+import { Context, Data, Effect, Layer, Match, Option, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
@@ -33,7 +33,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
     getContactDetails: (
       orcid: OrcidId.OrcidId,
-    ) => Effect.Effect<{ name: Name.Name; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
+    ) => Effect.Effect<{ name: Option.Option<Name.Name>; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
     hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: Queries.FromOnDemandQuery<
       typeof HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests
     >
@@ -146,7 +146,7 @@ export const layer = Layer.effect(
               Effect.fail(new Queries.UnableToQuery({ cause: 'Contact email address is unverified' })),
             VerifiedContactEmailAddress: contactEmailAddress =>
               Effect.succeed({
-                name,
+                name: Option.some(name),
                 email: contactEmailAddress.value,
               }),
           })
