@@ -17,3 +17,17 @@ describe('match', () => {
     expect(actual).toStrictEqual(persona.pseudonym)
   })
 })
+
+describe('getPersonaName', () => {
+  it.prop('PublicPersona', [fc.publicPersona()], ([persona]) => {
+    const actual = _.getPersonaName(persona)
+
+    expect(actual).toStrictEqual(persona.name)
+  })
+
+  it.prop('PseudonymPersona', [fc.pseudonymPersona()], ([persona]) => {
+    const actual = _.getPersonaName(persona)
+
+    expect(actual).toStrictEqual(persona.pseudonym)
+  })
+})

@@ -39,10 +39,7 @@ export const SendAuthorInviteEmails = Effect.fn(
 
         yield* email.inviteAuthorToReview({
           invitationId: invitation.invitationId,
-          inviter: Prereviewers.matchPersona(author, {
-            onPublic: persona => Option.some(persona.name),
-            onPseudonym: persona => Option.some(persona.pseudonym),
-          }),
+          inviter: Option.some(Prereviewers.getPersonaName(author)),
           invitee: { name: invitation.name, emailAddress: invitation.emailAddress },
           subject: { language: dataset.title.language, title: dataset.title.text },
         })

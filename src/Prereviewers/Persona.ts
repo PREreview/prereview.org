@@ -35,3 +35,8 @@ export const matchPersona: {
     },
   ): A | B => (self._tag === 'PublicPersona' ? onPublic(self) : onPseudonym(self)),
 )
+
+export const getPersonaName: (persona: Persona) => Name.Name = matchPersona({
+  onPublic: persona => persona.name,
+  onPseudonym: persona => persona.pseudonym,
+})
