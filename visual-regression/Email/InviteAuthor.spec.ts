@@ -1,4 +1,4 @@
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as _ from '../../src/ExternalInteractions/Email/InviteAuthor/CreateEmail.ts'
 import { html } from '../../src/html.ts'
@@ -21,7 +21,34 @@ test('HTML looks right', async ({ page }) => {
         },
         authorInviteId: Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
         newPrereview: {
-          author: Name('Jean-Baptiste Botul'),
+          author: Option.some(Name('Jean-Baptiste Botul')),
+          preprint: {
+            id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
+            title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
+            language: 'en',
+          },
+        },
+      }),
+      [Layer.succeed(Locale, DefaultLocale), Layer.succeed(PublicUrl, new URL('http://example.com'))],
+    ),
+  )
+
+  await page.setContent(email.html.toString())
+
+  await expect(page).toHaveScreenshot({ fullPage: true })
+})
+
+test('HTML looks right with no name', async ({ page }) => {
+  const email = await Effect.runPromise(
+    Effect.provide(
+      _.CreateEmail({
+        person: {
+          name: Name('Josiah Carberry'),
+          emailAddress: EmailAddress('jcarberry@example.com'),
+        },
+        authorInviteId: Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
+        newPrereview: {
+          author: Option.none(),
           preprint: {
             id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
             title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
@@ -48,7 +75,32 @@ test('text looks right', { tag: '@text' }, async () => {
         },
         authorInviteId: Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
         newPrereview: {
-          author: Name('Jean-Baptiste Botul'),
+          author: Option.some(Name('Jean-Baptiste Botul')),
+          preprint: {
+            id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
+            title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
+            language: 'en',
+          },
+        },
+      }),
+      [Layer.succeed(Locale, DefaultLocale), Layer.succeed(PublicUrl, new URL('http://example.com'))],
+    ),
+  )
+
+  expect(`${email.text}\n`).toMatchSnapshot()
+})
+
+test('text looks right with no name', { tag: '@text' }, async () => {
+  const email = await Effect.runPromise(
+    Effect.provide(
+      _.CreateEmail({
+        person: {
+          name: Name('Josiah Carberry'),
+          emailAddress: EmailAddress('jcarberry@example.com'),
+        },
+        authorInviteId: Uuid('cda07004-01ec-4d48-8ff0-87bb32c6e81d'),
+        newPrereview: {
+          author: Option.none(),
           preprint: {
             id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
             title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,

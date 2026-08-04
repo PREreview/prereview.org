@@ -508,8 +508,8 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                       newPrereview: {
                         ...newPrereview,
                         author: Prereviewers.matchPersona(newPrereview.persona, {
-                          onPublic: persona => persona.name,
-                          onPseudonym: persona => persona.pseudonym,
+                          onPublic: persona => Option.some(persona.name),
+                          onPseudonym: persona => Option.some(persona.pseudonym),
                         }),
                       },
                     }),

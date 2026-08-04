@@ -3518,7 +3518,7 @@ export const invitedToBeAnAuthor: Fixtures<
           },
           authorInviteId: Uuid.Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
           newPrereview: {
-            author: Name('Josiah Carberry'),
+            author: Option.some(Name('Josiah Carberry')),
             preprint: {
               id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
               language: 'en',
