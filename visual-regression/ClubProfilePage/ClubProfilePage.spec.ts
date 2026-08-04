@@ -54,8 +54,8 @@ const club1 = {
 
   added: Temporal.PlainDate.from('2024-01-02'),
   leads: [
-    { name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') },
-    { name: Name('Garima Jain'), orcid: OrcidId('0000-0002-8079-9611') },
+    new Prereviewers.PublicPersona({ name: Name('Arpita Ghosh'), orcidId: OrcidId('0009-0003-2106-3270') }),
+    new Prereviewers.PublicPersona({ name: Name('Garima Jain'), orcidId: OrcidId('0000-0002-8079-9611') }),
   ],
   contact: EmailAddress('email@example.com'),
   joinLink: new URL(
@@ -80,7 +80,7 @@ const club2 = {
     `,
   },
   added: Temporal.PlainDate.from('2025-02-03'),
-  leads: [{ name: Name('Arpita Ghosh'), orcid: OrcidId('0009-0003-2106-3270') }],
+  leads: [new Prereviewers.PublicPersona({ name: Name('Arpita Ghosh'), orcidId: OrcidId('0009-0003-2106-3270') })],
 } satisfies ClubDetails
 
 const prereview1 = new Prereviews.RecentPreprintPrereview({
