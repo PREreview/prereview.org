@@ -69,7 +69,7 @@ import { ProfileId, Uuid } from '../../types/index.ts'
 import { iso6391To3, iso6393To1, iso6393Validate } from '../../types/iso639.ts'
 import { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
-import type { OrcidId } from '../../types/OrcidId.ts'
+import { OrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
 import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
@@ -895,7 +895,10 @@ function recordToScietyPrereview(
           preprint: review.preprintId,
           createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
           doi: review.metadata.doi,
-          authors: Array.map(review.metadata.creators, creator => ({ ...creator, name: Name(creator.name) })),
+          authors: Array.map(review.metadata.creators, creator => ({
+            name: Name(creator.name),
+            orcid: creator.orcid ? OrcidId(creator.orcid) : undefined,
+          })),
           language: pipe(
             Option.fromNullable(review.metadata.language),
             Option.filter(iso6393Validate),
@@ -975,7 +978,7 @@ const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
 function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview['authors'] {
   const authors = Array.map(FptsToEffect.array(record.metadata.creators), ({ name, orcid }) => ({
     name: Name(name),
-    orcid,
+    orcid: orcid ? OrcidId(orcid) : undefined,
   }))
 
   const [named, last] = Array.unappend(authors)

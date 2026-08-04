@@ -1,13 +1,16 @@
 import { mod11_2 } from 'cdigit'
-import { type Equivalence, ParseResult, pipe, Schema } from 'effect'
+import { type Equivalence, type Option, ParseResult, pipe, type Predicate, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as OrcidId from 'orcid-id-ts'
+import * as OrcidIdTs from 'orcid-id-ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import type { NonEmptyString } from './NonEmptyString.ts'
 
-export { isOrcid as isOrcidId, Orcid as OrcidId, toUrl } from 'orcid-id-ts'
+export type OrcidId = OrcidIdTs.Orcid & NonEmptyString
 
-export const OrcidIdSchema = pipe(Schema.String, Schema.filter(OrcidId.isOrcid)).annotations({
+export const isOrcidId: Predicate.Refinement<unknown, OrcidId> = OrcidIdTs.isOrcid as never
+
+export const OrcidIdSchema = pipe(Schema.String, Schema.filter(isOrcidId)).annotations({
   arbitrary: () => fc =>
     fc
       .string({
@@ -16,18 +19,22 @@ export const OrcidIdSchema = pipe(Schema.String, Schema.filter(OrcidId.isOrcid))
         maxLength: 4 + 4 + 4 + 3,
       })
       .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
-      .filter(OrcidId.isOrcid),
+      .filter(isOrcidId),
 })
+
+export const OrcidId: (orcidId: string) => OrcidId = orcidId => OrcidIdSchema.make(orcidId)
 
 export const OrcidIdFromUrlSchema = Schema.transformOrFail(Schema.URL, Schema.typeSchema(OrcidIdSchema), {
   strict: true,
   decode: (url, _, ast) =>
     ParseResult.fromOption(parse(url.href), () => new ParseResult.Type(ast, url, 'Not an ORCID iD')),
-  encode: orcidId => ParseResult.succeed(OrcidId.toUrl(orcidId)),
+  encode: orcidId => ParseResult.succeed(OrcidIdTs.toUrl(orcidId)),
 })
 
-export const parse = FptsToEffect.optionK(OrcidId.parse)
+export const parse: (string: string) => Option.Option<OrcidId> = FptsToEffect.optionK(OrcidIdTs.parse as never)
 
-export const OrcidIdEquivalence: Equivalence.Equivalence<OrcidId.Orcid> = FptsToEffect.eq(OrcidId.Eq)
+export const toUrl: (orcid: OrcidId) => URL = OrcidIdTs.toUrl
 
-export const OrcidC = C.fromDecoder(D.fromRefinement(OrcidId.isOrcid, 'ORCID'))
+export const OrcidIdEquivalence: Equivalence.Equivalence<OrcidId> = FptsToEffect.eq(OrcidIdTs.Eq)
+
+export const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
