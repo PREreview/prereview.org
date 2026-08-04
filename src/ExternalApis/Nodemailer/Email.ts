@@ -15,10 +15,13 @@ export class Email extends Schema.Class<Email>('Email')({
     name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     address: EmailAddress.EmailAddressSchema,
   }),
-  to: Schema.Struct({
-    name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-    address: EmailAddress.EmailAddressSchema,
-  }),
+  to: Schema.Union(
+    Schema.Struct({
+      name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      address: EmailAddress.EmailAddressSchema,
+    }),
+    EmailAddress.EmailAddressSchema,
+  ),
   subject: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   text: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   html: HtmlSchema,
