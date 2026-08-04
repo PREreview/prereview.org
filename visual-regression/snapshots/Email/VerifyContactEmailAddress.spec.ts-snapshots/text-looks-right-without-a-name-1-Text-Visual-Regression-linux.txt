@@ -1,0 +1,3 @@
+Hi,
+
+Please verify your email address on PREreview by going to http://example.com/verify-email-address?verificationToken=2a29e36c-da26-438d-9a67-577101fa8968&redirectTo=%2Fmy-details

@@ -92,7 +92,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | un
     if (expectedEmail) {
       expect(verifyContactEmailAddress).toHaveBeenCalledWith(
         expect.objectContaining({
-          name,
+          name: Option.some(name),
           emailAddress: expect.objectContaining({ value: expectedEmail }),
           redirectTo: input.resumeAt,
         }),

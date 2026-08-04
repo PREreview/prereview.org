@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, Option, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
 import type { EventStore } from '../EventStore.ts'
@@ -55,7 +55,7 @@ export const StartVerificationOfContactEmailAddress: (
       )
 
       yield* email.verifyContactEmailAddress({
-        name,
+        name: Option.some(name),
         emailAddress: contactAddress,
         redirectTo: input.resumeAt,
       })

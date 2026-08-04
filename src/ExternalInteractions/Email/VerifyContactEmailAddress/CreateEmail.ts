@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import type { UnverifiedContactEmailAddress } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
@@ -10,7 +10,7 @@ import * as Routes from '../../../routes.ts'
 import { EmailAddress, type Name } from '../../../types/index.ts'
 
 export const CreateEmail: (reviewRequest: {
-  name: Name.Name
+  name: Option.Option<Name.Name>
   emailAddress: UnverifiedContactEmailAddress
   redirectTo: `/${string}`
 }) => Effect.Effect<Nodemailer.Email, never, Locale | PublicUrl> = Effect.fnUntraced(function* ({
@@ -29,7 +29,10 @@ export const CreateEmail: (reviewRequest: {
 
   return {
     from: { address: EmailAddress.EmailAddress('help@prereview.org'), name: 'PREreview' },
-    to: { address: emailAddress.value, name },
+    to: Option.match(name, {
+      onSome: name => ({ name, address: emailAddress.value }),
+      onNone: () => emailAddress.value,
+    }),
     subject: plainText(t('verifyEmailAddressTitle')()).toString(),
     html: yield* mjmlToHtml(html`
       <mjml ${languageAttributesFor(locale)}>
@@ -41,7 +44,12 @@ export const CreateEmail: (reviewRequest: {
         <mj-body>
           <mj-section>
             <mj-column>
-              <mj-text>${t('hiName')({ name })}</mj-text>
+              <mj-text
+                >${Option.match(name, {
+                  onSome: name => t('hiName')({ name }),
+                  onNone: () => 'Hi,',
+                })}</mj-text
+              >
               <mj-text>${t('verifyEmailAddressWithButton')()}</mj-text>
               <mj-button href="${verificationUrl.href}">${t('verifyEmailAddressButton')()}</mj-button>
             </mj-column>
@@ -49,7 +57,10 @@ export const CreateEmail: (reviewRequest: {
         </mj-body>
       </mjml>
     `),
-    text: plainText`${t('hiName')({ name })}
+    text: plainText`${Option.match(name, {
+      onSome: name => t('hiName')({ name }),
+      onNone: () => 'Hi,',
+    })}
 
 ${t('verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`.toString(),
   }
