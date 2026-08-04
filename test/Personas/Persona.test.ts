@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Struct } from 'effect'
+import { Option, Struct } from 'effect'
 import * as _ from '../../src/Prereviewers/index.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
@@ -22,12 +22,12 @@ describe('getPersonaName', () => {
   it.prop('PublicPersona', [fc.publicPersona()], ([persona]) => {
     const actual = _.getPersonaName(persona)
 
-    expect(actual).toStrictEqual(persona.name)
+    expect(actual).toStrictEqual(Option.some(persona.name))
   })
 
   it.prop('PseudonymPersona', [fc.pseudonymPersona()], ([persona]) => {
     const actual = _.getPersonaName(persona)
 
-    expect(actual).toStrictEqual(persona.pseudonym)
+    expect(actual).toStrictEqual(Option.some(persona.pseudonym))
   })
 })

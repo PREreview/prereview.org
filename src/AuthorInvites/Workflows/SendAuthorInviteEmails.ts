@@ -1,4 +1,4 @@
-import { Effect, Option, Schema } from 'effect'
+import { Effect, Schema } from 'effect'
 import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'
 import { Datasets } from '../../Datasets/index.ts'
 import { Email } from '../../ExternalInteractions/index.ts'
@@ -39,7 +39,7 @@ export const SendAuthorInviteEmails = Effect.fn(
 
         yield* email.inviteAuthorToReview({
           invitationId: invitation.invitationId,
-          inviter: Option.some(Prereviewers.getPersonaName(author)),
+          inviter: Prereviewers.getPersonaName(author),
           invitee: { name: invitation.name, emailAddress: invitation.emailAddress },
           subject: { language: dataset.title.language, title: dataset.title.text },
         })

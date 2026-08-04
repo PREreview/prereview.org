@@ -1,4 +1,4 @@
-import { Data, Function } from 'effect'
+import { Data, Function, Option } from 'effect'
 import type { Name, OrcidId, Pseudonym } from '../types/index.ts'
 
 export type Persona = PublicPersona | PseudonymPersona
@@ -36,7 +36,7 @@ export const matchPersona: {
   ): A | B => (self._tag === 'PublicPersona' ? onPublic(self) : onPseudonym(self)),
 )
 
-export const getPersonaName: (persona: Persona) => Name.Name = matchPersona({
-  onPublic: persona => persona.name,
-  onPseudonym: persona => persona.pseudonym,
+export const getPersonaName: (persona: Persona) => Option.Option<Name.Name> = matchPersona({
+  onPublic: persona => Option.some(persona.name),
+  onPseudonym: persona => Option.some(persona.pseudonym),
 })

@@ -507,7 +507,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                       authorInviteId,
                       newPrereview: {
                         ...newPrereview,
-                        author: Option.some(Prereviewers.getPersonaName(newPrereview.persona)),
+                        author: Prereviewers.getPersonaName(newPrereview.persona),
                       },
                     }),
                     env.runtime,
