@@ -12,7 +12,7 @@ import { EmailAddress, type Name, type Uuid } from '../../../types/index.ts'
 export const CreateEmail: (details: {
   person: { name: Name.Name; emailAddress: EmailAddress.EmailAddress }
   authorInviteId: Uuid.Uuid
-  newPrereview: { author: string; preprint: Preprints.PreprintTitle }
+  newPrereview: { author: Name.Name; preprint: Preprints.PreprintTitle }
 }) => Effect.Effect<Nodemailer.Email, never, Locale | PublicUrl> = Effect.fnUntraced(function* ({
   person,
   authorInviteId,
