@@ -12,7 +12,7 @@ export interface Requester {
 }
 
 export interface Review {
-  readonly author: Name.Name
+  readonly author: Option.Option<Name.Name>
   readonly id: number
   readonly preprint: Preprints.PreprintTitle
 }
@@ -41,7 +41,12 @@ export const CreateEmail: (details: {
                   onNone: () => 'Hi,',
                 })}</mj-text
               >
-              <mj-text>${review.author} has published a review of “${review.preprint.title}” on PREreview.</mj-text>
+              <mj-text
+                >${Option.match(review.author, {
+                  onSome: author => html`${author} has published a review of “${review.preprint.title}” on PREreview.`,
+                  onNone: () => html`A review of “${review.preprint.title}” has been published on PREreview.`,
+                })}</mj-text
+              >
               <mj-button href="${reviewUrl.href}">Read the review</mj-button>
               <mj-text
                 >If you have any questions, please let us know at
@@ -59,7 +64,11 @@ ${Option.match(requester.name, {
   onNone: () => 'Hi,',
 })}
 
-${review.author} has published a review of “${plainText(review.preprint.title).toString()}” on PREreview.
+${Option.match(review.author, {
+  onSome: author =>
+    `${author} has published a review of “${plainText(review.preprint.title).toString()}” on PREreview.`,
+  onNone: () => `A review of “${plainText(review.preprint.title).toString()}” has been published on PREreview.`,
+})}
 
 You can read the review by going to:
 

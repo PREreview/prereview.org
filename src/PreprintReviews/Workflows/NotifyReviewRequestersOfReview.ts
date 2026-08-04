@@ -1,4 +1,4 @@
-import { Array, Effect, pipe } from 'effect'
+import { Array, Effect, Option, pipe } from 'effect'
 import { Email } from '../../ExternalInteractions/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
@@ -33,7 +33,7 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
             emailAddress: requester.email,
           },
           review: {
-            author: Array.headNonEmpty(prereview.authors.named).name,
+            author: Option.some(Array.headNonEmpty(prereview.authors.named).name),
             id: prereview.id,
             preprint: prereview.preprint,
           },

@@ -20,7 +20,10 @@ test('HTML looks right', async ({ page }) => {
 
 test('HTML looks right without names', async ({ page }) => {
   const email = await Effect.runPromise(
-    Effect.provide(_.CreateEmail({ requester: requesterWithoutName, review }), Layer.succeed(PublicUrl, publicUrl)),
+    Effect.provide(
+      _.CreateEmail({ requester: requesterWithoutName, review: reviewWithoutName }),
+      Layer.succeed(PublicUrl, publicUrl),
+    ),
   )
 
   await page.setContent(email.html.toString())
@@ -38,7 +41,10 @@ test('text looks right', { tag: '@text' }, async () => {
 
 test('text looks right without names', { tag: '@text' }, async () => {
   const email = await Effect.runPromise(
-    Effect.provide(_.CreateEmail({ requester: requesterWithoutName, review }), Layer.succeed(PublicUrl, publicUrl)),
+    Effect.provide(
+      _.CreateEmail({ requester: requesterWithoutName, review: reviewWithoutName }),
+      Layer.succeed(PublicUrl, publicUrl),
+    ),
   )
 
   expect(`${email.text}\n`).toMatchSnapshot()
@@ -55,13 +61,18 @@ const requesterWithoutName = {
 } satisfies _.Requester
 
 const review = {
-  author: Name('Jean-Baptiste Botul'),
+  author: Option.some(Name('Jean-Baptiste Botul')),
   id: 12345,
   preprint: {
     id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
     title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
     language: 'en',
   },
+} satisfies _.Review
+
+const reviewWithoutName = {
+  ...review,
+  author: Option.none(),
 } satisfies _.Review
 
 const publicUrl = new URL('http://example.com')
