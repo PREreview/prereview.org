@@ -5,6 +5,9 @@
   "hiName": {
     "message": "crwdns4368:0{name}crwdne4368:0"
   },
+  "hi": {
+    "message": "crwdns6999:0crwdne6999:0"
+  },
   "verifyEmailAddressWithButton": {
     "message": "crwdns4370:0crwdne4370:0"
   },
@@ -22,6 +25,9 @@
   },
   "authorHasInvitedYou": {
     "message": "crwdns5786:0{author}crwdne5786:0"
+  },
+  "beenInvited": {
+    "message": "crwdns7001:0crwdne7001:0"
   },
   "beListedGoingTo": {
     "message": "crwdns5788:0crwdne5788:0"
