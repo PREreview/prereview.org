@@ -3532,7 +3532,7 @@ describe('addAuthorToRecordOnZenodo', () => {
               url: 'http://example.com/self',
               body: {
                 metadata: {
-                  creators: [creator, { name: persona.name, orcid: persona.orcidId }],
+                  creators: [creator, { name: persona.displayName, orcid: persona.orcidId }],
                   description: 'Description',
                   title: 'Title',
                   upload_type: 'publication',
@@ -3705,7 +3705,7 @@ describe('addAuthorToRecordOnZenodo', () => {
                 metadata: {
                   creators: [
                     creator,
-                    { name: persona.name, orcid: persona.orcidId },
+                    { name: persona.displayName, orcid: persona.orcidId },
                     { name: `${otherAuthors - 1} other authors` },
                   ],
                   description: 'Description',
@@ -3792,7 +3792,11 @@ describe('addAuthorToRecordOnZenodo', () => {
               url: 'http://example.com/self',
               body: {
                 metadata: {
-                  creators: [creator, { name: persona.name, orcid: persona.orcidId }, { name: '1 other author' }],
+                  creators: [
+                    creator,
+                    { name: persona.displayName, orcid: persona.orcidId },
+                    { name: '1 other author' },
+                  ],
                   description: 'Description',
                   title: 'Title',
                   upload_type: 'publication',
@@ -3877,7 +3881,7 @@ describe('addAuthorToRecordOnZenodo', () => {
               url: 'http://example.com/self',
               body: {
                 metadata: {
-                  creators: [creator, { name: persona.name, orcid: persona.orcidId }],
+                  creators: [creator, { name: persona.displayName, orcid: persona.orcidId }],
                   description: 'Description',
                   title: 'Title',
                   upload_type: 'publication',
@@ -4046,7 +4050,7 @@ describe('createCommentOnZenodo', () => {
                 title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
                 creators: [
                   Match.valueTags(comment.author, {
-                    PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                    PublicPersona: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
                     PseudonymPersona: persona => ({ name: persona.pseudonym }),
                   }),
                 ],

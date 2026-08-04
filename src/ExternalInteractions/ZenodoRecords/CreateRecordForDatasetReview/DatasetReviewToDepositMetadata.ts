@@ -20,12 +20,12 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
   return {
     creators: [
       Match.valueTags(review.author, {
-        PublicPersona: author => ({ name: author.name, orcid: author.orcidId }),
+        PublicPersona: author => ({ name: author.displayName, orcid: author.orcidId }),
         PseudonymPersona: author => ({ name: author.pseudonym }),
       }),
       ...review.otherAuthors.map(author =>
         Match.valueTags(author, {
-          PublicPersona: author => ({ name: author.name, orcid: author.orcidId }),
+          PublicPersona: author => ({ name: author.displayName, orcid: author.orcidId }),
           PseudonymPersona: author => ({ name: author.pseudonym }),
         }),
       ),

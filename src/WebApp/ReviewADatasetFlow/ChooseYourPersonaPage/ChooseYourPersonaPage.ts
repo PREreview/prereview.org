@@ -103,7 +103,7 @@ export const ChooseYourPersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <bdi translate="no">${publicPersona.name}</bdi>
+                  <bdi translate="no">${publicPersona.displayName}</bdi>
                 </label>
                 <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkToYourOrcid')()}</p>
               </li>

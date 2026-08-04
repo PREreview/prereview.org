@@ -130,7 +130,7 @@ export const ChoosePersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <bdi translate="no">${publicPersona.name}</bdi>
+                  <bdi translate="no">${publicPersona.displayName}</bdi>
                 </label>
                 <p id="persona-tip-public" role="note">${translate(locale, 'write-comment-flow', 'linkToOrcidId')()}</p>
               </li>

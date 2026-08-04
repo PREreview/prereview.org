@@ -4,6 +4,14 @@ import * as _ from '../../src/Prereviewers/index.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
+describe('PublicPersona', () => {
+  it.prop('displayName', [fc.publicPersona()], ([persona]) => {
+    const actual = persona.displayName
+
+    expect(actual).toStrictEqual(persona.name)
+  })
+})
+
 describe('match', () => {
   it.prop('PublicPersona', [fc.publicPersona()], ([persona]) => {
     const actual = _.matchPersona(persona, { onPublic: Struct.get('orcidId'), onPseudonym: shouldNotBeCalled })

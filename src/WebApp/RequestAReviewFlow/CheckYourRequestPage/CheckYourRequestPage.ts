@@ -69,7 +69,7 @@ const displayAuthor = Prereviewers.matchPersona({
       href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
       class="orcid"
       dir="auto"
-      >${persona.name}</a
+      >${persona.displayName}</a
     >`,
   onPseudonym: persona =>
     html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" dir="auto"

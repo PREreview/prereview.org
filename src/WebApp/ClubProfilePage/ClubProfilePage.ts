@@ -100,7 +100,7 @@ export function createPage({
                   href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(lead) })}"
                   class="orcid"
                   dir="auto"
-                  >${lead.name}</a
+                  >${lead.displayName}</a
                 >`,
             ),
             formatList(locale),
@@ -242,7 +242,7 @@ const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: Su
 }
 
 const displayPersona = Prereviewers.matchPersona({
-  onPublic: Struct.get('name'),
+  onPublic: Struct.get('displayName'),
   onPseudonym: Struct.get('pseudonym'),
 })
 

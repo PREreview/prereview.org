@@ -100,7 +100,7 @@ export function createPage({
       <dl class="summary-list">
         <div>
           <dt>${t('name')()}</dt>
-          <dd>${publicPersona.name}</dd>
+          <dd>${publicPersona.displayName}</dd>
         </div>
 
         <div>

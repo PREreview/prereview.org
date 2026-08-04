@@ -520,7 +520,7 @@ export const addAuthorToRecordOnZenodo = (
               named,
               Array.append(
                 Match.valueTags(persona, {
-                  PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                  PublicPersona: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
                   PseudonymPersona: persona => ({ name: persona.pseudonym }),
                 }),
               ),
@@ -670,7 +670,7 @@ function createDepositMetadataForComment(comment: CommentToPublish) {
           title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
           creators: [
             Match.valueTags(comment.author, {
-              PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+              PublicPersona: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
               PseudonymPersona: persona => ({ name: persona.pseudonym }),
             }),
           ],
@@ -715,7 +715,7 @@ function createDepositMetadata(
           creators: pipe(
             Array.of(
               Match.valueTags(newPrereview.persona, {
-                PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                PublicPersona: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
                 PseudonymPersona: persona => ({ name: persona.pseudonym }),
               }),
             ),

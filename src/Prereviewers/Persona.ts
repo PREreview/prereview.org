@@ -6,7 +6,11 @@ export type Persona = PublicPersona | PseudonymPersona
 export class PublicPersona extends Data.TaggedClass('PublicPersona')<{
   name: Name.Name
   orcidId: OrcidId.OrcidId
-}> {}
+}> {
+  get displayName(): Name.Name {
+    return this.name
+  }
+}
 
 export class PseudonymPersona extends Data.TaggedClass('PseudonymPersona')<{ pseudonym: Pseudonym.Pseudonym }> {}
 
