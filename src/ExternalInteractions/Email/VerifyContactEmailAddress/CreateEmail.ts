@@ -47,7 +47,7 @@ export const CreateEmail: (reviewRequest: {
               <mj-text
                 >${Option.match(name, {
                   onSome: name => t('hiName')({ name }),
-                  onNone: () => 'Hi,',
+                  onNone: () => t('hi')(),
                 })}</mj-text
               >
               <mj-text>${t('verifyEmailAddressWithButton')()}</mj-text>
@@ -59,7 +59,7 @@ export const CreateEmail: (reviewRequest: {
     `),
     text: plainText`${Option.match(name, {
       onSome: name => t('hiName')({ name }),
-      onNone: () => 'Hi,',
+      onNone: () => t('hi')(),
     })}
 
 ${t('verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`.toString(),

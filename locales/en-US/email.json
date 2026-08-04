@@ -7,6 +7,10 @@
     "message": "Hi {name},",
     "description": "Greeting in an email."
   },
+  "hi": {
+    "message": "Hi,",
+    "description": "Greeting in an email when we don’t know the recipient’s name."
+  },
   "verifyEmailAddressWithButton": {
     "message": "Please verify your email address on PREreview:",
     "description": "Text in the email titled “Verify your email address on PREreview” that tells the recipient to verify their email address by pressing the button below."
