@@ -53,7 +53,7 @@ export const CreateEmail: (details: {
               <mj-text
                 >${Option.match(inviter, {
                   onSome: inviter => t('authorHasInvitedYou')({ author: inviter }),
-                  onNone: () => 'You’ve been invited to appear as an author on the PREreview.',
+                  onNone: () => t('beenInvited')(),
                 })}</mj-text
               >
               <mj-button href="${inviteUrl.href}">${t('beListedAsAuthorButton')()}</mj-button>
@@ -79,7 +79,7 @@ ${t('thanksContributingReview')({
 
 ${Option.match(inviter, {
   onSome: inviter => t('authorHasInvitedYou')({ author: inviter }),
-  onNone: () => 'You’ve been invited to appear as an author on the PREreview.',
+  onNone: () => t('beenInvited')(),
 })}
 
 ${t('beListedGoingTo')()}

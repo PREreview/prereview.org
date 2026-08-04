@@ -49,7 +49,7 @@ export const CreateEmail: (details: {
               <mj-text
                 >${Option.match(newPrereview.author, {
                   onSome: author => t('authorHasInvitedYou')({ author }),
-                  onNone: () => 'You’ve been invited to appear as an author on the PREreview.',
+                  onNone: () => t('beenInvited')(),
                 })}</mj-text
               >
               <mj-button href="${inviteUrl.href}">${t('beListedAsAuthorButton')()}</mj-button>
@@ -76,7 +76,7 @@ ${t('thanksContributingReview')({ preprint: plainText(newPrereview.preprint.titl
 
 ${Option.match(newPrereview.author, {
   onSome: author => t('authorHasInvitedYou')({ author }),
-  onNone: () => 'You’ve been invited to appear as an author on the PREreview.',
+  onNone: () => t('beenInvited')(),
 })}
 
 ${t('beListedGoingTo')()}

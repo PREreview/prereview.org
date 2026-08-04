@@ -35,6 +35,10 @@
     "message": "{author} has invited you to appear as an author on the PREreview.",
     "description": "Text in the email titled “Be listed as a PREreview author” informing the recipient that they have been invited to appear as an author."
   },
+  "beenInvited": {
+    "message": "You’ve been invited to appear as an author on the PREreview.",
+    "description": "Text in the email titled “Be listed as a PREreview author” informing the recipient that they have been invited to appear as an author, but we don’t know the name of the inviter."
+  },
   "beListedGoingTo": {
     "message": "You can be listed by going to:",
     "description": "Text in the email titled “Be listed as a PREreview author” that tells the recipient they can be listed by going to the provided link."
