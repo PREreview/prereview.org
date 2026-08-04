@@ -541,7 +541,7 @@ export const addAuthorToRecordOnZenodo = (
   )
 
 interface CommentToPublish {
-  author: { name: Name; orcid?: OrcidId }
+  author: Prereviewers.Persona
   comment: Html
   prereview: {
     doi: Doi
@@ -668,7 +668,12 @@ function createDepositMetadataForComment(comment: CommentToPublish) {
           upload_type: 'publication',
           publication_type: 'other',
           title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
-          creators: [comment.author],
+          creators: [
+            Match.valueTags(comment.author, {
+              PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+              PseudonymPersona: persona => ({ name: persona.pseudonym }),
+            }),
+          ],
           description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${url.href}">${url.href}</a>.</strong></p>
 
 ${comment.comment.toString()}`,

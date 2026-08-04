@@ -113,10 +113,7 @@ const createRecordOnZenodoForComment = Layer.effect(
             ZenodoRecords.createCommentOnZenodo({
               ...comment,
               comment: text,
-              author: Prereviewers.matchPersona(author, {
-                onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
-                onPseudonym: persona => ({ name: persona.pseudonym }),
-              }),
+              author,
               prereview,
             }),
             { ...env, ...loggerEnv },

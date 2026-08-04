@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import { Array, Effect, Option, pipe, String } from 'effect'
+import { Array, Effect, Match, Option, pipe, String } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -3982,7 +3982,7 @@ describe('createCommentOnZenodo', () => {
     'when the comment can be created',
     [
       fc.record({
-        author: fc.record({ name: fc.name(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
+        author: fc.persona(),
         comment: fc.html(),
         prereview: fc.prereview(),
       }),
@@ -4044,7 +4044,12 @@ describe('createCommentOnZenodo', () => {
                 upload_type: 'publication',
                 publication_type: 'other',
                 title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
-                creators: [comment.author],
+                creators: [
+                  Match.valueTags(comment.author, {
+                    PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                    PseudonymPersona: persona => ({ name: persona.pseudonym }),
+                  }),
+                ],
                 description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${comment.comment.toString()}`,
@@ -4096,7 +4101,7 @@ ${comment.comment.toString()}`,
     'Zenodo is unavailable',
     [
       fc.record({
-        author: fc.record({ name: fc.name(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
+        author: fc.persona(),
         comment: fc.html(),
         prereview: fc.prereview(),
       }),
