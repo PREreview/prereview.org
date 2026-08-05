@@ -2,9 +2,11 @@ import { Array, Effect, flow, Option, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
+import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
 import { Clubs } from '../../../Clubs/index.ts'
@@ -492,11 +494,11 @@ const publishPrereview = (newPrereview: NewPrereview) =>
       }).pipe(Effect.catchTag('ClubNotFound', () => Effect.fail('unavailable' as const))),
     ),
     RTE.chainW(ZenodoRecords.createRecordOnZenodo),
-    RTE.chainFirstW(([, review]) =>
-      RTE.asksReaderTaskEitherW((env: EffectToFpts.EffectEnv<Locale | Email.Email>) =>
+    RTE.chainFirstReaderTaskKW(([, review]) =>
+      RT.asksReaderTaskW((env: EffectToFpts.EffectEnv<Locale | Email.Email> & L.LoggerEnv) =>
         pipe(
           newPrereview.otherAuthors,
-          RTE.traverseSeqArray(otherAuthor =>
+          RT.traverseSeqArray(otherAuthor =>
             pipe(
               createAuthorInvite({ status: 'open', emailAddress: otherAuthor.emailAddress, review }),
               RTE.chainTaskEitherK(authorInviteId =>
@@ -514,6 +516,10 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                   ),
                   TE.mapLeft(() => 'unavailable' as const),
                 ),
+              ),
+              RTE.matchEW(
+                () => RT.of(undefined),
+                () => RT.fromReaderIO(L.error('Failed to invite author to a review')),
               ),
             ),
           ),
