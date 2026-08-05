@@ -8,6 +8,6 @@ export class NameIsNotAvailable extends Data.TaggedError('NameIsNotAvailable')<{
 
 export const GetName = flow(
   Orcid.getPersonalDetails,
-  Effect.andThen(GetNameFromOrcidPersonalDetails),
+  Effect.map(GetNameFromOrcidPersonalDetails),
   Effect.mapError(error => new NameIsNotAvailable({ cause: error })),
 )

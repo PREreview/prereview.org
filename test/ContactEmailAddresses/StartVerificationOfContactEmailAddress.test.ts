@@ -23,7 +23,7 @@ const newEmailAddress = EmailAddress('new@example.com')
 const existingUnverifiedEmailAddress = EmailAddress('unverified@example.com')
 const existingVerifiedEmailAddress = EmailAddress('verified@example.com')
 
-const name = Name('Josiah Carberry')
+const name = Option.some(Name('Josiah Carberry'))
 
 it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, ReadonlyArray<Event['_tag']>]>([
   [
@@ -102,7 +102,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, Readonly
     if (expectedEmail) {
       expect(verifyContactEmailAddress).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: Option.some(name),
+          name,
           emailAddress: expect.objectContaining({ value: input.emailAddress }),
           redirectTo: input.resumeAt,
         }),

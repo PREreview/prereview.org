@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Match, Option, pipe } from 'effect'
+import { Context, Data, Effect, Layer, Match, pipe, type Option } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
@@ -120,7 +120,7 @@ export const layer = Layer.effect(
         pipe(
           orcidRecords.getName(orcidId),
           Effect.mapBoth({
-            onSuccess: name => new PublicPersona({ name: Option.some(name), orcidId }),
+            onSuccess: name => new PublicPersona({ name, orcidId }),
             onFailure: error => new UnableToGetPersona({ cause: error }),
           }),
         ),
@@ -146,7 +146,7 @@ export const layer = Layer.effect(
               Effect.fail(new Queries.UnableToQuery({ cause: 'Contact email address is unverified' })),
             VerifiedContactEmailAddress: contactEmailAddress =>
               Effect.succeed({
-                name: Option.some(name),
+                name,
                 email: contactEmailAddress.value,
               }),
           })

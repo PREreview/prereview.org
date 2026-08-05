@@ -25,7 +25,7 @@ const orcidIdWithVerified = OrcidId('0000-0003-4921-6155')
 const existingUnverifiedEmailAddress = EmailAddress('unverified@example.com')
 const existingVerifiedEmailAddress = EmailAddress('verified@example.com')
 
-const name = Name('Josiah Carberry')
+const name = Option.some(Name('Josiah Carberry'))
 
 it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | undefined, ReadonlyArray<Event['_tag']>]>(
   [
@@ -92,7 +92,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | un
     if (expectedEmail) {
       expect(verifyContactEmailAddress).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: Option.some(name),
+          name,
           emailAddress: expect.objectContaining({ value: expectedEmail }),
           redirectTo: input.resumeAt,
         }),
