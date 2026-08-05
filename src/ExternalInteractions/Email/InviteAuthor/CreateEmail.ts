@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
@@ -12,7 +12,7 @@ import { EmailAddress, type Name, type Uuid } from '../../../types/index.ts'
 export const CreateEmail: (details: {
   person: { name: Name.Name; emailAddress: EmailAddress.EmailAddress }
   authorInviteId: Uuid.Uuid
-  newPrereview: { author: string; preprint: Preprints.PreprintTitle }
+  newPrereview: { author: Option.Option<Name.Name>; preprint: Preprints.PreprintTitle }
 }) => Effect.Effect<Nodemailer.Email, never, Locale | PublicUrl> = Effect.fnUntraced(function* ({
   person,
   authorInviteId,
@@ -46,7 +46,12 @@ export const CreateEmail: (details: {
                   prereview: html`<a href="https://prereview.org/">PREreview.org</a>`,
                 })}
               </mj-text>
-              <mj-text>${t('authorHasInvitedYou')({ author: newPrereview.author })}</mj-text>
+              <mj-text
+                >${Option.match(newPrereview.author, {
+                  onSome: author => t('authorHasInvitedYou')({ author }),
+                  onNone: () => t('beenInvited')(),
+                })}</mj-text
+              >
               <mj-button href="${inviteUrl.href}">${t('beListedAsAuthorButton')()}</mj-button>
               <mj-text
                 >${t('chooseNotToBeListedLink')({
@@ -69,7 +74,10 @@ ${t('hiName')({ name: person.name })}
 
 ${t('thanksContributingReview')({ preprint: plainText(newPrereview.preprint.title).toString(), prereview: 'PREreview.org' })}
 
-${t('authorHasInvitedYou')({ author: newPrereview.author })}
+${Option.match(newPrereview.author, {
+  onSome: author => t('authorHasInvitedYou')({ author }),
+  onNone: () => t('beenInvited')(),
+})}
 
 ${t('beListedGoingTo')()}
 

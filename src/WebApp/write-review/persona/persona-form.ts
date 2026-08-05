@@ -123,7 +123,7 @@ export const personaForm = (
                       .with({ right: 'public' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <bdi translate="no">${publicPersona.name}</bdi>
+                  <bdi translate="no">${publicPersona.displayName}</bdi>
                 </label>
                 <p id="persona-tip-public" role="note">${t('linkToOrcidId')()}</p>
               </li>

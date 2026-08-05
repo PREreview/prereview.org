@@ -464,7 +464,7 @@ const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: Su
 }
 
 const displayPersona = Prereviewers.matchPersona({
-  onPublic: Struct.get('name'),
+  onPublic: Struct.get('displayName'),
   onPseudonym: Struct.get('pseudonym'),
 })
 

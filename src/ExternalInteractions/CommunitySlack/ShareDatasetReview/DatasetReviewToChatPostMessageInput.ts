@@ -43,6 +43,6 @@ export const DatasetReviewToChatPostMessageInput = (
 })
 
 const displayPersona = Match.typeTags<Prereviewers.Persona, NonEmptyString.NonEmptyString>()({
-  PublicPersona: Struct.get('name'),
+  PublicPersona: Struct.get('displayName'),
   PseudonymPersona: Struct.get('pseudonym'),
 })

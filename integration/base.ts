@@ -3518,7 +3518,7 @@ export const invitedToBeAnAuthor: Fixtures<
           },
           authorInviteId: Uuid.Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
           newPrereview: {
-            author: 'Josiah Carberry',
+            author: Option.some(Name('Josiah Carberry')),
             preprint: {
               id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
               language: 'en',
@@ -3610,7 +3610,7 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
         Effect.all([
           Email.inviteAuthorToReview({
             invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
-            inviter: Pseudonym('Red Wolf'),
+            inviter: Option.some(Pseudonym('Red Wolf')),
             invitee: {
               name: Name('Josiah Carberry'),
               emailAddress: EmailAddress('jcarberry@example.com'),
@@ -3622,7 +3622,7 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
           }),
           Email.inviteAuthorToReview({
             invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
-            inviter: Pseudonym('Red Wolf'),
+            inviter: Option.some(Pseudonym('Red Wolf')),
             invitee: {
               name: Name('Arne Saknussemm'),
               emailAddress: EmailAddress('asaknussemm@example.com'),
@@ -3711,7 +3711,7 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
         Effect.all([
           Email.inviteAuthorToReview({
             invitationId: Uuid.Uuid('ccc27378-d568-42a5-b8e6-a7830478165d'),
-            inviter: Pseudonym('Red Wolf'),
+            inviter: Option.some(Pseudonym('Red Wolf')),
             invitee: {
               name: Name('Josiah Carberry'),
               emailAddress: EmailAddress('jcarberry@example.com'),
@@ -3723,7 +3723,7 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
           }),
           Email.inviteAuthorToReview({
             invitationId: Uuid.Uuid('ac3bff19-c369-4009-801d-c67d63518d52'),
-            inviter: Pseudonym('Red Wolf'),
+            inviter: Option.some(Pseudonym('Red Wolf')),
             invitee: {
               name: Name('Arne Saknussemm'),
               emailAddress: EmailAddress('asaknussemm@example.com'),

@@ -1,7 +1,7 @@
 import { Array, Effect, pipe } from 'effect'
 import { Clubs } from '../../Clubs/index.ts'
 import { Locale } from '../../Context.ts'
-import { OrcidRecords } from '../../ExternalInteractions/index.ts'
+import { Prereviewers } from '../../Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import type { Slug } from '../../types/Slug.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
@@ -10,6 +10,7 @@ import { createPage } from './ClubProfilePage.ts'
 
 export const ClubProfilePage = Effect.fn(
   function* ({ slug }: { slug: Slug }) {
+    const prereviewers = yield* Prereviewers
     const clubs = yield* Clubs
     const locale = yield* Locale
 
@@ -18,14 +19,7 @@ export const ClubProfilePage = Effect.fn(
     const { club, prereviews } = yield* Effect.all(
       {
         club: pipe(
-          Array.map(
-            clubDetails.leads,
-            Effect.fnUntraced(function* (orcid) {
-              const name = yield* OrcidRecords.getName(orcid)
-
-              return { name, orcid }
-            }),
-          ),
+          Array.map(clubDetails.leads, prereviewers.getPublicPersona),
           Effect.allWith({ concurrency: 'inherit' }),
           Effect.andThen(leads => ({ ...clubDetails, leads })),
         ),
@@ -38,7 +32,7 @@ export const ClubProfilePage = Effect.fn(
   },
   Effect.catchTags({
     ClubNotFound: () => PageNotFound,
-    NameIsNotAvailable: () => HavingProblemsPage,
     PrereviewsAreUnavailable: () => HavingProblemsPage,
+    UnableToGetPersona: () => HavingProblemsPage,
   }),
 )

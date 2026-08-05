@@ -3,7 +3,7 @@ import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
 import { Clubs } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
-import { OrcidRecords } from '../../src/ExternalInteractions/index.ts'
+import { Prereviewers } from '../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -29,9 +29,9 @@ describe('ClubProfilePage', () => {
           .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
       fc.supportedLocale(),
-      fc.name(),
+      fc.publicPersona(),
     ],
-    ([slug, club, prereviews, locale, name]) =>
+    ([slug, club, prereviews, locale, publicPersona]) =>
       Effect.gen(function* () {
         const getForClub = vi.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
 
@@ -53,7 +53,7 @@ describe('ClubProfilePage', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, { getClubBySlug: () => Effect.succeed(club) }),
-          Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
+          Layer.mock(Prereviewers, { getPublicPersona: () => Effect.succeed(publicPersona) }),
         ]),
         Effect.provideService(Locale, locale),
       ),
@@ -61,8 +61,8 @@ describe('ClubProfilePage', () => {
 
   it.effect.prop(
     'when the PREreviews are unavailable',
-    [fc.slug(), fc.clubDetails(), fc.supportedLocale(), fc.name()],
-    ([slug, club, locale, name]) =>
+    [fc.slug(), fc.clubDetails(), fc.supportedLocale(), fc.publicPersona()],
+    ([slug, club, locale, publicPersona]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.ClubProfilePage({ slug }),
@@ -82,7 +82,7 @@ describe('ClubProfilePage', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, { getClubBySlug: () => Effect.succeed(club) }),
-          Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
+          Layer.mock(Prereviewers, { getPublicPersona: () => Effect.succeed(publicPersona) }),
         ]),
         Effect.provideService(Locale, locale),
       ),

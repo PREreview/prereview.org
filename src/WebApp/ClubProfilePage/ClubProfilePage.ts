@@ -13,14 +13,12 @@ import * as Routes from '../../routes.ts'
 import { profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
-import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
-import type { OrcidId } from '../../types/OrcidId.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export type ClubDetails = Omit<BaseClubDetails, 'leads'> & {
-  readonly leads: Array.NonEmptyReadonlyArray<{ readonly name: Name; readonly orcid: OrcidId }>
+  readonly leads: Array.NonEmptyReadonlyArray<Prereviewers.PublicPersona>
 }
 
 export function createPage({
@@ -99,10 +97,10 @@ export function createPage({
             Array.map(
               lead =>
                 html`<a
-                  href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(lead.orcid) })}"
+                  href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(lead) })}"
                   class="orcid"
                   dir="auto"
-                  >${lead.name}</a
+                  >${lead.displayName}</a
                 >`,
             ),
             formatList(locale),
@@ -244,7 +242,7 @@ const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: Su
 }
 
 const displayPersona = Prereviewers.matchPersona({
-  onPublic: Struct.get('name'),
+  onPublic: Struct.get('displayName'),
   onPseudonym: Struct.get('pseudonym'),
 })
 

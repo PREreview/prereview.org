@@ -172,7 +172,7 @@ const authorList = (datasetReview: RecentDatasetPrereview, locale: SupportedLoca
 }
 
 const displayPersona = Prereviewers.matchPersona({
-  onPublic: Struct.get('name'),
+  onPublic: Struct.get('displayName'),
   onPseudonym: Struct.get('pseudonym'),
 })
 

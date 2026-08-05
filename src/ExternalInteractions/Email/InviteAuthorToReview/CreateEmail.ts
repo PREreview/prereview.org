@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { type Html, html, mjmlToHtml, plainText } from '../../../html.ts'
@@ -10,7 +10,7 @@ import { EmailAddress, type Name, type Uuid } from '../../../types/index.ts'
 
 export const CreateEmail: (details: {
   invitationId: Uuid.Uuid
-  inviter: Name.Name
+  inviter: Option.Option<Name.Name>
   invitee: { name: Name.Name; emailAddress: EmailAddress.EmailAddress }
   subject: {
     language: LanguageCode
@@ -50,7 +50,12 @@ export const CreateEmail: (details: {
                   prereview: html`<a href="${homePage.href}">PREreview</a>`,
                 })}
               </mj-text>
-              <mj-text>${t('authorHasInvitedYou')({ author: inviter })}</mj-text>
+              <mj-text
+                >${Option.match(inviter, {
+                  onSome: inviter => t('authorHasInvitedYou')({ author: inviter }),
+                  onNone: () => t('beenInvited')(),
+                })}</mj-text
+              >
               <mj-button href="${inviteUrl.href}">${t('beListedAsAuthorButton')()}</mj-button>
               <mj-text>${t('chooseNotToBeListedIgnoring')()}</mj-text>
               <mj-text>
@@ -72,7 +77,10 @@ ${t('thanksContributingReview')({
   prereview: 'PREreview',
 })}
 
-${t('authorHasInvitedYou')({ author: inviter })}
+${Option.match(inviter, {
+  onSome: inviter => t('authorHasInvitedYou')({ author: inviter }),
+  onNone: () => t('beenInvited')(),
+})}
 
 ${t('beListedGoingTo')()}
 

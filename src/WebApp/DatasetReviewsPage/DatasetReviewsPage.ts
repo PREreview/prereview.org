@@ -191,7 +191,7 @@ const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
 }
 
 const displayAuthor = Prereviewers.matchPersona({
-  onPublic: ({ name }) => html`<bdi>${name}</bdi>`,
+  onPublic: ({ displayName }) => html`<bdi>${displayName}</bdi>`,
   onPseudonym: ({ pseudonym }) => html`<bdi>${pseudonym}</bdi>`,
 })
 
