@@ -15,7 +15,7 @@ export const NotifyCommunitySlack = Effect.fn(
       PublishedReceivedReviewRequest: reviewRequest =>
         Effect.succeed(Option.map(reviewRequest.author, Struct.get('name'))),
       PublishedPrereviewerReviewRequest: reviewRequest =>
-        pipe(Prereviewers.getPersona(reviewRequest.author), Effect.andThen(Prereviewers.getPersonaName), Effect.asSome),
+        pipe(Prereviewers.getPersona(reviewRequest.author), Effect.map(Prereviewers.getPersonaName)),
     })
 
     const preprint = yield* Preprints.getPreprint(reviewRequest.preprintId)
