@@ -24,7 +24,7 @@ export const EmailAddressC = C.fromDecoder(
 
 export const EmailAddressSchema = pipe(
   Schema.String,
-  Schema.filter(s => isEmailValid(s), { message: () => 'not an email address' }),
+  Schema.filter(s => isEmailValid(s) && !/[\u200b-\u200d\u2060]/.test(s), { message: () => 'not an email address' }),
   Schema.brand(EmailAddressBrand),
 )
 
