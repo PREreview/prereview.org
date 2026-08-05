@@ -324,7 +324,8 @@ const routerWithoutHyperTs = pipe(
               getName: EffectToFpts.toTaskEitherK(
                 flow(
                   Prereviewers.getPublicPersona,
-                  Effect.andThen(Struct.get('name')),
+                  Effect.map(Struct.get('name')),
+                  Effect.map(Option.getOrUndefined),
                   Effect.catchTag('UnableToGetPersona', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,

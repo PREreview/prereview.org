@@ -55,7 +55,7 @@ test('content looks right when in a club', async ({ showPage }) => {
 
 const datasetReview: _.DatasetReview = {
   author: new Prereviewers.PublicPersona({
-    name: Name.Name('Josiah Carberry'),
+    name: Option.some(Name.Name('Josiah Carberry')),
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),
   otherAuthors: [],

@@ -122,7 +122,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 const publicPersona = new Prereviewers.PublicPersona({
-  name: Name('Josiah Carberry'),
+  name: Option.some(Name('Josiah Carberry')),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

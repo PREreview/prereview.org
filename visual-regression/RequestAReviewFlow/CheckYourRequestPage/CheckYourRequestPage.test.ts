@@ -1,4 +1,5 @@
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -18,7 +19,7 @@ test('content looks right', async ({ showPage }) => {
     preprint,
     reviewRequest: {
       persona: new Prereviewers.PublicPersona({
-        name: Name('Josiah Carberry'),
+        name: Option.some(Name('Josiah Carberry')),
         orcidId: OrcidId('0000-0002-1825-0097'),
       }),
       reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),

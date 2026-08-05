@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import { checkPage } from '../../src/WebApp/author-invite-flow/check-page/check-page.ts'
 import { failureMessage } from '../../src/WebApp/author-invite-flow/check-page/failure-message.ts'
@@ -12,7 +13,7 @@ test('content looks right', async ({ showPage }) => {
   const response = checkPage({
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     persona: new Prereviewers.PublicPersona({
-      name: Name('Josiah Carberry'),
+      name: Option.some(Name('Josiah Carberry')),
       orcidId: OrcidId('0000-0002-1825-0097'),
     }),
     locale: DefaultLocale,

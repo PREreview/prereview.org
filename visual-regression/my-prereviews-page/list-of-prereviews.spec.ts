@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -19,7 +20,7 @@ test('content looks right', async ({ showPage }) => {
     _.ListOfPrereviews({
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
       publicPersona: new Prereviewers.PublicPersona({
-        name: Name('Josiah Carberry'),
+        name: Option.some(Name('Josiah Carberry')),
         orcidId: OrcidId('0000-0002-1825-0097'),
       }),
       pseudonymPersona: new Prereviewers.PseudonymPersona({
@@ -103,7 +104,7 @@ const prereview3 = new Prereviews.RecentPreprintPrereview({
 const prereview4 = new Prereviews.RecentDatasetPrereview({
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
-    name: Name('Josiah Carberry'),
+    name: Option.some(Name('Josiah Carberry')),
   }),
   otherAuthors: [new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
   anonymousAuthors: 1,
@@ -128,32 +129,32 @@ const prereview5 = new Prereviews.RecentDatasetPrereview({
   },
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
-    name: Name('Miguel Oliveira, Jr.'),
+    name: Option.some(Name('Miguel Oliveira, Jr.')),
   }),
   otherAuthors: [
     new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0003-4806-4946'),
-      name: Name('Arthur Ronald Brasil Terto'),
+      name: Option.some(Name('Arthur Ronald Brasil Terto')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-9340-9977'),
-      name: Name('Cleber Ataíde'),
+      name: Option.some(Name('Cleber Ataíde')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-2934-4734'),
-      name: Name('Glayci Kelli Reis da Silva Xavier'),
+      name: Option.some(Name('Glayci Kelli Reis da Silva Xavier')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-0509-3555'),
-      name: Name('Kyvia Fernanda Tenório da Silva'),
+      name: Option.some(Name('Kyvia Fernanda Tenório da Silva')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-5425-5071'),
-      name: Name('Marcelo Travassos da Silva'),
+      name: Option.some(Name('Marcelo Travassos da Silva')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId('0000-0002-7547-3430'),
-      name: Name('Pedro Ricardo Bin'),
+      name: Option.some(Name('Pedro Ricardo Bin')),
     }),
   ],
   anonymousAuthors: 1,

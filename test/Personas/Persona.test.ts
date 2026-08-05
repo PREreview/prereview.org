@@ -5,10 +5,26 @@ import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('PublicPersona', () => {
-  it.prop('displayName', [fc.publicPersona()], ([persona]) => {
-    const actual = persona.displayName
+  describe('displayName', () => {
+    it.prop(
+      'with a name',
+      [
+        fc
+          .name()
+          .chain(name => fc.tuple(fc.constant(name), fc.publicPersona({ name: fc.constant(Option.some(name)) }))),
+      ],
+      ([[expected, persona]]) => {
+        const actual = persona.displayName
 
-    expect(actual).toStrictEqual(persona.name)
+        expect(actual).toStrictEqual(expected)
+      },
+    )
+
+    it.prop('without a name', [fc.publicPersona({ name: fc.constant(Option.none()) })], ([persona]) => {
+      const actual = persona.displayName
+
+      expect(actual).toStrictEqual(persona.orcidId)
+    })
   })
 })
 
@@ -30,7 +46,7 @@ describe('getPersonaName', () => {
   it.prop('PublicPersona', [fc.publicPersona()], ([persona]) => {
     const actual = _.getPersonaName(persona)
 
-    expect(actual).toStrictEqual(Option.some(persona.name))
+    expect(actual).toStrictEqual(persona.name)
   })
 
   it.prop('PseudonymPersona', [fc.pseudonymPersona()], ([persona]) => {

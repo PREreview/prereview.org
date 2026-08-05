@@ -1,14 +1,14 @@
 import { Data, Function, Option } from 'effect'
-import type { Name, OrcidId, Pseudonym } from '../types/index.ts'
+import { Name, type OrcidId, type Pseudonym } from '../types/index.ts'
 
 export type Persona = PublicPersona | PseudonymPersona
 
 export class PublicPersona extends Data.TaggedClass('PublicPersona')<{
-  name: Name.Name
+  name: Option.Option<Name.Name>
   orcidId: OrcidId.OrcidId
 }> {
   get displayName(): Name.Name {
-    return this.name
+    return Option.getOrElse(this.name, () => Name.Name(this.orcidId))
   }
 }
 
@@ -41,6 +41,6 @@ export const matchPersona: {
 )
 
 export const getPersonaName: (persona: Persona) => Option.Option<Name.Name> = matchPersona({
-  onPublic: persona => Option.some(persona.name),
+  onPublic: persona => persona.name,
   onPseudonym: persona => Option.some(persona.pseudonym),
 })

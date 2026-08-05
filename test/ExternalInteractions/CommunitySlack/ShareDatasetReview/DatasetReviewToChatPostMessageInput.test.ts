@@ -1,5 +1,6 @@
 import { expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
+import { Option } from 'effect'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/ShareDatasetReview/DatasetReviewToChatPostMessageInput.ts'
 import * as Prereviewers from '../../../../src/Prereviewers/index.ts'
@@ -10,7 +11,7 @@ test.each([
     'public persona',
     {
       author: new Prereviewers.PublicPersona({
-        name: Name.Name('Josiah Carberry'),
+        name: Option.some(Name.Name('Josiah Carberry')),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: 0,
@@ -59,7 +60,7 @@ test.each([
     '1 other author',
     {
       author: new Prereviewers.PublicPersona({
-        name: Name.Name('Josiah Carberry'),
+        name: Option.some(Name.Name('Josiah Carberry')),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: 1,
@@ -85,7 +86,7 @@ test.each([
     '2 other authors',
     {
       author: new Prereviewers.PublicPersona({
-        name: Name.Name('Josiah Carberry'),
+        name: Option.some(Name.Name('Josiah Carberry')),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: 2,

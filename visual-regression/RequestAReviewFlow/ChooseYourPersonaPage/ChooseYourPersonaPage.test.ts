@@ -1,5 +1,5 @@
 import { Doi } from 'doi-ts'
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -11,7 +11,7 @@ import * as _ from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage
 import { expect, test } from '../../base.ts'
 
 const publicPersona = new Prereviewers.PublicPersona({
-  name: Name('Josiah Carberry'),
+  name: Option.some(Name('Josiah Carberry')),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

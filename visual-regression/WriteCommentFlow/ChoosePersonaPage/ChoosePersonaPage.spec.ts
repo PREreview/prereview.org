@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -52,7 +52,7 @@ test('content looks right when the persona is missing', async ({ showPage }) => 
 })
 
 const publicPersona = new Prereviewers.PublicPersona({
-  name: Name('Josiah Carberry'),
+  name: Option.some(Name('Josiah Carberry')),
   orcidId: OrcidId('0000-0002-1825-0097'),
 })
 

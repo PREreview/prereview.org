@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -115,7 +116,7 @@ const recentPrereview3 = new Prereviews.RecentPreprintPrereview({
 const recentPrereview4 = new Prereviews.RecentDatasetPrereview({
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-    name: Name.Name('Josiah Carberry'),
+    name: Option.some(Name.Name('Josiah Carberry')),
   }),
   otherAuthors: [new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })],
   anonymousAuthors: 1,
@@ -140,32 +141,32 @@ const recentPrereview5 = new Prereviews.RecentDatasetPrereview({
   },
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-    name: Name.Name('Miguel Oliveira, Jr.'),
+    name: Option.some(Name.Name('Miguel Oliveira, Jr.')),
   }),
   otherAuthors: [
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0003-4806-4946'),
-      name: Name.Name('Arthur Ronald Brasil Terto'),
+      name: Option.some(Name.Name('Arthur Ronald Brasil Terto')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-9340-9977'),
-      name: Name.Name('Cleber Ataíde'),
+      name: Option.some(Name.Name('Cleber Ataíde')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-2934-4734'),
-      name: Name.Name('Glayci Kelli Reis da Silva Xavier'),
+      name: Option.some(Name.Name('Glayci Kelli Reis da Silva Xavier')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-0509-3555'),
-      name: Name.Name('Kyvia Fernanda Tenório da Silva'),
+      name: Option.some(Name.Name('Kyvia Fernanda Tenório da Silva')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-5425-5071'),
-      name: Name.Name('Marcelo Travassos da Silva'),
+      name: Option.some(Name.Name('Marcelo Travassos da Silva')),
     }),
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-7547-3430'),
-      name: Name.Name('Pedro Ricardo Bin'),
+      name: Option.some(Name.Name('Pedro Ricardo Bin')),
     }),
   ],
   anonymousAuthors: 1,

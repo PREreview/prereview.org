@@ -13,12 +13,12 @@ const cases = [
     'all questions answered',
     {
       author: new Prereviewers.PublicPersona({
-        name: Name.Name('Josiah Carberry'),
+        name: Option.some(Name.Name('Josiah Carberry')),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: [
         new Prereviewers.PublicPersona({
-          name: Name.Name('Arne Saknussemm'),
+          name: Option.some(Name.Name('Arne Saknussemm')),
           orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
         }),
       ],
@@ -168,7 +168,7 @@ const cases = [
     'all questions answered with details',
     {
       author: new Prereviewers.PublicPersona({
-        name: Name.Name('Josiah Carberry'),
+        name: Option.some(Name.Name('Josiah Carberry')),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       otherAuthors: [],

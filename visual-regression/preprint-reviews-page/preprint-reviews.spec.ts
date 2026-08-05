@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import type { RapidPrereview } from '../../src/PreprintReviews/index.ts'
@@ -974,7 +975,7 @@ const prereview5 = {
 } satisfies PreprintPrereview
 
 const rapidPrereview1 = {
-  author: new PublicPersona({ name: Name('Alizée Malnoë'), orcidId: OrcidId('0000-0002-8777-3174') }),
+  author: new PublicPersona({ name: Option.some(Name('Alizée Malnoë')), orcidId: OrcidId('0000-0002-8777-3174') }),
   questions: {
     availableCode: 'not applicable',
     availableData: 'no',

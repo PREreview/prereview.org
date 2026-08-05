@@ -68,7 +68,7 @@ const dataset = new Datasets.Dataset({
 const prereview1: _.DatasetReview = {
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-    name: Name('Josiah Carberry'),
+    name: Option.some(Name('Josiah Carberry')),
   }),
   otherAuthors: [],
   anonymousAuthors: 0,
@@ -140,7 +140,7 @@ const prereview2: _.DatasetReview = {
   otherAuthors: [
     new Prereviewers.PublicPersona({
       orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-      name: Name('Josiah Carberry'),
+      name: Option.some(Name('Josiah Carberry')),
     }),
   ],
   anonymousAuthors: 1,

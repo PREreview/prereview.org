@@ -120,7 +120,7 @@ export const layer = Layer.effect(
         pipe(
           orcidRecords.getName(orcidId),
           Effect.mapBoth({
-            onSuccess: name => new PublicPersona({ name, orcidId }),
+            onSuccess: name => new PublicPersona({ name: Option.some(name), orcidId }),
             onFailure: error => new UnableToGetPersona({ cause: error }),
           }),
         ),

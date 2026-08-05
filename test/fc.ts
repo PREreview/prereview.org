@@ -1568,11 +1568,15 @@ export const ghostPage = (): fc.Arbitrary<GhostPage.GhostPage> =>
     locale: supportedLocale(),
   })
 
-export const publicPersona = (): fc.Arbitrary<Prereviewers.PublicPersona> =>
+export const publicPersona = ({
+  name: personaName,
+}: {
+  name?: fc.Arbitrary<Prereviewers.PublicPersona['name']>
+} = {}): fc.Arbitrary<Prereviewers.PublicPersona> =>
   fc
     .record({
       orcidId: orcidId(),
-      name: name(),
+      name: personaName ?? maybe(name()),
     })
     .map(args => new Prereviewers.PublicPersona(args))
 

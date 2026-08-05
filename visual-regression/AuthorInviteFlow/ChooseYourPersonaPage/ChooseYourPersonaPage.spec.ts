@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
@@ -54,7 +54,7 @@ const reviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
 const publicPersona = new Prereviewers.PublicPersona({
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-  name: Name.Name('Josiah Carberry'),
+  name: Option.some(Name.Name('Josiah Carberry')),
 })
 
 const pseudonymPersona = new Prereviewers.PseudonymPersona({

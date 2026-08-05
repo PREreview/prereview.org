@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../../src/form.ts'
 import { html } from '../../../src/html.ts'
@@ -47,7 +48,7 @@ const preprint = {
 } satisfies PreprintTitle
 
 const publicPersona = new Prereviewers.PublicPersona({
-  name: Name.Name('Josiah Carberry'),
+  name: Option.some(Name.Name('Josiah Carberry')),
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
 })
 

@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/ConfirmAuthorChoicesPage/ConfirmAuthorChoicesPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -35,7 +36,7 @@ const reviewId = Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0')
 
 const publicPersona = new Prereviewers.PublicPersona({
   orcidId: OrcidId('0000-0002-1825-0097'),
-  name: Name('Josiah Carberry'),
+  name: Option.some(Name('Josiah Carberry')),
 })
 
 const pseudonymPersona = new Prereviewers.PseudonymPersona({

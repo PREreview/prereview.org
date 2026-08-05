@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
+import { Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -54,8 +55,11 @@ const club1 = {
 
   added: Temporal.PlainDate.from('2024-01-02'),
   leads: [
-    new Prereviewers.PublicPersona({ name: Name('Arpita Ghosh'), orcidId: OrcidId('0009-0003-2106-3270') }),
-    new Prereviewers.PublicPersona({ name: Name('Garima Jain'), orcidId: OrcidId('0000-0002-8079-9611') }),
+    new Prereviewers.PublicPersona({
+      name: Option.some(Name('Arpita Ghosh')),
+      orcidId: OrcidId('0009-0003-2106-3270'),
+    }),
+    new Prereviewers.PublicPersona({ name: Option.some(Name('Garima Jain')), orcidId: OrcidId('0000-0002-8079-9611') }),
   ],
   contact: EmailAddress('email@example.com'),
   joinLink: new URL(
@@ -80,7 +84,12 @@ const club2 = {
     `,
   },
   added: Temporal.PlainDate.from('2025-02-03'),
-  leads: [new Prereviewers.PublicPersona({ name: Name('Arpita Ghosh'), orcidId: OrcidId('0009-0003-2106-3270') })],
+  leads: [
+    new Prereviewers.PublicPersona({
+      name: Option.some(Name('Arpita Ghosh')),
+      orcidId: OrcidId('0009-0003-2106-3270'),
+    }),
+  ],
 } satisfies ClubDetails
 
 const prereview1 = new Prereviews.RecentPreprintPrereview({
@@ -146,7 +155,7 @@ const prereview3 = new Prereviews.RecentPreprintPrereview({
 const prereview4 = new Prereviews.RecentDatasetPrereview({
   author: new Prereviewers.PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
-    name: Name('Josiah Carberry'),
+    name: Option.some(Name('Josiah Carberry')),
   }),
   otherAuthors: [new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
   anonymousAuthors: 1,

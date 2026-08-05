@@ -1,3 +1,4 @@
+import { Option } from 'effect'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -34,7 +35,7 @@ const viewModel = {
   invitationId: Uuid('d9de5f06-69ab-4ccf-a0ce-95b8f6af31c6'),
   author: new PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),
-    name: Name('Josiah Carberry'),
+    name: Option.some(Name('Josiah Carberry')),
   }),
   otherAuthors: [
     new PseudonymPersona({
