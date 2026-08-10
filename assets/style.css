@@ -2866,7 +2866,47 @@ spotlight-banner {
       position: absolute;
       inset-block-start: var(--space-3xs);
       inset-inline-end: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
+      border-color: transparent;
+      background-color: transparent;
       font-size: var(--step--1);
+
+      &::before {
+        content: '';
+        margin-inline-end: 0.4ch;
+        padding-inline-end: 1.1em;
+        background-color: currentcolor;
+        mask-image: url('remixicon/icons/System/close-fill.svg');
+        mask-repeat: no-repeat;
+        mask-origin: content-box;
+        mask-position: left 0% bottom 40%;
+        mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+      }
+
+      &:dir(rtl) {
+        &::before {
+          mask-position: right 0% bottom 40%;
+        }
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        block-size: var(--width-divider);
+        inset-block-end: 0;
+        inset-inline: var(--space-2xs);
+        background-color: transparent;
+      }
+
+      &:hover {
+        &::after {
+          background-color: currentcolor;
+        }
+      }
     }
   }
 }
