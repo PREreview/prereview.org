@@ -1,0 +1,176 @@
+{
+  "whichPreprint": {
+    "message": "Quel preprint êtes-vous en train d'examiner?"
+  },
+  "useDoiUrl": {
+    "message": "Utilisez le DOI ou l'URL de preprint."
+  },
+  "whatIsDoi": {
+    "message": "C'est quoi un DOI?"
+  },
+  "whatIsDoiText": {
+    "message": "Un <doi>DOI</doi> est un identifiant unique que vous pouvez trouver sur plusieurs preprints. Par exemple, {example} ou {exampleUrl}."
+  },
+  "errorEnterPreprint": {
+    "message": "Entrez le DOI ou l'URL du preprint"
+  },
+  "havingProblems": {
+    "message": "Désolé, nous avons des problèmes"
+  },
+  "doNotKnowPreprint": {
+    "message": "Désolé, nous ne connaissons pas ce preprint"
+  },
+  "notAPreprint": {
+    "message": "Désolé, seuls les preprints sont pris en charge"
+  },
+  "unsupportedDoi": {
+    "message": "Désolé, nous ne prenons pas en charge ce DOI"
+  },
+  "unsupportedUrl": {
+    "message": "Désolé, nous ne prenons pas en charge cette URL"
+  },
+  "doiCouldBeAdvance": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Advance, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeAfricarxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un AfricArXiv preprint, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeArcadiaScience": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Arcadia Science, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeArxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint arXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeAuthorea": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Authorea, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeBiorxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint bioRxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeBiorxivMedrxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint bioRxiv ou medRxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeChemrxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint ChemRxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeCurvenote": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Curvenote, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeEartharxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint EarthArXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeEcoevorxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint EcoEvoRxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeEdarxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint EdArXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeEngrxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint engrXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeJmir": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint de JMIR, mais nous ne trouvons aucun détail."
+  },
+  "doiCouldBeJxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Jxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeLifecycleJournal": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Lifecycle Journal, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeMedrxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint medRxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeMetaarxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint MetaArXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeNeurolibre": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint NeuroLibre, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeOsf": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint OSF, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeOsfLifecycleJournal": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint OSF ou Lifecycle Journal, mais nous n'avons aucun détail."
+  },
+  "doiCouldBePreprintsorg": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Preprints.org, mais nous n'avons aucun détail."
+  },
+  "doiCouldBePsyarxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint PsyArXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBePsycharchives": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint PsychArchives, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeResearchSquare": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Research Square, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeScielo": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint SciELO, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeScienceOpen": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint ScienceOpen, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeSocarxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint SocArXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeSsrn": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint SSRN, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeTechrxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint TechRxiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeUmsida": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint UMSIDA, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeVerixiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint VeriXiv, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeZenodo": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Zenodo, mais nous n'avons aucun détail."
+  },
+  "doiCouldBeZenodoAfricarxiv": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un preprint Zenodo ou AfricArXiv, mais nous n'avons aucun détail."
+  },
+  "urlCouldBePhilsci": {
+    "message": "Nous pensons que l'URL {url} pourrait être un preprint PhilSci-Archive, mais nous n'avons aucun détail."
+  },
+  "checkCorrectDoi": {
+    "message": "Si vous aviez saisi le DOI, vérifiez s'il est correct."
+  },
+  "checkCorrectUrl": {
+    "message": "Si vous aviez saisi l'URL, vérifiez si elle est correcte."
+  },
+  "checkPastedDoi": {
+    "message": "Si vous avez collé le DOI, vérifiez que vous avez copié l'adresse entière."
+  },
+  "checkPastedUrl": {
+    "message": "Si vous avez collé l'URL, vérifiez que vous avez copié l'adresse entière."
+  },
+  "doiIsCorrect": {
+    "message": "Si le DOI est correct, s'il vous plaît <contact>contactez-nous</contact>."
+  },
+  "urlIsCorrect": {
+    "message": "Si l'URL est correcte, s'il vous plaît <contact>contactez-nous</contact>."
+  },
+  "supportPreprintsFrom": {
+    "message": "Nous prenons en charge les preprints provenant de {servers}."
+  },
+  "isAPreprint": {
+    "message": "S'il s'agit d'un preprint, veuillez <contact>prendre contact </contact>."
+  },
+  "doiIsForPreprint": {
+    "message": "Si ce DOI est pour un serveur de preprints que nous ne prenons pas en charge, veuillez <contact>prendre contact</contact>."
+  },
+  "urlIsForPreprint": {
+    "message": "Si cette URL est pour un serveur de preprints que nous ne prenons pas en charge, veuillez <contact>prendre contact</contact>."
+  },
+  "otherwiseUseDoi": {
+    "message": "Sinon, si le preprint a un DOI, veuillez essayer d'utiliser cela à la place."
+  },
+  "unableToPublishNow": {
+    "message": "Nous ne pouvons pas publier de PREreviews pour ce preprint pour le moment."
+  },
+  "tryAgainLater": {
+    "message": "Veuillez réessayer plus tard."
+  }
+}

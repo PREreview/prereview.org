@@ -1,0 +1,53 @@
+{
+  "connectOrcidRecord": {
+    "message": "Connectez votre dossier ORCID"
+  },
+  "canConnect": {
+    "message": "Vous pouvez connecter votre profil PREreview à votre dossier ORCID."
+  },
+  "willAddPrereviews": {
+    "message": "Nous allons lier vos PREreviews à votre dossier ORCID."
+  },
+  "beforeYouStart": {
+    "message": "Avant de commencer"
+  },
+  "sendYouToOrcid": {
+    "message": "Nous allons vous rediriger vers ORCID, où l'on vous demandera de vous connecter et d'autoriser PREreview à accéder à votre profil. Il se peut que vous ayez déjà effectué ces étapes, et ORCID vous redirigera alors vers PREreview."
+  },
+  "cannotConnectRecord": {
+    "message": "Désolé, nous ne pouvons connecter votre dossier"
+  },
+  "youDeniedAccess": {
+    "message": "Vous avez refusé l'accès PREreview à votre dossier ORCID."
+  },
+  "tryAgain": {
+    "message": "S'il vous plaît, essayez encore."
+  },
+  "havingProblems": {
+    "message": "Désolé, nous avons des problèmes"
+  },
+  "unableToConnect": {
+    "message": "Nous ne pouvons pas connecter votre dossier pour le moment."
+  },
+  "unableToDisconnect": {
+    "message": "Nous ne pouvons pas déconnecter votre dossier pour le moment."
+  },
+  "tryAgainLater": {
+    "message": "Veuillez réessayer plus tard."
+  },
+  "disconnectOrcidRecord": {
+    "message": "Déconnecter votre dossier ORCID"
+  },
+  "canDisconnect": {
+    "message": "Vous pouvez déconnecter votre profil PREreview de votre dossier ORCID."
+  },
+  "stopAddingPrereviews": {
+    "message": "Nous allons arrêter d'ajouter de nouvelles PREreviews à votre dossier ORCID."
+  },
+  "canReconnect": {
+    "message": "Vous serez en mesure de le reconnecter à tout moment."
+  },
+  "disconnectRecordButton": {
+    "message": "Déconnectez le dossier"
+  }
+}

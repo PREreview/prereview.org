@@ -1,0 +1,20 @@
+{
+  "reviewTitle": {
+    "message": "PREreview de {dataset}"
+  },
+  "reviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewer} a évalué {dataset}} other {{reviewer} a évalué {dataset}}}"
+  },
+  "reviewTextInClub": {
+    "message": "{numberOfReviewers, plural, one {{reviewer} de {club} a évalué {dataset}} other {{reviewer} de {club} a évalué {dataset}}}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# autre auteur} other {# autres auteurs}}"
+  },
+  "reviewPublished": {
+    "message": "Revue publiée"
+  },
+  "repository": {
+    "message": "Dépôt"
+  }
+}

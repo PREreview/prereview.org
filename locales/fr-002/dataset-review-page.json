@@ -1,0 +1,35 @@
+{
+  "structuredReviewTitle": {
+    "message": "PREreview structurée de {dataset}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Auteur</visuallyHidden> par {author}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {author} du {club}"
+  },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# autre auteur} other {# autre auteurs}}"
+  },
+  "backLink": {
+    "message": "Retour à toutes les revues"
+  },
+  "seeDataset": {
+    "message": "Voir le jeu de données"
+  },
+  "published": {
+    "message": "Publié"
+  },
+  "license": {
+    "message": "Licence"
+  },
+  "licenseCcBy40": {
+    "message": "Attribution 4.0 International"
+  },
+  "competingInterests": {
+    "message": "Conflits d’intérêts"
+  },
+  "noCompetingInterestsStatement": {
+    "message": "L’auteur déclare n’avoir aucun conflit d’intérêts."
+  }
+}

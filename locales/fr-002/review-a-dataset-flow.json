@@ -1,0 +1,722 @@
+{
+  "whichDataset": {
+    "message": "Quel jeu de données évaluez-vous ?"
+  },
+  "useDoiUrl": {
+    "message": "Utilisez le DOI ou l'URL du jeu de données."
+  },
+  "whatIsDoi": {
+    "message": "Qu’est-ce qu’un DOI ?"
+  },
+  "whatIsDoiText": {
+    "message": "Un <doi>DOI</doi> est un identifiant unique que l'on trouve sur de nombreux jeux de données. Par exemple, {example} ou {exampleUrl}."
+  },
+  "errorEnterADataset": {
+    "message": "Entrez un DOI ou l'URL du jeu de données"
+  },
+  "errorEnterTheDataset": {
+    "message": "Entrez un DOI ou l'URL du jeu de données"
+  },
+  "doNotKnowDataset": {
+    "message": "Désolé, nous ne connaissons pas ce jeu de données"
+  },
+  "doiCouldBeDryad": {
+    "message": "Nous pensons que le DOI {doi} pourrait être un jeu de données Dryad, mais nous ne trouvons aucun détail."
+  },
+  "doiCouldBeScielo": {
+    "message": "Nous pensons que le DOI {doi} pourrait correspondre à un jeu de données SciELO, mais nous ne trouvons aucun détail."
+  },
+  "doiCouldBeZenodo": {
+    "message": "Nous pensons que le DOI {doi} pourrait correspondre à un jeu de données Zenodo, mais nous ne trouvons aucune information."
+  },
+  "checkCorrectDoi": {
+    "message": "Si vous aviez saisi le DOI, vérifiez s'il est correct."
+  },
+  "checkPastedDoi": {
+    "message": "Si vous avez collé le DOI, vérifiez que vous avez copié l'adresse entière."
+  },
+  "doiIsCorrect": {
+    "message": "Si le DOI est correct, s'il vous plaît <contact>contactez-nous</contact>."
+  },
+  "unsupportedDoi": {
+    "message": "Désolé, nous ne prenons pas en charge ce DOI"
+  },
+  "unsupportedUrl": {
+    "message": "Désolé, nous ne prenons pas en charge cette URL"
+  },
+  "supportDatasetsFrom": {
+    "message": "Nous prenons en charge les jeux de données provenant de {repositories}."
+  },
+  "doiIsForDataset": {
+    "message": "Si ce DOI concerne un jeu de données sur un dépôt que nous ne prenons pas en charge, veuillez <contact>prendre contact</contact>."
+  },
+  "urlIsForDataset": {
+    "message": "Si cette URL concerne un jeu de données sur un dépôt que nous ne prenons pas en charge, veuillez <contact>prendre contact</contact>."
+  },
+  "tryDoi": {
+    "message": "Sinon, si le jeu de données possède un DOI, veuillez essayer de l'utiliser à la place."
+  },
+  "notADataset": {
+    "message": "Désolé, nous ne prenons en charge que les jeux de données"
+  },
+  "isADataset": {
+    "message": "Si cela concerne un jeu de données, s'il vous plaît <contact>contactez-nous</contact>."
+  },
+  "reviewADataset": {
+    "message": "Examiner un jeu de données"
+  },
+  "backToDataset": {
+    "message": "Retour au jeu de données"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {authors}"
+  },
+  "youCanWriteAPrereview": {
+    "message": "Vous pouvez rédiger un PREreview de {dataset}. Nous vous poserons des questions sur le jeu de données afin de créer une évaluation structurée."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "Comme vous avez déjà commencé un PREreview de {dataset}, nous allons vous rediriger vers l'étape suivante afin que vous puissiez continuer."
+  },
+  "beforeStart": {
+    "message": "Avant de commencer"
+  },
+  "orcidIdLogIn": {
+    "message": "Nous vous demanderons de vous connecter avec votre identifiant ORCID iD. Si vous n'en possédez pas, vous pouvez en créer un."
+  },
+  "whatIsOrcidIdHeading": {
+    "message": "Qu’est-ce qu’un ORCID iD ?"
+  },
+  "whatIsOrcidId": {
+    "message": "Un <link>ORCID iD</link> est un identifiant unique qui vous distingue de toute personne ayant le même nom ou nom similaire."
+  },
+  "checkYourPrereview": {
+    "message": "Vérifiez votre PREreview"
+  },
+  "datasetDetails": {
+    "message": "Détails du jeu de données"
+  },
+  "title": {
+    "message": "Titre"
+  },
+  "posted": {
+    "message": "Publié"
+  },
+  "repository": {
+    "message": "Dépôt"
+  },
+  "yourDetails": {
+    "message": "Vos coordonnées"
+  },
+  "publishedName": {
+    "message": "Nom publié"
+  },
+  "changePublishedName": {
+    "message": "Modifier <visuallyHidden>votre nom de publication</visuallyHidden>"
+  },
+  "invitedAuthors": {
+    "message": "Auteurs invités"
+  },
+  "changeInvitedAuthors": {
+    "message": "Modifier <visuallyHidden>les auteurs invités</visuallyHidden>"
+  },
+  "invitedAuthorsNone": {
+    "message": "Aucun"
+  },
+  "haveCompetingInterests": {
+    "message": "Avez-vous des conflits d'intérêts ?"
+  },
+  "competingInterestsTip": {
+    "message": "Nous demandons à toutes les personnes chargées de l’évaluation de déclarer tout conflit d’intérêts susceptible d’influencer leur évaluation du jeu de données."
+  },
+  "competingInterestDefinition": {
+    "message": "Un conflit d’intérêts désigne tout élément susceptible de compromettre l’objectivité d’une PREreview."
+  },
+  "examples": {
+    "message": "Exemples"
+  },
+  "examplePersonalRelationship": {
+    "message": "Vous avez une relation personnelle avec l’auteur."
+  },
+  "exampleRival": {
+    "message": "Vous êtes un rival ou un compétiteur de l'auteur."
+  },
+  "exampleWorked": {
+    "message": "Vous avez récemment travaillé avec l'auteur."
+  },
+  "exampleCollaborate": {
+    "message": "Vous collaborez avec l'auteur."
+  },
+  "examplePublished": {
+    "message": "Vous avez publié avec l'auteur au cours des cinq dernières années."
+  },
+  "exampleGrant": {
+    "message": "Vous avez une subvention avec l'auteur."
+  },
+  "selectCompetingInterests": {
+    "message": "Sélectionnez oui si vous avez des conflits d'intérêts"
+  },
+  "competingInterestsDetails": {
+    "message": "De quoi s’agit-il ?"
+  },
+  "enterCompetingInterestsDetails": {
+    "message": "Saisissez les détails de vos conflits d’intérêts"
+  },
+  "competingInterests": {
+    "message": "Conflits d’intérêts"
+  },
+  "noneDeclared": {
+    "message": "Aucun conflit d’intérêts déclaré"
+  },
+  "changeCompetingInterests": {
+    "message": "Modifier <visuallyHidden>vos conflits d'intérêts</visuallyHidden>"
+  },
+  "codeOfConduct": {
+    "message": "Code de conduite"
+  },
+  "codeOfConductTip": {
+    "message": "En tant que membre de notre communauté, nous attendons de vous que vous respectiez le <link>Code de conduite de PREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Exemples de comportements attendus"
+  },
+  "exampleLanguage": {
+    "message": "Employer un langage accueillant et inclusif."
+  },
+  "exampleConstructive": {
+    "message": "Fournir des retours constructifs, c’est-à-dire utiles, à son destinataire."
+  },
+  "exampleRespect": {
+    "message": "Respecter les points de vue et les expériences différents."
+  },
+  "exampleCriticism": {
+    "message": "Accepter avec grâce les critiques constructives."
+  },
+  "exampleCommunity": {
+    "message": "Se concentrer sur ce qui est le mieux pour la communauté."
+  },
+  "exampleEmpathy": {
+    "message": "Faire preuve d’empathie envers les autres membres de la communauté."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Exemples de comportements inacceptables"
+  },
+  "exampleTrolling": {
+    "message": "Trollage, insultes ou commentaires dénigrants, ainsi qu’attaques personnelles ou politiques."
+  },
+  "exampleUnconstructiveFeedback": {
+    "message": "Fournir des retours non constructifs ou perturbateurs sur PREreview."
+  },
+  "exampleHarassment": {
+    "message": "Harcèlement public ou privé."
+  },
+  "exampleConfidentialInformation": {
+    "message": "Publier les informations confidentielles d’autres personnes, comme une adresse postale ou électronique, sans autorisation explicite."
+  },
+  "exampleSexualizedLanguage": {
+    "message": "Utiliser un langage ou des images à caractère sexuel, ou manifester une attention sexuelle importune ou faire des avances sexuelles importunes."
+  },
+  "exampleReviewingOwnDataset": {
+    "message": "Examiner son propre jeu de données."
+  },
+  "exampleInappropriateConduct": {
+    "message": "Tout autre comportement pouvant raisonnablement être considéré comme inapproprié dans un cadre professionnel."
+  },
+  "confirmCodeOfConduct": {
+    "message": "Confirmez que vous suivez le Code de conduite"
+  },
+  "followingCodeOfConduct": {
+    "message": "Je respecte le code de conduite"
+  },
+  "yourReview": {
+    "message": "Votre évaluation"
+  },
+  "rateQuality": {
+    "message": "Comment évalueriez-vous la qualité de ce jeu de données ?"
+  },
+  "selectRateQuality": {
+    "message": "Sélectionnez la façon dont vous évaluez la qualité"
+  },
+  "excellent": {
+    "message": "Excellente"
+  },
+  "excellentTip": {
+    "message": "Il n’y a pratiquement aucune erreur, incohérence, valeur manquante ou autre problème notable dans ce jeu de données."
+  },
+  "excellentWhy": {
+    "message": "Pourquoi sa qualité est-elle excellente ?"
+  },
+  "fair": {
+    "message": "Passable"
+  },
+  "fairTip": {
+    "message": "Ce jeu de données présente quelques erreurs, incohérences, valeurs manquantes ou autres problèmes notables, mais il reste suffisamment intact pour qu’on puisse lui faire confiance."
+  },
+  "fairWhy": {
+    "message": "Pourquoi sa qualité est-elle acceptable ?"
+  },
+  "poor": {
+    "message": "Médiocre"
+  },
+  "poorTip": {
+    "message": "Le jeu de données présente de nombreuses erreurs, incohérences, valeurs manquantes ou autres problèmes notables, ce qui fait qu’il est trop difficile de lui faire confiance."
+  },
+  "poorWhy": {
+    "message": "Pourquoi sa qualité est-elle médiocre ?"
+  },
+  "doNotKnow": {
+    "message": "Je ne sais pas"
+  },
+  "changeQualityRating": {
+    "message": "Modifier <visuallyHidden>comment vous évaluez la qualité</visuallyHidden>"
+  },
+  "followFairAndCare": {
+    "message": "Le jeu de données suit-il les principes FAIR et CARE ?"
+  },
+  "selectFollowFairAndCare": {
+    "message": "Sélectionnez une option pour indiquer si le jeu de données respecte les principes FAIR et CARE"
+  },
+  "whatAreFairPrinciples": {
+    "message": "Quels sont les principes FAIR ?"
+  },
+  "whatAreFairPrinciplesText": {
+    "message": "Un jeu de données respecte les <fairPrinciplesLink>principes FAIR</fairPrinciplesLink> s’il est :"
+  },
+  "fairPrinciplesFindable": {
+    "message": "Facile à trouver"
+  },
+  "fairPrinciplesAccessible": {
+    "message": "Accessible"
+  },
+  "fairPrinciplesInteroperable": {
+    "message": "Interopérable"
+  },
+  "fairPrinciplesReusable": {
+    "message": "Réutilisable"
+  },
+  "whatAreCarePrinciples": {
+    "message": "Que sont les principes CARE ?"
+  },
+  "whatAreCarePrinciplesText": {
+    "message": "Un jeu de données respecte les <carePrinciplesLink>principes CARE</carePrinciplesLink> s’il préserve la souveraineté et les droits de ses créateurs autochtones grâce aux éléments suivants :"
+  },
+  "carePrinciplesCollectiveBenefit": {
+    "message": "Bénéfice collectif"
+  },
+  "carePrinciplesAuthorityToControl": {
+    "message": "Autorité de contrôle"
+  },
+  "carePrinciplesResponsibility": {
+    "message": "Responsabilité"
+  },
+  "carePrinciplesEthics": {
+    "message": "Éthique"
+  },
+  "followFairAndCareYesTip": {
+    "message": "Le jeu de données contient suffisamment de métadonnées et respecte les principes FAIR et CARE."
+  },
+  "followFairAndCareYesWhy": {
+    "message": "Comment respecte-t-il ces principes ?"
+  },
+  "followFairAndCarePartlyTip": {
+    "message": "Le jeu de données contient certaines métadonnées et respecte certains principes FAIR et CARE, mais il présente quelques problèmes mineurs."
+  },
+  "followFairAndCarePartlyWhy": {
+    "message": "Comment respecte-t-il partiellement ces principes ?"
+  },
+  "followFairAndCareNoTip": {
+    "message": "Le jeu de données ne contient pas suffisamment de métadonnées et ne respecte pas les principes FAIR et CARE."
+  },
+  "followFairAndCareNoWhy": {
+    "message": "En quoi ne respecte-t-il pas ces principes ?"
+  },
+  "yes": {
+    "message": "Oui"
+  },
+  "no": {
+    "message": "Non"
+  },
+  "partly": {
+    "message": "Partiellement"
+  },
+  "changeFairAndCare": {
+    "message": "Modifier <visuallyHidden>si le jeu de données respecte les principes FAIR et CARE</visuallyHidden>"
+  },
+  "enoughMetadata": {
+    "message": "Le jeu de données contient-il suffisamment de métadonnées ?"
+  },
+  "selectEnoughMetadata": {
+    "message": "Sélectionnez une option pour indiquer si le jeu de données contient suffisamment de métadonnées"
+  },
+  "enoughMetadataYesTip": {
+    "message": "Le jeu de données contient suffisamment de métadonnées, notamment son type de données, les outils et méthodes utilisés pour recueillir et analyser les données, les considérations éthiques prises en compte lors de la collecte et de l’analyse des données, ainsi que des documents d’accompagnement tels qu’un glossaire, un fichier README ou des recommandations de logiciels."
+  },
+  "enoughMetadataYesWhy": {
+    "message": "De quelles métadonnées dispose-t-il ?"
+  },
+  "enoughMetadataPartlyTip": {
+    "message": "Le jeu de données contient certaines des informations mentionnées ci-dessus, mais davantage d’informations sont nécessaires pour comprendre pleinement comment les données ont été recueillies, analysées ou utilisées autrement."
+  },
+  "enoughMetadataPartlyWhy": {
+    "message": "De quelles métadonnées dispose-t-il et que manque-t-il ?"
+  },
+  "enoughMetadataNoTip": {
+    "message": "Le jeu de données ne contient pas suffisamment de métadonnées pour aider à comprendre comment les données ont été recueillies, analysées ou utilisées autrement."
+  },
+  "enoughMetadataNoWhy": {
+    "message": "Quelles métadonnées manquent ?"
+  },
+  "changeEnoughMetadata": {
+    "message": "Modifier <visuallyHidden>si le jeu de données a suffisamment de métadonnées</visuallyHidden>"
+  },
+  "trackChanges": {
+    "message": "Le jeu de données comprend-il un moyen de répertorier ou de suivre les modifications ou les versions ? Si oui, cela semble-t-il exact ?"
+  },
+  "selectTrackChanges": {
+    "message": "Sélectionnez une option pour indiquer si le jeu de données permet de répertorier ou de suivre les modifications ou les versions"
+  },
+  "trackChangesYesTip": {
+    "message": "Le jeu de données possède un historique clair des versions, qui semble exact et à jour."
+  },
+  "trackChangesYesWhy": {
+    "message": "Comment le jeu de données partage-t-il ses métadonnées ?"
+  },
+  "trackChangesPartlyTip": {
+    "message": "Le jeu de données permet de répertorier ou de suivre les modifications ou les versions, mais cette information ne semble ni exacte ni à jour."
+  },
+  "trackChangesPartlyWhy": {
+    "message": "Comment le jeu de données partage-t-il ses métadonnées ? Que manque-t-il ?"
+  },
+  "trackChangesNoWhy": {
+    "message": "Comment le jeu de données devrait-il présenter les métadonnées manquantes ?"
+  },
+  "changeTrackChanges": {
+    "message": "Modifier <visuallyHidden>si le jeu de données inclut un moyen de répertorier ou de suivre les modifications ou versions</visuallyHidden>"
+  },
+  "signsOfAlteration": {
+    "message": "Ce jeu de données présente-t-il des signes d’altération allant au-delà de ceux probablement dus à une erreur humaine — notamment la censure, la suppression ou l’expurgation — et qui ne s’expliquent pas autrement ?"
+  },
+  "selectSignsOfAlteration": {
+    "message": "Sélectionner si le jeu de données affiche des signes d'altération"
+  },
+  "signsOfAlterationYesTip": {
+    "message": "Le jeu de données présente des signes évidents d’altération qui ne sont pas expliqués par l’historique de ses versions ; une forme de censure, de suppression ou de caviardage est manifeste dans l’ensemble du jeu de données."
+  },
+  "signsOfAlterationYesWhy": {
+    "message": "Comment a-t-il été altéré ?"
+  },
+  "signsOfAlterationPartlyTip": {
+    "message": "Certaines parties de ce jeu de données présentent des signes d’altération qui ne sont pas expliqués par l’historique de ses versions ; une forme de censure, de suppression ou de caviardage est manifeste dans l’ensemble du jeu de données."
+  },
+  "signsOfAlterationPartlyWhy": {
+    "message": "Quelles parties semblent intactes ? Lesquelles semblent altérées ? Comment semblent-elles avoir été altérées ?"
+  },
+  "signsOfAlterationNoTip": {
+    "message": "Le jeu de données ne présente aucun signe évident d’altération."
+  },
+  "signsOfAlterationNoWhy": {
+    "message": "Qu'est-ce qui vous fait penser que ce jeu de données vous semble le plus intact ? Quels indices de fiabilité vous laissent penser qu'il n'a pas été altéré ?"
+  },
+  "changeSignsOfAlteration": {
+    "message": "Modifier <visuallyHidden>si le jeu de données présente des signes d'altération</visuallyHidden>"
+  },
+  "suitedForPurpose": {
+    "message": "Le jeu de données est-il adapté à l’objectif de recherche indiqué ?"
+  },
+  "selectSuitedForPurpose": {
+    "message": "Sélectionnez si le jeu de données est bien adapté"
+  },
+  "suitedForPurposeYesTip": {
+    "message": "La manière dont ces données ont été recueillies, analysées et utilisées convient bien à l’objectif de recherche annoncé."
+  },
+  "suitedForPurposeYesWhy": {
+    "message": "En quoi convient-il bien à cet objectif ?"
+  },
+  "suitedForPurposePartlyTip": {
+    "message": "La manière dont ces données ont été recueillies, analysées et utilisées répond en partie à l’objectif de recherche annoncé, mais d’autres questions, méthodes ou outils auraient été plus adaptés."
+  },
+  "suitedForPurposePartlyWhy": {
+    "message": "En quoi convient-il seulement en partie ? Quelles parties semblent bien adaptées ? Lesquelles ne le sont pas ?"
+  },
+  "suitedForPurposeNoTip": {
+    "message": "La manière dont ces données ont été recueillies, analysées et utilisées ne convient pas à l’objectif de recherche annoncé."
+  },
+  "suitedForPurposeNoWhy": {
+    "message": "En quoi ne convient-il pas à son objectif ?"
+  },
+  "changeSuitedForPurpose": {
+    "message": "Modifier <visuallyHidden>si le jeu de données est bien adapté</visuallyHidden>"
+  },
+  "supportsConclusion": {
+    "message": "Ce jeu de données vient-il étayer les conclusions indiquées par la personne qui mène la recherche ?"
+  },
+  "selectSupportsConclusion": {
+    "message": "Sélectionnez si le jeu de données étaye les conclusions"
+  },
+  "supportsConclusionYesTip": {
+    "message": "Ce jeu de données appuie clairement les conclusions du chercheur à son sujet — ou est susceptible d'appuyer des conclusions claires — sans nécessiter d'interprétation créative ni d'extrapolation excessive pour cela."
+  },
+  "supportsConclusionYesWhy": {
+    "message": "Comment le jeu de données étaye-t-il les conclusions ?"
+  },
+  "supportsConclusionPartlyTip": {
+    "message": "Ce jeu de données appuie certaines des conclusions du chercheur à ce sujet – ou est susceptible de soutenir certaines conclusions claires – mais ne soutient pas clairement certaines des conclusions du chercheur ou n’est pas susceptible de le faire en raison de questions mineures."
+  },
+  "supportsConclusionPartlyWhy": {
+    "message": "Comment le jeu de données étaye-t-il en partie les conclusions ?"
+  },
+  "supportsConclusionNoTip": {
+    "message": "Ce jeu de données ne soutient pas les conclusions du chercheur à son sujet — ou il est peu probable qu'il puisse soutenir des conclusions claires — sans analyse erronée ni extrapolation excessive."
+  },
+  "supportsConclusionNoWhy": {
+    "message": "De quelle manière le jeu de données n’étaye-t-il pas les conclusions ?"
+  },
+  "changeSupportsConclusion": {
+    "message": "Modifier <visuallyHidden>si le jeu de données étaye les conclusions</visuallyHidden>"
+  },
+  "granularEnough": {
+    "message": "Le jeu de données est-il suffisamment détaillé pour constituer une mesure de référence fiable ?"
+  },
+  "selectGranularEnough": {
+    "message": "Sélectionnez si le jeu de données est suffisamment granulaire"
+  },
+  "granularEnoughYesTip": {
+    "message": "Le jeu de données fournit des données à un niveau de détail ou de granularité suffisamment fin pour constituer une référence fiable en matière de mesure ou de vérité."
+  },
+  "granularEnoughYesWhy": {
+    "message": "En quoi est-il suffisamment détaillé ?"
+  },
+  "granularEnoughPartlyTip": {
+    "message": "Certaines données du jeu de données fournissent des informations à un niveau suffisamment détaillé ou granulaire pour sembler fiables comme référence de mesure ou de vérité, mais pas toutes."
+  },
+  "granularEnoughPartlyWhy": {
+    "message": "En quoi son niveau de détail n’est-il que partiellement suffisant ? Quelles parties doivent être davantage détaillées ?"
+  },
+  "granularEnoughNoTip": {
+    "message": "Le jeu de données ne fournit pas de données à un niveau suffisamment détaillé ou granulaire pour sembler fiable comme référence de mesure ou de vérité."
+  },
+  "granularEnoughNoWhy": {
+    "message": "En quoi n’est-il pas suffisamment détaillé ?"
+  },
+  "changeGranularEnough": {
+    "message": "Modifier <visuallyHidden>si le jeu de données est suffisamment granulaire</visuallyHidden>"
+  },
+  "relativelyErrorFree": {
+    "message": "Le jeu de données est-il relativement exempt d’erreurs ?"
+  },
+  "relativelyErrorFreeTip": {
+    "message": "Les erreurs peuvent notamment être dues à l’utilisation de méthodes inappropriées de collecte ou d’analyse des données, à l’utilisation d’indicateurs inappropriés avec les données, ou à d’autres manipulations des données qui entraînent des erreurs dans le jeu de données."
+  },
+  "selectRelativelyErrorFree": {
+    "message": "Sélectionner si le jeu de données est relativement exempt d'erreurs"
+  },
+  "relativelyErrorFreeYesTip": {
+    "message": "Le jeu de données contient très peu d’erreurs, voire aucune, et les erreurs éventuelles sont mineures."
+  },
+  "relativelyErrorFreeYesWhy": {
+    "message": "Y a-t-il des erreurs ?"
+  },
+  "relativelyErrorFreePartlyTip": {
+    "message": "Le jeu de données contient plusieurs erreurs mineures, voire une erreur majeure."
+  },
+  "relativelyErrorFreePartlyWhy": {
+    "message": "Quelles erreurs y a-t-il ?"
+  },
+  "relativelyErrorFreeNoTip": {
+    "message": "Le jeu de données contient de nombreuses erreurs mineures et majeures."
+  },
+  "relativelyErrorFreeNoWhy": {
+    "message": "Quelles erreurs majeures y a-t-il ?"
+  },
+  "changeRelativelyErrorFree": {
+    "message": "Modifier <visuallyHidden>si le jeu de données est relativement exempt d'erreurs</visuallyHidden>"
+  },
+  "howConsequential": {
+    "message": "Ce jeu de données est-il susceptible d’intéresser les personnes qui mènent des recherches dans son domaine d’étude, la plupart des personnes qui mènent des recherches ou le grand public ? Quelle importance est-il susceptible d’avoir pour ce ou ces publics ?"
+  },
+  "selectHowConsequential": {
+    "message": "Sélectionnez quelle est la probabilité de conséquence"
+  },
+  "veryConsequential": {
+    "message": "Très important"
+  },
+  "veryConsequentialTip": {
+    "message": "Le jeu de données est susceptible d’avoir un impact considérable sur un large public."
+  },
+  "veryConsequentialWhy": {
+    "message": "En quoi son impact est-il considérable ?"
+  },
+  "somewhatConsequential": {
+    "message": "Assez important"
+  },
+  "somewhatConsequentialTip": {
+    "message": "Plusieurs erreurs mineures, voire une erreur majeure, figurent dans le jeu de données."
+  },
+  "somewhatConsequentialWhy": {
+    "message": "En quoi son impact est-il relativement important ?"
+  },
+  "notConsequential": {
+    "message": "Sans importance"
+  },
+  "notConsequentialTip": {
+    "message": "Le jeu de données n’a probablement pas d’impact important sur le public auquel il est destiné."
+  },
+  "notConsequentialWhy": {
+    "message": "En quoi son impact n’est-il pas important ?"
+  },
+  "changeHowConsequential": {
+    "message": "Modifier <visuallyHidden>à quel point le jeu de données est susceptible de paraître significatif</visuallyHidden>"
+  },
+  "readyToBeShared": {
+    "message": "Ce jeu de données est-il prêt à être partagé ?"
+  },
+  "readyToBeSharedYesWhy": {
+    "message": "Pourquoi est-il prêt à être partagé ?"
+  },
+  "readyToBeSharedNoWhy": {
+    "message": "Pourquoi n’est-il pas prêt à être partagé ?"
+  },
+  "selectReadyToBeShared": {
+    "message": "Sélectionnez si le jeu de données est prêt à être partagé"
+  },
+  "changeReadyToBeShared": {
+    "message": "Modifier <visuallyHidden>si le jeu de données est prêt à être partagé</visuallyHidden>"
+  },
+  "anythingMissing": {
+    "message": "Qu’est-ce que la personne qui mène la recherche pourrait éventuellement inclure avec ce jeu de données pour en faciliter la découverte, la compréhension et la réutilisation de manière éthique et responsable ?"
+  },
+  "noAnswer": {
+    "message": "Aucune réponse"
+  },
+  "changeAnythingMissing": {
+    "message": "Modifier <visuallyHidden>si le jeu de données manque quelque chose</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "Publiez maintenant votre PREreview"
+  },
+  "publishPrereview": {
+    "message": "Publier la PREreview"
+  },
+  "publishingPrereview": {
+    "message": "Nous publions votre PREreview"
+  },
+  "publishPrereviewText": {
+    "message": "Vous pourrez voir votre PREreview sous peu."
+  },
+  "prereviewPublished": {
+    "message": "PREreview publiée"
+  },
+  "yourDoi": {
+    "message": "Votre DOI"
+  },
+  "whatHappensNext": {
+    "message": "Que se passe-t-il ensuite"
+  },
+  "invitedEmailsSent": {
+    "message": "Nous avons envoyé des courriels aux autres auteurs pour les inviter à figurer."
+  },
+  "inviteOthers": {
+    "message": "Si vous avez évalué le jeu de données avec d’autres personnes, veuillez nous contacter afin que nous puissions les inviter à figurer dans l’évaluation. Notre adresse e-mail est {emailAddress}."
+  },
+  "opensNewTabSuffix": {
+    "message": "(s’ouvre dans un nouvel onglet)"
+  },
+  "shareYourReview": {
+    "message": "Partagez votre évaluation"
+  },
+  "shareYourReviewText": {
+    "message": "Veuillez informer les auteurs que vous avez publié votre évaluation. Le jeu de données contient peut-être leurs coordonnées."
+  },
+  "letUsKnowHowItWent": {
+    "message": "Faites-nous part de votre expérience"
+  },
+  "scheduleInterview": {
+    "message": "<link>Planifiez un entretien</link> avec notre équipe produit pour discuter de votre expérience sur PREreview. Nous indemnisons volontiers les personnes interrogées pour les remercier de leur aide !"
+  },
+  "feedbackForm": {
+    "message": "Vous pouvez également nous faire part de vos commentaires sur PREreview.org en répondant à une <link>brève enquête anonyme</link>."
+  },
+  "seeYourReview": {
+    "message": "Voir votre évaluation"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "Avez-vous évalué ce jeu de données avec quelqu'un d'autre ?"
+  },
+  "didYouReviewWithAnyoneElseTip": {
+    "message": "Cela peut inclure les personnes qui ont participé à la discussion ou rédigé l’évaluation."
+  },
+  "selectDidYouReviewWithAnyoneElse": {
+    "message": "Sélectionnez « oui » si vous avez évalué le jeu de données avec quelqu'un d'autre"
+  },
+  "addAnAuthor": {
+    "message": "Ajouter un auteur"
+  },
+  "addAnotherAuthor": {
+    "message": "Ajouter un autre auteur"
+  },
+  "addAnAuthorName": {
+    "message": "Nom"
+  },
+  "addAnAuthorNameTip": {
+    "message": "Ils pourront choisir leur nom publié."
+  },
+  "addAnAuthorNameError": {
+    "message": "Entrez leur nom"
+  },
+  "addAnAuthorEmailAddress": {
+    "message": "Adresse e-mail"
+  },
+  "addAnAuthorEmailAddressTip": {
+    "message": "Nous utiliserons cette adresse uniquement pour les contacter au sujet de cette PREreview."
+  },
+  "addAnAuthorEmailAddressError": {
+    "message": "Entrez leur adresse e-mail"
+  },
+  "addAnAuthorEmailAddressInvalidError": {
+    "message": "Entrez une adresse e-mail au format correct, comme {exampleEmailAddress}"
+  },
+  "addedAuthorCount": {
+    "message": "{authorCount, plural, one {Vous avez ajouté # autre auteur} other {Vous avez ajouté # autres auteurs}}"
+  },
+  "authorNumber": {
+    "message": "Auteur {number, number}"
+  },
+  "removeAuthor": {
+    "message": "Supprimer <visuallyHidden>{name}</visuallyHidden>"
+  },
+  "addAnotherAuthorButton": {
+    "message": "Ajouter un autre auteur"
+  },
+  "wantToRemoveName": {
+    "message": "Êtes-vous sûr de vouloir supprimer {name}?"
+  },
+  "wantToRemoveNameError": {
+    "message": "Sélectionnez oui si vous voulez supprimer {name}"
+  },
+  "wantToRemoveNameYes": {
+    "message": "Oui, supprimer {name}"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "Quel nom souhaitez-vous utiliser ?"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "Sélectionnez le nom que vous souhaitez utiliser"
+  },
+  "youCanChooseOrcidOrPseudonym": {
+    "message": "Vous pouvez choisir entre votre nom sur ORCID ou votre pseudonyme PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "Qu’est-ce qu’un pseudonyme PREreview ?"
+  },
+  "prereviewPseudonymExplainer": {
+    "message": "Un <definition>pseudonyme PREreview</definition> est un nom alternatif que vous pouvez utiliser au lieu de votre nom réel. Il est unique et combine une couleur et un animal aléatoires. Votre pseudonyme est ‘{pseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "En utilisant votre pseudonyme, vous pouvez contribuer à l'évaluation ouverte des jeux de données sans craindre les représailles ou les jugements qui peuvent survenir lorsque vous utilisez votre vrai nom. Cependant, l'utilisation d'un pseudonyme conserve un élément de responsabilité."
+  },
+  "weWillLinkToYourOrcid": {
+    "message": "Nous allons lier votre PREreview à votre ORCID iD."
+  },
+  "weWillOnlyLinkToYourPseudonym": {
+    "message": "Nous allons uniquement lier votre PREreview avec ceux qui utilisent aussi votre pseudonyme."
+  }
+}

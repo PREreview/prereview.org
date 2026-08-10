@@ -1,0 +1,44 @@
+{
+  "title": {
+    "message": "Demandes d’évaluation récentes"
+  },
+  "titleWithDetails": {
+    "message": "Demandes d’évaluation récentes ({details})"
+  },
+  "pageNumber": {
+    "message": "page {page, number}"
+  },
+  "skipResults": {
+    "message": "Accéder directement aux résultats"
+  },
+  "filterTitle": {
+    "message": "Filtres"
+  },
+  "filterLanguageLabel": {
+    "message": "Langue"
+  },
+  "filterLanguageAny": {
+    "message": "Toutes"
+  },
+  "filterFieldLabel": {
+    "message": "Domaine"
+  },
+  "filterFieldAny": {
+    "message": "N'importe quel"
+  },
+  "filterButton": {
+    "message": "Filtrer les résultats"
+  },
+  "pagerNewer": {
+    "message": "Plus récentes"
+  },
+  "pagerOlder": {
+    "message": "Plus anciennes"
+  },
+  "noResults": {
+    "message": "Aucune demande d’évaluation n’a encore été publiée."
+  },
+  "appearHere": {
+    "message": "Lorsqu’elles seront publiées, elles apparaîtront ici."
+  }
+}

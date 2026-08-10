@@ -1,0 +1,14 @@
+{
+  "devName": {
+    "message": "Développement"
+  },
+  "devText": {
+    "message": "Développement local"
+  },
+  "sandboxName": {
+    "message": "Environnement de test"
+  },
+  "sandboxText": {
+    "message": "Cette version est un environnement de test."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "requestTitle": {
+    "message": "Demande d’évaluation pour {preprint}"
+  },
+  "requestText": {
+    "message": "Une évaluation a été demandée pour {preprint}"
+  },
+  "requestPublished": {
+    "message": "Demande publiée"
+  },
+  "requestServer": {
+    "message": "Serveur de preprints"
+  }
+}

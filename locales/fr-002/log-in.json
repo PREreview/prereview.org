@@ -1,0 +1,20 @@
+{
+  "havingProblems": {
+    "message": "Désolé, nous rencontrons des problèmes"
+  },
+  "cannotLogYouIn": {
+    "message": "Désolé, nous ne pouvons pas vous connecter"
+  },
+  "unableToLogYouIn": {
+    "message": "Nous ne pouvons pas vous connecter pour le moment."
+  },
+  "youDeniedAccess": {
+    "message": "Vous avez refusé à PREreview l'accès à votre ORCID iD."
+  },
+  "tryAgainLater": {
+    "message": "Veuillez réessayer plus tard."
+  },
+  "tryAgain": {
+    "message": "S'il vous plaît, essayez encore."
+  }
+}

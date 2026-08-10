@@ -1,0 +1,143 @@
+{
+  "prereviewsOf": {
+    "message": "PREreviews de {preprint}"
+  },
+  "preprintDetails": {
+    "message": "Détails de preprint"
+  },
+  "abstractHeading": {
+    "message": "Résumé"
+  },
+  "posted": {
+    "message": "Publié"
+  },
+  "server": {
+    "message": "Serveur de preprints"
+  },
+  "itemId": {
+    "message": "Identifiant de l’élément"
+  },
+  "readPreprint": {
+    "message": "Lire le preprint"
+  },
+  "prereviews": {
+    "message": "{number, plural, one {# PREreview} other {# PREreviews}}"
+  },
+  "writeAPrereview": {
+    "message": "Rédigez un PREreview"
+  },
+  "requestAPrereview": {
+    "message": "Demander une PREreview"
+  },
+  "prereviewByOneAuthor": {
+    "message": "PREreview par {author}"
+  },
+  "prereviewByOneAuthorInClub": {
+    "message": "PREreview par {author} du {club}"
+  },
+  "prereviewByMultipleAuthors": {
+    "message": "PREreview par {author} et al."
+  },
+  "prereviewByMultipleAuthorsInClub": {
+    "message": "PREreview {author} et al. du club {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# autre auteur} other {# autres auteurs}}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {authors}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {authors} du {club}"
+  },
+  "readPrereviewByOneAuthor": {
+    "message": "Lire <visuallyHidden>la PREreview de {author}</visuallyHidden>"
+  },
+  "readPrereviewByOneAuthorInClub": {
+    "message": "Lire <visuallyHidden>la PREreview de {author} au sein de {club}</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthors": {
+    "message": "Lire <visuallyHidden>la PREreview de {author} et al.</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthorsInClub": {
+    "message": "Lire <visuallyHidden>la PREreview de {author} et d’autres membres du club {club}</visuallyHidden>"
+  },
+  "rapidPrereviews": {
+    "message": "{number, plural, one {# PREreview rapide} other {# PREreviews rapides}}"
+  },
+  "whereCanRapidPrereview": {
+    "message": "Où puis-je remplir un Rapid PREreview ?"
+  },
+  "rapidReplacedWith": {
+    "message": "Nous avons récemment remplacé les PREreviews rapides par des <link>PREreviews structurées</link>."
+  },
+  "writeStructuredPrereview": {
+    "message": "Vous pouvez <link>écrire une PREreview structurée</link> maintenant."
+  },
+  "updatingRapidPrereviews": {
+    "message": "Nous mettrons bientôt à jour d’anciens PREreviews rapides comme ceux-ci."
+  },
+  "aggregatedRapidPreviews": {
+    "message": "PREreviews rapides agrégées"
+  },
+  "question": {
+    "message": "Question"
+  },
+  "yes": {
+    "message": "Oui"
+  },
+  "unsure": {
+    "message": "Incertain"
+  },
+  "na": {
+    "message": "N/A"
+  },
+  "no": {
+    "message": "Non"
+  },
+  "rapidAvailableCode": {
+    "message": "Le code utilisé dans le manuscrit est-il disponible ?"
+  },
+  "rapidAvailableData": {
+    "message": "Les données utilisées dans le manuscrit sont-elles disponibles ?"
+  },
+  "rapidCoherent": {
+    "message": "Les principales conclusions sont-elles étayées par les données et l’analyse ?"
+  },
+  "rapidEthics": {
+    "message": "Les auteurs ont-ils suffisamment discuté des préoccupations éthiques?"
+  },
+  "rapidFuture": {
+    "message": "Les résultats sont-ils susceptibles de mener à des recherches futures?"
+  },
+  "rapidLimitations": {
+    "message": "Le manuscrit aborde-t-il les limites?"
+  },
+  "rapidMethods": {
+    "message": "Les méthodes et les statistiques sont-elles adaptées à l’analyse ?"
+  },
+  "rapidNewData": {
+    "message": "Le manuscrit contient-il de nouvelles données?"
+  },
+  "rapidNovel": {
+    "message": "Les résultats sont-ils nouveaux ?"
+  },
+  "rapidPeerReview": {
+    "message": "Recommandez-vous ce manuscrit pour évaluation par les pairs ?"
+  },
+  "rapidRecommend": {
+    "message": "Recommanderiez-vous ce manuscrit aux autres?"
+  },
+  "rapidReproducibility": {
+    "message": "Les détails suffisants sont-ils fournis pour permettre la reproduction de l'étude?"
+  },
+  "havingProblems": {
+    "message": "Désolé, nous rencontrons des problèmes"
+  },
+  "unableToShow": {
+    "message": "Nous ne parvenons pas à afficher le preprint et ses PREreviews pour le moment."
+  },
+  "tryAgainLater": {
+    "message": "Veuillez réessayer plus tard."
+  }
+}

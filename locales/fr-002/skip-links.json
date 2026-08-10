@@ -1,0 +1,20 @@
+{
+  "main": {
+    "message": "Aller directement au contenu principal"
+  },
+  "form": {
+    "message": "Aller directement au formulaire"
+  },
+  "prereview": {
+    "message": "Aller directement à la PREreview"
+  },
+  "preprintDetails": {
+    "message": "Aller directement aux détails du preprint"
+  },
+  "datasetDetails": {
+    "message": "Aller directement aux détails du jeu de données"
+  },
+  "prereviews": {
+    "message": "Aller directement aux PREreviews"
+  }
+}

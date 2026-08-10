@@ -1,0 +1,29 @@
+{
+  "backLink": {
+    "message": "Précédent"
+  },
+  "errorPrefix": {
+    "message": "Erreur"
+  },
+  "optionalSuffix": {
+    "message": "Facultatif"
+  },
+  "errorSummaryTitle": {
+    "message": "Il y a un problème"
+  },
+  "startButton": {
+    "message": "Commencer maintenant"
+  },
+  "continueButton": {
+    "message": "Continuer"
+  },
+  "saveContinueButton": {
+    "message": "Enregistrer et continuer"
+  },
+  "reloadButton": {
+    "message": "Actualiser la page"
+  },
+  "radioSeparatorLabel": {
+    "message": "ou"
+  }
+}

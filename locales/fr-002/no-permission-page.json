@@ -1,0 +1,8 @@
+{
+  "noPermissionTitle": {
+    "message": "Vous n'avez pas la permission de voir cette page"
+  },
+  "shouldHaveAccess": {
+    "message": "Si vous pensez que vous devriez avoir accès, veuillez <contact>prendre contact</contact>."
+  }
+}

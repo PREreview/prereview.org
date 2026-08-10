@@ -1,0 +1,92 @@
+{
+  "menu": {
+    "message": "Menu"
+  },
+  "getInvolved": {
+    "message": "Participer"
+  },
+  "findOutMore": {
+    "message": "En savoir plus"
+  },
+  "chooseLanguage": {
+    "message": "Choisissez votre langue"
+  },
+  "myAccount": {
+    "message": "Mon compte"
+  },
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuAboutUs": {
+    "message": "À propos"
+  },
+  "menuHowToUse": {
+    "message": "Comment utiliser"
+  },
+  "menuDonate": {
+    "message": "Faire un don"
+  },
+  "menuMyDetails": {
+    "message": "Mes informations"
+  },
+  "menuNewNotification": {
+    "message": "Nouvelle notification"
+  },
+  "menuMyPrereviews": {
+    "message": "Mes PREreviews"
+  },
+  "menuMyReviewRequests": {
+    "message": "Mes demandes d’évaluation"
+  },
+  "menuLogOut": {
+    "message": "Se déconnecter"
+  },
+  "menuLogIn": {
+    "message": "Se connecter"
+  },
+  "menuLogInDemoUser": {
+    "message": "Se connecter en tant qu’utilisateur de démonstration"
+  },
+  "menuReviews": {
+    "message": "Évaluations"
+  },
+  "menuReviewsHint": {
+    "message": "Voir les preprints ayant fait l’objet d’un PREreview."
+  },
+  "menuRequests": {
+    "message": "Demandes"
+  },
+  "menuRequestsHint": {
+    "message": "Aider un auteur ou une autrice en évaluant son preprint."
+  },
+  "menuTrainings": {
+    "message": "Formations"
+  },
+  "menuTrainingsHint": {
+    "message": "En savoir plus sur l’évaluation éthique et constructive par les pairs."
+  },
+  "menuChampions": {
+    "message": "Programme des champions"
+  },
+  "menuChampionsHint": {
+    "message": "Découvrez notre programme annuel."
+  },
+  "menuLiveReviews": {
+    "message": "Évaluations en direct"
+  },
+  "menuResources": {
+    "message": "Ressources"
+  },
+  "menuStatistics": {
+    "message": "Statistiques"
+  },
+  "menuClubs": {
+    "message": "Clubs"
+  },
+  "menuClubsHint": {
+    "message": "Établir des liens avec des pairs partageant les mêmes idées."
+  },
+  "onlyEnglish": {
+    "message": "Cette page est uniquement disponible en anglais."
+  }
+}

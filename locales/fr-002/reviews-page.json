@@ -1,0 +1,56 @@
+{
+  "title": {
+    "message": "PREreviews récentes"
+  },
+  "titleWithDetails": {
+    "message": "PREreviews récentes ({details})"
+  },
+  "pageNumber": {
+    "message": "page {page, number}"
+  },
+  "skipResults": {
+    "message": "Aller directement aux résultats"
+  },
+  "filterTitle": {
+    "message": "Filtres"
+  },
+  "filterTitleAuthorLabel": {
+    "message": "Mot-clé, titre ou auteur"
+  },
+  "filterLanguageLabel": {
+    "message": "Langue"
+  },
+  "filterLanguageAny": {
+    "message": "Toutes"
+  },
+  "filterFieldLabel": {
+    "message": "Domaine"
+  },
+  "filterFieldAny": {
+    "message": "Tous"
+  },
+  "filterButton": {
+    "message": "Filtrer les résultats"
+  },
+  "pagerNewer": {
+    "message": "Plus récentes"
+  },
+  "pagerOlder": {
+    "message": "Plus anciennes"
+  },
+  "noResults": {
+    "message": "Aucune PREreview n’a encore été publiée."
+  },
+  "appearHere": {
+    "message": "Lorsqu’elles le seront, elles apparaîtront ici."
+  },
+  "havingProblems": {
+    "message": "Désolé, nous rencontrons des problèmes"
+  },
+  "unableToShow": {
+    "message": "Nous ne parvenons pas à afficher cette page de PREreviews récentes pour le moment."
+  },
+  "tryAgainLater": {
+    "message": "Veuillez réessayer plus tard."
+  }
+}

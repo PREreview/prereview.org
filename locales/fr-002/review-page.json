@@ -1,0 +1,74 @@
+{
+  "reviewTitle": {
+    "message": "PREreview de {preprint}"
+  },
+  "structuredReviewTitle": {
+    "message": "PREreview structurée de {preprint}"
+  },
+  "requestedPrereview": {
+    "message": "PREreview demandée"
+  },
+  "liveReview": {
+    "message": "Évaluation en direct"
+  },
+  "otherReviewsLink": {
+    "message": "Voir les autres évaluations"
+  },
+  "readPreprintLink": {
+    "message": "Lire le preprint"
+  },
+  "reviewAuthors": {
+    "message": "<hide>Rédigé</hide> par {authors}"
+  },
+  "clubReviewAuthors": {
+    "message": "<hide>Rédigé</hide> par {authors} du {club}"
+  },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# autre auteur} other {# autre auteurs}}"
+  },
+  "published": {
+    "message": "Publié"
+  },
+  "license": {
+    "message": "Licence"
+  },
+  "licenseCcZero10": {
+    "message": "CC0 1.0 Universel"
+  },
+  "licenseCcBy40": {
+    "message": "Attribution 4.0 International"
+  },
+  "addendumTitle": {
+    "message": "Addendum"
+  },
+  "commentsTitle": {
+    "message": "Commentaires"
+  },
+  "noComments": {
+    "message": "Aucun commentaire n’a encore été publié."
+  },
+  "commentItemTitle": {
+    "message": "{authors, plural, one {Commentaire de {author}} other {Commentaire de {author} et al.}}"
+  },
+  "commentItemAuthors": {
+    "message": "<hide>Rédigé</hide> par {authors}"
+  },
+  "writeCommentButton": {
+    "message": "Écrire un commentaire"
+  },
+  "prereviewRemoved": {
+    "message": "PREreview supprimé"
+  },
+  "weHaveRemoved": {
+    "message": "Nous avons supprimé cette PREreview."
+  },
+  "havingProblems": {
+    "message": "Désolé, nous rencontrons des problèmes"
+  },
+  "unableToShow": {
+    "message": "Nous ne parvenons pas à afficher la PREreview pour le moment."
+  },
+  "tryAgainLater": {
+    "message": "Veuillez réessayer plus tard."
+  }
+}

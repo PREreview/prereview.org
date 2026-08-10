@@ -1,0 +1,53 @@
+{
+  "anonymous": {
+    "message": "Anonyme"
+  },
+  "prereviewsTitle": {
+    "message": "PREreviews"
+  },
+  "noResults": {
+    "message": "{name} n’a encore publié aucune PREreview."
+  },
+  "noResultsAnonymous": {
+    "message": "Cette personne n’a pas encore publié de PREreview."
+  },
+  "appearHere": {
+    "message": "Quand ils le feront, ça apparaîtra ici."
+  },
+  "slackName": {
+    "message": "Nom de la communauté Slack"
+  },
+  "careerStage": {
+    "message": "Étape de carrière"
+  },
+  "careerStageEarly": {
+    "message": "Début de carrière"
+  },
+  "careerStageMid": {
+    "message": "À mi-carrière"
+  },
+  "careerStageLate": {
+    "message": "Fin de carrière"
+  },
+  "researchInterests": {
+    "message": "Centres d’intérêt de recherche"
+  },
+  "location": {
+    "message": "Lieu"
+  },
+  "languages": {
+    "message": "Langues"
+  },
+  "clubs": {
+    "message": "Clubs"
+  },
+  "openForRequests": {
+    "message": "{name} est ravi de recevoir des demandes de PREreview."
+  },
+  "openForRequestsAnonymous": {
+    "message": "Cette personne accepte volontiers les demandes de PREreview."
+  },
+  "contactSlack": {
+    "message": "Ils peuvent être contactés sur notre <link>communauté Slack</link>."
+  }
+}

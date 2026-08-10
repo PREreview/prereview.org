@@ -1,0 +1,83 @@
+{
+  "slogan": {
+    "message": "Des évaluations de preprints. Pour <swoosh>tous</swoosh> les chercheurs."
+  },
+  "heroText": {
+    "message": "Donnez et recevez des commentaires constructifs sur des preprints au sein d’une communauté internationale de pairs."
+  },
+  "reviewPreprintButton": {
+    "message": "Évaluer un preprint"
+  },
+  "requestReviewButton": {
+    "message": "Demander une évaluation"
+  },
+  "reviewDatasetLink": {
+    "message": "Évaluer un jeu de données"
+  },
+  "trainingTitle": {
+    "message": "Formation à l’évaluation par les pairs"
+  },
+  "trainingText": {
+    "message": "Ateliers interactifs destinés aux organisations et aux institutions qui souhaitent aider leurs membres à perfectionner leurs compétences en tant qu’évaluateurs."
+  },
+  "trainingLink": {
+    "message": "En savoir plus sur nos ateliers de formation"
+  },
+  "liveReviewsTitle": {
+    "message": "Évaluations en direct"
+  },
+  "liveReviewsText": {
+    "message": "Nous organisons des sessions collaboratives et interactives d’évaluation de preprints, comme alternative à l’évaluation traditionnelle par les pairs."
+  },
+  "liveReviewsLink": {
+    "message": "En savoir plus sur les Live Reviews"
+  },
+  "clubsTitle": {
+    "message": "Clubs PREreview"
+  },
+  "clubsText": {
+    "message": "Crée ou rejoins l’un de nos groupes d’évaluation de preprints, où les membres collaborent pour fournir des commentaires constructifs en temps utile."
+  },
+  "clubsLink": {
+    "message": "Découvrir nos nombreux clubs PREreview"
+  },
+  "missionTitle": {
+    "message": "Pour les chercheurs insuffisamment accompagnés, il existe une meilleure façon de faire"
+  },
+  "missionText": {
+    "message": "Nous soutenons et donnons les moyens d’agir à des communautés diverses et historiquement exclues de la recherche (en particulier les personnes en début de carrière), afin qu’elles fassent entendre leur voix, se forment et participent à l’évaluation par les pairs."
+  },
+  "missionLink": {
+    "message": "En savoir plus sur notre mission"
+  },
+  "requestsTitle": {
+    "message": "Demandes récentes d’évaluation"
+  },
+  "requestsLink": {
+    "message": "Voir toutes les demandes"
+  },
+  "statisticsTitle": {
+    "message": "Statistiques"
+  },
+  "statisticsReviews": {
+    "message": "{number, plural, one {<data>#</data> PREreview} other {<data>#</data> PREreviews}}"
+  },
+  "statisticsServers": {
+    "message": "{number, plural, one {<data>#</data> serveur de preprints} other {<data>#</data> serveurs de preprints}}"
+  },
+  "statisticsUsers": {
+    "message": "{number, plural, one {<data>#</data> évaluateur·rice PREreview} other {<data>#</data> évaluateur·rice·s PREreview}}"
+  },
+  "statisticsLink": {
+    "message": "Voir plus de statistiques"
+  },
+  "reviewsTitle": {
+    "message": "PREreviews récentes"
+  },
+  "reviewsLink": {
+    "message": "Voir tous les avis"
+  },
+  "fundersTitle": {
+    "message": "Bailleurs de fonds"
+  }
+}

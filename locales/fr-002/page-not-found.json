@@ -1,0 +1,14 @@
+{
+  "pageNotFoundTitle": {
+    "message": "Page introuvable"
+  },
+  "checkCorrect": {
+    "message": "Si vous avez saisi l'adresse web, vérifiez qu'elle est correcte."
+  },
+  "checkEntire": {
+    "message": "Si vous avez collé l'adresse web, vérifiez que vous avez copié toute l'adresse."
+  },
+  "contactUs": {
+    "message": "Si l'adresse web est correcte ou si vous avez cliqué sur un lien ou un bouton, veuillez <contact>prendre contact</contact>."
+  }
+}

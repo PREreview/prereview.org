@@ -1,0 +1,62 @@
+{
+  "title": {
+    "message": "PREreviews de {dataset}"
+  },
+  "datasetDetails": {
+    "message": "Détails du jeu de données"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {authors}"
+  },
+  "abstractHeading": {
+    "message": "Résumé"
+  },
+  "posted": {
+    "message": "Publié"
+  },
+  "repository": {
+    "message": "Dépôt"
+  },
+  "seeDataset": {
+    "message": "Voir le jeu de données"
+  },
+  "prereviews": {
+    "message": "{numberOfPrereviews, plural, one {# PREreview} other {# PREreviews}}"
+  },
+  "writeAPrereview": {
+    "message": "Rédiger un PREreview"
+  },
+  "prereviewTitle": {
+    "message": "PREreview par {author}"
+  },
+  "prereviewTitleInClub": {
+    "message": "PREreview par {author} du {club}"
+  },
+  "prereviewTitleMultipleAuthors": {
+    "message": "PREreview par {author} et al."
+  },
+  "prereviewTitleMultipleAuthorsInClub": {
+    "message": "PREreview par {author} et al. du club {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# autre auteur} other {# autres auteurs}}"
+  },
+  "prereviewAuthoredBy": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {author}"
+  },
+  "prereviewAuthoredByInClub": {
+    "message": "<visuallyHidden>Rédigé</visuallyHidden> par {author} du {club}"
+  },
+  "readPrereview": {
+    "message": "Lire <visuallyHidden>le PREreview de {author}</visuallyHidden>"
+  },
+  "readPrereviewInClub": {
+    "message": "Lire <visuallyHidden>la PREreview de {author} au sein de {club}</visuallyHidden>"
+  },
+  "readPrereviewMultipleAuthors": {
+    "message": "Lire <visuallyHidden>la PREreview de {author} et al.</visuallyHidden>"
+  },
+  "readPrereviewMultipleAuthorsInClub": {
+    "message": "Lire <visuallyHidden>la PREreview de {author} et d’autres membres du club {club}</visuallyHidden>"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "verifyEmailAddressTitle": {
+    "message": "Vérifiez votre adresse e-mail sur PREreview"
+  },
+  "hiName": {
+    "message": "Bonjour {name},"
+  },
+  "hi": {
+    "message": "Bonjour,"
+  },
+  "verifyEmailAddressWithButton": {
+    "message": "Veuillez vérifier s'il vous plaît votre adresse e-mail sur PREreview :"
+  },
+  "verifyEmailAddressGoingTo": {
+    "message": "Veuillez vérifier votre adresse e-mail sur PREreview en accédant au lien suivant : {link}"
+  },
+  "verifyEmailAddressButton": {
+    "message": "Vérifier votre adresse e-mail"
+  },
+  "beListedAsAuthor": {
+    "message": "Être mentionné comme auteur d’un PREreview"
+  },
+  "thanksContributingReview": {
+    "message": "Merci d’avoir contribué à une récente évaluation du preprint « {preprint} », publié sur {prereview} !"
+  },
+  "authorHasInvitedYou": {
+    "message": "{author} vous a invité à apparaître en tant qu'auteur sur le PREreview."
+  },
+  "beenInvited": {
+    "message": "Tu as été invité à apparaître en tant qu'auteur ou autrice sur la PREreview."
+  },
+  "beListedGoingTo": {
+    "message": "Vous pouvez être répertorié en accédant à:"
+  },
+  "beListedAsAuthorButton": {
+    "message": "Être répertorié en tant qu'auteur"
+  },
+  "chooseNotToBeListedIgnoring": {
+    "message": "Vous pouvez également choisir de ne pas être répertorié en ignorant ce courriel."
+  },
+  "chooseNotToBeListedGoingTo": {
+    "message": "Vous pouvez également choisir de ne pas être répertorié en ignorant cet e-mail ou en allant à:"
+  },
+  "chooseNotToBeListedLink": {
+    "message": "Vous pouvez également choisir de ne pas être répertorié par <link>en déclinant cette invitation</link> ou en ignorant cet e-mail."
+  },
+  "acknowledgeReviewRequestTitle": {
+    "message": "Évaluation demandée à la communauté PREreview"
+  },
+  "thanksReviewRequest": {
+    "message": "Merci d’avoir demandé une évaluation auprès de PREreview."
+  },
+  "reviewRequestSharedWithCommunity": {
+    "message": "Bien que nous ne puissions pas garantir un avis, nous avons partagé votre demande avec notre communauté PREreview sur notre canal {slackChannel} Slack."
+  },
+  "reviewRequestSlackCommunity": {
+    "message": "Vous pouvez rejoindre notre communauté Slack et ajouter plus de détails à votre demande d'évaluation en vous inscrivant à {slackLink}."
+  },
+  "haveAnyQuestions": {
+    "message": "Si vous avez des questions, veuillez nous le faire savoir à {emailAddress}."
+  },
+  "allTheBest": {
+    "message": "Cordialement,"
+  },
+  "footerIntro": {
+    "message": "PREreview est une plateforme, un centre de ressources et un facilitateur de rencontres."
+  },
+  "footerCommunity": {
+    "message": "Nous permettons à une communauté mondiale de pairs de formuler des retours sur les preprints de manière ouverte, rapide et constructive."
+  },
+  "footerJoinHtml": {
+    "message": "Rejoignez-nous sur <prereviewLink>prereview.org</prereviewLink> et <slackLink>abonnez-vous à notre vibrante communauté Slack</slackLink>."
+  },
+  "footerJoinText": {
+    "message": "Rejoignez-nous sur {prereviewLink} et inscrivez-vous à notre vibrante communauté Slack sur {slackLink}."
+  }
+}

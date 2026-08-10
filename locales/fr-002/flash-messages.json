@@ -1,0 +1,50 @@
+{
+  "titleSuccess": {
+    "message": "Succès"
+  },
+  "titleImportant": {
+    "message": "Important"
+  },
+  "titleAccessDenied": {
+    "message": "Accès refusé"
+  },
+  "messageLogInBlocked": {
+    "message": "Vous n'êtes pas autorisé à vous connecter."
+  },
+  "messageLoggedOut": {
+    "message": "Vous avez été déconnecté."
+  },
+  "messageLoggedIn": {
+    "message": "Vous avez été connecté."
+  },
+  "messageLoggedInDemoUser": {
+    "message": "Vous avez été connecté en tant qu’utilisateur de démonstration."
+  },
+  "messageVerifyEmail": {
+    "message": "Nous vous envoyons un e-mail. Veuillez l'ouvrir et suivre le lien pour vérifier votre adresse."
+  },
+  "messageVerifyEmailResend": {
+    "message": "Nous vous avons envoyé un nouvel e-mail."
+  },
+  "messageEmailVerified": {
+    "message": "Votre adresse e-mail a été vérifiée."
+  },
+  "messageOrcidConnected": {
+    "message": "Votre dossier ORCID a été connecté."
+  },
+  "messageOrcidDisconnected": {
+    "message": "Votre dossier ORCID a été déconnecté."
+  },
+  "messageSlackConnected": {
+    "message": "Votre compte communautaire Slack a été connecté."
+  },
+  "messageSlackDisconnected": {
+    "message": "Votre compte communautaire Slack a été déconnecté."
+  },
+  "messageAvatarChanged": {
+    "message": "Votre avatar a été changé."
+  },
+  "messageAvatarRemoved": {
+    "message": "Votre avatar a été supprimé."
+  }
+}

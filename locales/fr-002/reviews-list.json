@@ -1,0 +1,20 @@
+{
+  "reviewTitle": {
+    "message": "PREreview de {preprint}"
+  },
+  "reviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} a évalué {preprint}} other {{reviewers} ont évalué {preprint}}}"
+  },
+  "clubReviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} de {club} a évalué {preprint}} other {{reviewers} de {club} ont évalué {preprint}}}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# autre auteur} other {# autres auteurs}}"
+  },
+  "reviewPublished": {
+    "message": "Évaluation publiée"
+  },
+  "reviewServer": {
+    "message": "Serveur de preprints"
+  }
+}

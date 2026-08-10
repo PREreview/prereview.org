@@ -1,0 +1,74 @@
+{
+  "chooseLanguage": {
+    "message": "Choisissez votre langue:"
+  },
+  "newsletterText": {
+    "message": "Découvrez les événements à venir et les nouveautés."
+  },
+  "newsletterLink": {
+    "message": "Abonnez-vous à notre infolettre"
+  },
+  "slackText": {
+    "message": "Venez rejoindre la conversation !"
+  },
+  "slackLink": {
+    "message": "Rejoignez notre communauté Slack"
+  },
+  "feedbackLink": {
+    "message": "Partagez vos commentaires avec la PREreview!"
+  },
+  "menuHeading": {
+    "message": "Liens d’assistance"
+  },
+  "menuDonate": {
+    "message": "Faire un don"
+  },
+  "menuPeople": {
+    "message": "Personnes"
+  },
+  "menuFunding": {
+    "message": "Comment nous finançons nos activités"
+  },
+  "menuCodeOfConduct": {
+    "message": "Code de conduite"
+  },
+  "menuEdiaStatement": {
+    "message": "Déclaration sur l’équité, la diversité, l’inclusion et l’accessibilité"
+  },
+  "menuPrivacyPolicy": {
+    "message": "Politique de confidentialité"
+  },
+  "menuBlog": {
+    "message": "Blog"
+  },
+  "menuPartners": {
+    "message": "Partenaires"
+  },
+  "contactHeading": {
+    "message": "Contactez-nous"
+  },
+  "contactEmail": {
+    "message": "Écrivez-nous à l’adresse {address}"
+  },
+  "contactBluesky": {
+    "message": "{handle} sur Bluesky"
+  },
+  "contactMastodon": {
+    "message": "{handle} sur Mastodon"
+  },
+  "contactYouTube": {
+    "message": "{handle} sur YouTube"
+  },
+  "contactLinkedIn": {
+    "message": "{handle} sur LinkedIn"
+  },
+  "contactGitHub": {
+    "message": "{handle} sur GitHub"
+  },
+  "zenodo": {
+    "message": "Les PREreviews sont disponibles dans notre <community>communauté Zenodo</community> et via l’<api>API Zenodo</api>."
+  },
+  "copyright": {
+    "message": "Tout le contenu est disponible sous une <link>licence Creative Commons Attribution 4.0 International</link>, sauf indication contraire."
+  }
+}

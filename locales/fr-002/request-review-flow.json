@@ -1,0 +1,137 @@
+{
+  "checkYourRequest": {
+    "message": "Vérifiez votre demande"
+  },
+  "yourDetails": {
+    "message": "Vos coordonnées"
+  },
+  "publishedName": {
+    "message": "Nom publié"
+  },
+  "changeName": {
+    "message": "Changer <visuallyHidden>de nom</visuallyHidden>"
+  },
+  "nowPublishYourRequest": {
+    "message": "Publiez maintenant votre demande"
+  },
+  "weWillShareYourRequest": {
+    "message": "Nous partagerons votre demande avec la communauté PREreview."
+  },
+  "requestPrereview": {
+    "message": "Demander une PREreview"
+  },
+  "requestAPrereview": {
+    "message": "Demander une PREreview"
+  },
+  "sorryWeAreHavingProblems": {
+    "message": "Désolé, nous rencontrons des problèmes"
+  },
+  "unableToPublishYourWorkWasSaved": {
+    "message": "Nous n’avons pas pu publier votre demande de PREreview. Votre travail a été enregistré."
+  },
+  "pleaseTryAgainLater": {
+    "message": "Veuillez réessayer plus tard en revenant sur cette page."
+  },
+  "ifProblemPersistsContactUs": {
+    "message": "Si le problème persiste, s'il vous plaît <mailtoHelp>contactez-nous</mailtoHelp>."
+  },
+  "contactDetails": {
+    "message": "Coordonnées"
+  },
+  "confirmEmailAddressFirst": {
+    "message": "Nous sommes prêts à publier votre demande, mais nous devons d'abord confirmer votre adresse e-mail."
+  },
+  "onlyUseToContactYou": {
+    "message": "Nous l'utiliserons uniquement pour vous contacter à propos de votre compte et de vos publications."
+  },
+  "whatIsYourEmailAddress": {
+    "message": "Quelle est votre adresse e-mail?"
+  },
+  "whatIsYourEmailAddressErrorMissing": {
+    "message": "Entrez votre adresse e-mail"
+  },
+  "whatIsYourEmailAddressErrorInvalid": {
+    "message": "Entrez une adresse e-mail au format correct, comme {exampleEmailAddress}"
+  },
+  "verifyYourEmailAddress": {
+    "message": "Vérifier votre adresse e-mail"
+  },
+  "followLinkInEmail": {
+    "message": "Veuillez ouvrir l'e-mail que nous avons envoyé à {emailAddress} et suivre le lien. Vous pourrez ensuite publier votre demande."
+  },
+  "closePageOnceVerified": {
+    "message": "Une fois votre adresse vérifiée, vous pouvez fermer cette page."
+  },
+  "beNotifiedWhenReviewPublished": {
+    "message": "Souhaitez-vous être notifié lorsqu'un PREreview demandé est publié ?"
+  },
+  "canContactWhenReviewPublished": {
+    "message": "Nous pouvons vous envoyer un e-mail chaque fois qu'un PREreview est publié pour ce preprint."
+  },
+  "canChangeContactWhenReviewPublished": {
+    "message": "Vous pouvez modifier vos préférences à tout moment."
+  },
+  "beNotifiedWhenReviewPublishedMissing": {
+    "message": "Sélectionnez oui si vous souhaitez être notifié"
+  },
+  "beNotifiedWhenReviewPublishedYes": {
+    "message": "Oui"
+  },
+  "beNotifiedWhenReviewPublishedNo": {
+    "message": "Non"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "Quel nom souhaitez-vous utiliser ?"
+  },
+  "backToPreprint": {
+    "message": "Retour au preprint"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "Sélectionnez le nom que vous souhaitez utiliser"
+  },
+  "chooseBetweenOrcidNameAndPseudonym": {
+    "message": "Vous pouvez choisir entre votre nom sur ORCID ou votre pseudonyme PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "Qu’est-ce qu’un pseudonyme PREreview ?"
+  },
+  "prereviewPseudonymExplainer": {
+    "message": "Un <definition>pseudonyme PREreview</definition> est un nom alternatif que vous pouvez utiliser au lieu de votre nom réel. Il est unique et combine une couleur et un animal aléatoires. Votre pseudonyme est ‘{pseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "En utilisant votre pseudonyme, vous pouvez contribuer à l'évaluation ouverte des preprints sans craindre les représailles ou les jugements qui peuvent survenir lorsque vous utilisez votre vrai nom. Cependant, l’utilisation d’un pseudonyme conserve un élément de responsabilité."
+  },
+  "weWillLinkRequestToYourOrcid": {
+    "message": "Nous lierons votre demande à votre identifiant ORCID iD."
+  },
+  "weWillLinkRequestToOthersThatUseYourPseudonym": {
+    "message": "Nous allons uniquement lier votre demande avec ceux qui utilisent aussi votre pseudonyme."
+  },
+  "requestPublished": {
+    "message": "Demande publiée"
+  },
+  "whatHappensNext": {
+    "message": "Que se passe-t-il ensuite"
+  },
+  "whereYouCanSeeYourRequest": {
+    "message": "Vous pourrez voir votre demande sur notre <listOfRequestsLink>liste des demandes</listOfRequestsLink> et sur notre <communitySlackLink>Slack de la communauté</communitySlackLink> sous peu."
+  },
+  "youCanRequestAPrereview": {
+    "message": "Vous pouvez demander un PREreview de {preprintTitle}. Un PREreview est une évaluation d'un preprint et peut varier de quelques phrases à un rapport détaillé, semblable à un rapport d'évaluation par les pairs organisé par une revue."
+  },
+  "beforeYouStart": {
+    "message": "Avant de commencer"
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "Nous vous demanderons de vous connecter avec votre identifiant ORCID iD. Si vous n'en possédez pas, vous pouvez en créer un."
+  },
+  "whatIsAnOrcid": {
+    "message": "Qu’est-ce qu’un ORCID iD ?"
+  },
+  "orcidExplainer": {
+    "message": "Un <orcidLinkAsDefinition>ORCID iD</orcidLinkAsDefinition> est un identifiant unique qui vous distingue de toute personne ayant le même nom ou nom similaire."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "Comme vous avez déjà commencé, nous allons vous rediriger vers l'étape suivante afin que vous puissiez continuer."
+  }
+}

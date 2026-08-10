@@ -1,0 +1,242 @@
+{
+  "writeCommentTitle": {
+    "message": "Écrire un commentaire"
+  },
+  "backToPrereview": {
+    "message": "Retour à la PREreview"
+  },
+  "youCanWrite": {
+    "message": "Vous pouvez rédiger un commentaire sur ce PREreview de {preprint}."
+  },
+  "beforeStartHeading": {
+    "message": "Avant de commencer"
+  },
+  "orcidLogIn": {
+    "message": "Nous vous demanderons de vous connecter avec votre identifiant ORCID iD. Si vous n'en avez pas, vous pouvez en créer un."
+  },
+  "whatIsOrcidHeading": {
+    "message": "Qu’est-ce qu’un ORCID iD ?"
+  },
+  "whatIsOrcid": {
+    "message": "Un <link>ORCID iD</link> est un identifiant unique qui vous distingue de toute personne ayant le même nom ou nom similaire."
+  },
+  "reloadPageButton": {
+    "message": "Actualiser la page"
+  },
+  "carryOnMessage": {
+    "message": "Comme vous avez déjà commencé un commentaire sur cette PREreview de {preprint}, nous allons vous rediriger vers l'étape suivante afin que vous puissiez continuer."
+  },
+  "enterYourCommentTitle": {
+    "message": "Rédigez votre commentaire"
+  },
+  "errorEnterComment": {
+    "message": "Saisissez votre commentaire"
+  },
+  "whatNameTitle": {
+    "message": "Quel nom souhaitez-vous utiliser ?"
+  },
+  "errorSelectName": {
+    "message": "Sélectionnez le nom que vous souhaitez utiliser"
+  },
+  "whichNameTip": {
+    "message": "Vous pouvez choisir entre le nom figurant sur votre dossier ORCID ou votre pseudonyme PREreview."
+  },
+  "whatIsPseudonym": {
+    "message": "Qu’est-ce qu’un pseudonyme PREreview ?"
+  },
+  "whatIsPseudonymDefinition": {
+    "message": "Un <term>pseudonyme PREreview</term> est un nom alternatif que vous pouvez utiliser au lieu de votre nom réel. Il est unique et combine une couleur et un animal aléatoires. Votre pseudonyme est ‘{pseudonym}’."
+  },
+  "whatIsPseudonymAccountability": {
+    "message": "En utilisant votre pseudonyme, vous pouvez contribuer à l'évaluation ouverte des preprints sans craindre les représailles ou les jugements qui peuvent survenir lorsque vous utilisez votre vrai nom. Cependant, l’utilisation d’un pseudonyme conserve un élément de responsabilité."
+  },
+  "linkToOrcidId": {
+    "message": "Nous allons lier votre commentaire à votre identifiant ORCID iD."
+  },
+  "linkToPseudonym": {
+    "message": "Nous allons uniquement lier votre commentaire avec ceux qui utilisent aussi votre pseudonyme."
+  },
+  "competingInterestsTitle": {
+    "message": "Avez-vous des conflits d'intérêts ?"
+  },
+  "errorCompetingInterests": {
+    "message": "Sélectionnez oui si vous avez des conflits d'intérêts"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "Saisissez les détails de vos conflits d’intérêts"
+  },
+  "competingInterestsTip": {
+    "message": "Un conflit d’intérêts est tout ce qui pourrait compromettre l’objectivité du commentaire sur PREreview."
+  },
+  "examplesCompetingInterests": {
+    "message": "Exemples"
+  },
+  "competingInterestsRelationship": {
+    "message": "Vous avez une relation personnelle avec l’auteur de ce preprint."
+  },
+  "competingInterestsCompetitor": {
+    "message": "Vous êtes un rival ou un compétiteur de l'auteur de ce preprint."
+  },
+  "competingInterestsWorkedWith": {
+    "message": "Vous avez récemment travaillé avec l'auteur de ce preprint."
+  },
+  "competingInterestsWorkPlace": {
+    "message": "Vous travaillez au même endroit que l'auteur de ce preprint."
+  },
+  "competingInterestsCollaborate": {
+    "message": "Vous collaborez avec l'auteur de ce preprint."
+  },
+  "competingInterestsPublishedWith": {
+    "message": "Vous avez publié avec l'auteur de ce preprint au cours des cinq dernières années."
+  },
+  "competingInterestsGrantWith": {
+    "message": "Vous détenez une subvention avec l'auteur de ce preprint ou avez d'autres liens financiers."
+  },
+  "competingInterestsCommenter": {
+    "message": "L'un de ces mêmes critères s'applique entre vous et un autre évaluateur ayant déjà publié une évaluation sur ce preprint."
+  },
+  "competingInterestsNo": {
+    "message": "Non"
+  },
+  "competingInterestsYes": {
+    "message": "Oui"
+  },
+  "competingInterestsDetailsTitle": {
+    "message": "Lesquels ?"
+  },
+  "codeOfConductTitle": {
+    "message": "Code de conduite"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "Confirmez que vous suivez le Code de conduite"
+  },
+  "codeOfConductTip": {
+    "message": "En tant que membre de notre communauté, nous attendons de vous que vous respectiez le <link>Code de conduite de PREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Exemples de comportements attendus"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "Employer un langage accueillant et inclusif."
+  },
+  "expectedBehaviorConstructive": {
+    "message": "Fournir des commentaires constructifs, c’est-à-dire utiles, à la personne qui les reçoit."
+  },
+  "expectedBehaviorRespectful": {
+    "message": "Respecter la diversité des points de vue et des expériences."
+  },
+  "expectedBehaviorGraceful": {
+    "message": "Accepter avec bienveillance les critiques constructives."
+  },
+  "expectedBehaviorCommunity": {
+    "message": "Se concentrer sur ce qui est le mieux pour la communauté."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "Faire preuve d’empathie envers les autres membres de la communauté."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Exemples de comportements inacceptables"
+  },
+  "unacceptableBehaviorAttacks": {
+    "message": "Trollage, propos insultants ou désobligeants, et attaques personnelles ou politiques."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "Fournir des retours non constructifs ou perturbateurs sur PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "Harcèlement public ou privé."
+  },
+  "unacceptableBehaviorConfidential": {
+    "message": "Publier les informations confidentielles d’autres personnes, telles qu’une adresse physique ou électronique, sans autorisation explicite."
+  },
+  "unacceptableBehaviorSexual": {
+    "message": "Utilisation d’un langage ou d’images à caractère sexuel, ainsi que d’attentions ou d’avances sexuelles non désirées."
+  },
+  "unacceptableBehaviorOther": {
+    "message": "Tout autre comportement pouvant raisonnablement être considéré comme inapproprié dans un cadre professionnel."
+  },
+  "followingCodeOfConduct": {
+    "message": "Je respecte le code de conduite"
+  },
+  "contactDetailsTitle": {
+    "message": "Coordonnées"
+  },
+  "errorEnterEmailAddress": {
+    "message": "Entrez votre adresse e-mail"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "Entrez une adresse e-mail au format correct, comme {exampleEmailAddress}"
+  },
+  "needToConfirmEmailAddress": {
+    "message": "Nous sommes prêts à publier votre évaluation, mais nous devons d'abord confirmer votre adresse e-mail."
+  },
+  "emailAddressUse": {
+    "message": "Nous l'utiliserons uniquement pour vous contacter à propos de votre compte et de vos publications."
+  },
+  "whatIsYourEmailAddressTitle": {
+    "message": "Quelle est votre adresse e-mail?"
+  },
+  "verifyEmailAddressTitle": {
+    "message": "Vérifier votre adresse e-mail"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "Veuillez ouvrir l'e-mail que nous avons envoyé à {emailAddress} et suivre le lien. Vous pourrez ensuite publier votre évaluation."
+  },
+  "onceEmailAddressVerified": {
+    "message": "Une fois votre adresse vérifiée, vous pouvez fermer cette page."
+  },
+  "checkTitle": {
+    "message": "Saisissez votre commentaire"
+  },
+  "checkYourDetailsHeading": {
+    "message": "Vos coordonnées"
+  },
+  "publishedNameHeading": {
+    "message": "Nom publié"
+  },
+  "changeName": {
+    "message": "Modifier <visuallyHidden>nom</visuallyHidden>"
+  },
+  "competingInterestsHeading": {
+    "message": "Conflits d’intérêts"
+  },
+  "changeCompetingInterests": {
+    "message": "Modifier <visuallyHidden>les conflits d’intérêts</visuallyHidden>"
+  },
+  "noCompetingInterests": {
+    "message": "L’auteur de ce commentaire déclare n’avoir aucun conflit d’intérêts."
+  },
+  "checkYourCommentHeading": {
+    "message": "Votre évaluation"
+  },
+  "changeComment": {
+    "message": "Modifier <visuallyHidden>le commentaire</visuallyHidden>"
+  },
+  "nowPublishHeading": {
+    "message": "Publiez maintenant votre évaluation"
+  },
+  "nowPublishMessage": {
+    "message": "Nous attribuerons à votre évaluation un DOI (identifiant permanent) et le rendrons publiquement accessible sous une <license>licence CC BY 4.</license>."
+  },
+  "publishButton": {
+    "message": "Publier le commentaire"
+  },
+  "publishingTitle": {
+    "message": "Nous publions votre évaluation"
+  },
+  "publishingSeeShortlyMessage": {
+    "message": "Vous pourrez voir votre évaluation sous peu."
+  },
+  "publishedTitle": {
+    "message": "Commentaire publié"
+  },
+  "publishedYourDoi": {
+    "message": "Votre DOI {doi}"
+  },
+  "publishedHappensNextHeading": {
+    "message": "Que se passe-t-il ensuite"
+  },
+  "publishedSeeShortlyMessage": {
+    "message": "Vous pourrez voir votre évaluation sous peu."
+  }
+}

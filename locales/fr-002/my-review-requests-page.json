@@ -1,0 +1,17 @@
+{
+  "myReviewRequests": {
+    "message": "Mes demandes d’évaluation"
+  },
+  "onlyYouCanSee": {
+    "message": "Seule vous pouvez voir cette page."
+  },
+  "notPublished": {
+    "message": "Vous n'avez pas encore demandé d'évaluation."
+  },
+  "appearHere": {
+    "message": "Lorsque vous le ferez, elle apparaîtra ici."
+  },
+  "requestAReview": {
+    "message": "Demander une évaluation"
+  }
+}

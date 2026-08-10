@@ -1,0 +1,20 @@
+{
+  "clubLeads": {
+    "message": "Responsables des clubs"
+  },
+  "contactClub": {
+    "message": "Contactez le Club"
+  },
+  "joinClub": {
+    "message": "Rejoindre le Club"
+  },
+  "prereviews": {
+    "message": "PREreviews"
+  },
+  "noResults": {
+    "message": "{name} n'a pas encore publié de PREreview."
+  },
+  "appearHere": {
+    "message": "Quand ils le feront, ça apparaîtra ici."
+  }
+}
