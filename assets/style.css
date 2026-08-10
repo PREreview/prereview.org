@@ -2847,8 +2847,12 @@ spotlight-banner {
     color: var(--color-white);
   }
 
-  & > div > :first-child {
-    margin-block-start: 0;
+  & > div {
+    max-inline-size: 64ch;
+
+    & > :first-child {
+      margin-block-start: 0;
+    }
   }
 
   & :--button {
