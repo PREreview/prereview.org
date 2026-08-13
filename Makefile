@@ -50,6 +50,9 @@ start-services: .dev/server.crt .dev/server.key
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
+fix-format: node_modules
+	npx prettier --write --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
+
 lint-ts: node_modules src/manifest.json
 	npx eslint --cache --cache-location ".cache/eslint/" --max-warnings 0
 
