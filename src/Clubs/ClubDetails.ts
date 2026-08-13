@@ -10,6 +10,28 @@ import { ClubsData, type ClubDetails } from './Clubs.ts'
 
 export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   {
+    id: Uuid('0148fece-b97e-4cfd-87e9-9c2eb41f7332'),
+    name: {
+      language: 'en',
+      text: Name('African Women in STEM Peer Review Hub'),
+    },
+    slug: Slug('african-women-stem'),
+    description: {
+      language: 'en',
+      text: html`
+<p>
+  The African Women in STEM Peer Review Hub is a community-driven initiative dedicated to supporting, connecting, and empowering African women in science, technology, engineering, and mathematics. It aims to promote equitable participation, professional development, knowledge exchange, and greater visibility of African women in the global research community.
+</p>
+<p>
+  The African Women in STEM Peer Review Hub is a collaborative community that empowers African women researchers to develop peer-review expertise, critically engage with emerging research, and contribute meaningfully to the scholarly publishing ecosystem. Through collaborative peer review, mentorship, knowledge exchange, and capacity building, the Club aims to foster a culture of constructive and inclusive peer review while strengthening the visibility, confidence, and leadership of African women in research.
+</p>
+`
+    },
+    added: Temporal.PlainDate.from('2026-08-13'),
+    leads: [OrcidId('0009-0001-7220-9036'), OrcidId('0009-0003-4117-1631'), OrcidId('0000-0002-5378-7949')],
+    joinLink: new URL('https://docs.google.com/forms/d/e/1FAIpQLSf3C65-nJ3tNghPA5Sf0BY7Qc99H8eYNT1lUYJTn4zoY5pFTw/viewform?usp=header')
+  },
+  {
     id: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
     name: {
       language: 'en',
