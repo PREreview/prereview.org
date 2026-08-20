@@ -757,6 +757,32 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     leads: [OrcidId('0000-0003-2582-4420'), OrcidId('0009-0008-7768-0127')],
   },
   {
+    id: Uuid('1c0f77be-bcf0-4f4c-931f-e899c4f959c4'),
+    name: {
+      language: 'en',
+      text: Name('MedVantage Preprint Review Club'),
+    },
+    slug: Slug('medvantage'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          MedVantage Club is a student-run medical research and pre-health organization at Quarry Lane School that
+          connects high schoolers with hands-on research, clinical exposure, and mentorship in the biomedical sciences.
+          The club runs workshops, speaker events, and now peer-review training to help members build real scientific
+          and clinical literacy before college.
+        </p>
+        <p>
+          The MedVantage Preprint Review Club trains high-school and early-career student researchers to critically
+          evaluate biomedical preprints through structured, collaborative peer review, building both review skills and
+          scientific judgment.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-08-20'),
+    leads: [OrcidId('0009-0006-9048-5874')],
+  },
+  {
     id: Uuid('0cb0b787-fd2c-4325-83fe-0ed28361fcc6'),
     name: {
       language: 'en',
