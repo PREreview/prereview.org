@@ -101,7 +101,8 @@ const ensureIsAPreprint = (
     ['journalarticle', 'studyregistration'].includes(types.resourceTypeGeneral?.toLowerCase() as never)) ||
   (id._tag === 'AfricarxivUbuntunetPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
   (id._tag === 'ArxivPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
-  (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other')
+  (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other') ||
+  (id._tag === 'RadialPreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other')
     ? Either.void
     : Either.left(new Preprints.NotAPreprint({ cause: types }))
 
@@ -216,5 +217,6 @@ const detectLanguageForServer = ({
     LifecycleJournalPreprintId: () => Effect.succeed('en' as const),
     OsfPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
     PsychArchivesPreprintId: () => LanguageDetection.detectLanguageFrom(['de', 'en'], text, recordLanguage),
+    RadialPreprintId: () => Effect.succeed('en' as const),
     ZenodoPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
   })

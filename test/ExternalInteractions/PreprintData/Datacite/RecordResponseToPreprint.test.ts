@@ -18,6 +18,7 @@ import {
   OsfPreprintId,
   Preprint,
   PsychArchivesPreprintId,
+  RadialPreprintId,
   ZenodoPreprintId,
 } from '../../../../src/Preprints/index.ts'
 import { Name } from '../../../../src/types/Name.ts'
@@ -432,6 +433,25 @@ it.effect.each([
         text: rawHtml('Raman spectroscopy enables rapid and inexpensive exploration of biology'),
       },
       url: new URL('https://research.arcadiascience.com/pub/result-easy-raman-spectroscopy'),
+    }),
+  },
+  {
+    response: 'radial',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Proteins are dynamic ensembles of interconverting conformations. This ensemble, rather than any single structure, governs functions such as catalysis, mutational effects, and molecular recognition. Predicting protein conformational ensembles is a central goal of structural biology, but progress is constrained by a shortage of training data. Current ensemble predictors rely on molecular dynamics simulations, which are limited in number and constrained by force-field accuracy and accessible timescales. Experimental structural data is an untapped source of alternative data for training ensemble predictors of structure. X-ray crystallography and cryo-EM measure many copies of a protein and average over space and time, so the data encodes an ensemble of states. Conventional refinement collapses this signal into a single set of coordinates. Most Protein Data Bank (PDB) depositions, therefore, report a single averaged structure, leaving the underlying heterogeneity unmodeled and hidden in the experimental data. Here, we applied qFit to recover this latent heterogeneous signal at scale. Starting from structures resolved to better than 2 Å with deposited structure factors, we re-refined them and ran qFit multiconformer modeling. This produced over 60,000 completed multiconformer models, the largest dataset of experimentally derived ensemble protein structural models to date, spanning a broad range of sequence and structural diversity. 83.7% of structures have a lower $R_\\mathrm{free}$ with qFit multiconformer models compared to the deposited, re-refined model. These models identified widespread side-chain heterogeneity absent from the deposited models. This resource aims to help address the data bottleneck in ensemble prediction and reframes the experimental data deposited in the PDB as a source of ensemble information.</p>',
+        ),
+      },
+      authors: [{ name: Name('Stephanie A Wankowicz'), orcid: OrcidId('0000-0002-4225-7459') }],
+      id: new RadialPreprintId({ value: Doi('10.82153/pff0-ck46') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 8, day: 10 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Recovering Conformational Heterogeneity from the Protein Data Bank at Scale'),
+      },
+      url: new URL('https://thestacks.org/publications/qfit-at-scale'),
     }),
   },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
