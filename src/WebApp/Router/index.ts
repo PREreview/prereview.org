@@ -597,7 +597,7 @@ export const Router = pipe(
             onSome: () =>
               pipe(
                 app,
-                Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'private, no-store' })),
+                Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'private, no-store', Vary: 'Cookie' })),
               ),
           }),
         ),
