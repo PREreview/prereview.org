@@ -63,12 +63,7 @@ export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   PreprintsorgPreprintId: () => t('doiCouldBePreprintsorg'),
                   PsyarxivPreprintId: () => t('doiCouldBePsyarxiv'),
                   PsychArchivesPreprintId: () => t('doiCouldBePsycharchives'),
-                  RadialPreprintId:
-                    () =>
-                    ({ doi }: { doi: Html }) =>
-                      html`<span lang="en" dir="ltr">
-                        >We think the DOI ${doi} could be a Radial preprint, but we can’t find any details.</span
-                      >`,
+                  RadialPreprintId: () => t('doiCouldBeRadial'),
                   ResearchSquarePreprintId: () => t('doiCouldBeResearchSquare'),
                   ScieloPreprintId: () => t('doiCouldBeScielo'),
                   ScienceOpenPreprintId: () => t('doiCouldBeScienceOpen'),

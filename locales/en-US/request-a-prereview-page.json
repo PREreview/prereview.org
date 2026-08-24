@@ -131,6 +131,10 @@
     "message": "We think the DOI {doi} could be a PsychArchives preprint, but we can’t find any details.",
     "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
   },
+  "doiCouldBeRadial": {
+    "message": "We think the DOI {doi} could be a Radial preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
+  },
   "doiCouldBeResearchSquare": {
     "message": "We think the DOI {doi} could be a Research Square preprint, but we can’t find any details.",
     "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
