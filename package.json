@@ -89,7 +89,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitest/expect": "^4.1.10",
     "del-cli": "^7.0.0",
-    "eslint": "^10.8.0",
+    "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
