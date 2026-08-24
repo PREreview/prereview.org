@@ -2,11 +2,10 @@ import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
-import * as Routes from '../../../routes.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
-import * as Response from '../../Response/index.ts'
+import type * as Response from '../../Response/index.ts'
 import { RequestAReviewOfThisPreprintPage as MakeResponse } from './RequestAReviewOfThisPreprintPage.ts'
 
 export const RequestAReviewOfThisPreprintPage: ({
@@ -19,19 +18,9 @@ export const RequestAReviewOfThisPreprintPage: ({
       const user = yield* Effect.serviceOption(LoggedInUser)
       const locale = yield* Locale
 
-      const { preprint, reviewRequestId } = yield* Effect.all({
-        preprint: Preprints.getPreprintTitle(preprintId),
-        reviewRequestId: Option.match(user, {
-          onNone: () => Effect.succeedNone,
-          onSome: user => ReviewRequests.findReviewRequestByAPrereviewer({ requesterId: user.orcid, preprintId }),
-        }),
-      })
+      const preprint = yield* Preprints.getPreprintTitle(preprintId)
 
-      return Option.match(reviewRequestId, {
-        onNone: () => MakeResponse({ preprint, isLoggedIn: Option.isSome(user), locale }),
-        onSome: () =>
-          Response.RedirectResponse({ location: Routes.RequestAReviewStartNow.href({ preprintId: preprint.id }) }),
-      })
+      return MakeResponse({ preprint, isLoggedIn: Option.isSome(user), locale })
     },
     Effect.catchTags({
       PreprintIsNotFound: () => PageNotFound,

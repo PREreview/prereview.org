@@ -417,6 +417,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.waitForLoadState()
 
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Review a dataset')
 
