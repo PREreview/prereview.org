@@ -98,6 +98,9 @@
   "doiCouldBePsycharchives": {
     "message": "crwdns5327:0{doi}crwdne5327:0"
   },
+  "doiCouldBeRadial": {
+    "message": "crwdns7011:0{doi}crwdne7011:0"
+  },
   "doiCouldBeResearchSquare": {
     "message": "crwdns5329:0{doi}crwdne5329:0"
   },
