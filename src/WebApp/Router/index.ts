@@ -588,8 +588,20 @@ export const Router = pipe(
   HttpRouter.concat(AuthorInviteFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
-    HttpMiddleware.make(
-      Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
+    HttpMiddleware.make(app =>
+      pipe(
+        Effect.serviceOptional(LoggedInUser),
+        Effect.andThen(
+          Option.match({
+            onNone: () => app,
+            onSome: () =>
+              pipe(
+                app,
+                Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'private, no-store' })),
+              ),
+          }),
+        ),
+      ),
     ),
   ),
   HttpRouter.concat(DataRouter),
