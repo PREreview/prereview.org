@@ -104,6 +104,7 @@ import {
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   PsychArchivesPreprintId,
+  RadialPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
   ScienceOpenPreprintId,
@@ -1006,6 +1007,9 @@ export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =
 export const psychArchivesPreprintId = (): fc.Arbitrary<PsychArchivesPreprintId> =>
   doi(constant('23668')).map(doi => new PsychArchivesPreprintId({ value: doi }))
 
+export const radialPreprintId = (): fc.Arbitrary<RadialPreprintId> =>
+  doi(constant('82153')).map(doi => new RadialPreprintId({ value: doi }))
+
 export const researchSquarePreprintId = (): fc.Arbitrary<ResearchSquarePreprintId> =>
   doi(constant('21203')).map(doi => new ResearchSquarePreprintId({ value: doi }))
 
@@ -1115,6 +1119,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<PreprintIdWithDoi> =>
     preprintsorgPreprintId(),
     psyarxivPreprintId(),
     psychArchivesPreprintId(),
+    radialPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
     scienceOpenPreprintId(),
