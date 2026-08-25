@@ -1176,6 +1176,31 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     leads: [OrcidId('0009-0006-7429-6694'), OrcidId('0000-0002-2271-9193')],
   },
   {
+    id: Uuid('4c15becb-0cc4-462a-8331-3aabda133b31'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('Preprint Review Enthusiasts Club'),
+    },
+    slug: Slug('preprint-review-enthusiasts'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          PRE club is a community of early-career researchers and students passionate about preprint peer review and
+          open science.
+        </p>
+        <p>
+          We provide a supportive space for members to develop peer-review skills, exchange ideas, and collaborate on
+          reviewing preprints based on shared research interests.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-08-25'),
+    leads: [OrcidId('0009-0005-9199-2037'), OrcidId('0009-0008-6960-1716')],
+    contact: EmailAddress('isaactoba22@gmail.com'),
+  },
+  {
     id: Uuid('4bfded37-5773-4cc0-a073-2ce05cdb939c'),
     status: 'active',
     name: {
