@@ -6,7 +6,7 @@ import {
   HttpMethod,
   HttpServerError,
   HttpServerRequest,
-  type HttpServerResponse,
+  HttpServerResponse,
   type Path,
 } from '@effect/platform'
 import type { WorkflowEngine } from '@effect/workflow'
@@ -185,7 +185,10 @@ export const nonEffectRouter: Effect.Effect<
     sessionStore: sessionStore.store,
   } satisfies Env
 
-  return yield* handler(env)
+  return yield* Effect.andThen(
+    handler(env),
+    HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' }),
+  )
 })
 
 export interface Env {
