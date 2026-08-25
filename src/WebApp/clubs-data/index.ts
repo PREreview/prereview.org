@@ -11,6 +11,7 @@ interface Club {
   id: Uuid
   name: Name.Name
   added: Temporal.PlainDate
+  status: 'active' | 'inactive'
 }
 
 const getClubs: Effect.Effect<Array.NonEmptyReadonlyArray<Club>, never, Clubs> = Effect.gen(function* () {
@@ -26,6 +27,7 @@ const getClubs: Effect.Effect<Array.NonEmptyReadonlyArray<Club>, never, Clubs> =
     id: club.id,
     name: club.name.text,
     added: club.added,
+    status: club.status,
   }))
 }).pipe(Effect.catchTag('ClubNotFound', Effect.die))
 
@@ -33,6 +35,7 @@ const ClubSchema = Schema.Struct({
   id: UuidSchema,
   name: Name.NameSchema,
   added: PlainDateSchema,
+  status: Schema.Literal('active', 'inactive'),
 })
 
 const ClubsSchema = Schema.Array(ClubSchema)
