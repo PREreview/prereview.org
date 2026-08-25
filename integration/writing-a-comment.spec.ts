@@ -551,7 +551,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/reviews/1061864', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a comment' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
     await expect(page.getByRole('main')).toContainText('carry on')
@@ -564,7 +563,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can go back through the form',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ browserName, fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: Doi('10.5072/zenodo.1061863'),
       conceptrecid: 1061863,
@@ -643,6 +642,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your comment')
+
+    test.fail(
+      browserName === 'webkit',
+      'Known failure in WebKit on iPhone 11 where page.goBack() does not preserve back/forward cache state',
+    )
 
     await page.goBack()
 

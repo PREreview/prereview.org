@@ -1,28 +1,41 @@
 import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
+import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
+import * as Routes from '../../../routes.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
-import type * as Response from '../../Response/index.ts'
+import * as Response from '../../Response/index.ts'
 import { ReviewThisDatasetPage as MakeResponse } from './ReviewThisDatasetPage.ts'
 
 export const ReviewThisDatasetPage: ({
   datasetId,
 }: {
   datasetId: Datasets.DatasetId
-}) => Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> =
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale> =
   Effect.fn(
     function* ({ datasetId }) {
       const user = yield* Effect.serviceOption(LoggedInUser)
       const locale = yield* Locale
 
-      const dataset = yield* Datasets.getDataset(datasetId)
+      const { dataset, reviewId } = yield* Effect.all({
+        dataset: Datasets.getDataset(datasetId),
+        reviewId: Option.match(user, {
+          onNone: () => Effect.succeedNone,
+          onSome: user => DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId),
+        }),
+      })
 
-      return MakeResponse({ dataset, locale, isLoggedIn: Option.isSome(user) })
+      return Option.match(reviewId, {
+        onNone: () => MakeResponse({ dataset, locale, isLoggedIn: Option.isSome(user) }),
+        onSome: () =>
+          Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }) }),
+      })
     },
     Effect.catchTags({
       DatasetIsNotFound: () => PageNotFound,
       DatasetIsUnavailable: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
     }),
   )

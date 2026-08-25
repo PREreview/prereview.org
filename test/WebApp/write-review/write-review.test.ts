@@ -4,8 +4,9 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
-import { writeReviewMatch } from '../../../src/routes.ts'
+import { writeReviewMatch, writeReviewStartMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
+import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
 import * as fc from './fc.ts'
 
@@ -13,24 +14,23 @@ describe('writeReview', () => {
   describe('when there is a session', () => {
     it.effect.prop(
       'there is a form already',
-      [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.user()],
-      ([preprintId, preprint, locale, user]) =>
+      [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.form(), fc.user()],
+      ([preprintId, preprint, locale, newReview, user]) =>
         Effect.gen(function* () {
+          const formStore = new Keyv()
+          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
+
           const actual = yield* Effect.promise(
             _.writeReview({ id: preprintId, locale, user })({
+              formStore,
               getPreprint: () => TE.right(preprint),
             }),
           )
 
           expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
-            status: StatusCodes.OK,
-            title: expect.anything(),
-            nav: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(writeReviewStartMatch.formatter, { id: preprint.id }),
           })
         }),
     )
@@ -42,6 +42,7 @@ describe('writeReview', () => {
         Effect.gen(function* () {
           const actual = yield* Effect.promise(
             _.writeReview({ id: preprintId, locale, user })({
+              formStore: new Keyv(),
               getPreprint: () => TE.right(preprint),
             }),
           )
@@ -77,6 +78,7 @@ describe('writeReview', () => {
         Effect.gen(function* () {
           const actual = yield* Effect.promise(
             _.writeReview({ id: preprintId, locale, user })({
+              formStore: new Keyv(),
               getPreprint: () => TE.right(preprint),
             }),
           )
@@ -102,6 +104,7 @@ describe('writeReview', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
           _.writeReview({ id: preprintId, locale, user: undefined })({
+            formStore: new Keyv(),
             getPreprint: () => TE.right(preprint),
           }),
         )
@@ -126,6 +129,7 @@ describe('writeReview', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
           _.writeReview({ id: preprintId, locale, user })({
+            formStore: new Keyv(),
             getPreprint: () => TE.left(new PreprintIsUnavailable({})),
           }),
         )
@@ -148,6 +152,7 @@ describe('writeReview', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
           _.writeReview({ id: preprintId, locale, user })({
+            formStore: new Keyv(),
             getPreprint: () => TE.left(new PreprintIsNotFound({})),
           }),
         )
@@ -163,4 +168,3 @@ describe('writeReview', () => {
       }),
   )
 })
-

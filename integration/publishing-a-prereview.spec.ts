@@ -1068,7 +1068,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can go back through the form',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ browserName, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1089,6 +1089,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+    test.fail(
+      browserName === 'webkit',
+      'Known failure in WebKit on iPhone 11 where page.goBack() does not preserve back/forward cache state',
+    )
 
     await page.goBack()
 
@@ -1636,7 +1641,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await expect(page.getByRole('main')).toContainText('carry on')
