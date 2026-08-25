@@ -16,6 +16,7 @@ const orcidId0Clubs = OrcidId('0000-0002-6109-0367')
 const clubs = [
   {
     id: Uuid('a0b77186-b242-44ed-a969-49eca634d701'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Superheroes Club'),
@@ -30,6 +31,7 @@ const clubs = [
   },
   {
     id: Uuid('26a8ce99-8c88-4874-bfe6-71324b8970c9'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Villains Club'),

@@ -15,6 +15,7 @@ import { IsPrereviewerAClubLead } from './IsPrereviewerAClubLead.ts'
 
 export interface ClubDetails {
   readonly id: Uuid
+  readonly status: 'active' | 'inactive'
   readonly name: {
     readonly language: LanguageCode
     readonly text: Name

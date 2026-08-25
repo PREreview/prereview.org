@@ -16,6 +16,7 @@ const otherSlug = Slug('sidekicks-club')
 const clubs = [
   {
     id: Uuid('a0b77186-b242-44ed-a969-49eca634d701'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Superheroes Club'),
@@ -30,6 +31,7 @@ const clubs = [
   },
   {
     id: Uuid('a0b77186-b242-44ed-a969-49eca634d701'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Villains Club'),

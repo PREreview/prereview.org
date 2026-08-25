@@ -98,6 +98,7 @@ const ClubsData = Layer.unwrapEffect(
           ...Clubs.DefaultClubs,
           {
             id: Uuid('df52ec81-2f3d-434a-99a4-c657ad1c2f41'),
+            status: 'active',
             name: {
               language: 'en',
               text: Name('PREreview Staff Club'),

@@ -1355,6 +1355,7 @@ export const clubDetails = (): fc.Arbitrary<Clubs.ClubDetails> =>
   fc.record(
     {
       id: uuid(),
+      status: constantFrom('active', 'inactive'),
       name: fc.record({
         language: languageCode(),
         text: name(),

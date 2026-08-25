@@ -11,6 +11,7 @@ import { ClubsData, type ClubDetails } from './Clubs.ts'
 export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   {
     id: Uuid('0148fece-b97e-4cfd-87e9-9c2eb41f7332'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('African Women in STEM Peer Review Hub'),
@@ -42,6 +43,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('ASAPbio Cancer Biology Crowd'),
@@ -61,6 +63,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('d3e62606-0367-44b9-8d52-b75e0e7e5ba7'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('ASAPbio Cell Biology Crowd'),
@@ -76,6 +79,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('2a6fde8a-ca6d-4647-a3ac-8d8fb4ae5f52'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('ASAPbio Immunology Crowd'),
@@ -91,6 +95,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('901dba75-ecad-41b8-92b0-1aab56a96e54'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('ASAPbio Meta-Research Crowd'),
@@ -111,6 +116,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('8ee46f04-af8f-49f9-bc1c-1d3e2602672d'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('ASAPbio Microbiology Crowd'),
@@ -128,6 +134,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('3e820d44-fdb3-4cba-aeb6-ac03fb23108e'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('ASAPbio Metabolism Crowd'),
@@ -147,6 +154,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('317d0a13-5a10-44fc-9bcd-fb548e01e9cb'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('ASAPbio Neurobiology Crowd'),
@@ -163,6 +171,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('2dfeb178-dc0b-4970-9cdb-36b60250b3c4'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Biophysics Probing Neuroscience Lab'),
@@ -187,6 +196,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('0bb49906-085d-41ad-9787-9355356e624b'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Bio-Ed Preprint Review Community'),
@@ -207,6 +217,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('950e0757-d7ec-45b1-abbb-d171a03e5344'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Open Science Community BioBío (OSCB)'),
@@ -241,6 +252,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('2eba66eb-cdf0-4aae-996d-f42e75e0ad94'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Biomass and Biocatalysis Group'),
@@ -263,6 +275,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('7bff827e-bbaa-4ac9-8607-056643d8e16a'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('BioPeers SLU'),
@@ -287,6 +300,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('c8a72b87-cf45-42f0-aa75-a83a0d90eb5f'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Biophysics Leipzig University'),
@@ -313,6 +327,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('d341790c-1757-4c10-82fe-70acc5f95fa4'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Computational Biodiversity Science and Services'),
@@ -339,6 +354,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('e977f760-48ba-4541-bb9f-fdcaef4bd05d'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('IU Bloomington Biology'),
@@ -360,6 +376,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('b5041f10-289d-4d39-9c25-b4bea5ff3027'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('CARA: Critical Analysis of Research Articles Club'),
@@ -385,6 +402,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('07f0572c-aaee-4b93-b6ab-8bdc78644991'),
+    status: 'active',
     name: {
       language: 'es',
       text: Name('Club Comunidad Iberoamericana de Ciencia Abierta (CIbCA)'),
@@ -417,6 +435,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('490a8fe4-9cda-4e51-bf50-9307cba39997'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('DEVL Ecology & Evolution Club'),
@@ -439,6 +458,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('f26cbe5a-fb0a-43e9-9118-03cfa9aa601d'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('eLife Community Ambassadors'),
@@ -465,6 +485,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('a671af6b-f14a-4b72-b66d-a76b0e8623f7'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('EMERGE, A Matrix for Ethnographic Collaboration and Practice'),
@@ -490,6 +511,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('4dbef4c4-3793-4a32-9837-3fa39a69188a'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Future of Research Communication and e-Scholarship (FORCE11)'),
@@ -518,6 +540,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('3701c505-32ea-4176-83b6-05714803a121'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Etymos Analytica'),
@@ -533,6 +556,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('HHMI Transparent and Accountable Peer Review Training Program'),
@@ -559,6 +583,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('17248b36-7ba3-4fc2-b9c4-1edc10b57463'),
+    status: 'active',
     name: {
       language: 'es',
       text: Name('IIB-Mar del Plata Argentina'),
@@ -582,6 +607,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('2ff5d1d9-beef-4054-b311-cf0c40946767'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Intersectional Feminist Club'),
@@ -610,6 +636,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('23256c4b-ad41-4c1e-a3de-0dd28ca5177f'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('JMIR Publications'),
@@ -651,6 +678,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('caee8a6e-eabc-4bcc-a579-05295a928688'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Kone Consult Journal Club'),
@@ -678,6 +706,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Language Club'),
@@ -705,6 +734,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('a50913a6-5c49-4ab0-8394-661b4224b06f'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Biology of Marine Invertebrates & Friends'),
@@ -735,6 +765,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('46ed1601-a895-4703-9661-e06893017c5c'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('MLC Research Review Club'),
@@ -758,6 +789,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('1c0f77be-bcf0-4f4c-931f-e899c4f959c4'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('MedVantage Preprint Review Club'),
@@ -784,6 +816,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('0cb0b787-fd2c-4325-83fe-0ed28361fcc6'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Neuroden'),
@@ -820,6 +853,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('f5e1bdba-2ccf-435c-9404-ff43f21d2397'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Neuroscience Student Association at UTD'),
@@ -849,6 +883,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('a7933faf-6568-4884-87a1-483068a57a28'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Open Box Science'),
@@ -880,6 +915,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('980658e9-e025-46ff-9cee-f46ff02fc3f8'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Open Science Community Iraqi (OSCI)'),
@@ -907,6 +943,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('3c728f14-d22a-4704-8d16-203984c9b4bb'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Open Science Community Uruguay (OSCU)'),
@@ -928,6 +965,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('25a3af44-1d6c-4605-a22f-97a47d051439'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Open Scholarship Initiative at Simon Fraser University'),
@@ -955,6 +993,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('d7681876-2aaa-46eb-a7b7-7164e6f3b3ef'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('OxPlants Preprint Club'),
@@ -978,6 +1017,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('f0c71aca-aa3f-4a64-934e-4013e6811049'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('PhD Program in Biomedical Sciences, University of Padua'),
@@ -1004,6 +1044,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('8b34f6be-b086-4e2c-878a-5c3b74218448'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Parasitology and Infectious Diseases'),
@@ -1034,6 +1075,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('098981c2-aa2a-44ba-ba75-83e1b0b7fcb1'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Physical Education Preprint & Review Club'),
@@ -1066,6 +1108,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('b18ebd46-b563-49fa-8dc0-033d8a8c6074'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Plant Biotechnology Club'),
@@ -1086,6 +1129,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('b5f170f1-59e2-4f2b-8019-59aff327e9e0'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Plant Pathology & Genomics Preprint Club'),
@@ -1106,6 +1150,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('4bfded37-5773-4cc0-a073-2ce05cdb939c'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Proteostasis and Cancer Team INSERM U1242'),
@@ -1133,6 +1178,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('c485e5e6-3d53-4700-9734-e4ead74ee76d'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Review & Curate Network (RCN)'),
@@ -1160,6 +1206,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('4f8076fc-2219-49fc-be5f-6682ca7cc009'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('Reviewing Dental Articles Club'),
@@ -1185,6 +1232,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('3f07d8f6-4fbf-47e6-849c-2c157b6535b6'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('RR\\ID Student Reviewer Club'),
@@ -1214,6 +1262,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('ed1dca96-74c0-46ff-b29f-c900fd543d6d'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('SFB1638 Membrane Remodelling'),
@@ -1237,6 +1286,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('e9a18a97-f895-4872-a75f-78823b5fc99a'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('SG Biofilms and Microbiome Club'),
@@ -1258,6 +1308,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('292651fd-e6d6-45e4-a46a-42912396a269'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('SNL Semantics'),
@@ -1285,6 +1336,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('d90a3f87-607e-4da0-9c50-6de6992e118d'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('SUN Bioinformatics Journal Club'),
@@ -1308,6 +1360,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('2c5334ae-e361-48c3-bcca-6810c2f33cb4'),
+    status: 'inactive',
     name: {
       language: 'en',
       text: Name('University of Surrey Microbiology Journal Club'),
@@ -1331,6 +1384,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('e1919a60-4875-4925-83b2-6b381543ed07'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('Translate Science'),
@@ -1352,6 +1406,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('f0a5bcaf-8016-4c2e-92dd-b3a359329ead'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('TSL Preprint Club'),
@@ -1372,6 +1427,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('1013ab22-0917-4f34-adcb-7c8cf0eba463'),
+    status: 'active',
     name: {
       language: 'en',
       text: Name('ZMBP Preprint Club'),

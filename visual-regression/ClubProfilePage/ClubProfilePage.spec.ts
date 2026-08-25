@@ -38,6 +38,7 @@ test('content looks right when empty', async ({ showPage }) => {
 
 const club1 = {
   id: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
+  status: 'active',
   name: {
     language: 'en',
     text: Name('ASAPbio Cancer Biology Crowd'),
@@ -69,6 +70,7 @@ const club1 = {
 
 const club2 = {
   id: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
+  status: 'inactive',
   name: {
     language: 'en',
     text: Name('ASAPbio Cancer Biology Crowd'),

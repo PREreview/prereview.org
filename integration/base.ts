@@ -2349,6 +2349,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use([
       {
         id: Uuid.Uuid('3e820d44-fdb3-4cba-aeb6-ac03fb23108e'),
+        status: 'active',
         name: {
           language: 'en',
           text: Name('ASAPbio Metabolism Crowd'),
@@ -2711,6 +2712,7 @@ export const areAClubLead: Fixtures<Record<never, never>, Record<never, never>, 
       ...clubs,
       {
         id: Uuid.Uuid('189f39d2-fd09-4f31-83f4-5e9e9785dbb7'),
+        status: 'active',
         name: {
           language: 'en',
           text: Name('Psychoceramics Club'),
