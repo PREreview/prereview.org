@@ -555,6 +555,33 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     joinLink: new URL('https://forms.gle/nc75moVyEVvJBRqNA'),
   },
   {
+    id: Uuid('ed357297-17f4-404e-b519-72c82a8a58df'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('Healthcare Evidence Exchange Preprint Society (HEEPS)'),
+    },
+    slug: Slug('heeps'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          The Healthcare Evidence Exchange Preprint Society (HEEPS) is a multidisciplinary scholarly community
+          established to promote constructive, collaborative, and transparent review of healthcare-related preprints.
+        </p>
+        <p>
+          HEEPS brings together researchers, clinicians, healthcare professionals, students, educators, and other
+          members of the research community to engage with emerging healthcare research before formal journal
+          publication. The Society will use collaborative preprint review to strengthen research quality, develop
+          peer-review competencies, encourage open scientific dialogue, and promote equitable participation in research
+          evaluation.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-08-25'),
+    leads: [OrcidId('0000-0001-7734-167X')],
+  },
+  {
     id: Uuid('206ef17f-c5f3-44d3-acee-ba9b1f8299e9'),
     status: 'active',
     name: {
