@@ -43,7 +43,7 @@ export interface ClubName {
 export class Clubs extends Context.Tag('Clubs')<
   Clubs,
   {
-    listClubs: Effect.Effect<Array.NonEmptyReadonlyArray<ClubName>>
+    listClubs: Effect.Effect<Array.NonEmptyReadonlyArray<ClubName & { readonly status: 'active' | 'inactive' }>>
     getClubDetails: (clubId: Uuid) => Effect.Effect<ClubDetails, ClubNotFound>
     getClubName: (clubId: Uuid) => Effect.Effect<ClubName, ClubNotFound>
     getClubByName: (name: Name) => Effect.Effect<ClubName, ClubNotFound>
@@ -65,6 +65,7 @@ export const layer = Layer.effect(
       listClubs: Effect.succeed(
         Array.map(clubs, club => ({
           id: club.id,
+          status: club.status,
           language: club.name.language,
           name: club.name.text,
           slug: club.slug,
