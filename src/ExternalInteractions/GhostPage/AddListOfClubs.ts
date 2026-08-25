@@ -13,26 +13,6 @@ export const addListOfClubs =
   (text: Html) =>
     rawHtml(
       text.value
-        .replace('{{list-of-clubs}}', () =>
-          html`
-            <ul>
-              ${pipe(
-                Array.sortWith(clubs, Struct.get('name'), (a, b) =>
-                  String.localeCompare(b, locale, { sensitivity: 'base' })(a),
-                ),
-                Array.map(club => {
-                  return html`
-                    <li>
-                      <a href="${Routes.ClubProfile.href({ slug: club.slug })}" ${languageAttributesFor(club.language)}
-                        >${club.name}</a
-                      >
-                    </li>
-                  `
-                }),
-              )}
-            </ul>
-          `.toString(),
-        )
         .replace('{{list-of-active-clubs}}', () =>
           html`
             <ul>
