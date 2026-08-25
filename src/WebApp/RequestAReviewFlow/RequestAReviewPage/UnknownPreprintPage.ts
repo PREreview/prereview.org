@@ -63,6 +63,7 @@ export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   PreprintsorgPreprintId: () => t('doiCouldBePreprintsorg'),
                   PsyarxivPreprintId: () => t('doiCouldBePsyarxiv'),
                   PsychArchivesPreprintId: () => t('doiCouldBePsycharchives'),
+                  RadialPreprintId: () => t('doiCouldBeRadial'),
                   ResearchSquarePreprintId: () => t('doiCouldBeResearchSquare'),
                   ScieloPreprintId: () => t('doiCouldBeScielo'),
                   ScienceOpenPreprintId: () => t('doiCouldBeScienceOpen'),

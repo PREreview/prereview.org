@@ -156,6 +156,10 @@ export class PsychArchivesPreprintId extends Schema.TaggedClass<PsychArchivesPre
   value: Doi.RegistrantDoiSchema('23668'),
 }) {}
 
+export class RadialPreprintId extends Schema.TaggedClass<RadialPreprintId>()('RadialPreprintId', {
+  value: Doi.RegistrantDoiSchema('82153'),
+}) {}
+
 export class ResearchSquarePreprintId extends Schema.TaggedClass<ResearchSquarePreprintId>()(
   'ResearchSquarePreprintId',
   { value: Doi.RegistrantDoiSchema('21203') },
@@ -232,6 +236,7 @@ export const PreprintIdWithDoi = Schema.Union(
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   PsychArchivesPreprintId,
+  RadialPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
   ScienceOpenPreprintId,
@@ -300,6 +305,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintI
   '60763',
   '62329',
   '64898',
+  '82153',
 )
 
 export const IndeterminatePreprintIdFromDoiSchema = Schema.transformOrFail(
@@ -397,6 +403,7 @@ export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): I
     .when(Doi.hasRegistrant('60763'), doi => new AfricarxivUbuntunetPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('62329'), doi => new CurvenotePreprintId({ value: doi }))
     .when(Doi.hasRegistrant('64898'), doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
+    .when(Doi.hasRegistrant('82153'), doi => new RadialPreprintId({ value: doi }))
     .exhaustive()
 }
 

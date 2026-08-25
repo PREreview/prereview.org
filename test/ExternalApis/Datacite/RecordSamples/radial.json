@@ -1,0 +1,196 @@
+{
+  "data": {
+    "id": "10.82153/pff0-ck46",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.82153/pff0-ck46",
+      "prefix": "10.82153",
+      "suffix": "pff0-ck46",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Wankowicz, Stephanie A",
+          "nameType": "Personal",
+          "givenName": "Stephanie A",
+          "familyName": "Wankowicz",
+          "affiliation": ["Radial", "Vanderbilt University"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-4225-7459",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [{ "title": "Recovering Conformational Heterogeneity from the Protein Data Bank at Scale" }],
+      "publisher": "Radial",
+      "container": {},
+      "publicationYear": 2026,
+      "subjects": [
+        { "subject": "FOS: Biological sciences", "subjectScheme": "Fields of Science and Technology (FOS)" }
+      ],
+      "contributors": [
+        {
+          "name": "Wankowicz, Stephanie A",
+          "nameType": "Personal",
+          "givenName": "Stephanie A",
+          "familyName": "Wankowicz",
+          "affiliation": ["Radial", "Vanderbilt University"],
+          "contributorType": "Other",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-4225-7459",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "dates": [{ "date": "2026-08-10", "dateType": "Issued" }],
+      "language": "en",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "Article",
+        "resourceTypeGeneral": "Other"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1038/s41586-021-03819-2",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1038/s41586-024-07487-w",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1101/2025.06.14.659707",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.64898/2026.02.05.703733",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1126/science.abj8754",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1101/2024.10.10.615955",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1101/2025.01.08.631967",
+          "relatedIdentifierType": "DOI"
+        },
+        { "relationType": "References", "relatedIdentifier": "10.1021/cr040423+", "relatedIdentifierType": "DOI" },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1146/annurev-biophys-061824-104900",
+          "relatedIdentifierType": "DOI"
+        },
+        { "relationType": "References", "relatedIdentifier": "10.1038/nchembio.232", "relatedIdentifierType": "DOI" },
+        {
+          "relationType": "References",
+          "relatedIdentifier": "10.1038/s41592-026-03084-z",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "IsSupplementedBy",
+          "relatedIdentifier": "https://github.com/ExcitedStates/qfit-3.0",
+          "resourceTypeGeneral": "Software",
+          "relatedIdentifierType": "URL"
+        },
+        {
+          "relationType": "IsSupplementedBy",
+          "relatedIdentifier": "https://zenodo.org/records/20801853",
+          "resourceTypeGeneral": "Dataset",
+          "relatedIdentifierType": "URL"
+        },
+        { "relationType": "HasVersion", "relatedIdentifier": "10.82153/fjj4-gv26", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "lang": "en",
+          "description": "Proteins are dynamic ensembles of interconverting conformations. This ensemble, rather than any single structure, governs functions such as catalysis, mutational effects, and molecular recognition. Predicting protein conformational ensembles is a central goal of structural biology, but progress is constrained by a shortage of training data. Current ensemble predictors rely on molecular dynamics simulations, which are limited in number and constrained by force-field accuracy and accessible timescales. Experimental structural data is an untapped source of alternative data for training ensemble predictors of structure. X-ray crystallography and cryo-EM measure many copies of a protein and average over space and time, so the data encodes an ensemble of states. Conventional refinement collapses this signal into a single set of coordinates. Most Protein Data Bank (PDB) depositions, therefore, report a single averaged structure, leaving the underlying heterogeneity unmodeled and hidden in the experimental data. Here, we applied qFit to recover this latent heterogeneous signal at scale. Starting from structures resolved to better than 2 Å with deposited structure factors, we re-refined them and ran qFit multiconformer modeling. This produced over 60,000 completed multiconformer models, the largest dataset of experimentally derived ensemble protein structural models to date, spanning a broad range of sequence and structural diversity. 83.7% of structures have a lower $R_\\mathrm{free}$ with qFit multiconformer models compared to the deposited, re-refined model. These models identified widespread side-chain heterogeneity absent from the deposited models. This resource aims to help address the data bottleneck in ensemble prediction and reframes the experimental data deposited in the PDB as a source of ensemble information.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuODIxNTMvUEZGMC1DSzQ2PC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5XYW5rb3dpY3osIFN0ZXBoYW5pZSBBPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5TdGVwaGFuaWUgQTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5XYW5rb3dpY3o8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPmh0dHBzOi8vb3JjaWQub3JnLzAwMDAtMDAwMi00MjI1LTc0NTk8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSIwNTByYmc5MTkiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+UmFkaWFsPC9hZmZpbGlhdGlvbj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iMDJ2bTVydDM0IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPlZhbmRlcmJpbHQgVW5pdmVyc2l0eTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPlJlY292ZXJpbmcgQ29uZm9ybWF0aW9uYWwgSGV0ZXJvZ2VuZWl0eSBmcm9tIHRoZSBQcm90ZWluIERhdGEgQmFuayBhdCBTY2FsZTwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5SYWRpYWw8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjY8L3B1YmxpY2F0aW9uWWVhcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9Ik90aGVyIj5BcnRpY2xlPC9yZXNvdXJjZVR5cGU+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iRmllbGRzIG9mIFNjaWVuY2UgYW5kIFRlY2hub2xvZ3kgKEZPUykiPkZPUzogQmlvbG9naWNhbCBzY2llbmNlczwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxjb250cmlidXRvcnM+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJPdGhlciI+CiAgICAgIDxjb250cmlidXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5XYW5rb3dpY3osIFN0ZXBoYW5pZSBBPC9jb250cmlidXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+U3RlcGhhbmllIEE8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+V2Fua293aWN6PC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj5odHRwczovL29yY2lkLm9yZy8wMDAwLTAwMDItNDIyNS03NDU5PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iMDUwcmJnOTE5IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPlJhZGlhbDwvYWZmaWxpYXRpb24+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9IjAydm01cnQzNCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5WYW5kZXJiaWx0IFVuaXZlcnNpdHk8L2FmZmlsaWF0aW9uPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDI2LTA4LTEwPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IlJlZmVyZW5jZXMiPjEwLjEwMzgvczQxNTg2LTAyMS0wMzgxOS0yPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJSZWZlcmVuY2VzIj4xMC4xMDM4L3M0MTU4Ni0wMjQtMDc0ODctdzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iUmVmZXJlbmNlcyI+MTAuMTEwMS8yMDI1LjA2LjE0LjY1OTcwNzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iUmVmZXJlbmNlcyI+MTAuNjQ4OTgvMjAyNi4wMi4wNS43MDM3MzM8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IlJlZmVyZW5jZXMiPjEwLjExMjYvc2NpZW5jZS5hYmo4NzU0PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJSZWZlcmVuY2VzIj4xMC4xMTAxLzIwMjQuMTAuMTAuNjE1OTU1PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJSZWZlcmVuY2VzIj4xMC4xMTAxLzIwMjUuMDEuMDguNjMxOTY3PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJSZWZlcmVuY2VzIj4xMC4xMDIxL2NyMDQwNDIzKzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iUmVmZXJlbmNlcyI+MTAuMTE0Ni9hbm51cmV2LWJpb3BoeXMtMDYxODI0LTEwNDkwMDwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iUmVmZXJlbmNlcyI+MTAuMTAzOC9uY2hlbWJpby4yMzI8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IlJlZmVyZW5jZXMiPjEwLjEwMzgvczQxNTkyLTAyNi0wMzA4NC16PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IlVSTCIgcmVsYXRpb25UeXBlPSJJc1N1cHBsZW1lbnRlZEJ5IiByZXNvdXJjZVR5cGVHZW5lcmFsPSJTb2Z0d2FyZSI+aHR0cHM6Ly9naXRodWIuY29tL0V4Y2l0ZWRTdGF0ZXMvcWZpdC0zLjA8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iVVJMIiByZWxhdGlvblR5cGU9IklzU3VwcGxlbWVudGVkQnkiIHJlc291cmNlVHlwZUdlbmVyYWw9IkRhdGFzZXQiPmh0dHBzOi8vemVub2RvLm9yZy9yZWNvcmRzLzIwODAxODUzPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJIYXNWZXJzaW9uIj4xMC44MjE1My9mamo0LWd2MjY8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcy8+CiAgPGZvcm1hdHMvPgogIDx2ZXJzaW9uLz4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wL2xlZ2FsY29kZSIgcmlnaHRzSWRlbnRpZmllcj0iY2MtYnktNC4wIiByaWdodHNJZGVudGlmaWVyU2NoZW1lPSJTUERYIiBzY2hlbWVVUkk9Imh0dHBzOi8vc3BkeC5vcmcvbGljZW5zZXMvIj5DcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24geG1sOmxhbmc9ImVuIiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5Qcm90ZWlucyBhcmUgZHluYW1pYyBlbnNlbWJsZXMgb2YgaW50ZXJjb252ZXJ0aW5nIGNvbmZvcm1hdGlvbnMuIFRoaXMgZW5zZW1ibGUsIHJhdGhlciB0aGFuIGFueSBzaW5nbGUgc3RydWN0dXJlLCBnb3Zlcm5zIGZ1bmN0aW9ucyBzdWNoIGFzIGNhdGFseXNpcywgbXV0YXRpb25hbCBlZmZlY3RzLCBhbmQgbW9sZWN1bGFyIHJlY29nbml0aW9uLiBQcmVkaWN0aW5nIHByb3RlaW4gY29uZm9ybWF0aW9uYWwgZW5zZW1ibGVzIGlzIGEgY2VudHJhbCBnb2FsIG9mIHN0cnVjdHVyYWwgYmlvbG9neSwgYnV0IHByb2dyZXNzIGlzIGNvbnN0cmFpbmVkIGJ5IGEgc2hvcnRhZ2Ugb2YgdHJhaW5pbmcgZGF0YS4gQ3VycmVudCBlbnNlbWJsZSBwcmVkaWN0b3JzIHJlbHkgb24gbW9sZWN1bGFyIGR5bmFtaWNzIHNpbXVsYXRpb25zLCB3aGljaCBhcmUgbGltaXRlZCBpbiBudW1iZXIgYW5kIGNvbnN0cmFpbmVkIGJ5IGZvcmNlLWZpZWxkIGFjY3VyYWN5IGFuZCBhY2Nlc3NpYmxlIHRpbWVzY2FsZXMuIEV4cGVyaW1lbnRhbCBzdHJ1Y3R1cmFsIGRhdGEgaXMgYW4gdW50YXBwZWQgc291cmNlIG9mIGFsdGVybmF0aXZlIGRhdGEgZm9yIHRyYWluaW5nIGVuc2VtYmxlIHByZWRpY3RvcnMgb2Ygc3RydWN0dXJlLiBYLXJheSBjcnlzdGFsbG9ncmFwaHkgYW5kIGNyeW8tRU0gbWVhc3VyZSBtYW55IGNvcGllcyBvZiBhIHByb3RlaW4gYW5kIGF2ZXJhZ2Ugb3ZlciBzcGFjZSBhbmQgdGltZSwgc28gdGhlIGRhdGEgZW5jb2RlcyBhbiBlbnNlbWJsZSBvZiBzdGF0ZXMuIENvbnZlbnRpb25hbCByZWZpbmVtZW50IGNvbGxhcHNlcyB0aGlzIHNpZ25hbCBpbnRvIGEgc2luZ2xlIHNldCBvZiBjb29yZGluYXRlcy4gTW9zdCBQcm90ZWluIERhdGEgQmFuayAoUERCKSBkZXBvc2l0aW9ucywgdGhlcmVmb3JlLCByZXBvcnQgYSBzaW5nbGUgYXZlcmFnZWQgc3RydWN0dXJlLCBsZWF2aW5nIHRoZSB1bmRlcmx5aW5nIGhldGVyb2dlbmVpdHkgdW5tb2RlbGVkIGFuZCBoaWRkZW4gaW4gdGhlIGV4cGVyaW1lbnRhbCBkYXRhLiBIZXJlLCB3ZSBhcHBsaWVkIHFGaXQgdG8gcmVjb3ZlciB0aGlzIGxhdGVudCBoZXRlcm9nZW5lb3VzIHNpZ25hbCBhdCBzY2FsZS4gU3RhcnRpbmcgZnJvbSBzdHJ1Y3R1cmVzIHJlc29sdmVkIHRvIGJldHRlciB0aGFuIDIgw4Ugd2l0aCBkZXBvc2l0ZWQgc3RydWN0dXJlIGZhY3RvcnMsIHdlIHJlLXJlZmluZWQgdGhlbSBhbmQgcmFuIHFGaXQgbXVsdGljb25mb3JtZXIgbW9kZWxpbmcuIFRoaXMgcHJvZHVjZWQgb3ZlciA2MCwwMDAgY29tcGxldGVkIG11bHRpY29uZm9ybWVyIG1vZGVscywgdGhlIGxhcmdlc3QgZGF0YXNldCBvZiBleHBlcmltZW50YWxseSBkZXJpdmVkIGVuc2VtYmxlIHByb3RlaW4gc3RydWN0dXJhbCBtb2RlbHMgdG8gZGF0ZSwgc3Bhbm5pbmcgYSBicm9hZCByYW5nZSBvZiBzZXF1ZW5jZSBhbmQgc3RydWN0dXJhbCBkaXZlcnNpdHkuIDgzLjclIG9mIHN0cnVjdHVyZXMgaGF2ZSBhIGxvd2VyICRSX1xtYXRocm17ZnJlZX0kIHdpdGggcUZpdCBtdWx0aWNvbmZvcm1lciBtb2RlbHMgY29tcGFyZWQgdG8gdGhlIGRlcG9zaXRlZCwgcmUtcmVmaW5lZCBtb2RlbC4gVGhlc2UgbW9kZWxzIGlkZW50aWZpZWQgd2lkZXNwcmVhZCBzaWRlLWNoYWluIGhldGVyb2dlbmVpdHkgYWJzZW50IGZyb20gdGhlIGRlcG9zaXRlZCBtb2RlbHMuIFRoaXMgcmVzb3VyY2UgYWltcyB0byBoZWxwIGFkZHJlc3MgdGhlIGRhdGEgYm90dGxlbmVjayBpbiBlbnNlbWJsZSBwcmVkaWN0aW9uIGFuZCByZWZyYW1lcyB0aGUgZXhwZXJpbWVudGFsIGRhdGEgZGVwb3NpdGVkIGluIHRoZSBQREIgYXMgYSBzb3VyY2Ugb2YgZW5zZW1ibGUgaW5mb3JtYXRpb24uPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4K",
+      "url": "https://thestacks.org/publications/qfit-at-scale",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 11,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 1,
+      "versionOfCount": 0,
+      "created": "2026-08-07T18:11:57.000Z",
+      "registered": "2026-08-10T22:33:52.000Z",
+      "published": "2026",
+      "updated": "2026-08-10T22:33:52.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "ghok.vsdlvf", "type": "clients" } },
+      "provider": { "data": { "id": "ghok", "type": "providers" } },
+      "media": { "data": { "id": "10.82153/pff0-ck46", "type": "media" } },
+      "references": {
+        "data": [
+          { "id": "10.64898/2026.02.05.703733", "type": "dois" },
+          { "id": "10.1038/s41586-021-03819-2", "type": "dois" },
+          { "id": "10.1146/annurev-biophys-061824-104900", "type": "dois" },
+          { "id": "10.1101/2025.01.08.631967", "type": "dois" },
+          { "id": "10.1038/nchembio.232", "type": "dois" },
+          { "id": "10.1038/s41592-026-03084-z", "type": "dois" },
+          { "id": "10.1101/2024.10.10.615955", "type": "dois" },
+          { "id": "10.1101/2025.06.14.659707", "type": "dois" },
+          { "id": "10.1038/s41586-024-07487-w", "type": "dois" },
+          { "id": "10.1126/science.abj8754", "type": "dois" },
+          { "id": "10.1021/cr040423+", "type": "dois" }
+        ]
+      },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [{ "id": "10.82153/fjj4-gv26", "type": "dois" }] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

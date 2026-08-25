@@ -32,6 +32,7 @@ const serverNames: Record<PreprintId['_tag'], NonEmptyString> = Record.map(
     PreprintsorgPreprintId: 'Preprints.org',
     PsyarxivPreprintId: 'PsyArXiv',
     PsychArchivesPreprintId: 'PsychArchives',
+    RadialPreprintId: 'Radial',
     ResearchSquarePreprintId: 'Research Square',
     ScieloPreprintId: 'SciELO Preprints',
     ScienceOpenPreprintId: 'ScienceOpen Preprints',
