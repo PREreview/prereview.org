@@ -1,4 +1,3 @@
-import { Match, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type * as Prereviewers from './Prereviewers/index.ts'
@@ -29,18 +28,3 @@ export const getPseudonymPersona = (
   orcidId: OrcidId.OrcidId,
 ): RTE.ReaderTaskEither<GetPseudonymPersonaEnv, Prereviewers.UnableToGetPersona, Prereviewers.PseudonymPersona> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonymPersona }) => getPseudonymPersona(orcidId)))
-
-/** @deprecated */
-export const getPersona: (u: {
-  orcidId: OrcidId.OrcidId
-  persona: 'public' | 'pseudonym'
-}) => RTE.ReaderTaskEither<
-  GetPublicPersonaEnv & GetPseudonymPersonaEnv,
-  Prereviewers.UnableToGetPersona,
-  Prereviewers.Persona
-> = pipe(
-  Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),
-  Match.when({ persona: 'public' }, ({ orcidId }) => getPublicPersona(orcidId)),
-  Match.when({ persona: 'pseudonym' }, ({ orcidId }) => getPseudonymPersona(orcidId)),
-  Match.exhaustive,
-)
