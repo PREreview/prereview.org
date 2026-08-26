@@ -14,16 +14,6 @@ export interface ResolvePreprintIdEnv {
 }
 
 /** @deprecated */
-export interface GetPreprintIdEnv {
-  getPreprintId: (
-    id: Preprints.IndeterminatePreprintId,
-  ) => TE.TaskEither<
-    Preprints.NotAPreprint | Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable,
-    Preprints.PreprintId
-  >
-}
-
-/** @deprecated */
 export interface GetPreprintEnv {
   getPreprint: (
     id: Preprints.IndeterminatePreprintId,
@@ -42,10 +32,6 @@ export const resolvePreprintId = (...ids: Array.NonEmptyReadonlyArray<Preprints.
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ resolvePreprintId }: ResolvePreprintIdEnv) => resolvePreprintId(...ids)),
   )
-
-/** @deprecated */
-export const getPreprintId = (id: Preprints.IndeterminatePreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintId }: GetPreprintIdEnv) => getPreprintId(id)))
 
 /** @deprecated */
 export const getPreprint = (
