@@ -15,13 +15,7 @@ import {
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import {
-  type GetPseudonymPersonaEnv,
-  type GetPublicPersonaEnv,
-  getPersona,
-  getPseudonymPersona,
-} from '../../../persona.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   authorInviteDeclineMatch,
@@ -85,11 +79,9 @@ export const authorInviteCheck = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses> &
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Prereviewers.Prereviewers> &
     AddAuthorToPrereviewEnv &
     GetPrereviewEnv &
-    GetPublicPersonaEnv &
-    GetPseudonymPersonaEnv &
     GetAuthorInviteEnv &
     SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -135,7 +127,12 @@ export const authorInviteCheck = ({
         ),
       ),
     ),
-    RTE.bindW('persona', ({ personaChoice, user }) => getPersona({ orcidId: user.orcid, persona: personaChoice })),
+    RTE.bindW(
+      'persona',
+      EffectToFpts.toReaderTaskEitherK(({ personaChoice, user }) =>
+        Prereviewers.getPersona({ orcidId: user.orcid, persona: personaChoice }),
+      ),
+    ),
     RTE.matchEW(
       error =>
         RT.of(
@@ -184,7 +181,7 @@ const handlePublishForm = ({
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
-        getPseudonymPersona(user.orcid),
+        EffectToFpts.toReaderTaskEither(Prereviewers.getPseudonymPersona(user.orcid)),
         RTE.chainW(pseudonymPersona =>
           addAuthorToPrereview(invite.review, { orcidId: user.orcid, pseudonym: pseudonymPersona.pseudonym }, persona),
         ),
