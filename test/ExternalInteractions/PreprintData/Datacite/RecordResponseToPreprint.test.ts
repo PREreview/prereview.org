@@ -2,7 +2,6 @@ import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
@@ -21,6 +20,7 @@ import {
   RadialPreprintId,
   ZenodoPreprintId,
 } from '../../../../src/Preprints/index.ts'
+import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
 

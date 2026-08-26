@@ -1,6 +1,5 @@
-import * as Doi from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { Doi, Uuid } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/WriteCommentFlow/PublishedPage/PublishedPage.ts'
 import { expect, test } from '../../base.ts'
 

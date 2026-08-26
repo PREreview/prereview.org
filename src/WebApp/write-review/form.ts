@@ -1,4 +1,3 @@
-import { isDoi } from 'doi-ts'
 import { flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -29,6 +28,7 @@ import {
   writeReviewShouldReadMatch,
   writeReviewUseOfAiMatch,
 } from '../../routes.ts'
+import { isDoi } from '../../types/Doi.ts'
 import { EmailAddressC } from '../../types/EmailAddress.ts'
 import { NameC } from '../../types/Name.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'

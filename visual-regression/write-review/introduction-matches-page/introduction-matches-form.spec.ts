@@ -1,9 +1,9 @@
-import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../../src/form.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import { Doi } from '../../../src/types/Doi.ts'
 import { introductionMatchesForm } from '../../../src/WebApp/write-review/introduction-matches-page/introduction-matches-form.ts'
 import { expect, test } from '../../base.ts'
 

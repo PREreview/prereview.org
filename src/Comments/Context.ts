@@ -1,7 +1,7 @@
-import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type Option } from 'effect'
 import type { Html } from '../html.ts'
 import type { UnableToQuery } from '../Queries.ts'
+import type { Doi } from '../types/Doi.ts'
 import type { NonEmptyString, Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { CommentCommand } from './Commands.ts'

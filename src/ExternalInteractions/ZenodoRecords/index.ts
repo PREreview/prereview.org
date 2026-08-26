@@ -1,10 +1,9 @@
 import type { HttpClient } from '@effect/platform'
-import type * as Doi from 'doi-ts'
 import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
 import * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
-import type { OrcidId, Pseudonym } from '../../types/index.ts'
+import type { Doi, OrcidId, Pseudonym } from '../../types/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as ReviewPage from '../../WebApp/review-page/comments.ts'
 import { addCommentText } from './AddCommentText.ts'

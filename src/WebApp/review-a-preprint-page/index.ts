@@ -1,4 +1,3 @@
-import { type Doi, isDoi, parse } from 'doi-ts'
 import { Array, Option, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -12,6 +11,7 @@ import { type ResolvePreprintIdEnv, resolvePreprintId } from '../../preprint.ts'
 import { type IndeterminatePreprintId, PreprintDoiD, fromPreprintDoi, fromUrl } from '../../Preprints/index.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { writeReviewMatch } from '../../routes.ts'
+import { type Doi, isDoi, parse } from '../../types/Doi.ts'
 import { type PageResponse, RedirectResponse } from '../Response/index.ts'
 import { failureMessage } from './failure-message.ts'
 import { notAPreprintPage } from './not-a-preprint-page.ts'
@@ -75,7 +75,7 @@ const parseWhichPreprint = flow(
       getInput('preprint'),
       Option.flatMap(input =>
         pipe(
-          FptsToEffect.option(parse(input)),
+          parse(input),
           Option.map(unsupportedDoiE),
           Option.orElse(() =>
             pipe(Option.getRight(FptsToEffect.either(UrlD.decode(input))), Option.map(unsupportedUrlE)),

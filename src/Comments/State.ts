@@ -1,6 +1,6 @@
-import type { Doi } from 'doi-ts'
 import { Data, type Option } from 'effect'
 import type { Html } from '../html.ts'
+import type { Doi } from '../types/Doi.ts'
 import type { NonEmptyString } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 

@@ -1,6 +1,6 @@
-import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'
+import { Doi } from '../../src/types/Doi.ts'
 import { createUnknownPreprintWithDoiPage } from '../../src/WebApp/review-a-preprint-page/unknown-preprint-with-doi-page.ts'
 import { expect, test } from '../base.ts'
 

@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Doi } from 'doi-ts'
 import { Array, Effect, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -21,6 +20,7 @@ import * as _ from '../../../src/WebApp/review-a-preprint-page/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import type { ResolvePreprintIdEnv } from '../../../src/preprint.ts'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../../src/routes.ts'
+import { Doi } from '../../../src/types/Doi.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 

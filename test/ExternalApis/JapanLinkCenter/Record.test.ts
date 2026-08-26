@@ -1,9 +1,9 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { Effect, pipe, Tuple } from 'effect'
 import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.ts'
+import { Doi } from '../../../src/types/Doi.ts'
 import * as fc from '../../fc.ts'
 
 describe('GetRecord', () => {

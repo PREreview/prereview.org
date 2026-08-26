@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -16,6 +15,7 @@ import {
   authorInvitePublishedMatch,
   reviewMatch,
 } from '../../routes.ts'
+import type { Doi } from '../../types/Doi.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'

@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -10,6 +9,7 @@ import * as Routes from '../../routes.ts'
 import { reviewAPreprintMatch } from '../../routes.ts'
 import { errorPrefix } from '../../shared-translation-elements.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import type { Doi } from '../../types/Doi.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export type SubmittedWhichPreprint = E.Either<InvalidE, Doi>

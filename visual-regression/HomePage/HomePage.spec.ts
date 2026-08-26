@@ -1,5 +1,4 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { rawHtml } from '../../src/html.ts'
@@ -8,6 +7,7 @@ import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId
 import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
+import { Doi } from '../../src/types/Doi.ts'
 import { Name, OrcidId, Pseudonym, Slug, Uuid } from '../../src/types/index.ts'
 import { createPage } from '../../src/WebApp/HomePage/HomePage.ts'
 import { expect, test } from '../base.ts'

@@ -1,9 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
+import { Doi } from '../../src/types/Doi.ts'
 import * as _ from '../../src/WebApp/ReviewRequestsPage/PageOfReviewRequests.ts'
 import { expect, test } from '../base.ts'
 

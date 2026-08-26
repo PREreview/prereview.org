@@ -1,6 +1,5 @@
 import { UrlParams } from '@effect/platform'
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Doi } from 'doi-ts'
 import { Array, Effect, Either, Layer, Option, Tuple } from 'effect'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import {
@@ -16,6 +15,7 @@ import {
   PreprintIsNotFound,
   PreprintIsUnavailable,
 } from '../../../../src/Preprints/index.ts'
+import { Doi } from '../../../../src/types/Doi.ts'
 import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/MakeDecision.ts'
 import * as RequestAReviewForm from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/RequestAReviewForm.ts'
 import * as fc from '../../../fc.ts'

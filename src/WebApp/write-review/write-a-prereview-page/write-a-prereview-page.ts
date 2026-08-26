@@ -1,4 +1,3 @@
-import { isDoi } from 'doi-ts'
 import { Array, Boolean, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
@@ -9,6 +8,7 @@ import type { Preprint } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
+import { isDoi } from '../../../types/Doi.ts'
 import { PageResponse } from '../../Response/index.ts'
 
 export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedIn: boolean) =>

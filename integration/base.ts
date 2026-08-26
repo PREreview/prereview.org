@@ -14,7 +14,6 @@ import {
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
 } from '@playwright/test'
-import { Doi } from 'doi-ts'
 import { Config, Effect, Fiber, Layer, Logger, LogLevel, Option, pipe, Redacted, Schedule } from 'effect'
 import fetchMock, { type FetchMock } from 'fetch-mock'
 import * as fs from 'fs/promises'
@@ -65,6 +64,7 @@ import { SlackOauth } from '../src/SlackOauth.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
+import { Doi } from '../src/types/Doi.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { Uuid } from '../src/types/index.ts'
 import { Name } from '../src/types/Name.ts'

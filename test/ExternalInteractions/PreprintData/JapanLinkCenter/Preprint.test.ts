@@ -1,11 +1,11 @@
 import { describe, expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { Either } from 'effect'
 import { JapanLinkCenter } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/Preprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
 import { JxivPreprintId, Preprint } from '../../../../src/Preprints/index.ts'
+import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import * as fc from '../../../fc.ts'
 

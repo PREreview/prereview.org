@@ -8,7 +8,6 @@ import {
   UrlParams,
 } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import {
   Arbitrary,
   Array,
@@ -124,6 +123,7 @@ import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
+import { Doi, hasRegistrant, isDoi } from '../src/types/Doi.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'

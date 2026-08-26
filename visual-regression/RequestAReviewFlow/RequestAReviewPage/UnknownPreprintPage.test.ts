@@ -1,6 +1,6 @@
-import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, PhilsciPreprintId } from '../../../src/Preprints/index.ts'
+import { Doi } from '../../../src/types/Doi.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/UnknownPreprintPage.ts'
 import { expect, test } from '../../base.ts'
 

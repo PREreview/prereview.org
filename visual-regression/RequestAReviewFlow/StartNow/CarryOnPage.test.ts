@@ -1,7 +1,7 @@
-import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import * as Routes from '../../../src/routes.ts'
+import { Doi } from '../../../src/types/Doi.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/StartNow/CarryOnPage.ts'
 import { expect, test } from '../../base.ts'
 

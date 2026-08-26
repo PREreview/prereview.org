@@ -1,7 +1,7 @@
-import { Doi } from 'doi-ts'
 import { Duration } from 'effect'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
+import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base.ts'
 

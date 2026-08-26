@@ -1,7 +1,7 @@
-import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
+import { Doi } from '../../src/types/Doi.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 import { authorInvitePublished } from '../../src/WebApp/author-invite-flow/index.ts'
