@@ -71,8 +71,6 @@ describe('myDetails', () => {
                 getUserOnboarding: () => TE.right(userOnboarding),
                 isOpenForRequests: () => TE.fromEither(isOpenForRequests),
                 saveUserOnboarding: shouldNotBeCalled,
-                getPublicPersona: () => TE.right(publicPersona),
-                getPseudonymPersona: () => TE.right(pseudonymPersona),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
                 runtime,
@@ -95,6 +93,8 @@ describe('myDetails', () => {
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasOptedIn()),
+                getPublicPersona: () => Effect.succeed(publicPersona),
+                getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
             ]),
           ),
@@ -151,8 +151,6 @@ describe('myDetails', () => {
                 getUserOnboarding: () => TE.right(userOnboarding),
                 isOpenForRequests: () => TE.fromEither(isOpenForRequests),
                 saveUserOnboarding,
-                getPublicPersona: () => TE.right(publicPersona),
-                getPseudonymPersona: () => TE.right(pseudonymPersona),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
                 runtime,
@@ -176,6 +174,8 @@ describe('myDetails', () => {
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasOptedOut()),
+                getPublicPersona: () => Effect.succeed(publicPersona),
+                getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
             ]),
           ),
@@ -230,8 +230,6 @@ describe('myDetails', () => {
                 getUserOnboarding: () => TE.right(userOnboarding),
                 isOpenForRequests: () => TE.fromEither(isOpenForRequests),
                 saveUserOnboarding: () => TE.left('unavailable'),
-                getPublicPersona: () => TE.right(publicPersona),
-                getPseudonymPersona: () => TE.right(pseudonymPersona),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
                 runtime,
@@ -252,6 +250,8 @@ describe('myDetails', () => {
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasNotOptedIn()),
+                getPublicPersona: () => Effect.succeed(publicPersona),
+                getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
             ]),
           ),
@@ -305,8 +305,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.left('unavailable'),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -327,6 +325,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -379,8 +379,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -401,6 +399,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -453,8 +453,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -475,6 +473,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -527,8 +527,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -549,6 +547,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -601,8 +601,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.left('unavailable'),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -623,6 +621,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -675,8 +675,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -697,6 +695,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -749,8 +749,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -771,6 +769,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -823,8 +823,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -845,6 +843,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -897,8 +897,6 @@ describe('myDetails', () => {
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.fromEither(isOpenForRequests),
               saveUserOnboarding: shouldNotBeCalled,
-              getPublicPersona: () => TE.right(publicPersona),
-              getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               runtime,
@@ -919,6 +917,8 @@ describe('myDetails', () => {
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
           ]),
         ),
@@ -941,8 +941,6 @@ describe('myDetails', () => {
           getUserOnboarding: shouldNotBeCalled,
           isOpenForRequests: shouldNotBeCalled,
           saveUserOnboarding: shouldNotBeCalled,
-          getPublicPersona: shouldNotBeCalled,
-          getPseudonymPersona: shouldNotBeCalled,
           clock: SystemClock,
           logger: () => IO.of(undefined),
           runtime,

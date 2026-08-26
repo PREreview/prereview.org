@@ -12,7 +12,6 @@ import { maybeGetLanguages } from '../../languages.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { maybeGetLocation } from '../../location.ts'
 import { maybeGetOrcidToken } from '../../orcid-token.ts'
-import { getPseudonymPersona, getPublicPersona } from '../../persona.ts'
 import { Prereviewers } from '../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
@@ -33,8 +32,24 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
       pipe(
         RTE.Do,
         RTE.let('locale', () => locale),
-        RTE.apSW('publicPersona', getPublicPersona(user.orcid)),
-        RTE.apSW('pseudonymPersona', getPseudonymPersona(user.orcid)),
+        RTE.apSW(
+          'publicPersona',
+          EffectToFpts.toReaderTaskEither(
+            Effect.gen(function* () {
+              const prereviewers = yield* Prereviewers
+              return yield* prereviewers.getPublicPersona(user.orcid)
+            }),
+          ),
+        ),
+        RTE.apSW(
+          'pseudonymPersona',
+          EffectToFpts.toReaderTaskEither(
+            Effect.gen(function* () {
+              const prereviewers = yield* Prereviewers
+              return yield* prereviewers.getPseudonymPersona(user.orcid)
+            }),
+          ),
+        ),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
         RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
