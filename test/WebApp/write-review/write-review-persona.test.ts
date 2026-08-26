@@ -1,15 +1,15 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Tuple } from 'effect'
+import { Effect, Layer, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { CompletedFormC } from '../../../src/WebApp/write-review/completed-form.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewPersona', () => {
@@ -32,12 +32,13 @@ describe('writeReviewPersona', () => {
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
 
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: () => TE.right(publicPersona),
-            getPseudonymPersona: () => TE.right(pseudonymPersona),
+            runtime,
           }),
         )
 
@@ -49,7 +50,14 @@ describe('writeReviewPersona', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Prereviewers, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -69,12 +77,13 @@ describe('writeReviewPersona', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: () => TE.right(publicPersona),
-            getPseudonymPersona: () => TE.right(pseudonymPersona),
+            runtime,
           }),
         )
 
@@ -86,7 +95,14 @@ describe('writeReviewPersona', () => {
           status: StatusCodes.SeeOther,
           location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
         })
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Prereviewers, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -94,12 +110,13 @@ describe('writeReviewPersona', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method, id: preprintId, user })({
             formStore: new Keyv(),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            getPseudonymPersona: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -108,7 +125,7 @@ describe('writeReviewPersona', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
   )
 
   it.effect.prop(
@@ -116,12 +133,13 @@ describe('writeReviewPersona', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method, id: preprintId, user })({
             formStore: new Keyv(),
             getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-            getPublicPersona: shouldNotBeCalled,
-            getPseudonymPersona: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -133,7 +151,7 @@ describe('writeReviewPersona', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
   )
 
   it.effect.prop(
@@ -141,12 +159,13 @@ describe('writeReviewPersona', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method, id: preprintId, user })({
             formStore: new Keyv(),
             getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-            getPublicPersona: shouldNotBeCalled,
-            getPseudonymPersona: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -158,7 +177,7 @@ describe('writeReviewPersona', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
   )
 
   it.effect.prop(
@@ -166,12 +185,13 @@ describe('writeReviewPersona', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method, id: preprintId, user: undefined })({
             formStore: new Keyv(),
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: shouldNotBeCalled,
-            getPseudonymPersona: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -180,7 +200,7 @@ describe('writeReviewPersona', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
   )
 
   it.effect.prop(
@@ -200,12 +220,13 @@ describe('writeReviewPersona', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
             formStore,
             getPreprintTitle: () => TE.right(preprintTitle),
-            getPublicPersona: () => TE.right(publicPersona),
-            getPseudonymPersona: () => TE.right(pseudonymPersona),
+            runtime,
           }),
         )
 
@@ -218,6 +239,13 @@ describe('writeReviewPersona', () => {
           skipToLabel: 'form',
           js: ['error-summary.js'],
         })
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Prereviewers, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+        ),
+      ),
   )
 })

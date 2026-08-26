@@ -7,15 +7,10 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import {
-  type GetPseudonymPersonaEnv,
-  type GetPublicPersonaEnv,
-  getPseudonymPersona,
-  getPublicPersona,
-} from '../../../persona.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -36,7 +31,7 @@ export const writeReviewPersona = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetPublicPersonaEnv & GetPseudonymPersonaEnv & FormStoreEnv,
+  EffectToFpts.EffectEnv<Prereviewers.Prereviewers> & GetPreprintTitleEnv & FormStoreEnv,
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -55,8 +50,14 @@ export const writeReviewPersona = ({
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
-          RTE.bindW('publicPersona', ({ user }) => getPublicPersona(user.orcid)),
-          RTE.bindW('pseudonymPersona', ({ user }) => getPseudonymPersona(user.orcid)),
+          RTE.bindW(
+            'publicPersona',
+            EffectToFpts.toReaderTaskEitherK(({ user }) => Prereviewers.getPublicPersona(user.orcid)),
+          ),
+          RTE.bindW(
+            'pseudonymPersona',
+            EffectToFpts.toReaderTaskEitherK(({ user }) => Prereviewers.getPseudonymPersona(user.orcid)),
+          ),
           RTE.matchE(
             error =>
               RT.of(
