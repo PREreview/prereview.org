@@ -37,7 +37,7 @@ import {
 import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
-import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from '../../preprint.ts'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
@@ -784,7 +784,7 @@ export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
 function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  F.FetchEnv & GetClubByNameEnv & GetPreprintEnv & L.LoggerEnv,
+  EffectToFpts.EffectEnv<Preprints.Preprints> & F.FetchEnv & GetClubByNameEnv & L.LoggerEnv,
   | 'text-not-found'
   | 'no reviewed preprint'
   | PreprintIsUnavailable
@@ -812,7 +812,7 @@ function recordToPrereview(
           pipe(Option.fromNullable(record.metadata.notes), Option.map(sanitizeHtml), Option.getOrUndefined),
         ),
         authors: RTE.right<
-          F.FetchEnv & GetClubByNameEnv & GetPreprintEnv & L.LoggerEnv,
+          EffectToFpts.EffectEnv<Preprints.Preprints> & F.FetchEnv & GetClubByNameEnv & L.LoggerEnv,
           PreprintIsUnavailable | PreprintIsNotFound | 'text-unavailable'
         >(getAuthors(record) as never),
         club: RTE.rightReaderTask(pipe(getReviewClub(record), RT.map(Option.getOrUndefined))),
@@ -831,7 +831,7 @@ function recordToPrereview(
           toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
         preprint: pipe(
-          getPreprint(preprintId),
+          EffectToFpts.toReaderTaskEither(Preprints.getPreprint(preprintId)),
           RTE.map(preprint => ({
             id: preprint.id,
             title: preprint.title.text,

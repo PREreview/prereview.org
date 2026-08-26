@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
-import { Array, Effect, Match, Option, pipe, String } from 'effect'
+import { Array, Effect, Layer, Match, Option, pipe, String } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -26,7 +26,7 @@ import {
 import type { ClubName } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import type * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import { reviewMatch } from '../../../src/routes.ts'
@@ -775,7 +775,9 @@ describe('getPrereviewFromZenodo', () => {
           },
         }
 
-        const getPreprint = vi.fn(_ => TE.right(preprint))
+        const getPreprint = vi.fn(_ => Effect.succeed(preprint))
+
+        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprint }))
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -794,8 +796,8 @@ describe('getPrereviewFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: club ? () => T.of(Option.some(club)) : shouldNotBeCalled,
-            getPreprint,
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
@@ -832,19 +834,21 @@ describe('getPrereviewFromZenodo', () => {
     Effect.gen(function* () {
       const wasPrereviewRemoved = vi.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(_ => true)
 
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
           clock: SystemClock,
           fetch: shouldNotBeCalled,
           getClubByName: shouldNotBeCalled,
-          getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
+          runtime,
           wasPrereviewRemoved,
         }),
       )
 
       expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewWasRemoved()))
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -852,6 +856,8 @@ describe('getPrereviewFromZenodo', () => {
     [fc.integer(), fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone)],
     ([id, status]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
@@ -864,14 +870,14 @@ describe('getPrereviewFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
 
         expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -926,20 +932,22 @@ describe('getPrereviewFromZenodo', () => {
           })
           .getOnce('http://example.com/review.html/content', { status: textStatus })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: () => TE.right(preprint),
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
 
         expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
 
   it.effect.prop('when the review cannot be loaded', [fc.integer()], ([id]) =>
@@ -949,20 +957,22 @@ describe('getPrereviewFromZenodo', () => {
         status: StatusCodes.ServiceUnavailable,
       })
 
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
           clock: SystemClock,
           fetch: (...args) => fetch.fetchHandler(...args),
           getClubByName: shouldNotBeCalled,
-          getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
+          runtime,
           wasPrereviewRemoved: () => false,
         }),
       )
 
       expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
       expect(fetch.callHistory.done()).toBeTruthy()
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -1019,13 +1029,15 @@ describe('getPrereviewFromZenodo', () => {
           })
           .getOnce('http://example.com/review.html/content', { body: 'Some text' })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: () => TE.left(error),
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
@@ -1038,7 +1050,7 @@ describe('getPrereviewFromZenodo', () => {
           ),
         )
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => error }))),
   )
 
   it.effect.prop('when the record is restricted', [fc.integer(), fc.preprintDoi()], ([id, preprintDoi]) =>
@@ -1084,6 +1096,8 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
           clock: SystemClock,
@@ -1096,14 +1110,14 @@ describe('getPrereviewFromZenodo', () => {
               })
               .fetchHandler(...args),
           getClubByName: shouldNotBeCalled,
-          getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
+          runtime,
           wasPrereviewRemoved: () => false,
         }),
       )
 
       expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop('when the record is not in the community', [fc.integer(), fc.preprintDoi()], ([id, preprintDoi]) =>
@@ -1148,6 +1162,8 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
           clock: SystemClock,
@@ -1160,14 +1176,14 @@ describe('getPrereviewFromZenodo', () => {
               })
               .fetchHandler(...args),
           getClubByName: shouldNotBeCalled,
-          getPreprint: shouldNotBeCalled,
           logger: () => IO.of(undefined),
+          runtime,
           wasPrereviewRemoved: () => false,
         }),
       )
 
       expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -1239,6 +1255,8 @@ describe('getPrereviewFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
@@ -1251,14 +1269,14 @@ describe('getPrereviewFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
 
         expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -1312,20 +1330,22 @@ describe('getPrereviewFromZenodo', () => {
           status: StatusCodes.OK,
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
 
         expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -1374,6 +1394,8 @@ describe('getPrereviewFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
@@ -1386,14 +1408,14 @@ describe('getPrereviewFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: shouldNotBeCalled,
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
 
         expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -1452,20 +1474,22 @@ describe('getPrereviewFromZenodo', () => {
           status: StatusCodes.OK,
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprint: () => TE.right(preprint),
             logger: () => IO.of(undefined),
+            runtime,
             wasPrereviewRemoved: () => false,
           }),
         )
 
         expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
 })
 

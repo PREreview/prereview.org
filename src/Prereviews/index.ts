@@ -71,14 +71,19 @@ export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<Clubs | DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers>(),
+      Effect.context<
+        | Clubs
+        | DatasetReviews.DatasetReviewQueries
+        | Datasets.Datasets
+        | Prereviewers.Prereviewers
+        | Preprints.Preprints
+      >(),
       Context.omit(Scope.Scope),
     )
     const clubs = yield* Clubs
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
-    const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
@@ -240,16 +245,18 @@ export const layer = Layer.effect(
 
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
+        const runtime = yield* Effect.runtime<Preprints.Preprints>()
+
         return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
           fetch,
           getClubByName,
-          getPreprint,
+          runtime,
           wasPrereviewRemoved,
           zenodoApiKey: Redacted.value(zenodoApi.key),
           zenodoUrl: zenodoApi.origin,
           ...loggerEnv,
         })
-      }),
+      }, Effect.provide(context)),
       search: Effect.fn('Prereviews.search')(
         function* (args) {
           yield* Effect.annotateCurrentSpan({ args })
