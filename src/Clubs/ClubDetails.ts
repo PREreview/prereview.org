@@ -791,6 +791,35 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     contact: EmailAddress('lab239@exeter.ac.uk'),
   },
   {
+    id: Uuid('b559a9c4-9570-4f28-92c9-69ee401ef92c'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('Microbiology Nexus'),
+    },
+    slug: Slug('microbiology-nexus'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          Microbiology Nexus is a scholarly review group focused on advancing critical discussion and constructive
+          evaluation of research across the broad field of microbiology. The group brings together researchers,
+          educators, and microbiology enthusiasts to identify important findings, discuss emerging concepts, and promote
+          rigorous scientific communication.
+        </p>
+        <p>
+          Microbiology Nexus is a collaborative platform to review and discuss microbiology research, with an emphasis
+          on scientific rigor, methodological quality, biological significance and emerging trends in the field. The
+          group encourages constructive peer discussion based on evidence and keeps members up to date with developments
+          in microbiology and related fields.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-08-26'),
+    leads: [OrcidId('0000-0002-5258-9414')],
+    joinLink: new URL('https://forms.gle/qYjVPP6GajiaVSkr5'),
+  },
+  {
     id: Uuid('46ed1601-a895-4703-9661-e06893017c5c'),
     status: 'inactive',
     name: {
