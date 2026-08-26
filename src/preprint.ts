@@ -1,17 +1,6 @@
-import type { Array } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type * as Preprints from './Preprints/index.ts'
-
-/** @deprecated */
-export interface ResolvePreprintIdEnv {
-  resolvePreprintId: (
-    ...ids: Array.NonEmptyReadonlyArray<Preprints.IndeterminatePreprintId>
-  ) => TE.TaskEither<
-    Preprints.NotAPreprint | Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable,
-    Preprints.PreprintId
-  >
-}
 
 /** @deprecated */
 export interface GetPreprintEnv {
@@ -26,12 +15,6 @@ export interface GetPreprintTitleEnv {
     id: Preprints.IndeterminatePreprintId,
   ) => TE.TaskEither<Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable, Preprints.PreprintTitle>
 }
-
-/** @deprecated */
-export const resolvePreprintId = (...ids: Array.NonEmptyReadonlyArray<Preprints.IndeterminatePreprintId>) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ resolvePreprintId }: ResolvePreprintIdEnv) => resolvePreprintId(...ids)),
-  )
 
 /** @deprecated */
 export const getPreprint = (
