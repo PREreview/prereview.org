@@ -2,10 +2,10 @@ import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintEnv, getPreprint } from '../../../preprint.ts'
-import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import { getPreprint, type IndeterminatePreprintId, type Preprints } from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -23,9 +23,9 @@ export const writeReviewStart = ({
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<GetPreprintEnv & FormStoreEnv, PageResponse | RedirectResponse | LogInResponse> =>
+}): RT.ReaderTask<EffectToFpts.EffectEnv<Preprints> & FormStoreEnv, PageResponse | RedirectResponse | LogInResponse> =>
   pipe(
-    getPreprint(id),
+    EffectToFpts.toReaderTaskEither(getPreprint(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
