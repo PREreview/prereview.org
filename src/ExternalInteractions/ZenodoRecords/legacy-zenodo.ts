@@ -38,14 +38,8 @@ import {
 import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
-import {
-  type GetPreprintEnv,
-  type GetPreprintIdEnv,
-  type GetPreprintTitleEnv,
-  getPreprint,
-  getPreprintId,
-  getPreprintTitle,
-} from '../../preprint.ts'
+import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from '../../preprint.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
   type NotAPreprint,
@@ -57,7 +51,7 @@ import {
   fromUrl,
 } from '../../Preprints/index.ts'
 import type * as Prereviewers from '../../Prereviewers/index.ts'
-import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
+import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as Prereview from '../../Prereviews/Prereview.ts'
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
@@ -884,13 +878,16 @@ function recordToPreprintPrereview(
 function recordToScietyPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  L.LoggerEnv & GetPreprintIdEnv & GetClubByNameEnv,
+  EffectToFpts.EffectEnv<Preprints.Preprints> & L.LoggerEnv & GetClubByNameEnv,
   'no reviewed preprint' | NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable,
   ScietyPrereview & ReviewsDataPrereview
 > {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintId', flow(getReviewedPreprintId, RTE.chainW(getPreprintId))),
+    RTE.bindW(
+      'preprintId',
+      flow(getReviewedPreprintId, RTE.chainW(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId))),
+    ),
     RTE.chainW(review =>
       pipe(
         RTE.rightReaderTask(

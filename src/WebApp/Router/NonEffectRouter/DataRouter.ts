@@ -7,7 +7,6 @@ import { Clubs } from '../../../Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -54,7 +53,7 @@ export const DataRouter = pipe(
               ),
               env.runtime,
             ),
-            getPreprintId: EffectToFpts.toTaskEitherK(Preprints.getPreprintId, env.runtime),
+            runtime: env.runtime,
             zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
             zenodoUrl: env.zenodoApiConfig.origin,
             ...env.logger,
