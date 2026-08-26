@@ -17,12 +17,8 @@ import {
 import { missingE } from '../../../form.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import {
-  type GetPseudonymPersonaEnv,
-  type GetPublicPersonaEnv,
-  getPseudonymPersona,
-  getPublicPersona,
-} from '../../../persona.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -67,7 +63,7 @@ export const authorInvitePersona = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv & GetPublicPersonaEnv & GetPseudonymPersonaEnv,
+  EffectToFpts.EffectEnv<Prereviewers.Prereviewers> & GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -114,8 +110,11 @@ export const authorInvitePersona = ({
           .with({ method: P.string }, ({ invite, user, locale }) =>
             pipe(
               RTE.Do,
-              RTE.apS('publicPersona', getPublicPersona(user.orcid)),
-              RTE.apSW('pseudonymPersona', getPseudonymPersona(user.orcid)),
+              RTE.apS('publicPersona', EffectToFpts.toReaderTaskEither(Prereviewers.getPublicPersona(user.orcid))),
+              RTE.apSW(
+                'pseudonymPersona',
+                EffectToFpts.toReaderTaskEither(Prereviewers.getPseudonymPersona(user.orcid)),
+              ),
               RTE.matchW(
                 () => havingProblemsPage(locale),
                 ({ publicPersona, pseudonymPersona }) =>
@@ -164,8 +163,11 @@ const handlePersonaForm = ({
           .with({ persona: P.any }, form =>
             pipe(
               RTE.Do,
-              RTE.apS('publicPersona', getPublicPersona(user.orcid)),
-              RTE.apSW('pseudonymPersona', getPseudonymPersona(user.orcid)),
+              RTE.apS('publicPersona', EffectToFpts.toReaderTaskEither(Prereviewers.getPublicPersona(user.orcid))),
+              RTE.apSW(
+                'pseudonymPersona',
+                EffectToFpts.toReaderTaskEither(Prereviewers.getPseudonymPersona(user.orcid)),
+              ),
               RTE.matchW(
                 () => havingProblemsPage(locale),
                 ({ publicPersona, pseudonymPersona }) =>
