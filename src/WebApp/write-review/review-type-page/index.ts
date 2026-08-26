@@ -7,8 +7,13 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintEnv, getPreprint } from '../../../preprint.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import {
+  type IndeterminatePreprintId,
+  type PreprintTitle,
+  type Preprints,
+  getPreprint,
+} from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -36,11 +41,11 @@ export const writeReviewReviewType = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetPreprintEnv & FormStoreEnv,
+  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
   PageResponse | StreamlinePageResponse | RedirectResponse | LogInResponse
 > =>
   pipe(
-    getPreprint(id),
+    EffectToFpts.toReaderTaskEither(getPreprint(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
