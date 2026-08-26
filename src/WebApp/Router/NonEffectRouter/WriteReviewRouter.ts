@@ -424,7 +424,6 @@ export const WriteReviewRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         formStore: env.formStore,
-        getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
         popFromSession: withEnv(
           (key: string) =>

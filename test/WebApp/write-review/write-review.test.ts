@@ -1,9 +1,8 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewMatch, writeReviewStartMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
@@ -20,19 +19,16 @@ describe('writeReview', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
 
-          const actual = yield* Effect.promise(
-            _.writeReview({ id: preprintId, locale, user })({
-              formStore,
-              getPreprint: () => TE.right(preprint),
-            }),
-          )
+          const runtime = yield* Effect.runtime<Preprints>()
+
+          const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ formStore, runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
             status: StatusCodes.SeeOther,
             location: format(writeReviewStartMatch.formatter, { id: preprint.id }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
     )
 
     it.effect.prop(
@@ -40,11 +36,10 @@ describe('writeReview', () => {
       [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.user()],
       ([preprintId, preprint, locale, user]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Preprints>()
+
           const actual = yield* Effect.promise(
-            _.writeReview({ id: preprintId, locale, user })({
-              formStore: new Keyv(),
-              getPreprint: () => TE.right(preprint),
-            }),
+            _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -57,7 +52,7 @@ describe('writeReview', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
     )
 
     it.effect.prop(
@@ -76,11 +71,10 @@ describe('writeReview', () => {
       ],
       ([preprintId, locale, [user, preprint]]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Preprints>()
+
           const actual = yield* Effect.promise(
-            _.writeReview({ id: preprintId, locale, user })({
-              formStore: new Keyv(),
-              getPreprint: () => TE.right(preprint),
-            }),
+            _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -93,7 +87,7 @@ describe('writeReview', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
     )
   })
 
@@ -102,11 +96,10 @@ describe('writeReview', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale()],
     ([preprintId, preprint, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReview({ id: preprintId, locale, user: undefined })({
-            formStore: new Keyv(),
-            getPreprint: () => TE.right(preprint),
-          }),
+          _.writeReview({ id: preprintId, locale, user: undefined })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -119,7 +112,7 @@ describe('writeReview', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
 
   it.effect.prop(
@@ -127,11 +120,10 @@ describe('writeReview', () => {
     [fc.indeterminatePreprintId(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })],
     ([preprintId, locale, user]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReview({ id: preprintId, locale, user })({
-            formStore: new Keyv(),
-            getPreprint: () => TE.left(new PreprintIsUnavailable({})),
-          }),
+          _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -142,7 +134,7 @@ describe('writeReview', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => new PreprintIsUnavailable({}) }))),
   )
 
   it.effect.prop(
@@ -150,11 +142,10 @@ describe('writeReview', () => {
     [fc.indeterminatePreprintId(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })],
     ([preprintId, locale, user]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReview({ id: preprintId, locale, user })({
-            formStore: new Keyv(),
-            getPreprint: () => TE.left(new PreprintIsNotFound({})),
-          }),
+          _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -165,6 +156,6 @@ describe('writeReview', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => new PreprintIsNotFound({}) }))),
   )
 })
