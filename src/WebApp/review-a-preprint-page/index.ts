@@ -7,9 +7,9 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE } from '../../form.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { type ResolvePreprintIdEnv, resolvePreprintId } from '../../preprint.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import { type IndeterminatePreprintId, PreprintDoiD, fromPreprintDoi, fromUrl } from '../../Preprints/index.ts'
-import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
+import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { writeReviewMatch } from '../../routes.ts'
 import { type Doi, isDoi, parse } from '../../types/Doi.ts'
 import { type PageResponse, RedirectResponse } from '../Response/index.ts'
@@ -25,7 +25,7 @@ export const reviewAPreprint = (state: {
   body: unknown
   locale: SupportedLocale
   method: string
-}): RT.ReaderTask<ResolvePreprintIdEnv, PageResponse | RedirectResponse> =>
+}): RT.ReaderTask<EffectToFpts.EffectEnv<Preprints.Preprints>, PageResponse | RedirectResponse> =>
   match(state)
     .with({ method: 'POST', body: P.select() }, whichPreprint(state.locale))
     .otherwise(() => RT.of(createPage(E.right(undefined), state.locale)))
@@ -93,7 +93,7 @@ const whichPreprint = (locale: SupportedLocale) =>
     RTE.fromEitherK(parseWhichPreprint),
     RTE.chainW(preprint =>
       pipe(
-        resolvePreprintId(...preprint),
+        EffectToFpts.toReaderTaskEither(Preprints.resolvePreprintId(...preprint)),
         RTE.mapLeft(error =>
           match(error)
             .with({ _tag: 'PreprintIsNotFound' }, () => unknownPreprintE(Array.headNonEmpty(preprint)))

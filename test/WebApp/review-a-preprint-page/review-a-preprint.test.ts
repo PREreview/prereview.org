@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Array, Effect, Tuple } from 'effect'
+import { Array, Effect, Layer, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
@@ -14,15 +13,14 @@ import {
   OsfPreprintsPreprintId,
   PreprintIsNotFound,
   PreprintIsUnavailable,
+  Preprints,
 } from '../../../src/Preprints/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/review-a-preprint-page/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import type { ResolvePreprintIdEnv } from '../../../src/preprint.ts'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../../src/routes.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import * as fc from '../../fc.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('reviewAPreprint', () => {
   it.effect.prop(
@@ -30,9 +28,9 @@ describe('reviewAPreprint', () => {
     [fc.supportedLocale(), fc.requestMethod().filter(method => method !== 'POST'), fc.anything()],
     ([locale, method, body]) =>
       Effect.gen(function* () {
-        const actual = yield* Effect.promise(
-          _.reviewAPreprint({ locale, method, body })({ resolvePreprintId: shouldNotBeCalled }),
-        )
+        const runtime = yield* Effect.runtime<Preprints>()
+
+        const actual = yield* Effect.promise(_.reviewAPreprint({ locale, method, body })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -44,7 +42,7 @@ describe('reviewAPreprint', () => {
           skipToLabel: 'form',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   describe('with a POST request', () => {
@@ -67,12 +65,17 @@ describe('reviewAPreprint', () => {
       ],
       ([locale, [value, expected], resolved]) =>
         Effect.gen(function* () {
-          const resolvePreprintId = vi.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(resolved))
+          const resolvePreprintId = vi.fn<(typeof Preprints.Service)['resolvePreprintId']>(_ =>
+            Effect.succeed(resolved),
+          )
+
+          const runtime = yield* Effect.provide(
+            Effect.runtime<Preprints>(),
+            Layer.mock(Preprints, { resolvePreprintId }),
+          )
 
           const actual = yield* Effect.promise(
-            _.reviewAPreprint({ body: { preprint: value }, locale, method: 'POST' })({
-              resolvePreprintId,
-            }),
+            _.reviewAPreprint({ body: { preprint: value }, locale, method: 'POST' })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -138,11 +141,9 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const actual = yield* Effect.promise(
-            _.reviewAPreprint({ body, locale, method: 'POST' })({
-              resolvePreprintId: () => TE.left(new PreprintIsNotFound({})),
-            }),
-          )
+          const runtime = yield* Effect.runtime<Preprints>()
+
+          const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -152,7 +153,7 @@ describe('reviewAPreprint', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { resolvePreprintId: () => new PreprintIsNotFound({}) }))),
     )
 
     it.effect.prop(
@@ -160,11 +161,9 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const actual = yield* Effect.promise(
-            _.reviewAPreprint({ body, locale, method: 'POST' })({
-              resolvePreprintId: () => TE.left(new NotAPreprint({})),
-            }),
-          )
+          const runtime = yield* Effect.runtime<Preprints>()
+
+          const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -174,7 +173,7 @@ describe('reviewAPreprint', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { resolvePreprintId: () => new NotAPreprint({}) }))),
     )
 
     it.effect.prop(
@@ -182,11 +181,9 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const actual = yield* Effect.promise(
-            _.reviewAPreprint({ body, locale, method: 'POST' })({
-              resolvePreprintId: () => TE.left(new PreprintIsUnavailable({})),
-            }),
-          )
+          const runtime = yield* Effect.runtime<Preprints>()
+
+          const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -196,7 +193,7 @@ describe('reviewAPreprint', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { resolvePreprintId: () => new PreprintIsUnavailable({}) }))),
     )
 
     it.effect.prop(
@@ -204,11 +201,9 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.nonPreprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const actual = yield* Effect.promise(
-            _.reviewAPreprint({ body, locale, method: 'POST' })({
-              resolvePreprintId: shouldNotBeCalled,
-            }),
-          )
+          const runtime = yield* Effect.runtime<Preprints>()
+
+          const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -218,7 +213,7 @@ describe('reviewAPreprint', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
     )
 
     it.effect.prop(
@@ -226,11 +221,9 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.nonPreprintUrl().map(url => url.href) })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const actual = yield* Effect.promise(
-            _.reviewAPreprint({ body, locale, method: 'POST' })({
-              resolvePreprintId: shouldNotBeCalled,
-            }),
-          )
+          const runtime = yield* Effect.runtime<Preprints>()
+
+          const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -240,7 +233,7 @@ describe('reviewAPreprint', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
     )
   })
 
@@ -249,11 +242,9 @@ describe('reviewAPreprint', () => {
     [fc.supportedLocale(), fc.record({ preprint: fc.string() }, { requiredKeys: [] })],
     ([locale, body]) =>
       Effect.gen(function* () {
-        const actual = yield* Effect.promise(
-          _.reviewAPreprint({ body, locale, method: 'POST' })({
-            resolvePreprintId: shouldNotBeCalled,
-          }),
-        )
+        const runtime = yield* Effect.runtime<Preprints>()
+
+        const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -265,6 +256,6 @@ describe('reviewAPreprint', () => {
           skipToLabel: 'form',
           js: ['error-summary.js'],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 })

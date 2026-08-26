@@ -371,9 +371,7 @@ const routerWithoutHyperTs = pipe(
       Routes.reviewAPreprintMatch.parser,
       P.map(
         () => (env: Env) =>
-          reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({
-            resolvePreprintId: EffectToFpts.toTaskEitherK(Preprints.resolvePreprintId, env.runtime),
-          }),
+          reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({ runtime: env.runtime }),
       ),
     ),
     pipe(
