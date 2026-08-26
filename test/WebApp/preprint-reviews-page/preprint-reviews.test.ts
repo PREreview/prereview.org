@@ -1,11 +1,10 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/preprint-reviews-page/index.ts'
-import type { GetPreprintEnv } from '../../../src/preprint.ts'
 import { preprintReviewsMatch } from '../../../src/routes.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
@@ -57,15 +56,17 @@ describe('preprintReviews', () => {
     ],
     ([locale, preprint, prereviews, rapidPrereviews]) =>
       Effect.gen(function* () {
-        const getPreprint = vi.fn<GetPreprintEnv['getPreprint']>(_ => TE.right(preprint))
+        const getPreprint = vi.fn<(typeof Preprints.Service)['getPreprint']>(_ => Effect.succeed(preprint))
         const getPrereviews = vi.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
         const getRapidPrereviews = vi.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
 
+        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprint }))
+
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprint.id, locale })({
-            getPreprint,
             getPrereviews,
             getRapidPrereviews,
+            runtime,
           }),
         )
 
@@ -92,11 +93,13 @@ describe('preprintReviews', () => {
     [fc.supportedLocale(), fc.indeterminatePreprintId()],
     ([locale, preprintId]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprintId, locale })({
-            getPreprint: () => TE.left(new PreprintIsNotFound({})),
             getPrereviews: shouldNotBeCalled,
             getRapidPrereviews: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -108,7 +111,7 @@ describe('preprintReviews', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => new PreprintIsNotFound({}) }))),
   )
 
   it.effect.prop(
@@ -116,11 +119,13 @@ describe('preprintReviews', () => {
     [fc.supportedLocale(), fc.indeterminatePreprintId()],
     ([locale, preprintId]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprintId, locale })({
-            getPreprint: () => TE.left(new PreprintIsUnavailable({})),
             getPrereviews: shouldNotBeCalled,
             getRapidPrereviews: shouldNotBeCalled,
+            runtime,
           }),
         )
 
@@ -132,7 +137,7 @@ describe('preprintReviews', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => new PreprintIsUnavailable({}) }))),
   )
 
   it.effect.prop(
@@ -162,11 +167,13 @@ describe('preprintReviews', () => {
     ],
     ([locale, preprint, rapidPrereviews]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprint.id, locale })({
-            getPreprint: () => TE.right(preprint),
             getPrereviews: () => TE.left('unavailable'),
             getRapidPrereviews: () => TE.right(rapidPrereviews),
+            runtime,
           }),
         )
 
@@ -178,7 +185,7 @@ describe('preprintReviews', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
 
   it.effect.prop(
@@ -209,11 +216,13 @@ describe('preprintReviews', () => {
     ],
     ([locale, preprint, prereviews]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprint.id, locale })({
-            getPreprint: () => TE.right(preprint),
             getPrereviews: () => TE.right(prereviews),
             getRapidPrereviews: () => TE.left('unavailable'),
+            runtime,
           }),
         )
 
@@ -229,6 +238,6 @@ describe('preprintReviews', () => {
           main: expect.anything(),
           type: 'preprint',
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
 })

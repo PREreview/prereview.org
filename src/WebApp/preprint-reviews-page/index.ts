@@ -3,8 +3,8 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { type GetPreprintEnv, getPreprint } from '../../preprint.ts'
-import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
+import { type IndeterminatePreprintId, type Preprints, getPreprint } from '../../Preprints/index.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { pageNotFound } from '../http-error.ts'
 import type { PageResponse, TwoUpPageResponse } from '../Response/index.ts'
 import { failureMessage } from './failure-message.ts'
@@ -21,9 +21,12 @@ export const preprintReviews = ({
 }: {
   id: IndeterminatePreprintId
   locale: SupportedLocale
-}): RT.ReaderTask<GetPreprintEnv & GetPrereviewsEnv & GetRapidPrereviewsEnv, PageResponse | TwoUpPageResponse> =>
+}): RT.ReaderTask<
+  EffectToFpts.EffectEnv<Preprints> & GetPrereviewsEnv & GetRapidPrereviewsEnv,
+  PageResponse | TwoUpPageResponse
+> =>
   pipe(
-    getPreprint(id),
+    EffectToFpts.toReaderTaskEither(getPreprint(id)),
     RTE.chainW(preprint =>
       pipe(
         RTE.Do,

@@ -47,7 +47,7 @@ import * as Keyv from '../../../keyv.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import type * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { PublicUrl } from '../../../public-url.ts'
@@ -279,7 +279,6 @@ const routerWithoutHyperTs = pipe(
         ({ id }) =>
           (env: Env) =>
             preprintReviews({ id, locale: env.locale })({
-              getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
                   Prereviews.getForPreprint,
@@ -294,6 +293,7 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
+              runtime: env.runtime,
             }),
       ),
     ),
