@@ -7,8 +7,7 @@ import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
 import { ZenodoRecords } from '../ExternalInteractions/index.ts'
-import type { PreprintId } from '../Preprints/index.ts'
-import * as Preprints from '../Preprints/index.ts'
+import type { PreprintId, Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
@@ -72,18 +71,13 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
       Effect.context<
-        | Clubs
-        | DatasetReviews.DatasetReviewQueries
-        | Datasets.Datasets
-        | Prereviewers.Prereviewers
-        | Preprints.Preprints
+        Clubs | DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers | Preprints
       >(),
       Context.omit(Scope.Scope),
     )
     const clubs = yield* Clubs
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
-    const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
@@ -99,13 +93,15 @@ export const layer = Layer.effect(
       getFiveMostRecent: Effect.gen(function* () {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         return yield* pipe(
           FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
             fetch,
             getClubByName,
-            getPreprintTitle,
             ...loggerEnv,
             publicUrl,
+            runtime,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
           }),
@@ -124,10 +120,9 @@ export const layer = Layer.effect(
             ),
           ),
           Effect.orElseSucceed(Array.empty),
-          Effect.provide(context),
           Effect.withSpan('Prereviews.getFiveMostRecent'),
         )
-      }),
+      }).pipe(Effect.provide(context)),
       getForClub: Effect.fn('Prereviews.getForClub')(
         function* (id) {
           yield* Effect.annotateCurrentSpan({ id })
@@ -136,11 +131,13 @@ export const layer = Layer.effect(
 
           const club = yield* clubs.getClubDetails(id)
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(club), {
             fetch,
             getClubByName,
-            getPreprintTitle,
             publicUrl,
+            runtime,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
             ...loggerEnv,
@@ -181,11 +178,13 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForProfileFromZenodo(profile), {
             fetch,
             getClubByName,
-            getPreprintTitle,
             publicUrl,
+            runtime,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
             ...loggerEnv,
@@ -213,13 +212,15 @@ export const layer = Layer.effect(
 
           const { pseudonym } = yield* Prereviewers.getPseudonymPersona(user)
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           return yield* FptsToEffect.readerTaskEither(
             ZenodoRecords.getPrereviewsForUserFromZenodo({ orcidId: user, pseudonym }),
             {
               fetch,
               getClubByName,
-              getPreprintTitle,
               publicUrl,
+              runtime,
               zenodoApiKey: Redacted.value(zenodoApi.key),
               zenodoUrl: zenodoApi.origin,
               ...loggerEnv,
@@ -245,7 +246,7 @@ export const layer = Layer.effect(
 
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        const runtime = yield* Effect.runtime<Preprints.Preprints>()
+        const runtime = yield* Effect.runtime<Preprints>()
 
         return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
           fetch,
@@ -263,12 +264,14 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
             fetch,
             getClubByName,
-            getPreprintTitle,
             ...loggerEnv,
             publicUrl,
+            runtime,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
           })

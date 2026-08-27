@@ -242,6 +242,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ field, language, page, query })({
             clock: SystemClock,
@@ -269,13 +271,9 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-                .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-                .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             logger: () => IO.of(undefined),
             publicUrl,
+            runtime,
           }),
         )
 
@@ -312,7 +310,17 @@ describe('getRecentPrereviewsFromZenodo', () => {
             totalPages: 1,
           }),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint1))
+                .with('10.1101/2022.02.14.480364', () => Effect.succeed(preprint2))
+                .otherwise(() => new PreprintIsNotFound({})),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -414,6 +422,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ page })({
             clock: SystemClock,
@@ -437,12 +447,9 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
-                .otherwise(() => TE.left(error)),
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -466,7 +473,16 @@ describe('getRecentPrereviewsFromZenodo', () => {
             totalPages: 1,
           }),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint))
+                .otherwise(() => error),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -584,27 +600,37 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ page })({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.left(error1))
-                .otherwise(() => TE.left(error2)),
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => error1)
+                .otherwise(() => error2),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop('when the list is empty', [fc.integer({ min: 1 })], ([page]) =>
     Effect.gen(function* () {
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getRecentPrereviewsFromZenodo({ page })({
           clock: SystemClock,
@@ -627,14 +653,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
               })
               .fetchHandler(...args),
           getClubByName: shouldNotBeCalled,
-          getPreprintTitle: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           publicUrl: new URL('http://example.com'),
+          runtime,
         }),
       )
 
       expect(actual).toStrictEqual(E.left('not-found'))
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -654,37 +680,41 @@ describe('getRecentPrereviewsFromZenodo', () => {
           response: { status },
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ page })({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop('when the page number is impossible', [fc.integer({ max: 0 })], ([page]) =>
     Effect.gen(function* () {
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getRecentPrereviewsFromZenodo({ page })({
           clock: SystemClock,
           fetch: shouldNotBeCalled,
           getClubByName: shouldNotBeCalled,
-          getPreprintTitle: shouldNotBeCalled,
           logger: () => IO.of(undefined),
           publicUrl: new URL('http://example.com'),
+          runtime,
         }),
       )
 
       expect(actual).toStrictEqual(E.left('not-found'))
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 })
 
@@ -1647,6 +1677,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             },
           }
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           const actual = yield* Effect.promise(
             _.getPrereviewsForProfileFromZenodo(profile)({
               fetch: (...args) =>
@@ -1668,14 +1700,10 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   })
                   .fetchHandler(...args),
               getClubByName: shouldNotBeCalled,
-              getPreprintTitle: id =>
-                match(id.value as unknown)
-                  .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-                  .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-                  .otherwise(() => TE.left(new PreprintIsNotFound({}))),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               publicUrl,
+              runtime,
             }),
           )
 
@@ -1705,7 +1733,17 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               },
             ]),
           )
-        }),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Preprints, {
+              getPreprintTitle: id =>
+                match(id.value as unknown)
+                  .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint1))
+                  .with('10.1101/2022.02.14.480364', () => Effect.succeed(preprint2))
+                  .otherwise(() => new PreprintIsNotFound({})),
+            }),
+          ),
+        ),
     )
 
     it.effect.prop(
@@ -1914,6 +1952,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             },
           }
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           const actual = yield* Effect.promise(
             _.getPrereviewsForProfileFromZenodo(profile)({
               fetch: (...args) =>
@@ -1935,14 +1975,10 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   })
                   .fetchHandler(...args),
               getClubByName: () => T.of(Option.some(club)),
-              getPreprintTitle: id =>
-                match(id.value as unknown)
-                  .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-                  .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-                  .otherwise(() => TE.left(new PreprintIsNotFound({}))),
               clock: SystemClock,
               logger: () => IO.of(undefined),
               publicUrl,
+              runtime,
             }),
           )
 
@@ -1972,7 +2008,17 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               },
             ]),
           )
-        }),
+        }).pipe(
+          Effect.provide(
+            Layer.mock(Preprints, {
+              getPreprintTitle: id =>
+                match(id.value as unknown)
+                  .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint1))
+                  .with('10.1101/2022.02.14.480364', () => Effect.succeed(preprint2))
+                  .otherwise(() => new PreprintIsNotFound({})),
+            }),
+          ),
+        ),
     )
   })
 
@@ -2118,6 +2164,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForProfileFromZenodo(profile)({
             clock: SystemClock,
@@ -2139,12 +2187,9 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
-                .otherwise(() => TE.left(error)),
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -2165,7 +2210,16 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             },
           ]),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint))
+                .otherwise(() => error),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -2190,20 +2244,22 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           response: { status },
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForProfileFromZenodo(profile)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 })
 
@@ -2407,6 +2463,8 @@ describe('getPrereviewsForUserFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForUserFromZenodo(user)({
             fetch: (...args) =>
@@ -2428,14 +2486,10 @@ describe('getPrereviewsForUserFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-                .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-                .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
             publicUrl,
+            runtime,
           }),
         )
 
@@ -2465,7 +2519,17 @@ describe('getPrereviewsForUserFromZenodo', () => {
             },
           ]),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint1))
+                .with('10.1101/2022.02.14.480364', () => Effect.succeed(preprint2))
+                .otherwise(() => new PreprintIsNotFound({})),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -2614,6 +2678,8 @@ describe('getPrereviewsForUserFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForUserFromZenodo(user)({
             clock: SystemClock,
@@ -2635,12 +2701,9 @@ describe('getPrereviewsForUserFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
-                .otherwise(() => TE.left(error)),
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -2661,7 +2724,16 @@ describe('getPrereviewsForUserFromZenodo', () => {
             },
           ]),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint))
+                .otherwise(() => error),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -2686,20 +2758,22 @@ describe('getPrereviewsForUserFromZenodo', () => {
           response: { status },
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForUserFromZenodo(user)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 })
 
@@ -2868,6 +2942,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
             fetch: (...args) =>
@@ -2896,14 +2972,10 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .fetchHandler(...args),
             getClubByName: () =>
               T.of(Option.some({ id: club.id, name: club.name.text, language: club.name.language, slug: club.slug })),
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-                .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-                .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
             publicUrl,
+            runtime,
           }),
         )
 
@@ -2929,11 +3001,23 @@ describe('getPrereviewsForClubFromZenodo', () => {
             }),
           ]),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint1))
+                .with('10.1101/2022.02.14.480364', () => Effect.succeed(preprint2))
+                .otherwise(() => new PreprintIsNotFound({})),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop('when there are no Prereviews', [fc.origin(), fc.clubDetails()], ([publicUrl, club]) =>
     Effect.gen(function* () {
+      const runtime = yield* Effect.runtime<Preprints>()
+
       const actual = yield* Effect.promise(
         _.getPrereviewsForClubFromZenodo(club)({
           fetch: (...args) =>
@@ -2961,15 +3045,15 @@ describe('getPrereviewsForClubFromZenodo', () => {
               })
               .fetchHandler(...args),
           getClubByName: shouldNotBeCalled,
-          getPreprintTitle: shouldNotBeCalled,
           clock: SystemClock,
           logger: () => IO.of(undefined),
           publicUrl,
+          runtime,
         }),
       )
 
       expect(actual).toStrictEqual(E.right([]))
-    }),
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -3002,20 +3086,22 @@ describe('getPrereviewsForClubFromZenodo', () => {
           response: { status },
         })
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
             clock: SystemClock,
             fetch: (...args) => fetch.fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: shouldNotBeCalled,
             logger: () => IO.of(undefined),
             publicUrl,
+            runtime,
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.callHistory.done()).toBeTruthy()
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
   it.effect.prop(
@@ -3130,6 +3216,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
             fetch: (...args) =>
@@ -3158,14 +3246,10 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 .fetchHandler(...args),
             getClubByName: () =>
               T.of(Option.some({ id: club.id, name: club.name.text, language: club.name.language, slug: club.slug })),
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
-                .with('10.1101/2022.02.14.480364', () => TE.left(error))
-                .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
             publicUrl,
+            runtime,
           }),
         )
 
@@ -3182,7 +3266,17 @@ describe('getPrereviewsForClubFromZenodo', () => {
             }),
           ]),
         )
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint))
+                .with('10.1101/2022.02.14.480364', () => error)
+                .otherwise(() => new PreprintIsNotFound({})),
+          }),
+        ),
+      ),
   )
 
   it.effect.prop(
@@ -3239,6 +3333,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
         }
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
             fetch: (...args) =>
@@ -3266,19 +3362,25 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 })
                 .fetchHandler(...args),
             getClubByName: shouldNotBeCalled,
-            getPreprintTitle: id =>
-              match(id.value as unknown)
-                .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-                .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-                .otherwise(() => TE.left(new PreprintIsNotFound({}))),
             clock: SystemClock,
             logger: () => IO.of(undefined),
             publicUrl,
+            runtime,
           }),
         )
 
         expect(actual).toStrictEqual(E.right([]))
-      }),
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Preprints, {
+            getPreprintTitle: id =>
+              match(id.value as unknown)
+                .with('10.1101/2022.01.13.476201', () => Effect.succeed(preprint1))
+                .with('10.1101/2022.02.14.480364', () => Effect.succeed(preprint2))
+                .otherwise(() => new PreprintIsNotFound({})),
+          }),
+        ),
+      ),
   )
 })
 

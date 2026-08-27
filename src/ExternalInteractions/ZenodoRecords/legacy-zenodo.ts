@@ -37,7 +37,6 @@ import {
 import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
@@ -922,7 +921,7 @@ function recordToScietyPrereview(
 function recordToRecentPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
-  GetClubByNameEnv & GetPreprintTitleEnv & L.LoggerEnv,
+  EffectToFpts.EffectEnv<Preprints.Preprints> & GetClubByNameEnv & L.LoggerEnv,
   'no reviewed preprint' | PreprintIsUnavailable | PreprintIsNotFound,
   Prereview.RecentPreprintPrereview
 > {
@@ -930,7 +929,7 @@ function recordToRecentPrereview(
     getReviewedPreprintId(record),
     RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.rightReaderTask<GetClubByNameEnv & GetPreprintTitleEnv>(
+        club: RTE.rightReaderTask<EffectToFpts.EffectEnv<Preprints.Preprints> & GetClubByNameEnv>(
           pipe(getReviewClub(record), RT.map(Option.getOrUndefined)) as never,
         ),
         id: RTE.right(record.id),
@@ -942,7 +941,7 @@ function recordToRecentPrereview(
         ),
         fields: RTE.right(getReviewFields(record)),
         subfields: RTE.right(getReviewSubfields(record)),
-        preprint: getPreprintTitle(preprintId),
+        preprint: EffectToFpts.toReaderTaskEither(Preprints.getPreprintTitle(preprintId)),
       }),
     ),
     RTE.map(args => new Prereview.RecentPreprintPrereview(args)),
