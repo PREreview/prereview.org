@@ -105,7 +105,7 @@ describe('writeReviewShouldRead', () => {
         )
 
         expect(actual).toStrictEqual({
-          _tag: 'RedirectRespon se',
+          _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
