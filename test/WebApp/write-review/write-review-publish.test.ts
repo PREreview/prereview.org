@@ -8,7 +8,7 @@ import { Clubs } from '../../../src/Clubs/index.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'
@@ -41,6 +41,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -51,7 +52,6 @@ describe('writeReviewPublish', () => {
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
             formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -69,6 +69,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({ canClubLeadsAddReviewsToClubs: true }),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -93,6 +94,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -103,7 +105,6 @@ describe('writeReviewPublish', () => {
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
             formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -122,6 +123,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -145,6 +147,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -155,7 +158,6 @@ describe('writeReviewPublish', () => {
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
             formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -174,6 +176,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -213,6 +216,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
@@ -225,7 +229,6 @@ describe('writeReviewPublish', () => {
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
             addToSession,
             formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
             publishPrereview,
             runtime,
           })(),
@@ -265,6 +268,7 @@ describe('writeReviewPublish', () => {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -304,6 +308,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
@@ -314,7 +319,6 @@ describe('writeReviewPublish', () => {
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
             addToSession,
             formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
             publishPrereview,
             runtime,
           })(),
@@ -354,6 +358,7 @@ describe('writeReviewPublish', () => {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -377,6 +382,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
@@ -384,7 +390,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            getPreprintTitle: () => TE.right(preprintTitle),
             formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
@@ -403,6 +408,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -418,12 +424,12 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            getPreprintTitle: () => TE.right(preprintTitle),
             formStore: new Keyv(),
             publishPrereview: shouldNotBeCalled,
             runtime,
@@ -442,6 +448,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -457,13 +464,13 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
             formStore: new Keyv(),
-            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -484,6 +491,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsUnavailable({}) }),
         ]),
       ),
   )
@@ -499,13 +507,13 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
             formStore: new Keyv(),
-            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -526,6 +534,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsNotFound({}) }),
         ]),
       ),
   )
@@ -541,12 +550,12 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user: undefined })({
             addToSession: shouldNotBeCalled,
-            getPreprintTitle: () => TE.right(preprintTitle),
             formStore: new Keyv(),
             publishPrereview: shouldNotBeCalled,
             runtime,
@@ -565,6 +574,7 @@ describe('writeReviewPublish', () => {
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )
@@ -602,6 +612,7 @@ describe('writeReviewPublish', () => {
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
           | Prereviewers.Prereviewers
+          | Preprints
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
@@ -609,7 +620,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
             addToSession: shouldNotBeCalled,
-            getPreprintTitle: () => TE.right(preprintTitle),
             formStore,
             publishPrereview: () => TE.left('unavailable'),
             runtime,
@@ -637,6 +647,7 @@ describe('writeReviewPublish', () => {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
+          Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
       ),
   )

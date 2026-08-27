@@ -12,8 +12,12 @@ import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import {
+  type IndeterminatePreprintId,
+  type PreprintTitle,
+  type Preprints,
+  getPreprintTitle,
+} from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -63,17 +67,21 @@ export const writeReviewPublish = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetPreprintTitleEnv &
-    FormStoreEnv &
+  FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
     EffectToFpts.EffectEnv<
-      Clubs | ContactEmailAddresses | FeatureFlags | LanguageDetection.LanguageDetection | Prereviewers.Prereviewers
+      | Clubs
+      | ContactEmailAddresses
+      | FeatureFlags
+      | LanguageDetection.LanguageDetection
+      | Prereviewers.Prereviewers
+      | Preprints
     >,
   Response
 > =>
   pipe(
-    getPreprintTitle(id),
+    EffectToFpts.toReaderTaskEither(getPreprintTitle(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
