@@ -1,10 +1,8 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewAddAuthorMatch, writeReviewMatch, writeReviewPublishMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { CompletedFormC } from '../../../src/WebApp/write-review/completed-form.ts'
@@ -30,16 +28,15 @@ describe('writeReviewAddAuthors', () => {
             formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
           )
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthors({
               id: preprintId,
               locale,
               method: 'POST',
               user,
-            })({
-              formStore,
-              getPreprintTitle: () => TE.right(preprintTitle),
-            }),
+            })({ formStore, runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -47,7 +44,7 @@ describe('writeReviewAddAuthors', () => {
             status: StatusCodes.SeeOther,
             location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
     )
 
     it.effect.prop(
@@ -64,16 +61,15 @@ describe('writeReviewAddAuthors', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+          const runtime = yield* Effect.runtime<Preprints>()
+
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthors({
               id: preprintId,
               locale,
               method: 'POST',
               user,
-            })({
-              formStore,
-              getPreprintTitle: () => TE.right(preprintTitle),
-            }),
+            })({ formStore, runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -81,7 +77,7 @@ describe('writeReviewAddAuthors', () => {
             status: StatusCodes.SeeOther,
             location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
     )
   })
 
@@ -100,11 +96,10 @@ describe('writeReviewAddAuthors', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-          }),
+          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({ formStore, runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -112,7 +107,7 @@ describe('writeReviewAddAuthors', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewAddAuthorMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 
   it.effect.prop(
@@ -120,11 +115,10 @@ describe('writeReviewAddAuthors', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({
-            formStore: new Keyv(),
-            getPreprintTitle: () => TE.right(preprintTitle),
-          }),
+          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -132,7 +126,7 @@ describe('writeReviewAddAuthors', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 
   it.effect.prop(
@@ -150,11 +144,10 @@ describe('writeReviewAddAuthors', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-          }),
+          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({ formStore, runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -165,7 +158,7 @@ describe('writeReviewAddAuthors', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 
   it.effect.prop(
@@ -173,15 +166,14 @@ describe('writeReviewAddAuthors', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
-        const getPreprintTitle = vi.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ =>
-          TE.left(new PreprintIsUnavailable({})),
+        const getPreprintTitle = vi.fn<(typeof Preprints.Service)['getPreprintTitle']>(
+          _ => new PreprintIsUnavailable({}),
         )
 
+        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
+
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({
-            formStore: new Keyv(),
-            getPreprintTitle,
-          }),
+          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -201,11 +193,10 @@ describe('writeReviewAddAuthors', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({
-            formStore: new Keyv(),
-            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-          }),
+          _.writeReviewAddAuthors({ id: preprintId, locale, method, user })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -216,7 +207,7 @@ describe('writeReviewAddAuthors', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsNotFound({}) }))),
   )
 
   it.effect.prop(
@@ -224,11 +215,10 @@ describe('writeReviewAddAuthors', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthors({ id: preprintId, locale, method })({
-            formStore: new Keyv(),
-            getPreprintTitle: () => TE.right(preprintTitle),
-          }),
+          _.writeReviewAddAuthors({ id: preprintId, locale, method })({ formStore: new Keyv(), runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -236,6 +226,6 @@ describe('writeReviewAddAuthors', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 })
