@@ -9,8 +9,13 @@ import { P, match } from 'ts-pattern'
 import { invalidE, missingE } from '../../../form.ts'
 import { type Html, sanitizeHtml } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import {
+  type IndeterminatePreprintId,
+  type PreprintTitle,
+  type Preprints,
+  getPreprintTitle,
+} from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
 import { NonEmptyStringC } from '../../../types/NonEmptyString.ts'
 import type { User } from '../../../user.ts'
@@ -34,9 +39,12 @@ export const writeReviewReview = ({
   locale: SupportedLocale
   method: string
   user?: User
-}): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
+}): RT.ReaderTask<
+  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  PageResponse | StreamlinePageResponse | RedirectResponse
+> =>
   pipe(
-    getPreprintTitle(id),
+    EffectToFpts.toReaderTaskEither(getPreprintTitle(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),

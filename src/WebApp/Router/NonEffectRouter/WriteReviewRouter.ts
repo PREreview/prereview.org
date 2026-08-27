@@ -15,8 +15,8 @@ import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractio
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
+import type * as Preprints from '../../../Preprints/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
@@ -424,7 +424,6 @@ export const WriteReviewRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         formStore: env.formStore,
-        getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'
