@@ -237,7 +237,7 @@ export const RawHtmlC = C.make(
 
 function texToMathml(input: string) {
   return input.replace(
-    /(\${1,2}(?!\s*(?:&nbsp;|&#160;|&#xA0;|\u00a0)*\d+[\s,.]))([\s\S]+?)\1/g,
+    /(?<!\d(?:\s|&nbsp;|&#160;|&#xA0;|\u00a0)+?)(\${1,2}(?!(?:\s|&nbsp;|&#160;|&#xA0;|\u00a0)*\d+[\s,.]))([\s\S]+?)\1/g,
     (original, mode: string, match: string) => {
       try {
         return sanitizeHtml(

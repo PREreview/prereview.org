@@ -563,6 +563,7 @@ describe('sanitizeHtml', () => {
     ['with money', '$1 to $2', '$1 to $2'],
     ['with lots of money', '$100,000 to $200,000', '$100,000 to $200,000'],
     ['with even more money', '$1.5 to $2.1 million', '$1.5 to $2.1 million'],
+    ['with money in French', '100 000 $ à 200 000 $', '100 000 $ à 200 000 $'],
     ['with money in Portuguese', 'US$ 250.000 e US$ 750.000', 'US$ 250.000 e US$ 750.000'],
     [
       'extra whitespace',
