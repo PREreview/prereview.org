@@ -9,8 +9,12 @@ import { ContactEmailAddresses, type UnverifiedContactEmailAddress } from '../..
 import type { Locale } from '../../../Context.ts'
 import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import {
+  type IndeterminatePreprintId,
+  type PreprintTitle,
+  type Preprints,
+  getPreprintTitle,
+} from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch, writeReviewPublishMatch } from '../../../routes.ts'
 import { type EmailAddress, EmailAddressC } from '../../../types/EmailAddress.ts'
@@ -34,11 +38,11 @@ export const writeReviewEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & GetPreprintTitleEnv & FormStoreEnv,
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale | Preprints> & FormStoreEnv,
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
-    getPreprintTitle(id),
+    EffectToFpts.toReaderTaskEither(getPreprintTitle(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
