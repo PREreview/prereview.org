@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import type { PopFromSessionEnv } from '../../../src/WebApp/session.ts'
@@ -28,12 +28,10 @@ describe('writeReviewPublished', () => {
           TE.of(PublishedReviewC.encode(publishedReview)),
         )
 
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
-          _.writeReviewPublished({ id: preprintId, locale, user })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            popFromSession,
-            publicUrl,
-          }),
+          _.writeReviewPublished({ id: preprintId, locale, user })({ popFromSession, publicUrl, runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -45,7 +43,7 @@ describe('writeReviewPublished', () => {
           js: [],
         })
         expect(popFromSession).toHaveBeenCalledWith('published-review')
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 
   it.effect.prop(
@@ -59,11 +57,13 @@ describe('writeReviewPublished', () => {
     ],
     ([preprintId, preprintTitle, publishedReview, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({
-            getPreprintTitle: () => TE.right(preprintTitle),
             popFromSession: () => TE.fromEither(publishedReview),
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -72,7 +72,7 @@ describe('writeReviewPublished', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 
   it.effect.prop(
@@ -80,11 +80,13 @@ describe('writeReviewPublished', () => {
     [fc.indeterminatePreprintId(), fc.user(), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({
-            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
             popFromSession: shouldNotBeCalled,
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -96,7 +98,7 @@ describe('writeReviewPublished', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsUnavailable({}) }))),
   )
 
   it.effect.prop(
@@ -104,11 +106,13 @@ describe('writeReviewPublished', () => {
     [fc.indeterminatePreprintId(), fc.user(), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({
-            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
             popFromSession: shouldNotBeCalled,
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -120,7 +124,7 @@ describe('writeReviewPublished', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsNotFound({}) }))),
   )
 
   it.effect.prop(
@@ -128,11 +132,13 @@ describe('writeReviewPublished', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.supportedLocale()],
     ([preprintId, preprintTitle, locale]) =>
       Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Preprints>()
+
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user: undefined })({
-            getPreprintTitle: () => TE.right(preprintTitle),
             popFromSession: shouldNotBeCalled,
             publicUrl: new URL('http://example.com'),
+            runtime,
           }),
         )
 
@@ -141,6 +147,6 @@ describe('writeReviewPublished', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }),
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }))),
   )
 })

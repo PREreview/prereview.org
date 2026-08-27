@@ -5,15 +5,20 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
-import { type PublicUrlEnv, toUrl } from '../../../public-url.ts'
+import {
+  getPreprintTitle,
+  type IndeterminatePreprintId,
+  type Preprints,
+  type PreprintTitle,
+} from '../../../Preprints/index.ts'
+import { toUrl, type PublicUrlEnv } from '../../../public-url.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { reviewMatch, writeReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { PopFromSessionEnv } from '../../session.ts'
-import { type PublishedReview, popPublishedReview } from '../published-review.ts'
+import { popPublishedReview, type PublishedReview } from '../published-review.ts'
 import { publishedPage } from './published-page.ts'
 
 export const writeReviewPublished = ({
@@ -24,9 +29,9 @@ export const writeReviewPublished = ({
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<GetPreprintTitleEnv & PopFromSessionEnv & PublicUrlEnv, Response> =>
+}): RT.ReaderTask<EffectToFpts.EffectEnv<Preprints> & PopFromSessionEnv & PublicUrlEnv, Response> =>
   pipe(
-    getPreprintTitle(id),
+    EffectToFpts.toReaderTaskEither(getPreprintTitle(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
