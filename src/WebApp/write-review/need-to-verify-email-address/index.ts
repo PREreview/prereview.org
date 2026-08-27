@@ -6,8 +6,12 @@ import { match } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import {
+  getPreprintTitle,
+  type IndeterminatePreprintId,
+  type Preprints,
+  type PreprintTitle,
+} from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,
@@ -39,11 +43,11 @@ export const writeReviewNeedToVerifyEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale> & GetPreprintTitleEnv & FormStoreEnv,
+  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale | Preprints> & FormStoreEnv,
   PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
 > =>
   pipe(
-    getPreprintTitle(id),
+    EffectToFpts.toReaderTaskEither(getPreprintTitle(id)),
     RTE.matchEW(
       Match.valueTags({
         PreprintIsNotFound: () => RT.of(pageNotFound(locale)),
