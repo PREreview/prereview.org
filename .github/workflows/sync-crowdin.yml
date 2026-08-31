@@ -19,7 +19,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: 'Upload sources to Crowdin'
-        uses: crowdin/github-action@v2.17.1
+        uses: crowdin/github-action@v3.0.0
         with:
           upload_sources: true
           upload_translations: false
