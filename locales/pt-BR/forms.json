@@ -5,6 +5,9 @@
   "errorPrefix": {
     "message": "Erro"
   },
+  "optionalSuffix": {
+    "message": "(opcional)"
+  },
   "errorSummaryTitle": {
     "message": "Houve um problema"
   },
@@ -16,6 +19,9 @@
   },
   "saveContinueButton": {
     "message": "Salvar e continuar"
+  },
+  "reloadButton": {
+    "message": "Recarregar página"
   },
   "radioSeparatorLabel": {
     "message": "ou"

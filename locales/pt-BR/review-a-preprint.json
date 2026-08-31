@@ -17,6 +17,9 @@
   "havingProblems": {
     "message": "Desculpe, algo deu errado"
   },
+  "doNotKnowPreprint": {
+    "message": "Desculpe, não identificamos este preprint"
+  },
   "notAPreprint": {
     "message": "Desculpe, aceitamos apenas preprints"
   },
@@ -65,6 +68,9 @@
   "doiCouldBeEngrxiv": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint engrXiv, mas não conseguimos encontrar detalhes."
   },
+  "doiCouldBeJmir": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint JMIR, mas não encontramos nenhuma informação detalhada."
+  },
   "doiCouldBeJxiv": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Jxiv, mas não conseguimos encontrar detalhes."
   },
@@ -95,6 +101,9 @@
   "doiCouldBePsycharchives": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint PsychArchives, mas não conseguimos encontrar detalhes."
   },
+  "doiCouldBeRadial": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint Radial, mas não encontramos nenhuma informação detalhada."
+  },
   "doiCouldBeResearchSquare": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Research Square, mas não conseguimos encontrar detalhes."
   },
@@ -112,6 +121,9 @@
   },
   "doiCouldBeTechrxiv": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint TechRxiv, mas não conseguimos encontrar detalhes."
+  },
+  "doiCouldBeUmsida": {
+    "message": "Acreditamos que o DOI {doi} pode ser um preprint UMSIDA, mas não encontramos nenhuma informação detalhada."
   },
   "doiCouldBeVerixiv": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint VeriXiv, mas não conseguimos encontrar detalhes."
@@ -142,6 +154,9 @@
   },
   "urlIsCorrect": {
     "message": "Se o URL estiver correto, por favor, <contact>entre em contato</contact>."
+  },
+  "supportPreprintsFrom": {
+    "message": "Oferecemos suporte a preprints de {servers}."
   },
   "isAPreprint": {
     "message": "Se isso for um preprint, por favor, <contact>entre em contato</contact>."

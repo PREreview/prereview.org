@@ -35,6 +35,9 @@
   "menuMyPrereviews": {
     "message": "Minhas avaliações PREreview"
   },
+  "menuMyReviewRequests": {
+    "message": "Minhas solicitações de avaliação"
+  },
   "menuLogOut": {
     "message": "Sair"
   },
@@ -62,11 +65,20 @@
   "menuTrainingsHint": {
     "message": "Saiba mais sobre revisões por pares éticas e construtivas."
   },
+  "menuChampions": {
+    "message": "Programa de Champions"
+  },
+  "menuChampionsHint": {
+    "message": "Saiba mais sobre o nosso programa anual."
+  },
   "menuLiveReviews": {
     "message": "Avaliações ao vivo"
   },
   "menuResources": {
     "message": "Recursos"
+  },
+  "menuStatistics": {
+    "message": "Estatísticas"
   },
   "menuClubs": {
     "message": "Clubes"
