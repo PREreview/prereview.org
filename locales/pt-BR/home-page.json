@@ -11,8 +11,14 @@
   "requestReviewButton": {
     "message": "Solicite uma avaliação"
   },
+  "reviewDatasetLink": {
+    "message": "Avaliar um conjunto de dados"
+  },
   "trainingTitle": {
     "message": "Treinamento em avaliação por pares"
+  },
+  "trainingText": {
+    "message": "Workshops de treinamento interativos para organizações e instituições que desejam ajudar seus membros a aprimorar suas habilidades como avaliadores."
   },
   "trainingLink": {
     "message": "Saiba mais sobre nossas oficinas de treinamento"
@@ -32,6 +38,9 @@
   "clubsText": {
     "message": "Crie um grupo ou participe de um de nossos grupos de revisão de preprints, onde os membros trabalham juntos para oferecer feedback construtivo e em tempo hábil."
   },
+  "clubsLink": {
+    "message": "Veja nossos vários clubes de avaliação PREreview"
+  },
   "missionTitle": {
     "message": "Para pesquisadores sub-representados, há um caminho melhor"
   },
@@ -49,6 +58,18 @@
   },
   "statisticsTitle": {
     "message": "Estatísticas"
+  },
+  "statisticsReviews": {
+    "message": "{number, plural, one {<data>#</data> avaliação PREreview} other {<data>#</data> avaliações PREreview}}"
+  },
+  "statisticsServers": {
+    "message": "{number, plural, one {<data>#</data> servidor de preprints} other {<data>#</data> servidores de preprints}}"
+  },
+  "statisticsUsers": {
+    "message": "{number, plural, one {<data>#</data> avaliador PREreview} other {<data>#</data> avaliadores PREreview}}"
+  },
+  "statisticsLink": {
+    "message": "Ver mais estatísticas"
   },
   "reviewsTitle": {
     "message": "Avaliações PREreview recentes"

@@ -1,0 +1,35 @@
+{
+  "structuredReviewTitle": {
+    "message": "Avaliação PREreview estruturada de {dataset}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>De autoria</visuallyHidden> de {author}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>De autoria</visuallyHidden> de {author} do {club}"
+  },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# outro autor} other {# outros autores}}"
+  },
+  "backLink": {
+    "message": "Voltar à lista de todas as avaliações"
+  },
+  "seeDataset": {
+    "message": "Visualizar o conjunto de dados"
+  },
+  "published": {
+    "message": "Publicado"
+  },
+  "license": {
+    "message": "Licença"
+  },
+  "licenseCcBy40": {
+    "message": "Atribuição 4.0 Internacional"
+  },
+  "competingInterests": {
+    "message": "Conflitos de interesse"
+  },
+  "noCompetingInterestsStatement": {
+    "message": "O autor declara que não possui conflitos de interesse."
+  }
+}
