@@ -662,6 +662,32 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     ),
   },
   {
+    id: Uuid('c0312c22-bee6-4831-8dfc-6ff3eef15156'),
+    status: 'active',
+    name: {
+      language: 'es',
+      text: Name('INVTEA: Investigación en Trastornos del Espectro Autista (Grupo Inma Fernández)'),
+    },
+    slug: Slug('invtea'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          Most members of the INVTEA group conduct their work at the Faculty of Teacher Education at the University of
+          Valencia (Spain). In addition, researchers from universities in Ecuador and Chile also participate in the
+          group.
+        </p>
+        <p>
+          The group’s objectives are to contribute to research on psycho-educational intervention for children with
+          autism spectrum disorders and other neurodevelopmental disabilities, inclusive education, and teacher
+          training.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-01'),
+    leads: [OrcidId('0000-0002-4458-5763')],
+  },
+  {
     id: Uuid('23256c4b-ad41-4c1e-a3de-0dd28ca5177f'),
     status: 'active',
     name: {
