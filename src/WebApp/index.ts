@@ -1,6 +1,7 @@
 import { FileSystem, HttpServer, Multipart } from '@effect/platform'
 import { flow, Layer, Option, pipe } from 'effect'
 import { CmsContent } from '../CmsContent/index.ts'
+import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { SpotlightBanners } from '../SpotlightBanners/index.ts'
 import { Router } from './Router/index.ts'
@@ -26,4 +27,5 @@ export const layer = pipe(
   HttpServer.withLogAddress,
   Layer.provide(HttpMiddleware.logStopped),
   Layer.provide([TemplatePage.layer, CmsContent.layer, SpotlightBanners.layer]),
+  Layer.provide(ContentfulPages.layer),
 )

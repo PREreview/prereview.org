@@ -3,6 +3,8 @@ import { ContentfulId } from '../../ExternalApis/Contentful/index.ts'
 
 export type PageId = keyof typeof pageIds
 
+export const isPageId = (string: string): string is PageId => string in pageIds
+
 export const getContentfulIdForPage = (page: PageId): ContentfulId => pageIds[page]
 
 const pageIds = {

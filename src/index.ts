@@ -158,6 +158,7 @@ pipe(
       ),
       canClubLeadsAddReviewsToClubs: Config.withDefault(Config.boolean('CAN_CLUB_LEADS_ADD_REVIEWS_TO_CLUBS'), false),
       canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
+      loadPagesFromContentful: Config.withDefault(Config.boolean('LOAD_PAGES_FROM_CONTENTFUL'), false),
       sendCoarNotifyMessages: Config.withDefault(
         Config.literal(true, false, 'sandbox')('SEND_COAR_NOTIFY_MESSAGES'),
         false,
