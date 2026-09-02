@@ -77,6 +77,34 @@ export const createPage = ({
         </section>
       </div>
 
+      <section class="peer-review-week" aria-labelledby="peer-review-week-title">
+        <h2 id="peer-review-week-title" class="visually-hidden">
+          <span lang="en" dir="ltr">Peer Review Week 2026</span>
+        </h2>
+
+        <img
+          src="${assets['peer-review-week.png'].path}"
+          width="${assets['peer-review-week.png'].width}"
+          height="${assets['peer-review-week.png'].height}"
+          loading="lazy"
+          alt=""
+        />
+
+        <div>
+          <p>
+            <span lang="en" dir="ltr"
+              >PREreview is celebrating Peer Review Week 2026 with a global Review-a-thon, where Clubs review together
+              preprints and datasets in any field or language. The goal is to showcase the transformative power of
+              human, collaborative peer review in the research evaluation culture.</span
+            >
+          </p>
+
+          <a href="https://sites.google.com/prereview.org/review-a-thon" class="forward"
+            ><span lang="en" dir="ltr">Learn more about the Review-a-thon and the participating Clubs</span></a
+          >
+        </div>
+      </section>
+
       <section class="mission" aria-labelledby="mission-title">
         <div>
           <h2 id="mission-title">${translate(locale, 'home-page', 'missionTitle')()}</h2>
