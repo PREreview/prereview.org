@@ -36,6 +36,7 @@ import type {
 } from '../src/author-invite.ts'
 import type { CareerStage } from '../src/career-stage.ts'
 import type * as Clubs from '../src/Clubs/index.ts'
+import type { Page } from '../src/CmsContent/index.ts'
 import * as Comments from '../src/Comments/index.ts'
 import {
   type ContactEmailAddress,
@@ -1566,6 +1567,12 @@ export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service
     accessToken: redacted(fc.string()),
     environmentId: contentfulId(),
     spaceId: contentfulId(),
+  })
+
+export const cmsPage = (): fc.Arbitrary<Page> =>
+  fc.record({
+    html: html(),
+    locale: supportedLocale(),
   })
 
 export const ghostPage = (): fc.Arbitrary<GhostPage.GhostPage> =>

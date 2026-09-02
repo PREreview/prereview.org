@@ -1,14 +1,15 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
+import { CmsContent } from '../../../src/CmsContent/index.ts'
 import { Locale } from '../../../src/Context.ts'
-import { GhostPage } from '../../../src/ExternalInteractions/index.ts'
+import { UnableToQuery } from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/ChampionsProgramPage/index.ts'
 import * as fc from '../../fc.ts'
 
 describe('ChampionsProgramPage', () => {
-  it.effect.prop('when the page can be loaded', [fc.supportedLocale(), fc.ghostPage()], ([locale, page]) =>
+  it.effect.prop('when the page can be loaded', [fc.supportedLocale(), fc.cmsPage()], ([locale, page]) =>
     Effect.gen(function* () {
       const actual = yield* _.ChampionsProgramPage
 
@@ -24,7 +25,7 @@ describe('ChampionsProgramPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GhostPage.GetPageFromGhost, () => Effect.succeed(page)),
+      Effect.provide(Layer.mock(CmsContent, { getPage: () => Effect.succeed(page) })),
     ),
   )
 
@@ -42,7 +43,7 @@ describe('ChampionsProgramPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GhostPage.GetPageFromGhost, () => new GhostPage.PageIsUnavailable()),
+      Effect.provide(Layer.mock(CmsContent, { getPage: () => new UnableToQuery({}) })),
     ),
   )
 })

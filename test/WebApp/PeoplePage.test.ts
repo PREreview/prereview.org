@@ -1,7 +1,8 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
+import { CmsContent } from '../../src/CmsContent/index.ts'
 import { Locale } from '../../src/Context.ts'
-import { GhostPage } from '../../src/ExternalInteractions/index.ts'
+import { UnableToQuery } from '../../src/Queries.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/PeoplePage.ts'
 import * as fc from '../fc.ts'
@@ -9,7 +10,9 @@ import * as fc from '../fc.ts'
 describe('PeoplePage', () => {
   it.effect.prop('when the page cannot be loaded', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
-      const actual = yield* _.PeoplePage
+      const actual = yield* _.PeoplePage.pipe(
+        Effect.provide(Layer.mock(CmsContent, { getPage: () => new UnableToQuery({}) })),
+      )
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
@@ -21,7 +24,7 @@ describe('PeoplePage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GhostPage.GetPageFromGhost, () => new GhostPage.PageIsUnavailable()),
+      Effect.provide(Layer.mock(CmsContent, { getPage: () => new UnableToQuery({}) })),
     ),
   )
 })
