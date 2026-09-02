@@ -55,6 +55,18 @@
     "message": "See our many PREreview Clubs",
     "description": "Text of a link to find out more about PREreview Clubs."
   },
+  "peerReviewWeek2026Title": {
+    "message": "Peer Review Week 2026",
+    "description": "Title of the section about Peer Review Week 2026."
+  },
+  "peerReviewWeek2026Text": {
+    "message": "PREreview is celebrating Peer Review Week 2026 with a global Review-a-thon, where Clubs review together preprints and datasets in any field or language. The goal is to showcase the transformative power of human, collaborative peer review in the research evaluation culture.",
+    "description": "A description of PREreview’s activities for Peer Review Week 2026."
+  },
+  "peerReviewWeek2026Link": {
+    "message": "Learn more about the Review-a-thon and the participating Clubs",
+    "description": "Text of a link to find out more about PREreview’s activities for Peer Review Week 2026."
+  },
   "missionTitle": {
     "message": "For underserved researchers, there’s a better way",
     "description": "Title for the section about why PREreview exists."
