@@ -121,23 +121,6 @@
     "vite": "^8.2.2",
     "vitest": "^4.1.11"
   },
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "@ibm/plex-mono",
-      "@ibm/plex-sans",
-      "@ibm/plex-sans-arabic",
-      "@parcel/watcher",
-      "esbuild",
-      "msgpackr-extract",
-      "unrs-resolver"
-    ],
-    "onlyBuiltDependencies": [
-      "cld"
-    ],
-    "patchedDependencies": {
-      "fp-ts-routing@0.7.0": "patches/fp-ts-routing@0.7.0.patch"
-    }
-  },
   "scripts": {
     "prebuild": "del assets/locales dist src/locales src/manifest.json",
     "build": "run-s build:translations build:assets build:app",

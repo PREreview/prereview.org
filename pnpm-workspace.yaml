@@ -1,0 +1,12 @@
+allowBuilds:
+  '@ibm/plex-mono': false
+  '@ibm/plex-sans': false
+  '@ibm/plex-sans-arabic': false
+  '@parcel/watcher': false
+  cld: true
+  esbuild: false
+  msgpackr-extract: false
+  unrs-resolver: false
+
+patchedDependencies:
+  fp-ts-routing@0.7.0: patches/fp-ts-routing@0.7.0.patch

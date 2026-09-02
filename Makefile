@@ -8,7 +8,7 @@ INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 clean:
 	rm -rf .cache dist integration-results node_modules assets/locales src/locales src/manifest.json .dev/server.crt .dev/server.key
 
-node_modules: package.json pnpm-lock.yaml
+node_modules: package.json pnpm-lock.yaml pnpm-workspace.yaml
 	pnpm install --frozen-lockfile
 	touch node_modules
 
