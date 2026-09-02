@@ -8,5 +8,6 @@ export const isPageId = (string: string): string is PageId => string in pageIds
 export const getContentfulIdForPage = (page: PageId): ContentfulId => pageIds[page]
 
 const pageIds = {
-  Funding: ContentfulId.make('6lAbGsGtjCEbDa9zuXrUa5'),
+  EdiaStatement: ContentfulId.make('7zDPW858MYfLUInrNhezEj'),
+  Trainings: ContentfulId.make('42cK6fgeypGN3ttfUmWNAw'),
 } satisfies Record.ReadonlyRecord<string, ContentfulId>
