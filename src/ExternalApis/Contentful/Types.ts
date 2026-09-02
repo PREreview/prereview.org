@@ -15,7 +15,8 @@ export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Sc
 
 class Text extends Schema.Class<Text>('Text')({
   _tag: Schema.propertySignature(Schema.transformLiteral('text', 'Text')).pipe(Schema.fromKey('nodeType')),
-  value: NonEmptyStringSchema,
+  value: Schema.String,
+  marks: Schema.Array(Schema.Struct({ type: Schema.Literal('bold', 'italic') })),
 }) {}
 
 class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
@@ -26,6 +27,16 @@ class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
 
 class Heading1 extends Schema.Class<Heading1>('Heading1')({
   _tag: Schema.propertySignature(Schema.transformLiteral('heading-1', 'Heading1')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(Text),
+}) {}
+
+class Heading2 extends Schema.Class<Heading2>('Heading2')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('heading-2', 'Heading2')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(Text),
+}) {}
+
+class Heading3 extends Schema.Class<Heading3>('Heading3')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('heading-3', 'Heading3')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Text),
 }) {}
 
@@ -60,7 +71,7 @@ class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAsset
 
 class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(Heading1, Paragraph, EmbeddedAssetBlock)),
+  content: Schema.NonEmptyArray(Schema.Union(Heading1, Heading2, Heading3, Paragraph, EmbeddedAssetBlock)),
 }) {}
 
 export class Entry extends Schema.Class<Entry>('Entry')({

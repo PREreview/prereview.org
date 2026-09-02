@@ -1,0 +1,618 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+        "id": "7zDPW858MYfLUInrNhezEj",
+        "type": "Entry",
+        "createdAt": "2026-09-02T14:03:45.474Z",
+        "updatedAt": "2026-09-02T14:27:17.722Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 22,
+        "revision": 2,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "page" } }
+      },
+      "fields": {
+        "title": { "en-US": "Equity, Diversity, Inclusion, and Accessibility Statement" },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "We are building a new, more equitable way of sharing and evaluating scholarly work. We build community. We co-create knowledge. We create equity.",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "This statement is a living, imperfect document—an ongoing reflection of our journey to embody the values of equity, diversity, inclusion, and accessibility (EDIA) in all that we do. It exists because of the wisdom and care of many individuals who have shaped our thinking over time. We gratefully acknowledge the contributions of Dr. Antoinette Foster, Dr. Kim Tran, Lorraine Chuen and the OpenCon community, Dr. Leslie Chan, Dr. Baha Mali, DeEtta Jones (through her work with Code for Science and Society and Invest in Open Infrastructure), Tara Robertson, Dr. Kari Jordan, Ananda Valenzuela, and many other agents of change with whom we had the fortune to cross paths.",
+                    "marks": [{ "type": "italic" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Last update August 5, 2025.",
+                    "marks": [{ "type": "italic" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/edia-not-optional-essential" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Equity, diversity, inclusion, and accessibility are not optional; They are essential.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": "", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Equity, diversity, inclusion, and accessibility values and practices are the center of our approach towards transforming systems in the context of scholarly peer review. They are the guiding principles that inform how we work at PREreview, how we imagine our future, and how we grow as individuals in the community. They are key to fulfilling our mission towards a liberated future in which knowledge flows freely and equitably, unbound by systemic barriers or entrenched hierarchies.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "PREreview creates equity within traditional scholarly peer review by providing concrete opportunities for traditionally marginalized research communities to get involved, train, connect, and be valued and recognized for their contributions to knowledge, generally through open, peer review of preprints and other early research outputs.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Since peer review is conducted by people and thus is naturally subject to be influenced by personal beliefs and assumptions, we address biases at the start of the peer review process. In traditional peer review, people often replicate power structures that reinforce the disenfranchisement and exclusion of individuals, groups of individuals, as well as entire nations.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "The existing inequities, lack of diversity, and non-inclusive practices within peer review are only a manifestation of much larger problems deriving from structural and cultural oppressive systems that were created and continue to work to maintain and reinforce these disparities. These oppressive systems include, but are not limited to, patriarchal systems, white supremacy culture, heteronormativity, and the practice of colonialism. All of these systems are connected to each other, they are all human endeavors, they are part of who we are collectively, and they are embedded into everything that we create.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Therefore, we recognize that our work aimed at dismantling these systems within the scholarly peer review space cannot exist outside of a holistic action that starts with our individual commitments to equity, diversity, inclusion, and accessibility (EDIA) practices in our everyday lives and ends with radical transformation in the very fabric of our institutions and structures.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Below is our attempt to communicate clearly how we commit ourselves to these values by forging them into the way we work.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "How are we committed to equity?", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "We strive to provide access to ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "equitable peer review opportunities and apply an equity lens throughout all our work",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Through our ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "people-centered,", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": " ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "open-source and free preprint review platform",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": " we offer opportunities for ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "all experts", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": " to take peer review into their own hands by contributing openly to the review of emerging scholarly work published as preprints. While anyone with an ORCID record can create an account and engage on PREreview, the platform features, content, and tools are designed to center and prioritize the needs and lived-experiences of groups who have been traditionally excluded from the evaluation of scholarly work.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "In terms of our technical work, we ground all of our feature development, maintenance, and work to improve existing parts of PREreview.org within human-centered design processes including community design sprints, user research interviews, pilots with partner organizations interested in tailoring PREreview for their audiences, and timely, bespoke solutions for individual community member requests inline with our mission and values. These opportunities to offer input are open to all, and we strive to offer multiple ways to participate within and across these opportunities to provide as equitable access as possible for anyone who would like to contribute. We make decisions based on how real people use PREreview.org and the authentic feedback and suggestions they offer. Our technical work focuses on making sure our community members get what they need from us, rather than on what we hope to profit from them. The equity of the value exchange between PREreview.org and its community members should always be weighted towards those community members.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Through our", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org/trainings" },
+                    "content": [
+                      { "nodeType": "text", "value": " ", "marks": [], "data": {} },
+                      {
+                        "nodeType": "text",
+                        "value": "Open Reviewers training",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org/trainings#prereview-champions-program" },
+                    "content": [
+                      { "nodeType": "text", "value": "Champions program", "marks": [{ "type": "bold" }], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " we support individuals through a path of guided learning to build their profile as socially-conscious, constructive peer reviewers. We strive to equip them with the skills and resources to champion open and equitable peer review practices amongst their own communities. The training includes tools to help identify and mitigate bias, reflecting on how systems of oppression manifest in the review process and individual actions that we can take as reviewers to mitigate their impact.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Our commitment to equity is also woven into how we approach ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "partnership building", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ". Our work is limited by the perspectives, expertise, and experiences we have as a team, and our ideas are influenced by the communities with which we are most closely connected. We therefore approach partnerships from an opportunity perspective—offering our support, knowledge, and resources to individuals, groups, and organizations who need it to advance goals and missions that are in line with ours.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "How are we committed to diversity?", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "To this day, many groups remain intentionally excluded from peer review. The gatekeepers to knowledge production and dissemination are predominantly male and come from regions of the world that have perpetuated oppression and imposed rules on other cultures for centuries.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "At PREreview, our commitment to diversity is rooted in a continuous effort to ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "challenge traditional notions of expertise",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "—shifting the focus from pedigree and prestige to the value of lived experience and meaningful contributions to knowledge.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "For example, we began a ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "collaboration with the Rare As One Project",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", a network of patient-led organizations working to improve the lives of people affected by rare diseases. Together, we are exploring how patients and patient advocates can engage in reviewing preprints on research most relevant to them. We believe that anyone with relevant knowledge and lived-experience should be honored and valued for their contribution to shaping and providing feedback to research.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "We actively seek out community input and feedback at every stage of our work through ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "1:1 interviews", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "product design sprints", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": " run at different time zones to help us shape our tools and resources in response to the needs and expectations of a broad research community. Participants are compensated for their time and expertise.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Our commitment to diversity also manifests in the way we show up in ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "public spaces", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ". We only speak at conferences whose organizing body prioritizes diversity in their speaker selection, and that have a clear and actionable Code of Conduct to ensure participants are invited into a space in which there is zero tolerance for harassment and all forms of oppressive behaviors.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "How are we committed to inclusion?", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "As a consequence of British colonialism and the strengthening of U.S. global influence in the second half of the 20th century, English is the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "de facto", "marks": [{ "type": "italic" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": " language of scholarship. Non-native English speakers who are active in scholarly research face immeasurable barriers to participation and must conform to norms that were not set with their needs and experiences in mind. PREreview is committed to lowering such barriers and enabling participation for all.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Since 2025, we have been carrying out a ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/help-translate-prereview" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "community-informed and justice-centered translation and localization project",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " that led to the recent release of all our workflows and soon all our website pages and resources in Latin American Spanish and Brazilian Portuguese. This project is possible only because of an ongoing collaboration with fantastic justice-oriented translators and interpreters Luciana Lage (Portuguese) and Noemí González-Rocha (Spanish) of ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://sites.google.com/noemiinterprets.com/languageandjustice/home?authuser=0"
+                    },
+                    "content": [{ "nodeType": "text", "value": "A Simple Translation", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ", as well as the contribution of ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://content.prereview.org/prereviews-community-localization-and-translation-campaign-is-live/"
+                    },
+                    "content": [{ "nodeType": "text", "value": "community members", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " committed to shaping a better future for scholarly communications. We are committed to expanding this work to include more language relevant to our community members throughout PREreview’s future.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "We envision a future in which every subject-matter expert within or outside of the academy is welcome into a peer review culture where constructive feedback is expected and rewarded. In our preprint review platform, community members' profiles and filters de-emphasize information about a researcher’s title and work location and instead prioritize a list of review contributions, community engagement, mentorship, and training participation.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Through our", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org/live-reviews" },
+                    "content": [{ "nodeType": "text", "value": " Live Reviews", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " we facilitate respectful and constructive conversations around preprints, with diverse participants from around the world, leading to openly published PREreviews. When possible, we choose to discuss preprints authored by traditionally marginalized groups, and/or whose research topics give us a chance to reflect on social issues that lead to structural inequities.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "These events are also intentionally designed to enable both verbal and written contributions to suit different levels of interaction. We provide live-caption functionality, and, when possible, sign language interpretation and written and live translations in languages other than English.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "How are we committed to accessibility", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "We work to make", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org/" },
+                    "content": [{ "nodeType": "text", "value": " PREreview.org", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " as accessible as possible by paying attention to standards about contrast, readability, and measures like alt text to assist visitors who use screen readers.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Definitions", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Equity", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "The degree to which researchers are free from historic and present-day barriers to full access and participation in research production, evaluation, and dissemination. We focus on equity and not equality because we recognize that people begin with different resources and barriers, and therefore will need more or less support to reach the same level of access.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "To us, centering equity is not just about redistributing resources, but it’s about redistributing power. Centering justice over balance.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Diversity", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "The extent to which representation among peer reviewers reflects the diversity of identities and backgrounds across global research communities.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "To us, diversity is about honoring the plurality of worldviews, values, and ways of knowing. Not about presence, but about power. Viewing this knowledge as 100% necessary, not as an act of generosity.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Inclusion", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Enabling all researchers to bring their full potential, identities, perspectives, experiences, and skills to the table in a way that is affirming and rewarding to the reviewer, and encourages contribution to the peer review process and scholarship as a whole.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "To us, inclusion is about co-creating new structures with those previously excluded. Inclusion as transformation, not assimilation.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Accessibility", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "A specific component of inclusion that sees the design of products, resources, events, or environments to be usable by people who are disabled, people who require additional support in order to fully participate and engage.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
