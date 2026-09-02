@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install --yes \
 COPY .npmrc ./
 RUN npm install --global pnpm@10
 COPY patches/ patches/
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 #
 # Stage: intlc setup
