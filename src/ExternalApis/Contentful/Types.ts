@@ -13,10 +13,22 @@ export type ContentfulId = typeof ContentfulId.Type
 
 export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
 
+export type DocumentType = Text | Hyperlink | Heading1 | Heading2 | Heading3 | Paragraph | EmbeddedAssetBlock
+
+export type Mark = Bold | Italic
+
+class Bold extends Schema.Class<Bold>('Bold')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('bold', 'Bold')).pipe(Schema.fromKey('type')),
+}) {}
+
+class Italic extends Schema.Class<Italic>('Italic')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('italic', 'Italic')).pipe(Schema.fromKey('type')),
+}) {}
+
 class Text extends Schema.Class<Text>('Text')({
   _tag: Schema.propertySignature(Schema.transformLiteral('text', 'Text')).pipe(Schema.fromKey('nodeType')),
   value: Schema.String,
-  marks: Schema.Array(Schema.Struct({ type: Schema.Literal('bold', 'italic') })),
+  marks: Schema.Array(Schema.Union(Bold, Italic)),
 }) {}
 
 class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
@@ -69,7 +81,7 @@ class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAsset
   data: Schema.Struct({ target: Asset }),
 }) {}
 
-class Document extends Schema.Class<Document>('Document')({
+export class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Schema.Union(Heading1, Heading2, Heading3, Paragraph, EmbeddedAssetBlock)),
 }) {}

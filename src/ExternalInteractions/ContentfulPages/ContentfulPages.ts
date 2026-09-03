@@ -1,6 +1,6 @@
-import { Context, type Effect, Layer } from 'effect'
-import { UnableToQuery } from '../../Queries.ts'
-import type { GetPage } from './GetPage/index.ts'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { Contentful } from '../../ExternalApis/Contentful/index.ts'
+import { GetPage } from './GetPage/index.ts'
 
 export class ContentfulPages extends Context.Tag('ContentfulPages')<
   ContentfulPages,
@@ -13,7 +13,14 @@ export class ContentfulPages extends Context.Tag('ContentfulPages')<
     >
   }
 >() {
-  static readonly layer = Layer.succeed(this, {
-    getPage: () => new UnableToQuery({ cause: 'not implemented' }),
-  })
+  static readonly layer = Layer.effect(
+    this,
+    Effect.gen(function* () {
+      const context = yield* Effect.andThen(Effect.context<Contentful>(), Context.omit(Scope.Scope))
+
+      return {
+        getPage: flow(GetPage, Effect.provide(context)),
+      }
+    }),
+  )
 }
