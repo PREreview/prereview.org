@@ -10,3 +10,4 @@
 /src/manifest.json
 /src/locales/
 /.env
+/contentful-import/

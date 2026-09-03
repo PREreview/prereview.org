@@ -20,7 +20,7 @@ const ContentfulEntry = (post: typeof GhostPost.Type) => ({
 const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import')
 const inputFile = path.resolve(import.meta.dirname, '..', 'all-posts.json')
 
-pipe(
+void pipe(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
 
@@ -29,19 +29,14 @@ pipe(
     const raw = yield* fs.readFileString(inputFile)
     const posts = yield* Schema.decodeUnknown(GhostPosts)(JSON.parse(raw))
 
-    const valid = posts.filter(
-      (p): p is typeof GhostPost.Type => p.title !== undefined && p.slug !== undefined,
-    )
+    const valid = posts.filter((p): p is typeof GhostPost.Type => p.title !== undefined && p.slug !== undefined)
 
     yield* Effect.logInfo(`Writing ${valid.length} entries to ${outputDir}`)
 
     yield* Effect.forEach(
       valid,
       post =>
-        fs.writeFileString(
-          path.join(outputDir, `${post.slug}.json`),
-          JSON.stringify(ContentfulEntry(post), null, 2),
-        ),
+        fs.writeFileString(path.join(outputDir, `${post.slug}.json`), JSON.stringify(ContentfulEntry(post), null, 2)),
       { concurrency: 10 },
     )
 

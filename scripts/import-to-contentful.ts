@@ -26,7 +26,7 @@ const createEntry = (body: typeof EntryFields.Type) =>
     HttpClientRequest.bodyJson(body),
   )
 
-pipe(
+void pipe(
   Effect.gen(function* () {
     const token = yield* Effect.fromNullable(process.env['CONTENTFUL_MANAGEMENT_TOKEN']).pipe(
       Effect.mapError(() => new Error('CONTENTFUL_MANAGEMENT_TOKEN env var is not set')),
