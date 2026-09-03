@@ -136,6 +136,9 @@ importers:
       mjml:
         specifier: ^5.4.0
         version: 5.4.0(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.2)(terser@5.46.1)(typescript@6.0.3)
+      node-html-parser:
+        specifier: 9.0.3
+        version: 9.0.3
       nodemailer:
         specifier: ^9.0.5
         version: 9.0.5
@@ -3825,6 +3828,9 @@ packages:
   node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
     hasBin: true
+
+  node-html-parser@9.0.3:
+    resolution: {integrity: sha512-iaQ9rokcYNp99IY0h82q04Wtc27SObRT+OEytdJh0bFv2IN0fypnU63KUNVavkPSiwsmIELG1eUenajGhzrvpg==}
 
   node-releases@2.0.54:
     resolution: {integrity: sha512-YHs7BmmcsdAI5Ozuf8JZo6PT0mv2GIWC9vMfvUC3dp65M8hn7Ux8CPL+2oBI7juNuj9d0ndhTcznq2ODBps9cQ==}
@@ -9044,6 +9050,11 @@ snapshots:
     dependencies:
       detect-libc: 2.1.2
     optional: true
+
+  node-html-parser@9.0.3:
+    dependencies:
+      css-select: 5.2.2
+      entities: 8.0.0
 
   node-releases@2.0.54: {}
 

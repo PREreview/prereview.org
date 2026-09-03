@@ -14,6 +14,7 @@ const EntryFields = Schema.Struct({
   fields: Schema.Struct({
     title: Schema.Struct({ 'en-US': Schema.String }),
     slug: Schema.Struct({ 'en-US': Schema.String }),
+    content: Schema.Struct({ 'en-US': Schema.Unknown }),
   }),
 })
 

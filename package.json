@@ -48,6 +48,7 @@
     "logging-ts": "^0.3.4",
     "markdown-it": "^15.0.0",
     "mjml": "^5.4.0",
+    "node-html-parser": "9.0.3",
     "nodemailer": "^9.0.5",
     "normalize-url": "^9.0.1",
     "orcid-id-ts": "^0.1.3",
