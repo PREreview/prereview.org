@@ -1,6 +1,7 @@
+/* eslint-disable no-comments/disallowComments */
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { Effect, Layer, Logger, pipe, Schema } from 'effect'
+import { Effect, pipe, Schema } from 'effect'
 import { type HTMLElement as HtmlElement, type Node as HtmlNode, NodeType, parse as parseHtml } from 'node-html-parser'
 import path from 'path'
 
@@ -100,73 +101,81 @@ function getTag(node: HtmlNode): string {
   return (node as HtmlElement).tagName.toLowerCase()
 }
 
-const BOILERPLATE_HEADING_IDS = new Set(['stay-connected', 'consider-supporting-us'])
-const BOILERPLATE_HEADING_ID_PREFIXES = ['interested-in-supporting']
+type BoilerplateBlock =
+  | { kind: 'class'; name: string; cssClass: string }
+  | { kind: 'section'; name: string; ids?: ReadonlyArray<string>; idPrefixes?: ReadonlyArray<string> }
+  | { kind: 'button'; name: string; hrefPatterns: ReadonlyArray<string> }
 
-function isBoilerplateHeadingId(id: string): boolean {
-  return BOILERPLATE_HEADING_IDS.has(id) || BOILERPLATE_HEADING_ID_PREFIXES.some(prefix => id.startsWith(prefix))
-}
+// Each entry defines one named block to strip from Ghost posts.
+// - 'class'   : any element whose class contains cssClass
+// - 'section' : a heading whose id matches ids/idPrefixes, plus everything until the next heading
+// - 'button'  : a kg-button-card whose href matches any hrefPattern
+const BOILERPLATE_BLOCKS: ReadonlyArray<BoilerplateBlock> = [
+  { kind: 'class', name: 'Donate CTA header', cssClass: 'kg-header-card' },
+  { kind: 'section', name: 'Stay connected', ids: ['stay-connected'] },
+  {
+    kind: 'section',
+    name: 'Donation CTA',
+    ids: ['consider-supporting-us'],
+    idPrefixes: ['interested-in-supporting'],
+  },
+  { kind: 'button', name: 'Donate button', hrefPatterns: ['donorbox', '/donate'] },
+  { kind: 'button', name: 'Newsletter CTA button', hrefPatterns: ['civicrm'] },
+]
 
-function donationOrNewsletterLabel(el: HtmlElement): string | undefined {
-  const href = (el.querySelector('a')?.getAttribute('href') ?? '').toLowerCase()
-  if (href.includes('donorbox') || href.includes('/donate')) return 'Donate button'
-  if (href.includes('civicrm')) return 'Newsletter CTA button'
-  return undefined
+function matchesSectionStart(block: Extract<BoilerplateBlock, { kind: 'section' }>, id: string): boolean {
+  return (block.ids?.includes(id) ?? false) || (block.idPrefixes?.some(prefix => id.startsWith(prefix)) ?? false)
 }
 
 function filterBoilerplate(nodes: Array<HtmlNode>, skipped: Array<string>): Array<HtmlNode> {
   const result: Array<HtmlNode> = []
-  let inBoilerplateSection = false
+  let activeSectionName: string | null = null
 
   for (const node of nodes) {
     if (node.nodeType !== NodeType.ELEMENT_NODE) {
-      if (!inBoilerplateSection) result.push(node)
+      if (activeSectionName === null) result.push(node)
       continue
     }
 
     const el = node as HtmlElement
     const cls = getClass(node)
     const id = el.getAttribute('id') ?? ''
-    const t = getTag(node)
+    const tag = getTag(node)
 
-    if (cls.includes('kg-header-card')) {
-      skipped.push('Donate CTA (header card)')
+    const classBlock = BOILERPLATE_BLOCKS.find(b => b.kind === 'class' && cls.includes(b.cssClass))
+    if (classBlock) {
+      skipped.push(classBlock.name)
       continue
     }
 
-    if ((t === 'h1' || t === 'h2' || t === 'h3') && isBoilerplateHeadingId(id)) {
-      const last = result[result.length - 1]
-      if (last?.nodeType === NodeType.ELEMENT_NODE && getTag(last) === 'hr') {
-        result.pop()
-        skipped.push('Boilerplate section hr')
-      }
-      skipped.push(id === 'stay-connected' ? 'Stay connected heading' : 'Donation CTA heading')
-      inBoilerplateSection = true
-      continue
-    }
-
-    if (t === 'h1' || t === 'h2' || t === 'h3') {
-      inBoilerplateSection = false
-      result.push(node)
-      continue
-    }
-
-    if (inBoilerplateSection && (t === 'p' || t === 'hr')) {
-      skipped.push(t === 'p' ? 'Stay connected paragraph' : 'Boilerplate hr')
-      continue
-    }
-
-    if (cls.includes('kg-button-card')) {
-      const label = donationOrNewsletterLabel(el)
-      if (label !== undefined || inBoilerplateSection) {
-        skipped.push(label ?? 'CTA button in boilerplate section')
+    if (cls.includes('kg-button-card') && activeSectionName === null) {
+      const href = (el.querySelector('a')?.getAttribute('href') ?? '').toLowerCase()
+      const buttonBlock = BOILERPLATE_BLOCKS.find(
+        b => b.kind === 'button' && b.hrefPatterns.some(p => href.includes(p)),
+      )
+      if (buttonBlock) {
+        skipped.push(buttonBlock.name)
         continue
       }
     }
 
-    if (inBoilerplateSection) {
-      inBoilerplateSection = false
+    if (tag === 'h1' || tag === 'h2' || tag === 'h3') {
+      const sectionBlock = BOILERPLATE_BLOCKS.filter(
+        (b): b is Extract<BoilerplateBlock, { kind: 'section' }> => b.kind === 'section',
+      ).find(b => matchesSectionStart(b, id))
+      if (sectionBlock) {
+        const last = result[result.length - 1]
+        if (last?.nodeType === NodeType.ELEMENT_NODE && getTag(last) === 'hr') result.pop()
+        activeSectionName = sectionBlock.name
+        skipped.push(sectionBlock.name)
+        continue
+      }
+      activeSectionName = null
+      result.push(node)
+      continue
     }
+
+    if (activeSectionName !== null) continue
 
     result.push(node)
   }
@@ -334,7 +343,7 @@ void pipe(
       (p): p is typeof GhostPost.Type => p.title !== undefined && p.slug !== undefined && p.html !== undefined,
     )
 
-    yield* Effect.logInfo(`Writing ${valid.length} entries to ${outputDir}`)
+    console.log(`Writing ${valid.length} entries to ${outputDir}`)
 
     const reports = yield* Effect.forEach(
       valid,
@@ -355,20 +364,26 @@ void pipe(
     )
 
     const withSkips = reports.filter(r => r.skipped.length > 0)
-    yield* Effect.logInfo(`Skipped boilerplate blocks in ${withSkips.length} posts:`)
-    for (const { slug, skipped } of withSkips) {
-      const counts = skipped.reduce<Record<string, number>>((acc, label) => {
-        acc[label] = (acc[label] ?? 0) + 1
-        return acc
-      }, {})
-      const summary = Object.entries(counts)
-        .map(([label, n]) => `${n}× ${label}`)
-        .join(', ')
-      yield* Effect.logInfo(`  ${slug}: ${summary}`)
+    console.log(`\nSkipped boilerplate blocks in ${withSkips.length} posts:`)
+
+    const toKebab = (label: string) => label.toLowerCase().replace(/\s+/g, '-')
+
+    const allBlockNames: Array<string> = []
+    for (const { skipped } of withSkips) {
+      for (const label of skipped) {
+        const name = toKebab(label)
+        if (!allBlockNames.includes(name)) allBlockNames.push(name)
+      }
     }
 
-    yield* Effect.logInfo('Done')
+    for (const { slug, skipped } of withSkips) {
+      const present = new Set(skipped.map(toKebab))
+      const cells = allBlockNames.map(name => (present.has(name) ? name : '').padEnd(name.length))
+      console.log(`  ${cells.join('  ')}  https://content.prereview.org/${slug}`)
+    }
+
+    console.log('\nDone')
   }),
-  Effect.provide(Layer.mergeAll(NodeFileSystem.layer, Logger.pretty)),
+  Effect.provide(NodeFileSystem.layer),
   Effect.runPromise,
 )
