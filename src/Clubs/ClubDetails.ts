@@ -1294,18 +1294,28 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     description: {
       language: 'en',
       text: html`
-        The network started as a club with support from the ASAPbio community seed grant (850 USD) project to help
-        promote open science and access in Rwanda. However, due to the burning interest in becoming inclusive and
-        meeting the needs of a wider scientific community in Africa regarding open science and access, we changed the
-        club’s aims and scope. Today, the network, which was initially called the “Rwanda Preprint Club,” is the “Review
-        and Curate Network (RCN).”
-      </p>
-      <p>
-        The network aims to foster a collaborative and transparent environment for the evaluation, validation, and
-        organization of preprints. By focusing on preprints, the club also aims to accelerate scientific progress,
-        allowing for immediate dissemination of findings while maintaining the rigor of traditional Science.
-      </p>
-    `,
+        <p>
+          The network started as a club with support from the ASAPbio community seed grant (850 USD) project to help
+          promote open science and access in Rwanda. However, due to the burning interest in becoming inclusive and
+          meeting the needs of a wider scientific community in Africa regarding open science and access, we changed the
+          club’s aims and scope. Today, the network, which was initially called the “Rwanda Preprint Club,” is the
+          “Review and Curate Network (RCN).
+        </p>
+        <p>
+          The network aims to foster a collaborative and transparent environment for the evaluation, validation, and
+          organization of preprints. By focusing on preprints, the club also aims to accelerate scientific progress,
+          allowing for immediate dissemination of findings while maintaining the rigor of traditional Science.
+        </p>
+        <p>
+          The club reviews English and French-language preprints, produces podcasts on Open Science, conducts evidence
+          syntheses on Open Science topics and other types of research activities, and has piloting collaborative review
+          processes among undergraduate students to assess how best they could get involved in live peer reviews.
+        </p>
+        <p>
+          RCN is led by Dine Roseline Dzekem (Founder and Executive Director), Ogunniyi Tolulope Joseph (Production
+          Manager), and Shitondo Yahila (Program Manager).
+        </p>
+      `,
     },
     added: Temporal.PlainDate.from('2025-01-17'),
     leads: [OrcidId('0000-0002-8210-9258'), OrcidId('0000-0003-2582-4420')],
