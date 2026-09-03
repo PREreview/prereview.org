@@ -1308,8 +1308,8 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
         </p>
         <p>
           The club reviews English and French-language preprints, produces podcasts on Open Science, conducts evidence
-          syntheses on Open Science topics and other types of research activities, and has piloting collaborative
-          review processes among undergraduate students to assess how best they could get involved in live peer reviews.
+          syntheses on Open Science topics and other types of research activities, and has piloting collaborative review
+          processes among undergraduate students to assess how best they could get involved in live peer reviews.
         </p>
         <p>
           RCN is led by Dine Roseline Dzekem (Founder and Executive Director), Ogunniyi Tolulope Joseph (Production
