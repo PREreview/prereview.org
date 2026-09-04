@@ -40,6 +40,7 @@ void pipe(
         if (img === undefined) continue
         const src = img.getAttribute('src') ?? ''
         if (src.length === 0) continue
+        if (src.startsWith('data:')) continue
         const captionEl = fig.querySelector('figcaption')
         const caption = captionEl?.text.trim() ?? null
         images.push({ slug: post.slug, src, caption })
