@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install --yes \
   python3 \
   && rm --recursive --force /var/lib/apt/lists/*
 COPY .npmrc ./
-RUN npm install --global pnpm@10
+RUN npm install --global pnpm@11
 COPY patches/ patches/
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 

@@ -31,7 +31,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -88,7 +88,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -156,7 +156,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -182,7 +182,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -211,7 +211,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -262,7 +262,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -307,7 +307,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -414,7 +414,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
@@ -471,7 +471,7 @@ jobs:
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v6.0.10
         with:
-          version: 10
+          version: 11
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v7.0.0
