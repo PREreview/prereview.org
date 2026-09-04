@@ -369,7 +369,7 @@ interface SkipReport {
   skipped: Array<string>
 }
 
-const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import')
+const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import', 'entries')
 const inputFile = path.resolve(import.meta.dirname, '..', 'all-posts.json')
 
 void pipe(
