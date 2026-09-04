@@ -55,7 +55,7 @@
     "striptags": "^3.2.0",
     "ts-pattern": "^5.9.0",
     "turndown": "^7.2.4",
-    "uuid": "^14.0.1",
+    "uuid": "^14.0.2",
     "zenodo-ts": "^0.1.22"
   },
   "devDependencies": {
