@@ -1,8 +1,7 @@
-/* eslint-disable no-comments/disallowComments */
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { Effect, pipe, Schema } from 'effect'
-import { type HTMLElement as HtmlElement, NodeType, parse as parseHtml } from 'node-html-parser'
+import { parse as parseHtml } from 'node-html-parser'
 import path from 'path'
 
 const GhostPost = Schema.Struct({
@@ -18,8 +17,8 @@ interface ImageRecord {
   caption: string | null
 }
 
-const inputFile = path.resolve(import.meta.dirname, '..', 'all-posts.json')
-const outputFile = path.resolve(import.meta.dirname, '..', 'blog-post-images.json')
+const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'all-posts.json')
+const outputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-images.json')
 
 void pipe(
   Effect.gen(function* () {
@@ -28,9 +27,7 @@ void pipe(
     const raw = yield* fs.readFileString(inputFile)
     const posts = yield* Schema.decodeUnknown(GhostPosts)(JSON.parse(raw))
 
-    const valid = posts.filter(
-      (p): p is typeof GhostPost.Type => p.slug !== undefined && p.html !== undefined,
-    )
+    const valid = posts.filter((p): p is typeof GhostPost.Type => p.slug !== undefined && p.html !== undefined)
 
     const images: Array<ImageRecord> = []
 
@@ -39,10 +36,12 @@ void pipe(
       for (const fig of root.querySelectorAll('figure')) {
         const imgs = fig.querySelectorAll('img')
         if (imgs.length !== 1) continue
-        const src = (imgs[0] as HtmlElement).getAttribute('src') ?? ''
-        if (!src) continue
+        const [img] = imgs
+        if (img === undefined) continue
+        const src = img.getAttribute('src') ?? ''
+        if (src.length === 0) continue
         const captionEl = fig.querySelector('figcaption')
-        const caption = captionEl?.text.trim() || null
+        const caption = captionEl?.text.trim() ?? null
         images.push({ slug: post.slug, src, caption })
       }
     }

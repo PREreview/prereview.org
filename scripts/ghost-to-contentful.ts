@@ -370,7 +370,7 @@ interface SkipReport {
 }
 
 const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import', 'entries')
-const inputFile = path.resolve(import.meta.dirname, '..', 'all-posts.json')
+const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'all-posts.json')
 
 void pipe(
   Effect.gen(function* () {
