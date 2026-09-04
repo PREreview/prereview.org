@@ -9,6 +9,8 @@ interface Mark {
   type: 'bold' | 'italic'
 }
 
+type Warn = (msg: string) => void
+
 interface RichTextText {
   nodeType: 'text'
   value: string
@@ -16,7 +18,13 @@ interface RichTextText {
   data: Record<string, never>
 }
 
-type Inline = RichTextText
+interface Hyperlink {
+  nodeType: 'hyperlink'
+  data: { uri: string }
+  content: Array<RichTextText>
+}
+
+type Inline = RichTextText | Hyperlink
 
 interface Paragraph {
   nodeType: 'paragraph'
@@ -192,7 +200,7 @@ function filterBoilerplate(nodes: Array<HtmlNode>, skipped: Array<string>): Arra
   return result
 }
 
-function toInlines(node: HtmlNode, marks: Array<Mark> = []): Array<Inline> {
+function toInlines(node: HtmlNode, marks: Array<Mark> = [], warn: Warn): Array<Inline> {
   if (node.nodeType === NodeType.TEXT_NODE) {
     const value = node.text
     return value ? [makeText(value, marks)] : []
@@ -203,20 +211,32 @@ function toInlines(node: HtmlNode, marks: Array<Mark> = []): Array<Inline> {
   switch (getTag(node)) {
     case 'strong':
     case 'b':
-      return el.childNodes.flatMap(child => toInlines(child, [...marks, { type: 'bold' }]))
+      return el.childNodes.flatMap(child => toInlines(child, [...marks, { type: 'bold' }], warn))
     case 'em':
     case 'i':
-      return el.childNodes.flatMap(child => toInlines(child, [...marks, { type: 'italic' }]))
-    case 'a':
-      return el.childNodes.flatMap(child => toInlines(child, marks))
+      return el.childNodes.flatMap(child => toInlines(child, [...marks, { type: 'italic' }], warn))
+    case 'a': {
+      const href = el.getAttribute('href') ?? ''
+      const inlines = el.childNodes.flatMap(child => toInlines(child, marks, warn))
+      const textNodes = inlines.filter((c): c is RichTextText => c.nodeType === 'text')
+      if (!href) {
+        warn(`Skipping <a> with no href (text: "${textNodes.map(n => n.value).join('')}")`)
+        return []
+      }
+      if (!textNodes.length) {
+        warn(`Skipping <a href="${href}"> with no text content`)
+        return []
+      }
+      return [{ nodeType: 'hyperlink', data: { uri: href }, content: textNodes }]
+    }
     case 'br':
       return []
     default:
-      return el.childNodes.flatMap(child => toInlines(child, marks))
+      return el.childNodes.flatMap(child => toInlines(child, marks, warn))
   }
 }
 
-function toBlocks(nodes: Array<HtmlNode>): Array<Block> {
+function toBlocks(nodes: Array<HtmlNode>, warn: Warn): Array<Block> {
   const blocks: Array<Block> = []
 
   for (const node of nodes) {
@@ -234,24 +254,36 @@ function toBlocks(nodes: Array<HtmlNode>): Array<Block> {
 
     switch (getTag(node)) {
       case 'p': {
-        const inlines = el.childNodes.flatMap(child => toInlines(child))
+        const inlines = el.childNodes.flatMap(child => toInlines(child, [], warn))
         if (inlines.length) blocks.push(makeParagraph(inlines))
         break
       }
       case 'h1':
-        blocks.push({ nodeType: 'heading-1', data: {}, content: el.childNodes.flatMap(child => toInlines(child)) })
+        blocks.push({
+          nodeType: 'heading-1',
+          data: {},
+          content: el.childNodes.flatMap(child => toInlines(child, [], warn)),
+        })
         break
       case 'h2':
-        blocks.push({ nodeType: 'heading-2', data: {}, content: el.childNodes.flatMap(child => toInlines(child)) })
+        blocks.push({
+          nodeType: 'heading-2',
+          data: {},
+          content: el.childNodes.flatMap(child => toInlines(child, [], warn)),
+        })
         break
       case 'h3':
-        blocks.push({ nodeType: 'heading-3', data: {}, content: el.childNodes.flatMap(child => toInlines(child)) })
+        blocks.push({
+          nodeType: 'heading-3',
+          data: {},
+          content: el.childNodes.flatMap(child => toInlines(child, [], warn)),
+        })
         break
       case 'hr':
         blocks.push({ nodeType: 'hr', data: {}, content: [] })
         break
       case 'blockquote': {
-        const inlines = el.childNodes.flatMap(child => toInlines(child))
+        const inlines = el.childNodes.flatMap(child => toInlines(child, [], warn))
         const paragraphs: Array<Paragraph> = inlines.length ? [makeParagraph(inlines)] : []
         if (paragraphs.length) blocks.push({ nodeType: 'blockquote', data: {}, content: paragraphs })
         break
@@ -262,7 +294,7 @@ function toBlocks(nodes: Array<HtmlNode>): Array<Block> {
           .map(li => ({
             nodeType: 'list-item' as const,
             data: {},
-            content: [makeParagraph((li as HtmlElement).childNodes.flatMap(child => toInlines(child)))],
+            content: [makeParagraph((li as HtmlElement).childNodes.flatMap(child => toInlines(child, [], warn)))],
           }))
         if (items.length) blocks.push({ nodeType: 'unordered-list', data: {}, content: items })
         break
@@ -273,7 +305,7 @@ function toBlocks(nodes: Array<HtmlNode>): Array<Block> {
           .map(li => ({
             nodeType: 'list-item' as const,
             data: {},
-            content: [makeParagraph((li as HtmlElement).childNodes.flatMap(child => toInlines(child)))],
+            content: [makeParagraph((li as HtmlElement).childNodes.flatMap(child => toInlines(child, [], warn)))],
           }))
         if (items.length) blocks.push({ nodeType: 'ordered-list', data: {}, content: items })
         break
@@ -290,12 +322,12 @@ function toBlocks(nodes: Array<HtmlNode>): Array<Block> {
         if (cls.includes('kg-callout-card')) {
           const textEl = el.querySelector('.kg-callout-text')
           if (textEl) {
-            const inlines = textEl.childNodes.flatMap(child => toInlines(child))
+            const inlines = textEl.childNodes.flatMap(child => toInlines(child, [], warn))
             if (inlines.length) blocks.push(makeParagraph(inlines))
           }
           break
         }
-        blocks.push(...toBlocks([...el.childNodes]))
+        blocks.push(...toBlocks([...el.childNodes], warn))
         break
       }
       case 'figure':
@@ -310,17 +342,18 @@ function toBlocks(nodes: Array<HtmlNode>): Array<Block> {
       case 'colgroup':
         break
       default:
-        blocks.push(...toBlocks([...el.childNodes]))
+        blocks.push(...toBlocks([...el.childNodes], warn))
     }
   }
 
   return blocks
 }
 
-function htmlToRichText(html: string, skipped: Array<string>): RichText {
+function htmlToRichText(html: string, skipped: Array<string>, slug: string): RichText {
+  const warn = (msg: string) => console.log(`[warn] ${msg} — https://content.prereview.org/${slug}`)
   const root = parseHtml(html)
   const filtered = filterBoilerplate([...root.childNodes], skipped)
-  return { nodeType: 'document', data: {}, content: toBlocks(filtered) }
+  return { nodeType: 'document', data: {}, content: toBlocks(filtered, warn) }
 }
 
 const GhostPost = Schema.Struct({
@@ -363,7 +396,7 @@ void pipe(
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
-              content: { 'en-US': htmlToRichText(post.html, skipped) },
+              content: { 'en-US': htmlToRichText(post.html, skipped, post.slug) },
             },
           }
           yield* fs.writeFileString(path.join(outputDir, `${post.slug}.json`), JSON.stringify(entry, null, 2))
