@@ -373,25 +373,17 @@ void pipe(
     )
 
     const withSkips = reports.filter(r => r.skipped.length > 0)
-    console.log(`\nSkipped boilerplate blocks in ${withSkips.length} posts:`)
 
-    const toKebab = (label: string) => label.toLowerCase().replace(/\s+/g, '-')
+    const blockNames = BOILERPLATE_BLOCKS.map(b => b.name)
+    const csvEscape = (v: string | number) => (typeof v === 'string' && v.includes(',') ? `"${v}"` : String(v))
+    const csvHeader = ['url', ...blockNames].map(csvEscape).join(',')
+    const csvRows = withSkips.map(({ slug, skipped }) => {
+      const counts = blockNames.map(name => skipped.filter(s => s === name).length)
+      return [csvEscape(`https://content.prereview.org/${slug}`), ...counts].join(',')
+    })
 
-    const allBlockNames: Array<string> = []
-    for (const { skipped } of withSkips) {
-      for (const label of skipped) {
-        const name = toKebab(label)
-        if (!allBlockNames.includes(name)) allBlockNames.push(name)
-      }
-    }
-
-    for (const { slug, skipped } of withSkips) {
-      const present = new Set(skipped.map(toKebab))
-      const cells = allBlockNames.map(name => (present.has(name) ? name : '').padEnd(name.length))
-      console.log(`  ${cells.join('  ')}  https://content.prereview.org/${slug}`)
-    }
-
-    console.log('\nDone')
+    const csvPath = './skipped-blocks.csv'
+    yield* fs.writeFileString(csvPath, [csvHeader, ...csvRows].join('\n'))
   }),
   Effect.provide(NodeFileSystem.layer),
   Effect.runPromise,
