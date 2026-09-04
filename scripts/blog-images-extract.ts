@@ -35,15 +35,14 @@ void pipe(
       const root = parseHtml(post.html)
       for (const fig of root.querySelectorAll('figure')) {
         const imgs = fig.querySelectorAll('img')
-        if (imgs.length !== 1) continue
-        const [img] = imgs
-        if (img === undefined) continue
-        const src = img.getAttribute('src') ?? ''
-        if (src.length === 0) continue
-        if (src.startsWith('data:')) continue
         const captionEl = fig.querySelector('figcaption')
         const caption = captionEl?.text.trim() ?? null
-        images.push({ slug: post.slug, src, caption })
+        for (const img of imgs) {
+          const src = img.getAttribute('src') ?? ''
+          if (src.length === 0) continue
+          if (src.startsWith('data:')) continue
+          images.push({ slug: post.slug, src, caption })
+        }
       }
     }
 

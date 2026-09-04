@@ -80,7 +80,37 @@ interface OrderedList {
   content: Array<ListItem>
 }
 
-type Block = Paragraph | Heading1 | Heading2 | Heading3 | Hr | Blockquote | UnorderedList | OrderedList
+interface EmbeddedAssetBlock {
+  nodeType: 'embedded-asset-block'
+  data: { target: { sys: { id: string; type: 'Link'; linkType: 'Asset' } } }
+  content: []
+}
+
+interface EmbeddedEntryBlock {
+  nodeType: 'embedded-entry-block'
+  data: { target: { sys: { id: string; type: 'Link'; linkType: 'Entry' } } }
+  content: []
+}
+
+type Block =
+  | Paragraph
+  | Heading1
+  | Heading2
+  | Heading3
+  | Hr
+  | Blockquote
+  | UnorderedList
+  | OrderedList
+  | EmbeddedAssetBlock
+  | EmbeddedEntryBlock
+
+interface ImageRecord {
+  slug: string
+  src: string
+  caption: string | null
+  assetId?: string
+  entryId?: string
+}
 
 interface RichText {
   nodeType: 'document'
@@ -236,7 +266,7 @@ function toInlines(node: HtmlNode, marks: Array<Mark> = [], warn: Warn): Array<I
   }
 }
 
-function toBlocks(nodes: Array<HtmlNode>, warn: Warn): Array<Block> {
+function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<string, ImageRecord>): Array<Block> {
   const blocks: Array<Block> = []
 
   for (const node of nodes) {
@@ -250,7 +280,7 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn): Array<Block> {
     const el = node as HtmlElement
     const cls = getClass(node)
 
-    if (cls.includes('kg-image-card') || cls.includes('kg-gallery-card') || cls.includes('kg-embed-card')) continue
+    if (cls.includes('kg-embed-card')) continue
 
     switch (getTag(node)) {
       case 'p': {
@@ -327,10 +357,48 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn): Array<Block> {
           }
           break
         }
-        blocks.push(...toBlocks([...el.childNodes], warn))
+        blocks.push(...toBlocks([...el.childNodes], warn, imageLookup))
         break
       }
-      case 'figure':
+      case 'figure': {
+        const imgs = el.querySelectorAll('img')
+        if (imgs.length > 1) {
+          warn(`Skipping gallery figure with ${imgs.length} images`)
+          break
+        }
+        for (const img of imgs) {
+          const src = img.getAttribute('src')
+          if (src === undefined || src === '') {
+            warn('Figure contains <img> with no src')
+            continue
+          }
+          if (src.startsWith('data:')) {
+            warn(`Ignoring base64 data URI image (footer image): ${src.slice(0, 64)}…`)
+            continue
+          }
+          const record = imageLookup.get(src)
+          if (!record) {
+            warn(`No image record found for ${src}`)
+            continue
+          }
+          if (record.entryId !== undefined) {
+            blocks.push({
+              nodeType: 'embedded-entry-block',
+              data: { target: { sys: { id: record.entryId, type: 'Link', linkType: 'Entry' } } },
+              content: [],
+            })
+          } else if (record.assetId !== undefined) {
+            blocks.push({
+              nodeType: 'embedded-asset-block',
+              data: { target: { sys: { id: record.assetId, type: 'Link', linkType: 'Asset' } } },
+              content: [],
+            })
+          } else {
+            warn(`Image found but not yet uploaded to Contentful: ${src}`)
+          }
+        }
+        break
+      }
       case 'figcaption':
       case 'img':
       case 'iframe':
@@ -342,18 +410,23 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn): Array<Block> {
       case 'colgroup':
         break
       default:
-        blocks.push(...toBlocks([...el.childNodes], warn))
+        blocks.push(...toBlocks([...el.childNodes], warn, imageLookup))
     }
   }
 
   return blocks
 }
 
-function htmlToRichText(html: string, skipped: Array<string>, slug: string): RichText {
+function htmlToRichText(
+  html: string,
+  skipped: Array<string>,
+  slug: string,
+  imageLookup: ReadonlyMap<string, ImageRecord>,
+): RichText {
   const warn = (msg: string) => console.log(`[warn] ${msg} — https://content.prereview.org/${slug}`)
   const root = parseHtml(html)
   const filtered = filterBoilerplate([...root.childNodes], skipped)
-  return { nodeType: 'document', data: {}, content: toBlocks(filtered, warn) }
+  return { nodeType: 'document', data: {}, content: toBlocks(filtered, warn, imageLookup) }
 }
 
 const GhostPost = Schema.Struct({
@@ -371,12 +444,36 @@ interface SkipReport {
 
 const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import', 'entries')
 const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'all-posts.json')
+const imagesFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-images.json')
+
+const ImageRecordsSchema = Schema.Array(
+  Schema.Struct({
+    slug: Schema.String,
+    src: Schema.String,
+    caption: Schema.NullOr(Schema.String),
+    assetId: Schema.optional(Schema.String),
+    entryId: Schema.optional(Schema.String),
+  }),
+)
 
 void pipe(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
 
     yield* fs.makeDirectory(outputDir, { recursive: true })
+
+    const imagesRaw = yield* fs.readFileString(imagesFile)
+    const imageRecords = Array.from(yield* Schema.decodeUnknown(ImageRecordsSchema)(JSON.parse(imagesRaw)))
+
+    const imagesBySlug = new Map<string, Map<string, ImageRecord>>()
+    for (const record of imageRecords) {
+      let bySlug = imagesBySlug.get(record.slug)
+      if (!bySlug) {
+        bySlug = new Map()
+        imagesBySlug.set(record.slug, bySlug)
+      }
+      bySlug.set(record.src, record)
+    }
 
     const raw = yield* fs.readFileString(inputFile)
     const posts = yield* Schema.decodeUnknown(GhostPosts)(JSON.parse(raw))
@@ -392,11 +489,12 @@ void pipe(
       post =>
         Effect.gen(function* () {
           const skipped: Array<string> = []
+          const imageLookup = imagesBySlug.get(post.slug) ?? new Map<string, ImageRecord>()
           const entry = {
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
-              content: { 'en-US': htmlToRichText(post.html, skipped, post.slug) },
+              content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup) },
             },
           }
           yield* fs.writeFileString(path.join(outputDir, `${post.slug}.json`), JSON.stringify(entry, null, 2))
