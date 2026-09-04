@@ -8,7 +8,7 @@ const ENVIRONMENT_ID = 'master'
 const CONTENT_TYPE_ID = 'blogPost'
 const IMPORT_LIMIT = 5
 
-const importDir = path.resolve(import.meta.dirname, '..', 'contentful-import')
+const importDir = path.resolve(import.meta.dirname, '..', 'contentful-import', 'entries')
 
 const EntryFields = Schema.Struct({
   fields: Schema.Struct({
