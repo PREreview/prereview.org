@@ -121,6 +121,15 @@ const BOILERPLATE_BLOCKS: ReadonlyArray<BoilerplateBlock> = [
   },
   { kind: 'button', name: 'Donate button', hrefPatterns: ['donorbox', '/donate'] },
   { kind: 'button', name: 'Newsletter CTA button', hrefPatterns: ['civicrm'] },
+  { kind: 'section', name: 'Let us know what you think', ids: ['let-us-know-what-you-think'] },
+  {
+    kind: 'section',
+    name: 'Together tagline',
+    ids: [
+      'together-we-are-creating-a-more-open-equitable-and-collaborative-future-for-knowledge-sharing-and-evaluation',
+    ],
+  },
+  { kind: 'section', name: 'Help us CTA', ids: ['help-us-out', 'help-us-help-you'] },
 ]
 
 function matchesSectionStart(block: Extract<BoilerplateBlock, { kind: 'section' }>, id: string): boolean {
