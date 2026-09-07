@@ -4,13 +4,14 @@ import type { Locale } from '../../Context.ts'
 import type { Ghost } from '../../ExternalApis/index.ts'
 import type { Html } from '../../html.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
+import type { Slug } from '../../types/Slug.ts'
 import { addListOfClubs } from './AddListOfClubs.ts'
 import { getPage } from './GetPage.ts'
-import { getGhostIdAndLocaleForPage, type PageId } from './PageIds.ts'
+import { getGhostIdAndLocaleForPage, getPageIdForSlug } from './PageIds.ts'
 
 export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
   GetPageFromGhost,
-  (page: PageId) => Effect.Effect<GhostPage, PageIsUnavailable, Locale>
+  (slug: Slug) => Effect.Effect<GhostPage, PageIsUnavailable, Locale>
 >() {}
 
 export interface GhostPage {
@@ -31,10 +32,16 @@ export const layer = Layer.effect(
     const listOfClubs = yield* clubs.listClubs
 
     return flow(
-      getGhostIdAndLocaleForPage,
+      slug => getPageIdForSlug(slug),
+      Effect.andThen(getGhostIdAndLocaleForPage),
       Effect.bind('html', ({ id, locale }) => Effect.andThen(getPage(id), addListOfClubs(locale, listOfClubs))),
       Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
-      Effect.catchTag('GhostPageNotFound', 'GhostPageUnavailable', () => new PageIsUnavailable()),
+      Effect.catchTag(
+        'GhostPageNotFound',
+        'GhostPageUnavailable',
+        'NoSuchElementException',
+        () => new PageIsUnavailable(),
+      ),
       Effect.provide(context),
     )
   }),

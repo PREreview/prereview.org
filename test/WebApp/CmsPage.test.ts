@@ -10,24 +10,18 @@ import * as fc from '../fc.ts'
 describe('CmsPage', () => {
   it.effect.prop(
     'when the page can be loaded',
-    [
-      fc.supportedLocale(),
-      fc.cmsPage(),
-      fc.cmsPageId(),
-      fc.option(fc.string(), { nil: undefined }),
-      fc.pageResponse().map(Struct.get('current')),
-    ],
-    ([locale, page, pageId, canonical, current]) =>
+    [fc.supportedLocale(), fc.cmsPage(), fc.slug(), fc.pageResponse().map(Struct.get('current'))],
+    ([locale, page, slug, current]) =>
       Effect.gen(function* () {
         const getPage = vi.fn<(typeof CmsContent.Service)['getPage']>(_ => Effect.succeed(page))
 
-        const actual = yield* _.CmsPage({ pageId, canonical, current }).pipe(
+        const actual = yield* _.CmsPage({ canonical: `/${slug}`, current }).pipe(
           Effect.provide(Layer.mock(CmsContent, { getPage })),
         )
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          canonical,
+          canonical: `/${slug}`,
           current,
           status: StatusCodes.OK,
           title: expect.anything(),
@@ -35,21 +29,16 @@ describe('CmsPage', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(getPage).toHaveBeenCalledWith(pageId)
+        expect(getPage).toHaveBeenCalledWith(slug)
       }).pipe(Effect.provideService(Locale, locale)),
   )
 
   it.effect.prop(
     'when the page cannot be loaded',
-    [
-      fc.supportedLocale(),
-      fc.cmsPageId(),
-      fc.option(fc.string(), { nil: undefined }),
-      fc.pageResponse().map(Struct.get('current')),
-    ],
-    ([locale, pageId, canonical, current]) =>
+    [fc.supportedLocale(), fc.slug(), fc.pageResponse().map(Struct.get('current'))],
+    ([locale, slug, current]) =>
       Effect.gen(function* () {
-        const actual = yield* _.CmsPage({ pageId, canonical, current }).pipe(
+        const actual = yield* _.CmsPage({ canonical: `/${slug}`, current }).pipe(
           Effect.provide(Layer.mock(CmsContent, { getPage: () => new UnableToQuery({}) })),
         )
 

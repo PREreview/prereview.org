@@ -1,6 +1,7 @@
-import { Effect, pipe, type Record } from 'effect'
+import { Effect, type Option, pipe, Record } from 'effect'
 import { Locale } from '../../Context.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
+import type { Slug } from '../../types/Slug.ts'
 
 export type PageId = keyof typeof pageIds
 
@@ -12,6 +13,23 @@ export const getGhostIdAndLocaleForPage = (
     Effect.bind('locale', () => Effect.andThen(Locale, locale => (locale in pageIds[page] ? locale : 'en-US'))),
     Effect.let('id', ({ locale }) => pageIds[page][locale as never]),
   )
+
+const slugsToPageIds = {
+  about: 'AboutUs',
+  'champions-program': 'ChampionsProgram',
+  clubs: 'Clubs',
+  'code-of-conduct': 'CodeOfConduct',
+  'edia-statement': 'EdiaStatement',
+  funding: 'Funding',
+  'how-to-use': 'HowToUse',
+  'live-reviews': 'LiveReviews',
+  people: 'People',
+  'privacy-policy': 'PrivacyPolicy',
+  resources: 'Resources',
+  trainings: 'Trainings',
+} satisfies Record.ReadonlyRecord<string, PageId>
+
+export const getPageIdForSlug: (slug: Slug) => Option.Option<PageId> = slug => Record.get(slugsToPageIds, slug as never)
 
 const pageIds = {
   AboutUs: {

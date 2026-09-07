@@ -1,15 +1,16 @@
 import { Context, Effect, flow, Layer } from 'effect'
 import type { Locale } from '../Context.ts'
-import { ContentfulPages, getSlugForPage, isPageId } from '../ExternalInteractions/ContentfulPages/index.ts'
+import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import { GhostPage } from '../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { UnableToQuery } from '../Queries.ts'
-import type { Page, PageId } from './Types.ts'
+import type { Slug } from '../types/Slug.ts'
+import type { Page } from './Types.ts'
 
 export class CmsContent extends Context.Tag('CmsContent')<
   CmsContent,
   {
-    getPage: (pageId: PageId) => Effect.Effect<Page, UnableToQuery, Locale>
+    getPage: (slug: Slug) => Effect.Effect<Page, UnableToQuery, Locale>
   }
 >() {
   static readonly layer = Layer.effect(
@@ -21,10 +22,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
 
       if (loadPagesFromContentful) {
         return {
-          getPage: pageId =>
-            isPageId(pageId)
-              ? contentfulPages.getPage(getSlugForPage(pageId))
-              : new UnableToQuery({ cause: 'page not in Contentful' }),
+          getPage: contentfulPages.getPage,
         }
       }
 
