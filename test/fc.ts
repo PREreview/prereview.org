@@ -477,16 +477,18 @@ export const httpBody = (): fc.Arbitrary<HttpBody.HttpBody> =>
   )
 
 export const httpClientRequest = ({
+  headers: _headers,
   method,
   url: _url,
 }: {
+  headers?: fc.Arbitrary<Headers>
   method?: fc.Arbitrary<HttpClientRequest.HttpClientRequest['method']>
   url?: fc.Arbitrary<string | URL>
 } = {}): fc.Arbitrary<HttpClientRequest.HttpClientRequest> =>
   fc
     .record({
       body: httpBody(),
-      headers: headers(),
+      headers: _headers ?? headers(),
       method: method ?? requestMethod(),
       url: _url ?? url(),
     })

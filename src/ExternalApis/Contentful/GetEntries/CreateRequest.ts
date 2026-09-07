@@ -1,5 +1,5 @@
 import { HttpClientRequest, type UrlParams } from '@effect/platform'
-import { Effect, pipe } from 'effect'
+import { Effect, identity, pipe } from 'effect'
 import { ContentfulConfig, UsePreviewApi } from '../ContentfulConfig.ts'
 
 export const CreateRequest = Effect.fnUntraced(function* (urlParams: UrlParams.Input = {}) {
@@ -12,6 +12,7 @@ export const CreateRequest = Effect.fnUntraced(function* (urlParams: UrlParams.I
     ),
     HttpClientRequest.accept('application/vnd.contentful.delivery.v1+json'),
     HttpClientRequest.bearerToken(usePreviewApi ? config.previewAccessToken : config.accessToken),
+    usePreviewApi ? HttpClientRequest.setHeader('Cache-Control', 'no-store') : identity,
     HttpClientRequest.setUrlParams(urlParams),
     HttpClientRequest.setUrlParam('locale', '*'),
   )

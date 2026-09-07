@@ -1,5 +1,12 @@
-import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { Context, DateTime, Effect, flow, Function, Layer, Option, pipe, Queue, type Duration } from 'effect'
+import {
+  Headers,
+  HttpClient,
+  HttpClientError,
+  HttpClientResponse,
+  UrlParams,
+  type HttpClientRequest,
+} from '@effect/platform'
+import { Context, DateTime, Effect, Equal, flow, Function, Layer, Option, pipe, Queue, type Duration } from 'effect'
 import * as StatusCodes from '../StatusCodes.ts'
 import * as HttpCache from './HttpCache.ts'
 
@@ -30,7 +37,7 @@ export const CachingHttpClient = (
         const timestamp = yield* DateTime.now
         const req = yield* request
 
-        if (req.method !== 'GET') {
+        if (req.method !== 'GET' || Equal.equals(Headers.get(req.headers, 'Cache-Control'), Option.some('no-store'))) {
           return yield* httpClient.execute(req)
         }
 

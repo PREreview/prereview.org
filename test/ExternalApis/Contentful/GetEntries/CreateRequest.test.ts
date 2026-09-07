@@ -69,4 +69,22 @@ describe('CreateRequest', () => {
       }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, true), Layer.succeed(ContentfulConfig, config)])),
     )
   })
+
+  describe('sets the Cache-Control header', () => {
+    it.effect.prop('when using the delivery API', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
+
+        expect(actual.headers['cache-control']).toStrictEqual(undefined)
+      }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
+    )
+
+    it.effect.prop('when using the preview API', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
+
+        expect(actual.headers['cache-control']).toStrictEqual('no-store')
+      }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, true), Layer.succeed(ContentfulConfig, config)])),
+    )
+  })
 })

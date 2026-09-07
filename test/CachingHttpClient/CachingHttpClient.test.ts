@@ -460,6 +460,33 @@ describe('getting from the cache is too slow', () => {
   )
 })
 
+describe('with a no-store GET request', () => {
+  it.effect.prop(
+    'does not interact with cache',
+    [
+      fc.httpClientResponse({
+        request: fc.httpClientRequest({
+          method: fc.constant('GET'),
+          headers: fc.headers(fc.constant({ 'Cache-Control': 'no-store' })),
+        }),
+      }),
+      fc.statusCode(),
+      fc.durationInput(),
+    ],
+    ([response, timeToStale]) =>
+      Effect.gen(function* () {
+        const client = yield* pipe(
+          _.CachingHttpClient(timeToStale),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+          Effect.provide(Layer.mock(_.HttpCache, {})),
+        )
+        const actualResponse = yield* client.execute(response.request)
+
+        expect(actualResponse).toStrictEqual(response)
+      }).pipe(Effect.provide(emptyQueue)),
+  )
+})
+
 describe('with a non-GET request', () => {
   it.effect.prop(
     'does not interact with cache',
