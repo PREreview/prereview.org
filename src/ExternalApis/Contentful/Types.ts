@@ -13,7 +13,8 @@ export type ContentfulId = typeof ContentfulId.Type
 
 export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
 
-export type DocumentType = Text | Hyperlink | Heading1 | Heading2 | Heading3 | Paragraph | EmbeddedAssetBlock
+export type DocumentType =
+  Text | Hyperlink | Heading1 | Heading2 | Heading3 | Paragraph | ListItem | UnorderedList | EmbeddedAssetBlock
 
 export type Mark = Bold | Italic
 
@@ -57,6 +58,18 @@ class Paragraph extends Schema.Class<Paragraph>('Paragraph')({
   content: Schema.NonEmptyArray(Schema.Union(Text, Hyperlink)),
 }) {}
 
+class ListItem extends Schema.Class<ListItem>('ListItem')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('list-item', 'ListItem')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(Paragraph),
+}) {}
+
+class UnorderedList extends Schema.Class<UnorderedList>('UnorderedList')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('unordered-list', 'UnorderedList')).pipe(
+    Schema.fromKey('nodeType'),
+  ),
+  content: Schema.NonEmptyArray(ListItem),
+}) {}
+
 class Asset extends Schema.Class<Asset>('Asset')({
   sys: Schema.Struct({
     id: ContentfulId,
@@ -83,7 +96,9 @@ class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAsset
 
 export class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(Heading1, Heading2, Heading3, Paragraph, EmbeddedAssetBlock)),
+  content: Schema.NonEmptyArray(
+    Schema.Union(Heading1, Heading2, Heading3, Paragraph, UnorderedList, EmbeddedAssetBlock),
+  ),
 }) {}
 
 export class Entry extends Schema.Class<Entry>('Entry')({
