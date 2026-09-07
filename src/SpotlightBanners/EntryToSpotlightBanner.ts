@@ -1,8 +1,8 @@
 import { Effect, Option, ParseResult, Record, Schema, String } from 'effect'
-import { Locale } from '../../Context.ts'
-import { ContentfulId, Entry } from '../../ExternalApis/Contentful/index.ts'
-import { languageAttributesFor } from '../../Locales.ts'
-import { SpotlightBanner } from '../Types.ts'
+import { Locale } from '../Context.ts'
+import { ContentfulId, Entry } from '../ExternalApis/Contentful/index.ts'
+import { languageAttributesFor } from '../Locales.ts'
+import { SpotlightBanner } from './Types.ts'
 
 const SpotlightBannerEntry = Schema.Struct({
   ...Entry.fields,

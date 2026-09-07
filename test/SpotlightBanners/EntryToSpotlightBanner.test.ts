@@ -4,12 +4,12 @@ import { expect, it } from '@effect/vitest'
 import resolveResponse from 'contentful-resolve-response'
 import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { URL } from 'url'
-import { Locale } from '../../../src/Context.ts'
-import { Entries } from '../../../src/ExternalApis/Contentful/index.ts'
-import { rawHtml } from '../../../src/html.ts'
-import { DefaultLocale, type SupportedLocale } from '../../../src/locales/index.ts'
-import * as _ from '../../../src/SpotlightBanners/GetCurrentBanner/EntryToSpotlightBanner.ts'
-import { SpotlightBanner } from '../../../src/SpotlightBanners/index.ts'
+import { Locale } from '../../src/Context.ts'
+import { Entries } from '../../src/ExternalApis/Contentful/index.ts'
+import { rawHtml } from '../../src/html.ts'
+import { DefaultLocale, type SupportedLocale } from '../../src/locales/index.ts'
+import * as _ from '../../src/SpotlightBanners/EntryToSpotlightBanner.ts'
+import { SpotlightBanner } from '../../src/SpotlightBanners/index.ts'
 
 it.effect.each<{
   response: string

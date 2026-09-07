@@ -2,8 +2,8 @@ import { Array, Effect, Option, pipe, Schema } from 'effect'
 import type { Locale } from '../../Context.ts'
 import { Contentful, UsePreviewApi } from '../../ExternalApis/Contentful/index.ts'
 import { UnableToQuery } from '../../Queries.ts'
+import { EntryToSpotlightBanner } from '../EntryToSpotlightBanner.ts'
 import type { SpotlightBanner } from '../Types.ts'
-import { EntryToSpotlightBanner } from './EntryToSpotlightBanner.ts'
 
 export const PreviewBanner: (
   id: string,
