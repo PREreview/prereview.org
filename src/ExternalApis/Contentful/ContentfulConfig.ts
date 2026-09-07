@@ -3,7 +3,12 @@ import type { ContentfulId } from './Types.ts'
 
 export class ContentfulConfig extends Context.Tag('ContentfulConfig')<
   ContentfulConfig,
-  { accessToken: Redacted.Redacted; environmentId: ContentfulId; spaceId: ContentfulId }
+  {
+    accessToken: Redacted.Redacted
+    previewAccessToken: Redacted.Redacted
+    environmentId: ContentfulId
+    spaceId: ContentfulId
+  }
 >() {
   static readonly layer = (options: typeof ContentfulConfig.Service) => Layer.succeed(this, options)
 

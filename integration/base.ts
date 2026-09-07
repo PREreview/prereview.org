@@ -2488,6 +2488,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           Layer.succeed(FetchHttpClient.Fetch, fetch.fetchHandler),
           ContentfulConfig.layer({
             accessToken: Redacted.make('CONTENTFUL_ACCESS_TOKEN'),
+            previewAccessToken: Redacted.make('CONTENTFUL_PREVIEW_ACCESS_TOKEN'),
             environmentId: ContentfulId.make('environmentId'),
             spaceId: ContentfulId.make('spaceId'),
           }),

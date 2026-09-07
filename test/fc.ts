@@ -1565,6 +1565,7 @@ export const contentfulId = (): fc.Arbitrary<ContentfulId> => Arbitrary.make(Con
 export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service> =>
   fc.record({
     accessToken: redacted(fc.string()),
+    previewAccessToken: redacted(fc.string()),
     environmentId: contentfulId(),
     spaceId: contentfulId(),
   })

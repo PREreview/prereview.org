@@ -170,6 +170,7 @@ pipe(
     PostgresClientLayer,
     ContentfulConfig.layerConfig({
       accessToken: Config.redacted('CONTENTFUL_ACCESS_TOKEN'),
+      previewAccessToken: Config.redacted('CONTENTFUL_PREVIEW_ACCESS_TOKEN'),
       environmentId: Config.succeed(ContentfulId.make('master')),
       spaceId: Config.succeed(ContentfulId.make('dapbmjoaf8gb')),
     }),
