@@ -2,24 +2,17 @@ import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpSe
 import { Cause, Effect, flow, Match, pipe, Record, Struct } from 'effect'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import * as Routes from '../../routes.ts'
-import { AboutUsPage } from '../AboutUsPage/index.ts'
 import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
-import { ChampionsProgramPage } from '../ChampionsProgramPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../ClubProfilePage/index.ts'
 import { ClubsData } from '../clubs-data/index.ts'
-import { ClubsPage } from '../ClubsPage.ts'
-import { CodeOfConductPage } from '../CodeOfConductPage.ts'
+import { CmsPage } from '../CmsPage.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
-import { EdiaStatementPage } from '../EdiaStatementPage.ts'
-import { FundingPage } from '../FundingPage.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { HealthCheck } from '../HealthCheck.ts'
 import { HomePage } from '../HomePage/index.ts'
-import { HowToUsePage } from '../HowToUsePage.ts'
 import { Inbox } from '../Inbox/index.ts'
-import { LiveReviewsPage } from '../LiveReviewsPage.ts'
 import { authenticate, AuthenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
@@ -27,17 +20,13 @@ import * as MyDetails from '../MyDetails/index.ts'
 import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
-import { PeoplePage } from '../PeoplePage.ts'
-import { PrivacyPolicyPage } from '../PrivacyPolicyPage.ts'
 import * as RequestAReviewFlow from '../RequestAReviewFlow/index.ts'
 import { RequestsData } from '../RequestsData.ts'
-import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import * as ReviewAPreprintFlow from '../ReviewAPreprintFlow/index.ts'
 import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
 import { RobotsTxt } from '../RobotsTxt.ts'
-import { TrainingsPage } from '../TrainingsPage.ts'
 import { VerifyEmailAddress } from '../VerifyEmailAddress/index.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
@@ -552,21 +541,61 @@ const DataRouter = HttpRouter.fromIterable([
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.HomePage, HomePage),
-    MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
-    MakeStaticRoute('GET', Routes.ChampionsProgram, ChampionsProgramPage),
+    MakeStaticRoute(
+      'GET',
+      Routes.AboutUs,
+      CmsPage({ pageId: 'AboutUs', canonical: Routes.AboutUs, current: 'about-us' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.ChampionsProgram,
+      CmsPage({ pageId: 'ChampionsProgram', canonical: Routes.ChampionsProgram, current: 'champions-program' }),
+    ),
     MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
-    MakeStaticRoute('GET', Routes.Clubs, ClubsPage),
-    MakeStaticRoute('GET', Routes.CodeOfConduct, CodeOfConductPage),
-    MakeStaticRoute('GET', Routes.EdiaStatement, EdiaStatementPage),
-    MakeStaticRoute('GET', Routes.Funding, FundingPage),
-    MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
-    MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
+    MakeStaticRoute('GET', Routes.Clubs, CmsPage({ pageId: 'Clubs', canonical: Routes.Clubs, current: 'clubs' })),
+    MakeStaticRoute(
+      'GET',
+      Routes.CodeOfConduct,
+      CmsPage({ pageId: 'CodeOfConduct', canonical: Routes.CodeOfConduct, current: 'code-of-conduct' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.EdiaStatement,
+      CmsPage({ pageId: 'EdiaStatement', canonical: Routes.EdiaStatement, current: 'edia-statement' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.Funding,
+      CmsPage({ pageId: 'Funding', canonical: Routes.Funding, current: 'funding' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.HowToUse,
+      CmsPage({ pageId: 'HowToUse', canonical: Routes.HowToUse, current: 'how-to-use' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.LiveReviews,
+      CmsPage({ pageId: 'LiveReviews', canonical: Routes.LiveReviews, current: 'live-reviews' }),
+    ),
     MakeStaticRoute('GET', Routes.Menu, MenuPage),
     MakeStaticRoute('GET', Routes.Partners, PartnersPage),
-    MakeStaticRoute('GET', Routes.People, PeoplePage),
-    MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
-    MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
-    MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
+    MakeStaticRoute('GET', Routes.People, CmsPage({ pageId: 'People', canonical: Routes.People, current: 'people' })),
+    MakeStaticRoute(
+      'GET',
+      Routes.PrivacyPolicy,
+      CmsPage({ pageId: 'PrivacyPolicy', canonical: Routes.PrivacyPolicy, current: 'privacy-policy' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.Resources,
+      CmsPage({ pageId: 'Resources', canonical: Routes.Resources, current: 'resources' }),
+    ),
+    MakeStaticRoute(
+      'GET',
+      Routes.Trainings,
+      CmsPage({ pageId: 'Trainings', canonical: Routes.Trainings, current: 'trainings' }),
+    ),
     MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
     MakeQueryRoute('GET', Routes.ReviewRequests, ReviewRequestsPage),
   ]),

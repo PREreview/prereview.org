@@ -36,7 +36,7 @@ import type {
 } from '../src/author-invite.ts'
 import type { CareerStage } from '../src/career-stage.ts'
 import type * as Clubs from '../src/Clubs/index.ts'
-import type { Page } from '../src/CmsContent/index.ts'
+import type { Page, PageId } from '../src/CmsContent/index.ts'
 import * as Comments from '../src/Comments/index.ts'
 import {
   type ContactEmailAddress,
@@ -1569,6 +1569,22 @@ export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service
     environmentId: contentfulId(),
     spaceId: contentfulId(),
   })
+
+export const cmsPageId = (): fc.Arbitrary<PageId> =>
+  fc.constantFrom(
+    'AboutUs',
+    'ChampionsProgram',
+    'Clubs',
+    'CodeOfConduct',
+    'EdiaStatement',
+    'Funding',
+    'HowToUse',
+    'LiveReviews',
+    'People',
+    'PrivacyPolicy',
+    'Resources',
+    'Trainings',
+  )
 
 export const cmsPage = (): fc.Arbitrary<Page> =>
   fc.record({
