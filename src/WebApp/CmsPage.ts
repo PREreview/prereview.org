@@ -10,14 +10,22 @@ import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 import { PageResponse } from './Response/index.ts'
 
 export const CmsPage = Effect.fnUntraced(
-  function* ({ canonical, current }: { canonical: `/${string}`; current?: PageResponse['current'] }) {
+  function* ({
+    canonical,
+    current,
+    preview = false,
+  }: {
+    canonical: `/${string}`
+    current?: PageResponse['current']
+    preview?: boolean
+  }) {
     const cmsContent = yield* CmsContent
     const locale = yield* Locale
     const t = translate(locale)
 
     const slug = Slug(canonical.slice(1))
 
-    const content = yield* cmsContent.getPage(slug)
+    const content = yield* cmsContent.getPage(slug, preview)
 
     const titles = {
       [Routes.AboutUs]: t('about-us', 'title'),

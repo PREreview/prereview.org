@@ -1,4 +1,4 @@
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, Layer, pipe } from 'effect'
 import type { Locale } from '../Context.ts'
 import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import { GhostPage } from '../ExternalInteractions/index.ts'
@@ -10,7 +10,7 @@ import type { Page } from './Types.ts'
 export class CmsContent extends Context.Tag('CmsContent')<
   CmsContent,
   {
-    getPage: (slug: Slug) => Effect.Effect<Page, UnableToQuery, Locale>
+    getPage: (slug: Slug, preview?: boolean) => Effect.Effect<Page, UnableToQuery, Locale>
   }
 >() {
   static readonly layer = Layer.effect(
@@ -27,10 +27,13 @@ export class CmsContent extends Context.Tag('CmsContent')<
       }
 
       return {
-        getPage: flow(
-          getPageFromGhost,
-          Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
-        ),
+        getPage: (slug, preview = false) =>
+          preview
+            ? new UnableToQuery({ cause: 'not implemented' })
+            : pipe(
+                getPageFromGhost(slug),
+                Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
+              ),
       }
     }),
   )

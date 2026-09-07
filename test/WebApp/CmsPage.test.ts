@@ -10,12 +10,18 @@ import * as fc from '../fc.ts'
 describe('CmsPage', () => {
   it.effect.prop(
     'when the page can be loaded',
-    [fc.supportedLocale(), fc.cmsPage(), fc.slug(), fc.pageResponse().map(Struct.get('current'))],
-    ([locale, page, slug, current]) =>
+    [
+      fc.supportedLocale(),
+      fc.cmsPage(),
+      fc.slug(),
+      fc.pageResponse().map(Struct.get('current')),
+      fc.option(fc.boolean(), { nil: undefined }),
+    ],
+    ([locale, page, slug, current, preview]) =>
       Effect.gen(function* () {
         const getPage = vi.fn<(typeof CmsContent.Service)['getPage']>(_ => Effect.succeed(page))
 
-        const actual = yield* _.CmsPage({ canonical: `/${slug}`, current }).pipe(
+        const actual = yield* _.CmsPage({ canonical: `/${slug}`, current, preview }).pipe(
           Effect.provide(Layer.mock(CmsContent, { getPage })),
         )
 
@@ -29,16 +35,21 @@ describe('CmsPage', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(getPage).toHaveBeenCalledWith(slug)
+        expect(getPage).toHaveBeenCalledWith(slug, preview)
       }).pipe(Effect.provideService(Locale, locale)),
   )
 
   it.effect.prop(
     'when the page cannot be loaded',
-    [fc.supportedLocale(), fc.slug(), fc.pageResponse().map(Struct.get('current'))],
-    ([locale, slug, current]) =>
+    [
+      fc.supportedLocale(),
+      fc.slug(),
+      fc.pageResponse().map(Struct.get('current')),
+      fc.option(fc.boolean(), { nil: undefined }),
+    ],
+    ([locale, slug, current, preview]) =>
       Effect.gen(function* () {
-        const actual = yield* _.CmsPage({ canonical: `/${slug}`, current }).pipe(
+        const actual = yield* _.CmsPage({ canonical: `/${slug}`, current, preview }).pipe(
           Effect.provide(Layer.mock(CmsContent, { getPage: () => new UnableToQuery({}) })),
         )
 
