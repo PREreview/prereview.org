@@ -35,7 +35,7 @@ describe('CmsPage', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(getPage).toHaveBeenCalledWith(slug, preview)
+        expect(getPage).toHaveBeenCalledWith(slug, preview ?? false)
       }).pipe(Effect.provideService(Locale, locale)),
   )
 
