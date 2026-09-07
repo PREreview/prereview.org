@@ -8,6 +8,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canAddMultipleAuthors: (user?: User) => Effect.Effect<boolean, never, Clubs>
     canClubLeadsAddReviewsToClubs: boolean
     canLogInAsDemoUser: boolean
+    canPreviewContentFromContentful: boolean
     loadPagesFromContentful: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
     useCrowdinInContext: boolean
@@ -19,6 +20,7 @@ const defaults = {
   canAddMultipleAuthors: () => Effect.succeed(false),
   canClubLeadsAddReviewsToClubs: false,
   canLogInAsDemoUser: false,
+  canPreviewContentFromContentful: false,
   loadPagesFromContentful: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
@@ -30,6 +32,7 @@ export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct
 export const {
   canLogInAsDemoUser,
   canClubLeadsAddReviewsToClubs,
+  canPreviewContentFromContentful,
   loadPagesFromContentful,
   sendCoarNotifyMessages,
   useCrowdinInContext,
