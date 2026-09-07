@@ -1,4 +1,4 @@
-import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
+import { Cookies, HttpServerRequest, HttpServerResponse, Url, UrlParams } from '@effect/platform'
 import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
 import { EnabledLocales, FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
@@ -175,9 +175,25 @@ function generateAuthorizationRequestUrl({
 const getSpotlightBanner: Effect.Effect<
   Option.Option<SpotlightBanner>,
   never,
-  HttpServerRequest.HttpServerRequest | SpotlightBanners | Locale
+  HttpServerRequest.HttpServerRequest | FeatureFlags.FeatureFlags | SpotlightBanners | Locale
 > = Effect.gen(function* () {
   const spotlightBanners = yield* SpotlightBanners
+  const request = yield* HttpServerRequest.HttpServerRequest
+
+  const previewBannerId = yield* Effect.if(FeatureFlags.canPreviewContentFromContentful, {
+    onTrue: () =>
+      pipe(
+        Url.fromString(request.url, 'http://example.com'),
+        Effect.andThen(Url.urlParams),
+        Effect.andThen(UrlParams.getFirst('preview-spotlight-banner')),
+        Effect.orElseSucceed(() => undefined),
+      ),
+    onFalse: () => Effect.succeed(undefined),
+  })
+
+  if (typeof previewBannerId === 'string') {
+    return yield* spotlightBanners.previewBanner(previewBannerId)
+  }
 
   const spotlightBanner = yield* Effect.flatten(spotlightBanners.getCurrentBanner)
 
