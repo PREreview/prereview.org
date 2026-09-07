@@ -18,6 +18,7 @@ import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import * as MyDetails from '../MyDetails/index.ts'
 import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
+import type { Page } from '../page.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
 import * as RequestAReviewFlow from '../RequestAReviewFlow/index.ts'
@@ -80,6 +81,9 @@ const MakeStaticRoute = <E extends HttpServerError.RequestError, R>(
   path: `/${string}`,
   handler: Effect.Effect<Response.Response, E, R>,
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
+
+const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefined) =>
+  MakeStaticRoute('GET', path, CmsPage({ canonical: path, current }))
 
 const RequestAReviewFlowRouter = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.RequestAReview, RequestAReviewFlow.RequestAReviewPage()),
@@ -541,37 +545,21 @@ const DataRouter = HttpRouter.fromIterable([
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.HomePage, HomePage),
-    MakeStaticRoute('GET', Routes.AboutUs, CmsPage({ canonical: Routes.AboutUs, current: 'about-us' })),
-    MakeStaticRoute(
-      'GET',
-      Routes.ChampionsProgram,
-      CmsPage({ canonical: Routes.ChampionsProgram, current: 'champions-program' }),
-    ),
+    MakeCmsPageRoute(Routes.AboutUs, 'about-us'),
+    MakeCmsPageRoute(Routes.ChampionsProgram, 'champions-program'),
     MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
-    MakeStaticRoute('GET', Routes.Clubs, CmsPage({ canonical: Routes.Clubs, current: 'clubs' })),
-    MakeStaticRoute(
-      'GET',
-      Routes.CodeOfConduct,
-      CmsPage({ canonical: Routes.CodeOfConduct, current: 'code-of-conduct' }),
-    ),
-    MakeStaticRoute(
-      'GET',
-      Routes.EdiaStatement,
-      CmsPage({ canonical: Routes.EdiaStatement, current: 'edia-statement' }),
-    ),
-    MakeStaticRoute('GET', Routes.Funding, CmsPage({ canonical: Routes.Funding, current: 'funding' })),
-    MakeStaticRoute('GET', Routes.HowToUse, CmsPage({ canonical: Routes.HowToUse, current: 'how-to-use' })),
-    MakeStaticRoute('GET', Routes.LiveReviews, CmsPage({ canonical: Routes.LiveReviews, current: 'live-reviews' })),
+    MakeCmsPageRoute(Routes.Clubs, 'clubs'),
+    MakeCmsPageRoute(Routes.CodeOfConduct, 'code-of-conduct'),
+    MakeCmsPageRoute(Routes.EdiaStatement, 'edia-statement'),
+    MakeCmsPageRoute(Routes.Funding, 'funding'),
+    MakeCmsPageRoute(Routes.HowToUse, 'how-to-use'),
+    MakeCmsPageRoute(Routes.LiveReviews, 'live-reviews'),
     MakeStaticRoute('GET', Routes.Menu, MenuPage),
     MakeStaticRoute('GET', Routes.Partners, PartnersPage),
-    MakeStaticRoute('GET', Routes.People, CmsPage({ canonical: Routes.People, current: 'people' })),
-    MakeStaticRoute(
-      'GET',
-      Routes.PrivacyPolicy,
-      CmsPage({ canonical: Routes.PrivacyPolicy, current: 'privacy-policy' }),
-    ),
-    MakeStaticRoute('GET', Routes.Resources, CmsPage({ canonical: Routes.Resources, current: 'resources' })),
-    MakeStaticRoute('GET', Routes.Trainings, CmsPage({ canonical: Routes.Trainings, current: 'trainings' })),
+    MakeCmsPageRoute(Routes.People, 'people'),
+    MakeCmsPageRoute(Routes.PrivacyPolicy, 'privacy-policy'),
+    MakeCmsPageRoute(Routes.Resources, 'resources'),
+    MakeCmsPageRoute(Routes.Trainings, 'trainings'),
     MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
     MakeQueryRoute('GET', Routes.ReviewRequests, ReviewRequestsPage),
   ]),
