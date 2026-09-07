@@ -1,13 +1,13 @@
 import type { Record } from 'effect'
-import { ContentfulId } from '../../ExternalApis/Contentful/index.ts'
+import { Slug } from '../../types/Slug.ts'
 
-export type PageId = keyof typeof pageIds
+export type PageId = keyof typeof slugs
 
-export const isPageId = (string: string): string is PageId => string in pageIds
+export const isPageId = (string: string): string is PageId => string in slugs
 
-export const getContentfulIdForPage = (page: PageId): ContentfulId => pageIds[page]
+export const getSlugForPage = (page: PageId): Slug => slugs[page]
 
-const pageIds = {
-  EdiaStatement: ContentfulId.make('7zDPW858MYfLUInrNhezEj'),
-  Trainings: ContentfulId.make('42cK6fgeypGN3ttfUmWNAw'),
-} satisfies Record.ReadonlyRecord<string, ContentfulId>
+const slugs = {
+  EdiaStatement: Slug('edia-statement'),
+  Trainings: Slug('trainings'),
+} satisfies Record.ReadonlyRecord<string, Slug>

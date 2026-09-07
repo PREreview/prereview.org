@@ -1,7 +1,7 @@
 import { Array, Effect, pipe, Schema } from 'effect'
 import { Contentful, ContentfulIsUnavailable } from '../../../ExternalApis/Contentful/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
-import { getContentfulIdForPage, type PageId } from '../PageIds.ts'
+import { type PageId, getSlugForPage } from '../PageIds.ts'
 import type { ContentfulPage } from '../Types.ts'
 import { EntryToContentfulPage } from './EntryToContentfulPage.ts'
 
@@ -13,7 +13,11 @@ export const GetPage: (pageId: PageId) => Effect.Effect<ContentfulPage, UnableTo
 
     const contentful = yield* Contentful
 
-    const { items } = yield* contentful.getEntries({ limit: 1, 'sys.id': getContentfulIdForPage(pageId) })
+    const { items } = yield* contentful.getEntries({
+      content_type: 'page',
+      limit: 1,
+      'fields.slug': getSlugForPage(pageId),
+    })
 
     if (!Array.isNonEmptyReadonlyArray(items)) {
       return yield* new ContentfulIsUnavailable({ cause: 'page is not found' })
