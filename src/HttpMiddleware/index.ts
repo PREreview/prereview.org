@@ -112,8 +112,12 @@ export const addSecurityHeaders = HttpMiddleware.make(app =>
     const publicUrl = yield* PublicUrl
     const response = yield* app
     const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
+    const enableContentfulPreview = yield* FeatureFlags.canPreviewContentFromContentful
 
-    return HttpServerResponse.setHeaders(response, securityHeaders(publicUrl.protocol, useCrowdinInContext))
+    return HttpServerResponse.setHeaders(
+      response,
+      securityHeaders(publicUrl.protocol, useCrowdinInContext, enableContentfulPreview),
+    )
   }),
 )
 

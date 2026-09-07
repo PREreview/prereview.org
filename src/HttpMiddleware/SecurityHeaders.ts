@@ -25,7 +25,11 @@ const imgSrc = [
 ]
 const crossOriginEmbedderPolicy = 'credentialless'
 
-export const securityHeaders = (protocol: URL['protocol'], useCrowdinInContext: boolean) =>
+export const securityHeaders = (
+  protocol: URL['protocol'],
+  useCrowdinInContext: boolean,
+  enableContentfulPreview: boolean,
+) =>
   Headers.fromInput({
     'Content-Security-Policy': cspBuilder({
       directives: {
@@ -36,7 +40,7 @@ export const securityHeaders = (protocol: URL['protocol'], useCrowdinInContext: 
         'base-uri': "'self'",
         'font-src': ["'self'", 'https:', 'data:'],
         'form-action': "'self'",
-        'frame-ancestors': "'self'",
+        'frame-ancestors': ["'self'"].concat(enableContentfulPreview ? ['https://app.contentful.com'] : []),
         'frame-src': useCrowdinInContext ? crowdin.frameSrc : "'none'",
         'object-src': "'none'",
         'script-src-attr': useCrowdinInContext ? "'unsafe-inline'" : "'none'",
