@@ -1,22 +1,22 @@
 import { Array, Effect, pipe, Schema } from 'effect'
 import { Contentful, ContentfulIsUnavailable } from '../../../ExternalApis/Contentful/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
-import { type PageId, getSlugForPage } from '../PageIds.ts'
+import type { Slug } from '../../../types/Slug.ts'
 import type { ContentfulPage } from '../Types.ts'
 import { EntryToContentfulPage } from './EntryToContentfulPage.ts'
 
-export const GetPage: (pageId: PageId) => Effect.Effect<ContentfulPage, UnableToQuery, Contentful> = Effect.fn(
+export const GetPage: (slug: Slug) => Effect.Effect<ContentfulPage, UnableToQuery, Contentful> = Effect.fn(
   'ContentfulPages.getPage',
 )(
-  function* (pageId) {
-    yield* Effect.annotateCurrentSpan({ pageId })
+  function* (slug) {
+    yield* Effect.annotateCurrentSpan({ slug })
 
     const contentful = yield* Contentful
 
     const { items } = yield* contentful.getEntries({
       content_type: 'page',
       limit: 1,
-      'fields.slug': getSlugForPage(pageId),
+      'fields.slug': slug,
     })
 
     if (!Array.isNonEmptyReadonlyArray(items)) {
