@@ -1,0 +1,92 @@
+{
+  "menu": {
+    "message": "القائمة"
+  },
+  "getInvolved": {
+    "message": "شارك معنا"
+  },
+  "findOutMore": {
+    "message": "تعرّف على المزيد"
+  },
+  "chooseLanguage": {
+    "message": "اختر لغتك"
+  },
+  "myAccount": {
+    "message": "حسابي"
+  },
+  "menuBlog": {
+    "message": "المدونة"
+  },
+  "menuAboutUs": {
+    "message": "نبذة عنا"
+  },
+  "menuHowToUse": {
+    "message": "كيفية الاستخدام"
+  },
+  "menuDonate": {
+    "message": "تبرّع"
+  },
+  "menuMyDetails": {
+    "message": "بياناتي"
+  },
+  "menuNewNotification": {
+    "message": "إشعار جديد"
+  },
+  "menuMyPrereviews": {
+    "message": "مراجعاتي على PREreview"
+  },
+  "menuMyReviewRequests": {
+    "message": "طلبات المراجعة الخاصة بي"
+  },
+  "menuLogOut": {
+    "message": "تسجيل الخروج"
+  },
+  "menuLogIn": {
+    "message": "تسجيل الدخول"
+  },
+  "menuLogInDemoUser": {
+    "message": "تسجيل الدخول كمستخدم تجريبي"
+  },
+  "menuReviews": {
+    "message": "المراجعات"
+  },
+  "menuReviewsHint": {
+    "message": "اطّلع على المسودات البحثية الأولية التي خضعت لمراجعة على PREreview."
+  },
+  "menuRequests": {
+    "message": "طلبات"
+  },
+  "menuRequestsHint": {
+    "message": "ساعد مؤلفًا من خلال مراجعة مسودته البحثية الأولية."
+  },
+  "menuTrainings": {
+    "message": "التدريب"
+  },
+  "menuTrainingsHint": {
+    "message": "تعلّم أسس مراجعة الأقران الأخلاقية والبنّاءة."
+  },
+  "menuChampions": {
+    "message": "برنامج أبطال PREreview"
+  },
+  "menuChampionsHint": {
+    "message": "تعرّف على برنامجنا السنوي."
+  },
+  "menuLiveReviews": {
+    "message": "مراجعات مباشرة"
+  },
+  "menuResources": {
+    "message": "الموارد"
+  },
+  "menuStatistics": {
+    "message": "الإحصاءات"
+  },
+  "menuClubs": {
+    "message": "الأندية"
+  },
+  "menuClubsHint": {
+    "message": "تواصل مع أقران يشاركونك الاهتمامات."
+  },
+  "onlyEnglish": {
+    "message": "هذه الصفحة متاحة باللغة الإنجليزية فقط."
+  }
+}

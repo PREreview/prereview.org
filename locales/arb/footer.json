@@ -1,0 +1,74 @@
+{
+  "chooseLanguage": {
+    "message": "اختر لغتك:"
+  },
+  "newsletterText": {
+    "message": "تعرّف على آخر المستجدات والفعاليات القادمة."
+  },
+  "newsletterLink": {
+    "message": "اشترك في نشرتنا الإخبارية"
+  },
+  "slackText": {
+    "message": "انضم إلينا في الحوار!"
+  },
+  "slackLink": {
+    "message": "انضم إلى مجتمعنا على Slack"
+  },
+  "feedbackLink": {
+    "message": "شاركنا ملاحظاتك حول PREreview!"
+  },
+  "menuHeading": {
+    "message": "روابط الدعم"
+  },
+  "menuDonate": {
+    "message": "تبرّع"
+  },
+  "menuPeople": {
+    "message": "الأشخاص"
+  },
+  "menuFunding": {
+    "message": "كيف نُموَّل"
+  },
+  "menuCodeOfConduct": {
+    "message": "مدونة قواعد السلوك"
+  },
+  "menuEdiaStatement": {
+    "message": "بيان EDIA"
+  },
+  "menuPrivacyPolicy": {
+    "message": "سياسة الخصوصية"
+  },
+  "menuBlog": {
+    "message": "المدونة"
+  },
+  "menuPartners": {
+    "message": "الشركاء"
+  },
+  "contactHeading": {
+    "message": "تواصل معنا"
+  },
+  "contactEmail": {
+    "message": "تواصل معنا على {address}"
+  },
+  "contactBluesky": {
+    "message": "{handle} على Bluesky"
+  },
+  "contactMastodon": {
+    "message": "{handle} على Mastodon"
+  },
+  "contactYouTube": {
+    "message": "{handle} على YouTube"
+  },
+  "contactLinkedIn": {
+    "message": "{handle} على LinkedIn"
+  },
+  "contactGitHub": {
+    "message": "{handle} على GitHub"
+  },
+  "zenodo": {
+    "message": "تتوفر مراجعات PREreview في <community>مجتمعنا على Zenodo</community> وعبر <api>واجهة برمجة تطبيقات Zenodo</api>."
+  },
+  "copyright": {
+    "message": "جميع المحتويات متاحة بموجب <link>ترخيص المشاع الإبداعي نَسْبُ المُصنَّف 4.0 دولي </link>، ما لم يُذكر خلاف ذلك."
+  }
+}

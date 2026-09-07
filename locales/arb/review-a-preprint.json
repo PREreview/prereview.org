@@ -1,0 +1,179 @@
+{
+  "whichPreprint": {
+    "message": "ما المسودة البحثية الأولية التي تراجعها؟"
+  },
+  "useDoiUrl": {
+    "message": "استخدم DOI الخاص بالمسودة البحثية الأولية أو عنوان URL الخاص بها."
+  },
+  "whatIsDoi": {
+    "message": "ما هو DOI؟"
+  },
+  "whatIsDoiText": {
+    "message": "يُعدّ <doi>DOI</doi> معرّفًا فريدًا يمكنك العثور عليه في العديد من المسودات البحثية الأولية. على سبيل المثال، {example} أو {exampleUrl}."
+  },
+  "errorEnterPreprint": {
+    "message": "أدخل DOI الخاص بالمسودة البحثية الأولية أو عنوان URL الخاص بها"
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "doNotKnowPreprint": {
+    "message": "عذرًا، لا يمكننا العثور على هذه المسودة البحثية الأولية"
+  },
+  "notAPreprint": {
+    "message": "عذرًا، نحن ندعم المسودات البحثية الأولية فقط"
+  },
+  "unsupportedDoi": {
+    "message": "عذرًا، لا ندعم هذا الـDOI"
+  },
+  "unsupportedUrl": {
+    "message": "عذرًا، لا ندعم عنوان URL هذا"
+  },
+  "doiCouldBeAdvance": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Advance، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeAfricarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على AfricArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeArcadiaScience": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Arcadia Science، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeArxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على arXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeAuthorea": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Authorea، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeBiorxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على bioRxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeBiorxivMedrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على bioRxiv أو medRxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeChemrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على ChemRxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeCurvenote": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Curvenote، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeEartharxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على EarthArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeEcoevorxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على EcoEvoRxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeEdarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على EdArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeEngrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على engrXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeJmir": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على JMIR، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeJxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Jxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeLifecycleJournal": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Lifecycle Journal، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeMedrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على medRxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeMetaarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على MetaArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeNeurolibre": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على NeuroLibre، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeOsf": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على OSF، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeOsfLifecycleJournal": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على OSF أو Lifecycle Journal، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBePreprintsorg": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Preprints.org، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBePsyarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على PsyArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBePsycharchives": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على PsychArchives، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeRadial": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على Radial، لكننا لم نتمكن من العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeResearchSquare": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Research Square، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeScielo": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على SciELO، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeScienceOpen": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على ScienceOpen، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeSocarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على SocArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeSsrn": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على SSRN، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeTechrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على TechRxiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeUmsida": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على UMSIDA، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeVerixiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على VeriXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeZenodo": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Zenodo، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "doiCouldBeZenodoAfricarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يعود إلى مسودة بحثية أولية على Zenodo أو AfricArXiv، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "urlCouldBePhilsci": {
+    "message": "نعتقد أن عنوان URL ‏{url} قد يعود إلى مسودة بحثية أولية على PhilSci-Archive، لكننا لم نتمكن من العثور على أي تفاصيل."
+  },
+  "checkCorrectDoi": {
+    "message": "إذا أدخلت DOI، فتحقق من صحته."
+  },
+  "checkCorrectUrl": {
+    "message": "إذا أدخلت عنوان URL، فتحقق من صحته."
+  },
+  "checkPastedDoi": {
+    "message": "إذا لصقت DOI، فتحقق من أنك نسخت العنوان كاملًا."
+  },
+  "checkPastedUrl": {
+    "message": "إذا لصقت عنوان URL، فتحقق من أنك نسخت العنوان كاملًا."
+  },
+  "doiIsCorrect": {
+    "message": "إذا كان معرّف DOI صحيحًا، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "urlIsCorrect": {
+    "message": "إذا كان عنوان URL صحيحًا، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "supportPreprintsFrom": {
+    "message": "ندعم المسودات البحثية الأولية من {servers}."
+  },
+  "isAPreprint": {
+    "message": "إذا كانت هذه مسودة بحثية أولية، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "doiIsForPreprint": {
+    "message": "إذا كان معرّف DOI هذا لمسودة بحثية أولية على خادم لا ندعمه، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "urlIsForPreprint": {
+    "message": "إذا كان عنوان URL هذا لمسودة بحثية أولية على خادم لا ندعمه، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "otherwiseUseDoi": {
+    "message": "وإلا، إذا كانت للمسودة البحثية الأولية معرّف DOI، يُرجى محاولة استخدامه بدلًا من ذلك."
+  },
+  "unableToPublishNow": {
+    "message": "يتعذّر علينا حاليًا نشر مراجعات PREreview لهذه المسودة البحثية الأولية."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  }
+}

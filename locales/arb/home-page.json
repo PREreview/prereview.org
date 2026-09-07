@@ -1,0 +1,92 @@
+{
+  "slogan": {
+    "message": "مراجعات مفتوحة للمسودات البحثية الأولية <swoosh> لجميع</swoosh> الباحثين."
+  },
+  "heroText": {
+    "message": "قدّم وتلقَّ ملاحظات بنّاءة حول المسودات البحثية الأولية من مجتمع دولي من أقرانك."
+  },
+  "reviewPreprintButton": {
+    "message": "مراجعة مسودة بحثية أولية"
+  },
+  "requestReviewButton": {
+    "message": "طلب مراجعة"
+  },
+  "reviewDatasetLink": {
+    "message": "مراجعة مجموعة بيانات"
+  },
+  "trainingTitle": {
+    "message": "التدريب على مراجعة الأقران"
+  },
+  "trainingText": {
+    "message": "ورش عمل تفاعلية للمنظمات والمؤسسات التي تسعى إلى مساعدة أعضائها على صقل مهاراتهم في المراجعة."
+  },
+  "trainingLink": {
+    "message": "تعرّف على ورش العمل التدريبية التي نقدمها"
+  },
+  "liveReviewsTitle": {
+    "message": "المراجعات المباشرة"
+  },
+  "liveReviewsText": {
+    "message": "ننظّم جلسات تفاعلية وتعاونية لمراجعة المسودات البحثية الأولية، بوصفها نهجًا بديلًا لمراجعة الأقران التقليدية."
+  },
+  "liveReviewsLink": {
+    "message": "تعرّف على المزيد عن المراجعات المباشرة"
+  },
+  "clubsTitle": {
+    "message": "أندية PREreview"
+  },
+  "clubsText": {
+    "message": "أنشئ أو انضم إلى إحدى مجموعات Prereview لمراجعة المسودات البحثية الأولية، حيث يعمل الأعضاء معًا لتقديم ملاحظات بنّاءة في الوقت المناسب."
+  },
+  "clubsLink": {
+    "message": "تعرّف على أندية PREreview المتنوعة"
+  },
+  "peerReviewWeek2026Title": {
+    "message": "أسبوع مراجعة الأقران 2026"
+  },
+  "peerReviewWeek2026Text": {
+    "message": "يحتفل PREreview بأسبوع مراجعة الأقران 2026 من خلال فعالية مراجعة جماعية عالمية، حيث تجتمع الأندية لمراجعة المسودات البحثية الأولية ومجموعات البيانات معًا، في أي مجال أو بأي لغة. ويتمثل الهدف في إبراز القوة التحويلية لمراجعة الأقران التعاونية البشرية في تطوير ثقافة تقييم الأبحاث."
+  },
+  "peerReviewWeek2026Link": {
+    "message": "تعرّف على المزيد حول فعالية المراجعة الجماعية والأندية المشاركة"
+  },
+  "missionTitle": {
+    "message": "للباحثين الذين لا يحصلون على ما يكفي من الدعم والفرص، هناك طريقة أفضل"
+  },
+  "missionText": {
+    "message": "ندعم الباحثين من المجتمعات المتنوعة التي عانت تاريخيًا من الإقصاء، ونمكّنهم ( ولا سيما الباحثين في المراحل المبكرة من مسيرتهم المهنية) من إيصال أصواتهم، والحصول على التدريب، والمشاركة في مراجعة الأقران."
+  },
+  "missionLink": {
+    "message": "تعرّف على المزيد عن رسالتنا"
+  },
+  "requestsTitle": {
+    "message": "طلبات المراجعة الأخيرة"
+  },
+  "requestsLink": {
+    "message": "عرض جميع الطلبات"
+  },
+  "statisticsTitle": {
+    "message": "الإحصاءات"
+  },
+  "statisticsReviews": {
+    "message": "{number, plural, one {<data>#</data> مراجعة PREreview} other {<data>#</data> مراجعات PREreview}}"
+  },
+  "statisticsServers": {
+    "message": "{number, plural, one {<data>#</data> خادم للمسودات البحثية الأولية} other {<data>#</data> خوادم للمسودات البحثية الأولية}}"
+  },
+  "statisticsUsers": {
+    "message": "{number, plural, one {<data>#</data> مراجع PREreview} other {<data>#</data> من مراجعي PREreview}}"
+  },
+  "statisticsLink": {
+    "message": "عرض المزيد من الإحصاءات"
+  },
+  "reviewsTitle": {
+    "message": "أحدث مراجعات PREreview"
+  },
+  "reviewsLink": {
+    "message": "عرض جميع المراجعات"
+  },
+  "fundersTitle": {
+    "message": "الجهات المانحة"
+  }
+}
