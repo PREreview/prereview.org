@@ -28,7 +28,7 @@
     "cdigit": "^5.0.1",
     "cld": "^2.10.1",
     "clock-ts": "^0.1.2",
-    "cloudinary": "^2.10.0",
+    "cloudinary": "^2.11.0",
     "content-security-policy-builder": "^2.3.0",
     "contentful-resolve-response": "^2.0.1",
     "cookie-signature": "^1.2.2",
