@@ -1,5 +1,6 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Cause, Effect, flow, Match, pipe, Record, Struct } from 'effect'
+import { Cause, Effect, flow, Match, pipe, Record, Schema, Struct } from 'effect'
+import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import * as Routes from '../../routes.ts'
 import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
@@ -83,7 +84,22 @@ const MakeStaticRoute = <E extends HttpServerError.RequestError, R>(
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefined) =>
-  MakeStaticRoute('GET', path, CmsPage({ canonical: path, current }))
+  MakeStaticRoute(
+    'GET',
+    path,
+    pipe(
+      Effect.if(FeatureFlags.canPreviewContentFromContentful, {
+        onTrue: () =>
+          pipe(
+            HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
+            Effect.andThen(Struct.get('preview')),
+            Effect.orElseSucceed(() => false),
+          ),
+        onFalse: () => Effect.succeed(false),
+      }),
+      Effect.andThen(preview => CmsPage({ canonical: path, current, preview })),
+    ),
+  )
 
 const RequestAReviewFlowRouter = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.RequestAReview, RequestAReviewFlow.RequestAReviewPage()),
