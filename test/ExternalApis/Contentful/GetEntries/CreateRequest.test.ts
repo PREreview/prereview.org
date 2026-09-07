@@ -2,42 +2,71 @@ import { UrlParams } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer, Redacted } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Contentful/GetEntries/CreateRequest.ts'
-import { ContentfulConfig } from '../../../../src/ExternalApis/Contentful/index.ts'
+import { ContentfulConfig, UsePreviewApi } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as fc from '../../../fc.ts'
 
 describe('CreateRequest', () => {
-  it.effect.prop('creates a GET request', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.CreateRequest(params)
+  it.effect.prop(
+    'creates a GET request',
+    [fc.urlParams(), fc.contentfulConfig(), fc.boolean()],
+    ([params, config, usePreviewApi]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
 
-      expect(actual.method).toStrictEqual('GET')
-    }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
+        expect(actual.method).toStrictEqual('GET')
+      }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, usePreviewApi), Layer.succeed(ContentfulConfig, config)])),
   )
 
-  it.effect.prop('sets the URL', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.CreateRequest(params)
+  describe('sets the URL', () => {
+    it.effect.prop('when using the delivery API', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
 
-      expect(actual.url).toStrictEqual(
-        `https://cdn.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
-      )
-      expect(actual.urlParams).toStrictEqual(UrlParams.set(params, 'locale', '*'))
-    }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
+        expect(actual.url).toStrictEqual(
+          `https://cdn.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
+        )
+        expect(actual.urlParams).toStrictEqual(UrlParams.set(params, 'locale', '*'))
+      }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
+    )
+
+    it.effect.prop('when using the preview API', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
+
+        expect(actual.url).toStrictEqual(
+          `https://preview.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
+        )
+        expect(actual.urlParams).toStrictEqual(UrlParams.set(params, 'locale', '*'))
+      }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, true), Layer.succeed(ContentfulConfig, config)])),
+    )
+  })
+
+  it.effect.prop(
+    'sets the Accept header',
+    [fc.urlParams(), fc.contentfulConfig(), fc.boolean()],
+    ([params, config, usePreviewApi]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
+
+        expect(actual.headers['accept']).toStrictEqual('application/vnd.contentful.delivery.v1+json')
+      }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, usePreviewApi), Layer.succeed(ContentfulConfig, config)])),
   )
 
-  it.effect.prop('sets the Accept header', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.CreateRequest(params)
+  describe('sets the Authorization header', () => {
+    it.effect.prop('when using the delivery API', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
 
-      expect(actual.headers['accept']).toStrictEqual('application/vnd.contentful.delivery.v1+json')
-    }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
-  )
+        expect(actual.headers['authorization']).toStrictEqual(`Bearer ${Redacted.value(config.accessToken)}`)
+      }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
+    )
 
-  it.effect.prop('sets the Authorization header', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.CreateRequest(params)
+    it.effect.prop('when using the preview API', [fc.urlParams(), fc.contentfulConfig()], ([params, config]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CreateRequest(params)
 
-      expect(actual.headers['authorization']).toStrictEqual(`Bearer ${Redacted.value(config.accessToken)}`)
-    }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
-  )
+        expect(actual.headers['authorization']).toStrictEqual(`Bearer ${Redacted.value(config.previewAccessToken)}`)
+      }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, true), Layer.succeed(ContentfulConfig, config)])),
+    )
+  })
 })

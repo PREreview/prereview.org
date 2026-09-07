@@ -15,3 +15,7 @@ export class ContentfulConfig extends Context.Tag('ContentfulConfig')<
   static readonly layerConfig = (options: Config.Config.Wrap<Parameters<typeof this.layer>[0]>) =>
     Layer.unwrapEffect(Effect.map(Config.unwrap(options), this.layer))
 }
+
+export class UsePreviewApi extends Context.Reference<UsePreviewApi>()('UsePreviewApi', {
+  defaultValue: () => false,
+}) {}
