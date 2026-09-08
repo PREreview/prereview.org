@@ -3,7 +3,16 @@
   "compilerOptions": {
     "allowJs": true,
     "erasableSyntaxOnly": true,
-    "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator", "ESNext.Promise"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2024",
+      "ESNext.Array",
+      "ESNext.Collection",
+      "ESNext.Error",
+      "ESNext.Iterator",
+      "ESNext.Promise"
+    ],
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
