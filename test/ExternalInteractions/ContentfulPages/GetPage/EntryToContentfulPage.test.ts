@@ -40,228 +40,209 @@ it.effect.each<{
     }),
   },
   {
-    response: 'pages-marks',
+    response: 'pages-unordered-list-table',
     index: 0,
     expected: new ContentfulPage({
       html: html`
         <p>
-          <b
-            >We are building a new, more equitable way of sharing and evaluating scholarly work. We build community. We
-            co-create knowledge. We create equity.</b
+          Peer review plays a pivotal role in determining which research projects receive funding, which findings get
+          published, and ultimately, which knowledge is disseminated and utilized by the scientific community and the
+          broader public. Despite its critical importance, reviewers often undergo minimal training for this crucial
+          task. Furthermore, that training rarely focuses on mitigating the biases that are ingrained in the peer review
+          process. Hence, new generations of reviewers often lack the frameworks to address their biases leading to a
+          perpetuation of the current problems of inequities in scholarly publishing. At PREreview we offer two kinds of
+          peer review training workshops centered on issues of equity, diversity, and inclusion:
+          <b>PREreview Open Reviewers</b>, focused on research manuscripts’ review, and
+          <b>PREreview Open Grant Reviewers</b>, focused on grant applications’ review.
+        </p>
+        <p>
+          We work with organizations, institutions, and funding agencies that want to offer their communities the
+          opportunity to challenge their beliefs and learn from one another how to recognize and mitigate the impact of
+          bias in research evaluation.
+        </p>
+        <p>
+          Our workshops are designed for safe and inclusive delivery - both online and in-person - by providing clear
+          guidelines ahead of time and by accommodating participants’ different communication and participation styles.
+          Our content is intentionally interactive and is presented to participants using collaborative note-taking and
+          other supporting tools, such as Mentimeter. Contact us at
+          <a href="mailto:community@prereview.org">community@prereview.org</a> to discuss which type of workshop is best
+          for your organization and options for tailoring our workshop content for your organization’s needs.
+        </p>
+        <p>
+          Note: we also run 2-hour community workshops every quarter of the year which are open to individual sign-ups.
+          Read below for more information on the next available workshop and how to register.
+        </p>
+        <h1>PREreview Open Reviewers</h1>
+        <p>
+          The Open Reviewers Workshop is an interactive and hands-on training program designed for researchers at all
+          career levels who are interested in engaging in ethical and constructive manuscript peer review. With a focus
+          on promoting equity, diversity, and inclusion, the workshop provides participants with the necessary skills
+          and knowledge to conduct equitable peer reviews with the use of materials from
+          <a href="https://prereview.org/resources">The Open Reviewers Toolkit</a>.
+        </p>
+        <h2>2-hour workshop</h2>
+        <p>
+          This stand-alone introductory workshop focuses on the basics of open, preprint peer review and becoming aware
+          of biases present in the scholarly publication process.
+        </p>
+        <h3>Learning Objectives</h3>
+        <ul>
+          <li>A general understanding of journal-organized and independent review processes</li>
+          <li>An introduction to how systems of oppression manifest in the manuscript review process</li>
+          <li>An introduction to strategies to self-assess and mitigate bias in the context of manuscript review</li>
+        </ul>
+        <h2>Multi-session workshops</h2>
+        <p>
+          These multi-session training run for 4-6 hours and offer greater opportunities for practical review experience
+          following a structured approach to writing a review, keeping issues of bias and systemic oppression front of
+          mind. These workshops culminate in a <a href="https://prereview.org/live-reviews">Live Review</a> session
+          facilitated by PREreview staff where participants select and review a preprint together.
+        </p>
+        <h3>Learning Objectives</h3>
+        <ul>
+          <li>A general understanding of journal-organized and independent review processes</li>
+          <li>A detailed understanding of how systems of oppression manifest in the manuscript review process</li>
+          <li>Strategies to self-assess and mitigate bias in the context of manuscript review</li>
+          <li>
+            An in-depth understanding of and practical experience with peer reviewing a manuscript in a way that
+            minimizes bias, striving for constructive, clear, and actionable feedback
+          </li>
+          <li>
+            An opportunity to put learning into practice by collaboratively reviewing a preprint and publishing the
+            resulting preprint review on PREreview.org
+          </li>
+        </ul>
+        <h1>PREreview Open Grant Reviewers</h1>
+        <p>
+          The PREreview Open Grant Reviewers workshop is designed to guide grant reviewers in the equitable assessment
+          of grant applications. Our goal is to engage and train a pool of diverse, socially conscious grant reviewers.
+        </p>
+        <h2>2-hour workshop</h2>
+        <p>
+          Open Grant Reviewers is currently offered as a 2-hour workshop but can be modified to provide greater support
+          and depth of learning. Throughout the workshop, reviewers are encouraged to identify and address biases in the
+          grant review process using our <a href="https://prereview.org/resources">training materials</a>, which include
+          a Bias Reflection Guide. Our curriculum includes space for debate-based learning and open discussions among
+          the reviewers.
+        </p>
+        <h3>Learning Objectives</h3>
+        <ul>
+          <li>
+            A broad understanding of what systems of oppression are and how they manifest in the grant review process
+          </li>
+          <li>Strategies to recognize, self-assess, and address bias in the context of grant review</li>
+          <li>
+            How to review a grant in a way that minimizes bias, striving for constructive, clear, and actionable
+            feedback
+          </li>
+          <li>
+            Advice around best practices in creating rubrics and evaluation criteria that help reduce subjectivity, and
+            bring greater transparency and equity into the review process
+          </li>
+        </ul>
+        <h3>Pricing</h3>
+        <p>
+          The pricing across all our workshop offerings is as follows (in USD). Please note that these prices are for up
+          to 30 participants but more can be added at an additional cost.
+        </p>
+        <table>
+          <tr>
+            <th>Criteria</th>
+            <th>2 hours</th>
+            <th>4 hours</th>
+            <th>6 hours</th>
+          </tr>
+          <tr>
+            <td>
+              The annual revenue or expenses of your organization is &gt;$1.5 million USD, and/or you are based in a
+              high-income country*
+            </td>
+            <td>$2,000</td>
+            <td>$4,000</td>
+            <td>$6,000</td>
+          </tr>
+          <tr>
+            <td>
+              The annual revenue or expenses of your organization is between $750,000 and $1.5 million USD, and/or you
+              are based in an upper middle-income country*
+            </td>
+            <td>$1,000</td>
+            <td>$2,000</td>
+            <td>$3,000</td>
+          </tr>
+          <tr>
+            <td>
+              The annual revenue or expenses of your organization are between $250,000 and $750,00 USD, and/or you are
+              based in a low or lower-middle-income country*
+            </td>
+            <td>$500</td>
+            <td>$1,000</td>
+            <td>$1,500</td>
+          </tr>
+          <tr>
+            <td>
+              The annual revenue or expenses of your organization is &lt;$250,000 USD, and/or you are based in an IDA
+              (International Development Association) country*
+            </td>
+            <td>Free**</td>
+            <td>Free**</td>
+            <td>Free**</td>
+          </tr>
+        </table>
+        <p>
+          *Country classifications are as defined by the
+          <a href="https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html"
+            >World Bank categorization</a
+          >. Please refer to the
+          <a
+            href="https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups"
+            >International Development Association</a
           >
+          page for a list of eligible countries. The IDA is part of the World Bank. Its criteria are more nuanced than
+          ‘low income’ or ‘lower-middle income’ as it takes into account GNI per capita as well as creditworthiness,
+          which is especially important in countries where the gap between rich and poor is very large.
         </p>
         <p>
-          <i
-            >This statement is a living, imperfect document—an ongoing reflection of our journey to embody the values of
-            equity, diversity, inclusion, and accessibility (EDIA) in all that we do. It exists because of the wisdom
-            and care of many individuals who have shaped our thinking over time. We gratefully acknowledge the
-            contributions of Dr. Antoinette Foster, Dr. Kim Tran, Lorraine Chuen and the OpenCon community, Dr. Leslie
-            Chan, Dr. Baha Mali, DeEtta Jones (through her work with Code for Science and Society and Invest in Open
-            Infrastructure), Tara Robertson, Dr. Kari Jordan, Ananda Valenzuela, and many other agents of change with
-            whom we had the fortune to cross paths.</i
-          >
-        </p>
-        <p><i>Last update August 5, 2025.</i></p>
-        <p>
-          <a href="https://content.prereview.org/edia-not-optional-essential"
-            >Equity, diversity, inclusion, and accessibility are not optional; They are essential.</a
-          >
+          ** As we are a small team, we have limited slots for free workshops over the course of the year. For the 4 and
+          6 hours workshop, we can work with the organization/group to find sponsorship support. We appreciate your
+          understanding and flexibility in accommodating workshop requests.
         </p>
         <p>
-          Equity, diversity, inclusion, and accessibility values and practices are the center of our approach towards
-          transforming systems in the context of scholarly peer review. They are the guiding principles that inform how
-          we work at PREreview, how we imagine our future, and how we grow as individuals in the community. They are key
-          to fulfilling our mission towards a liberated future in which knowledge flows freely and equitably, unbound by
-          systemic barriers or entrenched hierarchies.
+          This equitable pricing plan has been developed with reference to criteria used by
+          <a href="https://c4disc.org/members">C4DISC</a>,
+          <a href="https://carpentries.org/workshops/">The Carpentries</a>, and
+          <a href="https://www.crossref.org/gem/">Crossref’s GEM program</a>.
+        </p>
+        <h1>Past and present collaborators include</h1>
+        <ul>
+          <li><a href="https://info.africarxiv.org/">AfricArXiv</a></li>
+          <li><a href="https://www.asu.edu/">Arizona State University</a></li>
+          <li><a href="https://www.crohnscolitisfoundation.org/">Crohn&apos;s and Colitis Foundation</a></li>
+          <li><a href="https://www.healthra.org/">Health Research Alliance</a></li>
+          <li><a href="https://www.orfg.org/">Open Research Funders Group</a></li>
+          <li><a href="https://www.ohsu.edu/">Oregon Health &amp; Science University</a></li>
+          <li><a href="https://eiderafricaltd.org/">Eider Africa</a></li>
+          <li><a href="https://elifesciences.org/">eLife</a></li>
+          <li><a href="https://www.nccr-antiresist.ch/">NCCR AntiResist</a></li>
+          <li><a href="https://www.acog.org/">The American College of Obstetricians and Gynecologists</a></li>
+          <li><a href="https://www.tcc-africa.org/">Training Centre in Communication (TCC) Africa</a></li>
+          <li><a href="https://www.exeter.ac.uk/">University of Exeter</a></li>
+          <li><a href="https://www.icm.uu.se/">Uppsala University Department of Cell and Molecular Biology</a></li>
+        </ul>
+        <h1>PREreview Champions Program</h1>
+        <p>
+          The <a href="https://prereview.org/champions-program">PREreview Champions Program</a> is a program designed to
+          equip PREreview community members with the resources, skills, and support to facilitate the adaptation and
+          adoption of open and equitable peer-review practices within their local communities.
         </p>
         <p>
-          PREreview creates equity within traditional scholarly peer review by providing concrete opportunities for
-          traditionally marginalized research communities to get involved, train, connect, and be valued and recognized
-          for their contributions to knowledge, generally through open, peer review of preprints and other early
-          research outputs.
+          The program is offered yearly and was piloted in 2024. Past and future content related to the PREreview
+          Champions Program can be found in
+          <a href="https://content.prereview.org/tag/prereview-champion">this collection of blog posts</a> on our
+          website.
         </p>
         <p>
-          Since peer review is conducted by people and thus is naturally subject to be influenced by personal beliefs
-          and assumptions, we address biases at the start of the peer review process. In traditional peer review, people
-          often replicate power structures that reinforce the disenfranchisement and exclusion of individuals, groups of
-          individuals, as well as entire nations.
-        </p>
-        <p>
-          The existing inequities, lack of diversity, and non-inclusive practices within peer review are only a
-          manifestation of much larger problems deriving from structural and cultural oppressive systems that were
-          created and continue to work to maintain and reinforce these disparities. These oppressive systems include,
-          but are not limited to, patriarchal systems, white supremacy culture, heteronormativity, and the practice of
-          colonialism. All of these systems are connected to each other, they are all human endeavors, they are part of
-          who we are collectively, and they are embedded into everything that we create.
-        </p>
-        <p>
-          Therefore, we recognize that our work aimed at dismantling these systems within the scholarly peer review
-          space cannot exist outside of a holistic action that starts with our individual commitments to equity,
-          diversity, inclusion, and accessibility (EDIA) practices in our everyday lives and ends with radical
-          transformation in the very fabric of our institutions and structures.
-        </p>
-        <p>
-          Below is our attempt to communicate clearly how we commit ourselves to these values by forging them into the
-          way we work.
-        </p>
-        <h1>How are we committed to equity?</h1>
-        <p>
-          We strive to provide access to
-          <b>equitable peer review opportunities and apply an equity lens throughout all our work</b>.
-        </p>
-        <p>
-          Through our <b>people-centered,</b> <b>open-source and free preprint review platform</b> we offer
-          opportunities for <b>all experts</b> to take peer review into their own hands by contributing openly to the
-          review of emerging scholarly work published as preprints. While anyone with an ORCID record can create an
-          account and engage on PREreview, the platform features, content, and tools are designed to center and
-          prioritize the needs and lived-experiences of groups who have been traditionally excluded from the evaluation
-          of scholarly work.
-        </p>
-        <p>
-          In terms of our technical work, we ground all of our feature development, maintenance, and work to improve
-          existing parts of PREreview.org within human-centered design processes including community design sprints,
-          user research interviews, pilots with partner organizations interested in tailoring PREreview for their
-          audiences, and timely, bespoke solutions for individual community member requests inline with our mission and
-          values. These opportunities to offer input are open to all, and we strive to offer multiple ways to
-          participate within and across these opportunities to provide as equitable access as possible for anyone who
-          would like to contribute. We make decisions based on how real people use PREreview.org and the authentic
-          feedback and suggestions they offer. Our technical work focuses on making sure our community members get what
-          they need from us, rather than on what we hope to profit from them. The equity of the value exchange between
-          PREreview.org and its community members should always be weighted towards those community members.
-        </p>
-        <p>
-          Through our<a href="https://prereview.org/trainings"> <b>Open Reviewers training</b></a> and
-          <a href="https://prereview.org/trainings#prereview-champions-program"><b>Champions program</b></a> we support
-          individuals through a path of guided learning to build their profile as socially-conscious, constructive peer
-          reviewers. We strive to equip them with the skills and resources to champion open and equitable peer review
-          practices amongst their own communities. The training includes tools to help identify and mitigate bias,
-          reflecting on how systems of oppression manifest in the review process and individual actions that we can take
-          as reviewers to mitigate their impact.
-        </p>
-        <p>
-          Our commitment to equity is also woven into how we approach <b>partnership building</b>. Our work is limited
-          by the perspectives, expertise, and experiences we have as a team, and our ideas are influenced by the
-          communities with which we are most closely connected. We therefore approach partnerships from an opportunity
-          perspective—offering our support, knowledge, and resources to individuals, groups, and organizations who need
-          it to advance goals and missions that are in line with ours.
-        </p>
-        <h1>How are we committed to diversity?</h1>
-        <p>
-          To this day, many groups remain intentionally excluded from peer review. The gatekeepers to knowledge
-          production and dissemination are predominantly male and come from regions of the world that have perpetuated
-          oppression and imposed rules on other cultures for centuries.
-        </p>
-        <p>
-          At PREreview, our commitment to diversity is rooted in a continuous effort to
-          <b>challenge traditional notions of expertise</b>—shifting the focus from pedigree and prestige to the value
-          of lived experience and meaningful contributions to knowledge.
-        </p>
-        <p>
-          For example, we began a <b>collaboration with the Rare As One Project</b>, a network of patient-led
-          organizations working to improve the lives of people affected by rare diseases. Together, we are exploring how
-          patients and patient advocates can engage in reviewing preprints on research most relevant to them. We believe
-          that anyone with relevant knowledge and lived-experience should be honored and valued for their contribution
-          to shaping and providing feedback to research.
-        </p>
-        <p>
-          We actively seek out community input and feedback at every stage of our work through <b>1:1 interviews</b> and
-          <b>product design sprints</b> run at different time zones to help us shape our tools and resources in response
-          to the needs and expectations of a broad research community. Participants are compensated for their time and
-          expertise.
-        </p>
-        <p>
-          Our commitment to diversity also manifests in the way we show up in <b>public spaces</b>. We only speak at
-          conferences whose organizing body prioritizes diversity in their speaker selection, and that have a clear and
-          actionable Code of Conduct to ensure participants are invited into a space in which there is zero tolerance
-          for harassment and all forms of oppressive behaviors.
-        </p>
-        <h1>How are we committed to inclusion?</h1>
-        <p>
-          As a consequence of British colonialism and the strengthening of U.S. global influence in the second half of
-          the 20th century, English is the <i>de facto</i> language of scholarship. Non-native English speakers who are
-          active in scholarly research face immeasurable barriers to participation and must conform to norms that were
-          not set with their needs and experiences in mind. PREreview is committed to lowering such barriers and
-          enabling participation for all.
-        </p>
-        <p>
-          Since 2025, we have been carrying out a
-          <a href="https://content.prereview.org/help-translate-prereview"
-            >community-informed and justice-centered translation and localization project</a
-          >
-          that led to the recent release of all our workflows and soon all our website pages and resources in Latin
-          American Spanish and Brazilian Portuguese. This project is possible only because of an ongoing collaboration
-          with fantastic justice-oriented translators and interpreters Luciana Lage (Portuguese) and Noemí
-          González-Rocha (Spanish) of
-          <a href="https://sites.google.com/noemiinterprets.com/languageandjustice/home?authuser=0"
-            >A Simple Translation</a
-          >, as well as the contribution of
-          <a href="https://content.prereview.org/prereviews-community-localization-and-translation-campaign-is-live/"
-            >community members</a
-          >
-          committed to shaping a better future for scholarly communications. We are committed to expanding this work to
-          include more language relevant to our community members throughout PREreview’s future.
-        </p>
-        <p>
-          We envision a future in which every subject-matter expert within or outside of the academy is welcome into a
-          peer review culture where constructive feedback is expected and rewarded. In our preprint review platform,
-          community members&apos; profiles and filters de-emphasize information about a researcher’s title and work
-          location and instead prioritize a list of review contributions, community engagement, mentorship, and training
-          participation.
-        </p>
-        <p>
-          Through our<a href="https://prereview.org/live-reviews"> Live Reviews</a> we facilitate respectful and
-          constructive conversations around preprints, with diverse participants from around the world, leading to
-          openly published PREreviews. When possible, we choose to discuss preprints authored by traditionally
-          marginalized groups, and/or whose research topics give us a chance to reflect on social issues that lead to
-          structural inequities.
-        </p>
-        <p>
-          These events are also intentionally designed to enable both verbal and written contributions to suit different
-          levels of interaction. We provide live-caption functionality, and, when possible, sign language interpretation
-          and written and live translations in languages other than English.
-        </p>
-        <h1>How are we committed to accessibility</h1>
-        <p>
-          We work to make<a href="https://prereview.org/"> PREreview.org</a> as accessible as possible by paying
-          attention to standards about contrast, readability, and measures like alt text to assist visitors who use
-          screen readers.
-        </p>
-        <h1>Definitions</h1>
-        <h2>Equity</h2>
-        <p>
-          The degree to which researchers are free from historic and present-day barriers to full access and
-          participation in research production, evaluation, and dissemination. We focus on equity and not equality
-          because we recognize that people begin with different resources and barriers, and therefore will need more or
-          less support to reach the same level of access.
-        </p>
-        <p>
-          To us, centering equity is not just about redistributing resources, but it’s about redistributing power.
-          Centering justice over balance.
-        </p>
-        <h2>Diversity</h2>
-        <p>
-          The extent to which representation among peer reviewers reflects the diversity of identities and backgrounds
-          across global research communities.
-        </p>
-        <p>
-          To us, diversity is about honoring the plurality of worldviews, values, and ways of knowing. Not about
-          presence, but about power. Viewing this knowledge as 100% necessary, not as an act of generosity.
-        </p>
-        <h2>Inclusion</h2>
-        <p>
-          Enabling all researchers to bring their full potential, identities, perspectives, experiences, and skills to
-          the table in a way that is affirming and rewarding to the reviewer, and encourages contribution to the peer
-          review process and scholarship as a whole.
-        </p>
-        <p>
-          To us, inclusion is about co-creating new structures with those previously excluded. Inclusion as
-          transformation, not assimilation.
-        </p>
-        <h2>Accessibility</h2>
-        <p>
-          A specific component of inclusion that sees the design of products, resources, events, or environments to be
-          usable by people who are disabled, people who require additional support in order to fully participate and
-          engage.
+          Please share your questions with us at <a href="mailto:community@prereview.org">community@prereview.org</a>.
         </p>
       `,
       locale: DefaultLocale,

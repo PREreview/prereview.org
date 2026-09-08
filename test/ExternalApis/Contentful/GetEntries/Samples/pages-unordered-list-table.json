@@ -1,0 +1,1207 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+        "type": "Entry",
+        "id": "42cK6fgeypGN3ttfUmWNAw",
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "page" } },
+        "revision": 0,
+        "createdAt": "2026-09-02T14:12:25.910Z",
+        "updatedAt": "2026-09-07T13:49:32.319Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+      },
+      "fields": {
+        "title": { "en-US": "Trainings" },
+        "slug": { "en-US": "trainings" },
+        "content": {
+          "en-US": {
+            "data": {},
+            "content": [
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Peer review plays a pivotal role in determining which research projects receive funding, which findings get published, and ultimately, which knowledge is disseminated and utilized by the scientific community and the broader public. Despite its critical importance, reviewers often undergo minimal training for this crucial task. Furthermore, that training rarely focuses on mitigating the biases that are ingrained in the peer review process. Hence, new generations of reviewers often lack the frameworks to address their biases leading to a perpetuation of the current problems of inequities in scholarly publishing. At PREreview we offer two kinds of peer review training workshops centered on issues of equity, diversity, and inclusion: ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {},
+                    "marks": [{ "type": "bold" }],
+                    "value": "PREreview Open Reviewers",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ", focused on research manuscripts’ review, and ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {},
+                    "marks": [{ "type": "bold" }],
+                    "value": "PREreview Open Grant Reviewers",
+                    "nodeType": "text"
+                  },
+                  { "data": {}, "marks": [], "value": ", focused on grant applications’ review.", "nodeType": "text" }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "We work with organizations, institutions, and funding agencies that want to offer their communities the opportunity to challenge their beliefs and learn from one another how to recognize and mitigate the impact of bias in research evaluation.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Our workshops are designed for safe and inclusive delivery - both online and in-person - by providing clear guidelines ahead of time and by accommodating participants’ different communication and participation styles. Our content is intentionally interactive and is presented to participants using collaborative note-taking and other supporting tools, such as Mentimeter. Contact us at ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": { "uri": "mailto:community@prereview.org" },
+                    "content": [{ "data": {}, "marks": [], "value": "community@prereview.org", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": " to discuss which type of workshop is best for your organization and options for tailoring our workshop content for your organization’s needs.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Note: we also run 2-hour community workshops every quarter of the year which are open to individual sign-ups. Read below for more information on the next available workshop and how to register.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "PREreview Open Reviewers", "nodeType": "text" }],
+                "nodeType": "heading-1"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "The Open Reviewers Workshop is an interactive and hands-on training program designed for researchers at all career levels who are interested in engaging in ethical and constructive manuscript peer review. With a focus on promoting equity, diversity, and inclusion, the workshop provides participants with the necessary skills and knowledge to conduct equitable peer reviews with the use of materials from ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": { "uri": "https://prereview.org/resources" },
+                    "content": [{ "data": {}, "marks": [], "value": "The Open Reviewers Toolkit", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": ".", "nodeType": "text" }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "2-hour workshop", "nodeType": "text" }],
+                "nodeType": "heading-2"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "This stand-alone introductory workshop focuses on the basics of open, preprint peer review and becoming aware of biases present in the scholarly publication process.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "Learning Objectives", "nodeType": "text" }],
+                "nodeType": "heading-3"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "A general understanding of journal-organized and independent review processes",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "An introduction to how systems of oppression manifest in the manuscript review process",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "An introduction to strategies to self-assess and mitigate bias in the context of manuscript review",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  }
+                ],
+                "nodeType": "unordered-list"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "Multi-session workshops", "nodeType": "text" }],
+                "nodeType": "heading-2"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "These multi-session training run for 4-6 hours and offer greater opportunities for practical review experience following a structured approach to writing a review, keeping issues of bias and systemic oppression front of mind. These workshops culminate in a ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": { "uri": "https://prereview.org/live-reviews" },
+                    "content": [{ "data": {}, "marks": [], "value": "Live Review", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": " session facilitated by PREreview staff where participants select and review a preprint together.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "Learning Objectives", "nodeType": "text" }],
+                "nodeType": "heading-3"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "A general understanding of journal-organized and independent review processes",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "A detailed understanding of how systems of oppression manifest in the manuscript review process",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "Strategies to self-assess and mitigate bias in the context of manuscript review",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "An in-depth understanding of and practical experience with peer reviewing a manuscript in a way that minimizes bias, striving for constructive, clear, and actionable feedback",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "An opportunity to put learning into practice by collaboratively reviewing a preprint and publishing the resulting preprint review on PREreview.org",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  }
+                ],
+                "nodeType": "unordered-list"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "PREreview Open Grant Reviewers", "nodeType": "text" }],
+                "nodeType": "heading-1"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "The PREreview Open Grant Reviewers workshop is designed to guide grant reviewers in the equitable assessment of grant applications. Our goal is to engage and train a pool of diverse, socially conscious grant reviewers.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "2-hour workshop", "nodeType": "text" }],
+                "nodeType": "heading-2"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "Open Grant Reviewers is currently offered as a 2-hour workshop but can be modified to provide greater support and depth of learning. Throughout the workshop, reviewers are encouraged to identify and address biases in the grant review process using our ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": { "uri": "https://prereview.org/resources" },
+                    "content": [{ "data": {}, "marks": [], "value": "training materials", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": ", which include a Bias Reflection Guide. Our curriculum includes space for debate-based learning and open discussions among the reviewers.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "Learning Objectives", "nodeType": "text" }],
+                "nodeType": "heading-3"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "A broad understanding of what systems of oppression are and how they manifest in the grant review process",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "Strategies to recognize, self-assess, and address bias in the context of grant review",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "How to review a grant in a way that minimizes bias, striving for constructive, clear, and actionable feedback",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "marks": [],
+                            "value": "Advice around best practices in creating rubrics and evaluation criteria that help reduce subjectivity, and bring greater transparency and equity into the review process",
+                            "nodeType": "text"
+                          }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  }
+                ],
+                "nodeType": "unordered-list"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "Pricing", "nodeType": "text" }],
+                "nodeType": "heading-3"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "The pricing across all our workshop offerings is as follows (in USD). Please note that these prices are for up to 30 participants but more can be added at an additional cost.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "Criteria", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-header-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "2 hours", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-header-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "4 hours", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-header-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "6 hours", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-header-cell"
+                      }
+                    ],
+                    "nodeType": "table-row"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "The annual revenue or expenses of your organization is >$1.5 million USD, and/or you are based in a high-income country*",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$2,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$4,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$6,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      }
+                    ],
+                    "nodeType": "table-row"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "The annual revenue or expenses of your organization is between $750,000 and $1.5 million USD, and/or you are based in an upper middle-income country*",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$1,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$2,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$3,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      }
+                    ],
+                    "nodeType": "table-row"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "The annual revenue or expenses of your organization are between $250,000 and $750,00 USD, and/or you are based in a low or lower-middle-income country*",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$500", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$1,000", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "$1,500", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      }
+                    ],
+                    "nodeType": "table-row"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "The annual revenue or expenses of your organization is <$250,000 USD, and/or you are based in an IDA (International Development Association) country*",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "Free**", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "Free**", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      },
+                      {
+                        "data": {},
+                        "content": [
+                          {
+                            "data": {},
+                            "content": [{ "data": {}, "marks": [], "value": "Free**", "nodeType": "text" }],
+                            "nodeType": "paragraph"
+                          }
+                        ],
+                        "nodeType": "table-cell"
+                      }
+                    ],
+                    "nodeType": "table-row"
+                  }
+                ],
+                "nodeType": "table"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "*Country classifications are as defined by the ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": {
+                      "uri": "https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html"
+                    },
+                    "content": [{ "data": {}, "marks": [], "value": "World Bank categorization", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": ". Please refer to the ", "nodeType": "text" },
+                  {
+                    "data": {
+                      "uri": "https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups"
+                    },
+                    "content": [
+                      { "data": {}, "marks": [], "value": "International Development Association", "nodeType": "text" }
+                    ],
+                    "nodeType": "hyperlink"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": " page for a list of eligible countries. The IDA is part of the World Bank. Its criteria are more nuanced than ‘low income’ or ‘lower-middle income’ as it takes into account GNI per capita as well as creditworthiness, which is especially important in countries where the gap between rich and poor is very large.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "** As we are a small team, we have limited slots for free workshops over the course of the year. For the 4 and 6 hours workshop, we can work with the organization/group to find sponsorship support. We appreciate your understanding and flexibility in accommodating workshop requests.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "This equitable pricing plan has been developed with reference to criteria used by ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": { "uri": "https://c4disc.org/members" },
+                    "content": [{ "data": {}, "marks": [], "value": "C4DISC", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": ", ", "nodeType": "text" },
+                  {
+                    "data": { "uri": "https://carpentries.org/workshops/" },
+                    "content": [{ "data": {}, "marks": [], "value": "The Carpentries", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": ", and ", "nodeType": "text" },
+                  {
+                    "data": { "uri": "https://www.crossref.org/gem/" },
+                    "content": [{ "data": {}, "marks": [], "value": "Crossref’s GEM program", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": ".", "nodeType": "text" }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  { "data": {}, "marks": [], "value": "Past and present collaborators include", "nodeType": "text" }
+                ],
+                "nodeType": "heading-1"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://info.africarxiv.org/" },
+                            "content": [{ "data": {}, "marks": [], "value": "AfricArXiv", "nodeType": "text" }],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.asu.edu/" },
+                            "content": [
+                              { "data": {}, "marks": [], "value": "Arizona State University", "nodeType": "text" }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.crohnscolitisfoundation.org/" },
+                            "content": [
+                              { "data": {}, "marks": [], "value": "Crohn's and Colitis Foundation", "nodeType": "text" }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.healthra.org/" },
+                            "content": [
+                              { "data": {}, "marks": [], "value": "Health Research Alliance", "nodeType": "text" }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.orfg.org/" },
+                            "content": [
+                              { "data": {}, "marks": [], "value": "Open Research Funders Group", "nodeType": "text" }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.ohsu.edu/" },
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "Oregon Health & Science University",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://eiderafricaltd.org/" },
+                            "content": [{ "data": {}, "marks": [], "value": "Eider Africa", "nodeType": "text" }],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://elifesciences.org/" },
+                            "content": [{ "data": {}, "marks": [], "value": "eLife", "nodeType": "text" }],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.nccr-antiresist.ch/" },
+                            "content": [{ "data": {}, "marks": [], "value": "NCCR AntiResist", "nodeType": "text" }],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.acog.org/" },
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "The American College of Obstetricians and Gynecologists",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.tcc-africa.org/" },
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "Training Centre in Communication (TCC) Africa",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.exeter.ac.uk/" },
+                            "content": [
+                              { "data": {}, "marks": [], "value": "University of Exeter", "nodeType": "text" }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  },
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "content": [
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" },
+                          {
+                            "data": { "uri": "https://www.icm.uu.se/" },
+                            "content": [
+                              {
+                                "data": {},
+                                "marks": [],
+                                "value": "Uppsala University Department of Cell and Molecular Biology",
+                                "nodeType": "text"
+                              }
+                            ],
+                            "nodeType": "hyperlink"
+                          },
+                          { "data": {}, "marks": [], "value": "", "nodeType": "text" }
+                        ],
+                        "nodeType": "paragraph"
+                      }
+                    ],
+                    "nodeType": "list-item"
+                  }
+                ],
+                "nodeType": "unordered-list"
+              },
+              {
+                "data": {},
+                "content": [{ "data": {}, "marks": [], "value": "PREreview Champions Program", "nodeType": "text" }],
+                "nodeType": "heading-1"
+              },
+              {
+                "data": {},
+                "content": [
+                  { "data": {}, "marks": [], "value": "The ", "nodeType": "text" },
+                  {
+                    "data": { "uri": "https://prereview.org/champions-program" },
+                    "content": [
+                      { "data": {}, "marks": [], "value": "PREreview Champions Program", "nodeType": "text" }
+                    ],
+                    "nodeType": "hyperlink"
+                  },
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": " is a program designed to equip PREreview community members with the resources, skills, and support to facilitate the adaptation and adoption of open and equitable peer-review practices within their local communities.",
+                    "nodeType": "text"
+                  }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "marks": [],
+                    "value": "The program is offered yearly and was piloted in 2024. Past and future content related to the PREreview Champions Program can be found in ",
+                    "nodeType": "text"
+                  },
+                  {
+                    "data": { "uri": "https://content.prereview.org/tag/prereview-champion" },
+                    "content": [
+                      { "data": {}, "marks": [], "value": "this collection of blog posts", "nodeType": "text" }
+                    ],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": " on our website.", "nodeType": "text" }
+                ],
+                "nodeType": "paragraph"
+              },
+              {
+                "data": {},
+                "content": [
+                  { "data": {}, "marks": [], "value": "Please share your questions with us at ", "nodeType": "text" },
+                  {
+                    "data": { "uri": "mailto:community@prereview.org" },
+                    "content": [{ "data": {}, "marks": [], "value": "community@prereview.org", "nodeType": "text" }],
+                    "nodeType": "hyperlink"
+                  },
+                  { "data": {}, "marks": [], "value": ".", "nodeType": "text" }
+                ],
+                "nodeType": "paragraph"
+              }
+            ],
+            "nodeType": "document"
+          }
+        }
+      }
+    }
+  ]
+}
