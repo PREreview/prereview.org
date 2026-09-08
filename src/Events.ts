@@ -74,7 +74,6 @@ export type EventFilter = EventFilterClauseInput | Array.NonEmptyReadonlyArray<E
 
 export function EventFilter<const C extends EventFilterClauseInput>(filter: C & ValidateClause<C>): C
 export function EventFilter<const C extends Array.NonEmptyReadonlyArray<EventFilterClauseInput>>(
-  // eslint-disable-next-line @typescript-eslint/unified-signatures
   filter: C & ValidateClauses<C>,
 ): C
 export function EventFilter(filter: EventFilter) {
