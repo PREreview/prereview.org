@@ -1318,7 +1318,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
       `,
     },
     added: Temporal.PlainDate.from('2025-01-17'),
-    leads: [OrcidId('0000-0002-8210-9258'), OrcidId('0000-0003-2582-4420')],
+    leads: [OrcidId('0000-0002-8210-9258'), OrcidId('0000-0003-2582-4420'), OrcidId('0009-0002-9829-0159')],
     joinLink: new URL('https://chat.whatsapp.com/EwqcyyjUIR57BZMvwuwIET'),
   },
   {
