@@ -54,7 +54,7 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<
   Heading2: heading2 => html`<h2>${Array.map(heading2.content, DocumentTypeToHtml)}</h2> `,
   Heading3: heading3 => html`<h3>${Array.map(heading3.content, DocumentTypeToHtml)}</h3>`,
   Hyperlink: hyperlink => html`<a href="${hyperlink.data.uri}">${Array.map(hyperlink.content, DocumentTypeToHtml)}</a>`,
-  ListItem: listItem => html`<li>${Array.map(listItem.content, DocumentTypeToHtml)}</li>`,
+  ListItem: listItem => html`<li>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</li>`,
   Paragraph: paragraph => html`<p>${Array.map(paragraph.content, DocumentTypeToHtml)}</p>`,
   Table: table =>
     html`<table>
@@ -64,14 +64,24 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<
     html`<tr>
       ${Array.map(tableRow.content, DocumentTypeToHtml)}
     </tr>`,
-  TableCell: tableCell => html`<td>${Array.map(tableCell.content, DocumentTypeToHtml)}</td>`,
-  TableHeaderCell: tableHeaderCell => html`<th>${Array.map(tableHeaderCell.content, DocumentTypeToHtml)}</th>`,
+  TableCell: tableCell => html`<td>${ContentToHtmlSkippingOverSingleParagraph(tableCell)}</td>`,
+  TableHeaderCell: tableHeaderCell => html`<th>${ContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</th>`,
   Text: text => Array.reduce(text.marks, html`${text.value}`, MarkToHtml),
   UnorderedList: unorderedList =>
     html`<ul>
       ${Array.map(unorderedList.content, DocumentTypeToHtml)}
     </ul>`,
 })
+
+const ContentToHtmlSkippingOverSingleParagraph = (
+  documentType: Extract<DocumentType, { content: unknown }>,
+): Array.NonEmptyReadonlyArray<Html> => {
+  if (documentType.content.length === 1 && documentType.content[0]._tag === 'Paragraph') {
+    return Array.map(documentType.content[0].content, DocumentTypeToHtml)
+  }
+
+  return Array.map(documentType.content, DocumentTypeToHtml)
+}
 
 const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>
   Match.valueTags(mark, {
