@@ -1,6 +1,6 @@
 import { Array, Match, Option, ParseResult, pipe, Predicate, Record, Schema } from 'effect'
 import { ContentfulId, Document, type DocumentType, Entry, type Mark } from '../../../ExternalApis/Contentful/index.ts'
-import { html, type Html } from '../../../html.ts'
+import { Html, html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { ContentfulPage } from '../Types.ts'
 
@@ -39,6 +39,36 @@ export const EntryToContentfulPage = Schema.transformOrFail(
   },
 )
 
+const HtmlFromSelfSchema = Schema.instanceOf(Html)
+
+const CallToActionEntryToHtml = Schema.transformOrFail(
+  Schema.Struct({
+    sys: Schema.Struct({
+      contentType: Schema.Struct({
+        sys: Schema.Struct({
+          id: Schema.Literal(ContentfulId.make('callToAction')),
+        }),
+      }),
+    }),
+    fields: Schema.Struct({
+      text: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+      url: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.URL }),
+    }),
+  }),
+  HtmlFromSelfSchema,
+  {
+    strict: true,
+    decode: callToAction =>
+      ParseResult.succeed(
+        html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
+          >${getValueForDefaultLocale(callToAction.fields.text)}</a
+        >`,
+      ),
+    encode: (page, _, ast) =>
+      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+  },
+)
+
 const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<DocumentType, Html>()({
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
@@ -50,6 +80,8 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<
       alt=""
     />`
   },
+  EmbeddedEntryBlock: embeddedEntryBlock =>
+    Schema.decodeUnknownSync(CallToActionEntryToHtml)(embeddedEntryBlock.data.target),
   Heading1: heading1 => html`<h1>${Array.map(heading1.content, DocumentTypeToHtml)}</h1>`,
   Heading2: heading2 => html`<h2>${Array.map(heading2.content, DocumentTypeToHtml)}</h2> `,
   Heading3: heading3 => html`<h3>${Array.map(heading3.content, DocumentTypeToHtml)}</h3>`,

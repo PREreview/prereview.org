@@ -27,6 +27,7 @@ export type DocumentType =
   | TableCell
   | TableHeaderCell
   | EmbeddedAssetBlock
+  | EmbeddedEntryBlock
 
 export type Mark = Bold | Italic
 
@@ -128,10 +129,17 @@ class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAsset
   data: Schema.Struct({ target: Asset }),
 }) {}
 
+class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntryBlock')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('embedded-entry-block', 'EmbeddedEntryBlock')).pipe(
+    Schema.fromKey('nodeType'),
+  ),
+  data: Schema.Struct({ target: Schema.suspend((): Schema.Schema<Entry> => Entry as never) }),
+}) {}
+
 export class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(
-    Schema.Union(Heading1, Heading2, Heading3, Paragraph, UnorderedList, Table, EmbeddedAssetBlock),
+    Schema.Union(Heading1, Heading2, Heading3, Paragraph, UnorderedList, Table, EmbeddedAssetBlock, EmbeddedEntryBlock),
   ),
 }) {}
 
