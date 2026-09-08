@@ -1,11 +1,16 @@
 import { Array, Effect, pipe, Schema } from 'effect'
+import type { ClubName } from '../../../Clubs/index.ts'
 import { Contentful, ContentfulIsUnavailable, UsePreviewApi } from '../../../ExternalApis/Contentful/index.ts'
+import { DefaultLocale } from '../../../locales/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
 import type { Slug } from '../../../types/Slug.ts'
-import type { ContentfulPage } from '../Types.ts'
+import { ContentfulPage } from '../Types.ts'
+import { addListOfClubs } from './AddListOfClubs.ts'
 import { EntryToContentfulPage } from './EntryToContentfulPage.ts'
 
-export const GetPage: (slug: Slug, preview?: boolean) => Effect.Effect<ContentfulPage, UnableToQuery, Contentful> =
+export const GetPage = (
+  clubs: Array.NonEmptyReadonlyArray<ClubName & { readonly status: 'active' | 'inactive' }>,
+): ((slug: Slug, preview?: boolean) => Effect.Effect<ContentfulPage, UnableToQuery, Contentful>) =>
   Effect.fn('ContentfulPages.getPage')(
     function* (slug, preview = false) {
       yield* Effect.annotateCurrentSpan({ slug })
@@ -24,7 +29,9 @@ export const GetPage: (slug: Slug, preview?: boolean) => Effect.Effect<Contentfu
         return yield* new ContentfulIsUnavailable({ cause: 'page is not found' })
       }
 
-      return yield* Schema.decodeUnknown(EntryToContentfulPage)(items[0])
+      const page = yield* Schema.decodeUnknown(EntryToContentfulPage)(items[0])
+
+      return new ContentfulPage({ html: addListOfClubs(DefaultLocale, clubs)(page.html), locale: page.locale })
     },
     Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
       pipe(

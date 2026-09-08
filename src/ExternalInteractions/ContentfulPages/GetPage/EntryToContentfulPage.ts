@@ -69,6 +69,30 @@ const CallToActionEntryToHtml = Schema.transformOrFail(
   },
 )
 
+const DynamicEmbedEntryToHtml = Schema.transformOrFail(
+  Schema.Struct({
+    sys: Schema.Struct({
+      contentType: Schema.Struct({
+        sys: Schema.Struct({
+          id: Schema.Literal(ContentfulId.make('dynamicEmbed')),
+        }),
+      }),
+    }),
+    fields: Schema.Struct({
+      key: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+    }),
+  }),
+  HtmlFromSelfSchema,
+  {
+    strict: true,
+    decode: dynamicEmbed => ParseResult.succeed(html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`),
+    encode: (page, _, ast) =>
+      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+  },
+)
+
+const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml)
+
 const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<DocumentType, Html>()({
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
@@ -81,7 +105,7 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<
     />`
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
-    Schema.decodeUnknownSync(CallToActionEntryToHtml)(embeddedEntryBlock.data.target),
+    Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target),
   Heading1: heading1 => html`<h1>${Array.map(heading1.content, DocumentTypeToHtml)}</h1>`,
   Heading2: heading2 => html`<h2>${Array.map(heading2.content, DocumentTypeToHtml)}</h2> `,
   Heading3: heading3 => html`<h3>${Array.map(heading3.content, DocumentTypeToHtml)}</h3>`,
