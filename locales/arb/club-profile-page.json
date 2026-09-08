@@ -1,0 +1,20 @@
+{
+  "clubLeads": {
+    "message": "قادة النادي"
+  },
+  "contactClub": {
+    "message": "تواصل مع النادي"
+  },
+  "joinClub": {
+    "message": "انضم إلى النادي"
+  },
+  "prereviews": {
+    "message": "مراجعات PREreview"
+  },
+  "noResults": {
+    "message": "{name} لم ينشر مراجعة أقران على PREreview بعد."
+  },
+  "appearHere": {
+    "message": "عند نشرها، ستظهر هنا."
+  }
+}

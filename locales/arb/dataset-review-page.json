@@ -1,0 +1,35 @@
+{
+  "structuredReviewTitle": {
+    "message": "مراجعة PREreview منظّمة لـ{dataset}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden> \n{author}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden>\n{author} من {club}"
+  },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# مؤلف آخر} other {# مؤلفين آخرين }}"
+  },
+  "backLink": {
+    "message": "العودة إلى جميع المراجعات"
+  },
+  "seeDataset": {
+    "message": "الاطلاع على مجموعة البيانات"
+  },
+  "published": {
+    "message": "نُشرت"
+  },
+  "license": {
+    "message": "الترخيص"
+  },
+  "licenseCcBy40": {
+    "message": "نَسْبُ الـمُصنَّف 4.0 دولي"
+  },
+  "competingInterests": {
+    "message": "تضارب المصالح"
+  },
+  "noCompetingInterestsStatement": {
+    "message": "يُقرّ المؤلف بعدم وجود أي تضارب في المصالح لديه."
+  }
+}

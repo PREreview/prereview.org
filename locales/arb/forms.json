@@ -1,0 +1,29 @@
+{
+  "backLink": {
+    "message": "رجوع"
+  },
+  "errorPrefix": {
+    "message": "خطأ"
+  },
+  "optionalSuffix": {
+    "message": "(اختياري)"
+  },
+  "errorSummaryTitle": {
+    "message": "حدثت مشكلة"
+  },
+  "startButton": {
+    "message": "ابدأ الآن"
+  },
+  "continueButton": {
+    "message": "متابعة"
+  },
+  "saveContinueButton": {
+    "message": "حفظ ومتابعة"
+  },
+  "reloadButton": {
+    "message": "إعادة التحميل"
+  },
+  "radioSeparatorLabel": {
+    "message": "أو"
+  }
+}
