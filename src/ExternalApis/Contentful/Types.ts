@@ -14,7 +14,19 @@ export type ContentfulId = typeof ContentfulId.Type
 export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
 
 export type DocumentType =
-  Text | Hyperlink | Heading1 | Heading2 | Heading3 | Paragraph | ListItem | UnorderedList | EmbeddedAssetBlock
+  | Text
+  | Hyperlink
+  | Heading1
+  | Heading2
+  | Heading3
+  | Paragraph
+  | ListItem
+  | UnorderedList
+  | Table
+  | TableRow
+  | TableCell
+  | TableHeaderCell
+  | EmbeddedAssetBlock
 
 export type Mark = Bold | Italic
 
@@ -70,6 +82,28 @@ class UnorderedList extends Schema.Class<UnorderedList>('UnorderedList')({
   content: Schema.NonEmptyArray(ListItem),
 }) {}
 
+class TableHeaderCell extends Schema.Class<TableHeaderCell>('TableHeaderCell')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('table-header-cell', 'TableHeaderCell')).pipe(
+    Schema.fromKey('nodeType'),
+  ),
+  content: Schema.NonEmptyArray(Schema.Union(Paragraph, UnorderedList)),
+}) {}
+
+class TableCell extends Schema.Class<TableCell>('TableCell')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('table-cell', 'TableCell')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(Schema.Union(Paragraph)),
+}) {}
+
+class TableRow extends Schema.Class<TableRow>('TableRow')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('table-row', 'TableRow')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(Schema.Union(TableHeaderCell, TableCell)),
+}) {}
+
+class Table extends Schema.Class<Table>('Table')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('table', 'Table')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(TableRow),
+}) {}
+
 class Asset extends Schema.Class<Asset>('Asset')({
   sys: Schema.Struct({
     id: ContentfulId,
@@ -97,7 +131,7 @@ class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAsset
 export class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(
-    Schema.Union(Heading1, Heading2, Heading3, Paragraph, UnorderedList, EmbeddedAssetBlock),
+    Schema.Union(Heading1, Heading2, Heading3, Paragraph, UnorderedList, Table, EmbeddedAssetBlock),
   ),
 }) {}
 

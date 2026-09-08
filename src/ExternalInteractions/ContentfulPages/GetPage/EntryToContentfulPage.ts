@@ -56,6 +56,16 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<
   Hyperlink: hyperlink => html`<a href="${hyperlink.data.uri}">${Array.map(hyperlink.content, DocumentTypeToHtml)}</a>`,
   ListItem: listItem => html`<li>${Array.map(listItem.content, DocumentTypeToHtml)}</li>`,
   Paragraph: paragraph => html`<p>${Array.map(paragraph.content, DocumentTypeToHtml)}</p>`,
+  Table: table =>
+    html`<table>
+      ${Array.map(table.content, DocumentTypeToHtml)}
+    </table>`,
+  TableRow: tableRow =>
+    html`<tr>
+      ${Array.map(tableRow.content, DocumentTypeToHtml)}
+    </tr>`,
+  TableCell: tableCell => html`<td>${Array.map(tableCell.content, DocumentTypeToHtml)}</td>`,
+  TableHeaderCell: tableHeaderCell => html`<th>${Array.map(tableHeaderCell.content, DocumentTypeToHtml)}</th>`,
   Text: text => Array.reduce(text.marks, html`${text.value}`, MarkToHtml),
   UnorderedList: unorderedList =>
     html`<ul>
