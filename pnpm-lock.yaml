@@ -104,6 +104,9 @@ importers:
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
+      htmlparser2:
+        specifier: ^12.0.0
+        version: 12.0.0
       intl-parse-accept-language:
         specifier: ^1.0.0
         version: 1.0.0

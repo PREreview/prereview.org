@@ -1,5 +1,21 @@
-import { Array, Data, Effect, Match, pipe, type Predicate } from 'effect'
+import {
+  Array,
+  Data,
+  Effect,
+  Equal,
+  Hash,
+  HashSet,
+  Match,
+  Option,
+  Order,
+  pipe,
+  Predicate,
+  Record,
+  Struct,
+  Tuple,
+} from 'effect'
 import { decode, encode } from 'html-entities'
+import { Parser } from 'htmlparser2'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import katex from 'katex'
@@ -12,6 +28,14 @@ export class Html extends Data.TaggedClass('Html')<{
 }> {
   toString() {
     return this.value
+  }
+
+  [Equal.symbol](that: unknown) {
+    return that instanceof Html && canonicalize(this.value) === canonicalize(that.value)
+  }
+
+  [Hash.symbol]() {
+    return Hash.string(canonicalize(this.value))
   }
 }
 
@@ -269,4 +293,151 @@ function stringEndsWithUnescapedAttribute(string: string): boolean {
 
 function stringEndsWithAttribute(string: string): boolean {
   return string.endsWith('="')
+}
+
+interface CanonicalNode {
+  readonly tag: string
+  readonly attrs: ReadonlyArray<readonly [string, string]>
+  children: ReadonlyArray<CanonicalNode | string>
+}
+
+const attrOrder: Order.Order<readonly [string, string]> = Order.mapInput(Order.string, Tuple.getFirst)
+
+function parseToCanonical(input: string): ReadonlyArray<CanonicalNode | string> {
+  const root = Array.empty<CanonicalNode | string>()
+  const stack = Array.empty<{ node: CanonicalNode; children: Array<CanonicalNode | string> }>()
+
+  const currentChildren = () => Option.match(Array.last(stack), { onNone: () => root, onSome: Struct.get('children') })
+
+  const parser = new Parser(
+    {
+      onopentag(name, attribs) {
+        const node: CanonicalNode = {
+          tag: name.toLowerCase(),
+          attrs: pipe(Record.toEntries(attribs), Array.sort(attrOrder)),
+          children: [],
+        }
+        currentChildren().push(node)
+        stack.push({ node, children: [] })
+      },
+      ontext(text) {
+        if (text !== '') {
+          currentChildren().push(decode(text))
+        }
+      },
+      onclosetag() {
+        const finished = stack.pop()
+        if (finished) {
+          finished.node.children = finished.children
+        }
+      },
+    },
+    { decodeEntities: false },
+  )
+
+  parser.write(input)
+  parser.end()
+
+  return root
+}
+
+type CanonicalChild = CanonicalNode | string
+
+const isTextNode: (node: CanonicalChild) => node is string = Predicate.isString
+
+const isElementNode = (node: CanonicalChild): node is CanonicalNode => !isTextNode(node)
+
+const isBlockLevel = (node: CanonicalChild) => isElementNode(node) && HashSet.has(blockElements, node.tag)
+
+const whitespaceSensitiveElements = HashSet.make('pre', 'textarea')
+
+const blockElements = HashSet.make(
+  'address',
+  'article',
+  'aside',
+  'blockquote',
+  'dd',
+  'div',
+  'dl',
+  'dt',
+  'fieldset',
+  'figcaption',
+  'figure',
+  'footer',
+  'form',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'header',
+  'hr',
+  'li',
+  'main',
+  'nav',
+  'ol',
+  'p',
+  'pre',
+  'section',
+  'table',
+  'tbody',
+  'td',
+  'tfoot',
+  'th',
+  'thead',
+  'tr',
+  'ul',
+)
+
+function normalizeText(text: string): string {
+  return text.replace(/[ \t\n\f\r]+/g, ' ')
+}
+
+function normalize(nodes: ReadonlyArray<CanonicalChild>, preserveWhitespace = false): ReadonlyArray<CanonicalChild> {
+  const normalizedNodes = Array.reduce(nodes, Array.empty<CanonicalChild>(), (result, node) => {
+    if (isElementNode(node)) {
+      result.push({
+        ...node,
+        children: normalize(node.children, preserveWhitespace || HashSet.has(whitespaceSensitiveElements, node.tag)),
+      })
+      return result
+    }
+
+    const previous = Array.last(result)
+    const text = preserveWhitespace ? node : normalizeText(node)
+
+    if (Option.isSome(previous) && isTextNode(previous.value)) {
+      result[result.length - 1] = previous.value + text
+    } else {
+      result.push(text)
+    }
+
+    return result
+  })
+
+  if (preserveWhitespace) {
+    return normalizedNodes
+  }
+
+  return pipe(
+    normalizedNodes,
+    Array.filterMap((node, index) => {
+      if (isElementNode(node)) {
+        return Option.some(node)
+      }
+
+      const trimStart = index === 0 || pipe(Array.get(normalizedNodes, index - 1), Option.exists(isBlockLevel))
+      const trimEnd =
+        index === normalizedNodes.length - 1 || pipe(Array.get(normalizedNodes, index + 1), Option.exists(isBlockLevel))
+
+      const text = node.replace(trimStart ? /^ / : /$^/, '').replace(trimEnd ? / $/ : /$^/, '')
+
+      return text === '' ? Option.none() : Option.some(text)
+    }),
+  )
+}
+
+function canonicalize(input: string): string {
+  return JSON.stringify(normalize(parseToCanonical(input)))
 }

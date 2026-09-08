@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Equal, Hash } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/html.ts'
@@ -29,6 +29,122 @@ test.each([
   ],
 ])('html (%s)', (_name, actual, expected) => {
   expect(actual.toString()).toBe(expected)
+})
+
+describe('Html Equal', () => {
+  test.each([
+    ['identical strings', '<p>Foo</p>', '<p>Foo</p>', true],
+    ['different attribute order', '<p class="a" id="b">Foo</p>', '<p id="b" class="a">Foo</p>', true],
+    ['collapsed whitespace between tags', '<div>\n  <p>Foo</p>\n</div>', '<div><p>Foo</p></div>', true],
+    ['collapsed whitespace within text', '<p>Foo   Bar</p>', '<p>Foo Bar</p>', true],
+    ['leading/trailing whitespace in text', '<p>  Foo  </p>', '<p>Foo</p>', true],
+    ['meaningful inter-element space kept', '<p><b>Foo</b> <i>Bar</i></p>', '<p><b>Foo</b><i>Bar</i></p>', false],
+    ['different text content', '<p>Foo</p>', '<p>Bar</p>', false],
+    ['different tag names', '<p>Foo</p>', '<div>Foo</div>', false],
+    ['different attribute values', '<p id="a">Foo</p>', '<p id="b">Foo</p>', false],
+    ['extra attribute', '<p id="a">Foo</p>', '<p>Foo</p>', false],
+    ['nested structure difference', '<div><p>Foo</p></div>', '<div><span>Foo</span></div>', false],
+    ['whitespace preserved inside <pre>', '<pre>  Foo   Bar  </pre>', '<pre>Foo Bar</pre>', false],
+    [
+      'whitespace preserved inside <textarea>',
+      '<textarea>  Foo   Bar  </textarea>',
+      '<textarea>Foo Bar</textarea>',
+      false,
+    ],
+    ['identical whitespace inside <pre>', '<pre>  Foo  </pre>', '<pre>  Foo  </pre>', true],
+    ['top-level whitespace trimmed', '  <p>Foo</p>  ', '<p>Foo</p>', true],
+    ['multiple top-level elements, reordered whitespace', '<p>A</p>\n<p>B</p>', '<p>A</p><p>B</p>', true],
+    [
+      'deeply nested attribute order',
+      '<div><span a="1" b="2"><i c="3" d="4">x</i></span></div>',
+      '<div><span b="2" a="1"><i d="4" c="3">x</i></span></div>',
+      true,
+    ],
+    ['leading whitespace only', '   <p>Foo</p>', '<p>Foo</p>', true],
+    ['trailing whitespace only', '<p>Foo</p>   ', '<p>Foo</p>', true],
+    ['leading and trailing newlines/tabs', '\n\t <p>Foo</p>\n\t ', '<p>Foo</p>', true],
+    ['leading whitespace before plain text snippet', '   Foo', 'Foo', true],
+    ['trailing whitespace after plain text snippet', 'Foo   ', 'Foo', true],
+    ['leading and trailing whitespace around plain text snippet', '  Foo  ', 'Foo', true],
+    [
+      'leading/trailing whitespace around multiple top-level elements',
+      '  <p>A</p><p>B</p>  ',
+      '<p>A</p><p>B</p>',
+      true,
+    ],
+    [
+      'leading/trailing whitespace around mixed inline content',
+      '  <b>Foo</b> <i>Bar</i>  ',
+      '<b>Foo</b> <i>Bar</i>',
+      true,
+    ],
+    ['only whitespace, both sides', '   ', '', true],
+    ['only whitespace vs empty variations', '\n\t \n', '  ', true],
+    ['leading whitespace changes meaning inside <pre>', '  <pre>Foo</pre>', '<pre>Foo</pre>', true],
+    ['whitespace-only snippet is not equal to non-empty content', '   ', '<p>Foo</p>', false],
+    ['void element with and without self-closing slash', '<img src="a.png">', '<img src="a.png"/>', true],
+    ['void element with attribute order difference', '<br class="a" id="b">', '<br id="b" class="a">', true],
+    ['comments are ignored', '<p>Foo<!-- comment -->Bar</p>', '<p>FooBar</p>', true],
+    ['comment-only difference', '<!-- a --><p>Foo</p>', '<p>Foo</p><!-- b -->', true],
+    ['tag name case-insensitivity', '<P>Foo</P>', '<p>Foo</p>', true],
+    ['attribute name case sensitivity', '<p CLASS="a">Foo</p>', '<p class="a">Foo</p>', true],
+    ['attribute value case sensitivity preserved', '<p class="A">Foo</p>', '<p class="a">Foo</p>', false],
+    ['single vs double quoted attributes', "<p class='a'>Foo</p>", '<p class="a">Foo</p>', true],
+    ['unquoted attributes', '<p class=a>Foo</p>', '<p class="a">Foo</p>', true],
+    ['boolean attribute with and without value', '<input disabled>', '<input disabled="disabled">', false],
+    ['entity vs literal character', '<p>&amp;</p>', '<p>&#38;</p>', true],
+    ['entity vs different encoding of same character', '<p>&copy;</p>', '<p>&#169;</p>', true],
+    ['different self-closing inline elements', '<br><br>', '<br/><br/>', true],
+    [
+      'nested identical structure with different whitespace styles',
+      '<ul>\n  <li>A</li>\n  <li>B</li>\n</ul>',
+      '<ul><li>A</li><li>B</li></ul>',
+      true,
+    ],
+    ['same text different case is not equal', '<p>Foo</p>', '<p>foo</p>', false],
+    ['duplicate attributes, first wins', '<p class="a" class="b">Foo</p>', '<p class="a">Foo</p>', true],
+    ['empty element vs self-closing empty element', '<span></span>', '<span/>', true],
+    [
+      'whitespace only between inline and block element (one side)',
+      '<b>Foo</b>   <p>Bar</p>',
+      '<b>Foo</b><p>Bar</p>',
+      true,
+    ],
+    ['attribute value whitespace is significant', '<p class="a  b">Foo</p>', '<p class="a b">Foo</p>', false],
+    ['empty attribute value vs boolean attribute', '<p class="">Foo</p>', '<p class>Foo</p>', true],
+    ['attribute value with unencoded ampersand vs encoded', '<a href="a&b">x</a>', '<a href="a&amp;b">x</a>', false],
+    ['numeric character reference with leading zeros', '<p>&#0038;</p>', '<p>&#38;</p>', true],
+    ['non-breaking space vs regular space', '<p>Foo&nbsp;Bar</p>', '<p>Foo Bar</p>', false],
+    [
+      'nested element inside <pre> preserves whitespace',
+      '<pre><span>  Foo  </span></pre>',
+      '<pre><span>Foo</span></pre>',
+      false,
+    ],
+  ])('with Html (%s)', (_name, a, b, expected) => {
+    const htmlA = _.rawHtml(a)
+    const htmlB = _.rawHtml(b)
+
+    expect(Equal.equals(htmlA, htmlB)).toBe(expected)
+  })
+
+  test.each([
+    ['string', 'not html'],
+    ['number', 42],
+    ['null', null],
+  ])('with non-Html (%s)', (_name, value) => {
+    expect(Equal.equals(_.rawHtml('<p>Foo</p>'), value)).toBe(false)
+  })
+})
+
+describe('Html Hash', () => {
+  it.prop('with the same value', [fc.html()], value => {
+    expect(Hash.hash(value)).toStrictEqual(Hash.hash(value))
+  })
+
+  it.prop('with a different value', [fc.html(), fc.html()], ([a, b]) => {
+    expect(Hash.hash(a)).not.toStrictEqual(Hash.hash(b))
+  })
 })
 
 describe('sanitizeHtml', () => {
