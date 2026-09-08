@@ -277,8 +277,8 @@ importers:
         specifier: ^4.7.9
         version: 4.7.9
       html-validate:
-        specifier: ^11.11.0
-        version: 11.11.0(@vitest/expect@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
+        specifier: ^11.13.0
+        version: 11.13.0(@vitest/expect@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       iso-639-3:
         specifier: ^2.2.0
         version: 2.2.0
@@ -3100,8 +3100,8 @@ packages:
     resolution: {integrity: sha512-n6l5uca7/y5joxZ3LUePhzmBFUJ+U2YWzhMa8XUTecSeSlQiZdF5XAd/Q3/WUl0VsXgUwWi8I7CNIwdI5WN1SQ==}
     engines: {node: '>=20.10'}
 
-  html-validate@11.11.0:
-    resolution: {integrity: sha512-ta6WyTPBO6/qj9OdlwW4p9rcArFWaMV4eiiYzfrrypnfSQP+VOHorkJBem1/UBhuahNB4G/YItX9Fkk8eK3rQg==}
+  html-validate@11.13.0:
+    resolution: {integrity: sha512-+D/OzRlO1500q7N5Zq6TElX/HUmclqpKVh4B8z3ko1121I09i2fOrdiuYnufBOAFw85ex5cprn2fOZpzA41Utg==}
     engines: {node: ^22.22.0 || >= 24.8.0}
     hasBin: true
     peerDependencies:
@@ -8013,7 +8013,7 @@ snapshots:
 
   html-tags@5.1.0: {}
 
-  html-validate@11.11.0(@vitest/expect@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))):
+  html-validate@11.13.0(@vitest/expect@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))):
     dependencies:
       '@html-validate/stylish': 6.0.0
       '@sidvind/better-ajv-errors': 7.0.0(ajv@8.20.0)
