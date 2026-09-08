@@ -681,13 +681,17 @@ describe('sanitizeHtml', () => {
     ['with even more money', '$1.5 to $2.1 million', '$1.5 to $2.1 million'],
     ['with money in French', '100 000 $ à 200 000 $', '100 000 $ à 200 000 $'],
     ['with money in Portuguese', 'US$ 250.000 e US$ 750.000', 'US$ 250.000 e US$ 750.000'],
+    ['money in adjacent untrusted table cells', '<td>$500</td><td>$1,000</td>', '$500$1,000', false],
+    ['money in adjacent trusted table cells', '<td>$500</td><td>$1,000</td>', '<td>$500</td><td>$1,000</td>', true],
+    ['money immediately followed by a tag', '<p>$500</p>', '<p>$500</p>'],
+    ['money at the very end of the string', 'Cost: $500', 'Cost: $500'],
     [
       'extra whitespace',
       '  <h2> \n   h2\n\n  </h2> <p> \n   p1\n\n </p><h4> h4\n</h4><p> p2\n</p> \n ',
       '<h2>h2</h2>\n\n<p>p1</p>\n\n<h4>h4</h4>\n\n<p>p2</p>',
     ],
-  ])('with block level (%s)', (_name, input, expected) => {
-    const actual = _.sanitizeHtml(input)
+  ])('with block level (%s)', (_name, input, expected, trusted = false) => {
+    const actual = _.sanitizeHtml(input, { trusted })
 
     expect(actual.toString()).toBe(expected)
   })
