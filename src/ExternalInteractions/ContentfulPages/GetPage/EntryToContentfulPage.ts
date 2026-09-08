@@ -53,7 +53,10 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<
   Heading1: heading1 => html`<h1>${Array.map(heading1.content, DocumentTypeToHtml)}</h1>`,
   Heading2: heading2 => html`<h2>${Array.map(heading2.content, DocumentTypeToHtml)}</h2> `,
   Heading3: heading3 => html`<h3>${Array.map(heading3.content, DocumentTypeToHtml)}</h3>`,
-  Hyperlink: hyperlink => html`<a href="${hyperlink.data.uri}">${Array.map(hyperlink.content, DocumentTypeToHtml)}</a>`,
+  Hyperlink: hyperlink =>
+    html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
+      >${Array.map(hyperlink.content, DocumentTypeToHtml)}</a
+    >`,
   ListItem: listItem => html`<li>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</li>`,
   Paragraph: paragraph => html`<p>${Array.map(paragraph.content, DocumentTypeToHtml)}</p>`,
   Table: table =>

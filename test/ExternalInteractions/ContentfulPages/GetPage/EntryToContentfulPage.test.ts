@@ -78,7 +78,7 @@ it.effect.each<{
           career levels who are interested in engaging in ethical and constructive manuscript peer review. With a focus
           on promoting equity, diversity, and inclusion, the workshop provides participants with the necessary skills
           and knowledge to conduct equitable peer reviews with the use of materials from
-          <a href="https://prereview.org/resources">The Open Reviewers Toolkit</a>.
+          <a href="/resources">The Open Reviewers Toolkit</a>.
         </p>
         <h2>2-hour workshop</h2>
         <p>
@@ -95,8 +95,8 @@ it.effect.each<{
         <p>
           These multi-session training run for 4-6 hours and offer greater opportunities for practical review experience
           following a structured approach to writing a review, keeping issues of bias and systemic oppression front of
-          mind. These workshops culminate in a <a href="https://prereview.org/live-reviews">Live Review</a> session
-          facilitated by PREreview staff where participants select and review a preprint together.
+          mind. These workshops culminate in a <a href="/live-reviews">Live Review</a> session facilitated by PREreview
+          staff where participants select and review a preprint together.
         </p>
         <h3>Learning Objectives</h3>
         <ul>
@@ -121,9 +121,8 @@ it.effect.each<{
         <p>
           Open Grant Reviewers is currently offered as a 2-hour workshop but can be modified to provide greater support
           and depth of learning. Throughout the workshop, reviewers are encouraged to identify and address biases in the
-          grant review process using our <a href="https://prereview.org/resources">training materials</a>, which include
-          a Bias Reflection Guide. Our curriculum includes space for debate-based learning and open discussions among
-          the reviewers.
+          grant review process using our <a href="/resources">training materials</a>, which include a Bias Reflection
+          Guide. Our curriculum includes space for debate-based learning and open discussions among the reviewers.
         </p>
         <h3>Learning Objectives</h3>
         <ul>
@@ -231,9 +230,9 @@ it.effect.each<{
         </ul>
         <h1>PREreview Champions Program</h1>
         <p>
-          The <a href="https://prereview.org/champions-program">PREreview Champions Program</a> is a program designed to
-          equip PREreview community members with the resources, skills, and support to facilitate the adaptation and
-          adoption of open and equitable peer-review practices within their local communities.
+          The <a href="/champions-program">PREreview Champions Program</a> is a program designed to equip PREreview
+          community members with the resources, skills, and support to facilitate the adaptation and adoption of open
+          and equitable peer-review practices within their local communities.
         </p>
         <p>
           The program is offered yearly and was piloted in 2024. Past and future content related to the PREreview
