@@ -247,6 +247,71 @@ it.effect.each<{
       locale: DefaultLocale,
     }),
   },
+  {
+    response: 'pages-cta-dynamic-embed',
+    index: 0,
+    expected: new ContentfulPage({
+      html: html`
+        <p>
+          PREreview Clubs are collaborative preprint reviewing groups around a shared affiliation, affinity, interest,
+          location, or any other common cause. Club members work together to give preprint authors timely, constructive
+          peer feedback.
+        </p>
+        <h1>How can I start a PREreview Club?</h1>
+        <p>
+          Anyone who wants to form a collaborative preprint reviewing group can ask to start a Club. While we plan to
+          automate the process more in the future, PREreview Clubs are a concierge service. That means you should
+          <a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN">complete this form</a> to start a PREreview
+          Club. We’ll get back in touch with you by email to describe the next steps in the process and to make sure
+          it’s a good fit for what you want to achieve.
+        </p>
+        <p>
+          If everything seems right, we’ll set up your Clubs page and go through our workflow with you to ensure that
+          your Club and all its participating authors are credited on the reviews you author together.
+        </p>
+        <p>
+          You might start a PREreview Club based on affinity, geography, or language. You might also create a Club for
+          your class, lab, institution, or organization. You might even start a Club for your friends who love
+          collaborative preprint review!
+        </p>
+        <p>
+          You can check out our
+          <a href="https://zenodo.org/records/10210085">PREreview Clubs onboarding document</a> here to learn more.
+        </p>
+        <p>
+          If you’re interested in starting a club after that,
+          <a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN">complete this form</a>, and we&apos;ll
+          contact you soon to begin the process.
+        </p>
+        <a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" class="button">Start a Club!</a>
+        <h1>Can I join an existing PREreview Club?</h1>
+        <p>
+          Yes, you can if the club is open to accepting new members. Some clubs are dedicated to particular groups or
+          communities. Here is the list of active PREreview Clubs:
+        </p>
+        {{list-of-active-clubs}}
+        <p>Here is the list of inactive PREreview Clubs:</p>
+        {{list-of-inactive-clubs}}
+        <h1>Share your PREreview Clubs feedback</h1>
+        <p>
+          If you have feedback to give about your PREreview Clubs experience, please feel welcome to schedule a user
+          research interview with Head of Product Chad Sansing.
+          <a href="https://calendar.app.google/DErAfj3kydB3BqDZ7">Click here to sign up for a chat</a>. If you can’t
+          find a time that works for you, you can <a href="mailto:chad@prereview.org">email Chad</a> to arrange a call,
+          as well. Whenever possible, we compensate interviewees.
+        </p>
+        <h1>Join the PREreview community Slack</h1>
+        <p>
+          The PREreview community is now on Slack! Join us to connect with like-minded peers and to continue
+          conversations with colleagues and other participants from PREreview training workshops.
+        </p>
+        <p><a href="https://bit.ly/PREreview-Slack">Sign up here</a> for your invitation to join us on Slack!</p>
+        <a href="https://bit.ly/PREreview-Slack" class="button">Join our Slack</a>
+        <p></p>
+      `,
+      locale: DefaultLocale,
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

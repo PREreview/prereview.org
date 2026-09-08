@@ -1,0 +1,339 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+        "type": "Entry",
+        "id": "3V8leA0f5ZPgF0piZEEFCO",
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "page" } },
+        "revision": 0,
+        "createdAt": "2026-09-08T13:08:59.657Z",
+        "updatedAt": "2026-09-08T14:13:12.213Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+      },
+      "fields": {
+        "title": { "en-US": "Clubs" },
+        "slug": { "en-US": "clubs" },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "PREreview Clubs are collaborative preprint reviewing groups around a shared affiliation, affinity, interest, location, or any other common cause. Club members work together to give preprint authors timely, constructive peer feedback.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "How can I start a PREreview Club?", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Anyone who wants to form a collaborative preprint reviewing group can ask to start a Club. While we plan to automate the process more in the future, PREreview Clubs are a concierge service. That means you should ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" },
+                    "content": [{ "nodeType": "text", "value": "complete this form", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to start a PREreview Club. We’ll get back in touch with you by email to describe the next steps in the process and to make sure it’s a good fit for what you want to achieve.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "If everything seems right, we’ll set up your Clubs page and go through our workflow with you to ensure that your Club and all its participating authors are credited on the reviews you author together.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "You might start a PREreview Club based on affinity, geography, or language. You might also create a Club for your class, lab, institution, or organization. You might even start a Club for your friends who love collaborative preprint review!",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "You can check out our ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://zenodo.org/records/10210085" },
+                    "content": [
+                      { "nodeType": "text", "value": "PREreview Clubs onboarding document", "marks": [], "data": {} }
+                    ]
+                  },
+                  { "nodeType": "text", "value": " here to learn more.", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "If you’re interested in starting a club after that, ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" },
+                    "content": [{ "nodeType": "text", "value": "complete this form", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", and we'll contact you soon to begin the process.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "5tFXtJsK7tG5u35j9GWDnR", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Can I join an existing PREreview Club?", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Yes, you can if the club is open to accepting new members. Some clubs are dedicated to particular groups or communities. Here is the list of active PREreview Clubs:",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "6VvCihlRhD3RMIzeBz3ko6", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Here is the list of inactive PREreview Clubs:",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "3v7cn3BLvGIXlnb19G8G0V", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Share your PREreview Clubs feedback", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "If you have feedback to give about your PREreview Clubs experience, please feel welcome to schedule a user research interview with Head of Product Chad Sansing. ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://calendar.app.google/DErAfj3kydB3BqDZ7" },
+                    "content": [
+                      { "nodeType": "text", "value": "Click here to sign up for a chat", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". If you can’t find a time that works for you, you can ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "mailto:chad@prereview.org" },
+                    "content": [{ "nodeType": "text", "value": "email Chad", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to arrange a call, as well. Whenever possible, we compensate interviewees.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Join the PREreview community Slack", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "The PREreview community is now on Slack! Join us to connect with like-minded peers and to continue conversations with colleagues and other participants from PREreview training workshops.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://bit.ly/PREreview-Slack" },
+                    "content": [{ "nodeType": "text", "value": "Sign up here", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " for your invitation to join us on Slack!", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2kcE8mVDTjsV94ujNKsSXg", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "", "marks": [], "data": {} }]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "2kcE8mVDTjsV94ujNKsSXg",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } },
+          "revision": 0,
+          "createdAt": "2026-09-08T13:12:56.012Z",
+          "updatedAt": "2026-09-08T13:13:02.209Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": { "text": { "en-US": "Join our Slack" }, "url": { "en-US": "https://bit.ly/PREreview-Slack" } }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "3v7cn3BLvGIXlnb19G8G0V",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "dynamicEmbed" } },
+          "revision": 0,
+          "createdAt": "2026-09-08T13:40:09.394Z",
+          "updatedAt": "2026-09-08T14:07:38.302Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": { "key": { "en-US": "list-of-inactive-clubs" } }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "5tFXtJsK7tG5u35j9GWDnR",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } },
+          "revision": 0,
+          "createdAt": "2026-09-08T13:11:27.158Z",
+          "updatedAt": "2026-09-08T13:11:48.497Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "text": { "en-US": "Start a Club!" },
+          "url": { "en-US": "https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "6VvCihlRhD3RMIzeBz3ko6",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "dynamicEmbed" } },
+          "revision": 0,
+          "createdAt": "2026-09-08T13:39:46.500Z",
+          "updatedAt": "2026-09-08T14:07:50.058Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": { "key": { "en-US": "list-of-active-clubs" } }
+      }
+    ]
+  }
+}
