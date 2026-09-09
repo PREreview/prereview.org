@@ -1,7 +1,7 @@
 import { Command, FileSystem } from '@effect/platform'
 import { NodeContext, NodeRuntime } from '@effect/platform-node'
 import { pascalCase } from 'case-anything'
-import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, String, Tuple } from 'effect'
+import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, Stream, String, Tuple } from 'effect'
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
@@ -64,8 +64,25 @@ class SrcModules extends Effect.Service<SrcModules>()('SrcModules', {
   effect: DiscoverSrcModules,
 }) {}
 
-const RunIntlc = ({ locale, module }: { locale: string; module: string }) =>
-  Command.make('intlc', 'compile', `locales/${locale}/${module}.json`, '-l', locale).pipe(Command.string())
+const RunIntlc = Effect.fnUntraced(function* ({ locale, module }: { locale: string; module: string }) {
+  const command = Command.make('intlc', 'compile', `locales/${locale}/${module}.json`, '-l', locale)
+
+  const process = yield* Command.start(command)
+
+  const { output, exitCode } = yield* Effect.all(
+    {
+      output: process.stdout.pipe(Stream.decodeText(), Stream.mkString),
+      exitCode: process.exitCode,
+    },
+    { concurrency: 'unbounded' },
+  )
+
+  if (exitCode !== 0) {
+    return yield* Effect.fail(`Failed to compile ${locale}/${module}.json`)
+  }
+
+  return output
+})
 
 const BuildAssetsTarget = Effect.fnUntraced(function* ({
   locale,
@@ -308,6 +325,7 @@ const BuildSrcLocales = Effect.gen(function* () {
 
 const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency: 'inherit' }).pipe(
   Effect.andThen(Console.log('Done')),
+  Effect.tapError(() => Console.error('Failed')),
 )
 
 program.pipe(
@@ -317,5 +335,5 @@ program.pipe(
       Layer.provideMerge(NodeContext.layer),
     ),
   ),
-  NodeRuntime.runMain,
+  NodeRuntime.runMain({ disableErrorReporting: true }),
 )
