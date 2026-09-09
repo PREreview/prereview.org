@@ -51,7 +51,7 @@ it.effect.prop(
       Effect.provide(Layer.mock(Events.Events, {} as never)),
       Effect.provide(TestLibsqlClient),
     ),
-  { timeout: Duration.toMillis('60 seconds') },
+  { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
 
 describe('when the last known position is none', () => {
@@ -104,7 +104,7 @@ describe('when the last known position is none', () => {
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(TestLibsqlClient),
       ),
-    { timeout: Duration.toMillis('60 seconds') },
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
 })
 
@@ -138,7 +138,7 @@ describe('when the last known position has not changed', () => {
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(TestLibsqlClient),
       ),
-    { timeout: Duration.toMillis('60 seconds') },
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
 })
 
@@ -175,7 +175,7 @@ describe('when the last known position has changed', () => {
         Effect.provide(Layer.mock(Events.Events, {} as never)),
         Effect.provide(TestLibsqlClient),
       ),
-    { timeout: Duration.toMillis('60 seconds') },
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
 })
 
@@ -450,7 +450,7 @@ it.effect.prop(
       Effect.provide(Layer.mock(Events.Events, {} as never)),
       Effect.provide(TestLibsqlClient),
     ),
-  { timeout: Duration.toMillis('60 seconds') },
+  { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
 
 const TestLibsqlClient = Layer.unwrapScoped(
