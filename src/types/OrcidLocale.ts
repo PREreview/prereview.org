@@ -33,6 +33,12 @@ export const parse = (s: string): Option.Option<OrcidLocale> => {
 
   const candidates = parts.map((_, i) => parts.slice(0, i + 1).join('_'))
 
+  try {
+    candidates.push(new Intl.Locale(s).language)
+  } catch {
+    // Do nothing
+  }
+
   for (const candidate of candidates.reverse()) {
     if (isOrcidLocale(candidate)) {
       return Option.some(candidate)
