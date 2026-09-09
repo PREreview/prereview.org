@@ -120,7 +120,7 @@ const ClubsData = Layer.unwrapEffect(
 pipe(
   Program,
   Layer.provide(ClubsData),
-  Layer.provide(OpenAiLanguageModel.modelWithTokenizer('gpt-4o')),
+  Layer.provide(OpenAiLanguageModel.modelWithTokenizer('gpt-5.6-sol')),
   Layer.provide(
     OpenAiClient.layerConfig({
       apiKey: Config.redacted('OPENAI_API_KEY'),
