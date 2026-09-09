@@ -69,16 +69,18 @@ const RunIntlc = Effect.fnUntraced(function* ({ locale, module }: { locale: stri
 
   const process = yield* Command.start(command)
 
-  const { output, exitCode } = yield* Effect.all(
+  const { output, stderr, exitCode } = yield* Effect.all(
     {
       output: process.stdout.pipe(Stream.decodeText(), Stream.mkString),
+      stderr: process.stderr.pipe(Stream.decodeText(), Stream.mkString),
       exitCode: process.exitCode,
     },
     { concurrency: 'unbounded' },
   )
 
   if (exitCode !== 0) {
-    return yield* Effect.fail(`Failed to compile ${locale}/${module}.json`)
+    yield* Console.error(stderr)
+    return yield* Effect.fail(`intlc compile failed with exit code ${exitCode}`)
   }
 
   return output
