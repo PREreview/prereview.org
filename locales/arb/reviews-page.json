@@ -1,0 +1,56 @@
+{
+  "title": {
+    "message": "أحدث مراجعات PREreview"
+  },
+  "titleWithDetails": {
+    "message": "أحدث مراجعات PREreview ({details})"
+  },
+  "pageNumber": {
+    "message": "الصفحة {page, number}"
+  },
+  "skipResults": {
+    "message": "تخطَّ إلى النتائج"
+  },
+  "filterTitle": {
+    "message": "تصفية"
+  },
+  "filterTitleAuthorLabel": {
+    "message": "كلمة مفتاحية، العنوان أو المؤلف"
+  },
+  "filterLanguageLabel": {
+    "message": "اللغة"
+  },
+  "filterLanguageAny": {
+    "message": "أيّ لغة"
+  },
+  "filterFieldLabel": {
+    "message": "المجال"
+  },
+  "filterFieldAny": {
+    "message": "أيّ مجال"
+  },
+  "filterButton": {
+    "message": "تصفية النتائج"
+  },
+  "pagerNewer": {
+    "message": "الأحدث"
+  },
+  "pagerOlder": {
+    "message": "الأقدم"
+  },
+  "noResults": {
+    "message": "لم تُنشر أي مراجعات PREreview بعد."
+  },
+  "appearHere": {
+    "message": "عند نشرها، ستظهر هنا."
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToShow": {
+    "message": "يتعذّر علينا عرض هذه الصفحة من أحدث مراجعات PREreview في الوقت الحالي."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  }
+}

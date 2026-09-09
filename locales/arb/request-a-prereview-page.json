@@ -1,0 +1,170 @@
+{
+  "requestTitle": {
+    "message": "أي مسودة بحثية أولية تود طلب مراجعتها؟"
+  },
+  "useDoiUrl": {
+    "message": "استخدم معرّف DOI للمسودة البحثية الأولية أو عنوان URL الخاص بها."
+  },
+  "whatIsDoi": {
+    "message": "ما هو معرّف DOI؟"
+  },
+  "whatIsDoiText": {
+    "message": "<doi>DOI</doi> هو معرّف فريد يمكنك العثور عليه في العديد من المسودات البحثية الأولية. على سبيل المثال، {example} أو {exampleUrl}."
+  },
+  "errorEnterPreprint": {
+    "message": "أدخل معرّف DOI للمسودة البحثية الأولية أو عنوان URL الخاص بها"
+  },
+  "doNotKnowPreprint": {
+    "message": "عذرًا، لا نتعرّف على هذه المسودة البحثية الأولية"
+  },
+  "notAPreprint": {
+    "message": "عذرًا، نحن ندعم المسودات البحثية الأولية فقط"
+  },
+  "unsupportedDoiTitle": {
+    "message": "عذرًا، لا ندعم معرّف DOI هذا"
+  },
+  "unsupportedUrlTitle": {
+    "message": "عذرًا، لا ندعم عنوان URL هذا"
+  },
+  "doiCouldBeAdvance": {
+    "message": "نعتقد أن معرّف DOI {doi} قد يكون لمسودة بحثية أولية على منصة Advanced Preprints، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeAfricarxiv": {
+    "message": "نعتقد أن معرّف DOI {doi} قد يكون لمسودة بحثية أولية على منصة AfricArXiv ، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeArcadiaScience": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Arcadia Science Preprint، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeArxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة arXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeAuthorea": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Authorea، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeBiorxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة bioRxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeBiorxivMedrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة bioRxiv أو medRxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeChemrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة chemRxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeCurvenote": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Curvenote ، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeEartharxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة EarthArXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeEcoevorxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة EcoEvoRxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeEdarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة EDArxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeEngrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة engrXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeJmir": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة JMIR، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeJxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Jxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeLifecycleJournal": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على Lifecycle Journal، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeMedrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة MedRxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeMetaarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة MetaArxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeNeurolibre": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة NeuroLibre، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeOsf": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة OSF، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeOsfLifecycleJournal": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة OSF أو Lifecycle Journal، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBePreprintsorg": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Preprints.org، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBePsyarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة PsyArXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBePsycharchives": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Psych Archives، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeRadial": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على Radial، لكننا لم نتمكن من العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeResearchSquare": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Research Square، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeScielo": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة SciELO، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeScienceOpen": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة ScienceOpen، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeSocarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة SocArXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeSsrn": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة SSRN، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeTechrxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة TechRxiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeVerixiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة VeriXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeUmsida": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة UMSIDA، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeZenodo": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Zenodo، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeZenodoAfricarxiv": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمسودة بحثية أولية على منصة Zenodo أو AfricArXiv، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "urlCouldBePhilsci": {
+    "message": "نعتقد أن معرّف URL {url} قد يكون لمسودة بحثية أولية على منصة PhilSci-Archive، ولكن يتعذر علينا العثور على أي تفاصيل عنها."
+  },
+  "checkCorrectDoi": {
+    "message": "إذا أدخلت معرّف DOI، فتحقق من صحته."
+  },
+  "checkCorrectUrl": {
+    "message": "إذا أدخلت عنوان URL، فتحقق من صحته."
+  },
+  "checkPastedDoi": {
+    "message": "إذا لصقت معرّف DOI، فتحقق من نسخ العنوان بالكامل."
+  },
+  "checkPastedUrl": {
+    "message": "إذا لصقت عنوان URL، فتحقق من نسخ العنوان بالكامل."
+  },
+  "doiIsCorrect": {
+    "message": "إذا كان معرّف DOI صحيحًا، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "urlIsCorrect": {
+    "message": "إذا كان عنوان URL صحيحًا، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "supportPreprintsFrom": {
+    "message": "نحن ندعم المسودات البحثية الأولية من {servers}."
+  },
+  "isAPreprint": {
+    "message": "إذا كانت هذه مسودة بحثية أولية، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "doiContactUs": {
+    "message": "إذا كان معرّف DOI هذا لمسودة بحثية أولية على خادم لا ندعمه، يُرجى <contact> التواصل معنا</contact>."
+  },
+  "urlContactUs": {
+    "message": "إذا كان عنوان URL هذا لمسودة بحثية أولية على منصة لا ندعمها، يُرجى <contact>التواصل معنا</contact>."
+  },
+  "tryDoi": {
+    "message": "بخلاف ذلك، إذا كانت للمسودة البحثية الأولية معرّف DOI، يُرجى محاولة استخدامه بدلًا من ذلك."
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "prereviewsOf": {
+    "message": "مراجعات PREreview ل{preprint}"
+  },
+  "preprintDetails": {
+    "message": "تفاصيل المسودة البحثية الأولية"
+  },
+  "abstractHeading": {
+    "message": "الملخص"
+  },
+  "posted": {
+    "message": "تاريخ النشر"
+  },
+  "server": {
+    "message": "الخادم"
+  },
+  "itemId": {
+    "message": "معرّف العنصر"
+  },
+  "readPreprint": {
+    "message": "قراءة المسودة البحثية الأولية"
+  },
+  "prereviews": {
+    "message": "{number, plural, one {# مراجعة PREreview} other {# مراجعات PREreview}}"
+  },
+  "writeAPrereview": {
+    "message": "كتابة مراجعة PREreview"
+  },
+  "requestAPrereview": {
+    "message": "طلب مراجعة PREreview"
+  },
+  "prereviewByOneAuthor": {
+    "message": "مراجعة PREreview بواسطة {author}"
+  },
+  "prereviewByOneAuthorInClub": {
+    "message": "مراجعة PREreview بواسطة {author} لصالح نادي {club}"
+  },
+  "prereviewByMultipleAuthors": {
+    "message": "مراجعة PREreview بواسطة {author} وآخرون."
+  },
+  "prereviewByMultipleAuthorsInClub": {
+    "message": "مراجعة PREreview بواسطة {author} وآخرون لصالح نادي {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# مؤلف آخر} other {# مؤلفون آخرون}}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden> {authors}"
+  },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden> {authors} من {club}"
+  },
+  "readPrereviewByOneAuthor": {
+    "message": "اقرأ <visuallyHidden>مراجعة PREreview التي أجراها {author}</visuallyHidden>"
+  },
+  "readPrereviewByOneAuthorInClub": {
+    "message": "اقرأ <visuallyHidden>مراجعة PREreview التي أجراها {author} من {club}</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthors": {
+    "message": "اقرأ <visuallyHidden>مراجعة PREreview التي أجراها {author} وآخرون</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthorsInClub": {
+    "message": "اقرأ <visuallyHidden>مراجعة PREreview التي أجراها {author} وآخرون من {club}</visuallyHidden>"
+  },
+  "rapidPrereviews": {
+    "message": "{number, plural, one {# مراجعة PREreview سريعة} other {# مراجعات PREreview سريعة}}"
+  },
+  "whereCanRapidPrereview": {
+    "message": "أين يمكنني إجراء مراجعة PREreview سريعة؟"
+  },
+  "rapidReplacedWith": {
+    "message": "استبدلنا مؤخرًا مراجعات PREreview السريعة <link>بمراجعات PREreview المُهيكلة</link>."
+  },
+  "writeStructuredPrereview": {
+    "message": "يمكنك الآن <link>إجراء مراجعة PREreview مُهيكلة</link>."
+  },
+  "updatingRapidPrereviews": {
+    "message": "سنُحدّث قريبًا مراجعات PREreview السريعة الأقدم مثل هذه."
+  },
+  "aggregatedRapidPreviews": {
+    "message": "مراجعات PREreview السريعة المُجمّعة"
+  },
+  "question": {
+    "message": "السؤال"
+  },
+  "yes": {
+    "message": "نعم"
+  },
+  "unsure": {
+    "message": "غير متأكد"
+  },
+  "na": {
+    "message": "لا ينطبق"
+  },
+  "no": {
+    "message": "لا"
+  },
+  "rapidAvailableCode": {
+    "message": "هل الشيفرة البرمجية المستخدمة في المخطوطة متاحة؟"
+  },
+  "rapidAvailableData": {
+    "message": "هل البيانات المستخدمة في المخطوطة متاحة؟"
+  },
+  "rapidCoherent": {
+    "message": "هل تدعم البيانات والتحليلات الاستنتاجات الرئيسية؟"
+  },
+  "rapidEthics": {
+    "message": "هل ناقش المؤلفون المخاوف الأخلاقية بشكل كافٍ؟"
+  },
+  "rapidFuture": {
+    "message": "هل يُرجح أن تؤدي النتائج إلى أبحاث مستقبلية؟"
+  },
+  "rapidLimitations": {
+    "message": "هل تناقش المخطوطة حدود الدراسة؟"
+  },
+  "rapidMethods": {
+    "message": "هل الأساليب الإحصائية والمنهجيات مناسبة للتحليل؟"
+  },
+  "rapidNewData": {
+    "message": "هل تتضمن المخطوطة بيانات جديدة؟"
+  },
+  "rapidNovel": {
+    "message": "هل النتائج جديدة؟"
+  },
+  "rapidPeerReview": {
+    "message": "هل توصي بإخضاع هذه المخطوطة لمراجعة الأقران؟"
+  },
+  "rapidRecommend": {
+    "message": "هل توصي بهذه المخطوطة للآخرين؟"
+  },
+  "rapidReproducibility": {
+    "message": "هل قُدّمت تفاصيل كافية تتيح إعادة إجراء الدراسة؟"
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات. "
+  },
+  "unableToShow": {
+    "message": "يتعذّر علينا عرض المسودة البحثية الأولية ومراجعات PREreview الخاصة بها في الوقت الحالي."
+  },
+  "tryAgainLater": {
+    "message": " يُرجى المحاولة مرة أخرى لاحقًا."
+  }
+}

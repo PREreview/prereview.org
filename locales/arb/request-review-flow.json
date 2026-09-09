@@ -1,0 +1,137 @@
+{
+  "checkYourRequest": {
+    "message": "تحقّق من طلبك"
+  },
+  "yourDetails": {
+    "message": "بياناتك"
+  },
+  "publishedName": {
+    "message": "الاسم المنشور"
+  },
+  "changeName": {
+    "message": "تغيير<visuallyHidden> الاسم </visuallyHidden>"
+  },
+  "nowPublishYourRequest": {
+    "message": "نشر طلبك الآن"
+  },
+  "weWillShareYourRequest": {
+    "message": "سنشارك طلبك مع مجتمع PREreview."
+  },
+  "requestPrereview": {
+    "message": "طلب مراجعة PREreview"
+  },
+  "requestAPrereview": {
+    "message": "طلب إجراء مراجعة PREreview"
+  },
+  "sorryWeAreHavingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToPublishYourWorkWasSaved": {
+    "message": "تعذّر علينا نشر طلبك لإجراء مراجعة PREreview. لقد حفظنا عملك."
+  },
+  "pleaseTryAgainLater": {
+    "message": "يُرجى العودة إلى هذه الصفحة والمحاولة مرة أخرى لاحقًا."
+  },
+  "ifProblemPersistsContactUs": {
+    "message": "إذا استمرت هذه المشكلة، فيُرجى<mailtoHelp> التواصل معنا </mailtoHelp>."
+  },
+  "contactDetails": {
+    "message": "بيانات التواصل"
+  },
+  "confirmEmailAddressFirst": {
+    "message": "نحن مستعدون لنشر طلبك، ولكن نحتاج أولًا إلى تأكيد عنوان بريدك الإلكتروني."
+  },
+  "onlyUseToContactYou": {
+    "message": "سنستخدم هذا العنوان فقط للتواصل معك بشأن حسابك وما تنشره."
+  },
+  "whatIsYourEmailAddress": {
+    "message": "ما عنوان بريدك الإلكتروني؟"
+  },
+  "whatIsYourEmailAddressErrorMissing": {
+    "message": "أدخل عنوان بريدك الإلكتروني"
+  },
+  "whatIsYourEmailAddressErrorInvalid": {
+    "message": "أدخل عنوان بريد إلكتروني بالصيغة الصحيحة، مثل {exampleEmailAddress}"
+  },
+  "verifyYourEmailAddress": {
+    "message": "تحقّق من عنوان بريدك الإلكتروني"
+  },
+  "followLinkInEmail": {
+    "message": "يُرجى فتح الرسالة الإلكترونية التي أرسلناها إلى {emailAddress} واتباع الرابط الموجود فيها. بعد ذلك، ستتمكن من نشر طلبك."
+  },
+  "closePageOnceVerified": {
+    "message": "بمجرد التحقق من عنوانك، يمكنك إغلاق هذه الصفحة."
+  },
+  "beNotifiedWhenReviewPublished": {
+    "message": "هل ترغب في تلقي إشعار عند نشر مراجعة PREreview؟"
+  },
+  "canContactWhenReviewPublished": {
+    "message": "يمكننا إرسال رسالة إلكترونية إليك كلما نُشرت مراجعة PREreview لهذه المسودة البحثية الأولية."
+  },
+  "canChangeContactWhenReviewPublished": {
+    "message": "يمكنك تغيير تفضيلك في أي وقت."
+  },
+  "beNotifiedWhenReviewPublishedMissing": {
+    "message": "اختر «نعم» إذا كنت ترغب في تلقي إشعار"
+  },
+  "beNotifiedWhenReviewPublishedYes": {
+    "message": "نعم"
+  },
+  "beNotifiedWhenReviewPublishedNo": {
+    "message": "لا"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "ما الاسم الذي ترغب في استخدامه؟"
+  },
+  "backToPreprint": {
+    "message": "العودة إلى المسودة البحثية الأولية"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "اختر الاسم الذي ترغب في استخدامه"
+  },
+  "chooseBetweenOrcidNameAndPseudonym": {
+    "message": "يمكنك الاختيار بين الاسم الموجود في سجل ORCID الخاص بك أو اسمك المستعار في PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "ما هو الاسم المستعار في PREreview؟"
+  },
+  "prereviewPseudonymExplainer": {
+    "message": "<definition>الاسم المستعار في PREreview</definition> هو اسم بديل يمكنك استخدامه بدلًا من اسمك الحقيقي. وهو اسم فريد يجمع بين لون وحيوان عشوائيين. اسمك المستعار هو «{pseudonym}»."
+  },
+  "whyUseAPseudonym": {
+    "message": "باستخدام اسمك المستعار، يمكنك المساهمة في مراجعة المسودات البحثية الأولية بشكل مفتوح، دون الخوف من الانتقام أو إصدار الأحكام عليك، مما قد يحدث عند استخدام اسمك الحقيقي. ومع ذلك، فإن استخدام اسم مستعار يُبقي على قدر من المساءلة."
+  },
+  "weWillLinkRequestToYourOrcid": {
+    "message": "سنربط طلبك بمعرّف ORCID الخاص بك."
+  },
+  "weWillLinkRequestToOthersThatUseYourPseudonym": {
+    "message": "سنربط طلبك فقط بالطلبات الأخرى التي تستخدم اسمك المستعار نفسه."
+  },
+  "requestPublished": {
+    "message": "تم نشر الطلب"
+  },
+  "whatHappensNext": {
+    "message": "ماذا يحدث بعد ذلك؟"
+  },
+  "whereYouCanSeeYourRequest": {
+    "message": "ستتمكن من رؤية طلبك في <listOfRequestsLink>قائمة الطلبات</listOfRequestsLink> و<communitySlackLink>مساحة Slack الخاصة بالمجتمع</communitySlackLink> قريبًا."
+  },
+  "youCanRequestAPrereview": {
+    "message": "يمكنك طلب مراجعة PREreview لـ {preprintTitle}. ومراجعة PREreview هي مراجعة لمسودة بحثية أولية، ويمكن أن تتراوح من بضع جمل إلى تقرير مفصل، على غرار تقرير مراجعة الأقران الذي تنظمه المجلات العلمية."
+  },
+  "beforeYouStart": {
+    "message": "قبل أن تبدأ"
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "سنطلب منك تسجيل الدخول باستخدام معرّف ORCID الخاص بك. إذا لم يكن لديك معرّف، يمكنك إنشاء واحد."
+  },
+  "whatIsAnOrcid": {
+    "message": "ما هو معرف ORCID ؟"
+  },
+  "orcidExplainer": {
+    "message": "<orcidLinkAsDefinition>معرّف ORCID iD</orcidLinkAsDefinition> هو معرّف فريد يميّزك عن الأشخاص الآخرين الذين يحملون الاسم نفسه أو أسماء مشابهة."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "بما أنك بدأت بالفعل، سننقلك إلى الخطوة التالية لتتمكن من المتابعة."
+  }
+}
