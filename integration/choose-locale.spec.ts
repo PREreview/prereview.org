@@ -1,4 +1,13 @@
+import type { Page } from '@playwright/test'
 import { expect, test } from './base.ts'
+
+const chooseLocale = async (page: Page, name: string, url: string | RegExp) => {
+  const link = page.getByRole('contentinfo').getByRole('link', { name, exact: true })
+
+  await expect(link).toBeVisible()
+  await link.focus()
+  await Promise.all([page.waitForURL(url, { waitUntil: 'domcontentloaded' }), link.press('Enter')])
+}
 
 test('can choose a locale through picker and path', async ({ fetch, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
@@ -7,7 +16,7 @@ test('can choose a locale through picker and path', async ({ fetch, page }) => {
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 
-  await page.getByRole('link', { name: 'português (Brasil)' }).click()
+  await chooseLocale(page, 'português (Brasil)', /\/pt-br$/)
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
@@ -46,7 +55,7 @@ test('can choose a locale through picker and path', async ({ fetch, page }) => {
 
   await expect(page.getByRole('main')).toContainText('Algumas informações sobre nós.')
 
-  await page.getByRole('link', { name: 'English (US)' }).click()
+  await chooseLocale(page, 'English (US)', /\/en-us\/about$/)
 
   await expect(page.getByRole('main')).toContainText('Some information about us.')
 })
@@ -56,7 +65,7 @@ test.extend({ locale: 'pt-BR' })('with a Brazilian-Portuguese browser', async ({
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
-  await page.getByRole('link', { name: 'English (US)' }).click()
+  await chooseLocale(page, 'English (US)', /\/en-us$/)
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 })
@@ -67,7 +76,7 @@ test.extend({ locale: 'pt-PT' })('with a European-Portuguese browser', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
   await expect(page.getByRole('link', { name: 'português (Brasil)' })).toHaveAttribute('aria-current', 'true')
 
-  await page.getByRole('link', { name: 'English (US)' }).click()
+  await chooseLocale(page, 'English (US)', /\/en-us$/)
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 })
@@ -78,7 +87,7 @@ test.extend({ locale: 'is' })('with an Icelandic browser', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
   await expect(page.getByRole('link', { name: 'English (US)' })).toHaveAttribute('aria-current', 'true')
 
-  await page.getByRole('link', { name: 'português (Brasil)' }).click()
+  await chooseLocale(page, 'português (Brasil)', /\/pt-br$/)
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 })
