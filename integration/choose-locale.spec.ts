@@ -5,8 +5,7 @@ const chooseLocale = async (page: Page, name: string, url: string | RegExp) => {
   const link = page.getByRole('contentinfo').getByRole('link', { name, exact: true })
 
   await expect(link).toBeVisible()
-  await link.focus()
-  await Promise.all([page.waitForURL(url, { waitUntil: 'domcontentloaded' }), link.press('Enter')])
+  await Promise.all([page.waitForURL(url, { waitUntil: 'domcontentloaded' }), link.click()])
 }
 
 test('can choose a locale through picker and path', async ({ fetch, page }) => {
