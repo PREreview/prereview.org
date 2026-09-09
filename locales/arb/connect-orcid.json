@@ -1,0 +1,53 @@
+{
+  "connectOrcidRecord": {
+    "message": "اربط سجل ORCID الخاص بك"
+  },
+  "canConnect": {
+    "message": "يمكنك ربط ملفك الشخصي على PREreview بسجل ORCID الخاص بك."
+  },
+  "willAddPrereviews": {
+    "message": "سنضيف مراجعات PREreview الخاصة بك إلى سجل ORCID الخاص بك."
+  },
+  "beforeYouStart": {
+    "message": "قبل أن تبدأ"
+  },
+  "sendYouToOrcid": {
+    "message": "سننقلك إلى ORCID، حيث سيُطلب منك تسجيل الدخول ومنح PREreview صلاحية الوصول إلى سجلك هناك. ربما تكون قد أكملت هذه الخطوات بالفعل، وسيعيدك ORCID إلى PREreview."
+  },
+  "cannotConnectRecord": {
+    "message": "عذرًا، لا يمكننا ربط سجلك"
+  },
+  "youDeniedAccess": {
+    "message": "لقد رفضت منح PREreview صلاحية الوصول إلى سجل ORCID الخاص بك."
+  },
+  "tryAgain": {
+    "message": "يُرجى المحاولة مرة أخرى."
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToConnect": {
+    "message": "يتعذّر علينا ربط سجلك في الوقت الحالي."
+  },
+  "unableToDisconnect": {
+    "message": "يتعذّر علينا إلغاء ربط سجلك في الوقت الحالي."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  },
+  "disconnectOrcidRecord": {
+    "message": "ألغِ ربط سجل ORCID الخاص بك"
+  },
+  "canDisconnect": {
+    "message": "يمكنك إلغاء ربط ملفك الشخصي على PREreview بسجل ORCID الخاص بك."
+  },
+  "stopAddingPrereviews": {
+    "message": "سنتوقف عن إضافة مراجعات PREreview الجديدة إلى سجل ORCID الخاص بك."
+  },
+  "canReconnect": {
+    "message": "يمكنك إعادة ربطه في أي وقت."
+  },
+  "disconnectRecordButton": {
+    "message": "إلغاء ربط السجل"
+  }
+}

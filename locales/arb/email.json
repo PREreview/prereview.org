@@ -1,0 +1,77 @@
+{
+  "verifyEmailAddressTitle": {
+    "message": "تحقّق من عنوان بريدك الإلكتروني على PREreview"
+  },
+  "hiName": {
+    "message": "مرحبًا {name}،"
+  },
+  "hi": {
+    "message": "مرحبًا،"
+  },
+  "verifyEmailAddressWithButton": {
+    "message": "يُرجى التحقق من عنوان بريدك الإلكتروني على PREreview:"
+  },
+  "verifyEmailAddressGoingTo": {
+    "message": "يُرجى التحقق من عنوان بريدك الإلكتروني على PREreview من خلال الانتقال إلى {link}"
+  },
+  "verifyEmailAddressButton": {
+    "message": "التحقق من عنوان البريد الإلكتروني"
+  },
+  "beListedAsAuthor": {
+    "message": "الإدراج كمؤلف في PREreview"
+  },
+  "thanksContributingReview": {
+    "message": "شكرًا لمساهمتك في مراجعة حديثة لـ «{preprint}» المنشورة على {prereview}!"
+  },
+  "authorHasInvitedYou": {
+    "message": "دعاك {author} إلى الظهور كمؤلف في مراجعة PREreview."
+  },
+  "beenInvited": {
+    "message": "لقد تمت دعوتك للظهور كمؤلف في PREreview."
+  },
+  "beListedGoingTo": {
+    "message": "يمكنك إدراج اسمك كمؤلف من خلال الانتقال إلى:"
+  },
+  "beListedAsAuthorButton": {
+    "message": "الإدراج كمؤلف"
+  },
+  "chooseNotToBeListedIgnoring": {
+    "message": "يمكنك أيضًا اختيار عدم إدراج اسمك من خلال تجاهل هذه الرسالة الإلكترونية."
+  },
+  "chooseNotToBeListedGoingTo": {
+    "message": "يمكنك أيضًا اختيار عدم إدراج اسمك من خلال تجاهل هذه الرسالة الإلكترونية أو الانتقال إلى:"
+  },
+  "chooseNotToBeListedLink": {
+    "message": "يمكنك أيضًا اختيار عدم إدراج اسمك من خلال <link>رفض هذه الدعوة</link> أو تجاهل هذه الرسالة الإلكترونية."
+  },
+  "acknowledgeReviewRequestTitle": {
+    "message": "تم طلب مراجعة من مجتمع PREreview"
+  },
+  "thanksReviewRequest": {
+    "message": "شكرًا لطلبك مراجعة من PREreview."
+  },
+  "reviewRequestSharedWithCommunity": {
+    "message": "رغم أننا لا نستطيع ضمان الحصول على مراجعة، فقد شاركنا طلبك مع مجتمع PREreview عبر قناة Slack الخاصة بنا {slackChannel}."
+  },
+  "reviewRequestSlackCommunity": {
+    "message": "يمكنك الانضمام إلى مجتمعنا على Slack وإضافة مزيد من التفاصيل إلى طلب المراجعة الخاصة بك من خلال التسجيل على {slackLink}."
+  },
+  "haveAnyQuestions": {
+    "message": "إذا كانت لديك أي أسئلة، يُرجى التواصل معنا عبر {emailAddress}."
+  },
+  "allTheBest": {
+    "message": "مع أطيب التمنيات،"
+  },
+  "footerIntro": {
+    "message": "PREreview هي منصة ومورد ومركز لتنسيق الجهود وجمع أفراد المجتمع."
+  },
+  "footerCommunity": {
+    "message": "نوفّر طرقًا لإجراء مراجعات المسودات البحثية الأولية بصورة مفتوحة وسريعة وبنّاءة، وبمشاركة مجتمع عالمي من الباحثين والأقران."
+  },
+  "footerJoinHtml": {
+    "message": "انضم إلينا عبر <prereviewLink>prereview.org</prereviewLink> و<slackLink>سجّل للانضمام إلى مجتمعنا النابض بالحياة على Slack</slackLink>."
+  },
+  "footerJoinText": {
+    "message": "انضم إلينا عبر {prereviewLink} وسجّل للانضمام إلى مجتمعنا النابض بالحياة على Slack عبر {slackLink}."
+  }
+}

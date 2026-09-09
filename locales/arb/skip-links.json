@@ -1,0 +1,20 @@
+{
+  "main": {
+    "message": "الانتقال إلى المحتوى الرئيسي"
+  },
+  "form": {
+    "message": "الانتقال إلى النموذج"
+  },
+  "prereview": {
+    "message": "الانتقال إلى مراجعة PREreview"
+  },
+  "preprintDetails": {
+    "message": "الانتقال إلى تفاصيل المسودة البحثية الأولية"
+  },
+  "datasetDetails": {
+    "message": "الانتقال إلى تفاصيل مجموعة البيانات"
+  },
+  "prereviews": {
+    "message": "الانتقال إلى مراجعات PREreview"
+  }
+}

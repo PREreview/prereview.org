@@ -1,0 +1,20 @@
+{
+  "reviewTitle": {
+    "message": "PREreview لـ{dataset}"
+  },
+  "reviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewer} راجع {dataset}} other {{reviewer} راجع {dataset}}}"
+  },
+  "reviewTextInClub": {
+    "message": "{numberOfReviewers, plural, one {{reviewer} من {club} راجع {dataset}} other {{reviewer} من {club} راجع {dataset}}}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# مؤلف آخر} other {# مؤلفين آخرين}}"
+  },
+  "reviewPublished": {
+    "message": "نُشرت المراجعة"
+  },
+  "repository": {
+    "message": "المستودع"
+  }
+}

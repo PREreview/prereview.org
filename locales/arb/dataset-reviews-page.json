@@ -1,0 +1,62 @@
+{
+  "title": {
+    "message": "مراجعات PREreview ل{dataset}"
+  },
+  "datasetDetails": {
+    "message": "تفاصيل مجموعة البيانات"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden> {authors}"
+  },
+  "abstractHeading": {
+    "message": "الملخص"
+  },
+  "posted": {
+    "message": "تاريخ النشر"
+  },
+  "repository": {
+    "message": "المستودع"
+  },
+  "seeDataset": {
+    "message": "عرض مجموعة البيانات"
+  },
+  "prereviews": {
+    "message": "{numberOfPrereviews, plural, one {# مراجعة PREreview} other {# مراجعات PREreview}}"
+  },
+  "writeAPrereview": {
+    "message": "كتابة مراجعة PREreview"
+  },
+  "prereviewTitle": {
+    "message": "مراجعة PREreview بواسطة {author}"
+  },
+  "prereviewTitleInClub": {
+    "message": "مراجعة PREreview بواسطة {author} من نادي {club}"
+  },
+  "prereviewTitleMultipleAuthors": {
+    "message": "مراجعة PREreview بواسطة {author} وآخرون."
+  },
+  "prereviewTitleMultipleAuthorsInClub": {
+    "message": "مراجعة PREreview بواسطة {author} وآخرين من نادي {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# مؤلف آخر} other {# مؤلفين آخرين}}"
+  },
+  "prereviewAuthoredBy": {
+    "message": "<visuallyHidden> تأليف</visuallyHidden> بواسطة {author}"
+  },
+  "prereviewAuthoredByInClub": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden> {author} في نادي {club}"
+  },
+  "readPrereview": {
+    "message": "اقرأ<visuallyHidden> مراجعة PREreview بواسطة {author}</visuallyHidden>"
+  },
+  "readPrereviewInClub": {
+    "message": "اقرأ<visuallyHidden> مراجعة PREreview بواسطة {author} من نادي {club}</visuallyHidden>"
+  },
+  "readPrereviewMultipleAuthors": {
+    "message": "اقرأ<visuallyHidden> مراجعة PREreview بواسطة {author} وآخرون.</visuallyHidden>"
+  },
+  "readPrereviewMultipleAuthorsInClub": {
+    "message": "اقرأ <visuallyHidden> مراجعة PREreview بواسطة {author} وآخرين من نادي {club}</visuallyHidden>"
+  }
+}

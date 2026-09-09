@@ -1,0 +1,287 @@
+{
+  "myDetails": {
+    "message": "بياناتي"
+  },
+  "welcomeToPrereview": {
+    "message": "مرحبًا بك في PREreview. يمكنك استخدام هذه الصفحة لمساعدة المؤلفين والمحررين وغيرهم من مراجعي PREreview في التعرّف أكثر على اهتماماتك وعملك ونشاطك في المراجعة."
+  },
+  "onlyYouCanSee": {
+    "message": "يمكنك أنت وحدك رؤية هذه الصفحة. لديك صفحتان للملف الشخصي يمكن للجميع رؤيتهما:"
+  },
+  "viewPublicProfile": {
+    "message": "عرض الملف الشخصي العام"
+  },
+  "viewPseudonymProfile": {
+    "message": "عرض الملف الشخصي بالاسم المستعار"
+  },
+  "name": {
+    "message": "الاسم"
+  },
+  "pseudonym": {
+    "message": "الاسم المستعار في PREreview"
+  },
+  "orcidRecord": {
+    "message": "سجل ORCID"
+  },
+  "connected": {
+    "message": "مرتبط"
+  },
+  "connectOrcidRecord": {
+    "message": "ربط سجل ORCID"
+  },
+  "disconnectOrcidRecord": {
+    "message": "إلغاء ربط <visuallyHidden>سجل ORCID</visuallyHidden>"
+  },
+  "avatar": {
+    "message": "الصورة الرمزية"
+  },
+  "uploadAvatar": {
+    "message": "تحميل صورة رمزية"
+  },
+  "changeAvatar": {
+    "message": "تغيير <visuallyHidden>الصورة الرمزية </visuallyHidden>"
+  },
+  "removeAvatar": {
+    "message": "إزالة <visuallyHidden> الصورة الرمزية </visuallyHidden>"
+  },
+  "slackCommunityName": {
+    "message": "اسمك في مجتمع Slack"
+  },
+  "connectSlack": {
+    "message": "ربط حساب Slack"
+  },
+  "disconnectSlack": {
+    "message": "إلغاء ربط <visuallyHidden> حساب Slack\n</visuallyHidden>"
+  },
+  "emailAddress": {
+    "message": "عنوان البريد الإلكتروني"
+  },
+  "enterEmailAddress": {
+    "message": "أدخل عنوان البريد الإلكتروني"
+  },
+  "unverified": {
+    "message": "غير موثَّق"
+  },
+  "changeEmailAddress": {
+    "message": "تغيير <visuallyHidden> البريد الإلكتروني </visuallyHidden>"
+  },
+  "requestedReviewNotifications": {
+    "message": "تلقي إشعارات بطلبات المراجعة"
+  },
+  "requestedReviewNotificationsOff": {
+    "message": "إيقاف"
+  },
+  "requestedReviewNotificationsOn": {
+    "message": "تشغيل"
+  },
+  "changeRequestedReviewNotifications": {
+    "message": "تغيير <visuallyHidden> إشعارات طلبات المراجعة </visuallyHidden>"
+  },
+  "openReviewRequests": {
+    "message": "متاح لتلقي طلبات المراجعة"
+  },
+  "enterPreferenceReviewRequests": {
+    "message": "أدخل تفضيلاتك لطلبات المراجعة"
+  },
+  "changePreferenceReviewRequests": {
+    "message": "تغيير <visuallyHidden> تفضيلاتك لطلبات المراجعة </visuallyHidden>"
+  },
+  "setPreferenceReviewRequestsVisibility": {
+    "message": "تعيين <visuallyHidden>مستوى ظهور تفضيلات طلبات المراجعة </visuallyHidden>"
+  },
+  "yes": {
+    "message": "نعم"
+  },
+  "no": {
+    "message": "لا"
+  },
+  "shownPublic": {
+    "message": "يظهر في ملفك الشخصي العام"
+  },
+  "restricted": {
+    "message": "لا يظهر إلا لمستخدمي PREreview فقط"
+  },
+  "careerStage": {
+    "message": "المرحلة المهنية"
+  },
+  "enterCareerStage": {
+    "message": "أدخل المرحلة المهنية"
+  },
+  "changeCareerStage": {
+    "message": "تغيير <visuallyHidden> المرحلة المهنية </visuallyHidden>"
+  },
+  "setCareerStageVisibility": {
+    "message": "تعيين <visuallyHidden> مستوى ظهور المرحلة المهنية </visuallyHidden>"
+  },
+  "early": {
+    "message": "مبكرة"
+  },
+  "mid": {
+    "message": "متوسطة"
+  },
+  "late": {
+    "message": "متقدمة"
+  },
+  "researchInterests": {
+    "message": "الاهتمامات البحثية"
+  },
+  "enterResearchInterests": {
+    "message": "أدخل اهتماماتك البحثية"
+  },
+  "changeResearchInterests": {
+    "message": "تغيير <visuallyHidden> الاهتمامات البحثية </visuallyHidden>"
+  },
+  "setResearchInterestsVisibility": {
+    "message": "تعيين <visuallyHidden> مدى ظهور الاهتمامات البحثية </visuallyHidden>"
+  },
+  "location": {
+    "message": "الموقع"
+  },
+  "enterLocation": {
+    "message": "أدخل موقعك"
+  },
+  "changeLocation": {
+    "message": "تغيير <visuallyHidden> الموقع </visuallyHidden>"
+  },
+  "setLocationVisibility": {
+    "message": "تعيين مدى ظهور <visuallyHidden> الموقع </visuallyHidden>"
+  },
+  "languages": {
+    "message": "اللغات"
+  },
+  "enterLanguages": {
+    "message": "أدخل اللغات"
+  },
+  "changeLanguages": {
+    "message": "تغيير <visuallyHidden> اللغات </visuallyHidden>"
+  },
+  "setLanguagesVisibility": {
+    "message": "تغيير مدى ظهور <visuallyHidden> اللغات </visuallyHidden>"
+  },
+  "uploadAnAvatar": {
+    "message": "تحميل صورة رمزية"
+  },
+  "selectImageError": {
+    "message": "اختر صورة"
+  },
+  "imageTypeError": {
+    "message": "يجب أن يكون الملف المحدد بتنسيق AVIF أو HEIC أو JPG أو PNG أو WebP"
+  },
+  "imageSizeError": {
+    "message": "الملف المحدد يجب أن يكون أصغر من {size}"
+  },
+  "youCanUploadAvatar": {
+    "message": "يمكنك تحميل صورة لاستخدامها كصورة رمزية لك. يجب أن لا يتجاوز حجم الملف المحدد {size}."
+  },
+  "whereWillItShow": {
+    "message": "أين ستظهر؟"
+  },
+  "showOnPublicProfile": {
+    "message": "ستظهر صورتك الرمزية في ملفك الشخصي العام."
+  },
+  "removeYourAvatar": {
+    "message": "إزالة صورتك الرمزية"
+  },
+  "removeAvatarFromProfile": {
+    "message": "سنزيل صورتك الرمزية من ملفك الشخصي."
+  },
+  "canUploadNewOne": {
+    "message": "يمكنك تحميل صورة جديدة في أي وقت."
+  },
+  "removeAvatarButton": {
+    "message": "إزالة الصورة الرمزية"
+  },
+  "whatCareerStage": {
+    "message": "ما مرحلتك المهنية ؟"
+  },
+  "selectCareerStageError": {
+    "message": "حدد مرحلتك المهنية"
+  },
+  "preferNotToSay": {
+    "message": "أفضل عدم الإفصاح"
+  },
+  "seeCareerStage": {
+    "message": "من يمكنه رؤية مرحلتك المهنية؟"
+  },
+  "everyone": {
+    "message": "الجميع"
+  },
+  "everyoneCareerStageTip": {
+    "message": "سنظهرها في ملفك الشخصي العام."
+  },
+  "everyoneLocationTip": {
+    "message": "سنظهرها في ملفك الشخصي العام"
+  },
+  "everyoneLanguagesTip": {
+    "message": "سنظهرهم في ملفك الشخصي العام."
+  },
+  "everyoneResearchInterestsTip": {
+    "message": "سنظهرهم في ملفك الشخصي العام."
+  },
+  "everyoneOpenForRequestsTip": {
+    "message": "سيظهر في ملفك الشخصي العام."
+  },
+  "onlyPrereview": {
+    "message": "مستخدمو PREreview فقط"
+  },
+  "onlyPrereviewOpenForRequestsTip": {
+    "message": "لن نُطلع أي شخص آخر على ذلك."
+  },
+  "onlyPrereviewCareerStageTip": {
+    "message": "لن نشاركها مع أي شخص آخر."
+  },
+  "onlyPrereviewLocationTip": {
+    "message": "لن نشاركه مع أي شخص آخر."
+  },
+  "onlyPrereviewLanguagesTip": {
+    "message": "لن نشاركها مع أي شخص آخر."
+  },
+  "onlyPrereviewResearchInterestsTip": {
+    "message": "لن نشاركها مع أي شخص آخر."
+  },
+  "whatEmailAddress": {
+    "message": "ما عنوان بريدك الإلكتروني؟"
+  },
+  "enterEmailAddressError": {
+    "message": "أدخل عنوان بريدك الإلكتروني"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "أدخل عنوان بريد إلكتروني بالصيغة الصحيحة، مثل {exampleEmailAddress}"
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "سنستخدم هذا العنوان فقط للتواصل معك بشأن حسابك ومراجعات PREreview."
+  },
+  "receiveRequestedReviewNotifications": {
+    "message": "هل ترغب في تلقي إشعار عند نشر مراجعة PREreview التي طلبتها؟"
+  },
+  "selectReceiveRequestedReviewNotificationsError": {
+    "message": "اختر «نعم» إذا كنت ترغب في تلقي إشعار"
+  },
+  "whatLanguages": {
+    "message": "ما اللغات التي يمكنك إجراء المراجعات بها؟"
+  },
+  "seeLanguages": {
+    "message": "من يمكنه رؤية لغاتك؟"
+  },
+  "whereBased": {
+    "message": "أين تقيم؟"
+  },
+  "seeLocation": {
+    "message": "من يمكنه رؤية موقعك؟"
+  },
+  "happyTakeRequests": {
+    "message": "هل ترغب في تلقي طلبات لإجراء مراجعة PREreview؟"
+  },
+  "selectHappyTakeRequestsError": {
+    "message": "اختر «نعم» إذا كنت ترغب في تلقي طلبات لإجراء مراجعة PREreview"
+  },
+  "seeHappyTakeRequests": {
+    "message": "من يمكنه معرفة أنك متاح لتلقي طلبات المراجعة؟"
+  },
+  "whatResearchInterests": {
+    "message": "ما اهتماماتك البحثية؟"
+  },
+  "seeWhatResearchInterests": {
+    "message": "من يمكنه رؤية اهتماماتك البحثية؟"
+  }
+}

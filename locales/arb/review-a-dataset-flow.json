@@ -1,0 +1,722 @@
+{
+  "whichDataset": {
+    "message": "ما مجموعة البيانات التي تراجعها؟"
+  },
+  "useDoiUrl": {
+    "message": "استخدم معرّف DOI لمجموعة البيانات أو عنوان URL الخاص بها."
+  },
+  "whatIsDoi": {
+    "message": "ما هو DOI؟"
+  },
+  "whatIsDoiText": {
+    "message": "معرّف <doi>DOI</doi> هو معرّف فريد يمكنك العثور عليه في العديد من مجموعات البيانات. على سبيل المثال، {example} أو {exampleUrl}."
+  },
+  "errorEnterADataset": {
+    "message": "أدخل معرّف DOI لمجموعة البيانات أو عنوان URL الخاص بها"
+  },
+  "errorEnterTheDataset": {
+    "message": "أدخل معرّف DOI لمجموعة البيانات أو عنوان URL الخاص بها"
+  },
+  "doNotKnowDataset": {
+    "message": "عذرًا، لا نعرف مجموعة البيانات هذه"
+  },
+  "doiCouldBeDryad": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمجموعة بيانات على Dryad، لكننا لم نتمكن من العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeScielo": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمجموعة بيانات على SciELO، لكننا لم نتمكن من العثور على أي تفاصيل عنها."
+  },
+  "doiCouldBeZenodo": {
+    "message": "نعتقد أن معرّف DOI ‏{doi} قد يكون لمجموعة بيانات على Zenodo، لكننا لم نتمكن من العثور على أي تفاصيل عنها."
+  },
+  "checkCorrectDoi": {
+    "message": "إذا كتبت معرّف DOI، فتأكد من صحته."
+  },
+  "checkPastedDoi": {
+    "message": "إذا لصقت معرّف DOI، فتأكد من أنك نسخت العنوان بالكامل."
+  },
+  "doiIsCorrect": {
+    "message": "إذا كان معرّف DOI صحيحًا، فيُرجى<contact> التواصل معنا</contact>."
+  },
+  "unsupportedDoi": {
+    "message": "عذرًا، لا ندعم معرّف DOI هذا"
+  },
+  "unsupportedUrl": {
+    "message": "عذرًا، لا ندعم عنوان URL هذا"
+  },
+  "supportDatasetsFrom": {
+    "message": "نحن ندعم مجموعات البيانات من {repositories}."
+  },
+  "doiIsForDataset": {
+    "message": "إذا كان معرّف DOI هذا يعود إلى مجموعة بيانات في مستودع لا ندعمه، فيُرجى<contact> التواصل معنا</contact>."
+  },
+  "urlIsForDataset": {
+    "message": "إذا كان عنوان URL هذا يعود إلى مجموعة بيانات في مستودع لا ندعمه، فيُرجى <contact>التواصل معنا</contact>."
+  },
+  "tryDoi": {
+    "message": "وإلا، إذا كانت مجموعة البيانات (Dataset) تحتوي على DOI، فيُرجى محاولة استخدامه بدلًا من ذلك."
+  },
+  "notADataset": {
+    "message": "عذرًا، نحن ندعم مجموعات البيانات فقط."
+  },
+  "isADataset": {
+    "message": "إذا كانت هذه مجموعة بيانات، فيُرجى<contact> التواصل معنا</contact>."
+  },
+  "reviewADataset": {
+    "message": "مراجعة مجموعة بيانات"
+  },
+  "backToDataset": {
+    "message": "العودة إلى مجموعة البيانات"
+  },
+  "authoredBy": {
+    "message": "من<visuallyHidden> تأليف</visuallyHidden> {authors}"
+  },
+  "youCanWriteAPrereview": {
+    "message": "يمكنك كتابة مراجعة PREreview لـ{dataset}. سنطرح أسئلة حول مجموعة البيانات لإنشاء مراجعة مُهيكلة."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "بما أنك بدأت بالفعل مراجعة PREreview لـ{dataset}، سننقلك إلى الخطوة التالية حتى تتمكن من المتابعة."
+  },
+  "beforeStart": {
+    "message": "قبل أن تبدأ"
+  },
+  "orcidIdLogIn": {
+    "message": "سنطلب منك تسجيل الدخول باستخدام معرّف ORCID الخاص بك. إذا لم يكن لديك معرّف، يمكنك إنشاء واحد."
+  },
+  "whatIsOrcidIdHeading": {
+    "message": "ما هو معرّف ORCID؟"
+  },
+  "whatIsOrcidId": {
+    "message": "معرّف <link>ORCID iD</link> هو معرّف فريد يميزك عن كل شخص آخر يحمل اسمًا مطابقًا لاسمك أو مشابهًا له."
+  },
+  "checkYourPrereview": {
+    "message": "تحقّق من مراجعتك على PREreview"
+  },
+  "datasetDetails": {
+    "message": "تفاصيل مجموعة البيانات"
+  },
+  "title": {
+    "message": "العنوان"
+  },
+  "posted": {
+    "message": "تاريخ النشر"
+  },
+  "repository": {
+    "message": "المستودع"
+  },
+  "yourDetails": {
+    "message": "بياناتك"
+  },
+  "publishedName": {
+    "message": "الاسم المنشور"
+  },
+  "changePublishedName": {
+    "message": "تغيير<visuallyHidden> اسمك المنشور</visuallyHidden>"
+  },
+  "invitedAuthors": {
+    "message": "المؤلفون المدعوون"
+  },
+  "changeInvitedAuthors": {
+    "message": "تغيير<visuallyHidden> المؤلفين المدعوين</visuallyHidden>"
+  },
+  "invitedAuthorsNone": {
+    "message": "لا يوجد"
+  },
+  "haveCompetingInterests": {
+    "message": "هل لديك أي تضارب في المصالح؟"
+  },
+  "competingInterestsTip": {
+    "message": "نطلب من جميع المراجعين الإفصاح عن أي تضارب في المصالح قد يؤثر في مراجعتهم لمجموعة البيانات."
+  },
+  "competingInterestDefinition": {
+    "message": "تضارب المصالح هو أي أمر يمكن أن يؤثر في موضوعية مراجعة PREreview."
+  },
+  "examples": {
+    "message": "أمثلة"
+  },
+  "examplePersonalRelationship": {
+    "message": "لديك علاقة شخصية بالمؤلف."
+  },
+  "exampleRival": {
+    "message": "أنت منافس أو خصم للمؤلف."
+  },
+  "exampleWorked": {
+    "message": "عملت مؤخرًا مع المؤلف."
+  },
+  "exampleCollaborate": {
+    "message": "تتعاون مع المؤلف."
+  },
+  "examplePublished": {
+    "message": "نشرت بحثًا مع المؤلف خلال السنوات الخمس الماضية."
+  },
+  "exampleGrant": {
+    "message": "لديك منحة بحثية مشتركة مع المؤلف."
+  },
+  "selectCompetingInterests": {
+    "message": "اختر «نعم» إذا كان لديك أي تضارب في المصالح"
+  },
+  "competingInterestsDetails": {
+    "message": "ما طبيعة تضارب المصالح؟"
+  },
+  "enterCompetingInterestsDetails": {
+    "message": "أدخل تفاصيل تضارب المصالح"
+  },
+  "competingInterests": {
+    "message": "تضارب المصالح"
+  },
+  "noneDeclared": {
+    "message": "لم يُعلن عن أي تضارب في المصالح"
+  },
+  "changeCompetingInterests": {
+    "message": "تغيير <visuallyHidden>تضارب المصالح الخاصة بك </visuallyHidden>"
+  },
+  "codeOfConduct": {
+    "message": "مدونة قواعد السلوك"
+  },
+  "codeOfConductTip": {
+    "message": "بصفتك عضوًا في مجتمعنا، نتوقع منك الالتزام ب<link>مدونة قواعد السلوك الخاصة بـPREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "أمثلة على السلوكيات المتوقعة"
+  },
+  "exampleLanguage": {
+    "message": "استخدام لغة ترحيبية وشاملة."
+  },
+  "exampleConstructive": {
+    "message": "تقديم ملاحظات بنّاءة، أي مفيدة لمن يتلقاها."
+  },
+  "exampleRespect": {
+    "message": "احترام وجهات النظر والتجارب المختلفة."
+  },
+  "exampleCriticism": {
+    "message": "تقبّل النقد البنّاء برحابة صدر."
+  },
+  "exampleCommunity": {
+    "message": "التركيز على ما هو أفضل للمجتمع."
+  },
+  "exampleEmpathy": {
+    "message": "إظهار التعاطف مع أعضاء المجتمع الآخرين."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "أمثلة على السلوكيات غير المقبولة"
+  },
+  "exampleTrolling": {
+    "message": "الاستفزاز المتعمد أو التعليقات المهينة أو الحاطة من القدر، والهجمات الشخصية أو السياسية."
+  },
+  "exampleUnconstructiveFeedback": {
+    "message": "تقديم ملاحظات غير بنّاءة أو معطِّلة بشأن مراجعة PREreview."
+  },
+  "exampleHarassment": {
+    "message": "التحرش العلني أو الخاص."
+  },
+  "exampleConfidentialInformation": {
+    "message": "نشر معلومات سرية تخص الآخرين، مثل عنوانهم الفعلي أو الإلكتروني، دون إذن صريح."
+  },
+  "exampleSexualizedLanguage": {
+    "message": "استخدام لغة أو صور ذات طابع جنسي، أو إبداء اهتمام أو تقديم مبادرات جنسية غير مرغوب فيها."
+  },
+  "exampleReviewingOwnDataset": {
+    "message": "مراجعة مجموعة البيانات الخاصة بك."
+  },
+  "exampleInappropriateConduct": {
+    "message": "أي سلوك آخر يمكن اعتباره، بصورة معقولة، غير ملائم في بيئة مهنية."
+  },
+  "confirmCodeOfConduct": {
+    "message": "أكّد أنك تلتزم بمدونة قواعد السلوك"
+  },
+  "followingCodeOfConduct": {
+    "message": "ألتزم بمدونة قواعد السلوك"
+  },
+  "yourReview": {
+    "message": "مراجعتك"
+  },
+  "rateQuality": {
+    "message": "كيف تقيّم جودة مجموعة البيانات هذه؟"
+  },
+  "selectRateQuality": {
+    "message": "اختر تقييمك لجودة مجموعة البيانات"
+  },
+  "excellent": {
+    "message": "ممتازة"
+  },
+  "excellentTip": {
+    "message": "لا توجد في مجموعة البيانات هذه، أو تكاد لا توجد، أخطاء ملحوظة أو أوجه عدم اتساق أو قيم مفقودة أو مشكلات أخرى."
+  },
+  "excellentWhy": {
+    "message": "لماذا تُعدّ جودتها ممتازة؟"
+  },
+  "fair": {
+    "message": "مقبولة"
+  },
+  "fairTip": {
+    "message": "توجد في مجموعة البيانات هذه بعض الأخطاء الملحوظة أو أوجه عدم الاتساق أو القيم المفقودة أو المشكلات الأخرى، لكنها لا تزال متماسكة بدرجة كافية تتيح الوثوق بها."
+  },
+  "fairWhy": {
+    "message": "لماذا تُعدّ جودتها مقبولة؟"
+  },
+  "poor": {
+    "message": "ضعيفة"
+  },
+  "poorTip": {
+    "message": "توجد في مجموعة البيانات هذه العديد من الأخطاء الملحوظة أو أوجه عدم الاتساق أو القيم المفقودة أو المشكلات الأخرى، مما يجعل الوثوق بها أمرًا بالغ الصعوبة."
+  },
+  "poorWhy": {
+    "message": "لماذا تُعدّ جودتها ضعيفة؟"
+  },
+  "doNotKnow": {
+    "message": "لا أعرف"
+  },
+  "changeQualityRating": {
+    "message": "غيّر <visuallyHidden>تقييمك لجودة مجموعة البيانات </visuallyHidden>"
+  },
+  "followFairAndCare": {
+    "message": "هل تتبع مجموعة البيانات هذه مبادئ FAIR وCARE؟"
+  },
+  "selectFollowFairAndCare": {
+    "message": "حدّد ما إذا كانت مجموعة البيانات تتبع مبادئ FAIR وCARE"
+  },
+  "whatAreFairPrinciples": {
+    "message": "ما مبادئ FAIR؟"
+  },
+  "whatAreFairPrinciplesText": {
+    "message": "تتبع مجموعة البيانات <fairPrinciplesLink>مبادئ FAIR </fairPrinciplesLink> إذا كانت:"
+  },
+  "fairPrinciplesFindable": {
+    "message": " قابلة للاكتشاف"
+  },
+  "fairPrinciplesAccessible": {
+    "message": "متاحة"
+  },
+  "fairPrinciplesInteroperable": {
+    "message": "قابلة للتشغيل البيني"
+  },
+  "fairPrinciplesReusable": {
+    "message": "قابلة لإعادة الاستخدام"
+  },
+  "whatAreCarePrinciples": {
+    "message": "ما مبادئ CARE؟"
+  },
+  "whatAreCarePrinciplesText": {
+    "message": "تتبع مجموعة البيانات <carePrinciplesLink>مبادئ CARE </carePrinciplesLink> إذا كانت تحافظ على السيادة والحقوق الخاصة بمبدعيها من الشعوب الأصلية من خلال:"
+  },
+  "carePrinciplesCollectiveBenefit": {
+    "message": "المنفعة الجماعية"
+  },
+  "carePrinciplesAuthorityToControl": {
+    "message": "سلطة التحكم"
+  },
+  "carePrinciplesResponsibility": {
+    "message": "المسؤولية"
+  },
+  "carePrinciplesEthics": {
+    "message": "الأخلاقيات"
+  },
+  "followFairAndCareYesTip": {
+    "message": "تتمتع مجموعة البيانات ببيانات وصفية كافية وتتبع مبادئ قابلية الاكتشاف، وإمكانية الوصول، والتشغيل البيني، وإعادة الاستخدام FAIR، بالإضافة إلى مبادئ المنفعة الجماعية، وسلطة التحكم، والمسؤولية، والأخلاقيات CARE."
+  },
+  "followFairAndCareYesWhy": {
+    "message": "كيف تتبع مبادئ FAIR وCARE؟"
+  },
+  "followFairAndCarePartlyTip": {
+    "message": "تحتوي مجموعة البيانات على بعض البيانات الوصفية وتتبع بعض مبادئ FAIR وCARE، ولكن توجد بعض المشكلات البسيطة."
+  },
+  "followFairAndCarePartlyWhy": {
+    "message": "كيف تتبع مجموعة البيانات المبادئ جزئيًا؟"
+  },
+  "followFairAndCareNoTip": {
+    "message": "تفتقر مجموعة البيانات إلى بيانات وصفية كافية ولا تتبع مبادئ FAIR وCARE."
+  },
+  "followFairAndCareNoWhy": {
+    "message": "كيف لا تتبع مجموعة البيانات المبادئ؟"
+  },
+  "yes": {
+    "message": "نعم"
+  },
+  "no": {
+    "message": "لا"
+  },
+  "partly": {
+    "message": "جزئيا"
+  },
+  "changeFairAndCare": {
+    "message": "<visuallyHidden>غيّر ما إذا كانت مجموعة البيانات تتبع مبادئ FAIR وCARE</visuallyHidden>"
+  },
+  "enoughMetadata": {
+    "message": "هل تحتوي مجموعة البيانات على بيانات وصفية كافية؟"
+  },
+  "selectEnoughMetadata": {
+    "message": "حدّد ما إذا كانت مجموعة البيانات تحتوي على بيانات وصفية كافية"
+  },
+  "enoughMetadataYesTip": {
+    "message": "تحتوي مجموعة البيانات على بيانات وصفية كافية، مثل نوع البيانات، والأدوات والأساليب المستخدمة لجمع البيانات وتحليلها، والاعتبارات الأخلاقية المتبعة أثناء جمع البيانات وتحليلها، والوثائق الداعمة، مثل مسرد المصطلحات أو ملف README أو توصيات البرامج."
+  },
+  "enoughMetadataYesWhy": {
+    "message": "ما البيانات الوصفية التي تحتوي عليها؟"
+  },
+  "enoughMetadataPartlyTip": {
+    "message": "تتضمن مجموعة البيانات بعض المعلومات المذكورة أعلاه، ولكن هناك حاجة إلى مزيد من المعلومات لفهم كيفية جمع البيانات وتحليلها واستخدامها بطرق أخرى فهمًا كاملًا."
+  },
+  "enoughMetadataPartlyWhy": {
+    "message": "ما البيانات الوصفية التي تحتوي عليها، وما البيانات الوصفية المفقودة؟"
+  },
+  "enoughMetadataNoTip": {
+    "message": "لا تتضمن مجموعة البيانات بيانات وصفية كافية للمساعدة في فهم كيفية جمع البيانات وتحليلها واستخدامها بطرق أخرى."
+  },
+  "enoughMetadataNoWhy": {
+    "message": "ما البيانات الوصفية المفقودة؟"
+  },
+  "changeEnoughMetadata": {
+    "message": "تغيير <visuallyHidden>إذا كانت مجموعة البيانات تحتوي على بيانات وصفية كافية</visuallyHidden>"
+  },
+  "trackChanges": {
+    "message": "هل تتضمن مجموعة البيانات وسيلة لسرد التغييرات أو تتبّع الإصدارات؟ وإذا كان الأمر كذلك، فهل تبدو هذه المعلومات دقيقة؟"
+  },
+  "selectTrackChanges": {
+    "message": "حدّد ما إذا كانت مجموعة البيانات تتضمن وسيلة لسرد التغييرات أو تتبّع الإصدارات"
+  },
+  "trackChangesYesTip": {
+    "message": "تحتوي مجموعة البيانات على سجل واضح للإصدارات، ويبدو أنه دقيق ومحدّث."
+  },
+  "trackChangesYesWhy": {
+    "message": "كيف تُشارك مجموعة البيانات بياناتها الوصفية؟"
+  },
+  "trackChangesPartlyTip": {
+    "message": "تتضمن مجموعة البيانات وسيلة لسرد التغييرات أو تتبّع الإصدارات، ولكن لا يبدو أن هذه المعلومات دقيقة أو محدّثة."
+  },
+  "trackChangesPartlyWhy": {
+    "message": "كيف تُشارك مجموعة البيانات بياناتها الوصفية؟ ما البيانات المفقودة؟"
+  },
+  "trackChangesNoWhy": {
+    "message": "كيف ينبغي أن تعرض مجموعة البيانات بياناتها الوصفية المفقودة؟"
+  },
+  "changeTrackChanges": {
+    "message": "غيّر <visuallyHidden>ما إذا كانت مجموعة البيانات تتضمن وسيلة لسرد التغييرات أو تتبّع الإصدارات</visuallyHidden>"
+  },
+  "signsOfAlteration": {
+    "message": "هل تُظهر مجموعة البيانات علامات على إجراء تغييرات عليها تتجاوز حالات الخطأ البشري المحتملة، مثل الرقابة أو الحذف أو التنقيح، من دون توثيق هذه التغييرات أو توضيح أسبابها؟"
+  },
+  "selectSignsOfAlteration": {
+    "message": "حدّد ما إذا كانت مجموعة البيانات تُظهر مؤشرات على التلاعب بها"
+  },
+  "signsOfAlterationYesTip": {
+    "message": "تُظهر مجموعة البيانات مؤشرات واضحة على التلاعب بها، ولا تفسّرها سجلات إصداراتها. وتظهر فيها بوضوح، في مواضع مختلفة، علامات على نوع من الرقابة أو الحذف أو التنقيح."
+  },
+  "signsOfAlterationYesWhy": {
+    "message": "كيف تم التلاعب بها؟"
+  },
+  "signsOfAlterationPartlyTip": {
+    "message": "تُظهر بعض أجزاء مجموعة البيانات هذه مؤشرات على التلاعب بها، ولا تفسّرها سجلات إصداراتها. وتظهر فيها بوضوح، في مواضع مختلفة، علامات على نوع من الرقابة أو الحذف أو التنقيح."
+  },
+  "signsOfAlterationPartlyWhy": {
+    "message": "ما الأجزاء التي تبدو سليمة؟ ما الأجزاء التي يبدو أنه تم التلاعب بها؟ كيف يبدو أنه تم التلاعب بها؟"
+  },
+  "signsOfAlterationNoTip": {
+    "message": "لا تُظهر مجموعة البيانات مؤشرات واضحة على التلاعب بها."
+  },
+  "signsOfAlterationNoWhy": {
+    "message": "ما الذي يجعلك ترى أن مجموعة البيانات هذه سليمة إلى حد كبير؟ ما مؤشرات الموثوقية التي تجعلك تعتقد أنها لم تتعرض للتلاعب؟"
+  },
+  "changeSignsOfAlteration": {
+    "message": "غيّر <visuallyHidden>تقييمك إذا كانت مجموعة البيانات تُظهر مؤشرات على التلاعب بها</visuallyHidden>"
+  },
+  "suitedForPurpose": {
+    "message": "هل تتلاءم مجموعة البيانات هذه جيدًا مع الغرض البحثي المعلن لها؟"
+  },
+  "selectSuitedForPurpose": {
+    "message": "حدّد ما إذا كانت مجموعة البيانات ملائمة للغرض البحثي المعلن لها"
+  },
+  "suitedForPurposeYesTip": {
+    "message": "تتناسب طريقة جمع هذه البيانات وتحليلها واستخدامها جيدًا مع الغرض البحثي المعلن لها."
+  },
+  "suitedForPurposeYesWhy": {
+    "message": "كيف تلائم مجموعة البيانات الغرض البحثي؟"
+  },
+  "suitedForPurposePartlyTip": {
+    "message": "تدعم طريقة جمع هذه البيانات وتحليلها واستخدامها الغرض البحثي المعلن لها جزئيًا، لكن كانت أسئلة أو أساليب أو أدوات أخرى ستكون أنسب."
+  },
+  "suitedForPurposePartlyWhy": {
+    "message": "كيف تكون مجموعة البيانات ملائمة للغرض البحثي المعلن لها جزئيًا فقط؟ ما الأجزاء التي تبدو ملائمة؟ وما الأجزاء التي لا تبدو ملائمة؟"
+  },
+  "suitedForPurposeNoTip": {
+    "message": "لا تتناسب طريقة جمع هذه البيانات وتحليلها واستخدامها مع الغرض البحثي المعلن لها."
+  },
+  "suitedForPurposeNoWhy": {
+    "message": "ما الذي يجعل مجموعة البيانات ملائمة للغرض البحثي المعلن لها جزئيًا فقط؟ ما الأجزاء التي تبدو ملائمة؟ وما الأجزاء التي لا تبدو ملائمة؟"
+  },
+  "changeSuitedForPurpose": {
+    "message": "غيّر <visuallyHidden>تقييمك إذا كانت مجموعة البيانات ملائمة للغرض البحثي المعلن لها </visuallyHidden>"
+  },
+  "supportsConclusion": {
+    "message": "هل تدعم مجموعة البيانات هذه الاستنتاجات المعلنة للباحث؟"
+  },
+  "selectSupportsConclusion": {
+    "message": "اختر ما إذا كانت مجموعة البيانات تدعم الاستنتاجات"
+  },
+  "supportsConclusionYesTip": {
+    "message": "تدعم مجموعة البيانات هذه بوضوح استنتاج الباحث بشأنها، أو يُرجّح أن تدعم استنتاجات واضحة، ولا تتطلب تفسيرًا إبداعيًا أو مبالغة في الاستنتاج للوصول إليها."
+  },
+  "supportsConclusionYesWhy": {
+    "message": "كيف تدعم الاستنتاجات؟"
+  },
+  "supportsConclusionPartlyTip": {
+    "message": "تدعم مجموعة البيانات هذه بعض استنتاجات الباحث بشأنها، أو يُرجّح أن تدعم بعض الاستنتاجات الواضحة، لكنها لا تدعم بوضوح بعض استنتاجات الباحث، أو يُرجّح ألا تدعمها بسبب مشكلات بسيطة."
+  },
+  "supportsConclusionPartlyWhy": {
+    "message": "كيف تدعم الاستنتاجات جزئيًا؟"
+  },
+  "supportsConclusionNoTip": {
+    "message": "لا تدعم مجموعة البيانات هذه استنتاجات الباحث بشأنها، أو يُرجّح ألا تدعم أي استنتاجات واضحة دون تحليل معيب أو مبالغة في الاستنتاج."
+  },
+  "supportsConclusionNoWhy": {
+    "message": "كيف لا تدعم الاستنتاجات؟"
+  },
+  "changeSupportsConclusion": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت مجموعة البيانات تدعم الاستنتاجات </visuallyHidden>"
+  },
+  "granularEnough": {
+    "message": "هل مجموعة البيانات مفصّلة بما يكفي لتكون معيارًا موثوقًا للقياس؟"
+  },
+  "selectGranularEnough": {
+    "message": "اختر ما إذا كانت مجموعة البيانات مفصّلة بما يكفي"
+  },
+  "granularEnoughYesTip": {
+    "message": "توفر مجموعة البيانات بيانات بمستوى من التفصيل أو الدقة يبدو كافيًا لاعتبارها معيارًا موثوقًا للقياس أو للحقيقة."
+  },
+  "granularEnoughYesWhy": {
+    "message": "كيف تكون مفصّلة بما يكفي؟\n"
+  },
+  "granularEnoughPartlyTip": {
+    "message": "توفّر بعض البيانات في مجموعة البيانات مستوى من التفصيل أو الدقة يبدو كافيًا لاعتبارها معيارًا موثوقًا للقياس أو للحقيقة، لكن لا ينطبق ذلك على جميع البيانات."
+  },
+  "granularEnoughPartlyWhy": {
+    "message": "إلى أي مدى تُعدّ البيانات مفصّلة بما يكفي؟ وما الأجزاء التي تحتاج إلى مزيد من التفصيل؟"
+  },
+  "granularEnoughNoTip": {
+    "message": "لا توفّر مجموعة البيانات بيانات بمستوى من التفصيل أو الدقة يبدو كافيًا لاعتبارها معيارًا موثوقًا للقياس أو للحقيقة."
+  },
+  "granularEnoughNoWhy": {
+    "message": "كيف أنها ليست مفصّلة بما يكفي؟"
+  },
+  "changeGranularEnough": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت مجموعة البيانات مفصّلة بما يكفي</visuallyHidden>"
+  },
+  "relativelyErrorFree": {
+    "message": "هل مجموعة البيانات خالية نسبيًا من الأخطاء؟"
+  },
+  "relativelyErrorFreeTip": {
+    "message": "قد تشمل الأخطاء أمورًا مثل استخدام أساليب غير مناسبة لجمع البيانات أو تحليلها، أو استخدام مقاييس غير مناسبة مع البيانات، أو التلاعب بالبيانات بطرق أخرى تؤدي إلى حدوث أخطاء في مجموعة البيانات."
+  },
+  "selectRelativelyErrorFree": {
+    "message": "اختر ما إذا كانت مجموعة البيانات خالية نسبيًا من الأخطاء"
+  },
+  "relativelyErrorFreeYesTip": {
+    "message": " تحتوي مجموعة البيانات على عدد قليل من الأخطاء، إن وُجدت، و الأخطاء الموجودة بسيطة"
+  },
+  "relativelyErrorFreeYesWhy": {
+    "message": "هل توجد أي أخطاء؟"
+  },
+  "relativelyErrorFreePartlyTip": {
+    "message": "توجد عدة أخطاء بسيطة أو حتى خطأ واحد كبير في مجموعة البيانات."
+  },
+  "relativelyErrorFreePartlyWhy": {
+    "message": "ما الأخطاء الموجودة؟"
+  },
+  "relativelyErrorFreeNoTip": {
+    "message": "توجد أخطاء بسيطة أو كبيرة عديدة في مجموعة البيانات."
+  },
+  "relativelyErrorFreeNoWhy": {
+    "message": "ما الأخطاء الكبيرة الموجودة؟"
+  },
+  "changeRelativelyErrorFree": {
+    "message": "تغيير<visuallyHidden> ما إذا كانت مجموعة البيانات خالية نسبيًا من الأخطاء </visuallyHidden>"
+  },
+  "howConsequential": {
+    "message": "هل يُرجّح أن تحظى مجموعة البيانات هذه باهتمام الباحثين في مجالها الدراسي، أو معظم الباحثين، أو عامة الناس؟ وما مدى أهميتها المتوقعة بالنسبة إلى ذلك الجمهور أو تلك الجماهير؟"
+  },
+  "selectHowConsequential": {
+    "message": "اختر مدى الأهمية المتوقعة لمجموعة البيانات"
+  },
+  "veryConsequential": {
+    "message": "ذات أثر بالغ"
+  },
+  "veryConsequentialTip": {
+    "message": "من المرجّح أن تكون مجموعة البيانات مهمة جدًا لجمهور واسع."
+  },
+  "veryConsequentialWhy": {
+    "message": "ما الذي يجعلها ذات أثر بالغ؟"
+  },
+  "somewhatConsequential": {
+    "message": "ذات أهمية إلى حد ما"
+  },
+  "somewhatConsequentialTip": {
+    "message": "توجد عدة أخطاء بسيطة أو حتى خطأ واحد كبير في مجموعة البيانات."
+  },
+  "somewhatConsequentialWhy": {
+    "message": "ما الذي يجعلها مهمة إلى حد ما؟"
+  },
+  "notConsequential": {
+    "message": "غير مهمة"
+  },
+  "notConsequentialTip": {
+    "message": "من غير المرجّح أن تكون مجموعة البيانات مهمة لجمهورها المستهدف."
+  },
+  "notConsequentialWhy": {
+    "message": "ما الذي يجعلها غير مهمة؟"
+  },
+  "changeHowConsequential": {
+    "message": "غيّر مدى الأهمية أو الأثر الذي يُحتمل أن تبدو عليه مجموعة البيانات"
+  },
+  "readyToBeShared": {
+    "message": "هل مجموعة البيانات هذه جاهزة للمشاركة؟"
+  },
+  "readyToBeSharedYesWhy": {
+    "message": "لماذا هي جاهزة للمشاركة؟"
+  },
+  "readyToBeSharedNoWhy": {
+    "message": "لماذا ليست جاهزة للمشاركة؟"
+  },
+  "selectReadyToBeShared": {
+    "message": "اختر ما إذا كانت مجموعة البيانات جاهزة للمشاركة"
+  },
+  "changeReadyToBeShared": {
+    "message": "تغيير<visuallyHidden> ما إذا كانت مجموعة البيانات جاهزة للمشاركة </visuallyHidden>"
+  },
+  "anythingMissing": {
+    "message": "ما الذي قد يكون من المفيد للباحث تضمينه أيضًا، إن وُجد، مع مجموعة البيانات هذه لتسهيل العثور عليها وفهمها وإعادة استخدامها بطرق أخلاقية ومسؤولة؟"
+  },
+  "noAnswer": {
+    "message": "لا توجد إجابة"
+  },
+  "changeAnythingMissing": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت مجموعة البيانات تفتقد إلى أي شيء </visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "انشر مراجعة PREreview الخاصة بك الآن"
+  },
+  "publishPrereview": {
+    "message": "نشر مراجعة PREreview"
+  },
+  "publishingPrereview": {
+    "message": "جارٍ نشر مراجعة PREreview الخاصة بك"
+  },
+  "publishPrereviewText": {
+    "message": "ستتمكن من رؤية مراجعة PREreview الخاصة بك قريبًا."
+  },
+  "prereviewPublished": {
+    "message": "نُشرت مراجعة PREreview"
+  },
+  "yourDoi": {
+    "message": "معرّف DOI الخاص بك"
+  },
+  "whatHappensNext": {
+    "message": "ماذا يحدث بعد ذلك"
+  },
+  "invitedEmailsSent": {
+    "message": "لقد أرسلنا رسائل إلكترونية إلى المؤلفين الآخرين لدعوتهم إلى الظهور كمؤلفين."
+  },
+  "inviteOthers": {
+    "message": "إذا أجريت مراجعة مجموعة البيانات مع آخرين، فيُرجى التواصل معنا حتى نتمكن من دعوتهم لإدراج أسمائهم في المراجعة. عنوان بريدنا الإلكتروني هو {emailAddress}."
+  },
+  "opensNewTabSuffix": {
+    "message": "(يفتح في علامة تبويب جديدة)"
+  },
+  "shareYourReview": {
+    "message": "مشاركة مراجعتك"
+  },
+  "shareYourReviewText": {
+    "message": "يُرجى إبلاغ المؤلفين بأنك نشرت مراجعتك على Prereview. قد تكون لديهم بيانات للتواصل معهم في مجموعة البيانات."
+  },
+  "letUsKnowHowItWent": {
+    "message": "أخبرنا كيف كانت تجربتك"
+  },
+  "scheduleInterview": {
+    "message": "<link>حدّد موعدًا لإجراء مقابلة </link>مع فريق المنتجات لدينا لمناقشة تجربتك على PREreview. ويسعدنا تعويض المشاركين في المقابلات تقديرًا لمساعدتهم!"
+  },
+  "feedbackForm": {
+    "message": "يمكنك أيضًا مشاركة ملاحظاتك حول PREreview.org معنا من خلال إكمال <link>استبيان موجز ومجهول الهوية</link>."
+  },
+  "seeYourReview": {
+    "message": "عرض مراجعتك على PREreview"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "هل أجريت مراجعة مجموعة البيانات هذه مع شخص آخر؟"
+  },
+  "didYouReviewWithAnyoneElseTip": {
+    "message": "يمكن أن يشمل ذلك أشخاصًا ساهموا في النقاش أو شاركوا في كتابة المراجعة."
+  },
+  "selectDidYouReviewWithAnyoneElse": {
+    "message": "اختر «نعم» إذا أجريت مراجعة مجموعة البيانات مع شخص آخر"
+  },
+  "addAnAuthor": {
+    "message": "إضافة مؤلف"
+  },
+  "addAnotherAuthor": {
+    "message": "إضافة مؤلف آخر"
+  },
+  "addAnAuthorName": {
+    "message": "الاسم"
+  },
+  "addAnAuthorNameTip": {
+    "message": "سيتمكن من اختيار الاسم الذي سيُنشر به."
+  },
+  "addAnAuthorNameError": {
+    "message": "أدخل اسمه"
+  },
+  "addAnAuthorEmailAddress": {
+    "message": "عنوان البريد الإلكتروني"
+  },
+  "addAnAuthorEmailAddressTip": {
+    "message": "سنستخدم هذا العنوان فقط للتواصل معه بشأن مراجعة PREreview هذه."
+  },
+  "addAnAuthorEmailAddressError": {
+    "message": "أدخل عنوان بريده الإلكتروني"
+  },
+  "addAnAuthorEmailAddressInvalidError": {
+    "message": "أدخل عنوان بريد إلكتروني بالصيغة الصحيحة، مثل {exampleEmailAddress}"
+  },
+  "addedAuthorCount": {
+    "message": "{authorCount, plural, one {قمت بإضافة # مؤلف آخر} other {قمت بإضافة # من المؤلفين الآخرين}}"
+  },
+  "authorNumber": {
+    "message": "المؤلف {number, number}"
+  },
+  "removeAuthor": {
+    "message": "إزالة<visuallyHidden>{name}</visuallyHidden>"
+  },
+  "addAnotherAuthorButton": {
+    "message": "إضافة مؤلف آخر"
+  },
+  "wantToRemoveName": {
+    "message": "هل أنت متأكد من رغبتك في إزالة {name}؟"
+  },
+  "wantToRemoveNameError": {
+    "message": "اختر «نعم» إذا كنت تريد إزالة {name}"
+  },
+  "wantToRemoveNameYes": {
+    "message": "نعم، أزل {name}"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "ما الاسم الذي ترغب في استخدامه؟"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "اختر الاسم الذي ترغب في استخدامه"
+  },
+  "youCanChooseOrcidOrPseudonym": {
+    "message": "يمكنك الاختيار بين الاسم الموجود في سجل ORCID الخاص بك أو اسمك المستعار في PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "ما هو الاسم المستعار في PREreview؟"
+  },
+  "prereviewPseudonymExplainer": {
+    "message": "<definition>الاسم المستعار في PREreview</definition> هو اسم بديل يمكنك استخدامه بدلًا من اسمك الحقيقي. وهو اسم فريد يجمع بين لون وحيوان عشوائيين. اسمك المستعار هو ‘{pseudonym}.’"
+  },
+  "whyUseAPseudonym": {
+    "message": "باستخدام اسمك المستعار في PREreview، يمكنك المساهمة في مراجعة مجموعة البيانات المفتوحة دون الخوف من الانتقام أو التعرّض لأحكام أو انتقادات قد تواجهها عند استخدام اسمك الحقيقي. ومع ذلك، يحافظ استخدام الاسم المستعار على قدر من المساءلة."
+  },
+  "weWillLinkToYourOrcid": {
+    "message": "سنربط مراجعة PREreview الخاصة بك بمعرّف ORCID الخاص بك."
+  },
+  "weWillOnlyLinkToYourPseudonym": {
+    "message": "سنربط مراجعة PREreview الخاصة بك فقط بالأشخاص الآخرين الذين يحملون نفس اسمك المستعار أيضًا."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "disconnectSlackAccount": {
+    "message": "ألغِ ربط حسابك على Slack الخاص بمجتمع Prereview"
+  },
+  "youCanDisconnect": {
+    "message": "يمكنك إلغاء ربط ملفك الشخصي على PREreview بحسابك على Slack الخاص بمجتمع PREreview."
+  },
+  "removeOrcidId": {
+    "message": "سنزيل معرّف ORCID الخاص بك من ملفك الشخصي على Slack."
+  },
+  "canReconnect": {
+    "message": "يمكنك إعادة ربطه في أي وقت."
+  },
+  "disconnectAccountButton": {
+    "message": "إلغاء ربط الحساب"
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToDisconnect": {
+    "message": "يتعذّر علينا إلغاء ربط حسابك في الوقت الحالي."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  }
+}

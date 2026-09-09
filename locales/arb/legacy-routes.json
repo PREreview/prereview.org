@@ -1,0 +1,17 @@
+{
+  "temporaryTitle": {
+    "message": "عذرًا، لقد أزلنا هذه الصفحة مؤقتًا"
+  },
+  "permanentlyTitle": {
+    "message": "عذرًا، لقد أوقفنا إتاحة هذه الصفحة"
+  },
+  "temporaryMessage": {
+    "message": "نجري حاليًا بعض التغييرات على PREreview، ولذلك أزلنا هذه الصفحة مؤقتًا."
+  },
+  "permanentlyMessage": {
+    "message": "نجري حاليًا بعض التغييرات على PREreview، ولذلك أزلنا هذه الصفحة."
+  },
+  "getInTouch": {
+    "message": "إذا كانت لديك أي أسئلة، أو إذا كنت قد اخترت رابطًا أو زرًا، فيُرجى <link>التواصل معنا</link>."
+  }
+}
