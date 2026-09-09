@@ -279,13 +279,13 @@
     "message": "تغيير<visuallyHidden> الاسم </visuallyHidden>"
   },
   "invitedAuthors": {
-    "message": "{number, plural,one {مؤلف مدعو}other {مؤلفون مدعوون}}"
+    "message": "{number, plural, one {مؤلف مدعو} other {مؤلفون مدعوون}}"
   },
   "changeInvitedAuthors": {
     "message": "تغيير <visuallyHidden>المؤلفين المدعوين</visuallyHidden>"
   },
   "changeCompetingInterests": {
-    "message": "تغيير<visuallyHidden> تضارب المصالح"
+    "message": "تغيير<visuallyHidden> تضارب المصالح</visuallyHidden>"
   },
   "changePrereview": {
     "message": "تغيير<visuallyHidden> مراجعتك على PREreview</visuallyHidden>"

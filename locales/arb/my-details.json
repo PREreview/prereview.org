@@ -156,7 +156,7 @@
     "message": "تغيير <visuallyHidden> اللغات </visuallyHidden>"
   },
   "setLanguagesVisibility": {
-    "message": "تغيير مدى ظهور </visuallyHidden> اللغات </visuallyHidden>"
+    "message": "تغيير مدى ظهور <visuallyHidden> اللغات </visuallyHidden>"
   },
   "uploadAnAvatar": {
     "message": "تحميل صورة رمزية"
