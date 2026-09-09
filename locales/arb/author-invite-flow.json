@@ -1,0 +1,146 @@
+{
+  "checkYourDetails": {
+    "message": "تحقّق من بياناتك"
+  },
+  "yourDetails": {
+    "message": "بياناتك"
+  },
+  "publishedName": {
+    "message": "الاسم المنشور"
+  },
+  "changeName": {
+    "message": "تغيير <visuallyHidden>الاسم</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "انشر مراجعة PREreview المحدّثة الآن"
+  },
+  "weWillAddYourName": {
+    "message": "سنضيف اسمك إلى قائمة المؤلفين."
+  },
+  "updatePrereview": {
+    "message": "تحديث مراجعة PREreview"
+  },
+  "nameAdded": {
+    "message": "تمت إضافة الاسم"
+  },
+  "whatHappensNext": {
+    "message": "ماذا يحدث بعد ذلك"
+  },
+  "ableToSeePrereviewShortly": {
+    "message": "ستتمكن من رؤية اسمك على مراجعة PREreview قريبًا."
+  },
+  "yourDoi": {
+    "message": "معرّف DOI الخاص بك"
+  },
+  "closeWindowOrSeePrereview": {
+    "message": "يمكنك إغلاق هذه النافذة، أو <link>الاطلاع على مراجعة PREreview</link>."
+  },
+  "beListed": {
+    "message": "إدراج اسمك كمؤلف"
+  },
+  "invitedToAppear": {
+    "message": "لقد تمت دعوتك للظهور كمؤلف في هذه المراجعة على PREreview."
+  },
+  "weWillAskYouToLogInWithYourOrcid": {
+    "message": "سنطلب منك تسجيل الدخول باستخدام معرّف ORCID الخاص بك. إذا لم يكن لديك معرّف، يمكنك إنشاء واحد."
+  },
+  "whatIsAnOrcid": {
+    "message": "ما هو معرّف ORCID؟"
+  },
+  "orcidExplainer": {
+    "message": "يُعدّ <link>معرّف ORCID</link> معرّفًا فريدًا يميّزك عن كل من يحمل اسمًا مطابقًا أو مشابهًا لاسمك."
+  },
+  "beforeYouStart": {
+    "message": "قبل أن تبدأ"
+  },
+  "declineTheInvitation": {
+    "message": "رفض الدعوة"
+  },
+  "youCanDecline": {
+    "message": "يمكنك رفض هذه الدعوة والبقاء مؤلفًا مجهول الهوية."
+  },
+  "asYouHaveAlreadyStartedWeWillTakeYouToTheNextStep": {
+    "message": "بما أنك بدأت بالفعل، فسننقلك إلى الخطوة التالية لتتمكن من المتابعة."
+  },
+  "sorryHavingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToAddYourNameWorkHasBeenSaved": {
+    "message": "لم نتمكن من إضافة اسمك إلى مراجعة PREreview. لكننا حفظنا عملك."
+  },
+  "comeBackLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا بالعودة إلى هذه الصفحة."
+  },
+  "getInTouch": {
+    "message": "إذا استمرت هذه المشكلة، يُرجى <link>التواصل معنا</link>."
+  },
+  "invitationDeclined": {
+    "message": "تم رفض الدعوة"
+  },
+  "youHaveDeclinedToAppearAsAuthor": {
+    "message": "لقد رفضت الظهور كمؤلف في هذه المراجعة على PREreview."
+  },
+  "youCanCloseThisWindow": {
+    "message": "يمكنك إغلاق هذه النافذة."
+  },
+  "contactDetails": {
+    "message": "بيانات التواصل"
+  },
+  "readyToAddYourNameConfirmYourEmailFirst": {
+    "message": "نحن مستعدون لإضافة اسمك إلى مراجعة PREreview، لكننا بحاجة أولًا إلى تأكيد عنوان بريدك الإلكتروني."
+  },
+  "usedToContactYouAboutYourAccountAndPrereviews": {
+    "message": "سنستخدمه فقط للتواصل معك بشأن حسابك ومراجعات PREreview الخاصة بك."
+  },
+  "whatEmailAddressShouldWeUse": {
+    "message": "ما عنوان البريد الإلكتروني الذي ينبغي أن نستخدمه؟"
+  },
+  "selectTheEmailAddressYouWouldLikeToUse": {
+    "message": "اختر عنوان البريد الإلكتروني الذي تود استخدامه"
+  },
+  "aDifferentOne": {
+    "message": "عنوان آخر"
+  },
+  "whatIsYourEmailAddress": {
+    "message": "ما عنوان بريدك الإلكتروني؟"
+  },
+  "enterYourEmailAddress": {
+    "message": "أدخل عنوان بريدك الإلكتروني"
+  },
+  "enterAnEmailAddressInTheCorrectFormat": {
+    "message": "أدخل عنوان بريد إلكتروني بالصيغة الصحيحة، مثل {exampleEmailAddress}"
+  },
+  "verifyYourEmailAddress": {
+    "message": "أكّد عنوان بريدك الإلكتروني"
+  },
+  "pleaseOpenLinkInEmailWeSentYou": {
+    "message": "يرجى فتح رسالة البريد الإلكتروني التي أرسلناها إلى {contactEmailAddress} واتباع الرابط الموجود فيها. بعد ذلك، ستتمكن من إضافة اسمك إلى مراجعة PREreview."
+  },
+  "onceVerifiedYouCanClosePage": {
+    "message": "بعد التحقق من عنوان بريدك الإلكتروني، يمكنك إغلاق هذه الصفحة."
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "ما الاسم الذي تود استخدامه؟"
+  },
+  "youCanChooseBetweenOrcidNameAndPrereviewPseudonym": {
+    "message": "يمكنك الاختيار بين الاسم الموجود في سجل ORCID الخاص بك أو اسمك المستعار في PREreview."
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "ما هو الاسم المستعار في PREreview؟"
+  },
+  "pseudonymExplainer": {
+    "message": "<definition>الاسم المستعار في PREreview</definition> هو اسم بديل يمكنك استخدامه بدلًا من اسمك الحقيقي. وهو اسم فريد يجمع بين لون وحيوان عشوائيين. اسمك المستعار هو «{userPseudonym}»"
+  },
+  "whyUseAPseudonym": {
+    "message": "باستخدام اسمك المستعار، يمكنك المساهمة في مراجعة المسودات البحثية الأولية المفتوحة دون الخوف من الانتقام أو التعرّض للأحكام أو الانتقادات التي قد تتعرض لها عند استخدام اسمك الحقيقي. ومع ذلك، يظل استخدام الاسم المستعار متضمنًا قدرًا من المساءلة."
+  },
+  "selectTheNameYouWouldLikeToUse": {
+    "message": "اختر الاسم الذي تود استخدامه"
+  },
+  "weWillLinkYourPrereviewToYourOrcid": {
+    "message": "سنربط مراجعتك على PREreview بمعرّف ORCID الخاص بك."
+  },
+  "weWillOnlyLinkToOtherPseudonymPrereviews": {
+    "message": "سنربط مراجعتك فقط بالمراجعات الأخرى التي تستخدم اسمك المستعار نفسه."
+  }
+}

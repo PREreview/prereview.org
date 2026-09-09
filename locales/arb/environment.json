@@ -1,0 +1,14 @@
+{
+  "devName": {
+    "message": "التطوير"
+  },
+  "devText": {
+    "message": "التطوير المحلي"
+  },
+  "sandboxName": {
+    "message": " بيئة الاختبار"
+  },
+  "sandboxText": {
+    "message": "هذه النسخة هي بيئة اختبار."
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "titleSuccess": {
+    "message": "نجاح"
+  },
+  "titleImportant": {
+    "message": "مهم"
+  },
+  "titleAccessDenied": {
+    "message": "تم رفض الوصول"
+  },
+  "messageLogInBlocked": {
+    "message": "لا يُسمح لك بتسجيل الدخول."
+  },
+  "messageLoggedOut": {
+    "message": "تم تسجيل خروجك."
+  },
+  "messageLoggedIn": {
+    "message": "تم تسجيل دخولك."
+  },
+  "messageLoggedInDemoUser": {
+    "message": "تم تسجيل دخولك كمستخدم تجريبي."
+  },
+  "messageVerifyEmail": {
+    "message": "نرسل إليك رسالة بريد إلكتروني. يُرجى فتحها واتباع الرابط للتحقق من عنوان بريدك الإلكتروني."
+  },
+  "messageVerifyEmailResend": {
+    "message": "لقد أرسلنا إليك رسالة بريد إلكتروني جديدة."
+  },
+  "messageEmailVerified": {
+    "message": "تم التحقق من عنوان بريدك الإلكتروني."
+  },
+  "messageOrcidConnected": {
+    "message": "تم ربط سجل ORCID الخاص بك."
+  },
+  "messageOrcidDisconnected": {
+    "message": "تم إلغاء ربط سجل ORCID الخاص بك."
+  },
+  "messageSlackConnected": {
+    "message": "تم ربط حسابك على مجتمع Slack."
+  },
+  "messageSlackDisconnected": {
+    "message": "تم إلغاء ربط حسابك على Slack الخاص بمجتمع Prereview."
+  },
+  "messageAvatarChanged": {
+    "message": "تم تغيير صورتك الرمزية."
+  },
+  "messageAvatarRemoved": {
+    "message": "تمت إزالة صورتك الرمزية."
+  }
+}

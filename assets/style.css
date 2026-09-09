@@ -1256,6 +1256,7 @@ label {
 :--button {
   display: inline-block;
   position: relative;
+  inline-size: fit-content;
   min-inline-size: 4em;
   padding-block: var(--space-2xs);
   padding-inline: var(--space-xs);

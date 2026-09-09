@@ -1,0 +1,971 @@
+{
+  "prereviewOf": {
+    "message": "مراجعة أولية لـ{preprintTitle}"
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "ownPreprint": {
+    "message": "عذرًا، لا يمكنك مراجعة مسودتك البحثية الأولية الخاصة بك"
+  },
+  "unableToPublish": {
+    "message": "تعذّر علينا نشر مراجعتك على PREreview. لقد حفظنا عملك."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا بالعودة إلى هذه الصفحة."
+  },
+  "ifNotAuthor": {
+    "message": "إذا لم تكن مؤلفًا، يرجى <contact> التواصل معنا </contact>."
+  },
+  "getInTouch": {
+    "message": "إذا استمرت هذه المشكلة، يرجى <contact> التواصل معنا </contact>."
+  },
+  "enterTheirName": {
+    "message": "أدخل اسمهم"
+  },
+  "enterTheirEmail": {
+    "message": "أدخل عنوان بريدهم الإلكتروني"
+  },
+  "invalidEmail": {
+    "message": "أدخل عنوان بريد إلكتروني بالصيغة الصحيحة، مثل: {exampleEmailAddress}"
+  },
+  "addAuthor": {
+    "message": "إضافة مؤلف"
+  },
+  "enterNamesAndEmailAddress": {
+    "message": "أدخل أسماء المؤلفين الآخرين وعناوين بريدهم الإلكتروني"
+  },
+  "enterNamesAndEmailAddressTip": {
+    "message": "ضع كل مؤلف في سطر منفصل."
+  },
+  "namesAndEmailAddressInvalidFormat": {
+    "message": "أدخل أسماء المؤلفين وعناوين بريدهم الإلكتروني بالصيغة الصحيحة"
+  },
+  "namesAndEmailAddressMissing": {
+    "message": "أدخل أسماء المؤلفين وعناوين بريدهم الإلكتروني"
+  },
+  "nameInputLabel": {
+    "message": "الاسم"
+  },
+  "theyWillChooseTheirName": {
+    "message": "سيتمكنون من اختيار الاسم الذي سيُنشرون به."
+  },
+  "emailAddress": {
+    "message": "عنوان البريد الإلكتروني"
+  },
+  "useOfEmail": {
+    "message": "سنستخدمه فقط للتواصل معهم بشأن هذه المراجعة الأولية على PREreview."
+  },
+  "howWouldYouLikeToStart": {
+    "message": "كيف تود أن تبدأ مراجعتك الأولية؟"
+  },
+  "selectHowToStart": {
+    "message": "حدّد الطريقة التي تود أن تبدأ بها مراجعتك الأولية"
+  },
+  "withPrompts": {
+    "message": "باستخدام أسئلة إرشادية"
+  },
+  "withTemplate": {
+    "message": "باستخدام قالب"
+  },
+  "alreadyWritten": {
+    "message": "لقد كتبت المراجعة بالفعل"
+  },
+  "weWillAskQuestions": {
+    "message": "سنطرح أسئلة حول المسودة البحثية الأولية لإنشاء مراجعة منظّمة."
+  },
+  "weWillTemplate": {
+    "message": "سنقدّم قالبًا أساسيًا، ولكن يمكنك إجراء المراجعة بالطريقة التي تفضلها."
+  },
+  "pasteYourReview": {
+    "message": "الصق مراجعتك الأولية"
+  },
+  "writeYourReview": {
+    "message": "اكتب مراجعتك الأولية"
+  },
+  "selectTheNameError": {
+    "message": "حدّد الاسم الذي تود استخدامه"
+  },
+  "youCanChooseBetweenNames": {
+    "message": "يمكنك الاختيار بين الاسم الموجود في سجل ORCID الخاص بك أو الاسم المستعار الخاص بك على PREreview."
+  },
+  "whatIsAPseudonym": {
+    "message": "ما هو الاسم المستعار في PREreview؟"
+  },
+  "pseudonymIsA": {
+    "message": "الأسم المستعار على <term>PREreview </term> هو اسم بديل يمكنك استخدامه بدلاً من اسمك الحقيقي. إنه فريد ويجمع بين لون عشوائي وحيوان. اسمك المستعار هو '{pseudonym}'."
+  },
+  "pseudonymAccountability": {
+    "message": "باستخدام اسمك المستعار، يمكنك المساهمة في مراجعة المسودات البحثية الأولية بشكل مفتوح دون الخوف من الانتقام أو الأحكام السلبية التي قد تتعرض لها عند استخدام اسمك الحقيقي. ومع ذلك، فإن استخدام اسم مستعار يُبقي على قدر من المساءلة."
+  },
+  "linkToOrcidId": {
+    "message": "سنربط مراجعتك على PREreview بمعرّف ORCID الخاص بك."
+  },
+  "linkToPseudonym": {
+    "message": "سنربط مراجعتك على PREreview فقط بالمراجعات الأخرى التي تستخدم فيها اسمك المستعار نفسه."
+  },
+  "pasteYourReviewError": {
+    "message": "الصق مراجعتك على PREreview"
+  },
+  "enterYourReviewError": {
+    "message": "أدخل مراجعتك على PREreview"
+  },
+  "copyAndPasteReview": {
+    "message": "انسخ مراجعتك على PREreview والصقها هنا. سنبذل قصارى جهدنا للحفاظ على تنسيقها كما هو."
+  },
+  "writeReviewSupport": {
+    "message": "نريد أن ندعمك في تقديم ملاحظات عالية الجودة على PREreview. اطلع على <link>نصائحنا ومواردنا للمراجعين</link>."
+  },
+  "goodBehaviorExamples": {
+    "message": "أمثلة على السلوكيات الجيدة للمراجعين"
+  },
+  "goodBehaviorRespectful": {
+    "message": "احترام المؤلفين وأعمالهم."
+  },
+  "goodBehaviorHumble": {
+    "message": "التحلّي بالتواضع والوعي بكيفية رغبتك في تلقي الملاحظات من الآخرين."
+  },
+  "goodBehaviorActionable": {
+    "message": "تقديم ملاحظات واضحة وبنّاءة وقابلة للتطبيق من شأنها تحسين المسودة البحثية الأولية."
+  },
+  "reviewSectionsExamples": {
+    "message": "أمثلة على أقسام المراجعة المفيدة"
+  },
+  "beginSummary": {
+    "message": "ابدأ بملخص للبحث وبيان إسهامه في مجال الدراسة."
+  },
+  "sharePositiveFeedback": {
+    "message": "بعد ذلك، شارك ملاحظاتك الإيجابية، بما في ذلك ما يتعلق بالنهج المتّبع، ونقاط القوة، والنتائج."
+  },
+  "shareConcerns": {
+    "message": "وأخيرًا، اذكر الملاحظات الجوهرية والثانوية، إلى جانب اقتراحات واضحة وبنّاءة وقابلة للتطبيق لمعالجتها."
+  },
+  "writeAShortSummary": {
+    "message": "اكتب ملخصًا موجزًا لأهم نتائج البحث وكيف أسهم هذا العمل في تطوير مجال الدراسة."
+  },
+  "majorIssues": {
+    "message": "الإشكالات الجوهرية"
+  },
+  "listSignificantConcerns": {
+    "message": "اذكر الإشكالات الجوهرية المتعلقة بالبحث، إن وُجدت."
+  },
+  "minorIssues": {
+    "message": "المشكلات الثانوية"
+  },
+  "listFlowConcerns": {
+    "message": "اذكر الملاحظات التي من شأنها تحسين سلاسة النص أو وضوحه، لكنها لا تؤثر بشكل جوهري في فهم البحث واستنتاجاته."
+  },
+  "addedAuthorCount": {
+    "message": "{authorCount, plural, one {لقد أضفت مؤلفًا آخر} other {لقد أضفت # مؤلفين آخرين}}"
+  },
+  "authorNumber": {
+    "message": "المؤلف {number, number}"
+  },
+  "changeAuthorDetailsLink": {
+    "message": "تغيير <visuallyHidden>بيانات {name}</visuallyHidden>"
+  },
+  "removeAuthor": {
+    "message": "إزالة <visuallyHidden>{name}</visuallyHidden>"
+  },
+  "name": {
+    "message": "الاسم"
+  },
+  "addAnotherAuthor": {
+    "message": "إضافة مؤلف آخر"
+  },
+  "no": {
+    "message": "لا"
+  },
+  "yes": {
+    "message": "نعم"
+  },
+  "enterName": {
+    "message": "أدخل اسمهم"
+  },
+  "enterEmail": {
+    "message": "أدخل عنوان بريدهم الإلكتروني"
+  },
+  "changeAuthorDetailsHeading": {
+    "message": "تعديل بيانات {name}"
+  },
+  "ableToChoseName": {
+    "message": "سيتمكنون من اختيار الاسم الذي سيُنشرون به."
+  },
+  "prereviewPublishedTitle": {
+    "message": "نُشرت مراجعتك على PREreview"
+  },
+  "yourDoi": {
+    "message": "معرّف DOI الخاص بك"
+  },
+  "whatHappensNext": {
+    "message": "ماذا يحدث بعد ذلك"
+  },
+  "whereYouCanSeeYourPrereview": {
+    "message": "ستتمكن من الاطلاع على مراجعتك على PREreview قريبًا.\nوستظهر أيضًا في<communitySlack> مجتمعنا على Slack </communitySlack>."
+  },
+  "whereYouCanSeeYourPrereviewSciety": {
+    "message": "ستتمكن من الاطلاع على مراجعتك على PREreview قريبًا. وستظهر أيضًا على <communitySlack>مجتمعنا على Slack</communitySlack> وعلى <sciety>Sciety</sciety>."
+  },
+  "opensInNewTab": {
+    "message": "تُفتح في علامة تبويب جديدة"
+  },
+  "letUsKnowAuthorDetails": {
+    "message": "يُرجى تزويدنا ببيانات المؤلفين الآخرين، بما في ذلك أسماؤهم ومعرّفات ORCID الخاصة بهم، وسنضيفهم إلى مراجعة PREreview. عنوان بريدنا الإلكتروني هو {mailtoHelp}."
+  },
+  "sentEmailsToAuthors": {
+    "message": "لقد أرسلنا رسائل بريد إلكتروني إلى المؤلفين الآخرين، ندعوهم فيها إلى الظهور."
+  },
+  "shareYourReview": {
+    "message": "شارك مراجعتك"
+  },
+  "letAuthorsKnow": {
+    "message": "يُرجى إبلاغ المؤلفين بأنك نشرت مراجعتك. قد تجد بيانات التواصل الخاصة بهم في المسودة البحثية الأولية."
+  },
+  "letCommunityKnow": {
+    "message": "ولمَ لا تُطلع المجتمع الأوسع على مراجعتك أيضًا:"
+  },
+  "shareOnBluesky": {
+    "message": "شاركها على Bluesky"
+  },
+  "shareOnBlueskyMessage": {
+    "message": "لقد نشرتُ للتو #مراجعة_مسودة_بحثية_أولية لـ {preprintTitle} على {prereviewHandle}"
+  },
+  "shareOnLinkedin": {
+    "message": "شاركها على LinkedIn"
+  },
+  "listOnSciety": {
+    "message": "أدرجها في Sciety"
+  },
+  "howItWent": {
+    "message": "أخبرنا كيف سارت تجربتك"
+  },
+  "scheduleAnInterview": {
+    "message": "<link>حدّد موعدًا لمقابلة</link> مع فريق المنتجات لدينا لمناقشة تجربتك على PREreview. ويسعدنا تقديم مكافأة للمشاركين في المقابلات تقديرًا لمساعدتهم!"
+  },
+  "feedbackSurvey": {
+    "message": "يمكنك أيضًا مشاركة ملاحظاتك حول PREreview.org معنا من خلال تعبئة <link>استبيان موجز ومجهول الهوية</link>."
+  },
+  "backToPreprint": {
+    "message": "العودة إلى المسودة البحثية الأولية"
+  },
+  "publishTitle": {
+    "message": "انشر مراجعتك على PREreview لـ{preprintTitle}"
+  },
+  "checkPrereview": {
+    "message": "تحقّق من مراجعتك على PREreview"
+  },
+  "preprintDetails": {
+    "message": "تفاصيل المسودة البحثية الأولية"
+  },
+  "preprintTitle": {
+    "message": "العنوان"
+  },
+  "preprintServer": {
+    "message": "خادم المسودات البحثية الأولية"
+  },
+  "authorDetails": {
+    "message": "بيانات المؤلف"
+  },
+  "yourDetails": {
+    "message": "بياناتك"
+  },
+  "yourPublishedName": {
+    "message": "اسمك المنشور"
+  },
+  "publishedName": {
+    "message": "الاسم المنشور"
+  },
+  "changeName": {
+    "message": "تغيير<visuallyHidden> الاسم </visuallyHidden>"
+  },
+  "invitedAuthors": {
+    "message": "{number, plural,one {مؤلف مدعو}other {مؤلفون مدعوون}}"
+  },
+  "changeInvitedAuthors": {
+    "message": "تغيير <visuallyHidden>المؤلفين المدعوين</visuallyHidden>"
+  },
+  "changeCompetingInterests": {
+    "message": "تغيير<visuallyHidden> تضارب المصالح"
+  },
+  "changePrereview": {
+    "message": "تغيير<visuallyHidden> مراجعتك على PREreview</visuallyHidden>"
+  },
+  "yourReview": {
+    "message": "مراجعتك"
+  },
+  "doesIntroductionExplain": {
+    "message": "هل توضّح المقدمة هدف البحث المقدَّم في المسودة البحثية الأولية؟"
+  },
+  "changeIfIntroExplains": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت المقدمة توضّح هدف البحث المقدَّم في المسودة البحثية الأولية</visuallyHidden>"
+  },
+  "methodsWellSuited": {
+    "message": "هل تُعدّ المنهجيات المتّبعة ملائمةً لهذا البحث؟"
+  },
+  "changeMethodsWellSuited": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت المنهجيات المتّبعة ملائمةً لهذا البحث</visuallyHidden>"
+  },
+  "conclusionsSupported": {
+    "message": "هل تدعم البيانات الاستنتاجات؟"
+  },
+  "changeConclusionsSupported": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت الاستنتاجات مدعومة بالبيانات</visuallyHidden>"
+  },
+  "dataPresentationWellSuited": {
+    "message": "هل تُعدّ طرق عرض البيانات، بما في ذلك التصورات البيانية، ملائمةً لتمثيل البيانات؟"
+  },
+  "changeDataPresentationWellSuited": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت طرق عرض البيانات ملائمةً لتمثيل البيانات؟</visuallyHidden>"
+  },
+  "clearDiscussion": {
+    "message": "إلى أي مدى يناقش المؤلفون نتائجهم ويشرحونها ويفسرونها بوضوح، إلى جانب الخطوات المحتملة التالية للبحث؟"
+  },
+  "changeClearDiscussion": {
+    "message": "تغيير <visuallyHidden>مدى وضوح مناقشة المؤلفين لنتائجهم والخطوات التالية</visuallyHidden>"
+  },
+  "advanceKnowledge": {
+    "message": "هل يُرجّح أن تُسهم هذه المسودة البحثية الأولية في تطوير المعرفة الأكاديمية؟"
+  },
+  "changeAdvanceKnowledge": {
+    "message": "تغيير <visuallyHidden>ما إذا كان يُرجّح أن تُسهم المسودة البحثية الأولية في تطوير المعرفة الأكاديمية</visuallyHidden>"
+  },
+  "benefitFromEditing": {
+    "message": "هل ستستفيد من التحرير اللغوي؟"
+  },
+  "changeBenefitFromEditing": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت ستستفيد من التحرير اللغوي</visuallyHidden>"
+  },
+  "wouldRecommend": {
+    "message": "هل توصي بهذه المسودة البحثية الأولية للآخرين؟"
+  },
+  "changeWouldRecommend": {
+    "message": "تغيير <visuallyHidden>ما إذا كنت توصي بهذه المسودة البحثية الأولية للآخرين</visuallyHidden>"
+  },
+  "readyForAttention": {
+    "message": "هل هي جاهزة لاهتمام محرر أو ناشر أو جمهور أوسع؟"
+  },
+  "changeReadyForAttention": {
+    "message": "تغيير <visuallyHidden>ما إذا كانت جاهزة لاهتمام محرر أو ناشر أو جمهور أوسع</visuallyHidden>"
+  },
+  "nowPublish": {
+    "message": "انشر مراجعتك على PREreview الآن"
+  },
+  "weWillAssignLicense": {
+    "message": "سنُسنِد إلى مراجعتك على PREreview معرّف DOI (معرّفًا دائمًا)، وسنجعلها متاحة للعامة بموجب ترخيص {licenseLink}."
+  },
+  "publishButton": {
+    "message": "نشر مراجعة PREreview"
+  },
+  "selectYesToRemove": {
+    "message": "اختر «نعم» إذا كنت تريد إزالة {authorName}"
+  },
+  "sureYouWantToRemove": {
+    "message": "هل أنت متأكد من رغبتك في إزالة {authorName}؟"
+  },
+  "yesRemove": {
+    "message": "نعم، أزل {authorName}"
+  },
+  "writeAPrereview": {
+    "message": "اكتب مراجعة على PREreview"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>من تأليف</visuallyHidden> {authors}"
+  },
+  "posted": {
+    "message": "نُشر"
+  },
+  "server": {
+    "message": "الخادم"
+  },
+  "itemId": {
+    "message": "معرّف العنصر"
+  },
+  "youCanWriteAPrereview": {
+    "message": "يمكنك كتابة مراجعة PREreview لـ {preprintTitle}. مراجعة PREreview هي مراجعة لمسودة بحثية أولية، ويمكن أن تتراوح بين بضع جمل وتقرير مطوّل، على غرار تقرير مراجعة الأقران الذي تنظمه المجلات العلمية."
+  },
+  "beforeStartHeading": {
+    "message": "قبل أن تبدأ"
+  },
+  "orcidLogIn": {
+    "message": "سنطلب منك تسجيل الدخول باستخدام معرّف ORCID الخاص بك. إذا لم يكن لديك معرّف، يمكنك إنشاء واحد."
+  },
+  "whatIsOrcidHeading": {
+    "message": "ما هو معرّف ORCID؟"
+  },
+  "whatIsOrcid": {
+    "message": "يُعدّ <link>معرّف ORCID</link> معرّفًا فريدًا يميّزك عن كل من يحمل اسمًا مطابقًا أو مشابهًا لاسمك."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "بما أنك بدأت بالفعل مراجعة PREreview لـ <cite>{preprintTitle}</cite>، فسننقلك إلى الخطوة التالية لتتمكن من المتابعة."
+  },
+  "selectYesIfYouReviewedWithSomeoneElse": {
+    "message": "اختر «نعم» إذا أجريت مراجعة للمسودة البحثية الأولية مع شخص آخر"
+  },
+  "confirmOtherAuthorsHaveReadAndApproved": {
+    "message": "أكّد أن المؤلفين الآخرين قد قرؤوا مراجعة PREreview ووافقوا عليها"
+  },
+  "didYouReviewWithAnyoneElse": {
+    "message": "هل أجريت مراجعة هذه المسودة البحثية الأولية مع شخص آخر؟"
+  },
+  "thisCanIncludePeopleWho": {
+    "message": "قد يشمل ذلك الأشخاص الذين ساهموا في النقاش أو شاركوا في كتابة المراجعة."
+  },
+  "noIReviewedAlone": {
+    "message": "لا، أجريت المراجعة بمفردي"
+  },
+  "yesButDoNotWantToBeListed": {
+    "message": "نعم، لكنهم لا يرغبون في إدراج أسمائهم كمؤلفين"
+  },
+  "yesAndWantToBeListed": {
+    "message": "نعم، ويرغب بعضهم أو جميعهم في إدراج أسمائهم كمؤلفين"
+  },
+  "theyHaveReadAndApproved": {
+    "message": "لقد قرؤوا مراجعة PREreview ووافقوا عليها"
+  },
+  "isClubReview": {
+    "message": "هل هذه مراجعة لنادٍ؟"
+  },
+  "asLeadCanAddToClub": {
+    "message": "{numberOfClubs, plural, one {بما أنك قائد نادٍ، يمكننا إضافة المراجعة إلى ناديك.} other {بما أنك قائد نادٍ، يمكننا إضافة المراجعة إلى أحد أنديتك.}}"
+  },
+  "isClubReviewError": {
+    "message": "اختر ناديًا للمراجعة"
+  },
+  "addToClub": {
+    "message": "إضافة إلى {clubName}"
+  },
+  "notClubReview": {
+    "message": "هذه ليست مراجعة لنادٍ"
+  },
+  "club": {
+    "message": "النادي"
+  },
+  "changeClub": {
+    "message": "تغيير <visuallyHidden>ناديك</visuallyHidden>"
+  },
+  "noClub": {
+    "message": "المراجعة ليست ضمن ناد"
+  },
+  "useOfAi": {
+    "message": "استخدام الذكاء الاصطناعي"
+  },
+  "useOfAiShort": {
+    "message": "استخدام الذكاء الاصطناعي"
+  },
+  "discloseAiIdeas": {
+    "message": "نطلب من جميع المراجعين الإفصاح عن استخدام الذكاء الاصطناعي الذي ساعدهم في توليد أفكار جديدة لمراجعتهم على PREreview.\nومن أمثلة أدوات الذكاء الاصطناعي التوليدي ChatGPT وGemini."
+  },
+  "aiEditing": {
+    "message": "لا تحتاج إلى الإفصاح عن أدوات الذكاء الاصطناعي التي استُخدمت حصريًا للتحرير اللغوي أو لتلبية احتياجات إمكانية الوصول، ما دامت الأفكار الواردة في مراجعتك من إنتاجك أنت."
+  },
+  "understandHowCreated": {
+    "message": "نطلب منك ذلك لمساعدة القرّاء على فهم كيفية إعداد المراجعة، وما إذا كانت تتضمن ملاحظات بشرية أو آلية أو مزيجًا من الاثنين. قد نزيل أي مراجعة تكون أفكارها مولّدة بالكامل بواسطة الذكاء الاصطناعي."
+  },
+  "didYouUseAi": {
+    "message": "هل استخدمت الذكاء الاصطناعي لتوليد أفكار لهذه المراجعة؟"
+  },
+  "didAuthorsUseAi": {
+    "message": "هل استخدمت أنت أو أيٌّ من المؤلفين الآخرين الذكاء الاصطناعي لتوليد أفكار لهذه المراجعة؟"
+  },
+  "selectYesIfUsedAi": {
+    "message": "اختر «نعم» إذا استخدمت الذكاء الاصطناعي لتوليد أفكار لهذه المراجعة"
+  },
+  "selectYesIfAuthorsUsedAi": {
+    "message": "اختر «نعم» إذا استخدمت أنت أو أيٌّ من المؤلفين الآخرين الذكاء الاصطناعي لتوليد أفكار لهذه المراجعة"
+  },
+  "aiIdeasStatement": {
+    "message": "يُقرّ المؤلف\\ه باستخدام الذكاء الاصطناعي التوليدي لتوليد أفكار جديدة لمراجعته."
+  },
+  "aiIdeasAuthorsStatement": {
+    "message": "يُقرّ المؤلفون بأنهم استخدموا الذكاء الاصطناعي التوليدي لتوليد أفكار جديدة لمراجعتهم."
+  },
+  "noAiIdeasStatement": {
+    "message": "يُقرّ المؤلف\\ه بعدم استخدام الذكاء الاصطناعي التوليدي لتوليد أفكار جديدة لمراجعته/مراجعتها."
+  },
+  "noAiIdeasAuthorsStatement": {
+    "message": "يُقرّ المؤلفون بعدم استخدام الذكاء الاصطناعي التوليدي لتوليد أفكار جديدة لمراجعتهم."
+  },
+  "changeUseOfAi": {
+    "message": "تغيير <visuallyHidden>استخدام الذكاء الاصطناعي</visuallyHidden>"
+  },
+  "whatNameToUse": {
+    "message": "ما الاسم الذي تود استخدامه؟"
+  },
+  "competingInterests": {
+    "message": "تضارب المصالح"
+  },
+  "competingInterestsNo": {
+    "message": "يُقرّ المؤلف بعدم وجود أي تضارب في المصالح لديه."
+  },
+  "competingInterestsAuthorsNo": {
+    "message": "يُقرّ المؤلفون بعدم وجود أي تضارب في المصالح لديهم."
+  },
+  "selectYesIfCompetingInterest": {
+    "message": "اختر «نعم» إذا كان لديك أي تضارب في المصالح"
+  },
+  "selectYesIfAuthorsCompetingInterest": {
+    "message": "اختر «نعم» إذا كان لديك أو لدى أيٍّ من المؤلفين الآخرين أي تضارب في المصالح"
+  },
+  "competingInterestDetails": {
+    "message": "أدخل تفاصيل تضارب المصالح لديك"
+  },
+  "authorsCompetingInterestDetails": {
+    "message": "أدخل تفاصيل تضارب المصالح لديكم"
+  },
+  "doYouHaveCompetingInterests": {
+    "message": "هل لديك أي تضارب في المصالح؟"
+  },
+  "doAuthorsHaveCompetingInterests": {
+    "message": "هل لديك أو لدى أيٍّ من المؤلفين الآخرين أي تضارب في المصالح؟"
+  },
+  "discloseCompetingInterests": {
+    "message": "نطلب من جميع المراجعين الإفصاح عن أي تضارب في المصالح قد يؤثر في مراجعتهم للمسودة البحثية الأولية."
+  },
+  "whatIsCompetingInterest": {
+    "message": "تضارب المصالح هو أي أمر قد يؤثر في موضوعية مراجعة الأقران على PREreview."
+  },
+  "competingInterestsMatter": {
+    "message": "تضارب المصالح مهم لأنه قد يؤدي إلى تحيّز، متصوَّر أو فعلي، في تقييم المسودة البحثية الأولية. ويُعدّ الإفصاح عنه أمرًا أساسيًا لضمان الشفافية والحفاظ على نزاهة عملية المراجعة."
+  },
+  "example": {
+    "message": "مثال"
+  },
+  "examples": {
+    "message": "أمثلة"
+  },
+  "conflictPersonalRelationship": {
+    "message": "لديك علاقة شخصية بالمؤلف."
+  },
+  "conflictRivalOfAuthor": {
+    "message": "أنت منافس أو خصم للمؤلف."
+  },
+  "conflictRecentlyWorkedTogether": {
+    "message": "لقد عملت مؤخرًا مع المؤلف."
+  },
+  "conflictCollaborateWithAuthor": {
+    "message": "انت تتعاون مع المؤلف."
+  },
+  "conflictPublishedTogether": {
+    "message": "لقد نشرت بحثًا مع المؤلف خلال السنوات الخمس الماضية."
+  },
+  "conflictHoldGrantTogether": {
+    "message": "لديك منحة بحثية مشتركة مع المؤلف."
+  },
+  "whatAreThey": {
+    "message": "ما هم؟"
+  },
+  "confirmCodeOfConduct": {
+    "message": "أكّد أنك تلتزم بمدونة قواعد السلوك"
+  },
+  "codeOfConduct": {
+    "message": "مدونة قواعد السلوك"
+  },
+  "expectYouToAbideByCodeOfConduct": {
+    "message": "بصفتك عضوًا في مجتمعنا، نتوقع منك الالتزام بـ <link>مدونة قواعد السلوك الخاصة بـ PREreview</link>."
+  },
+  "examplesOfExpectedBehavior": {
+    "message": "أمثلة على السلوكيات المتوقعة"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "استخدام لغة ترحيبية وشاملة."
+  },
+  "expectedBehaviorFeedback": {
+    "message": "تقديم ملاحظات بنّاءة، أي ملاحظات مفيدة لمن يتلقاها."
+  },
+  "expectedBehaviorRespect": {
+    "message": "احترام وجهات النظر والتجارب المختلفة."
+  },
+  "expectedBehaviorGracefulAcceptance": {
+    "message": "تقبّل النقد البنّاء برحابة صدر."
+  },
+  "expectedBehaviorBestOfCommunity": {
+    "message": "التركيز على ما هو الأفضل للمجتمع."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "إظهار التعاطف تجاه أعضاء المجتمع الآخرين."
+  },
+  "examplesOfUnacceptableBehavior": {
+    "message": "أمثلة على السلوكيات غير المقبولة"
+  },
+  "unacceptableBehaviorTrollingEtc": {
+    "message": "الاستفزاز المتعمّد أو التعليقات المهينة أو الانتقاصية، والهجمات الشخصية أو السياسية."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "تقديم ملاحظات غير بنّاءة أو تعيق عملية مراجعة الأقران على PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "المضايقة، سواء كانت علنية أو خاصة."
+  },
+  "unacceptableBehaviorPublishingConfidentialInformation": {
+    "message": "نشر المعلومات السرية للآخرين، مثل العنوان البريدي أو الإلكتروني، دون الحصول على إذن صريح."
+  },
+  "unacceptableBehaviorSexualizedLanguage": {
+    "message": "استخدام لغة أو صور ذات طابع جنسي، أو توجيه اهتمام أو إبداء مبادرات جنسية غير مرغوب فيها."
+  },
+  "unacceptableBehaviorReviewingOwnPreprint": {
+    "message": "مراجعة المسودة البحثية الأولية الخاصة بك."
+  },
+  "unacceptableBehaviorInappropriate": {
+    "message": "أي سلوك آخر يمكن اعتباره، بصورة معقولة، غير ملائم في بيئة مهنية."
+  },
+  "iAmFollowingCodeOfConduct": {
+    "message": "أنا ألتزم بمدونة قواعد السلوك"
+  },
+  "contactDetails": {
+    "message": "بيانات التواصل"
+  },
+  "enterEmailAddressError": {
+    "message": "أدخل عنوان بريدك الإلكتروني"
+  },
+  "enterEmailAddressFormatError": {
+    "message": "أدخل عنوان بريد إلكتروني بالصيغة الصحيحة، مثل {exampleEmailAddress}"
+  },
+  "confirmEmailAddress": {
+    "message": "نحن مستعدون لنشر مراجعتك على PREreview، لكننا بحاجة أولًا إلى تأكيد عنوان بريدك الإلكتروني."
+  },
+  "onlyUseContact": {
+    "message": "سنستخدمه فقط للتواصل معك بشأن حسابك ومراجعات PREreview الخاصة بك."
+  },
+  "whatIsYourEmail": {
+    "message": "ما عنوان بريدك الإلكتروني؟"
+  },
+  "verifyEmailAddress": {
+    "message": "أكّد عنوان بريدك الإلكتروني"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "يرجى فتح رسالة البريد الإلكتروني التي أرسلناها إلى {emailAddress} واتباع الرابط الموجود فيها. بعد ذلك، ستتمكن من نشر مراجعتك على PREreview."
+  },
+  "onceEmailAddressVerified": {
+    "message": "بعد التحقق من عنوان بريدك الإلكتروني، يمكنك إغلاق هذه الصفحة."
+  },
+  "resendEmailButton": {
+    "message": "إعادة إرسال البريد الإلكتروني"
+  },
+  "selectIntroductionExplains": {
+    "message": "حدد ما إذا كانت المقدمة توضّح هدف البحث المقدَّم في المسودة البحثية الأولية"
+  },
+  "clearlyExplainsTip": {
+    "message": "توضّح الهدف بوضوح."
+  },
+  "howIntroductionExplains": {
+    "message": "كيف توضّح المقدمة الهدف؟ (اختياري)"
+  },
+  "partly": {
+    "message": "جزئيًا"
+  },
+  "partlyTip": {
+    "message": "تذكر الهدف، لكنها لا توضّحه بالكامل."
+  },
+  "partlyHow": {
+    "message": "كيف توضّح المقدمة الهدف بشكل جزئي؟ (اختياري)"
+  },
+  "doesNotExplain": {
+    "message": "لا تذكر الهدف ولا توضّحه."
+  },
+  "doesNotExplainHow": {
+    "message": "كيف لا توضّح المقدمة الهدف؟ (اختياري)"
+  },
+  "selectMethodsWellSuited": {
+    "message": "حدّد ما إذا كانت المنهجيات المتّبعة ملائمةً لهذا البحث"
+  },
+  "selectClearDiscussion": {
+    "message": "حدّد مدى وضوح مناقشة المؤلفين لنتائجهم والخطوات التالية"
+  },
+  "methodsHighlyAppropriate": {
+    "message": "ملائمة بدرجة كبيرة"
+  },
+  "methodsHighlyAppropriateTip": {
+    "message": "يتّبعون أفضل الممارسات في جميع مراحل البحث. وقد نُفّذت المنهجيات بدقة، وتوفّر أساسًا متينًا للتوصل إلى استنتاجات صحيحة."
+  },
+  "methodsHighlyAppropriateHow": {
+    "message": "لماذا تُعدّ ملائمة بدرجة كبيرة؟ (اختياري)"
+  },
+  "methodsSomewhatAppropriate": {
+    "message": "ملائمة إلى حدٍّ ما"
+  },
+  "methodsSomewhatAppropriateTip": {
+    "message": "يتّبعون أفضل الممارسات في معظم مراحل البحث، ولكن ليس جميعها. وقد نُفّذت المنهجيات بصورة جيدة، وتوفّر أساسًا جيدًا للتوصل إلى استنتاجات صحيحة."
+  },
+  "methodsSomewhatAppropriateWhy": {
+    "message": "لماذا تُعدّ ملائمة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "methodsNeitherAppropriateNorInappropriate": {
+    "message": "لا ملائمة ولا غير ملائمة"
+  },
+  "methodsNeitherAppropriateNorInappropriateTip": {
+    "message": "لا يتّبعون أفضل الممارسات دائمًا، لكن المنهجيات توفّر أساسًا معقولًا للإجابة عن سؤال البحث."
+  },
+  "methodsNeitherAppropriateNorInappropriateWhy": {
+    "message": "لماذا لا تُعدّ ملائمة ولا غير ملائمة؟ (اختياري)"
+  },
+  "methodsSomewhatInappropriate": {
+    "message": "غير ملائمة إلى حدٍّ ما"
+  },
+  "methodsSomewhatInappropriateTip": {
+    "message": "تتضمن المنهجيات بعض أوجه القصور أو الانحرافات عن أفضل الممارسات، مما يحدّ من قيمة المعلومات والرؤى التي تقدمها."
+  },
+  "methodsSomewhatInappropriateWhy": {
+    "message": "لماذا تُعدّ غير ملائمة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "methodsHighlyInappropriate": {
+    "message": "غير ملائمة بدرجة كبيرة"
+  },
+  "methodsHighlyInappropriateTip": {
+    "message": "تشوبها عيوب جوهرية، أو تفتقر إلى الصلاحية، أو لا تتوافق مع أفضل الممارسات."
+  },
+  "methodsHighlyInappropriateWhy": {
+    "message": "لماذا تُعدّ غير ملائمة بدرجة كبيرة؟ (اختياري)"
+  },
+  "selectConclusionsSupported": {
+    "message": "حدّد ما إذا كانت الاستنتاجات مدعومة بالبيانات"
+  },
+  "conclusionsHighlySupported": {
+    "message": "مدعومة بدرجة كبيرة"
+  },
+  "conclusionsHighlySupportedTip": {
+    "message": "تتسم الاستنتاجات بالشمول والدقة باستمرار، وتقدّم تفسيرًا واقعيًا للبيانات دون مبالغة أو استخلاص استنتاجات لا تعكسها النتائج."
+  },
+  "conclusionsHighlySupportedWhy": {
+    "message": "لماذا تُعدّ الاستنتاجات مدعومة بدرجة كبيرة؟ (اختياري)"
+  },
+  "conclusionsSomewhatSupported": {
+    "message": "مدعومة إلى حدٍّ ما"
+  },
+  "conclusionsSomewhatSupportedTip": {
+    "message": "تتسم الاستنتاجات بالشمول والدقة في معظم الأحيان، ولكن ليس دائمًا. وتقدّم تفسيرًا معقولًا للبيانات دون مبالغة أو إضافة تفسيرات لا تعكسها النتائج."
+  },
+  "conclusionsSomewhatSupportedWhy": {
+    "message": "لماذا تُعدّ الاستنتاجات مدعومة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "conclusionsNeitherSupportedNorUnsupported": {
+    "message": "لا تُعدّ مدعومة ولا غير مدعومة"
+  },
+  "conclusionsNeitherSupportedNorUnsupportedTip": {
+    "message": "لم يتم التوصل إلى أي استنتاجات بشأن البيانات، أو أن الاستنتاجات المطروحة معقولة، لكنها غير مشروحة أو مبررة بشكل كافٍ من قِبل المؤلفين."
+  },
+  "conclusionsNeitherSupportedNorUnsupportedWhy": {
+    "message": "ما الذي يجعل الاستنتاجات لا تُعدّ مدعومة ولا غير مدعومة؟ (اختياري)"
+  },
+  "conclusionsSomewhatUnsupported": {
+    "message": "غير مدعومة إلى حدٍّ ما"
+  },
+  "conclusionsSomewhatUnsupportedTip": {
+    "message": "لا تتناول الاستنتاجات البيانات بشكل كامل، أو أنها تعمّم النتائج بصورة مفرطة ولا تدعمها البيانات بشكل كافٍ."
+  },
+  "conclusionsSomewhatUnsupportedWhy": {
+    "message": "لماذا تُعدّ الاستنتاجات غير مدعومة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "conclusionsHighlyUnsupported": {
+    "message": "غير مدعومة بدرجة كبيرة"
+  },
+  "conclusionsHighlyUnsupportedTip": {
+    "message": "لا تستند الاستنتاجات إلى البيانات، ولا تدعمها البيانات، أو تتعارض معها."
+  },
+  "conclusionsHighlyUnsupportedWhy": {
+    "message": "لماذا تُعدّ الاستنتاجات غير مدعومة بدرجة كبيرة؟ (اختياري)"
+  },
+  "veryClearly": {
+    "message": "بوضوح شديد"
+  },
+  "veryClearlyTip": {
+    "message": "تُظهر مناقشتهم لنتائجهم والخطوات المحتملة التالية، وشرحهم لها وتفسيرهم إياها، وضوحًا وعمقًا واستبصارًا."
+  },
+  "veryClearlyHow": {
+    "message": "ما الذي يجعلها واضحة جدًا؟ (اختياري)"
+  },
+  "somewhatClearly": {
+    "message": "بوضوح إلى حدٍّ ما"
+  },
+  "somewhatClearlyTip": {
+    "message": "يقدمون مناقشة واضحة ومتعمقة لنتائجهم والخطوات المحتملة التالية، ويشرحونها ويفسرونها بوضوح."
+  },
+  "somewhatClearlyHow": {
+    "message": "ما الذي يجعلها واضحة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "neitherClearlyNorUnclearly": {
+    "message": "لا بوضوح ولا بغموض"
+  },
+  "neitherClearlyNorUnclearlyTip": {
+    "message": "يذكرون نتائجهم أو الخطوات المحتملة التالية، لكنهم لا يتناولونها أو يشرحونها."
+  },
+  "neitherClearlyNorUnclearlyHow": {
+    "message": "ما الذي يجعلها لا واضحة ولا غير واضحة؟ (اختياري)"
+  },
+  "somewhatUnclearly": {
+    "message": "بغير وضوح إلى حدٍّ ما"
+  },
+  "somewhatUnclearlyTip": {
+    "message": "يقدّمون مناقشةً أو شرحًا أو تفسيرًا مُربكًا أو متناقضًا لنتائجهم والخطوات المحتملة التالية."
+  },
+  "somewhatUnclearlyHow": {
+    "message": "ما الذي يجعلها غير واضحة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "veryUnclearly": {
+    "message": "بوضوح غير كافٍ بدرجة كبيرة"
+  },
+  "veryUnclearlyTip": {
+    "message": "يقدّمون مناقشةً أو شرحًا أو تفسيرًا غير صحيح أو غير مستند إلى أدلة لنتائجهم والخطوات المحتملة التالية."
+  },
+  "veryUnclearlyHow": {
+    "message": "ما الذي يجعلها غير واضحة بدرجة كبيرة؟ (اختياري)"
+  },
+  "selectAdvanceKnowledge": {
+    "message": "حدّد هذا الخيار إذا كان من المرجّح أن تُسهم المسودة البحثية الأولية في تطوير المعرفة الأكاديمية"
+  },
+  "advanceKnowledgeHighlyLikely": {
+    "message": "مرجّح جدًا"
+  },
+  "advanceKnowledgeHighlyLikelyTip": {
+    "message": "تقدّم المسودة البحثية الأولية إسهامًا مهمًا يُسهم بدرجة كبيرة في تطوير فهم موضوع البحث أو تأكيده."
+  },
+  "advanceKnowledgeHighlyLikelyWhy": {
+    "message": "لماذا تُعدّ مرجّحة جدًا؟ (اختياري)"
+  },
+  "advanceKnowledgeSomewhatLikely": {
+    "message": "مرجّح إلى حدٍّ ما"
+  },
+  "advanceKnowledgeSomewhatLikelyTip": {
+    "message": "تسهم المسودة البحثية الأولية في عدد من التطورات أو التأكيدات الجديرة بالملاحظة."
+  },
+  "advanceKnowledgeSomewhatLikelyWhy": {
+    "message": "لماذا تُعدّ مرجّحة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "advanceKnowledgeModeratelyLikely": {
+    "message": "مرجّح بدرجة متوسطة"
+  },
+  "advanceKnowledgeModeratelyLikelyTip": {
+    "message": "تسهم المسودة البحثية الأولية في عدد محدود فقط من التطورات أو التأكيدات في إطار المعرفة القائمة."
+  },
+  "advanceKnowledgeModeratelyLikelyWhy": {
+    "message": "لماذا تُعدّ مرجّحة بدرجة متوسطة؟ (اختياري)"
+  },
+  "advanceKnowledgeNotLikely": {
+    "message": "غير مرجّح"
+  },
+  "advanceKnowledgeNotLikelyTip": {
+    "message": "لا تقدّم المسودة البحثية الأولية أي تطورات أو تأكيدات مهمة، رغم أن البحث والاستنتاجات قد تكون سليمة."
+  },
+  "advanceKnowledgeNotLikelyWhy": {
+    "message": "لماذا تُعدّ غير مرجّحة؟ (اختياري)"
+  },
+  "advanceKnowledgeNotAtAllLikely": {
+    "message": "غير مرجّح على الإطلاق"
+  },
+  "advanceKnowledgeNotAtAllLikelyTip": {
+    "message": "لا تقدّم المسودة البحثية الأولية أي تطورات أو تأكيدات مهمة بسبب أوجه القصور فيها."
+  },
+  "advanceKnowledgeNotAtAllLikelyWhy": {
+    "message": "لماذا تُعدّ غير مرجّحة على الإطلاق؟ (اختياري)"
+  },
+  "selectBenefitFromEditing": {
+    "message": "حدّد «نعم» إذا كانت ستستفيد من التحرير اللغوي"
+  },
+  "benefitFromEditingNoTip": {
+    "message": "قد تكون هناك مشكلات لغوية بسيطة، لكنها لا تؤثر في الوضوح أو الفهم."
+  },
+  "benefitFromEditingNoWhy": {
+    "message": "لماذا لن يفيد ذلك؟ (اختياري)"
+  },
+  "benefitFromEditingYesTip": {
+    "message": "قد تعيق الأخطاء النحوية أو الصياغات المربكة أو العبارات غير الواضحة فهم المحتوى."
+  },
+  "benefitFromEditingYesWhy": {
+    "message": "لماذا سيفيد ذلك؟ (اختياري)"
+  },
+  "selectWouldRecommend": {
+    "message": "حدّد «نعم» إذا كنت توصي بهذه المسودة البحثية الأولية للآخرين"
+  },
+  "wouldRecommendYes": {
+    "message": "نعم، فهي عالية الجودة"
+  },
+  "wouldRecommendYesHow": {
+    "message": "ما الذي يجعلها عالية الجودة؟ (اختياري)"
+  },
+  "wouldRecommendYesImproved": {
+    "message": "نعم، لكنها تحتاج إلى تحسين"
+  },
+  "wouldRecommendYesImprovedWhy": {
+    "message": "ما الذي يحتاج إلى تحسين؟ (اختياري)"
+  },
+  "wouldRecommendNo": {
+    "message": "لا، فهي منخفضة الجودة أو تعاني من عيوب جوهرية"
+  },
+  "wouldRecommendNoWhy": {
+    "message": "لماذا لا توصي بها؟ (اختياري)"
+  },
+  "selectReadyForAttention": {
+    "message": "حدّد «نعم» إذا كانت جاهزة لاهتمام محرر أو ناشر أو جمهور أوسع"
+  },
+  "readyForAttentionYes": {
+    "message": "نعم، كما هي"
+  },
+  "readyForAttentionYesWhy": {
+    "message": "لماذا هي جاهزة؟ (اختياري)"
+  },
+  "readyForAttentionMinorChanges": {
+    "message": "نعم، بعد إجراء تعديلات بسيطة"
+  },
+  "readyForAttentionMinorChangesWhy": {
+    "message": "ما الذي يحتاج إلى تعديل؟ (اختياري)"
+  },
+  "readyForAttentionNo": {
+    "message": "لا، تحتاج إلى مراجعة جوهرية"
+  },
+  "readyForAttentionNoWhy": {
+    "message": "ما الذي يحتاج إلى تغيير؟ (اختياري)"
+  },
+  "areTheDataPresentationsWellSuited": {
+    "message": "هل تُعدّ طرق عرض البيانات، بما في ذلك التصورات البيانية، ملائمةً لتمثيل البيانات؟"
+  },
+  "selectIfDataPresentationsWellSuited": {
+    "message": "حدّد ما إذا كانت طرق عرض البيانات ملائمةً لتمثيل البيانات"
+  },
+  "highlyAppropriateAndClear": {
+    "message": "ملائمة وواضحة بدرجة كبيرة"
+  },
+  "highlyAppropriateAndClearTip": {
+    "message": "تتبع أفضل ممارسات إمكانية الوصول بشكل شامل، وتعرض النتائج والأنماط الرئيسية في البيانات بفاعلية، مما يجعل فهم البيانات أو تفسيرها سهلًا للغاية."
+  },
+  "highlyAppropriateAndClearWhy": {
+    "message": "لماذا تُعدّ ملائمة وواضحة بدرجة كبيرة؟ (اختياري)"
+  },
+  "somewhatAppropriate": {
+    "message": "ملائمة وواضحة إلى حدٍّ ما"
+  },
+  "somewhatAppropriateTip": {
+    "message": "تتبع أفضل ممارسات إمكانية الوصول، وتعرض النتائج والأنماط الرئيسية في البيانات بوضوح، مما يجعل فهم البيانات أو تفسيرها بفاعلية أمرًا سهلًا."
+  },
+  "somewhatAppropriateWhy": {
+    "message": "لماذا تُعدّ ملائمة وواضحة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "neitherAppropriateOrClear": {
+    "message": "لا تُعدّ ملائمة وواضحة ولا غير ملائمة وغير واضحة"
+  },
+  "neitherAppropriateOrClearTip": {
+    "message": "تتبع بعض عناصر أفضل ممارسات إمكانية الوصول، وتعرض النتائج والأنماط، إلا أن طرق العرض المختارة ليست الأفضل أو الأوضح لاستخدامها مع هذا النوع من البيانات."
+  },
+  "neitherAppropriateOrClearWhy": {
+    "message": "لماذا لا تُعدّ ملائمة وواضحة ولا غير ملائمة وغير واضحة؟ (اختياري)"
+  },
+  "somewhatInappropriate": {
+    "message": "غير ملائمة أو غير واضحة إلى حدٍّ ما"
+  },
+  "somewhatInappropriateTip": {
+    "message": "لا تتبع أفضل ممارسات إمكانية الوصول، وتتضمن بعض أوجه عدم الدقة أو الغموض أو النقص البسيطة، مما يجعل فهم البيانات أو تفسيرها بفاعلية أمرًا صعبًا إلى حدٍّ ما."
+  },
+  "somewhatInappropriateWhy": {
+    "message": "لماذا تُعدّ غير ملائمة أو غير واضحة إلى حدٍّ ما؟ (اختياري)"
+  },
+  "highlyInappropriate": {
+    "message": "غير ملائمة أو غير واضحة بدرجة كبيرة"
+  },
+  "highlyInappropriateTip": {
+    "message": "تتضمن عوائق كبيرة أمام إمكانية الوصول، وتفتقر إلى التسميات المناسبة أو المقاييس الملائمة أو المعلومات السياقية ذات الصلة، مما يجعل فهم البيانات أو تفسيرها بفاعلية أمرًا صعبًا للغاية."
+  },
+  "highlyInappropriateWhy": {
+    "message": "لماذا تُعدّ غير ملائمة أو غير واضحة بدرجة كبيرة؟ (اختياري)"
+  },
+  "iDoNotKnow": {
+    "message": "لا أعرف"
+  }
+}

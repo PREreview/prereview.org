@@ -1,0 +1,41 @@
+{
+  "loading": {
+    "message": "جارٍ التحميل"
+  },
+  "bold": {
+    "message": "عريض"
+  },
+  "italic": {
+    "message": "مائل"
+  },
+  "subscript": {
+    "message": "نص منخفض"
+  },
+  "superscript": {
+    "message": "نص مرتفع"
+  },
+  "link": {
+    "message": "رابط"
+  },
+  "headingLevel1": {
+    "message": "عنوان من المستوى الأول"
+  },
+  "headingLevel2": {
+    "message": "عنوان من المستوى الثاني"
+  },
+  "headingLevel3": {
+    "message": "عنوان من المستوى الثالث"
+  },
+  "bulletedList": {
+    "message": "قائمة نقطية"
+  },
+  "numberedList": {
+    "message": "قائمة مرقمة"
+  },
+  "formatting": {
+    "message": "التنسيق"
+  },
+  "enterAUrl": {
+    "message": "أدخل عنوان URL"
+  }
+}
