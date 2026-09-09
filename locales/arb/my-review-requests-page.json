@@ -1,0 +1,17 @@
+{
+  "myReviewRequests": {
+    "message": "طلبات المراجعة الخاصة بي"
+  },
+  "onlyYouCanSee": {
+    "message": "أنت وحدك تستطيع رؤية هذه الصفحة."
+  },
+  "notPublished": {
+    "message": "لم تطلب إجراء مراجعة بعد."
+  },
+  "appearHere": {
+    "message": "عندما تطلب إجراء مراجعة، ستظهر هنا."
+  },
+  "requestAReview": {
+    "message": "طلب مراجعة"
+  }
+}

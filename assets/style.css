@@ -44,9 +44,18 @@
   padding: 0;
 }
 
-:where([lang]) {
-  &:where(:lang(en)) {
+[lang],
+[dir] {
+  :lang(en, es, pt) > & {
     quotes: '“' '”' '‘' '’';
+  }
+
+  :lang(fr) > & {
+    quotes: '«' '»';
+  }
+
+  :lang(arb) > & {
+    quotes: '”' '“' '’' '‘';
   }
 }
 
@@ -1166,12 +1175,7 @@ dfn {
   font-style: normal;
 }
 
-q {
-  quotes: inherit;
-}
-
 cite {
-  quotes: inherit;
   font-style: normal;
 
   :not(dd) > & {
@@ -2786,7 +2790,7 @@ skip-link {
 
       &:dir(rtl) {
         &::after {
-          transform: rotateY(180deg);
+          transform: scaleX(-1);
         }
       }
     }

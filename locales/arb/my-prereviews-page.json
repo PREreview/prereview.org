@@ -1,0 +1,32 @@
+{
+  "myPrereviews": {
+    "message": "مراجعات PREreview الخاصة بي"
+  },
+  "onlyYouCanSee": {
+    "message": "لا يمكنك سوى أنت رؤية هذه الصفحة. لديك صفحتان للملف الشخصي يمكن للجميع رؤيتهما:"
+  },
+  "viewPublicProfile": {
+    "message": "عرض الملف الشخصي العام"
+  },
+  "viewPseudonymProfile": {
+    "message": "عرض الملف الشخصي بالاسم المستعار"
+  },
+  "notPublished": {
+    "message": "لم تنشر مراجعة PREreview بعد."
+  },
+  "appearHere": {
+    "message": "عندما تنشر مراجعة، ستظهر هنا."
+  },
+  "reviewAPreprint": {
+    "message": "مراجعة مسودة بحثية أولية"
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToShow": {
+    "message": "يتعذّر علينا عرض مراجعات PREreview الخاصة بك في الوقت الحالي."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  }
+}

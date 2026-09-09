@@ -37,7 +37,14 @@ describe('parse', () => {
     },
     {
       fastCheck: {
-        examples: [[['en-US', 'en']], [['en-US-x-twain', 'en']], [['es-419', 'es']], [['zh-CN', 'zh_CN']]],
+        examples: [
+          [['arb', 'ar']],
+          [['EN', 'en']],
+          [['en-US', 'en']],
+          [['en-US-x-twain', 'en']],
+          [['es-419', 'es']],
+          [['zh-CN', 'zh_CN']],
+        ],
       },
     },
   )
@@ -52,7 +59,7 @@ describe('parse', () => {
     },
     {
       fastCheck: {
-        examples: [['EN'], ['lb'], ['sv-SE'], ['zh_SG']],
+        examples: [['lb'], ['sv-SE'], ['zh_SG']],
       },
     },
   )

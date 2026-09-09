@@ -38,6 +38,18 @@
   "clubsText": {
     "message": "Inicia o únete a uno de nuestros grupos de revisión de preprints; en estos, sus integrantes colaboran para ofrecer retroalimentación oportuna y constructiva."
   },
+  "clubsLink": {
+    "message": "Conoce nuestros numerosos clubes de PREreview"
+  },
+  "peerReviewWeek2026Title": {
+    "message": "Peer Review Week 2026"
+  },
+  "peerReviewWeek2026Text": {
+    "message": "PREreview celebra la Peer Review Week 2026 con un Review-a-thon global, en el que los clubes de PREreview revisarán preprints y conjuntos de datos de cualquier disciplina o idioma en equipo. El objetivo es destacar el poder transformador de la revisión por pares humana y colaborativa en la cultura de evaluación de la investigación."
+  },
+  "peerReviewWeek2026Link": {
+    "message": "Obtén más información sobre el Review-a-thon y los clubes participantes"
+  },
   "missionTitle": {
     "message": "Existe un camino mejor para investigadores/as de sectores desfavorecidos"
   },

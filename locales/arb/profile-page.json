@@ -1,0 +1,53 @@
+{
+  "anonymous": {
+    "message": "مجهول"
+  },
+  "prereviewsTitle": {
+    "message": "مراجعات PREreview"
+  },
+  "noResults": {
+    "message": "{name} لم ينشر مراجعة PREreview بعد."
+  },
+  "noResultsAnonymous": {
+    "message": "لم ينشر هذا الشخص مراجعة PREreview بعد."
+  },
+  "appearHere": {
+    "message": "عندما ينشر مراجعة، ستظهر هنا."
+  },
+  "slackName": {
+    "message": "اسم مجتمع Slack"
+  },
+  "careerStage": {
+    "message": "المرحلة المهنية"
+  },
+  "careerStageEarly": {
+    "message": "مبكرة"
+  },
+  "careerStageMid": {
+    "message": "متوسطة"
+  },
+  "careerStageLate": {
+    "message": "متقدمة"
+  },
+  "researchInterests": {
+    "message": "الاهتمامات البحثية"
+  },
+  "location": {
+    "message": "الموقع"
+  },
+  "languages": {
+    "message": "اللغات"
+  },
+  "clubs": {
+    "message": "النوادي"
+  },
+  "openForRequests": {
+    "message": "{name} سعيد بتلقي طلبات لإجراء مراجعة PREreview."
+  },
+  "openForRequestsAnonymous": {
+    "message": "هذا الشخص يرغب في تلقي طلبات لإجراء مراجعة PREreview."
+  },
+  "contactSlack": {
+    "message": "يمكن التواصل معه عبر <link> مجتمع Slack</link> الخاص بنا."
+  }
+}

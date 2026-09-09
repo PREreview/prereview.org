@@ -1,0 +1,242 @@
+{
+  "writeCommentTitle": {
+    "message": "كتابة تعليق"
+  },
+  "backToPrereview": {
+    "message": "العودة إلى مراجعة PREreview"
+  },
+  "youCanWrite": {
+    "message": "يمكنك كتابة تعليق على مراجعة PREreview هذه لـ {preprint}."
+  },
+  "beforeStartHeading": {
+    "message": "قبل أن تبدأ"
+  },
+  "orcidLogIn": {
+    "message": "سنطلب منك تسجيل الدخول باستخدام ORCID iD الخاص بك. وإذا لم يكن لديك ORCID iD، يمكنك إنشاء واحد."
+  },
+  "whatIsOrcidHeading": {
+    "message": "ما هو معرّف ORCID iD؟"
+  },
+  "whatIsOrcid": {
+    "message": "<link>ORCID iD</link> هو معرّف فريد يميّزك عن جميع الأشخاص الذين يحملون الاسم نفسه أو اسمًا مشابهًا."
+  },
+  "reloadPageButton": {
+    "message": "أعد تحميل الصفحة"
+  },
+  "carryOnMessage": {
+    "message": "بما أنك بدأت بالفعل كتابة تعليق على مراجعة PREreview هذه لـ{preprint}، سننقلك إلى الخطوة التالية لتتمكن من المتابعة."
+  },
+  "enterYourCommentTitle": {
+    "message": "اكتب تعليقك"
+  },
+  "errorEnterComment": {
+    "message": "أدخل تعليقك"
+  },
+  "whatNameTitle": {
+    "message": "ما الاسم الذي تود استخدامه؟"
+  },
+  "errorSelectName": {
+    "message": "اختر الاسم الذي تود استخدامه"
+  },
+  "whichNameTip": {
+    "message": "يمكنك الاختيار بين الاسم الموجود في سجل ORCID الخاص بك واسمك المستعار في PREreview."
+  },
+  "whatIsPseudonym": {
+    "message": "ما هو الاسم المستعار في PREreview؟"
+  },
+  "whatIsPseudonymDefinition": {
+    "message": "<term>الاسم المستعار في PREreview</term> هو اسم بديل يمكنك استخدامه بدلًا من اسمك الحقيقي. وهو اسم فريد يجمع بين لون وحيوان عشوائيين. اسمك المستعار هو «{pseudonym}»."
+  },
+  "whatIsPseudonymAccountability": {
+    "message": "باستخدام اسمك المستعار، يمكنك المساهمة في مراجعة المسودات البحثية الأولية بشكل مفتوح، دون الخوف من الانتقام أو إصدار الأحكام عليك، مما قد يحدث عند استخدام اسمك الحقيقي. ومع ذلك، فإن استخدام اسم مستعار يُبقي على قدر من المساءلة."
+  },
+  "linkToOrcidId": {
+    "message": "سنربط تعليقك بمعرّف ORCID الخاص بك."
+  },
+  "linkToPseudonym": {
+    "message": "سنربط تعليقك فقط بالتعليقات الأخرى التي تستخدم اسمك المستعار نفسه."
+  },
+  "competingInterestsTitle": {
+    "message": "هل لديك أي مصالح متضاربة؟"
+  },
+  "errorCompetingInterests": {
+    "message": "اختر «نعم» إذا كانت لديك أي مصالح متضاربة"
+  },
+  "errorCompetingInterestsDetails": {
+    "message": "أدخل تفاصيل المصالح المتضاربة"
+  },
+  "competingInterestsTip": {
+    "message": "المصلحة المتضاربة هي أي أمر يمكن أن يؤثر في موضوعية تعليقك على مراجعة PREreview."
+  },
+  "examplesCompetingInterests": {
+    "message": "أمثلة"
+  },
+  "competingInterestsRelationship": {
+    "message": "لديك علاقة شخصية بمؤلف المسودة البحثية الأولية."
+  },
+  "competingInterestsCompetitor": {
+    "message": "أنت منافس أو منافس تجاري لمؤلف المسودة البحثية الأولية."
+  },
+  "competingInterestsWorkedWith": {
+    "message": "سبق أن عملت مؤخرًا مع مؤلف المسودة البحثية الأولية."
+  },
+  "competingInterestsWorkPlace": {
+    "message": "تعمل في المكان نفسه الذي يعمل فيه مؤلف المسودة البحثية الأولية."
+  },
+  "competingInterestsCollaborate": {
+    "message": "تتعاون مع مؤلف المسودة البحثية الأولية."
+  },
+  "competingInterestsPublishedWith": {
+    "message": "نشرت بحثًا مع مؤلف المسودة البحثية الأولية خلال السنوات الخمس الماضية."
+  },
+  "competingInterestsGrantWith": {
+    "message": "لديك منحة بحثية مشتركة مع مؤلف المسودة البحثية الأولية أو تربطك به علاقات مالية أخرى."
+  },
+  "competingInterestsCommenter": {
+    "message": "تنطبق أي من هذه المعايير نفسها على علاقتك بمعلّق آخر سبق له نشر تعليق على هذه المسودة البحثية الأولية."
+  },
+  "competingInterestsNo": {
+    "message": "لا"
+  },
+  "competingInterestsYes": {
+    "message": "نعم"
+  },
+  "competingInterestsDetailsTitle": {
+    "message": "ما هم؟"
+  },
+  "codeOfConductTitle": {
+    "message": "مدونة قواعد السلوك"
+  },
+  "errorFollowingCodeOfConduct": {
+    "message": "أكّد التزامك باتباع مدونة قواعد السلوك"
+  },
+  "codeOfConductTip": {
+    "message": "بصفتك عضوًا في مجتمعنا، نتوقع منك الالتزام ب <link>مدونة قواعد السلوك الخاصة بـ PREreview</link>."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "أمثلة على السلوكيات المتوقعة"
+  },
+  "expectedBehaviorLanguage": {
+    "message": "استخدام لغة ترحيبية وشاملة."
+  },
+  "expectedBehaviorConstructive": {
+    "message": "تقديم ملاحظات بنّاءة ومفيدة لمتلقيها."
+  },
+  "expectedBehaviorRespectful": {
+    "message": "احترام اختلاف وجهات النظر والتجارب."
+  },
+  "expectedBehaviorGraceful": {
+    "message": "تقبّل النقد البنّاء برحابة صدر."
+  },
+  "expectedBehaviorCommunity": {
+    "message": "التركيز على ما هو أفضل للمجتمع."
+  },
+  "expectedBehaviorEmpathy": {
+    "message": "إظهار التعاطف تجاه أعضاء المجتمع الآخرين."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "أمثلة على السلوكيات غير المقبولة"
+  },
+  "unacceptableBehaviorAttacks": {
+    "message": "الاستفزاز المتعمد ، أو التعليقات المهينة أو الانتقاصية، أو الهجمات الشخصية أو السياسية."
+  },
+  "unacceptableBehaviorUnconstructive": {
+    "message": "تقديم ملاحظات غير بنّاءة أو تعيق سير العمل بشأن مراجعة PREreview."
+  },
+  "unacceptableBehaviorHarassment": {
+    "message": "التحرش العلني أو الخاص."
+  },
+  "unacceptableBehaviorConfidential": {
+    "message": "نشر معلومات سرية تخص الآخرين، مثل عناوينهم الفعلية أو الإلكترونية، دون إذن صريح منهم."
+  },
+  "unacceptableBehaviorSexual": {
+    "message": "استخدام لغة أو صور ذات طابع جنسي، أو إبداء اهتمام أو توجيه تلميحات أو مبادرات جنسية غير مرغوب فيها."
+  },
+  "unacceptableBehaviorOther": {
+    "message": "أي سلوك آخر يمكن اعتباره، بشكل معقول، غير لائق في بيئة مهنية."
+  },
+  "followingCodeOfConduct": {
+    "message": "انا أتبع مدونة السلوك"
+  },
+  "contactDetailsTitle": {
+    "message": "بيانات الاتصال"
+  },
+  "errorEnterEmailAddress": {
+    "message": "أدخل عنوان بريدك الإلكتروني"
+  },
+  "errorEnterValidEmailAddress": {
+    "message": "أدخل عنوان بريد إلكتروني بالتنسيق الصحيح، مثل {exampleEmailAddress}"
+  },
+  "needToConfirmEmailAddress": {
+    "message": "نحن مستعدون لنشر تعليقك، ولكن نحتاج أولًا إلى تأكيد عنوان بريدك الإلكتروني."
+  },
+  "emailAddressUse": {
+    "message": "سنستخدم عنوان بريدك الإلكتروني فقط للتواصل معك بشأن حسابك وما تنشره."
+  },
+  "whatIsYourEmailAddressTitle": {
+    "message": "ما عنوان بريدك الإلكتروني؟"
+  },
+  "verifyEmailAddressTitle": {
+    "message": "تحقّق من عنوان بريدك الإلكتروني"
+  },
+  "howToVerifyEmailAddress": {
+    "message": "يرجى فتح الرسالة الإلكترونية التي أرسلناها إلي {emailAddress} واتباع الرابط الموجود فيها. بعد ذلك، ستتمكن من نشر تعليقك."
+  },
+  "onceEmailAddressVerified": {
+    "message": "بمجرد التحقق من عنوان بريدك الإلكتروني، يمكنك إغلاق هذه الصفحة."
+  },
+  "checkTitle": {
+    "message": "راجع تعليقك"
+  },
+  "checkYourDetailsHeading": {
+    "message": "بياناتك"
+  },
+  "publishedNameHeading": {
+    "message": "الاسم المنشور"
+  },
+  "changeName": {
+    "message": "تغيير <visuallyHidden> الاسم</visuallyHidden>"
+  },
+  "competingInterestsHeading": {
+    "message": "المصالح المتضاربة"
+  },
+  "changeCompetingInterests": {
+    "message": "تغيير<visuallyHidden> المصالح المتضاربة</visuallyHidden>"
+  },
+  "noCompetingInterests": {
+    "message": "يُقرّ مؤلف هذا التعليق بعدم وجود أي مصالح متضاربة لديه."
+  },
+  "checkYourCommentHeading": {
+    "message": "تعليقك"
+  },
+  "changeComment": {
+    "message": "تغيير<visuallyHidden> التعليق</visuallyHidden>"
+  },
+  "nowPublishHeading": {
+    "message": "انشر تعليقك الآن"
+  },
+  "nowPublishMessage": {
+    "message": "سنمنح تعليقك معرّف DOI (معرّفًا دائمًا) ونجعله متاحًا للعامة بموجب <license>ترخيص CC BY 4.0</license>."
+  },
+  "publishButton": {
+    "message": "نشر التعليق"
+  },
+  "publishingTitle": {
+    "message": "نعمل على نشر تعليقك"
+  },
+  "publishingSeeShortlyMessage": {
+    "message": "ستتمكن من رؤية تعليقك قريبًا."
+  },
+  "publishedTitle": {
+    "message": "تم نشر التعليق"
+  },
+  "publishedYourDoi": {
+    "message": "معرّف DOI الخاص بك {doi}"
+  },
+  "publishedHappensNextHeading": {
+    "message": "ماذا يحدث بعد ذلك؟"
+  },
+  "publishedSeeShortlyMessage": {
+    "message": "ستتمكن من رؤية تعليقك قريبًا."
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "reviewTitle": {
+    "message": "مراجعة PREreview ل{preprint}"
+  },
+  "structuredReviewTitle": {
+    "message": "مراجعة PREreview مُهيكلة لـ{preprint}"
+  },
+  "requestedPrereview": {
+    "message": "مراجعة PREreview المطلوبة"
+  },
+  "liveReview": {
+    "message": "المراجعة المباشرة"
+  },
+  "otherReviewsLink": {
+    "message": "عرض المراجعات الأخرى"
+  },
+  "readPreprintLink": {
+    "message": "قراءة المسودة البحثية الأولية"
+  },
+  "reviewAuthors": {
+    "message": "<hide>من تأليف</hide> {authors}"
+  },
+  "clubReviewAuthors": {
+    "message": "<hide>من تأليف</hide> {authors} من {club}"
+  },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# مؤلف آخر} other {# مؤلفين آخرين}}"
+  },
+  "published": {
+    "message": "نُشرت"
+  },
+  "license": {
+    "message": "الترخيص"
+  },
+  "licenseCcZero10": {
+    "message": "CC0 1.0 العالمي"
+  },
+  "licenseCcBy40": {
+    "message": "النَسب 4.0 الدولي"
+  },
+  "addendumTitle": {
+    "message": "ملحق"
+  },
+  "commentsTitle": {
+    "message": "التعليقات"
+  },
+  "noComments": {
+    "message": "لم تُنشر أي تعليقات بعد."
+  },
+  "commentItemTitle": {
+    "message": "{authors, plural, one {تعليق بقلم {author}} other {تعليق بقلم {author} وآخرين.}}"
+  },
+  "commentItemAuthors": {
+    "message": "<hide>من تأليف</hide> {authors}"
+  },
+  "writeCommentButton": {
+    "message": "إضافة تعليق"
+  },
+  "prereviewRemoved": {
+    "message": "تمت إزالة مراجعة PREreview"
+  },
+  "weHaveRemoved": {
+    "message": "لقد أزلنا مراجعة PREreview هذة."
+  },
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "unableToShow": {
+    "message": "يتعذّر علينا عرض مراجعة PREreview في الوقت الحالي."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  }
+}

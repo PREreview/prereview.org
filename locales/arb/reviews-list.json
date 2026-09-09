@@ -1,0 +1,20 @@
+{
+  "reviewTitle": {
+    "message": "مراجعة PREreview لـ {preprint}"
+  },
+  "reviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} راجع {preprint}} other {{reviewers} راجعوا {preprint}}}"
+  },
+  "clubReviewText": {
+    "message": "{numberOfReviewers, plural, one {{reviewers} من {club} راجع {preprint}} other {{reviewers} من {club} راجعوا {preprint}}}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# مؤلف آخر} other {# مؤلفين آخرين}}"
+  },
+  "reviewPublished": {
+    "message": "نُشرت المراجعة"
+  },
+  "reviewServer": {
+    "message": "خادم المسودات البحثية الأولية"
+  }
+}

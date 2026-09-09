@@ -1,0 +1,14 @@
+{
+  "requestTitle": {
+    "message": "طلب مراجعة لـ {preprint}"
+  },
+  "requestText": {
+    "message": "تم طلب مراجعة لـ {preprint}"
+  },
+  "requestPublished": {
+    "message": "نُشر طلب المراجعة"
+  },
+  "requestServer": {
+    "message": "خادم المسودات البحثية الأولية"
+  }
+}

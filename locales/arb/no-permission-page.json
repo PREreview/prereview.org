@@ -1,0 +1,8 @@
+{
+  "noPermissionTitle": {
+    "message": "ليس لديك صلاحية لعرض هذه الصفحة"
+  },
+  "shouldHaveAccess": {
+    "message": "إذا كنت تعتقد أنه ينبغي أن تكون لديك صلاحية الوصول إليها، فيُرجى <contact> التواصل معنا </contact>."
+  }
+}

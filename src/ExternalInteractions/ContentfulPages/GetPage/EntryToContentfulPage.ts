@@ -30,7 +30,7 @@ export const EntryToContentfulPage = Schema.transformOrFail(
     decode: entry =>
       ParseResult.succeed(
         new ContentfulPage({
-          html: html`${Array.map(getValueForDefaultLocale(entry.fields.content).content, DocumentTypeToHtml)}`,
+          html: html`${Array.filterMap(getValueForDefaultLocale(entry.fields.content).content, DocumentTypeToHtml)}`,
           locale: DefaultLocale,
         }),
       ),
@@ -93,53 +93,72 @@ const DynamicEmbedEntryToHtml = Schema.transformOrFail(
 
 const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml)
 
-const DocumentTypeToHtml: (documentType: DocumentType) => Html = Match.typeTags<DocumentType, Html>()({
+const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = Match.typeTags<
+  DocumentType,
+  Option.Option<Html>
+>()({
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
 
-    return html`<img
-      src="${file.url.href}"
-      width="${file.details.image.width}"
-      height="${file.details.image.height}"
-      alt=""
-    />`
+    return Option.some(
+      html`<img
+        src="${file.url.href}"
+        width="${file.details.image.width}"
+        height="${file.details.image.height}"
+        alt=""
+      />`,
+    )
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
-    Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target),
-  Heading1: heading1 => html`<h1>${Array.map(heading1.content, DocumentTypeToHtml)}</h1>`,
-  Heading2: heading2 => html`<h2>${Array.map(heading2.content, DocumentTypeToHtml)}</h2> `,
-  Heading3: heading3 => html`<h3>${Array.map(heading3.content, DocumentTypeToHtml)}</h3>`,
+    Option.fromNullable(Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target)),
+  Heading1: heading1 => Option.some(html`<h1>${Array.filterMap(heading1.content, DocumentTypeToHtml)}</h1>`),
+  Heading2: heading2 => Option.some(html`<h2>${Array.filterMap(heading2.content, DocumentTypeToHtml)}</h2> `),
+  Heading3: heading3 => Option.some(html`<h3>${Array.filterMap(heading3.content, DocumentTypeToHtml)}</h3>`),
   Hyperlink: hyperlink =>
-    html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
-      >${Array.map(hyperlink.content, DocumentTypeToHtml)}</a
-    >`,
-  ListItem: listItem => html`<li>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</li>`,
-  Paragraph: paragraph => html`<p>${Array.map(paragraph.content, DocumentTypeToHtml)}</p>`,
+    Option.some(
+      html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
+        >${Array.filterMap(hyperlink.content, DocumentTypeToHtml)}</a
+      >`,
+    ),
+  ListItem: listItem => Option.some(html`<li>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</li>`),
+  Paragraph: paragraph =>
+    Array.match(Array.filterMap(paragraph.content, DocumentTypeToHtml), {
+      onEmpty: () => Option.none(),
+      onNonEmpty: content => Option.some(html`<p>${content}</p>`),
+    }),
   Table: table =>
-    html`<table>
-      ${Array.map(table.content, DocumentTypeToHtml)}
-    </table>`,
+    Option.some(
+      html`<table>
+        ${Array.filterMap(table.content, DocumentTypeToHtml)}
+      </table>`,
+    ),
   TableRow: tableRow =>
-    html`<tr>
-      ${Array.map(tableRow.content, DocumentTypeToHtml)}
-    </tr>`,
-  TableCell: tableCell => html`<td>${ContentToHtmlSkippingOverSingleParagraph(tableCell)}</td>`,
-  TableHeaderCell: tableHeaderCell => html`<th>${ContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</th>`,
-  Text: text => Array.reduce(text.marks, html`${text.value}`, MarkToHtml),
+    Option.some(
+      html`<tr>
+        ${Array.filterMap(tableRow.content, DocumentTypeToHtml)}
+      </tr>`,
+    ),
+  TableCell: tableCell => Option.some(html`<td>${ContentToHtmlSkippingOverSingleParagraph(tableCell)}</td>`),
+  TableHeaderCell: tableHeaderCell =>
+    Option.some(html`<th>${ContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</th>`),
+  Text: text =>
+    text.value === '' ? Option.none() : Option.some(Array.reduce(text.marks, html`${text.value}`, MarkToHtml)),
   UnorderedList: unorderedList =>
-    html`<ul>
-      ${Array.map(unorderedList.content, DocumentTypeToHtml)}
-    </ul>`,
+    Option.some(
+      html`<ul>
+        ${Array.filterMap(unorderedList.content, DocumentTypeToHtml)}
+      </ul>`,
+    ),
 })
 
 const ContentToHtmlSkippingOverSingleParagraph = (
   documentType: Extract<DocumentType, { content: unknown }>,
-): Array.NonEmptyReadonlyArray<Html> => {
+): ReadonlyArray<Html> => {
   if (documentType.content.length === 1 && documentType.content[0]._tag === 'Paragraph') {
-    return Array.map(documentType.content[0].content, DocumentTypeToHtml)
+    return Array.filterMap(documentType.content[0].content, DocumentTypeToHtml)
   }
 
-  return Array.map(documentType.content, DocumentTypeToHtml)
+  return Array.filterMap(documentType.content, DocumentTypeToHtml)
 }
 
 const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>

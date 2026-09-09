@@ -1,0 +1,20 @@
+{
+  "havingProblems": {
+    "message": "عذرًا، نواجه بعض المشكلات"
+  },
+  "cannotLogYouIn": {
+    "message": "عذرًا، يتعذّر علينا تسجيل دخولك"
+  },
+  "unableToLogYouIn": {
+    "message": "يتعذّر علينا تسجيل دخولك في الوقت الحالي."
+  },
+  "youDeniedAccess": {
+    "message": "لقد رفضت منح PREreview صلاحية الوصول إلى معرّف ORCID الخاص بك."
+  },
+  "tryAgainLater": {
+    "message": "يُرجى المحاولة مرة أخرى لاحقًا."
+  },
+  "tryAgain": {
+    "message": "يُرجى المحاولة مرة أخرى."
+  }
+}

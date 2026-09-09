@@ -1,0 +1,44 @@
+{
+  "title": {
+    "message": "أحدث طلبات المراجعة"
+  },
+  "titleWithDetails": {
+    "message": "أحدث طلبات المراجعة ({details})"
+  },
+  "pageNumber": {
+    "message": "صفحة {page, number}"
+  },
+  "skipResults": {
+    "message": "تخطَّ إلى النتائج"
+  },
+  "filterTitle": {
+    "message": "تصفية"
+  },
+  "filterLanguageLabel": {
+    "message": "اللغة"
+  },
+  "filterLanguageAny": {
+    "message": "أيّ لغة"
+  },
+  "filterFieldLabel": {
+    "message": "المجال"
+  },
+  "filterFieldAny": {
+    "message": "أيّ مجال"
+  },
+  "filterButton": {
+    "message": "تصفية النتائج"
+  },
+  "pagerNewer": {
+    "message": "الأحدث"
+  },
+  "pagerOlder": {
+    "message": "الأقدم"
+  },
+  "noResults": {
+    "message": "لم تُنشر أي طلبات مراجعة بعد."
+  },
+  "appearHere": {
+    "message": "عند نشرها، ستظهر هنا."
+  }
+}
