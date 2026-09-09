@@ -256,13 +256,14 @@ const BuildAssetsLocales = Effect.gen(function* () {
 
   yield* Effect.all(
     [
-      Effect.forEach(foo, BuildAssetsTarget, { concurrency: 'inherit' }),
-      Effect.forEach(assetsModules, module => BuildAssetsModule({ module, target: `${tempDir}/${module}/index.ts` }), {
-        concurrency: 'inherit',
-      }),
+      Effect.all(Array.map(foo, BuildAssetsTarget), { concurrency: 'inherit', mode: 'validate' }),
+      Effect.all(
+        Array.map(assetsModules, module => BuildAssetsModule({ module, target: `${tempDir}/${module}/index.ts` })),
+        { concurrency: 'inherit', mode: 'validate' },
+      ),
       BuildAssets(`${tempDir}/index.ts`),
     ],
-    { concurrency: 'inherit' },
+    { concurrency: 'inherit', mode: 'validate' },
   )
 
   yield* fileSystem.makeDirectory(targetDir, { recursive: true })
@@ -299,13 +300,14 @@ const BuildSrcLocales = Effect.gen(function* () {
 
   yield* Effect.all(
     [
-      Effect.forEach(foo, BuildSrcTarget, { concurrency: 'inherit' }),
-      Effect.forEach(modules, module => BuildSrcModule({ module, target: `${tempDir}/${module}/index.ts` }), {
-        concurrency: 'inherit',
-      }),
+      Effect.all(Array.map(foo, BuildSrcTarget), { concurrency: 'inherit', mode: 'validate' }),
+      Effect.all(
+        Array.map(modules, module => BuildSrcModule({ module, target: `${tempDir}/${module}/index.ts` })),
+        { concurrency: 'inherit', mode: 'validate' },
+      ),
       BuildSrc(`${tempDir}/index.ts`),
     ],
-    { concurrency: 'inherit' },
+    { concurrency: 'inherit', mode: 'validate' },
   )
 
   yield* fileSystem.makeDirectory(targetDir, { recursive: true })
@@ -325,7 +327,7 @@ const BuildSrcLocales = Effect.gen(function* () {
   yield* fileSystem.copy(tempDir, targetDir)
 }).pipe(Effect.scoped)
 
-const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency: 'inherit' }).pipe(
+const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency: 'inherit', mode: 'validate' }).pipe(
   Effect.andThen(Console.log('Done')),
   Effect.tapError(() => Console.error('Failed')),
 )
