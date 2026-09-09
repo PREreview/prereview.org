@@ -307,7 +307,6 @@ it.effect.each<{
         </p>
         <p><a href="https://bit.ly/PREreview-Slack">Sign up here</a> for your invitation to join us on Slack!</p>
         <a href="https://bit.ly/PREreview-Slack" class="button">Join our Slack</a>
-        <p></p>
       `,
       locale: DefaultLocale,
     }),
