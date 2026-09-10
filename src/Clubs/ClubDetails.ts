@@ -1208,6 +1208,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     },
     added: Temporal.PlainDate.from('2025-09-09'),
     leads: [OrcidId('0000-0002-5644-7632')],
+    contact: EmailAddress('lessafabrice21@gmail.com'),
   },
   {
     id: Uuid('b5f170f1-59e2-4f2b-8019-59aff327e9e0'),
