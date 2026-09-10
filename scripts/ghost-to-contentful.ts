@@ -399,6 +399,7 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
       case 'td':
       case 'col':
       case 'colgroup':
+        warn(`stripping ${getTag(node)}`)
         break
       default:
         blocks.push(...toBlocks([...el.childNodes], warn, imageLookup))
