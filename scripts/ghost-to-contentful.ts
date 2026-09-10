@@ -271,8 +271,6 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
     const el = node as HtmlElement
     const cls = getClass(node)
 
-    if (cls.includes('kg-embed-card')) continue
-
     switch (getTag(node)) {
       case 'p': {
         const inlines = el.childNodes.flatMap(child => toInlines(child, [], warn))
@@ -355,6 +353,10 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
         const imgs = el.querySelectorAll('img')
         if (imgs.length > 1) {
           warn(`Skipping gallery figure with ${imgs.length} images`)
+          break
+        }
+        if (imgs.length === 0) {
+          warn('Skipping figure without an image')
           break
         }
         for (const img of imgs) {
