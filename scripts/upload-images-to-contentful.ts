@@ -46,8 +46,26 @@ const ProcessedAsset = Schema.Struct({
   }),
 })
 
+// This image has no file extension in its URL but is known to be a JPG; every other
+// extension-less image is assumed to be a PNG.
+const JPG_WITHOUT_EXTENSION =
+  '59H7BKSZ7HlyxWInnpMY53MuphI65BzsO5qBRYVH0bHeCvPRogVNY8Ds8gJbrpBR1-dj1WiPVTmM_t-wm4GiOdCBZcD5hSCTSFLWVLIk9g4PHkPSVBeV6G_Sv7mfhknH9MO3FcRsQqGL7Snq2Pas06NVYBOGaJMs2DHZXq0Otwjnpe7nu7k06qYkvkBQHg'
+
+function baseFileNameFromUrl(url: string): string {
+  return url.split('/').pop()?.split('?')[0] ?? 'image'
+}
+
+function extensionFromFileName(fileName: string): string | undefined {
+  const parts = fileName.split('.')
+  return parts.length > 1 ? parts.pop()?.toLowerCase() : undefined
+}
+
 function contentTypeFromUrl(url: string): string {
-  const ext = url.split('/').pop()?.split('?')[0]?.split('.').pop()?.toLowerCase()
+  const fileName = baseFileNameFromUrl(url)
+  const ext = extensionFromFileName(fileName)
+  if (ext === undefined) {
+    return fileName === JPG_WITHOUT_EXTENSION ? 'image/jpeg' : 'image/png'
+  }
   switch (ext) {
     case 'png':
       return 'image/png'
@@ -63,7 +81,10 @@ function contentTypeFromUrl(url: string): string {
 }
 
 function fileNameFromUrl(url: string): string {
-  return url.split('/').pop()?.split('?')[0] ?? 'image.jpg'
+  const fileName = baseFileNameFromUrl(url)
+  if (extensionFromFileName(fileName) !== undefined) return fileName
+
+  return `${fileName}.${fileName === JPG_WITHOUT_EXTENSION ? 'jpg' : 'png'}`
 }
 
 function captionPlainText(captionHtml: string): string {
