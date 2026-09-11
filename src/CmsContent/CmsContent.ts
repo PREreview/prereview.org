@@ -35,10 +35,9 @@ export class CmsContent extends Context.Tag('CmsContent')<
             ? new UnableToQuery({ cause: 'not implemented' })
             : pipe(
                 Effect.gen(function* () {
-                  const locale = yield* Locale
                   const page = yield* getPageFromGhost(slug)
 
-                  return { ...page, title: getTitle(slug, locale) }
+                  return { ...page, title: getTitle(slug, page.locale) }
                 }),
                 Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
               ),
