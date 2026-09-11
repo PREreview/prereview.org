@@ -577,6 +577,34 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     joinLink: new URL('https://forms.gle/nc75moVyEVvJBRqNA'),
   },
   {
+    id: Uuid('d753b701-9f49-48e2-ac65-989e35ace4df'),
+    status: 'active',
+    name: {
+      language: 'es',
+      text: Name('Filología Abierta'),
+    },
+    slug: Slug('filologia-abierta'),
+    description: {
+      language: 'es',
+      text: html`
+        <p>
+          Filología Abierta nace de la iniciativa de dos colegas y filólogas costarricenses que, aunque hoy viven en
+          países distintos (una en Estados Unidos y otra en España), quieren seguir compartiendo su amor por el
+          conocimiento. Así surgió la idea de crear este club: un espacio para mantenerse conectadas y construir una
+          comunidad en torno a la filología y la revisión abierta.
+        </p>
+        <p>
+          Filología Abierta es un PREreview Club es un espacio cercano y acogedor para leer, dialogar y compartir
+          observaciones constructivas sobre trabajos académicos en desarrollo. Nuestro propósito es fortalecer la
+          presencia de las Humanidades y de la producción académica en español dentro de los espacios de revisión
+          abierta, así como promover prácticas de evaluación más colaborativas, transparentes y formativas.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-11'),
+    leads: [OrcidId('0000-0001-5326-2088'), OrcidId('0009-0001-3109-6645')],
+  },
+  {
     id: Uuid('ed357297-17f4-404e-b519-72c82a8a58df'),
     status: 'active',
     name: {
