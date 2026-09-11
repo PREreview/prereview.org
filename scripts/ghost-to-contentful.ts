@@ -82,6 +82,14 @@ interface ButtonRecord {
   entryId?: string
 }
 
+interface AuthorRecord {
+  slug: string
+  name: string
+  profileImageSrc: string | null
+  assetId?: string
+  entryId?: string
+}
+
 interface RichText {
   nodeType: 'document'
   data: Record<string, never>
@@ -366,10 +374,15 @@ function htmlToRichText(
   return { nodeType: 'document', data: {}, content: toBlocks(filtered, warn, imageLookup, buttonLookup) }
 }
 
+const GhostPostAuthor = Schema.Struct({
+  slug: Schema.NonEmptyTrimmedString,
+})
+
 const GhostPost = Schema.Struct({
   title: Schema.NonEmptyTrimmedString,
   slug: Schema.NonEmptyTrimmedString,
   html: Schema.String,
+  authors: Schema.Array(Schema.partial(GhostPostAuthor)),
 })
 
 const GhostPosts = Schema.Array(Schema.partial(GhostPost))
@@ -383,6 +396,7 @@ const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import', '
 const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'all-posts.json')
 const imagesFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-images.json')
 const buttonsFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-buttons.json')
+const authorsFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-authors.json')
 
 const ImageRecordsSchema = Schema.Array(
   Schema.Struct({
@@ -396,6 +410,16 @@ const ButtonRecordsSchema = Schema.Array(
   Schema.Struct({
     text: Schema.String,
     target: Schema.String,
+    entryId: Schema.optional(Schema.String),
+  }),
+)
+
+const AuthorRecordsSchema = Schema.Array(
+  Schema.Struct({
+    slug: Schema.String,
+    name: Schema.String,
+    profileImageSrc: Schema.NullOr(Schema.String),
+    assetId: Schema.optional(Schema.String),
     entryId: Schema.optional(Schema.String),
   }),
 )
@@ -427,11 +451,20 @@ void pipe(
       buttonLookup.set(buttonKey(record.text, record.target), record)
     }
 
+    const authorsRaw = yield* fs.readFileString(authorsFile)
+    const authorRecords = Array.from(yield* Schema.decodeUnknown(AuthorRecordsSchema)(JSON.parse(authorsRaw)))
+
+    const authorLookup = new Map<string, AuthorRecord>()
+    for (const record of authorRecords) {
+      authorLookup.set(record.slug, record)
+    }
+
     const raw = yield* fs.readFileString(inputFile)
     const posts = yield* Schema.decodeUnknown(GhostPosts)(JSON.parse(raw))
 
     const valid = posts.filter(
-      (p): p is typeof GhostPost.Type => p.title !== undefined && p.slug !== undefined && p.html !== undefined,
+      (p): p is typeof GhostPost.Type =>
+        p.title !== undefined && p.slug !== undefined && p.html !== undefined && p.authors !== undefined,
     )
 
     console.log(`Writing ${valid.length} entries to ${outputDir}`)
@@ -442,10 +475,24 @@ void pipe(
         Effect.gen(function* () {
           const skipped: Array<string> = []
           const imageLookup = imagesBySlug.get(post.slug) ?? new Map<string, ImageRecord>()
+
+          const authorLinks: Array<{ sys: { type: 'Link'; linkType: 'Entry'; id: string } }> = []
+          for (const author of post.authors) {
+            const record = author.slug !== undefined ? authorLookup.get(author.slug) : undefined
+            if (record?.entryId !== undefined) {
+              authorLinks.push({ sys: { type: 'Link', linkType: 'Entry', id: record.entryId } })
+            } else {
+              console.log(
+                `[warn] Author not found or not yet uploaded to Contentful (slug: "${author.slug}") — https://content.prereview.org/${post.slug}`,
+              )
+            }
+          }
+
           const entry = {
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
+              authors: { 'en-US': authorLinks },
               content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup, buttonLookup) },
             },
           }
