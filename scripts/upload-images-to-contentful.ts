@@ -1,19 +1,23 @@
 import { FileSystem, HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
 import { Effect, Layer, Logger, pipe, Schedule, Schema } from 'effect'
+import { parse as parseHtml } from 'node-html-parser'
 import path from 'path'
+import { type Inline, toInlines, type Warn } from './rich-text-inline.ts'
 
 const SPACE_ID = '66hjlpng9xzg'
 const ENVIRONMENT_ID = 'master'
 const BASE_URL = `https://api.contentful.com/spaces/${SPACE_ID}/environments/${ENVIRONMENT_ID}`
-const CAPTIONED_CONTENT_TYPE = 'captionedAsset'
+const MEDIA_CONTENT_TYPE = 'media'
+const MAX_TITLE_LENGTH = 256
 
 const imagesFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-images.json')
 
 interface ImageRecord {
   slug: string
   src: string
-  caption: string | null
+  captionHtml: string | null
+  alt: string | null
   assetId?: string
   entryId?: string
 }
@@ -22,7 +26,8 @@ const ImageRecords = Schema.Array(
   Schema.Struct({
     slug: Schema.String,
     src: Schema.String,
-    caption: Schema.NullOr(Schema.String),
+    captionHtml: Schema.NullOr(Schema.String),
+    alt: Schema.NullOr(Schema.String),
     assetId: Schema.optional(Schema.String),
     entryId: Schema.optional(Schema.String),
   }),
@@ -61,17 +66,26 @@ function fileNameFromUrl(url: string): string {
   return url.split('/').pop()?.split('?')[0] ?? 'image.jpg'
 }
 
-function toRichText(text: string) {
+function captionPlainText(captionHtml: string): string {
+  return parseHtml(captionHtml).text.trim()
+}
+
+function deriveTitle(record: ImageRecord): string {
+  const captionText = record.captionHtml !== null ? captionPlainText(record.captionHtml) : ''
+  const altText = record.alt?.trim() ?? ''
+  const base = captionText.length > 0 ? captionText : altText.length > 0 ? altText : fileNameFromUrl(record.src)
+  return base.slice(0, MAX_TITLE_LENGTH)
+}
+
+function captionToRichText(captionHtml: string, warn: Warn) {
+  const root = parseHtml(captionHtml)
+  const inlines: Array<Inline> = root.childNodes.flatMap(child => toInlines(child, [], warn))
+  if (!inlines.length) return null
+
   return {
     nodeType: 'document',
     data: {},
-    content: [
-      {
-        nodeType: 'paragraph',
-        data: {},
-        content: [{ nodeType: 'text', value: text, marks: [], data: {} }],
-      },
-    ],
+    content: [{ nodeType: 'paragraph', data: {}, content: inlines }],
   }
 }
 
@@ -156,23 +170,28 @@ void pipe(
 
     yield* fs.writeFileString(imagesFile, JSON.stringify(records, null, 2))
 
-    const toCaption = records.filter(r => r.caption !== null && r.assetId !== undefined && r.entryId === undefined)
-    yield* Effect.logInfo(`Creating ${toCaption.length} captionedAsset entries`)
+    const toMediaEntry = records.filter(r => r.assetId !== undefined && r.entryId === undefined)
+    yield* Effect.logInfo(`Creating ${toMediaEntry.length} media entries`)
 
     yield* Effect.forEach(
-      toCaption,
+      toMediaEntry,
       record =>
         Effect.gen(function* () {
+          const warn: Warn = msg => console.log(`[warn] ${msg} (${record.slug} ${record.src})`)
+          const caption = record.captionHtml !== null ? captionToRichText(record.captionHtml, warn) : null
+
           const createResp = yield* authedClient.execute(
             yield* HttpClientRequest.post(`${BASE_URL}/entries`).pipe(
               HttpClientRequest.setHeaders({
                 'Content-Type': 'application/vnd.contentful.management.v1+json',
-                'X-Contentful-Content-Type': CAPTIONED_CONTENT_TYPE,
+                'X-Contentful-Content-Type': MEDIA_CONTENT_TYPE,
               }),
               HttpClientRequest.bodyJson({
                 fields: {
-                  caption: { 'en-US': toRichText(record.caption ?? '') },
-                  image: { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id: record.assetId } } },
+                  title: { 'en-US': deriveTitle(record) },
+                  file: { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id: record.assetId } } },
+                  ...(caption !== null ? { caption: { 'en-US': caption } } : {}),
+                  ...(record.alt !== null ? { altText: { 'en-US': record.alt } } : {}),
                 },
               }),
             ),

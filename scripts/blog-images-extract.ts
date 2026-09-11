@@ -14,7 +14,8 @@ const GhostPosts = Schema.Array(Schema.partial(GhostPost))
 interface ImageRecord {
   slug: string
   src: string
-  caption: string | null
+  captionHtml: string | null
+  alt: string | null
 }
 
 const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'all-posts.json')
@@ -36,12 +37,15 @@ void pipe(
       for (const fig of root.querySelectorAll('figure')) {
         const imgs = fig.querySelectorAll('img')
         const captionEl = fig.querySelector('figcaption')
-        const caption = captionEl?.text.trim() ?? null
+        const captionText = captionEl?.innerHTML.trim() ?? ''
+        const captionHtml = captionText.length > 0 ? captionText : null
         for (const img of imgs) {
           const src = img.getAttribute('src') ?? ''
           if (src.length === 0) continue
           if (src.startsWith('data:')) continue
-          images.push({ slug: post.slug, src, caption })
+          const altText = img.getAttribute('alt')?.trim() ?? ''
+          const alt = altText.length > 0 ? altText : null
+          images.push({ slug: post.slug, src, captionHtml, alt })
         }
       }
     }

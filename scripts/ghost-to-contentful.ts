@@ -4,27 +4,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { Effect, pipe, Schema } from 'effect'
 import { type HTMLElement as HtmlElement, type Node as HtmlNode, NodeType, parse as parseHtml } from 'node-html-parser'
 import path from 'path'
-
-interface Mark {
-  type: 'bold' | 'italic'
-}
-
-type Warn = (msg: string) => void
-
-interface RichTextText {
-  nodeType: 'text'
-  value: string
-  marks: Array<Mark>
-  data: Record<string, never>
-}
-
-interface Hyperlink {
-  nodeType: 'hyperlink'
-  data: { uri: string }
-  content: Array<RichTextText>
-}
-
-type Inline = RichTextText | Hyperlink
+import { type Inline, makeText, toInlines, type Warn } from './rich-text-inline.ts'
 
 interface Paragraph {
   nodeType: 'paragraph'
@@ -80,12 +60,6 @@ interface OrderedList {
   content: Array<ListItem>
 }
 
-interface EmbeddedAssetBlock {
-  nodeType: 'embedded-asset-block'
-  data: { target: { sys: { id: string; type: 'Link'; linkType: 'Asset' } } }
-  content: []
-}
-
 interface EmbeddedEntryBlock {
   nodeType: 'embedded-entry-block'
   data: { target: { sys: { id: string; type: 'Link'; linkType: 'Entry' } } }
@@ -93,22 +67,11 @@ interface EmbeddedEntryBlock {
 }
 
 type Block =
-  | Paragraph
-  | Heading1
-  | Heading2
-  | Heading3
-  | Hr
-  | Blockquote
-  | UnorderedList
-  | OrderedList
-  | EmbeddedAssetBlock
-  | EmbeddedEntryBlock
+  Paragraph | Heading1 | Heading2 | Heading3 | Hr | Blockquote | UnorderedList | OrderedList | EmbeddedEntryBlock
 
 interface ImageRecord {
   slug: string
   src: string
-  caption: string | null
-  assetId?: string
   entryId?: string
 }
 
@@ -117,13 +80,6 @@ interface RichText {
   data: Record<string, never>
   content: Array<Block>
 }
-
-const makeText = (value: string, marks: Array<Mark> = []): RichTextText => ({
-  nodeType: 'text',
-  value,
-  marks,
-  data: {},
-})
 
 const makeParagraph = (inlines: Array<Inline>): Paragraph => ({
   nodeType: 'paragraph',
@@ -219,42 +175,6 @@ function filterBoilerplate(nodes: Array<HtmlNode>, skipped: Array<string>): Arra
   }
 
   return result
-}
-
-function toInlines(node: HtmlNode, marks: Array<Mark> = [], warn: Warn): Array<Inline> {
-  if (node.nodeType === NodeType.TEXT_NODE) {
-    const value = node.text
-    return value ? [makeText(value, marks)] : []
-  }
-  if (node.nodeType !== NodeType.ELEMENT_NODE) return []
-
-  const el = node as HtmlElement
-  switch (getTag(node)) {
-    case 'strong':
-    case 'b':
-      return el.childNodes.flatMap(child => toInlines(child, [...marks, { type: 'bold' }], warn))
-    case 'em':
-    case 'i':
-      return el.childNodes.flatMap(child => toInlines(child, [...marks, { type: 'italic' }], warn))
-    case 'a': {
-      const href = el.getAttribute('href') ?? ''
-      const inlines = el.childNodes.flatMap(child => toInlines(child, marks, warn))
-      const textNodes = inlines.filter((c): c is RichTextText => c.nodeType === 'text')
-      if (!href) {
-        warn(`Skipping <a> with no href (text: "${textNodes.map(n => n.value).join('')}")`)
-        return []
-      }
-      if (!textNodes.length) {
-        warn(`Skipping <a href="${href}"> with no text content`)
-        return []
-      }
-      return [{ nodeType: 'hyperlink', data: { uri: href }, content: textNodes }]
-    }
-    case 'br':
-      return []
-    default:
-      return el.childNodes.flatMap(child => toInlines(child, marks, warn))
-  }
 }
 
 function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<string, ImageRecord>): Array<Block> {
@@ -380,14 +300,8 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
               data: { target: { sys: { id: record.entryId, type: 'Link', linkType: 'Entry' } } },
               content: [],
             })
-          } else if (record.assetId !== undefined) {
-            blocks.push({
-              nodeType: 'embedded-asset-block',
-              data: { target: { sys: { id: record.assetId, type: 'Link', linkType: 'Asset' } } },
-              content: [],
-            })
           } else {
-            warn(`Image found but not yet uploaded to Contentful: ${src}`)
+            warn(`Image found but not yet uploaded to Contentful as a media entry: ${src}`)
           }
         }
         break
@@ -444,8 +358,6 @@ const ImageRecordsSchema = Schema.Array(
   Schema.Struct({
     slug: Schema.String,
     src: Schema.String,
-    caption: Schema.NullOr(Schema.String),
-    assetId: Schema.optional(Schema.String),
     entryId: Schema.optional(Schema.String),
   }),
 )
