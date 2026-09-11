@@ -1575,6 +1575,7 @@ export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service
 
 export const cmsPage = (): fc.Arbitrary<Page> =>
   fc.record({
+    title: html(),
     html: html(),
     locale: supportedLocale(),
   })
