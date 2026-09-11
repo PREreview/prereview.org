@@ -353,6 +353,28 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     joinLink: new URL('https://tally.so/r/wdPM9d'),
   },
   {
+    id: Uuid('8175b36e-9f81-4306-acd1-c75cb2eb4a41'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('BISE Review Club'),
+    },
+    slug: Slug('bise'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          We are the BISE lab (Laboratorio de Biología Integral de Sistemas Evolutivos) at the Universidad de Buenos
+          Aires, Argentina
+        </p>
+
+        <p>The lab members meet to review papers, from PIs to undergrad students</p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-11'),
+    leads: [OrcidId('0000-0001-7820-3471')],
+  },
+  {
     id: Uuid('e977f760-48ba-4541-bb9f-fdcaef4bd05d'),
     status: 'active',
     name: {
