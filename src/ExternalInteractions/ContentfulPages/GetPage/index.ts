@@ -1,5 +1,6 @@
 import { Array, Effect, pipe, Schema } from 'effect'
 import type { ClubName } from '../../../Clubs/index.ts'
+import type { Locale } from '../../../Context.ts'
 import { Contentful, ContentfulIsUnavailable, UsePreviewApi } from '../../../ExternalApis/Contentful/index.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
@@ -10,7 +11,7 @@ import { EntryToContentfulPage } from './EntryToContentfulPage.ts'
 
 export const GetPage = (
   clubs: Array.NonEmptyReadonlyArray<ClubName & { readonly status: 'active' | 'inactive' }>,
-): ((slug: Slug, preview?: boolean) => Effect.Effect<ContentfulPage, UnableToQuery, Contentful>) =>
+): ((slug: Slug, preview?: boolean) => Effect.Effect<ContentfulPage, UnableToQuery, Contentful | Locale>) =>
   Effect.fn('ContentfulPages.getPage')(
     function* (slug, preview = false) {
       yield* Effect.annotateCurrentSpan({ slug })

@@ -3,7 +3,8 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '@effect/vitest'
 import { assertEquals } from '@effect/vitest/utils'
 import resolveResponse from 'contentful-resolve-response'
-import { Array, Effect, pipe, Schema, Struct } from 'effect'
+import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
+import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetPage/EntryToContentfulPage.ts'
 import { ContentfulPage } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
@@ -327,7 +328,7 @@ it.effect.each<{
     )
 
     assertEquals(actual, expected)
-  }).pipe(Effect.provide(NodeFileSystem.layer)),
+  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
 )
 
 it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
@@ -345,7 +346,7 @@ it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
     actual.forEach(result => {
       expect(result).toMatchObject({ _tag: 'Left' })
     })
-  }).pipe(Effect.provide(NodeFileSystem.layer)),
+  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
 )
 
 const ResolveEntries = (response: string) => {

@@ -1,7 +1,8 @@
-import { Array, Match, Option, ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import { Array, Effect, Match, Option, ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type DocumentType, Entry, type Mark } from '../../../ExternalApis/Contentful/index.ts'
 import { Html, html } from '../../../html.ts'
-import { DefaultLocale } from '../../../locales/index.ts'
+import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { ContentfulPage } from '../Types.ts'
 
 const ContentfulPageEntry = Schema.Struct({
@@ -27,14 +28,25 @@ export const EntryToContentfulPage = Schema.transformOrFail(
   Schema.typeSchema(ContentfulPage),
   {
     strict: true,
-    decode: entry =>
-      ParseResult.succeed(
-        new ContentfulPage({
-          title: html`${getValueForDefaultLocale(entry.fields.title)}`,
-          html: html`${Array.filterMap(getValueForDefaultLocale(entry.fields.content).content, DocumentTypeToHtml)}`,
-          locale: DefaultLocale,
+    decode: Effect.fnUntraced(function* (entry) {
+      const locale = yield* Locale
+
+      return new ContentfulPage({
+        title: Option.match(getValueForLocale(entry.fields.title, locale), {
+          onSome: title => html`${title}`,
+          onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
         }),
-      ),
+        html: Option.match(getValueForLocale(entry.fields.content, locale), {
+          onSome: content => html`${Array.filterMap(content.content, DocumentTypeToHtml)}`,
+          onNone: () =>
+            html`${Array.filterMap(getValueForDefaultLocale(entry.fields.content).content, DocumentTypeToHtml)}`,
+        }),
+        locale: Option.match(getValueForLocale(entry.fields.title, locale), {
+          onSome: () => locale,
+          onNone: () => DefaultLocale,
+        }),
+      })
+    }),
     encode: (page, _, ast) =>
       ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding pages back to an entry is forbidden.')),
   },
@@ -167,6 +179,9 @@ const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>
     Bold: () => html`<b>${text}</b>`,
     Italic: () => html`<i>${text}</i>`,
   })
+
+const getValueForLocale = <T>(values: Record<string, T | undefined>, locale: SupportedLocale): Option.Option<T> =>
+  pipe(Record.get(values, locale), Option.filter(Predicate.isNotUndefined))
 
 const getValueForDefaultLocale = <T>(values: Record<string, T | undefined>): T =>
   pipe(
