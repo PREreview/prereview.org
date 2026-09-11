@@ -383,6 +383,8 @@ const GhostPost = Schema.Struct({
   slug: Schema.NonEmptyTrimmedString,
   html: Schema.String,
   authors: Schema.Array(Schema.partial(GhostPostAuthor)),
+  published_at: Schema.NonEmptyTrimmedString,
+  updated_at: Schema.NonEmptyTrimmedString,
 })
 
 const GhostPosts = Schema.Array(Schema.partial(GhostPost))
@@ -464,7 +466,12 @@ void pipe(
 
     const valid = posts.filter(
       (p): p is typeof GhostPost.Type =>
-        p.title !== undefined && p.slug !== undefined && p.html !== undefined && p.authors !== undefined,
+        p.title !== undefined &&
+        p.slug !== undefined &&
+        p.html !== undefined &&
+        p.authors !== undefined &&
+        p.published_at !== undefined &&
+        p.updated_at !== undefined,
     )
 
     console.log(`Writing ${valid.length} entries to ${outputDir}`)
@@ -494,6 +501,8 @@ void pipe(
               slug: { 'en-US': post.slug },
               authors: { 'en-US': authorLinks },
               content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup, buttonLookup) },
+              firstPublishedAtOverride: { 'en-US': post.published_at },
+              publishedAtOverride: { 'en-US': post.updated_at },
             },
           }
           yield* fs.writeFileString(path.join(outputDir, `${post.slug}.json`), JSON.stringify(entry, null, 2))
