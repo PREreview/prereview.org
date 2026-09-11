@@ -98,9 +98,7 @@ void pipe(
 
           if (createResp.status >= 400) {
             const text = yield* createResp.text
-            return yield* Effect.logError(
-              `Asset create failed for ${record.slug} ${src}: ${createResp.status} ${text}`,
-            )
+            return yield* Effect.logError(`Asset create failed for ${record.slug} ${src}: ${createResp.status} ${text}`)
           }
 
           const created = yield* createResp.json.pipe(Effect.flatMap(Schema.decodeUnknown(SysResponse)))
