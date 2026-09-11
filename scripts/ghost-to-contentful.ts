@@ -4,6 +4,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { Effect, pipe, Schema } from 'effect'
 import { type HTMLElement as HtmlElement, type Node as HtmlNode, NodeType, parse as parseHtml } from 'node-html-parser'
 import path from 'path'
+import { buttonKey, normalizeButtonUrl } from './cta-button.ts'
 import { type Inline, makeText, toInlines, type Warn } from './rich-text-inline.ts'
 
 interface Paragraph {
@@ -72,6 +73,12 @@ type Block =
 interface ImageRecord {
   slug: string
   src: string
+  entryId?: string
+}
+
+interface ButtonRecord {
+  text: string
+  target: string
   entryId?: string
 }
 
@@ -177,7 +184,12 @@ function filterBoilerplate(nodes: Array<HtmlNode>, skipped: Array<string>): Arra
   return result
 }
 
-function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<string, ImageRecord>): Array<Block> {
+function toBlocks(
+  nodes: Array<HtmlNode>,
+  warn: Warn,
+  imageLookup: ReadonlyMap<string, ImageRecord>,
+  buttonLookup: ReadonlyMap<string, ButtonRecord>,
+): Array<Block> {
   const blocks: Array<Block> = []
 
   for (const node of nodes) {
@@ -252,9 +264,25 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
       case 'div': {
         if (cls.includes('kg-button-card')) {
           const link = el.querySelector('a')
-          if (link) {
-            const text = link.text.trim()
-            if (text) blocks.push(makeParagraph([makeText(text)]))
+          const text = link?.text.trim() ?? ''
+          if (!link || !text) break
+
+          const href = link.getAttribute('href') ?? ''
+          const target = normalizeButtonUrl(href)
+          if (target !== null && target !== href) {
+            warn(`Normalized CTA button url "${href}" -> "${target}" (text: "${text}")`)
+          }
+          const record = target !== null ? buttonLookup.get(buttonKey(text, target)) : undefined
+
+          if (record?.entryId !== undefined) {
+            blocks.push({
+              nodeType: 'embedded-entry-block',
+              data: { target: { sys: { id: record.entryId, type: 'Link', linkType: 'Entry' } } },
+              content: [],
+            })
+          } else {
+            warn(`CTA button not found or not yet uploaded to Contentful (text: "${text}", href: "${href}")`)
+            blocks.push(makeParagraph([makeText(text)]))
           }
           break
         }
@@ -266,7 +294,7 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
           }
           break
         }
-        blocks.push(...toBlocks([...el.childNodes], warn, imageLookup))
+        blocks.push(...toBlocks([...el.childNodes], warn, imageLookup, buttonLookup))
         break
       }
       case 'figure': {
@@ -318,7 +346,7 @@ function toBlocks(nodes: Array<HtmlNode>, warn: Warn, imageLookup: ReadonlyMap<s
         warn(`stripping ${getTag(node)}`)
         break
       default:
-        blocks.push(...toBlocks([...el.childNodes], warn, imageLookup))
+        blocks.push(...toBlocks([...el.childNodes], warn, imageLookup, buttonLookup))
     }
   }
 
@@ -330,11 +358,12 @@ function htmlToRichText(
   skipped: Array<string>,
   slug: string,
   imageLookup: ReadonlyMap<string, ImageRecord>,
+  buttonLookup: ReadonlyMap<string, ButtonRecord>,
 ): RichText {
   const warn = (msg: string) => console.log(`[warn] ${msg} — https://content.prereview.org/${slug}`)
   const root = parseHtml(html)
   const filtered = filterBoilerplate([...root.childNodes], skipped)
-  return { nodeType: 'document', data: {}, content: toBlocks(filtered, warn, imageLookup) }
+  return { nodeType: 'document', data: {}, content: toBlocks(filtered, warn, imageLookup, buttonLookup) }
 }
 
 const GhostPost = Schema.Struct({
@@ -353,11 +382,20 @@ interface SkipReport {
 const outputDir = path.resolve(import.meta.dirname, '..', 'contentful-import', 'entries')
 const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'all-posts.json')
 const imagesFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-images.json')
+const buttonsFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-buttons.json')
 
 const ImageRecordsSchema = Schema.Array(
   Schema.Struct({
     slug: Schema.String,
     src: Schema.String,
+    entryId: Schema.optional(Schema.String),
+  }),
+)
+
+const ButtonRecordsSchema = Schema.Array(
+  Schema.Struct({
+    text: Schema.String,
+    target: Schema.String,
     entryId: Schema.optional(Schema.String),
   }),
 )
@@ -381,6 +419,14 @@ void pipe(
       bySlug.set(record.src, record)
     }
 
+    const buttonsRaw = yield* fs.readFileString(buttonsFile)
+    const buttonRecords = Array.from(yield* Schema.decodeUnknown(ButtonRecordsSchema)(JSON.parse(buttonsRaw)))
+
+    const buttonLookup = new Map<string, ButtonRecord>()
+    for (const record of buttonRecords) {
+      buttonLookup.set(buttonKey(record.text, record.target), record)
+    }
+
     const raw = yield* fs.readFileString(inputFile)
     const posts = yield* Schema.decodeUnknown(GhostPosts)(JSON.parse(raw))
 
@@ -400,7 +446,7 @@ void pipe(
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
-              content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup) },
+              content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup, buttonLookup) },
             },
           }
           yield* fs.writeFileString(path.join(outputDir, `${post.slug}.json`), JSON.stringify(entry, null, 2))
