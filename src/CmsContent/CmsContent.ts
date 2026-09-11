@@ -1,5 +1,5 @@
 import { Context, Effect, Layer, Option, pipe, Record } from 'effect'
-import { Locale } from '../Context.ts'
+import type { Locale } from '../Context.ts'
 import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import { GhostPage } from '../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
