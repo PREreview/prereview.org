@@ -19,6 +19,7 @@ import {
   EdarxivPreprintId,
   EngrxivPreprintId,
   JmirPreprintId,
+  LifecycleJournalPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   NeurolibrePreprintId,
@@ -946,6 +947,31 @@ it.effect.each([
         ),
       },
       url: new URL('https://preprints.jmir.org/preprint/96189'),
+    }),
+  },
+  {
+    response: 'lifecycle-journal.json',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          "<p>This preregistered study replicates and expands the seminal work of Amiel and Cowell (1992) on public understanding of fundamental income inequality axioms. The original study, conducted with university students, revealed surprisingly limited support for key principles widely accepted in inequality research—most notably the transfer principle, which states that transferring income from a richer to a poorer person (without reversing their rank order) reduces inequality. Only 62% of students endorsed this principle when framed verbally and 35% when framed numerically, despite its central role in inequality measurement. The current study evaluates whether these findings replicate in a sample (~3,300 adults) representative of the adult population with respect to gender, age, and education, and examines the broader behavioral and attitudinal implications of accepting the transfer principle. The study tests four hypotheses. First, we assess whether support for the transfer principle remains highly contentious (H1). Second, we evaluate whether, consistent with prior evidence, it is the least supported among core axioms—scale invariance, translation invariance, replication invariance, and decomposability—when presented numerically (H2). Third, we examine whether endorsing the transfer principle is associated with stronger preferences for redistribution by public and private actors (H3). Fourth, we test whether endorsement predicts higher inequality aversion, measured through participants' willingness to accept efficiency losses in redistribution and, in an incentivized condition, their decision to donate part of their bonus to an inequality-reducing organization (H4). The study includes two experimental treatments aimed at enhancing participants' comprehension and effort: a visual cues condition that presents proportional depictions of income distributions, and an incentivized condition that offers bonuses for providing non-illogical answers. Furthermore, the study explores how support for the axioms relates to contemporary measures of inequality perception and evaluation.</p>",
+        ),
+      },
+      authors: [
+        { name: Name('Cristóbal Moya'), orcid: OrcidId('0000-0002-7176-4775') },
+        { name: Name('Carsten Schröder'), orcid: OrcidId('0000-0002-6406-595X') },
+        { name: Name('Philipp Lersch'), orcid: OrcidId('0000-0003-3863-8301') },
+      ],
+      id: new LifecycleJournalPreprintId({ value: Doi('10.71240/lcyc.724372') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 12, day: 17 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Public Understanding of Inequality: Support for Inequality Expert Principles, Redistribution Preferences and Inequality Aversion',
+        ),
+      },
+      url: new URL('https://lifecycle-flax.fly.dev/journal/articles//69/index.html'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

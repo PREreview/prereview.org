@@ -201,6 +201,7 @@ const detectLanguageForServer = ({
     EdarxivPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     EngrxivPreprintId: () => Effect.succeed('en' as const),
     JmirPreprintId: () => Effect.succeed('en' as const),
+    LifecycleJournalPreprintId: () => Effect.succeed('en' as const),
     MedrxivPreprintId: () => Effect.succeed('en' as const),
     MetaarxivPreprintId: () => Effect.succeed('en' as const),
     NeurolibrePreprintId: () => Effect.succeed('en' as const),

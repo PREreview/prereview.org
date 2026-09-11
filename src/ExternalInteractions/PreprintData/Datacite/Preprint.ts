@@ -13,6 +13,7 @@ import {
   OsfPreprintId,
   ZenodoPreprintId,
 } from '../../../Preprints/index.ts'
+import type { Doi } from '../../../types/Doi.ts'
 import { Iso639, OrcidId } from '../../../types/index.ts'
 import { Name } from '../../../types/Name.ts'
 import * as LanguageDetection from '../../LanguageDetection/index.ts'
@@ -64,7 +65,10 @@ const determineDatacitePreprintId = (
 
     if (indeterminateId._tag === 'OsfOrLifecycleJournalPreprintId') {
       if (record.publisher === 'Lifecycle Journal') {
-        return new LifecycleJournalPreprintId({ value: indeterminateId.value })
+        return new LifecycleJournalPreprintId({ value: indeterminateId.value }) as Extract<
+          LifecycleJournalPreprintId,
+          { value: Doi<'17605'> }
+        >
       }
 
       return new OsfPreprintId({ value: indeterminateId.value })

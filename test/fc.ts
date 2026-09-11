@@ -881,7 +881,7 @@ export const jxivPreprintUrl = (): fc.Arbitrary<[URL, JxivPreprintId]> =>
     ])
 
 export const lifecycleJournalPreprintId = (): fc.Arbitrary<LifecycleJournalPreprintId> =>
-  doi(constant('17605')).map(doi => new LifecycleJournalPreprintId({ value: doi }))
+  doi(constantFrom('17605', '71240')).map(doi => new LifecycleJournalPreprintId({ value: doi }))
 
 export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<
   [URL, [OsfOrLifecycleJournalPreprintId, OsfPreprintsPreprintId]]
@@ -1157,6 +1157,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
+    lifecycleJournalPreprintId().filter(id => hasRegistrant('71240')(id.value)) as fc.Arbitrary<never>,
     medrxivPreprintId(),
     metaarxivPreprintId(),
     neurolibrePreprintId(),
@@ -1180,7 +1181,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
     africarxivZenodoPreprintId(),
     arcadiaSciencePreprintId(),
     arxivPreprintId(),
-    lifecycleJournalPreprintId(),
+    lifecycleJournalPreprintId().filter(id => hasRegistrant('17605')(id.value)) as fc.Arbitrary<never>,
     osfPreprintId(),
     psychArchivesPreprintId(),
     zenodoPreprintId(),

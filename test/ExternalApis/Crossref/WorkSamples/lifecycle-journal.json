@@ -1,0 +1,73 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 9, 10]],
+      "date-time": "2026-09-10T00:09:50Z",
+      "timestamp": 1788998990961,
+      "version": "build-2803163510"
+    },
+    "posted": { "date-parts": [[2025, 12, 17]] },
+    "group-title": "Lifecycle Journal",
+    "reference-count": 0,
+    "publisher": "Center for Open Science",
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>This preregistered study replicates and expands the seminal work of Amiel and Cowell (1992) on public understanding of fundamental income inequality axioms. The original study, conducted with university students, revealed surprisingly limited support for key principles widely accepted in inequality research\u2014most notably the transfer principle, which states that transferring income from a richer to a poorer person (without reversing their rank order) reduces inequality. Only 62% of students endorsed this principle when framed verbally and 35% when framed numerically, despite its central role in inequality measurement. The current study evaluates whether these findings replicate in a sample (~3,300 adults) representative of the adult population with respect to gender, age, and education, and examines the broader behavioral and attitudinal implications of accepting the transfer principle.\nThe study tests four hypotheses. First, we assess whether support for the transfer principle remains highly contentious (H1). Second, we evaluate whether, consistent with prior evidence, it is the least supported among core axioms\u2014scale invariance, translation invariance, replication invariance, and decomposability\u2014when presented numerically (H2). Third, we examine whether endorsing the transfer principle is associated with stronger preferences for redistribution by public and private actors (H3). Fourth, we test whether endorsement predicts higher inequality aversion, measured through participants' willingness to accept efficiency losses in redistribution and, in an incentivized condition, their decision to donate part of their bonus to an inequality-reducing organization (H4).\nThe study includes two experimental treatments aimed at enhancing participants' comprehension and effort: a visual cues condition that presents proportional depictions of income distributions, and an incentivized condition that offers bonuses for providing non-illogical answers. Furthermore, the study explores how support for the axioms relates to contemporary measures of inequality perception and evaluation.<\/jats:p>",
+    "DOI": "10.71240\/lcyc.724372",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 12, 17]], "date-time": "2025-12-17T23:09:21Z", "timestamp": 1766012961000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Public Understanding of Inequality: Support for Inequality Expert Principles, Redistribution Preferences and Inequality Aversion"
+    ],
+    "prefix": "10.71240",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7176-4775",
+        "authenticated-orcid": false,
+        "given": "Crist\u00f3bal",
+        "family": "Moya",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [{ "vocabulary": "crossref", "role": "author" }]
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-6406-595X",
+        "authenticated-orcid": false,
+        "given": "Carsten",
+        "family": "Schr\u00f6der",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [{ "vocabulary": "crossref", "role": "author" }]
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-3863-8301",
+        "authenticated-orcid": false,
+        "given": "Philipp",
+        "family": "Lersch",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [{ "vocabulary": "crossref", "role": "author" }]
+      }
+    ],
+    "member": "15934",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 9, 9]], "date-time": "2026-09-09T23:42:58Z", "timestamp": 1788997378000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/lifecycle-flax.fly.dev\/journal\/articles\/\/69\/index.html" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 12, 17]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.71240\/lcyc.724372",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2025, 12, 17]] },
+    "subtype": "preprint"
+  }
+}

@@ -116,7 +116,7 @@ export class JxivPreprintId extends Schema.TaggedClass<JxivPreprintId>()('JxivPr
 export class LifecycleJournalPreprintId extends Schema.TaggedClass<LifecycleJournalPreprintId>()(
   'LifecycleJournalPreprintId',
   {
-    value: Doi.RegistrantDoiSchema('17605'),
+    value: Doi.RegistrantDoiSchema('17605', '71240'),
   },
 ) {}
 
@@ -305,6 +305,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintI
   '60763',
   '62329',
   '64898',
+  '71240',
   '82153',
 )
 
@@ -403,6 +404,7 @@ export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): I
     .when(Doi.hasRegistrant('60763'), doi => new AfricarxivUbuntunetPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('62329'), doi => new CurvenotePreprintId({ value: doi }))
     .when(Doi.hasRegistrant('64898'), doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
+    .when(Doi.hasRegistrant('71240'), doi => new LifecycleJournalPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('82153'), doi => new RadialPreprintId({ value: doi }))
     .exhaustive()
 }

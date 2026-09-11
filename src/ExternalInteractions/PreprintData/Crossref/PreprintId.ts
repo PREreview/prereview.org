@@ -1,4 +1,4 @@
-import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId, LifecycleJournalPreprintId, PreprintId } from '../../../Preprints/index.ts'
 import { Doi } from '../../../types/index.ts'
 
 const crossrefDoiPrefixes = [
@@ -27,13 +27,20 @@ const crossrefDoiPrefixes = [
   '55458',
   '62329',
   '64898',
+  '71240',
 ] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
-export type CrossrefPreprintId = Extract<PreprintId, { value: Doi.Doi<CrossrefDoiPrefix> }>
+type CrossrefLifecycleJournalPreprintId = Omit<LifecycleJournalPreprintId, 'value'> & {
+  value: Doi.Doi<'71240'>
+}
 
-export type IndeterminateCrossrefPreprintId = Extract<IndeterminatePreprintId, { value: Doi.Doi<CrossrefDoiPrefix> }>
+export type CrossrefPreprintId =
+  Extract<PreprintId, { value: Doi.Doi<CrossrefDoiPrefix> }> | CrossrefLifecycleJournalPreprintId
+
+export type IndeterminateCrossrefPreprintId =
+  Extract<IndeterminatePreprintId, { value: Doi.Doi<CrossrefDoiPrefix> }> | CrossrefLifecycleJournalPreprintId
 
 export const isCrossrefPreprintId = (id: IndeterminatePreprintId): id is IndeterminateCrossrefPreprintId =>
   id._tag !== 'PhilsciPreprintId' && isDoiFromSupportedPublisher(id.value)

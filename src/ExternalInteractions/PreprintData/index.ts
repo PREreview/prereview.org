@@ -27,6 +27,7 @@ export const layer = Layer.effect(
       Match.when(isCrossrefPreprintId, getPreprintFromCrossref),
       Match.when(isDatacitePreprintId, getPreprintFromDatacite),
       Match.when(isJapanLinkCenterPreprintId, getPreprintFromJapanLinkCenter),
+      Match.tag('LifecycleJournalPreprintId', Effect.die),
       Match.exhaustive,
     )
 
