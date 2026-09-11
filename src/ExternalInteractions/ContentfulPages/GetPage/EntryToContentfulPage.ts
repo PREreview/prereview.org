@@ -124,20 +124,23 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
     Option.fromNullable(Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target)),
-  Heading1: heading1 => Option.some(html`<h1>${Array.filterMap(heading1.content, DocumentTypeToHtml)}</h1>`),
-  Heading2: heading2 => Option.some(html`<h2>${Array.filterMap(heading2.content, DocumentTypeToHtml)}</h2> `),
-  Heading3: heading3 => Option.some(html`<h3>${Array.filterMap(heading3.content, DocumentTypeToHtml)}</h3>`),
+  Heading1: heading1 =>
+    Option.some(html`<h1><span>${Array.filterMap(heading1.content, DocumentTypeToHtml)}</span></h1>`),
+  Heading2: heading2 =>
+    Option.some(html`<h2><span>${Array.filterMap(heading2.content, DocumentTypeToHtml)}</span></h2> `),
+  Heading3: heading3 =>
+    Option.some(html`<h3><span>${Array.filterMap(heading3.content, DocumentTypeToHtml)}</span></h3>`),
   Hyperlink: hyperlink =>
     Option.some(
       html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
         >${Array.filterMap(hyperlink.content, DocumentTypeToHtml)}</a
       >`,
     ),
-  ListItem: listItem => Option.some(html`<li>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</li>`),
+  ListItem: listItem => Option.some(html`<li><span>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</span></li>`),
   Paragraph: paragraph =>
     Array.match(Array.filterMap(paragraph.content, DocumentTypeToHtml), {
       onEmpty: () => Option.none(),
-      onNonEmpty: content => Option.some(html`<p>${content}</p>`),
+      onNonEmpty: content => Option.some(html`<p><span>${content}</span></p>`),
     }),
   Table: table =>
     Option.some(
@@ -151,9 +154,10 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
         ${Array.filterMap(tableRow.content, DocumentTypeToHtml)}
       </tr>`,
     ),
-  TableCell: tableCell => Option.some(html`<td>${ContentToHtmlSkippingOverSingleParagraph(tableCell)}</td>`),
+  TableCell: tableCell =>
+    Option.some(html`<td><span>${ContentToHtmlSkippingOverSingleParagraph(tableCell)}</span></td>`),
   TableHeaderCell: tableHeaderCell =>
-    Option.some(html`<th>${ContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</th>`),
+    Option.some(html`<th><span>${ContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</span></th>`),
   Text: text =>
     text.value === '' ? Option.none() : Option.some(Array.reduce(text.marks, html`${text.value}`, MarkToHtml)),
   UnorderedList: unorderedList =>
