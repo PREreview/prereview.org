@@ -31,7 +31,11 @@ export const GetPage = (
 
       const page = yield* Schema.decodeUnknown(EntryToContentfulPage)(items[0])
 
-      return new ContentfulPage({ html: addListOfClubs(DefaultLocale, clubs)(page.html), locale: page.locale })
+      return new ContentfulPage({
+        title: page.title,
+        html: addListOfClubs(DefaultLocale, clubs)(page.html),
+        locale: page.locale,
+      })
     },
     Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
       pipe(

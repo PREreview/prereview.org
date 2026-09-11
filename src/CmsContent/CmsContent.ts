@@ -25,12 +25,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
 
       if (loadPagesFromContentful) {
         return {
-          getPage: Effect.fnUntraced(function* (slug, preview) {
-            const locale = yield* Locale
-            const page = yield* contentfulPages.getPage(slug, preview)
-
-            return { ...page, title: getTitle(slug, locale) }
-          }),
+          getPage: contentfulPages.getPage,
         }
       }
 

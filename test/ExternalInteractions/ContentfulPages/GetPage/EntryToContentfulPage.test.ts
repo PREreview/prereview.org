@@ -19,6 +19,7 @@ it.effect.each<{
     response: 'pages-assets',
     index: 0,
     expected: new ContentfulPage({
+      title: html`How we’re funded`,
       html: html`
         <h1>Fiscal Sponsor</h1>
         <img
@@ -43,6 +44,7 @@ it.effect.each<{
     response: 'pages-unordered-list-table',
     index: 0,
     expected: new ContentfulPage({
+      title: html`Trainings`,
       html: html`
         <p>
           Peer review plays a pivotal role in determining which research projects receive funding, which findings get
@@ -251,6 +253,7 @@ it.effect.each<{
     response: 'pages-cta-dynamic-embed',
     index: 0,
     expected: new ContentfulPage({
+      title: html`Clubs`,
       html: html`
         <p>
           PREreview Clubs are collaborative preprint reviewing groups around a shared affiliation, affinity, interest,

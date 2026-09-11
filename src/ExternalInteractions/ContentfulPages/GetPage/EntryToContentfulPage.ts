@@ -30,6 +30,7 @@ export const EntryToContentfulPage = Schema.transformOrFail(
     decode: entry =>
       ParseResult.succeed(
         new ContentfulPage({
+          title: html`${getValueForDefaultLocale(entry.fields.title)}`,
           html: html`${Array.filterMap(getValueForDefaultLocale(entry.fields.content).content, DocumentTypeToHtml)}`,
           locale: DefaultLocale,
         }),

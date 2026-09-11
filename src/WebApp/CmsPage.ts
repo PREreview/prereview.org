@@ -29,7 +29,7 @@ export const CmsPage = Effect.fnUntraced(
     return PageResponse({
       title: plainText(content.title),
       main: html`
-        <h1>${content.title}</h1>
+        <h1><span ${languageAttributesFor(content.locale)}>${content.title}</span></h1>
 
         ${content.locale !== locale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
         <div ${languageAttributesFor(content.locale)}>${fixHeadingLevels(1, content.html)}</div>
