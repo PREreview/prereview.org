@@ -53,11 +53,24 @@ class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
   content: Schema.NonEmptyArray(Text),
 }) {}
 
+class EntryLink extends Schema.Class<EntryLink>('EntryLink')({
+  sys: Schema.Struct({
+    id: ContentfulId,
+    type: Schema.Literal('Link'),
+    linkType: Schema.Literal('Entry'),
+  }),
+}) {}
+
 class EntryHyperlink extends Schema.Class<EntryHyperlink>('EntryHyperlink')({
   _tag: Schema.propertySignature(Schema.transformLiteral('entry-hyperlink', 'EntryHyperlink')).pipe(
     Schema.fromKey('nodeType'),
   ),
-  data: Schema.Struct({ target: Schema.suspend((): Schema.Schema<Entry> => Entry as never) }),
+  data: Schema.Struct({
+    target: Schema.suspend(
+      (): Schema.Schema<Entry | EntryLink | '[Circular]'> =>
+        Schema.Union(Entry, EntryLink, Schema.Literal('[Circular]')) as never,
+    ),
+  }),
   content: Schema.NonEmptyArray(Text),
 }) {}
 
