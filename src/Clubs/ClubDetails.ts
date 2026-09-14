@@ -897,7 +897,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
   },
   {
     id: Uuid('46ed1601-a895-4703-9661-e06893017c5c'),
-    status: 'inactive',
+    status: 'active',
     name: {
       language: 'en',
       text: Name('MLC Research Review Club'),

@@ -163,7 +163,12 @@ class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntry
   _tag: Schema.propertySignature(Schema.transformLiteral('embedded-entry-block', 'EmbeddedEntryBlock')).pipe(
     Schema.fromKey('nodeType'),
   ),
-  data: Schema.Struct({ target: Schema.suspend((): Schema.Schema<Entry> => Entry as never) }),
+  data: Schema.Struct({
+    target: Schema.suspend(
+      (): Schema.Schema<Entry | EntryLink | '[Circular]'> =>
+        Schema.Union(Entry, EntryLink, Schema.Literal('[Circular]')) as never,
+    ),
+  }),
 }) {}
 
 export class Document extends Schema.Class<Document>('Document')({
