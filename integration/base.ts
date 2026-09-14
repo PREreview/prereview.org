@@ -19,7 +19,7 @@ import fetchMock, { type FetchMock } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
 import Keyv from 'keyv'
-import nodemailer from 'nodemailer'
+import nodemailer, { type SendMailOptions } from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import { URL } from 'url'
 import { v4 } from 'uuid'
@@ -101,7 +101,7 @@ interface AppFixtures {
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   showSpotlight: (typeof FeatureFlags.FeatureFlags.Service)['showSpotlight']
-  emails: Array<nodemailer.SendMailOptions>
+  emails: Array<SendMailOptions>
   seedEvents: ReadonlyArray<Events.Event>
 }
 
@@ -2379,7 +2379,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(new Keyv())
   },
   emails: async ({}, use, testInfo) => {
-    const emails: Array<nodemailer.SendMailOptions> = []
+    const emails: Array<SendMailOptions> = []
 
     await use(emails)
 
