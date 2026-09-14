@@ -87,7 +87,7 @@
     "@types/turndown": "^5.0.6",
     "@typescript/analyze-trace": "^0.11.1",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
-    "@vitest/expect": "^4.1.11",
+    "@vitest/expect": "^5.0.0",
     "del-cli": "^7.0.0",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
@@ -120,7 +120,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.69.0",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "scripts": {
     "prebuild": "del assets/locales dist src/locales src/manifest.json",
