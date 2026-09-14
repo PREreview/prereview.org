@@ -10,6 +10,7 @@ import {
 } from '../../../ExternalApis/Contentful/index.ts'
 import { Html, html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
+import { SlugSchema } from '../../../types/Slug.ts'
 import { ContentfulPage } from '../Types.ts'
 
 const ContentfulPageEntry = Schema.Struct({
@@ -27,6 +28,19 @@ const ContentfulPageEntry = Schema.Struct({
   fields: Schema.Struct({
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Document }),
+  }),
+})
+
+const EntryWithSlugField = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({
+      sys: Schema.Struct({
+        id: Schema.Literal(ContentfulId.make('page')),
+      }),
+    }),
+  }),
+  fields: Schema.Struct({
+    slug: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: SlugSchema }),
   }),
 })
 
@@ -165,6 +179,15 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
     Option.fromNullable(Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target)),
+  EntryHyperlink: hyperlink => {
+    const target = Schema.decodeUnknownSync(EntryWithSlugField)(hyperlink.data.target)
+
+    return Option.some(
+      html`<a href="/${getValueForDefaultLocale(target.fields.slug)}"
+        >${Array.filterMap(hyperlink.content, DocumentTypeToHtml)}</a
+      >`,
+    )
+  },
   Heading1: heading1 =>
     Option.some(html`<h1><span>${Array.filterMap(heading1.content, DocumentTypeToHtml)}</span></h1>`),
   Heading2: heading2 =>

@@ -16,6 +16,7 @@ export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Sc
 export type DocumentType =
   | Text
   | Hyperlink
+  | EntryHyperlink
   | Heading1
   | Heading2
   | Heading3
@@ -52,6 +53,14 @@ class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
   content: Schema.NonEmptyArray(Text),
 }) {}
 
+class EntryHyperlink extends Schema.Class<EntryHyperlink>('EntryHyperlink')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('entry-hyperlink', 'EntryHyperlink')).pipe(
+    Schema.fromKey('nodeType'),
+  ),
+  data: Schema.Struct({ target: Schema.suspend((): Schema.Schema<Entry> => Entry as never) }),
+  content: Schema.NonEmptyArray(Text),
+}) {}
+
 class Heading1 extends Schema.Class<Heading1>('Heading1')({
   _tag: Schema.propertySignature(Schema.transformLiteral('heading-1', 'Heading1')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Text),
@@ -69,7 +78,7 @@ class Heading3 extends Schema.Class<Heading3>('Heading3')({
 
 class Paragraph extends Schema.Class<Paragraph>('Paragraph')({
   _tag: Schema.propertySignature(Schema.transformLiteral('paragraph', 'Paragraph')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(Text, Hyperlink)),
+  content: Schema.NonEmptyArray(Schema.Union(Text, Hyperlink, EntryHyperlink)),
 }) {}
 
 class ListItem extends Schema.Class<ListItem>('ListItem')({
