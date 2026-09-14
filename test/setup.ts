@@ -51,12 +51,12 @@ expect.extend({
   plainTextContaining,
 })
 
-interface CustomMatchers<R = unknown> {
+interface CustomMatchers<R = unknown, T = unknown> {
   htmlContaining(sample: Html | string): R
   plainTextContaining(sample: string): R
 }
 
 declare module 'vitest' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface Matchers<R extends void | Promise<void> = void | Promise<void>, T = unknown> extends CustomMatchers<R> {}
+  interface Matchers<R extends void | Promise<void> = void | Promise<void>, T = unknown> extends CustomMatchers<R, T> {}
 }
