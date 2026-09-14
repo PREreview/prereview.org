@@ -25,7 +25,20 @@ export class CmsContent extends Context.Tag('CmsContent')<
 
       if (loadPagesFromContentful) {
         return {
-          getPage: contentfulPages.getPage,
+          getPage: (slug, preview = false) =>
+            preview
+              ? contentfulPages.getPage(slug, true)
+              : pipe(
+                  contentfulPages.getPage(slug),
+                  Effect.orElse(() =>
+                    Effect.gen(function* () {
+                      const page = yield* getPageFromGhost(slug)
+
+                      return { ...page, title: getTitle(slug, page.locale) }
+                    }),
+                  ),
+                  Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
+                ),
         }
       }
 
