@@ -4,10 +4,9 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   cacheDir: '.cache/vitest',
   test: {
-    experimental: {
-      fsModuleCache: true,
-      fsModuleCachePath: '.cache/vitest/module',
-    },
+    clearMocks: false,
+    fsModuleCache: true,
+    fsModuleCachePath: '.cache/vitest/module',
     include: ['./test/**/*.test.ts'],
     isolate: false,
     sequence: {
