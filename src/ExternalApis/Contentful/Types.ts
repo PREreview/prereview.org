@@ -21,6 +21,7 @@ export type DocumentType =
   | Heading3
   | Paragraph
   | ListItem
+  | OrderedList
   | UnorderedList
   | Table
   | TableRow
@@ -76,6 +77,13 @@ class ListItem extends Schema.Class<ListItem>('ListItem')({
   content: Schema.NonEmptyArray(Paragraph),
 }) {}
 
+class OrderedList extends Schema.Class<OrderedList>('OrderedList')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('ordered-list', 'OrderedList')).pipe(
+    Schema.fromKey('nodeType'),
+  ),
+  content: Schema.NonEmptyArray(ListItem),
+}) {}
+
 class UnorderedList extends Schema.Class<UnorderedList>('UnorderedList')({
   _tag: Schema.propertySignature(Schema.transformLiteral('unordered-list', 'UnorderedList')).pipe(
     Schema.fromKey('nodeType'),
@@ -87,7 +95,7 @@ class TableHeaderCell extends Schema.Class<TableHeaderCell>('TableHeaderCell')({
   _tag: Schema.propertySignature(Schema.transformLiteral('table-header-cell', 'TableHeaderCell')).pipe(
     Schema.fromKey('nodeType'),
   ),
-  content: Schema.NonEmptyArray(Schema.Union(Paragraph, UnorderedList)),
+  content: Schema.NonEmptyArray(Schema.Union(Paragraph, OrderedList, UnorderedList)),
 }) {}
 
 class TableCell extends Schema.Class<TableCell>('TableCell')({
@@ -139,7 +147,17 @@ class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntry
 export class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(
-    Schema.Union(Heading1, Heading2, Heading3, Paragraph, UnorderedList, Table, EmbeddedAssetBlock, EmbeddedEntryBlock),
+    Schema.Union(
+      Heading1,
+      Heading2,
+      Heading3,
+      Paragraph,
+      OrderedList,
+      UnorderedList,
+      Table,
+      EmbeddedAssetBlock,
+      EmbeddedEntryBlock,
+    ),
   ),
 }) {}
 

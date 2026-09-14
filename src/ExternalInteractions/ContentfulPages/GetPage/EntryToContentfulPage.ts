@@ -178,6 +178,12 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
       >`,
     ),
   ListItem: listItem => Option.some(html`<li><span>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</span></li>`),
+  OrderedList: orderedList =>
+    Option.some(
+      html`<ol>
+        ${Array.filterMap(orderedList.content, DocumentTypeToHtml)}
+      </ol>`,
+    ),
   Paragraph: paragraph =>
     Array.match(Array.filterMap(paragraph.content, DocumentTypeToHtml), {
       onEmpty: () => Option.none(),
