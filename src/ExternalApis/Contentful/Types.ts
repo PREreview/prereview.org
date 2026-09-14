@@ -105,7 +105,7 @@ class Table extends Schema.Class<Table>('Table')({
   content: Schema.NonEmptyArray(TableRow),
 }) {}
 
-class Asset extends Schema.Class<Asset>('Asset')({
+export class Asset extends Schema.Class<Asset>('Asset')({
   sys: Schema.Struct({
     id: ContentfulId,
     locale: Schema.optional(Schema.NonEmptyString),
@@ -156,7 +156,7 @@ export class Entry extends Schema.Class<Entry>('Entry')({
   }),
   fields: Schema.Record({
     key: ContentfulId,
-    value: Schema.Record({ key: NonEmptyStringSchema, value: Schema.Union(NonEmptyStringSchema, Document) }),
+    value: Schema.Record({ key: NonEmptyStringSchema, value: Schema.Union(NonEmptyStringSchema, Document, Asset) }),
   }),
 }) {}
 

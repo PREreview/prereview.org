@@ -1,6 +1,13 @@
 import { Array, Effect, Match, Option, ParseResult, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
-import { ContentfulId, Document, type DocumentType, Entry, type Mark } from '../../../ExternalApis/Contentful/index.ts'
+import {
+  Asset,
+  ContentfulId,
+  Document,
+  type DocumentType,
+  Entry,
+  type Mark,
+} from '../../../ExternalApis/Contentful/index.ts'
 import { Html, html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { ContentfulPage } from '../Types.ts'
@@ -104,7 +111,41 @@ const DynamicEmbedEntryToHtml = Schema.transformOrFail(
   },
 )
 
-const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml)
+const MediaEntryToHtml = Schema.transformOrFail(
+  Schema.Struct({
+    sys: Schema.Struct({
+      contentType: Schema.Struct({
+        sys: Schema.Struct({
+          id: Schema.Literal(ContentfulId.make('media')),
+        }),
+      }),
+    }),
+    fields: Schema.Struct({
+      file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
+    }),
+  }),
+  HtmlFromSelfSchema,
+  {
+    strict: true,
+    decode: media => {
+      const file = getValueForDefaultLocale(media.fields.file)
+      const asset = getValueForDefaultLocale(file.fields.file)
+
+      return ParseResult.succeed(html`
+        <img
+          src="${asset.url.href}"
+          width="${asset.details.image.width}"
+          height="${asset.details.image.height}"
+          alt=""
+        />
+      `)
+    },
+    encode: (page, _, ast) =>
+      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+  },
+)
+
+const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml, MediaEntryToHtml)
 
 const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = Match.typeTags<
   DocumentType,

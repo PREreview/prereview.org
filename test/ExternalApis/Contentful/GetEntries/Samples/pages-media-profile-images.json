@@ -1,0 +1,1837 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+        "type": "Entry",
+        "id": "4AkBiRre1rfk8j5pPaDvn9",
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "page" } },
+        "revision": 0,
+        "createdAt": "2026-09-14T08:32:02.612Z",
+        "updatedAt": "2026-09-14T08:53:20.182Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+      },
+      "fields": {
+        "title": { "en-US": "People" },
+        "slug": { "en-US": "people" },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Our core team is currently composed of five full-time staff: ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "Vanessa Fairhurst", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ", Head of Community, ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Daniela Saderi", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ", Executive Director, ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Chad Sansing", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ", Head of Product, ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "María Pía Tavella", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ", Communications and Engagement Officer, and ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "Chris Wilkinson", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ", Head of Technology.", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "We receive technical support from ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Daniel Haarhoff", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ", Software Engineer at eLife, as part of an ongoing contract and collaboration between PREreview and eLife.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "We receive temporary support from ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "María Sol Ruiz", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ", part-time Champions Fellow, with the coordination of community-facing initiatives.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "We also rely on the wise advice and support of an Advisory Committee (AC), which currently includes ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "Monica Granados", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": " (PREreview co-founder, AC Co-chair), ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Samantha Hindle", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": " (PREreview co-founder, AC Secretary), ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "Christopher Steven Marcum ",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "(AC Chair),", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": " Lamis Yahia Mohamed Elkheir",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": ", ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Aurelia Munene", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ",", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": " Malvika Sharan", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ", and ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Kirstie Whitaker ", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": "(AC Treasurer).", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Staff", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Vanessa Fairhurst (she/her) – Head of Community",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "Mcl8QjTLm9uRIrUAR4zpY", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Vanessa joined the PREreview team in November 2022. She studied her undergraduate in European Languages and Business Management before going onto study her Master’s in Applied and Professional Ethics. She began her career in academia working at international development organization INASP with a focus on improving access to scholarly information and research in developing countries. She then went on to support publishers around the world as Community Engagement Manager at Crossref building a global ambassador team and collaborating with others to ensure that scholarly research metadata is registered, linked, and distributed. Openness, accessibility, and equity have always been central to Vanessa’s work, and she greatly enjoys supporting and empowering researchers around the globe to improve the research process.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Daniela Saderi, Ph.D. (she/her) – Executive Director, Co-Founder",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2MxuClGGMedtgRt2tIDsSI", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Daniela is an Italian-born neuroscientist, community builder, and advocate for open and collaborative science. During her doctoral research, she discovered a passion for empowering early-career researchers and fostering cross-disciplinary collaboration, which led her to co-found PREreview. As a Mozilla Fellow for Science (2018/2019), Daniela worked to advance open practices, amplify marginalized voices in research, and create opportunities for inclusive collaboration.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Her work focuses on facilitating transformative change by building trust with value-aligned organizations, breaking down silos, and fostering conversations that drive shared goals. Daniela thrives on surfacing innovative solutions, strengthening community networks, and enabling researchers to realize their full potential.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Outside of work, she enjoys reading and spending time with her family and friends.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Chad Sansing (he/him) – Head of Product", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "67xFFtlUFh3jDjfK4OWIUA", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Chad joined the PREreview team in late October 2022. Prior to joining PREreview, he worked for the Mozilla Foundation in a variety of roles, most recently as a program manager on the MozFest team. While at Mozilla, Chad worked on several projects including its web literacy curriculum, Open Leadership Framework, Open Leaders program, and community and program management for the MozFest Trustworthy AI Working Group and the Facilitator and Volunteer communities at MozFest. Before that, Chad taught middle school for 14 years and helped found two small public schools for non-traditional learners. He is passionate about helping people discover their individual and shared capacities for social good and positive change. Outside work, you can find him reading, playing games, and hanging out with friends and family.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "María Pía Tavella, Ph.D. (she/her) - Communications and Engagement Officer",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "7Fho7AUpQpyAxSn03cNp33", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Pía joined the PREreview team in December 2025. She is an Argentine anthropologist, science communicator and educator. While finishing her doctoral studies, she decided to cultivate her skills in science communication for diverse audiences, with the conviction that knowledge should be open, beneficial, and accessible for all. She went on to serve as Science Communication Professional for the Argentine research council CONICET, and completed the SAPIENS magazine Public Scholar Training Fellowship, gaining extensive experience in crafting science-related storytelling content for non-specialized audiences. Recently, she carried out a professional stay at the Museum of America in Spain, helping to communicate their decolonial initiatives.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Pía is passionate about harnessing the power of compelling, strategic, and cross-cultural communications to advance meaningful, community-centered change. Outside work, she enjoys reading fiction, dancing, and immersing herself in nature.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Chris Wilkinson (he/him) – Head of Technology",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2mdOUAia46g4cSHUNU5LZ6", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Chris joined PREreview as the Head of Technology in August 2024. Prior to that, he was Tech Lead Manager at eLife but working full time with the PREreview team since July 2021, helping us develop and maintain our preprint review platform. He started developing software professionally while working for the University of Cambridge, and began contributing to open-source software communities. Chris joined eLife in 2015, initially working on their internal publishing platform and open-source efforts. He later helped found Sciety and establish their remote-first ensemble-programming team. Before joining PREreview, he also worked with Knowledge Futures to create the DocMaps framework. Chris is a keen advocate for sustainable and accessible web-based software, iteratively developed in close collaboration with the wider team.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Daniel Haarhoff – Software Engineer (eLife)",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "7v52Uqy2eZFIkcQmLxKIP9", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Daniel has been supporting Chris and the development of PREreview part-time since 2023. He has been part of the eLife tech team since 2020, working as part of the ensemble building Sciety. He is delighted to be helping to make science more equitable and transparent. In his spare time he has built ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://freeyourscience.org/" },
+                    "content": [{ "nodeType": "text", "value": "FreeYourScience.org", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to help scientists republish Open Access and volunteers and the Cambridge Makespace.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "María Sol Ruiz, Ph.D. (she/her) – Champion Fellow",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "49ITP3Nlr8waq1WzW8iYWN", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Sol joined the PREreview team as a part-time staff in January 2026 to provide support to the PREreview Champions programme and other community-facing initiatives. She is an Argentine biomedical scientist working at the University of Buenos Aires and the National Scientific Research Council in Argentina. Her research focuses on pediatric leukemias and molecular diagnostics. Adding to her experience, she is part of the teaching staff for Molecular Biology and Human Genetics at the University of Buenos Aires.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Sol is an advocate for open and collaborative science, having participated in the eLife Ambassador and PREreview Champions programs. Throughout her career she has been part of diverse projects and teams that worked towards improving access to scientific resources and educational tools in disadvantaged groups.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Advisory Committee", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "PREreview’s Advisory Committee is responsible for hiring and evaluating the Executive Director, providing financial oversight, and advising on strategic planning, fundraising, and business models. Additionally, members of the AC serve as advocates and ambassadors for the organization, leveraging their networks to benefit the organization’s reputation and long-term financial sustainability. The AC executes these responsibilities through meetings, regular correspondence, and collaboration via email and online platforms.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Samantha Hindle, Ph.D. (she/her) – Co-Founder, Advisory Committee Secretary",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "40XFRGUBPuAQP6JaR6Soic", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Sam has a Ph.D. in Neuroscience where she characterized neurodegenerative disorders in ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "Drosophila", "marks": [{ "type": "italic" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ". During her postdoctoral position studying the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "Drosophila", "marks": [{ "type": "italic" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": " blood-brain barrier, she became increasingly passionate about open science and the potential for preprints to rewrite the way scientists disseminate their research. Following her passion for preprints, Sam became the Content Lead at ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://www.biorxiv.org/" },
+                    "content": [{ "nodeType": "text", "value": "bioRxiv", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " and now manages the preprint content teams at CSHL. Her advocacy for the use of preprints began with her early engagement with the ASAPbio Ambassadors and Mozilla communities, paths that led her to co-found PREreview in 2017.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Monica Granados, Ph.D. (she/her) – Co-Founder, Advisory Committee Co-Chair",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2cBNCa5ln5fNKEXNwsWELh", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Dr. Monica Granados is Director of Open Science at Creative Commons where she works on increasing the adoption of open licenses on research outputs and how open science is changing in the age of AI. She received her MSc from the University of Toronto and her PhD McGill University and has published several papers on open access and data. She is also has worked with NASA to develop their Transform to Open Science initiative and on Environment and Climate Change Canada’s Open Science Action Plan.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Christopher Steven Marcum, Ph.D., F.G.S.A. (he/him/they/them) – Advisory Committee Chair",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2E64Sm27wgdmLa5Am9ESRP", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Dr. ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://orcid.org/0000-0002-0899-6143" },
+                    "content": [{ "nodeType": "text", "value": "Christopher Steven Marcum", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " is an open science advocate, a Senior Fellow at the Data Foundation's Center for Data Policy, and is the Chair of PREreview's Advisory Committee. He has over a decade of public service as a social scientist in the federal government. His most recent roles were in the White House Office of Science and Technology Policy (OSTP) as Assistant Director for Open Science and Data Policy, and in the White House Office of Management and Budget (OMB) as Senior Statistician and Senior Scientist, where his portfolios included development and implementation of federal policies on public access to federally-funded research, open and confidential data, peer review, and scientific integrity.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Dr. Marcum oversaw transformative science policies in his OSTP portfolio that led to the 2022 OSTP Public Access Memo, the 2023 Federal Scientific Integrity Framework, and the White House declaring 2023 as a Year of Open Science. In his OMB capacity, Dr. Marcum oversaw the Federal Statistical Research Data Centers as Chair of the Executive Committee and was a key contributor to major federal information policies, including the OMB implementation guidance on the Open Government Data Act. Dr. Marcum received his Ph.D. in sociology from the University of California, Irvine (UCI) in 2011. He is a fellow of the Gerontological Society of America, nominated by his peers for his research, training, and advocacy on issues related to aging and the life course. He has written over 80 scholarly articles and thought pieces.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Lamis Yahia Mohamed Elkheir, Ph.D. (she/her) - Director of Training & Resource Development at African Reproducibility Network (AREN)",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "78qpPo93J6rgBEsiYjkxhY", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Dr. Lamis Elkheir is an open science leader and academic whose work focuses on shaping how open research practices are understood, adopted, and sustained across African research communities. She brings over a decade of experience working within universities and research networks, combining teaching, programme leadership, and community engagement to support more open, collaborative, and context-aware approaches to research.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "As Director of Training & Resource Development at the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://africanrn.org/" },
+                    "content": [
+                      { "nodeType": "text", "value": "African Reproducibility Network ", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "(AREN) and Lecturer at the University of Khartoum, Lamis works at the intersection of global open science initiatives and local institutional realities. She designs and leads training programmes that centre the needs of early-career and underrepresented researchers. In addition, she serves as Co-Chair of Working Group 2 within the Open Science Monitoring Initiative (OSMI), where she co-leads international efforts to map and analyse open science monitoring frameworks and indicators. Across her work, she is particularly committed to ensuring that researchers in diverse and often resource-constrained contexts have both the voice and the agency to participate meaningfully in shaping research culture and evaluation.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Aurelia Munene (she/her) – Founder and CEO at Eider Africa",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "4GGR6MZTJgEUcqu9JMxIxn", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Aurelia Muthoni Munene is the Founder of ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://eiderafricaltd.org/" },
+                    "content": [{ "nodeType": "text", "value": "Eider Africa", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", and together with a team of dedicated African scholars, she designs and delivers research mentorship programs with and for early career researchers in Africa. The goal is to create a movement of researchers who are critical, responsible and collaborative. Aurelia is a board member of the Association of Faculty Enrichment in Teaching and Learning which trains faculty on transformative learning and teaching approaches including open peer review. Aurelia is also an Associate and Research Steward with INASP (AuthorAID) where she supports research mentorship activities for early career researchers and reviews AuthorAID courses to ensure they are aligned to Gender Responsive Pedagogy guidelines. She is a Personal Development Coach for the AMID Young Professionals Program of the Radboud University in the Netherlands partnering with University of Nairobi, Kenya. She is a member of the Research Data Share Kenya Collective.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Aurelia is an international development consultant and researcher in areas of social policy, gender-based violence, sexual reproductive health, gender and social development with 17 years’ experience. Aurelia is also the Executive Director of Roots and Wings Research and Development Organisation. She has authored over 40 reports, 2 book chapters and 5 Journal articles. Aurelia holds a Master of Arts in Development Studies majoring in Social Policy from the Erasmus University, International Institute of Social Studies, Netherlands, and she is currently pursuing a Second Master’s degree, MBA in Health Care Management at Strathmore University in Kenya.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Malvika Sharan, Ph.D. (she/her) - Senior Director of Data Science at St. Jude Children’s Research Hospital",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "5nnANZlhGv0J5H3gqQozNb", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Dr. Malvika Sharan is the Senior Director of Data Science at the newly established Office of Data Science at St. Jude Children’s Research Hospital. Previously, she held research and leadership roles at The Alan Turing Institute and European Molecular Biology Laboratory, where she led and scaled data science and bioinformatics community initiatives, notably The Turing Way and EMBL’s Bio-IT.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "An open source/science advocate, Malvika co-founded Open Life Science (OLS), an international training, mentoring and capacity building organisation, and recently established RCM Cooperative to mobilise and connect Research Community Managers from across organisations. She has advised initiatives like NASA Open Science, the Society of RSE, Open Bioinformatics Foundation and Data Science Without Borders.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Malvika is a Mozilla Open Leaders Fellow, Software Sustainability Institute Fellow, and was named among the 100 Brilliant Women in AI Ethics (2024). A lifelong learner, Malvika is dedicated to improving open research, community building, collaboration, governance, and ethical practices in data science and AI.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Kirstie Whitaker, Ph.D. (she/her) - Executive Director at Berkeley Institute for Data Science, Advisory Committee Treasurer",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "3BM9B3Cq138c88n16hTO6N", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Dr. Kirstie Whitaker is the Executive Director at the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://bids.berkeley.edu/" },
+                    "content": [
+                      { "nodeType": "text", "value": "Berkeley Institute for Data Science", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " (BIDS), where she supports the delivery of innovative open source software and infrastructure to benefit science and society, including through the Jupyter and Scientific Python ecosystems. She is the founder of The Turing Way, a community co-created Jupyter Book that enables leaders and practitioners to deliver open, collaborative, reproducible and inclusive data-intensive research.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Prior to joining the BIDS in January 2025, Kirstie led the Tools, Practices and Systems research program at The Alan Turing Institute, the UK’s national institute for data science and artificial intelligence. She completed her Ph.D. at the Helen Wills Neuroscience Institute at UC Berkeley in 2012, where she held a Fulbright Scholarship and was a Mozilla Open Science Fellow in 2016/17. Kirstie advocates for equity, inclusion and justice as mechanisms to deliver the most impactful, ethical and efficient data science research and innovation.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Former Staff", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Grace Park - Former Communications and Engagement Officer",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "4gTzOiVyFsc1cVzrQnBW7S", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Grace joined PREreview as the first Communications and Engagement Officer from December 2024 to June 2025. In this role, Grace helped the team manage communications and supported various programs, including the Live Review and the Champions program, championing the achievements and efforts of many community members.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Arturo Garduño-Magaña (he/him) – Former Open Grant Reviewers Program Manager and Trainer",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "0919aLea29iVX2ddy4zru", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Arturo worked with PREreview from February 2022 to July 2023 as the Open Grant Reviewers Program Manager and Trainer. In that role, he led the design and delivery of Open Grant Reviewers, a program part of the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://www.openandequitable.org/" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Open and Equitable Funding Model Program",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", developed in close collaboration with the Open Research Founders Group and the Health Research Alliance. Arturo is working at DataCite as the Regional Engagement Specialist, Latin America.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Antoinette Foster, Ph.D.(she/her) – Former Open Reviewers Program Manager",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "5k0yiQIPurvuB3okzHxY9F", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Antoinette Foster has a Ph.D. in Neuroscience and is passionate about establishing racial equity within the scientific enterprise. Antoinette joined the PREreview team in January 2020 and was instrumental in creating the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/openreviewers" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "PREreview Open Reviewers training and mentoring program",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": " and running ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/prereview-open-reviewers-pilot-announcement/" },
+                    "content": [{ "nodeType": "text", "value": "its pilot", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", giving special attention to bringing an equity lens to the curriculum and format. Antoinette is now the Director of Community Transformation at Oregon Health and Science University, where she aims to directly impact internalized and interpersonal racism by empowering her community to become active agents of change.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-2",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Katrina Murphy (she/her) – Former Project Manager",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "7JZw0gs61RP8wAkDKuGTyF", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Katrina joined the PREreview team in April 2020 and stayed with us as PREreview Project Manager until October 2021. During her time with us, Katrina has not only helped our small team manage and deliver on the work we were set to do across programs and collaborations, but has also played a central role in organizing our ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/prereview-open-reviewers-pilot-announcement" },
+                    "content": [{ "nodeType": "text", "value": "first cohort", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " of the ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/openreviewers" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "PREreview Open Reviewers training and mentoring program",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". Katrina is also a yoga teacher and has now moved on to dedicate her full self to her life passion at the intersection of conventional and integrative healthcare practices.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Former Advisory Committee Members", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Kristen Ratan (she/her) – Founder and Director at ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://strategiesos.org/" },
+                            "content": [{ "nodeType": "text", "value": "Stratos", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": " (09/2020-03/2026)", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Sarah Greaves (she/her) – STM Publishing Consultant (12/2020-08/2024)",
+                            "marks": [],
+                            "data": {}
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Lenny Teytelman, Ph.D. – CEO, Co-Founder, ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://protocols.io/" },
+                            "content": [{ "nodeType": "text", "value": "protocols.io", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": " (12/2019–07/2023)", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Georgia Bullen – Executive Director, ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://superbloom.design/" },
+                            "content": [{ "nodeType": "text", "value": "Superbloom", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": " (04/2020–10/2021)", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Naomi Penfold, Ph.D. – Researcher | Data scientist (01/2020-10/2020)",
+                            "marks": [],
+                            "data": {}
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "This page was last updated on 18 February 2026.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "0919aLea29iVX2ddy4zru",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:51:51.547Z",
+          "updatedAt": "2026-09-14T08:51:59.195Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Arturo Garduño-Magaña profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "4WXPBOm0QUXbULBRXLFPN8" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "2E64Sm27wgdmLa5Am9ESRP",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:48:26.007Z",
+          "updatedAt": "2026-09-14T08:48:32.705Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Christopher Steven Marcum profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "42mYMlcNAjNXARJcS6LD9H" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "2MxuClGGMedtgRt2tIDsSI",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:42:54.867Z",
+          "updatedAt": "2026-09-14T08:43:31.906Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Daniela Saderi profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "3IVE2OuH5vwEfPkqzeqh3Q" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "2cBNCa5ln5fNKEXNwsWELh",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:47:50.083Z",
+          "updatedAt": "2026-09-14T08:47:57.723Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Monica Granados profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "77lEV2ipgbkEEqyUEzsXxF" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "2mdOUAia46g4cSHUNU5LZ6",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:45:05.151Z",
+          "updatedAt": "2026-09-14T08:45:27.562Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Chris Wilkinson profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "3gNTZjNi1shtnoJc7MbOio" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "3BM9B3Cq138c88n16hTO6N",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:50:34.472Z",
+          "updatedAt": "2026-09-14T08:50:41.169Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Kirstie Whitaker profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6xEO2yZgZyLetqkwJbaJVI" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "40XFRGUBPuAQP6JaR6Soic",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:47:04.942Z",
+          "updatedAt": "2026-09-14T08:47:11.723Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Samantha Hindle profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "2b9P62mj1ai5jTlINxgYoc" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "49ITP3Nlr8waq1WzW8iYWN",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:46:24.181Z",
+          "updatedAt": "2026-09-14T08:46:30.735Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "María Sol Ruiz profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7oJ2Vtn4niB7Jd1w2quAp4" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "4GGR6MZTJgEUcqu9JMxIxn",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:49:31.430Z",
+          "updatedAt": "2026-09-14T08:49:39.690Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Aurelia Munene profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6iCPvoP1ELMnc8XZc8GilW" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "4gTzOiVyFsc1cVzrQnBW7S",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:51:21.831Z",
+          "updatedAt": "2026-09-14T08:51:28.711Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Grace Park profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "61bqShbwFWJ8WYBrEdXntm" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "5k0yiQIPurvuB3okzHxY9F",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:52:28.906Z",
+          "updatedAt": "2026-09-14T08:52:38.419Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Antoinette Foster profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7yOVIeLbKKEuprTqBbmSgR" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "5nnANZlhGv0J5H3gqQozNb",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:50:01.298Z",
+          "updatedAt": "2026-09-14T08:50:24.589Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Malvika Sharan profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "134ZBeQJGlHrGNe1uOoDmE" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "67xFFtlUFh3jDjfK4OWIUA",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:43:41.218Z",
+          "updatedAt": "2026-09-14T08:44:06.125Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Chad Sansing profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7cOxbgJTA5aHAvOAF3mMms" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "78qpPo93J6rgBEsiYjkxhY",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:48:56.367Z",
+          "updatedAt": "2026-09-14T08:49:02.672Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Lamis Yahia Mohamed Elkheir profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "1I3JNZt7Pge1YVbj2cP47Q" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "7Fho7AUpQpyAxSn03cNp33",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:44:19.358Z",
+          "updatedAt": "2026-09-14T08:44:25.938Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "María Pía Tavella" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "69hG0LgJNaqAujlRdGkTYi" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "7JZw0gs61RP8wAkDKuGTyF",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:53:13.736Z",
+          "updatedAt": "2026-09-14T08:53:26.611Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Katrina Murphy profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5tkBquqVgG2x8JMmldE2AE" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "7v52Uqy2eZFIkcQmLxKIP9",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:45:40.400Z",
+          "updatedAt": "2026-09-14T08:45:46.981Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Daniel Haarhoff profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "UNYKBory9dn6gayYHGpeM" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Entry",
+          "id": "Mcl8QjTLm9uRIrUAR4zpY",
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } },
+          "revision": 0,
+          "createdAt": "2026-09-14T08:42:00.802Z",
+          "updatedAt": "2026-09-14T08:42:43.969Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Vanessa Fairhurst profile" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6IDInBIr6jbVwbQYjQD9bt" } } }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "134ZBeQJGlHrGNe1uOoDmE",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:50:04.322Z",
+          "updatedAt": "2026-09-14T08:50:15.971Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Malvika Sharan" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/134ZBeQJGlHrGNe1uOoDmE/021352bb9cbb0b08b9caedc975848a9b/Malvika-headshot-250x250.png",
+              "details": { "size": 55907, "image": { "width": 250, "height": 250 } },
+              "fileName": "Malvika-headshot-250x250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "1I3JNZt7Pge1YVbj2cP47Q",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:49:01.071Z",
+          "updatedAt": "2026-09-14T08:49:11.289Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Lamis Yahia Mohamed Elkheir" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/1I3JNZt7Pge1YVbj2cP47Q/60f1585ec7e34703d03694ec6bceac08/Lamis-headshot-250x250.png",
+              "details": { "size": 74328, "image": { "width": 250, "height": 250 } },
+              "fileName": "Lamis-headshot-250x250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "2b9P62mj1ai5jTlINxgYoc",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:47:07.953Z",
+          "updatedAt": "2026-09-14T08:47:22.116Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Samantha Hindle" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg",
+              "details": { "size": 10402, "image": { "width": 250, "height": 250 } },
+              "fileName": "sam_bw_small-1.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "3IVE2OuH5vwEfPkqzeqh3Q",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:43:01.154Z",
+          "updatedAt": "2026-09-14T08:43:23.300Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Daniela Saderi" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png",
+              "details": { "size": 59819, "image": { "width": 250, "height": 250 } },
+              "fileName": "image-3.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "3gNTZjNi1shtnoJc7MbOio",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:45:08.046Z",
+          "updatedAt": "2026-09-14T08:45:22.791Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Chris Wilkinson" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg",
+              "details": { "size": 7454, "image": { "width": 250, "height": 250 } },
+              "fileName": "Chris-250.jpeg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "42mYMlcNAjNXARJcS6LD9H",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:48:30.284Z",
+          "updatedAt": "2026-09-14T08:48:40.254Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Christopher Steven Marcum" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg",
+              "details": { "size": 7335, "image": { "width": 250, "height": 250 } },
+              "fileName": "unnamed-2.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "4WXPBOm0QUXbULBRXLFPN8",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:51:55.382Z",
+          "updatedAt": "2026-09-14T08:52:05.031Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Arturo Garduño-Magaña" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG",
+              "details": { "size": 8684, "image": { "width": 250, "height": 250 } },
+              "fileName": "agm_250-wbg-1.JPG",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "5tkBquqVgG2x8JMmldE2AE",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:53:20.832Z",
+          "updatedAt": "2026-09-14T08:53:31.027Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Katrina Murphy" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg",
+              "details": { "size": 9402, "image": { "width": 250, "height": 250 } },
+              "fileName": "KatrinaMurphy_Headshot_Square_250.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "61bqShbwFWJ8WYBrEdXntm",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:51:25.439Z",
+          "updatedAt": "2026-09-14T08:51:35.692Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Grace Park" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png",
+              "details": { "size": 35659, "image": { "width": 250, "height": 250 } },
+              "fileName": "grace-250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "69hG0LgJNaqAujlRdGkTYi",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:44:24.690Z",
+          "updatedAt": "2026-09-14T08:44:40.601Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "María Pía Tavella" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg",
+              "details": { "size": 8699, "image": { "width": 250, "height": 250 } },
+              "fileName": "pia-250.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "6IDInBIr6jbVwbQYjQD9bt",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:42:07.744Z",
+          "updatedAt": "2026-09-14T08:42:34.153Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Vanessa Fairhurst" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png",
+              "details": { "size": 48111, "image": { "width": 250, "height": 250 } },
+              "fileName": "image-2.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "6iCPvoP1ELMnc8XZc8GilW",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:49:35.447Z",
+          "updatedAt": "2026-09-14T08:49:47.425Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Aurelia Munene" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png",
+              "details": { "size": 91555, "image": { "width": 250, "height": 250 } },
+              "fileName": "aurelia-250x250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "6xEO2yZgZyLetqkwJbaJVI",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:50:37.998Z",
+          "updatedAt": "2026-09-14T08:50:47.872Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Kirstie Whitaker" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/6xEO2yZgZyLetqkwJbaJVI/53e62918158c6c779294c5785566f0a3/Kirstie-headshot-250x250.png",
+              "details": { "size": 73286, "image": { "width": 250, "height": 250 } },
+              "fileName": "Kirstie-headshot-250x250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "77lEV2ipgbkEEqyUEzsXxF",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:47:53.866Z",
+          "updatedAt": "2026-09-14T08:48:05.429Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Monica Granados" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png",
+              "details": { "size": 53607, "image": { "width": 250, "height": 250 } },
+              "fileName": "monica_bw_small-1.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "7cOxbgJTA5aHAvOAF3mMms",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:43:48.044Z",
+          "updatedAt": "2026-09-14T08:43:59.782Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Chad Sansing" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png",
+              "details": { "size": 80519, "image": { "width": 250, "height": 250 } },
+              "fileName": "chad-sansing-pic-bw-250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "7oJ2Vtn4niB7Jd1w2quAp4",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:46:28.268Z",
+          "updatedAt": "2026-09-14T08:46:41.740Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "María Sol Ruiz" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png",
+              "details": { "size": 65251, "image": { "width": 250, "height": 250 } },
+              "fileName": "sol-resized.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "7yOVIeLbKKEuprTqBbmSgR",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:52:36.947Z",
+          "updatedAt": "2026-09-14T08:52:56.279Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Antoinette Foster" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png",
+              "details": { "size": 53280, "image": { "width": 250, "height": 250 } },
+              "fileName": "NGP_Antionette_Foster_250.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "type": "Asset",
+          "id": "UNYKBory9dn6gayYHGpeM",
+          "revision": 0,
+          "createdAt": "2026-09-14T08:45:45.004Z",
+          "updatedAt": "2026-09-14T08:45:56.569Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } }
+        },
+        "fields": {
+          "title": { "en-US": "Daniel Haarhoff" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg",
+              "details": { "size": 11314, "image": { "width": 250, "height": 250 } },
+              "fileName": "cropped-bw-hff.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
