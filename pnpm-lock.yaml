@@ -184,8 +184,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.10.0(jiti@2.6.1)(supports-color@10.2.2))
       '@fast-check/vitest':
-        specifier: ^0.4.1
-        version: 0.4.1(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
+        specifier: ^0.5.0
+        version: 0.5.0(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       '@fullhuman/postcss-purgecss':
         specifier: ^8.0.0
         version: 8.0.0(postcss@8.5.28)
@@ -1073,10 +1073,10 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fast-check/vitest@0.4.1':
-    resolution: {integrity: sha512-OX6TecB+ZzRfPc49jcPChcV1cf5aDu77CdDU8liecWVam7eD7mPvJNP50b9bBSTxVoGN5wzxrX9PIcCnqgC8bg==}
+  '@fast-check/vitest@0.5.0':
+    resolution: {integrity: sha512-Kgbj2smuq1P4OhGKuPATs5i2fAxNmGbJ/zSmTrzWhQSLUrHREbKWgv9WGbNUOXcx77q6joLVMmTygyXuwP2Bog==}
     peerDependencies:
-      vitest: ^4.1.0
+      vitest: ^4.1.0 || ^5.0.0
 
   '@fullhuman/postcss-purgecss@8.0.0':
     resolution: {integrity: sha512-fSRaBGf6+DYdfQMxedWfnIW8FSYE1LBpgy16jpK1L2vNb1HgeBRRZ+UX4UokNmW7YEAwPdvwkKdYtlkYpH+Aqg==}
@@ -5937,7 +5937,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fast-check/vitest@0.4.1(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
+  '@fast-check/vitest@0.5.0(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
     dependencies:
       fast-check: 3.23.2
       vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
