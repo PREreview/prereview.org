@@ -544,9 +544,7 @@ const AuthRouter = HttpRouter.fromIterable([
     Routes.OrcidAuth,
     flow(
       Match.value,
-      Match.when({ code: Match.string }, ({ code, state }) =>
-        Effect.catchAll(authenticate(code, state), Effect.succeed),
-      ),
+      Match.when({ code: Match.string }, ({ code, state }) => authenticate(code, state)),
       Match.when({ error: Match.string }, AuthenticateError),
       Match.exhaustive,
     ),

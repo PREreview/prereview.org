@@ -296,7 +296,6 @@ describe('authenticate', () => {
 
         const actual = yield* pipe(
           _.authenticate(code, referer.href),
-          Effect.flip,
           Effect.provideService(_.IsUserBlocked, isUserBlocked),
           Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
         )
@@ -354,7 +353,6 @@ describe('authenticate', () => {
 
         const actual = yield* pipe(
           _.authenticate(code, referer.href),
-          Effect.flip,
           Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
           Effect.provideService(FetchHttpClient.Fetch, (...args) => fetch.fetchHandler(...args)),
         )
@@ -412,7 +410,6 @@ describe('authenticate', () => {
 
         const actual = yield* pipe(
           _.authenticate(code, referer.href),
-          Effect.flip,
           Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
           Effect.provideService(FetchHttpClient.Fetch, (...args) => fetch.fetchHandler(...args)),
         )

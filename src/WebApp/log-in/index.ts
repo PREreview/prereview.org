@@ -131,8 +131,10 @@ export const authenticate = Effect.fn(
   Effect.catchAll(
     flow(
       Match.value,
-      Match.when('blocked', () => Effect.fail(FlashMessageResponse({ location: Routes.HomePage, message: 'blocked' }))),
-      Match.orElse(() => Effect.flip(Effect.andThen(Locale, failureMessage))),
+      Match.when('blocked', () =>
+        Effect.succeed(FlashMessageResponse({ location: Routes.HomePage, message: 'blocked' })),
+      ),
+      Match.orElse(() => Effect.andThen(Locale, failureMessage)),
     ),
   ),
 )
