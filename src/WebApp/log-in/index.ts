@@ -1,11 +1,10 @@
-import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
-import { Boolean, Context, Duration, Effect, Function, Match, Redacted, Struct, flow, identity, pipe } from 'effect'
+import { Cookies, FetchHttpClient, HttpServerResponse, Url } from '@effect/platform'
+import { Boolean, Context, Duration, Effect, Match, Redacted, Struct, flow, identity, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -78,12 +77,11 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
 
 export const authenticate = Effect.fn(
   function* (code: string, state: string) {
-    const publicUrl = yield* PublicUrl
     const { cookie, store } = yield* SessionStore
     const isUserBlocked = yield* IsUserBlocked
     const prereviewers = yield* Prereviewers
 
-    const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
+    const referer = yield* getReferer(state)
 
     const authenticatedOrcidId = yield* GetOrcidIdUsingAuthorizationCode(code)
 
@@ -146,16 +144,11 @@ export const AuthenticateError = pipe(
   Match.orElse(() => Effect.andThen(Locale, failureMessage)),
 )
 
-function getReferer(state: string) {
-  return pipe(
-    RE.fromEither(E.tryCatch(() => new URL(state), Function.constant('not-a-url'))),
-    RE.chain(ifHasSameOrigin),
-    RE.match(
-      () => Routes.HomePage,
-      referer => referer.href,
-    ),
-  )
-}
+const getReferer: (state: string) => Effect.Effect<string, never, PublicUrl> = flow(
+  Url.fromString,
+  Effect.filterEffectOrFail({ predicate: ifHasSameOrigin, orFailWith: () => 'not-same-origin' }),
+  Effect.match({ onSuccess: referer => referer.href, onFailure: () => Routes.HomePage }),
+)
 
 const JsonD = {
   decode: (s: string) =>

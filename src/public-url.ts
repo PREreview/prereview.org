@@ -1,8 +1,7 @@
 import { Url } from '@effect/platform'
-import { Context, Effect, Function, pipe } from 'effect'
+import { Context, Effect } from 'effect'
 import { format, type Formatter } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RE from 'fp-ts/lib/ReaderEither.js'
 import type { QueryRoute, Route } from './routes.ts'
 
 export interface PublicUrlEnv {
@@ -41,11 +40,8 @@ export const toUrl: {
       ),
   )
 
-export function ifHasSameOrigin(url: URL) {
-  return RE.asksReaderEither(({ publicUrl }: PublicUrlEnv) =>
-    pipe(
-      url,
-      RE.fromPredicate(url => url.origin === publicUrl.origin, Function.constant('different-origin')),
-    ),
-  )
-}
+export const ifHasSameOrigin = Effect.fnUntraced(function* (url: URL) {
+  const publicUrl = yield* PublicUrl
+
+  return url.origin === publicUrl.origin
+})
