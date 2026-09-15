@@ -200,7 +200,7 @@ const updateReviewRequestStateWithPertinentEvent = (
 
 const query = (state: State, input: Input): Result =>
   Either.gen(function* () {
-    const fiteredMostRecentReviewRequestsByPreprint = HashMap.filter(
+    const filteredMostRecentReviewRequestsByPreprint = HashMap.filter(
       state.mostRecentReviewRequestsByPreprint,
       reviewRequest =>
         Boolean.every([
@@ -214,7 +214,7 @@ const query = (state: State, input: Input): Result =>
 
     const sortedLatestReviewRequestForEachPreprint = Array.reverse(
       Array.sortWith(
-        HashMap.values(fiteredMostRecentReviewRequestsByPreprint),
+        HashMap.values(filteredMostRecentReviewRequestsByPreprint),
         Struct.get('published'),
         Temporal.OrderInstant,
       ),
