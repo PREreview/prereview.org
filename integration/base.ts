@@ -77,6 +77,8 @@ import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
 
 export { expect } from '@playwright/test'
 
+type NoFixtures = object
+
 interface AppFixtures {
   baseURL: string
   sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
@@ -105,7 +107,7 @@ interface AppFixtures {
   seedEvents: ReadonlyArray<Events.Event>
 }
 
-const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
+const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & PlaywrightTestOptions> = {
   authorInviteStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -2590,11 +2592,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
 }
 
-export const usePostgresDB: Fixtures<
-  { postgresUrl: URL },
-  Record<never, never>,
-  Pick<AppFixtures, 'sqlClientLayer'>
-> = {
+export const usePostgresDB: Fixtures<{ postgresUrl: URL }, NoFixtures, Pick<AppFixtures, 'sqlClientLayer'>> = {
   postgresUrl: async ({}, use) => {
     const postgresConnection = await pipe(
       Effect.gen(function* () {
@@ -2620,7 +2618,7 @@ export const usePostgresDB: Fixtures<
 
 export const canLogIn: Fixtures<
   { hasSeenMyDetailsPage: boolean },
-  Record<never, never>,
+  NoFixtures,
   Pick<AppFixtures, 'fetch' | 'seedEvents' | 'userOnboardingStore'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   hasSeenMyDetailsPage: async ({}, use) => {
@@ -2655,8 +2653,8 @@ export const canLogIn: Fixtures<
 }
 
 export const canLogInAsDemoUser: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'canLogInAsDemoUser' | 'seedEvents'>
 > = {
   canLogInAsDemoUser: async ({}, use) => {
@@ -2664,7 +2662,7 @@ export const canLogInAsDemoUser: Fixtures<
   },
 }
 
-export const canRegisterAsNewUser: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'fetch'>> = {
+export const canRegisterAsNewUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     fetch.post('http://orcid.test/token', {
       status: StatusCodes.OK,
@@ -2681,23 +2679,19 @@ export const canRegisterAsNewUser: Fixtures<Record<never, never>, Record<never, 
   },
 }
 
-export const userIsBlocked: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'isUserBlocked'>> = {
+export const userIsBlocked: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'isUserBlocked'>> = {
   isUserBlocked: async ({}, use) => {
     await use(() => true)
   },
 }
 
-export const prereviewWasRemoved: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'wasPrereviewRemoved'>
-> = {
+export const prereviewWasRemoved: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'wasPrereviewRemoved'>> = {
   wasPrereviewRemoved: async ({}, use) => {
     await use(() => true)
   },
 }
 
-export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, Pick<PlaywrightTestArgs, 'page'>> = {
+export const areLoggedIn: Fixtures<NoFixtures, NoFixtures, Pick<PlaywrightTestArgs, 'page'>> = {
   page: async ({ page }, use) => {
     await page.goto('/log-in', { waitUntil: 'domcontentloaded' })
 
@@ -2707,7 +2701,7 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
   },
 }
 
-export const areAClubLead: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'clubs'>> = {
+export const areAClubLead: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'clubs'>> = {
   clubs: async ({ clubs }, use) => {
     await use([
       ...clubs,
@@ -2730,11 +2724,7 @@ export const areAClubLead: Fixtures<Record<never, never>, Record<never, never>, 
   },
 }
 
-export const isASlackUser: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>
-> = {
+export const isASlackUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     fetch.post('http://slack.test/token', {
       status: StatusCodes.OK,
@@ -2769,11 +2759,7 @@ export const isASlackUser: Fixtures<
   },
 }
 
-export const willPublishAReview: Fixtures<
-  Pick<AppFixtures, 'fetch'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'fetch'>
-> = {
+export const willPublishAReview: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.1055805'),
@@ -2908,7 +2894,7 @@ export const willPublishAReview: Fixtures<
   },
 }
 
-export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'fetch'>> = {
+export const willUpdateAReview: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.1055805'),
@@ -3073,11 +3059,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
   },
 }
 
-export const willPublishADatasetReview: Fixtures<
-  Pick<AppFixtures, 'fetch'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'fetch'>
-> = {
+export const willPublishADatasetReview: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.1055805'),
@@ -3217,11 +3199,7 @@ export const willPublishADatasetReview: Fixtures<
   },
 }
 
-export const willPublishAComment: Fixtures<
-  Pick<AppFixtures, 'fetch'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'fetch'>
-> = {
+export const willPublishAComment: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.112360'),
@@ -3380,11 +3358,7 @@ export const willPublishAComment: Fixtures<
   },
 }
 
-export const hasAnUnverifiedEmailAddress: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'seedEvents'>
-> = {
+export const hasAnUnverifiedEmailAddress: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'seedEvents'>> = {
   seedEvents: async ({ seedEvents }, use) => {
     await use([
       ...seedEvents,
@@ -3397,11 +3371,7 @@ export const hasAnUnverifiedEmailAddress: Fixtures<
   },
 }
 
-export const hasAVerifiedEmailAddress: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'seedEvents'>
-> = {
+export const hasAVerifiedEmailAddress: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'seedEvents'>> = {
   seedEvents: async ({ seedEvents }, use) => {
     const contactAddressId = Uuid.Uuid('41ca4cf0-117e-4f60-a864-535863fe1897')
 
@@ -3422,8 +3392,8 @@ export const hasAVerifiedEmailAddress: Fixtures<
 }
 
 export const optedInToRequestedReviewNotifications: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'seedEvents'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
@@ -3438,8 +3408,8 @@ export const optedInToRequestedReviewNotifications: Fixtures<
 }
 
 export const invitedToBeAnAuthor: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'authorInviteStore' | 'baseURL' | 'emails' | 'fetch' | 'nodemailer'> &
     Pick<PlaywrightTestArgs, 'page'>
 > = {
@@ -3546,8 +3516,8 @@ export const invitedToBeAnAuthor: Fixtures<
 }
 
 export const invitedToBeADatasetReviewAuthor: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'baseURL' | 'emails' | 'nodemailer' | 'seedEvents'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
@@ -3652,8 +3622,8 @@ export const invitedToBeADatasetReviewAuthor: Fixtures<
 }
 
 export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'baseURL' | 'emails' | 'nodemailer' | 'seedEvents'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
@@ -3753,10 +3723,10 @@ export const invitedMyselfToBeADatasetReviewAuthor: Fixtures<
 }
 
 export const canAddMultipleAuthors: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'canAddMultipleAuthors'>,
-  Record<never, never>
+  NoFixtures
 > = {
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => Effect.succeed(true))
@@ -3764,10 +3734,10 @@ export const canAddMultipleAuthors: Fixtures<
 }
 
 export const clubLeadsCanAddReviewsToClubs: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'canClubLeadsAddReviewsToClubs'>,
-  Record<never, never>
+  NoFixtures
 > = {
   canClubLeadsAddReviewsToClubs: async ({}, use) => {
     await use(true)
@@ -3775,10 +3745,10 @@ export const clubLeadsCanAddReviewsToClubs: Fixtures<
 }
 
 export const showSpotlight: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
+  NoFixtures,
+  NoFixtures,
   Pick<AppFixtures, 'fetch' | 'showSpotlight'>,
-  Record<never, never>
+  NoFixtures
 > = {
   showSpotlight: async ({ fetch }, use) => {
     fetch.get({
@@ -3811,7 +3781,7 @@ export const showSpotlight: Fixtures<
 
 export const seedEvents = (
   ...events: ReadonlyArray<Events.Event>
-): Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'seedEvents'>, Record<never, never>> => ({
+): Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'seedEvents'>, NoFixtures> => ({
   seedEvents: async ({}, use) => {
     await use(events)
   },
