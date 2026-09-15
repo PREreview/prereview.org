@@ -1335,6 +1335,32 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     leads: [OrcidId('0000-0003-1978-7491')],
   },
   {
+    id: Uuid('116179da-caf9-424a-97c2-b8faf999a53a'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('ReplicationWiki Webinar Series'),
+    },
+    slug: Slug('replicationwiki'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          ReplicationWiki webinar series on replication in the social sciences, organized with the Institute for New
+          Economic Thinking (INET) Young Scholars Initiative (YSI) working group Philosophy of Economics and Project
+          Teaching Integrity in Empirical Research (TIER)
+        </p>
+        <p>
+          We review texts that will be published in a special issue of a peer reviewed academic journal, and a textbook,
+          both on replication in the empirical social sciences, as well as possible further related academic texts
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-15'),
+    leads: [OrcidId('0000-0002-8382-2071'), OrcidId('0000-0001-8268-1505'), OrcidId('0009-0001-9284-5216')],
+    contact: EmailAddress('jhoeffl@gwdg.de'),
+  },
+  {
     id: Uuid('c485e5e6-3d53-4700-9734-e4ead74ee76d'),
     status: 'active',
     name: {
