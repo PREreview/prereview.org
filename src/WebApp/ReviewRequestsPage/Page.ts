@@ -80,10 +80,10 @@ export const form = ({
         </div>
       </div>
       <div>
-        <label for="server">Server</label>
+        <label for="server">${t('filterServerLabel')()}</label>
         <div class="select">
           <select name="server" id="server">
-            <option value="" ${server === undefined ? html`selected` : ''}>Any</option>
+            <option value="" ${server === undefined ? html`selected` : ''}>${t('filterServerAny')()}</option>
             ${pipe(
               Servers,
               Array.map(server => Tuple.make(server, getServerName(locale, server))),

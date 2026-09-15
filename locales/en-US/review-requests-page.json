@@ -31,9 +31,17 @@
     "message": "Field",
     "description": "Label for the dropdown to filter the list of review requests by field."
   },
+  "filterServerLabel": {
+    "message": "Server",
+    "description": "Label for the dropdown to filter the list of review requests by server."
+  },
   "filterFieldAny": {
     "message": "Any",
     "description": "Option in the dropdown to filter the list of review requests by field."
+  },
+  "filterServerAny": {
+    "message": "Any",
+    "description": "Option in the dropdown to filter the list of review requests by server."
   },
   "filterButton": {
     "message": "Filter results",
