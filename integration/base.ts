@@ -2592,11 +2592,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   },
 }
 
-export const usePostgresDB: Fixtures<
-  { postgresUrl: URL },
-  NoFixtures,
-  Pick<AppFixtures, 'sqlClientLayer'>
-> = {
+export const usePostgresDB: Fixtures<{ postgresUrl: URL }, NoFixtures, Pick<AppFixtures, 'sqlClientLayer'>> = {
   postgresUrl: async ({}, use) => {
     const postgresConnection = await pipe(
       Effect.gen(function* () {
@@ -2689,11 +2685,7 @@ export const userIsBlocked: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, '
   },
 }
 
-export const prereviewWasRemoved: Fixtures<
-  NoFixtures,
-  NoFixtures,
-  Pick<AppFixtures, 'wasPrereviewRemoved'>
-> = {
+export const prereviewWasRemoved: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'wasPrereviewRemoved'>> = {
   wasPrereviewRemoved: async ({}, use) => {
     await use(() => true)
   },
@@ -2732,11 +2724,7 @@ export const areAClubLead: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'c
   },
 }
 
-export const isASlackUser: Fixtures<
-  NoFixtures,
-  NoFixtures,
-  Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>
-> = {
+export const isASlackUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     fetch.post('http://slack.test/token', {
       status: StatusCodes.OK,
@@ -2771,11 +2759,7 @@ export const isASlackUser: Fixtures<
   },
 }
 
-export const willPublishAReview: Fixtures<
-  Pick<AppFixtures, 'fetch'>,
-  NoFixtures,
-  Pick<AppFixtures, 'fetch'>
-> = {
+export const willPublishAReview: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.1055805'),
@@ -3075,11 +3059,7 @@ export const willUpdateAReview: Fixtures<NoFixtures, NoFixtures, Pick<AppFixture
   },
 }
 
-export const willPublishADatasetReview: Fixtures<
-  Pick<AppFixtures, 'fetch'>,
-  NoFixtures,
-  Pick<AppFixtures, 'fetch'>
-> = {
+export const willPublishADatasetReview: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.1055805'),
@@ -3219,11 +3199,7 @@ export const willPublishADatasetReview: Fixtures<
   },
 }
 
-export const willPublishAComment: Fixtures<
-  Pick<AppFixtures, 'fetch'>,
-  NoFixtures,
-  Pick<AppFixtures, 'fetch'>
-> = {
+export const willPublishAComment: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.112360'),
@@ -3382,11 +3358,7 @@ export const willPublishAComment: Fixtures<
   },
 }
 
-export const hasAnUnverifiedEmailAddress: Fixtures<
-  NoFixtures,
-  NoFixtures,
-  Pick<AppFixtures, 'seedEvents'>
-> = {
+export const hasAnUnverifiedEmailAddress: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'seedEvents'>> = {
   seedEvents: async ({ seedEvents }, use) => {
     await use([
       ...seedEvents,
@@ -3399,11 +3371,7 @@ export const hasAnUnverifiedEmailAddress: Fixtures<
   },
 }
 
-export const hasAVerifiedEmailAddress: Fixtures<
-  NoFixtures,
-  NoFixtures,
-  Pick<AppFixtures, 'seedEvents'>
-> = {
+export const hasAVerifiedEmailAddress: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'seedEvents'>> = {
   seedEvents: async ({ seedEvents }, use) => {
     const contactAddressId = Uuid.Uuid('41ca4cf0-117e-4f60-a864-535863fe1897')
 
