@@ -10,7 +10,8 @@ export const DoiSchema: Schema.Schema<Doi.Doi, string> = pipe(Schema.String, Sch
 
 export const RegistrantDoiSchema = <R extends string>(
   ...registrants: ReadonlyArray<R>
-): Schema.Schema<Doi.Doi<R>, string> => pipe(DoiSchema, Schema.filter(Doi.hasRegistrant(...registrants)))
+): Schema.Schema<Doi.Doi<R>, string> & { readonly registrants: ReadonlyArray<R> } =>
+  Object.assign(pipe(DoiSchema, Schema.filter(Doi.hasRegistrant(...registrants))), { registrants })
 
 export const DoiFromUrlSchema: Schema.Schema<Doi.Doi, string> = Schema.transformOrFail(
   Schema.URL,
