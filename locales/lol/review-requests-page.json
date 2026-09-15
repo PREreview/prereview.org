@@ -23,8 +23,14 @@
   "filterFieldLabel": {
     "message": "crwdns2106:0crwdne2106:0"
   },
+  "filterServerLabel": {
+    "message": "crwdns8289:0crwdne8289:0"
+  },
   "filterFieldAny": {
     "message": "crwdns2108:0crwdne2108:0"
+  },
+  "filterServerAny": {
+    "message": "crwdns8291:0crwdne8291:0"
   },
   "filterButton": {
     "message": "crwdns2110:0crwdne2110:0"
