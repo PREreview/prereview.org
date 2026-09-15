@@ -5,19 +5,25 @@ import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import { fieldIds, getFieldName } from '../../types/field.ts'
+import { type Server, getServerName, Servers } from './Servers.ts'
 
 export const title = ({
   currentPage,
   field,
   language,
   locale,
-}: Pick<ReviewRequests.PageOfReviewRequests, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
+  server,
+}: Pick<ReviewRequests.PageOfReviewRequests, 'currentPage' | 'field' | 'language'> & {
+  locale: SupportedLocale
+  server?: Server
+}) => {
   const t = translate(locale, 'review-requests-page')
 
   const details = Array.append(
     [
       field ? plainText(getFieldName(field, locale)).toString() : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
+      server ? getServerName(locale, server) : undefined,
     ].filter(String.isString),
     t('pageNumber')({ page: currentPage }),
   )
@@ -29,7 +35,8 @@ export const form = ({
   field,
   language,
   locale,
-}: Pick<ReviewRequests.PageOfReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) => {
+  server,
+}: Pick<ReviewRequests.PageOfReviewRequests, 'field' | 'language'> & { locale: SupportedLocale; server?: Server }) => {
   const t = translate(locale, 'review-requests-page')
 
   return html`
@@ -67,6 +74,22 @@ export const form = ({
               Array.sort<readonly [string, Html]>(Order.mapInput(StringOrder(locale), ([, name]) => name.toString())),
               Array.map(
                 ([id, name]) => html` <option value="${id}" ${id === field ? html`selected` : ''}>${name}</option>`,
+              ),
+            )}
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="server">Server</label>
+        <div class="select">
+          <select name="server" id="server">
+            <option value="" ${server === undefined ? html`selected` : ''}>Any</option>
+            ${pipe(
+              Servers,
+              Array.map(server => Tuple.make(server, getServerName(locale, server))),
+              Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), ([, name]) => name)),
+              Array.map(
+                ([id, name]) => html` <option value="${id}" ${id === server ? html`selected` : ''}>${name}</option>`,
               ),
             )}
           </select>

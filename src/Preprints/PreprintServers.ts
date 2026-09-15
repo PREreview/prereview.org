@@ -46,7 +46,8 @@ const serverNames: Record<PreprintId['_tag'], NonEmptyString> = Record.map(
   NonEmptyString,
 )
 
-export const getServerName = (preprintId: PreprintId): NonEmptyString => serverNames[preprintId._tag]
+export const getServerName = (preprintId: PreprintId | PreprintId['_tag']): NonEmptyString =>
+  typeof preprintId === 'string' ? serverNames[preprintId] : serverNames[preprintId._tag]
 
 export const ServerNames: Array.NonEmptyReadonlyArray<NonEmptyString> = Array.dedupe(
   Record.values(serverNames),

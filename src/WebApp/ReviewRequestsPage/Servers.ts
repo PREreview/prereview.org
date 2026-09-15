@@ -1,5 +1,6 @@
 import { Array, Record } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import type { Registrant } from '../../types/Doi.ts'
 
 export type Server = keyof typeof servers
@@ -24,6 +25,11 @@ const servers = {
 } as const
 
 export const Servers = Record.keys(servers) as never as Array.NonEmptyReadonlyArray<Server>
+
+export const getServerName = (locale: SupportedLocale, server: Server) =>
+  new Intl.ListFormat(locale, { type: 'disjunction' }).format(
+    Array.map(servers[server], type => Preprints.getServerName(type._tag)),
+  )
 
 export const isServer = (value: string): value is Server => value in servers
 

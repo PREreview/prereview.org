@@ -48,6 +48,20 @@ test('content looks right with a field', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with a server', async ({ showPage }) => {
+  const response = _.PageOfReviewRequests({
+    currentPage: 1,
+    totalPages: 3,
+    server: 'biorxiv-medrxiv',
+    reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
+    locale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks on a middle page', async ({ showPage }) => {
   const response = _.PageOfReviewRequests({
     currentPage: 2,

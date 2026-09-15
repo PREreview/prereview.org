@@ -30,16 +30,20 @@ export const ReviewRequestsPage: (query: {
       doiRegistrants: server ? registrantsForServer(server) : undefined,
     })
 
-    return PageOfReviewRequests({ ...reviewRequests, locale })
+    return PageOfReviewRequests({ ...reviewRequests, locale, server })
   },
-  (response, { field, language, page }) =>
+  (response, { field, language, page, server }) =>
     Effect.catchIf(
       response,
       error => error._tag === 'ReviewRequestsNotFound' && page === 1,
       Effect.fnUntraced(function* () {
         const locale = yield* Locale
 
-        return NoResultsPage({ field, language, locale })
+        if (typeof server === 'string' && !isServer(server)) {
+          return yield* PageNotFound
+        }
+
+        return NoResultsPage({ field, language, locale, server })
       }),
     ),
   Effect.catchTags({

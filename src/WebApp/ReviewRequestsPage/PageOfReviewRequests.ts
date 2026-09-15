@@ -10,6 +10,7 @@ import { renderDate } from '../../time.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 import { form, title } from './Page.ts'
+import type { Server } from './Servers.ts'
 
 export const PageOfReviewRequests = ({
   currentPage,
@@ -17,17 +18,18 @@ export const PageOfReviewRequests = ({
   language,
   locale,
   field,
+  server,
   reviewRequests,
-}: ReviewRequests.PageOfReviewRequests & { locale: SupportedLocale }) => {
+}: ReviewRequests.PageOfReviewRequests & { locale: SupportedLocale; server?: Server }) => {
   const t = translate(locale, 'review-requests-page')
 
   return PageResponse({
-    title: title({ currentPage, field, language, locale }),
+    title: title({ currentPage, field, language, locale, server }),
     extraSkipLink: [html`${t('skipResults')()}`, '#results'],
     main: html`
       <h1>${t('title')()}</h1>
 
-      ${form({ field, language, locale })}
+      ${form({ field, language, locale, server })}
 
       <ol class="cards" id="results">
         ${reviewRequests.map(
@@ -84,21 +86,25 @@ export const PageOfReviewRequests = ({
       <nav class="pager">
         ${
           currentPage > 1
-            ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage - 1, field, language })}" rel="prev"
+            ? html`<a
+                href="${Routes.ReviewRequests.href({ page: currentPage - 1, field, language, server })}"
+                rel="prev"
                 >${t('pagerNewer')()}</a
               >`
             : ''
         }
         ${
           currentPage < totalPages
-            ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage + 1, field, language })}" rel="next"
+            ? html`<a
+                href="${Routes.ReviewRequests.href({ page: currentPage + 1, field, language, server })}"
+                rel="next"
                 >${t('pagerOlder')()}</a
               >`
             : ''
         }
       </nav>
     `,
-    canonical: Routes.ReviewRequests.href({ page: currentPage, field, language }),
+    canonical: Routes.ReviewRequests.href({ page: currentPage, field, language, server }),
     current: 'review-requests',
   })
 }

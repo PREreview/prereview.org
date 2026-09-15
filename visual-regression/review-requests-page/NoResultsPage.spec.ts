@@ -26,4 +26,12 @@ test('content looks right when empty with a field', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when empty with a server', async ({ showPage }) => {
+  const response = _.NoResultsPage({ server: 'biorxiv-medrxiv', locale })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 const locale = DefaultLocale
