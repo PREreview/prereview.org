@@ -226,6 +226,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 1,
       language: undefined,
       field: undefined,
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request1Id,
@@ -257,6 +258,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 1,
       language: undefined,
       field: undefined,
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request2Id,
@@ -305,6 +307,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 2,
       language: undefined,
       field: undefined,
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request2Id,
@@ -375,6 +378,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 2,
       language: undefined,
       field: undefined,
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request7Id,
@@ -428,6 +432,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 1,
       language: 'pt',
       field: undefined,
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request1Id,
@@ -447,6 +452,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 1,
       language: 'pt',
       field: undefined,
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request1Id,
@@ -475,12 +481,64 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       totalPages: 1,
       language: undefined,
       field: '20',
+      doiRegistrants: undefined,
       reviewRequests: [
         {
           id: request1Id,
           published: request1Published2.publishedAt,
           topics: request1Categorized2.topics,
           preprintId: request1Started2.preprintId,
+        },
+      ],
+    }),
+  ],
+  [
+    'matches on DOI registrant',
+    { page: 1, doiRegistrants: ['1101', '20944'] },
+    [
+      request1Started1,
+      request1Started2,
+      request1Published1,
+      request1Categorized1,
+      request1Categorized2,
+      request1Published2,
+      request2Received,
+      request2Accepted,
+      request2Categorized,
+      request3Received,
+      request3Accepted,
+      request3Categorized,
+      request4Received,
+      request4Categorized,
+      request4Accepted,
+      request6Received,
+      request6Accepted,
+      request6Categorized,
+    ],
+    Either.right({
+      currentPage: 1,
+      totalPages: 1,
+      language: undefined,
+      field: undefined,
+      doiRegistrants: ['1101', '20944'],
+      reviewRequests: [
+        {
+          id: request2Id,
+          published: request2Accepted.acceptedAt,
+          topics: request2Categorized.topics,
+          preprintId: request2Received.preprintId,
+        },
+        {
+          id: request1Id,
+          published: request1Published2.publishedAt,
+          topics: request1Categorized2.topics,
+          preprintId: request1Started2.preprintId,
+        },
+        {
+          id: request6Id,
+          published: request6Accepted.acceptedAt,
+          topics: request6Categorized.topics,
+          preprintId: request6Received.preprintId,
         },
       ],
     }),

@@ -3,6 +3,7 @@ import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
+import { getRegistrant, type Registrant } from '../../types/Doi.ts'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import { getTopicField, type TopicId } from '../../types/Topic.ts'
@@ -13,6 +14,7 @@ export interface PageOfReviewRequests {
   readonly totalPages: number
   readonly field?: FieldId
   readonly language?: LanguageCode
+  readonly doiRegistrants?: Array.NonEmptyReadonlyArray<Registrant<Preprints.IndeterminatePreprintIdWithDoi['value']>>
   readonly reviewRequests: Array.NonEmptyReadonlyArray<{
     readonly id: Uuid.Uuid
     readonly published: Temporal.Instant
@@ -25,6 +27,7 @@ export interface Input {
   field?: FieldId
   language?: LanguageCode
   page: number
+  doiRegistrants?: Array.NonEmptyReadonlyArray<Registrant<Preprints.IndeterminatePreprintIdWithDoi['value']>>
 }
 
 export type Result = Either.Either<PageOfReviewRequests, Errors.NoReviewRequestsFound>
@@ -203,6 +206,9 @@ const query = (state: State, input: Input): Result =>
         Boolean.every([
           input.language === undefined || Equal.equals(reviewRequest.language, input.language),
           input.field === undefined || Array.contains(reviewRequest.fields, input.field),
+          input.doiRegistrants === undefined ||
+            (typeof reviewRequest.preprintId.value === 'string' &&
+              Array.contains(input.doiRegistrants, getRegistrant(reviewRequest.preprintId.value))),
         ]),
     )
 
@@ -226,6 +232,7 @@ const query = (state: State, input: Input): Result =>
       totalPages: pagesOfLatestReviewRequestForEachPreprint.length,
       field: input.field,
       language: input.language,
+      doiRegistrants: input.doiRegistrants,
       reviewRequests: Array.map(pageOfLatestReviewRequestForEachPreprint, reviewRequest => ({
         id: reviewRequest.id,
         published: reviewRequest.published,
