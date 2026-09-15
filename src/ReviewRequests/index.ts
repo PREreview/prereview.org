@@ -4,6 +4,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
+import type { Registrant } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
 import type { OrcidId } from '../types/index.ts'
 import type { SubfieldId } from '../types/subfield.ts'
@@ -65,6 +66,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
       field?: FieldId
       language?: LanguageCode
       page: number
+      doiRegistrants?: Array.NonEmptyReadonlyArray<Registrant<Preprints.IndeterminatePreprintIdWithDoi['value']>>
     }) => Effect.Effect<PageOfReviewRequests, ReviewRequestsNotFound | ReviewRequestsAreUnavailable>
   }
 >() {}

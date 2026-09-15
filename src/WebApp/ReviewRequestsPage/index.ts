@@ -8,16 +8,27 @@ import { PageNotFound } from '../PageNotFound/index.ts'
 import type { PageResponse } from '../Response/index.ts'
 import { NoResultsPage } from './NoResultsPage.ts'
 import { PageOfReviewRequests } from './PageOfReviewRequests.ts'
+import { isServer, registrantsForServer } from './Servers.ts'
 
 export const ReviewRequestsPage: (query: {
   field?: FieldId
   language?: LanguageCode
   page: number
+  server?: string
 }) => Effect.Effect<PageResponse, never, ReviewRequests.ReviewRequests | Locale> = Effect.fn('ReviewRequestsPage')(
-  function* ({ field, language, page }) {
+  function* ({ field, language, page, server }) {
     const locale = yield* Locale
 
-    const reviewRequests = yield* ReviewRequests.search({ field, language, page })
+    if (typeof server === 'string' && !isServer(server)) {
+      return yield* PageNotFound
+    }
+
+    const reviewRequests = yield* ReviewRequests.search({
+      field,
+      language,
+      page,
+      doiRegistrants: server ? registrantsForServer(server) : undefined,
+    })
 
     return PageOfReviewRequests({ ...reviewRequests, locale })
   },

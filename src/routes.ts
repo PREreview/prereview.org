@@ -182,6 +182,7 @@ export const ReviewRequests = QueryRoute({
       decode: Option.getOrElse(() => 1),
       encode: Option.liftPredicate(page => page !== 1),
     }),
+    server: EmptyStringAsOptional(Schema.NonEmptyString),
   }),
 })
 
