@@ -1346,9 +1346,10 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
       language: 'en',
       text: html`
         <p>
-          ReplicationWiki webinar series on replication in the social sciences, organized with the Institute for New
-          Economic Thinking (INET) Young Scholars Initiative (YSI) working group Philosophy of Economics and Project
-          Teaching Integrity in Empirical Research (TIER)
+          <a href="https://guscastilloa.github.io/projects/replication_webinar/">ReplicationWiki webinar series</a> on
+          replication in the social sciences, organized with the Institute for New Economic Thinking (INET) Young
+          Scholars Initiative (YSI) working group Philosophy of Economics and Project Teaching Integrity in Empirical
+          Research (TIER)
         </p>
         <p>
           We review texts that will be published in a special issue of a peer reviewed academic journal, and a textbook,
