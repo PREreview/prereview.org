@@ -98,6 +98,7 @@ test
     await page.getByRole('link', { name: 'Request a review' }).click()
     await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
     await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
     await expect(page.getByRole('main')).toContainText('carry on')
