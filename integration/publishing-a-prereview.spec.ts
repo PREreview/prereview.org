@@ -1636,6 +1636,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await expect(page.getByRole('main')).toContainText('carry on')

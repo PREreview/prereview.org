@@ -1,46 +1,22 @@
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import Keyv from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
-import { writeReviewMatch, writeReviewStartMatch } from '../../../src/routes.ts'
+import { writeReviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
-import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
 import * as fc from './fc.ts'
 
 describe('writeReview', () => {
   describe('when there is a session', () => {
     it.effect.prop(
-      'there is a form already',
-      [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.form(), fc.user()],
-      ([preprintId, preprint, locale, newReview, user]) =>
-        Effect.gen(function* () {
-          const formStore = new Keyv()
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
-
-          const runtime = yield* Effect.runtime<Preprints>()
-
-          const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ formStore, runtime }))
-
-          expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SeeOther,
-            location: format(writeReviewStartMatch.formatter, { id: preprint.id }),
-          })
-        }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
-    )
-
-    it.effect.prop(
-      "there isn't a form",
+      "the user isn't an author",
       [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.user()],
       ([preprintId, preprint, locale, user]) =>
         Effect.gen(function* () {
           const runtime = yield* Effect.runtime<Preprints>()
 
-          const actual = yield* Effect.promise(
-            _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
-          )
+          const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -73,9 +49,7 @@ describe('writeReview', () => {
         Effect.gen(function* () {
           const runtime = yield* Effect.runtime<Preprints>()
 
-          const actual = yield* Effect.promise(
-            _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
-          )
+          const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -98,9 +72,7 @@ describe('writeReview', () => {
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<Preprints>()
 
-        const actual = yield* Effect.promise(
-          _.writeReview({ id: preprintId, locale, user: undefined })({ formStore: new Keyv(), runtime }),
-        )
+        const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user: undefined })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -122,9 +94,7 @@ describe('writeReview', () => {
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<Preprints>()
 
-        const actual = yield* Effect.promise(
-          _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
-        )
+        const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -144,9 +114,7 @@ describe('writeReview', () => {
       Effect.gen(function* () {
         const runtime = yield* Effect.runtime<Preprints>()
 
-        const actual = yield* Effect.promise(
-          _.writeReview({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
-        )
+        const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
