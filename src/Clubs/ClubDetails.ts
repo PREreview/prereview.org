@@ -456,6 +456,27 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     joinLink: new URL('https://openlab.ec/club-cibca'),
   },
   {
+    id: Uuid('00d089f2-dd15-4d6d-a04e-d0e69cb1f500'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('CogCompNeuro'),
+    },
+    slug: Slug('cogcompneuro'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          This is a club designed to discuss and review preprints related to computational and cognitive neuroscience,
+          primarily focusing on human attention and audition.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-16'),
+    leads: [OrcidId('0009-0006-3602-1593')],
+    contact: EmailAddress('emailakankshagupta@gmail.com'),
+  },
+  {
     id: Uuid('490a8fe4-9cda-4e51-bf50-9307cba39997'),
     status: 'active',
     name: {
