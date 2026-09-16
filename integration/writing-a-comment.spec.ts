@@ -551,6 +551,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/reviews/1061864', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a comment' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
     await expect(page.getByRole('main')).toContainText('carry on')
