@@ -61,29 +61,31 @@ const MediaEntry = Schema.Struct({
   }),
 })
 
+const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof PageEntry.Type) {
+  const locale = yield* Locale
+
+  return new ContentfulPage({
+    title: Option.match(getValueForLocale(entry.fields.title, locale), {
+      onSome: title => html`${title}`,
+      onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
+    }),
+    html: Option.match(getValueForLocale(entry.fields.content, locale), {
+      onSome: content => html`${ContentToHtml(content)}`,
+      onNone: () => html`${ContentToHtml(getValueForDefaultLocale(entry.fields.content))}`,
+    }),
+    locale: Option.match(getValueForLocale(entry.fields.title, locale), {
+      onSome: () => locale,
+      onNone: () => DefaultLocale,
+    }),
+  })
+})
+
 export const EntryToContentfulPage = Schema.transformOrFail(
   Schema.typeSchema(PageEntry),
   Schema.typeSchema(ContentfulPage),
   {
     strict: true,
-    decode: Effect.fnUntraced(function* (entry) {
-      const locale = yield* Locale
-
-      return new ContentfulPage({
-        title: Option.match(getValueForLocale(entry.fields.title, locale), {
-          onSome: title => html`${title}`,
-          onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
-        }),
-        html: Option.match(getValueForLocale(entry.fields.content, locale), {
-          onSome: content => html`${ContentToHtml(content)}`,
-          onNone: () => html`${ContentToHtml(getValueForDefaultLocale(entry.fields.content))}`,
-        }),
-        locale: Option.match(getValueForLocale(entry.fields.title, locale), {
-          onSome: () => locale,
-          onNone: () => DefaultLocale,
-        }),
-      })
-    }),
+    decode: PageEntryToContentfulPage,
     encode: (page, _, ast) =>
       ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding pages back to an entry is forbidden.')),
   },
