@@ -5,7 +5,6 @@ import {
   type Block,
   ContentfulId,
   Document,
-  Entry,
   type Inline,
   type Mark,
   type Text,
@@ -15,17 +14,9 @@ import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
 import { ContentfulPage } from '../Types.ts'
 
-const ContentfulPageEntry = Schema.Struct({
-  ...Entry.fields,
+const PageEntry = Schema.Struct({
   sys: Schema.Struct({
-    ...Entry.fields.sys.fields,
-    contentType: Schema.Struct({
-      ...Entry.fields.sys.fields.contentType.fields,
-      sys: Schema.Struct({
-        ...Entry.fields.sys.fields.contentType.fields.sys.fields,
-        id: Schema.Literal(ContentfulId.make('page')),
-      }),
-    }),
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('page')) }) }),
   }),
   fields: Schema.Struct({
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
@@ -33,13 +24,9 @@ const ContentfulPageEntry = Schema.Struct({
   }),
 })
 
-const EntryWithSlugField = Schema.Struct({
+const PageSlugEntry = Schema.Struct({
   sys: Schema.Struct({
-    contentType: Schema.Struct({
-      sys: Schema.Struct({
-        id: Schema.Literal(ContentfulId.make('page')),
-      }),
-    }),
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('page')) }) }),
   }),
   fields: Schema.Struct({
     slug: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: SlugSchema }),
@@ -75,7 +62,7 @@ const MediaEntry = Schema.Struct({
 })
 
 export const EntryToContentfulPage = Schema.transformOrFail(
-  Schema.typeSchema(ContentfulPageEntry),
+  Schema.typeSchema(PageEntry),
   Schema.typeSchema(ContentfulPage),
   {
     strict: true,
@@ -156,7 +143,7 @@ const ElementToHtml = Match.typeTags<Block | Inline | Text, Option.Option<Html>>
   EmbeddedEntryBlock: embeddedEntryBlock =>
     Option.fromNullable(Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target)),
   EntryHyperlink: hyperlink => {
-    const target = Schema.decodeUnknownSync(EntryWithSlugField)(hyperlink.data.target)
+    const target = Schema.decodeUnknownSync(PageSlugEntry)(hyperlink.data.target)
 
     return Option.some(html`<a href="/${getValueForDefaultLocale(target.fields.slug)}">${ContentToHtml(hyperlink)}</a>`)
   },
