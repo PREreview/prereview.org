@@ -19,7 +19,7 @@ env:
 jobs:
   build-assets:
     name: 'Build assets'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-locales
@@ -73,7 +73,7 @@ jobs:
 
   build-locales:
     name: 'Build locales'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
 
     steps:
@@ -116,7 +116,7 @@ jobs:
 
   build-image:
     name: 'Build image'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     outputs:
       image: ${{ steps.build.outputs.digest }}
@@ -146,7 +146,7 @@ jobs:
 
   format:
     name: 'Format'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
 
     steps:
@@ -172,7 +172,7 @@ jobs:
 
   lint-css:
     name: 'Lint CSS'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
 
     steps:
@@ -198,7 +198,7 @@ jobs:
 
   lint-ts:
     name: 'Lint TypeScript'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-assets
@@ -245,7 +245,7 @@ jobs:
 
   test:
     name: 'Test (${{ matrix.shard }}/${{ strategy.job-total }})'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-assets
@@ -290,7 +290,7 @@ jobs:
 
   test-integration:
     name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-assets
@@ -349,7 +349,7 @@ jobs:
 
   test-smoke:
     name: 'Smoke test'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-image
@@ -397,7 +397,7 @@ jobs:
 
   test-visual-regression:
     name: 'Visual regression test (${{ matrix.shard }}/${{ strategy.job-total }})'
-    runs-on: ubuntu-22.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 30
     needs:
       - build-assets
@@ -458,7 +458,7 @@ jobs:
 
   typecheck:
     name: 'Typecheck'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - build-assets
@@ -505,7 +505,7 @@ jobs:
 
   push:
     name: 'Push image'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
     outputs:
@@ -554,7 +554,7 @@ jobs:
 
   deploy:
     name: 'Deploy (${{ matrix.instance }})'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
     needs:
@@ -581,7 +581,7 @@ jobs:
 
   deploy-http-cache:
     name: 'Deploy (${{ matrix.instance }})'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
     needs:
@@ -618,7 +618,7 @@ jobs:
 
   crowdin:
     name: 'Update Crowdin'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     if: github.ref == 'refs/heads/main'
     needs:
@@ -654,7 +654,7 @@ jobs:
 
   notify:
     name: 'Notify of failure'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     needs:
       - deploy
