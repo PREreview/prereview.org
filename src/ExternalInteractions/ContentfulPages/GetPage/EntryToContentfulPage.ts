@@ -99,23 +99,28 @@ export const EntryToContentfulPage: (entry: Entry) => Effect.Effect<ContentfulPa
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry)
 
-const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Html>()({
-  CallToActionEntry: callToAction =>
-    html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
-      >${getValueForDefaultLocale(callToAction.fields.text)}</a
-    >`,
-  DynamicEmbedEntry: dynamicEmbed => html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`,
+const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Effect.Effect<Html, never, Locale>>()({
+  CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
+    const locale = yield* Locale
+
+    const text = Option.getOrElse(getValueForLocale(callToAction.fields.text, locale), () =>
+      getValueForDefaultLocale(callToAction.fields.text),
+    )
+
+    return html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button">${text}</a>`
+  }),
+  DynamicEmbedEntry: dynamicEmbed => Effect.succeed(html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`),
   MediaEntry: media => {
     const file = getValueForDefaultLocale(media.fields.file)
     const asset = getValueForDefaultLocale(file.fields.file)
 
-    return html`
+    return Effect.succeed(html`
       <img src="${asset.url.href}" width="${asset.details.image.width}" height="${asset.details.image.height}" alt="" />
-    `
+    `)
   },
 })
 
-const BlockElementToHtml = Match.typeTags<Block, Effect.Effect<Option.Option<Html>, ParseResult.ParseError>>()({
+const BlockElementToHtml = Match.typeTags<Block, Effect.Effect<Option.Option<Html>, ParseResult.ParseError, Locale>>()({
   Document: document => Effect.map(BlockContentToHtml(document), content => Option.some(html`${content}`)),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
@@ -193,7 +198,7 @@ const BlockElementToHtml = Match.typeTags<Block, Effect.Effect<Option.Option<Htm
 
 const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError> =>
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, Locale> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -212,7 +217,7 @@ const BlockContentToHtml = (
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError> => {
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, Locale> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }
