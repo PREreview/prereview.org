@@ -2,11 +2,13 @@ import { Array, Effect, Match, Option, ParseResult, pipe, Predicate, Record, Sch
 import { Locale } from '../../../Context.ts'
 import {
   Asset,
+  type Block,
   ContentfulId,
   Document,
-  type DocumentType,
   Entry,
+  type Inline,
   type Mark,
+  type Text,
 } from '../../../ExternalApis/Contentful/index.ts'
 import { Html, html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
@@ -160,10 +162,11 @@ const MediaEntryToHtml = Schema.transformOrFail(
 
 const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml, MediaEntryToHtml)
 
-const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = Match.typeTags<
-  DocumentType,
+const ElementToHtml: (element: Block | Inline | Text) => Option.Option<Html> = Match.typeTags<
+  Block | Inline | Text,
   Option.Option<Html>
 >()({
+  Document: document => Option.some(html`${ContentToHtml(document)}`),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
 
@@ -230,17 +233,15 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
     ),
 })
 
-const ContentToHtml = ({ content }: Document | Extract<DocumentType, { content: unknown }>): ReadonlyArray<Html> =>
-  Array.filterMap(content, DocumentTypeToHtml)
+const ContentToHtml = ({ content }: Extract<Block | Inline, { content: unknown }>): ReadonlyArray<Html> =>
+  Array.filterMap(content, ElementToHtml)
 
-const ContentToHtmlSkippingOverSingleParagraph = (
-  documentType: Extract<DocumentType, { content: unknown }>,
-): ReadonlyArray<Html> => {
-  if (documentType.content.length === 1 && documentType.content[0]._tag === 'Paragraph') {
-    return ContentToHtml(documentType.content[0])
+const ContentToHtmlSkippingOverSingleParagraph = (block: Extract<Block, { content: unknown }>): ReadonlyArray<Html> => {
+  if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
+    return ContentToHtml(block.content[0])
   }
 
-  return ContentToHtml(documentType)
+  return ContentToHtml(block)
 }
 
 const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>

@@ -13,10 +13,8 @@ export type ContentfulId = typeof ContentfulId.Type
 
 export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
 
-export type DocumentType =
-  | Text
-  | Hyperlink
-  | EntryHyperlink
+export type Block =
+  | Document
   | Heading1
   | Heading2
   | Heading3
@@ -31,6 +29,8 @@ export type DocumentType =
   | EmbeddedAssetBlock
   | EmbeddedEntryBlock
 
+export type Inline = EntryHyperlink | Hyperlink
+
 export type Mark = Bold | Italic
 
 class Bold extends Schema.Class<Bold>('Bold')({
@@ -41,7 +41,7 @@ class Italic extends Schema.Class<Italic>('Italic')({
   _tag: Schema.propertySignature(Schema.transformLiteral('italic', 'Italic')).pipe(Schema.fromKey('type')),
 }) {}
 
-class Text extends Schema.Class<Text>('Text')({
+export class Text extends Schema.Class<Text>('Text')({
   _tag: Schema.propertySignature(Schema.transformLiteral('text', 'Text')).pipe(Schema.fromKey('nodeType')),
   value: Schema.String,
   marks: Schema.Array(Schema.Union(Bold, Italic)),
