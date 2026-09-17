@@ -162,10 +162,7 @@ const MediaEntryToHtml = Schema.transformOrFail(
 
 const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml, MediaEntryToHtml)
 
-const ElementToHtml: (element: Block | Inline | Text) => Option.Option<Html> = Match.typeTags<
-  Block | Inline | Text,
-  Option.Option<Html>
->()({
+const ElementToHtml = Match.typeTags<Block | Inline | Text, Option.Option<Html>>()({
   Document: document => Option.some(html`${ContentToHtml(document)}`),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
