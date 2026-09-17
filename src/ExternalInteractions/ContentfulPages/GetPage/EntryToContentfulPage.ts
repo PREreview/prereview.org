@@ -1,4 +1,4 @@
-import { Array, Effect, Match, Option, ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import { Array, Effect, Match, Option, ParseResult, pipe, Predicate, Record, Schema, type Types } from 'effect'
 import { Locale } from '../../../Context.ts'
 import {
   Asset,
@@ -70,8 +70,8 @@ const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof Pag
       onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
     }),
     html: Option.match(getValueForLocale(entry.fields.content, locale), {
-      onSome: content => html`${ContentToHtml(content)}`,
-      onNone: () => html`${ContentToHtml(getValueForDefaultLocale(entry.fields.content))}`,
+      onSome: content => html`${BlockContentToHtml(content)}`,
+      onNone: () => html`${BlockContentToHtml(getValueForDefaultLocale(entry.fields.content))}`,
     }),
     locale: Option.match(getValueForLocale(entry.fields.title, locale), {
       onSome: () => locale,
@@ -109,8 +109,8 @@ const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Html>()({
   },
 })
 
-const ElementToHtml = Match.typeTags<Block | Inline | Text, Option.Option<Html>>()({
-  Document: document => Option.some(html`${ContentToHtml(document)}`),
+const BlockElementToHtml = Match.typeTags<Block, Option.Option<Html>>()({
+  Document: document => Option.some(html`${BlockContentToHtml(document)}`),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
 
@@ -125,68 +125,91 @@ const ElementToHtml = Match.typeTags<Block | Inline | Text, Option.Option<Html>>
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
     pipe(Schema.decodeUnknownSync(EmbeddedEntry)(embeddedEntryBlock.data.target), EmbeddedEntryToHtml, Option.some),
-  EntryHyperlink: hyperlink => {
-    const target = Schema.decodeUnknownSync(PageSlugEntry)(hyperlink.data.target)
-
-    return Option.some(html`<a href="/${getValueForDefaultLocale(target.fields.slug)}">${ContentToHtml(hyperlink)}</a>`)
-  },
-  Heading1: heading1 => Option.some(html`<h1><span>${ContentToHtml(heading1)}</span></h1>`),
-  Heading2: heading2 => Option.some(html`<h2><span>${ContentToHtml(heading2)}</span></h2> `),
-  Heading3: heading3 => Option.some(html`<h3><span>${ContentToHtml(heading3)}</span></h3>`),
-  Hyperlink: hyperlink =>
-    Option.some(
-      html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
-        >${ContentToHtml(hyperlink)}</a
-      >`,
-    ),
-  ListItem: listItem => Option.some(html`<li><span>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</span></li>`),
+  Heading1: heading1 => Option.some(html`<h1><span>${BlockContentToHtml(heading1)}</span></h1>`),
+  Heading2: heading2 => Option.some(html`<h2><span>${BlockContentToHtml(heading2)}</span></h2> `),
+  Heading3: heading3 => Option.some(html`<h3><span>${BlockContentToHtml(heading3)}</span></h3>`),
+  ListItem: listItem =>
+    Option.some(html`<li><span>${BlockContentToHtmlSkippingOverSingleParagraph(listItem)}</span></li>`),
   OrderedList: orderedList =>
     Option.some(
       html`<ol>
-        ${ContentToHtml(orderedList)}
+        ${BlockContentToHtml(orderedList)}
       </ol>`,
     ),
   Paragraph: paragraph =>
-    Array.match(ContentToHtml(paragraph), {
+    Array.match(BlockContentToHtml(paragraph), {
       onEmpty: () => Option.none(),
       onNonEmpty: content => Option.some(html`<p><span>${content}</span></p>`),
     }),
   Table: table =>
     Option.some(
       html`<table>
-        ${ContentToHtml(table)}
+        ${BlockContentToHtml(table)}
       </table>`,
     ),
   TableRow: tableRow =>
     Option.some(
       html`<tr>
-        ${ContentToHtml(tableRow)}
+        ${BlockContentToHtml(tableRow)}
       </tr>`,
     ),
   TableCell: tableCell =>
-    Option.some(html`<td><span>${ContentToHtmlSkippingOverSingleParagraph(tableCell)}</span></td>`),
+    Option.some(html`<td><span>${BlockContentToHtmlSkippingOverSingleParagraph(tableCell)}</span></td>`),
   TableHeaderCell: tableHeaderCell =>
-    Option.some(html`<th><span>${ContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</span></th>`),
-  Text: text =>
-    text.value === '' ? Option.none() : Option.some(Array.reduce(text.marks, html`${text.value}`, MarkToHtml)),
+    Option.some(html`<th><span>${BlockContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</span></th>`),
   UnorderedList: unorderedList =>
     Option.some(
       html`<ul>
-        ${ContentToHtml(unorderedList)}
+        ${BlockContentToHtml(unorderedList)}
       </ul>`,
     ),
 })
 
-const ContentToHtml = ({ content }: Extract<Block | Inline, { content: unknown }>): ReadonlyArray<Html> =>
-  Array.filterMap(content, ElementToHtml)
+const BlockContentToHtml = (
+  block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
+): ReadonlyArray<Html> =>
+  Array.filterMap(block.content, (element: Block | Inline | Text) => {
+    if (element._tag === 'Text') {
+      return TextToHtml(element)
+    }
 
-const ContentToHtmlSkippingOverSingleParagraph = (block: Extract<Block, { content: unknown }>): ReadonlyArray<Html> => {
+    if (element._tag === 'EntryHyperlink' || element._tag === 'Hyperlink') {
+      return InlineElementToHtml(element)
+    }
+
+    return BlockElementToHtml(element)
+  })
+
+const BlockContentToHtmlSkippingOverSingleParagraph = (
+  block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
+): ReadonlyArray<Html> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
-    return ContentToHtml(block.content[0])
+    return BlockContentToHtml(block.content[0])
   }
 
-  return ContentToHtml(block)
+  return BlockContentToHtml(block)
 }
+
+const InlineElementToHtml = Match.typeTags<Inline, Option.Option<Html>>()({
+  EntryHyperlink: hyperlink => {
+    const target = Schema.decodeUnknownSync(PageSlugEntry)(hyperlink.data.target)
+
+    return Option.some(
+      html`<a href="/${getValueForDefaultLocale(target.fields.slug)}">${InlineContentToHtml(hyperlink)}</a>`,
+    )
+  },
+  Hyperlink: hyperlink =>
+    Option.some(
+      html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
+        >${InlineContentToHtml(hyperlink)}</a
+      >`,
+    ),
+})
+
+const InlineContentToHtml = (inline: Inline): ReadonlyArray<Html> => Array.filterMap(inline.content, TextToHtml)
+
+const TextToHtml = (text: Text): Option.Option<Html> =>
+  text.value === '' ? Option.none() : Option.some(Array.reduce(text.marks, html`${text.value}`, MarkToHtml))
 
 const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>
   Match.valueTags(mark, {
