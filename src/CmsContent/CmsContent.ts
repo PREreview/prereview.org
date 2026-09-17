@@ -40,7 +40,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
                   ),
                   Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
                 ),
-          getBlogPost: () => new UnableToQuery({ cause: 'not implemented' }),
+          getBlogPost: contentfulPages.getBlogPost,
         }
       }
 
