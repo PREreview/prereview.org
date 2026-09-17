@@ -853,7 +853,7 @@ it.effect.each<{
   ),
 )
 
-it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
+it.effect.each([['banners', 'blog-posts-multiple-authors']])("can't parse a record (%s)", ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
