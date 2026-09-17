@@ -46,6 +46,34 @@ const EntryWithSlugField = Schema.Struct({
   }),
 })
 
+const CallToActionEntry = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('callToAction')) }) }),
+  }),
+  fields: Schema.Struct({
+    text: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+    url: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.URL }),
+  }),
+})
+
+const DynamicEmbedEntry = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('dynamicEmbed')) }) }),
+  }),
+  fields: Schema.Struct({
+    key: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+  }),
+})
+
+const MediaEntry = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('media')) }) }),
+  }),
+  fields: Schema.Struct({
+    file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
+  }),
+})
+
 export const EntryToContentfulPage = Schema.transformOrFail(
   Schema.typeSchema(ContentfulPageEntry),
   Schema.typeSchema(ContentfulPage),
@@ -76,89 +104,38 @@ export const EntryToContentfulPage = Schema.transformOrFail(
 
 const HtmlFromSelfSchema = Schema.instanceOf(Html)
 
-const CallToActionEntryToHtml = Schema.transformOrFail(
-  Schema.Struct({
-    sys: Schema.Struct({
-      contentType: Schema.Struct({
-        sys: Schema.Struct({
-          id: Schema.Literal(ContentfulId.make('callToAction')),
-        }),
-      }),
-    }),
-    fields: Schema.Struct({
-      text: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
-      url: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.URL }),
-    }),
-  }),
-  HtmlFromSelfSchema,
-  {
-    strict: true,
-    decode: callToAction =>
-      ParseResult.succeed(
-        html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
-          >${getValueForDefaultLocale(callToAction.fields.text)}</a
-        >`,
-      ),
-    encode: (page, _, ast) =>
-      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
-  },
-)
+const CallToActionEntryToHtml = Schema.transformOrFail(CallToActionEntry, HtmlFromSelfSchema, {
+  strict: true,
+  decode: callToAction =>
+    ParseResult.succeed(
+      html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
+        >${getValueForDefaultLocale(callToAction.fields.text)}</a
+      >`,
+    ),
+  encode: (page, _, ast) =>
+    ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+})
 
-const DynamicEmbedEntryToHtml = Schema.transformOrFail(
-  Schema.Struct({
-    sys: Schema.Struct({
-      contentType: Schema.Struct({
-        sys: Schema.Struct({
-          id: Schema.Literal(ContentfulId.make('dynamicEmbed')),
-        }),
-      }),
-    }),
-    fields: Schema.Struct({
-      key: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
-    }),
-  }),
-  HtmlFromSelfSchema,
-  {
-    strict: true,
-    decode: dynamicEmbed => ParseResult.succeed(html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`),
-    encode: (page, _, ast) =>
-      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
-  },
-)
+const DynamicEmbedEntryToHtml = Schema.transformOrFail(DynamicEmbedEntry, HtmlFromSelfSchema, {
+  strict: true,
+  decode: dynamicEmbed => ParseResult.succeed(html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`),
+  encode: (page, _, ast) =>
+    ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+})
 
-const MediaEntryToHtml = Schema.transformOrFail(
-  Schema.Struct({
-    sys: Schema.Struct({
-      contentType: Schema.Struct({
-        sys: Schema.Struct({
-          id: Schema.Literal(ContentfulId.make('media')),
-        }),
-      }),
-    }),
-    fields: Schema.Struct({
-      file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
-    }),
-  }),
-  HtmlFromSelfSchema,
-  {
-    strict: true,
-    decode: media => {
-      const file = getValueForDefaultLocale(media.fields.file)
-      const asset = getValueForDefaultLocale(file.fields.file)
+const MediaEntryToHtml = Schema.transformOrFail(MediaEntry, HtmlFromSelfSchema, {
+  strict: true,
+  decode: media => {
+    const file = getValueForDefaultLocale(media.fields.file)
+    const asset = getValueForDefaultLocale(file.fields.file)
 
-      return ParseResult.succeed(html`
-        <img
-          src="${asset.url.href}"
-          width="${asset.details.image.width}"
-          height="${asset.details.image.height}"
-          alt=""
-        />
-      `)
-    },
-    encode: (page, _, ast) =>
-      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+    return ParseResult.succeed(html`
+      <img src="${asset.url.href}" width="${asset.details.image.width}" height="${asset.details.image.height}" alt="" />
+    `)
   },
-)
+  encode: (page, _, ast) =>
+    ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
+})
 
 const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml, MediaEntryToHtml)
 
