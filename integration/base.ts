@@ -3761,6 +3761,7 @@ export const showSpotlight: Fixtures<
               sys: {
                 id: '19ku1fGWddXyrFone7Pu62',
                 contentType: { sys: { type: 'Link', linkType: 'ContentType', id: 'banner' } },
+                createdAt: '2026-07-24T08:35:54.088Z',
               },
               fields: {
                 title: { 'en-US': 'Matchmaking experiment' },

@@ -1,0 +1,165 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "69xLdDkE1JEXs5JZJKcjcb",
+        "type": "Entry",
+        "createdAt": "2026-09-11T11:00:46.542Z",
+        "updatedAt": "2026-09-11T11:00:46.542Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "PREreview platform news, 31 October 2025" },
+        "slug": { "en-US": "prereview-platform-news-31-october-2025" },
+        "authors": {
+          "en-US": [
+            { "sys": { "type": "Link", "linkType": "Entry", "id": "6c6jcfRv3WiUJbZlgSUr1M" } },
+            { "sys": { "type": "Link", "linkType": "Entry", "id": "5r3zaemc6ZFh98N7UrmOlE" } }
+          ]
+        },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Thanks for checking out the latest update from the product team at ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org" },
+                    "content": [{ "nodeType": "text", "value": "PREreview.org", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "What’s new at PREreview?", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "We’re continuing to improve ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://content.prereview.org/now-you-can-review-datasets-on-prereview-org/" },
+                    "content": [
+                      { "nodeType": "text", "value": "our new dataset review workflow", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " this week. Soon, we’ll display dataset reviews alongside preprint reviews on our webpage and community Slack. We’ve also added support for more registrant DOIs from Dryad to allow for the review of older datasets. We’ll automate the process for adding multiple authors shortly, as well.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "What’s next?", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Up next we’ll add our-use-of-AI declaration step to the dataset review workflow. Next month, we’re prototyping more individualized matchmaking between community members and reviews and requests that might interest them. We’re also prepping for our next all-hands retreat in November.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2025-10-31T14:00:00.000+00:00" },
+        "publishedAtOverride": { "en-US": "2025-10-31T14:00:00.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5r3zaemc6ZFh98N7UrmOlE",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:41:55.644Z",
+          "updatedAt": "2026-09-11T10:41:55.644Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Chris Wilkinson" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5TAeiD28TZ39ZrVjuNfWmI" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6c6jcfRv3WiUJbZlgSUr1M",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:41:53.848Z",
+          "updatedAt": "2026-09-11T10:41:53.848Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": { "name": { "en-US": "Chad Sansing" } }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5TAeiD28TZ39ZrVjuNfWmI",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:41:51.498Z",
+          "updatedAt": "2026-09-11T10:41:51.498Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Chris Wilkinson profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/5TAeiD28TZ39ZrVjuNfWmI/204bf4c4a963004d79a48b8c19c0f40d/4ed4ad3d4daf86e7febbcf025a5f7c65",
+              "details": { "size": 16938, "image": { "width": 250, "height": 250 } },
+              "fileName": "4ed4ad3d4daf86e7febbcf025a5f7c65",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

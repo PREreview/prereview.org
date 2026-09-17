@@ -1,5 +1,6 @@
-import { Schema } from 'effect'
-import { NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
+import { type Array, Schema } from 'effect'
+import { type NonEmptyString, NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
+import { InstantSchema } from '../../types/Temporal.ts'
 
 const ProtocolRelativeUrl = Schema.transform(Schema.String.pipe(Schema.pattern(/^\/\//)), Schema.URL, {
   strict: true,
@@ -198,10 +199,17 @@ export class Entry extends Schema.Class<Entry>('Entry')({
         id: ContentfulId,
       }),
     }),
+    createdAt: InstantSchema,
   }),
   fields: Schema.Record({
     key: ContentfulId,
-    value: Schema.Record({ key: NonEmptyStringSchema, value: Schema.Union(NonEmptyStringSchema, Document, Asset) }),
+    value: Schema.Record({
+      key: NonEmptyStringSchema,
+      value: Schema.suspend(
+        (): Schema.Schema<NonEmptyString | Document | Asset | Entry | Array.NonEmptyReadonlyArray<Entry>, unknown> =>
+          Schema.Union(NonEmptyStringSchema, Document, Asset, Entry, Schema.NonEmptyArray(Entry)) as never,
+      ),
+    }),
   }),
 }) {}
 
