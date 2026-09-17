@@ -25,6 +25,7 @@ import {
 import { type Html, html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
+import { DynamicEmbed, DynamicEmbedder } from '../DynamicEmbedder.ts'
 import { ContentfulPage } from '../Types.ts'
 
 const PageEntry = Schema.Struct({
@@ -61,7 +62,7 @@ const DynamicEmbedEntry = Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('dynamicEmbed')) }) }),
   }),
   fields: Schema.Struct({
-    key: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+    key: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: DynamicEmbed }),
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'DynamicEmbedEntry'))
 
@@ -94,12 +95,19 @@ const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof Pag
   })
 })
 
-export const EntryToContentfulPage: (entry: Entry) => Effect.Effect<ContentfulPage, ParseResult.ParseError, Locale> =
-  flow(Schema.decodeUnknown(Schema.typeSchema(PageEntry)), Effect.andThen(PageEntryToContentfulPage))
+export const EntryToContentfulPage: (
+  entry: Entry,
+) => Effect.Effect<ContentfulPage, ParseResult.ParseError, DynamicEmbedder | Locale> = flow(
+  Schema.decodeUnknown(Schema.typeSchema(PageEntry)),
+  Effect.andThen(PageEntryToContentfulPage),
+)
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry)
 
-const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Effect.Effect<Html, never, Locale>>()({
+const EmbeddedEntryToHtml = Match.typeTags<
+  typeof EmbeddedEntry.Type,
+  Effect.Effect<Html, never, DynamicEmbedder | Locale>
+>()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
 
@@ -109,7 +117,11 @@ const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Effect.Eff
 
     return html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button">${text}</a>`
   }),
-  DynamicEmbedEntry: dynamicEmbed => Effect.succeed(html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`),
+  DynamicEmbedEntry: Effect.fnUntraced(function* (dynamicEmbed) {
+    const dynamicEmbedded = yield* DynamicEmbedder
+
+    return yield* dynamicEmbedded[getValueForDefaultLocale(dynamicEmbed.fields.key)]
+  }),
   MediaEntry: media => {
     const file = getValueForDefaultLocale(media.fields.file)
     const asset = getValueForDefaultLocale(file.fields.file)
@@ -120,7 +132,10 @@ const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Effect.Eff
   },
 })
 
-const BlockElementToHtml = Match.typeTags<Block, Effect.Effect<Option.Option<Html>, ParseResult.ParseError, Locale>>()({
+const BlockElementToHtml = Match.typeTags<
+  Block,
+  Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale>
+>()({
   Document: document => Effect.map(BlockContentToHtml(document), content => Option.some(html`${content}`)),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
@@ -198,7 +213,7 @@ const BlockElementToHtml = Match.typeTags<Block, Effect.Effect<Option.Option<Htm
 
 const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, Locale> =>
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -217,7 +232,7 @@ const BlockContentToHtml = (
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, Locale> => {
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }

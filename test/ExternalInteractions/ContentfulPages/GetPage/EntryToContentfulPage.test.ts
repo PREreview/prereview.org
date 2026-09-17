@@ -6,6 +6,7 @@ import resolveResponse from 'contentful-resolve-response'
 import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
+import { DynamicEmbedder } from '../../../../src/ExternalInteractions/ContentfulPages/DynamicEmbedder.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetPage/EntryToContentfulPage.ts'
 import { ContentfulPage } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html } from '../../../../src/html.ts'
@@ -840,7 +841,16 @@ it.effect.each<{
     )
 
     assertEquals(actual, expected)
-  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
+  }).pipe(
+    Effect.provide([
+      Layer.mock(DynamicEmbedder, {
+        listOfActiveClubs: Effect.succeed(html`{{list-of-active-clubs}}`),
+        listOfInactiveClubs: Effect.succeed(html`{{list-of-inactive-clubs}}`),
+      }),
+      Layer.succeed(Locale, DefaultLocale),
+      NodeFileSystem.layer,
+    ]),
+  ),
 )
 
 it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
@@ -858,7 +868,9 @@ it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
     actual.forEach(result => {
       expect(result).toMatchObject({ _tag: 'Left' })
     })
-  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
+  }).pipe(
+    Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
+  ),
 )
 
 const ResolveEntries = (response: string) => {
