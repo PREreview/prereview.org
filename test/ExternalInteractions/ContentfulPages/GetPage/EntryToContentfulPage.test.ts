@@ -836,7 +836,7 @@ it.effect.each<{
       Effect.andThen(Schema.decodeUnknown(Entries)),
       Effect.andThen(Struct.get('items')),
       Effect.andThen(Array.get(index)),
-      Effect.andThen(Schema.decodeUnknown(_.EntryToContentfulPage)),
+      Effect.andThen(_.EntryToContentfulPage),
     )
 
     assertEquals(actual, expected)
@@ -851,7 +851,7 @@ it.effect.each([['banners']])("can't parse a record (%s)", ([response]) =>
       Effect.map(ResolveEntries),
       Effect.andThen(Schema.decodeUnknown(Entries)),
       Effect.andThen(Struct.get('items')),
-      Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToContentfulPage)(item))),
+      Effect.andThen(Array.map(item => _.EntryToContentfulPage(item))),
       Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
     )
 

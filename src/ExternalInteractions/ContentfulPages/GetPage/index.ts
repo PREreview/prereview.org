@@ -1,4 +1,4 @@
-import { Array, Effect, pipe, Schema } from 'effect'
+import { Array, Effect, pipe } from 'effect'
 import type { ClubName } from '../../../Clubs/index.ts'
 import type { Locale } from '../../../Context.ts'
 import { Contentful, ContentfulIsUnavailable, UsePreviewApi } from '../../../ExternalApis/Contentful/index.ts'
@@ -30,7 +30,7 @@ export const GetPage = (
         return yield* new ContentfulIsUnavailable({ cause: 'page is not found' })
       }
 
-      const page = yield* Schema.decodeUnknown(EntryToContentfulPage)(items[0])
+      const page = yield* EntryToContentfulPage(items[0])
 
       return new ContentfulPage({
         title: page.title,

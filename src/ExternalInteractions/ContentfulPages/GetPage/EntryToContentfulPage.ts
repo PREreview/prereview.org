@@ -1,10 +1,23 @@
-import { Array, Effect, Match, Option, ParseResult, pipe, Predicate, Record, Schema, type Types } from 'effect'
+import {
+  Array,
+  Effect,
+  flow,
+  Match,
+  Option,
+  type ParseResult,
+  pipe,
+  Predicate,
+  Record,
+  Schema,
+  type Types,
+} from 'effect'
 import { Locale } from '../../../Context.ts'
 import {
   Asset,
   type Block,
   ContentfulId,
   Document,
+  type Entry,
   type Inline,
   type Mark,
   type Text,
@@ -80,16 +93,8 @@ const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof Pag
   })
 })
 
-export const EntryToContentfulPage = Schema.transformOrFail(
-  Schema.typeSchema(PageEntry),
-  Schema.typeSchema(ContentfulPage),
-  {
-    strict: true,
-    decode: PageEntryToContentfulPage,
-    encode: (page, _, ast) =>
-      ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding pages back to an entry is forbidden.')),
-  },
-)
+export const EntryToContentfulPage: (entry: Entry) => Effect.Effect<ContentfulPage, ParseResult.ParseError, Locale> =
+  flow(Schema.decodeUnknown(Schema.typeSchema(PageEntry)), Effect.andThen(PageEntryToContentfulPage))
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry)
 
