@@ -155,6 +155,12 @@ export const VerifyEmailAddress = QueryRoute({
   }),
 })
 
+export const BlogPost = Route({
+  path: '/blog/:slug',
+  href: params => `/blog/${params.slug}`,
+  schema: Schema.Struct({ slug: SlugSchema }),
+})
+
 export const ClubProfile = Route({
   path: '/clubs/:slug',
   href: params => `/clubs/${params.slug}`,

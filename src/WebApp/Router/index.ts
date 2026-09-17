@@ -7,6 +7,7 @@ import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../ClubProfilePage/index.ts'
 import { ClubsData } from '../clubs-data/index.ts'
+import { CmsBlogPostPage } from '../CmsBlogPost.ts'
 import { CmsPage } from '../CmsPage.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
@@ -556,6 +557,37 @@ const DataRouter = HttpRouter.fromIterable([
   HttpRouter.makeRoute('GET', Routes.RequestsData, RequestsData),
 ]).pipe(HttpRouter.use(HttpMiddleware.requireScietyListToken))
 
+const BlogRouter = HttpRouter.fromIterable([
+  MakeRoute(
+    'GET',
+    Routes.BlogPost,
+    flow(
+      Effect.succeed,
+      Effect.bind('preview', () =>
+        Effect.if(FeatureFlags.canPreviewContentFromContentful, {
+          onTrue: () =>
+            pipe(
+              HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
+              Effect.andThen(Struct.get('preview')),
+              Effect.orElseSucceed(() => false),
+            ),
+          onFalse: () => Effect.succeed(false),
+        }),
+      ),
+      Effect.andThen(CmsBlogPostPage),
+    ),
+  ),
+]).pipe(
+  HttpRouter.use(
+    HttpMiddleware.make(app =>
+      Effect.if(FeatureFlags.loadBlogFromContentful, {
+        onTrue: () => app,
+        onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
+      }),
+    ),
+  ),
+)
+
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.HomePage, HomePage),
@@ -594,6 +626,7 @@ export const Router = pipe(
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(AuthorInviteFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
+  HttpRouter.concat(BlogRouter),
   HttpRouter.use(
     HttpMiddleware.make(
       Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
