@@ -9,7 +9,7 @@ import {
   type Mark,
   type Text,
 } from '../../../ExternalApis/Contentful/index.ts'
-import { Html, html } from '../../../html.ts'
+import { type Html, html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
 import { ContentfulPage } from '../Types.ts'
@@ -41,7 +41,7 @@ const CallToActionEntry = Schema.Struct({
     text: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     url: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.URL }),
   }),
-})
+}).pipe(Schema.attachPropertySignature('_tag', 'CallToActionEntry'))
 
 const DynamicEmbedEntry = Schema.Struct({
   sys: Schema.Struct({
@@ -50,7 +50,7 @@ const DynamicEmbedEntry = Schema.Struct({
   fields: Schema.Struct({
     key: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
   }),
-})
+}).pipe(Schema.attachPropertySignature('_tag', 'DynamicEmbedEntry'))
 
 const MediaEntry = Schema.Struct({
   sys: Schema.Struct({
@@ -59,7 +59,7 @@ const MediaEntry = Schema.Struct({
   fields: Schema.Struct({
     file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
   }),
-})
+}).pipe(Schema.attachPropertySignature('_tag', 'MediaEntry'))
 
 const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof PageEntry.Type) {
   const locale = yield* Locale
@@ -91,42 +91,23 @@ export const EntryToContentfulPage = Schema.transformOrFail(
   },
 )
 
-const HtmlFromSelfSchema = Schema.instanceOf(Html)
+const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry)
 
-const CallToActionEntryToHtml = Schema.transformOrFail(CallToActionEntry, HtmlFromSelfSchema, {
-  strict: true,
-  decode: callToAction =>
-    ParseResult.succeed(
-      html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
-        >${getValueForDefaultLocale(callToAction.fields.text)}</a
-      >`,
-    ),
-  encode: (page, _, ast) =>
-    ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
-})
-
-const DynamicEmbedEntryToHtml = Schema.transformOrFail(DynamicEmbedEntry, HtmlFromSelfSchema, {
-  strict: true,
-  decode: dynamicEmbed => ParseResult.succeed(html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`),
-  encode: (page, _, ast) =>
-    ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
-})
-
-const MediaEntryToHtml = Schema.transformOrFail(MediaEntry, HtmlFromSelfSchema, {
-  strict: true,
-  decode: media => {
+const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Html>()({
+  CallToActionEntry: callToAction =>
+    html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
+      >${getValueForDefaultLocale(callToAction.fields.text)}</a
+    >`,
+  DynamicEmbedEntry: dynamicEmbed => html`{{${getValueForDefaultLocale(dynamicEmbed.fields.key)}}}`,
+  MediaEntry: media => {
     const file = getValueForDefaultLocale(media.fields.file)
     const asset = getValueForDefaultLocale(file.fields.file)
 
-    return ParseResult.succeed(html`
+    return html`
       <img src="${asset.url.href}" width="${asset.details.image.width}" height="${asset.details.image.height}" alt="" />
-    `)
+    `
   },
-  encode: (page, _, ast) =>
-    ParseResult.fail(new ParseResult.Forbidden(ast, page, 'Encoding back to an embedded entry is forbidden.')),
 })
-
-const EmbeddedEntryToHtml = Schema.Union(CallToActionEntryToHtml, DynamicEmbedEntryToHtml, MediaEntryToHtml)
 
 const ElementToHtml = Match.typeTags<Block | Inline | Text, Option.Option<Html>>()({
   Document: document => Option.some(html`${ContentToHtml(document)}`),
@@ -143,7 +124,7 @@ const ElementToHtml = Match.typeTags<Block | Inline | Text, Option.Option<Html>>
     )
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
-    Option.fromNullable(Schema.decodeUnknownSync(EmbeddedEntryToHtml)(embeddedEntryBlock.data.target)),
+    pipe(Schema.decodeUnknownSync(EmbeddedEntry)(embeddedEntryBlock.data.target), EmbeddedEntryToHtml, Option.some),
   EntryHyperlink: hyperlink => {
     const target = Schema.decodeUnknownSync(PageSlugEntry)(hyperlink.data.target)
 
