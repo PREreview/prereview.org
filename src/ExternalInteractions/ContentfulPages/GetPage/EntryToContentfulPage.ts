@@ -82,9 +82,10 @@ const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof Pag
       onSome: title => html`${title}`,
       onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
     }),
-    html: Option.match(getValueForLocale(entry.fields.content, locale), {
-      onSome: content => html`${BlockContentToHtml(content)}`,
-      onNone: () => html`${BlockContentToHtml(getValueForDefaultLocale(entry.fields.content))}`,
+    html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
+      onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
+      onNone: () =>
+        Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), content => html`${content}`),
     }),
     locale: Option.match(getValueForLocale(entry.fields.title, locale), {
       onSome: () => locale,
@@ -114,12 +115,12 @@ const EmbeddedEntryToHtml = Match.typeTags<typeof EmbeddedEntry.Type, Html>()({
   },
 })
 
-const BlockElementToHtml = Match.typeTags<Block, Option.Option<Html>>()({
-  Document: document => Option.some(html`${BlockContentToHtml(document)}`),
+const BlockElementToHtml = Match.typeTags<Block, Effect.Effect<Option.Option<Html>, ParseResult.ParseError>>()({
+  Document: document => Effect.map(BlockContentToHtml(document), content => Option.some(html`${content}`)),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
 
-    return Option.some(
+    return Effect.succeedSome(
       html`<img
         src="${file.url.href}"
         width="${file.details.image.width}"
@@ -129,65 +130,89 @@ const BlockElementToHtml = Match.typeTags<Block, Option.Option<Html>>()({
     )
   },
   EmbeddedEntryBlock: embeddedEntryBlock =>
-    pipe(Schema.decodeUnknownSync(EmbeddedEntry)(embeddedEntryBlock.data.target), EmbeddedEntryToHtml, Option.some),
-  Heading1: heading1 => Option.some(html`<h1><span>${BlockContentToHtml(heading1)}</span></h1>`),
-  Heading2: heading2 => Option.some(html`<h2><span>${BlockContentToHtml(heading2)}</span></h2> `),
-  Heading3: heading3 => Option.some(html`<h3><span>${BlockContentToHtml(heading3)}</span></h3>`),
+    pipe(
+      Schema.decodeUnknown(EmbeddedEntry)(embeddedEntryBlock.data.target),
+      Effect.andThen(EmbeddedEntryToHtml),
+      Effect.asSome,
+    ),
+  Heading1: heading1 =>
+    Effect.map(BlockContentToHtml(heading1), content => Option.some(html`<h1><span>${content}</span></h1>`)),
+  Heading2: heading2 =>
+    Effect.map(BlockContentToHtml(heading2), content => Option.some(html`<h2><span>${content}</span></h2> `)),
+  Heading3: heading3 =>
+    Effect.map(BlockContentToHtml(heading3), content => Option.some(html`<h3><span>${content}</span></h3>`)),
   ListItem: listItem =>
-    Option.some(html`<li><span>${BlockContentToHtmlSkippingOverSingleParagraph(listItem)}</span></li>`),
+    Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(listItem), content =>
+      Option.some(html`<li><span>${content}</span></li>`),
+    ),
   OrderedList: orderedList =>
-    Option.some(
-      html`<ol>
-        ${BlockContentToHtml(orderedList)}
-      </ol>`,
+    Effect.map(BlockContentToHtml(orderedList), content =>
+      Option.some(
+        html`<ol>
+          ${content}
+        </ol>`,
+      ),
     ),
   Paragraph: paragraph =>
-    Array.match(BlockContentToHtml(paragraph), {
-      onEmpty: () => Option.none(),
-      onNonEmpty: content => Option.some(html`<p><span>${content}</span></p>`),
-    }),
+    Effect.map(BlockContentToHtml(paragraph), content =>
+      Array.isNonEmptyReadonlyArray(content) ? Option.some(html`<p><span>${content}</span></p>`) : Option.none(),
+    ),
   Table: table =>
-    Option.some(
-      html`<table>
-        ${BlockContentToHtml(table)}
-      </table>`,
+    Effect.map(BlockContentToHtml(table), content =>
+      Option.some(
+        html`<table>
+          ${content}
+        </table>`,
+      ),
     ),
   TableRow: tableRow =>
-    Option.some(
-      html`<tr>
-        ${BlockContentToHtml(tableRow)}
-      </tr>`,
+    Effect.map(BlockContentToHtml(tableRow), content =>
+      Option.some(
+        html`<tr>
+          ${content}
+        </tr>`,
+      ),
     ),
   TableCell: tableCell =>
-    Option.some(html`<td><span>${BlockContentToHtmlSkippingOverSingleParagraph(tableCell)}</span></td>`),
+    Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(tableCell), content =>
+      Option.some(html`<td><span>${content}</span></td>`),
+    ),
   TableHeaderCell: tableHeaderCell =>
-    Option.some(html`<th><span>${BlockContentToHtmlSkippingOverSingleParagraph(tableHeaderCell)}</span></th>`),
+    Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(tableHeaderCell), content =>
+      Option.some(html`<th><span>${content}</span></th>`),
+    ),
   UnorderedList: unorderedList =>
-    Option.some(
-      html`<ul>
-        ${BlockContentToHtml(unorderedList)}
-      </ul>`,
+    Effect.map(BlockContentToHtml(unorderedList), content =>
+      Option.some(
+        html`<ul>
+          ${content}
+        </ul>`,
+      ),
     ),
 })
 
 const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
-): ReadonlyArray<Html> =>
-  Array.filterMap(block.content, (element: Block | Inline | Text) => {
-    if (element._tag === 'Text') {
-      return TextToHtml(element)
-    }
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError> =>
+  Effect.forEach(
+    block.content,
+    (element: Block | Inline | Text) => {
+      if (element._tag === 'Text') {
+        return Effect.succeed(TextToHtml(element))
+      }
 
-    if (element._tag === 'EntryHyperlink' || element._tag === 'Hyperlink') {
-      return InlineElementToHtml(element)
-    }
+      if (element._tag === 'EntryHyperlink' || element._tag === 'Hyperlink') {
+        return Effect.succeed(InlineElementToHtml(element))
+      }
 
-    return BlockElementToHtml(element)
-  })
+      return BlockElementToHtml(element)
+    },
+    { concurrency: 'inherit' },
+  ).pipe(Effect.andThen(Array.getSomes))
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
-): ReadonlyArray<Html> => {
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }
