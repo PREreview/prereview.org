@@ -58,9 +58,8 @@ export const EntryToContentfulPage = Schema.transformOrFail(
           onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
         }),
         html: Option.match(getValueForLocale(entry.fields.content, locale), {
-          onSome: content => html`${Array.filterMap(content.content, DocumentTypeToHtml)}`,
-          onNone: () =>
-            html`${Array.filterMap(getValueForDefaultLocale(entry.fields.content).content, DocumentTypeToHtml)}`,
+          onSome: content => html`${ContentToHtml(content)}`,
+          onNone: () => html`${ContentToHtml(getValueForDefaultLocale(entry.fields.content))}`,
         }),
         locale: Option.match(getValueForLocale(entry.fields.title, locale), {
           onSome: () => locale,
@@ -182,46 +181,39 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
   EntryHyperlink: hyperlink => {
     const target = Schema.decodeUnknownSync(EntryWithSlugField)(hyperlink.data.target)
 
-    return Option.some(
-      html`<a href="/${getValueForDefaultLocale(target.fields.slug)}"
-        >${Array.filterMap(hyperlink.content, DocumentTypeToHtml)}</a
-      >`,
-    )
+    return Option.some(html`<a href="/${getValueForDefaultLocale(target.fields.slug)}">${ContentToHtml(hyperlink)}</a>`)
   },
-  Heading1: heading1 =>
-    Option.some(html`<h1><span>${Array.filterMap(heading1.content, DocumentTypeToHtml)}</span></h1>`),
-  Heading2: heading2 =>
-    Option.some(html`<h2><span>${Array.filterMap(heading2.content, DocumentTypeToHtml)}</span></h2> `),
-  Heading3: heading3 =>
-    Option.some(html`<h3><span>${Array.filterMap(heading3.content, DocumentTypeToHtml)}</span></h3>`),
+  Heading1: heading1 => Option.some(html`<h1><span>${ContentToHtml(heading1)}</span></h1>`),
+  Heading2: heading2 => Option.some(html`<h2><span>${ContentToHtml(heading2)}</span></h2> `),
+  Heading3: heading3 => Option.some(html`<h3><span>${ContentToHtml(heading3)}</span></h3>`),
   Hyperlink: hyperlink =>
     Option.some(
       html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
-        >${Array.filterMap(hyperlink.content, DocumentTypeToHtml)}</a
+        >${ContentToHtml(hyperlink)}</a
       >`,
     ),
   ListItem: listItem => Option.some(html`<li><span>${ContentToHtmlSkippingOverSingleParagraph(listItem)}</span></li>`),
   OrderedList: orderedList =>
     Option.some(
       html`<ol>
-        ${Array.filterMap(orderedList.content, DocumentTypeToHtml)}
+        ${ContentToHtml(orderedList)}
       </ol>`,
     ),
   Paragraph: paragraph =>
-    Array.match(Array.filterMap(paragraph.content, DocumentTypeToHtml), {
+    Array.match(ContentToHtml(paragraph), {
       onEmpty: () => Option.none(),
       onNonEmpty: content => Option.some(html`<p><span>${content}</span></p>`),
     }),
   Table: table =>
     Option.some(
       html`<table>
-        ${Array.filterMap(table.content, DocumentTypeToHtml)}
+        ${ContentToHtml(table)}
       </table>`,
     ),
   TableRow: tableRow =>
     Option.some(
       html`<tr>
-        ${Array.filterMap(tableRow.content, DocumentTypeToHtml)}
+        ${ContentToHtml(tableRow)}
       </tr>`,
     ),
   TableCell: tableCell =>
@@ -233,19 +225,22 @@ const DocumentTypeToHtml: (documentType: DocumentType) => Option.Option<Html> = 
   UnorderedList: unorderedList =>
     Option.some(
       html`<ul>
-        ${Array.filterMap(unorderedList.content, DocumentTypeToHtml)}
+        ${ContentToHtml(unorderedList)}
       </ul>`,
     ),
 })
+
+const ContentToHtml = ({ content }: Document | Extract<DocumentType, { content: unknown }>): ReadonlyArray<Html> =>
+  Array.filterMap(content, DocumentTypeToHtml)
 
 const ContentToHtmlSkippingOverSingleParagraph = (
   documentType: Extract<DocumentType, { content: unknown }>,
 ): ReadonlyArray<Html> => {
   if (documentType.content.length === 1 && documentType.content[0]._tag === 'Paragraph') {
-    return Array.filterMap(documentType.content[0].content, DocumentTypeToHtml)
+    return ContentToHtml(documentType.content[0])
   }
 
-  return Array.filterMap(documentType.content, DocumentTypeToHtml)
+  return ContentToHtml(documentType)
 }
 
 const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>
