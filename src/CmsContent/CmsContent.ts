@@ -8,12 +8,13 @@ import { translate, type SupportedLocale } from '../locales/index.ts'
 import { UnableToQuery } from '../Queries.ts'
 import * as Routes from '../routes.ts'
 import type { Slug } from '../types/Slug.ts'
-import type { Page } from './Types.ts'
+import type { BlogPost, Page } from './Types.ts'
 
 export class CmsContent extends Context.Tag('CmsContent')<
   CmsContent,
   {
     getPage: (slug: Slug, preview?: boolean) => Effect.Effect<Page, UnableToQuery, Locale>
+    getBlogPost: (slug: Slug, preview?: boolean) => Effect.Effect<BlogPost, UnableToQuery, Locale>
   }
 >() {
   static readonly layer = Layer.effect(
@@ -39,6 +40,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
                   ),
                   Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
                 ),
+          getBlogPost: () => new UnableToQuery({ cause: 'not implemented' }),
         }
       }
 
@@ -54,6 +56,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
                 }),
                 Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
               ),
+        getBlogPost: () => new UnableToQuery({ cause: 'not implemented' }),
       }
     }),
   )
