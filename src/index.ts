@@ -173,7 +173,10 @@ pipe(
       accessToken: Config.redacted('CONTENTFUL_ACCESS_TOKEN'),
       previewAccessToken: Config.redacted('CONTENTFUL_PREVIEW_ACCESS_TOKEN'),
       environmentId: Config.succeed(ContentfulId.make('master')),
-      spaceId: Config.succeed(ContentfulId.make('dapbmjoaf8gb')),
+      spaceId: Config.withDefault(
+        Schema.Config('CONTENTFUL_SPACE_ID', ContentfulId),
+        ContentfulId.make('dapbmjoaf8gb'),
+      ),
     }),
     Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
     Layer.effect(
