@@ -10,6 +10,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canLogInAsDemoUser: boolean
     canPreviewContentFromContentful: boolean
     loadPagesFromContentful: boolean
+    loadBlogFromContentful: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
     useCrowdinInContext: boolean
     showSpotlight: boolean
@@ -21,6 +22,7 @@ const defaults = {
   canClubLeadsAddReviewsToClubs: false,
   canLogInAsDemoUser: false,
   canPreviewContentFromContentful: false,
+  loadBlogFromContentful: false,
   loadPagesFromContentful: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
@@ -33,6 +35,7 @@ export const {
   canLogInAsDemoUser,
   canClubLeadsAddReviewsToClubs,
   canPreviewContentFromContentful,
+  loadBlogFromContentful,
   loadPagesFromContentful,
   sendCoarNotifyMessages,
   useCrowdinInContext,
