@@ -374,6 +374,14 @@ body {
   }
 }
 
+i,
+em {
+  &:where(:--arabic-script) {
+    font-style: normal;
+    font-weight: 500;
+  }
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -2157,6 +2165,10 @@ single-use-form {
   font-style: italic;
   text-wrap-style: pretty;
 
+  &:where(:--arabic-script) {
+    font-style: normal;
+  }
+
   & :any-link {
     color: inherit;
   }
@@ -2767,6 +2779,7 @@ skip-link {
     display: inline-block;
     position: relative;
     font-style: inherit;
+    font-weight: inherit;
 
     @media (forced-colors: none) {
       text-shadow:
