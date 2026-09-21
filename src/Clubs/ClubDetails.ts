@@ -553,6 +553,38 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     leads: [OrcidId('0000-0002-7489-4233')],
   },
   {
+    id: Uuid('af6ce174-6a81-42b0-95b3-2393a8bde87d'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('Environmental Health Research Group'),
+    },
+    slug: Slug('environmental-health-research-group'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          The Environmental Health Research Group is a multidisciplinary team dedicated to advancing evidence-based
+          solutions for water quality, pollution control, environmental toxicology, and public health. Under Dr. Raimi’s
+          leadership, we bridge rigorous scientific research with policy advisory and community engagement to address
+          pressing environmental health challenges in Nigeria and the Global South.
+        </p>
+        <p>
+          The Environmental Health Research Group is a collaborative research club that brings together scholars,
+          students, and practitioners to investigate and address critical environmental health issues, including water
+          quality, pollution, toxicology, and climate-related health risks. Our purpose is to foster interdisciplinary
+          research, build capacity among emerging scientists, and translate scientific evidence into actionable policies
+          and community interventions that promote healthier environments and sustainable development.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-21'),
+    leads: [OrcidId('0000-0001-5042-6729')],
+    joinLink: new URL(
+      'https://docs.google.com/forms/d/e/1FAIpQLScwQ98ZXKJtQWuo4WeflRtSynWEoC1PIndoqgKa8QtYqDlsKQ/viewform',
+    ),
+  },
+  {
     id: Uuid('4dbef4c4-3793-4a32-9837-3fa39a69188a'),
     status: 'active',
     name: {
