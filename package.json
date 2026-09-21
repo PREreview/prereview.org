@@ -3,7 +3,7 @@
   "engines": {
     "node": "24",
     "npm": "11",
-    "pnpm": "11"
+    "pnpm": "12"
   },
   "type": "module",
   "dependencies": {
