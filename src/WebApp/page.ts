@@ -2,7 +2,7 @@ import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effe
 import { format } from 'fp-ts-routing'
 import { type Html, type PlainText, html } from '../html.ts'
 import { languageAttributesFor } from '../Locales.ts'
-import { type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
+import { CrowdinInContextLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as Routes from '../routes.ts'
 import type { UserOnboarding } from '../user-onboarding.ts'
@@ -113,6 +113,10 @@ export const page = ({
                     }
                     document.documentElement.lang = window.jipt.target_language
                     document.documentElement.dir = window.jipt.target_language === 'arb' ? 'rtl' : 'ltr'
+                    document.documentElement.querySelectorAll('[lang="${CrowdinInContextLocale}"]').forEach(element => {
+                      element.removeAttribute('lang')
+                      element.removeAttribute('dir')
+                    })
                     document.documentElement.querySelectorAll('.locale').forEach(element => {
                       element.innerText =
                         new Intl.DisplayNames(window.jipt.target_language, {
