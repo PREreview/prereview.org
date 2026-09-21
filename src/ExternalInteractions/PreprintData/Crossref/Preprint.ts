@@ -3,7 +3,7 @@ import { Array, Effect, Either, flow, Match, pipe } from 'effect'
 import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import type { Crossref } from '../../../ExternalApis/index.ts'
-import { type Html, sanitizeHtml } from '../../../html.ts'
+import { type Html, rawHtml, sanitizeHtml } from '../../../html.ts'
 import { transformJatsToHtml } from '../../../jats.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { Doi, Iso639 } from '../../../types/index.ts'
@@ -136,7 +136,10 @@ const getTitle = (
   Array.match(title, {
     onEmpty: () => new Preprints.PreprintIsUnavailable({ cause: { title } }),
     onNonEmpty: flow(
-      title => Effect.succeed({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
+      title =>
+        Effect.succeed({
+          text: removeOuterBoldTags(sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false })),
+        }),
       Effect.bind('language', ({ text }) =>
         Effect.catchTag(
           detectLanguageForServer({ id, text, workLanguage }),
@@ -179,6 +182,9 @@ const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
       ? decode(text)
       : text
     : text
+
+const removeOuterBoldTags = (text: Html): Html =>
+  rawHtml(text.toString().replace(/^(\s*)<b>([\s\S]*)<\/b>(\s*)$/i, '$1$2$3'))
 
 const detectLanguageForServer = ({
   id,

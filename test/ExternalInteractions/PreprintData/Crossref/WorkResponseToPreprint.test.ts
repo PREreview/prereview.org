@@ -239,6 +239,30 @@ it.effect.each([
     }),
   },
   {
+    response: 'scielo-preprints-title-bold.json',
+    expected: Preprint({
+      authors: [
+        { name: Name('Andressa Marques da Silva'), orcid: OrcidId('0000-0002-2762-0723') },
+        { name: Name('Alex Branco Fraga'), orcid: OrcidId('0000-0002-6881-1446') },
+      ],
+      id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.17527') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 8, day: 24 }),
+      title: {
+        text: rawHtml(
+          'Educação Física na Matriz do Exame Nacional do Ensino Médio: Um saber à margem da avaliação na área de linguagens',
+        ),
+        language: 'pt',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Este estudo analisa o posicionamento da Educação Física na matriz de referência do Exame Nacional do Ensino Médio (ENEM), considerando os documentos curriculares que respaldam a inclusão dos objetos de conhecimento da disciplina no exame. Para tanto, realizamos uma análise documental, tal como preconizada por Cellard, dos seguintes documentos: Parâmetros Curriculares Nacionais do Ensino Médio - Parte II (2000), Parâmetros Curriculares + (2002), Orientações Curriculares do Ensino Médio (2006) e a Matriz de Referência do ENEM (2009). A análise, ancorada na perspectiva discursiva foucaultiana e na noção de subalternidade epistêmica de Walter Mignolo, evidencia uma posição subalterna da disciplina na área de Linguagens, expressa na falta de consenso sobre sua função escolar, na dependência do conceito de “linguagem corporal” para justificar sua inclusão curricular e avaliativa, e no apagamento da Educação Física nos eixos cognitivos da Matriz do exame. O estudo defende a revisão da Matriz do ENEM como forma de fomentar o debate acadêmico sobre o lugar da Educação Física na formação integral dos estudantes e nas avaliações nacionais.</p>',
+        ),
+        language: 'pt',
+      },
+      url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/17527/version/18410'),
+    }),
+  },
+  {
     response: 'scielo-preprints-title-encoded-html.json',
     expected: Preprint({
       authors: [{ name: Name('Helder Ferreira do Vale'), orcid: OrcidId('0000-0002-4993-7932') }],
