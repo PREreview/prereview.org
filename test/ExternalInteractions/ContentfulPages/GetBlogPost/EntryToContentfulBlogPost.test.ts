@@ -101,9 +101,9 @@ it.effect.each<{
             community to give constructive feedback on a research output as a team!
           </span>
         </p>
-        <a href="https://sites.google.com/prereview.org/review-a-thon/about?authuser=4" class="button"
-          >LEARN MORE &amp; REGISTER</a
-        >
+        <a href="https://sites.google.com/prereview.org/review-a-thon/about?authuser=4" class="button">
+          <span>LEARN MORE &amp; REGISTER</span>
+        </a>
         <p>
           <span>
             💌 Please let us know if you have any questions at
@@ -291,9 +291,9 @@ it.effect.each<{
             Please reach out to share your questions, feedback, and collaboration proposals to expand on this work.
           </span>
         </p>
-        <a href="https://articles.continuousfoundation.org/articles/modular-peer-review/report" class="button"
-          >READ THE FINAL REPORT</a
-        >
+        <a href="https://articles.continuousfoundation.org/articles/modular-peer-review/report" class="button">
+          <span>READ THE FINAL REPORT</span>
+        </a>
         <h3><span>Events</span></h3>
         <img
           src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
@@ -450,7 +450,9 @@ it.effect.each<{
             <a href="https://prereviewcommunity.slack.com/archives/C05B95LEN5C">#request-a-review</a> channel.
           </span>
         </p>
-        <a href="https://bit.ly/PREreview-Slack" class="button">JOIN THE CONVERSATION</a>
+        <a href="https://bit.ly/PREreview-Slack" class="button">
+          <span>JOIN THE CONVERSATION</span>
+        </a>
       `,
       locale: DefaultLocale,
     }),

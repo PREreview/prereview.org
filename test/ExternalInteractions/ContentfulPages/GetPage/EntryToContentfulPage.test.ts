@@ -302,7 +302,9 @@ it.effect.each<{
             contact you soon to begin the process.
           </span>
         </p>
-        <a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" class="button">Start a Club!</a>
+        <a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" class="button">
+          <span>Start a Club!</span>
+        </a>
         <h1><span>Can I join an existing PREreview Club?</span></h1>
         <p>
           <span>
@@ -335,7 +337,9 @@ it.effect.each<{
             <a href="https://bit.ly/PREreview-Slack">Sign up here</a> for your invitation to join us on Slack!
           </span>
         </p>
-        <a href="https://bit.ly/PREreview-Slack" class="button">Join our Slack</a>
+        <a href="https://bit.ly/PREreview-Slack" class="button">
+          <span>Join our Slack</span>
+        </a>
       `,
       locale: DefaultLocale,
     }),

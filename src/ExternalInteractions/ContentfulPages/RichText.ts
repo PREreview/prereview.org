@@ -19,7 +19,9 @@ const EmbeddedEntryToHtml = Match.typeTags<
       getValueForDefaultLocale(callToAction.fields.text),
     )
 
-    return html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button">${text}</a>`
+    return html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
+      ><span>${text}</span></a
+    >`
   }),
   DynamicEmbedEntry: Effect.fnUntraced(function* (dynamicEmbed) {
     const dynamicEmbedded = yield* DynamicEmbedder
