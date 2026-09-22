@@ -589,6 +589,14 @@ img {
   }
 }
 
+figure {
+  margin-block: var(--space-m-l);
+}
+
+figcaption {
+  font-size: var(--step--1);
+}
+
 nav {
   .contents > & {
     display: flex;

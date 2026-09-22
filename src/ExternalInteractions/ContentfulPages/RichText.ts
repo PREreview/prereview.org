@@ -10,7 +10,7 @@ const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEn
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
-  Effect.Effect<Html, never, DynamicEmbedder | Locale>
+  Effect.Effect<Html, ParseResult.ParseError, DynamicEmbedder | Locale>
 >()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
@@ -28,20 +28,36 @@ const EmbeddedEntryToHtml = Match.typeTags<
 
     return yield* dynamicEmbedded[getValueForDefaultLocale(dynamicEmbed.fields.key)]
   }),
-  MediaEntry: media => {
+  MediaEntry: Effect.fnUntraced(function* (media) {
     const file = getValueForDefaultLocale(media.fields.file)
     const asset = getValueForDefaultLocale(file.fields.file)
     const altText = media.fields.altText ? getValueForDefaultLocale(media.fields.altText) : ''
+    const caption = yield* media.fields.caption
+      ? BlockContentToHtml(getValueForDefaultLocale(media.fields.caption))
+      : Effect.succeed([])
 
-    return Effect.succeed(html`
-      <img
-        src="${asset.url.href}"
-        width="${asset.details.image.width}"
-        height="${asset.details.image.height}"
-        alt="${altText}"
-      />
-    `)
-  },
+    return Array.match(caption, {
+      onNonEmpty: caption => html`
+        <figure>
+          <img
+            src="${asset.url.href}"
+            width="${asset.details.image.width}"
+            height="${asset.details.image.height}"
+            alt="${altText}"
+          />
+          <figcaption>${caption}</figcaption>
+        </figure>
+      `,
+      onEmpty: () => html`
+        <img
+          src="${asset.url.href}"
+          width="${asset.details.image.width}"
+          height="${asset.details.image.height}"
+          alt="${altText}"
+        />
+      `,
+    })
+  }),
 })
 
 const BlockElementToHtml = Match.typeTags<

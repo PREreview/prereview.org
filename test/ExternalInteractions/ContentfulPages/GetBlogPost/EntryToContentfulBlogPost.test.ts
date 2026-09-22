@@ -115,12 +115,19 @@ it.effect.each<{
           </span>
         </p>
         <h3><span>PREreview in Dialogue</span></h3>
-        <img
-          src="https://images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png"
-          width="300"
-          height="300"
-          alt="Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
-        />
+        <figure>
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png"
+            width="300"
+            height="300"
+            alt="Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
+          />
+          <figcaption>
+            <p>
+              <span>Credits: by Getillustrations. Canva Pro licensed content.</span>
+            </p>
+          </figcaption>
+        </figure>
         <p>
           <span>
             <b>Pia Tavella at the IV Encuentro de la Red Chilena de Revistas Científicas de Acceso Abierto</b>
@@ -205,12 +212,20 @@ it.effect.each<{
           </span>
         </p>
         <h3><span>PREreview Champions in Action!</span></h3>
-        <img
-          src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
-          width="300"
-          height="300"
-          alt="A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
-        />
+
+        <figure>
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
+            width="300"
+            height="300"
+            alt="A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
+          />
+          <figcaption>
+            <p>
+              <span>Credits: “Diverse Hands Making Heart” by Vectorfair Y. Canva Pro licensed content</span>
+            </p>
+          </figcaption>
+        </figure>
         <p>
           <span>
             For the past couple of months, 2026 PREreview Champions have been spreading out the word about open peer
@@ -294,12 +309,17 @@ it.effect.each<{
           <span>READ THE FINAL REPORT</span>
         </a>
         <h3><span>Events</span></h3>
-        <img
-          src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
-          width="300"
-          height="300"
-          alt="A red megaphone icon outlined in black against a white background."
-        />
+        <figure>
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
+            width="300"
+            height="300"
+            alt="A red megaphone icon outlined in black against a white background."
+          />
+          <figcaption>
+            <p><span>Credits: Wena Vega from sketchify</span></p>
+          </figcaption>
+        </figure>
         <p>
           <span><b>Upcoming events</b></span>
         </p>
