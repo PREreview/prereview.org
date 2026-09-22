@@ -31,9 +31,15 @@ const EmbeddedEntryToHtml = Match.typeTags<
   MediaEntry: media => {
     const file = getValueForDefaultLocale(media.fields.file)
     const asset = getValueForDefaultLocale(file.fields.file)
+    const altText = media.fields.altText ? getValueForDefaultLocale(media.fields.altText) : ''
 
     return Effect.succeed(html`
-      <img src="${asset.url.href}" width="${asset.details.image.width}" height="${asset.details.image.height}" alt="" />
+      <img
+        src="${asset.url.href}"
+        width="${asset.details.image.width}"
+        height="${asset.details.image.height}"
+        alt="${altText}"
+      />
     `)
   },
 })

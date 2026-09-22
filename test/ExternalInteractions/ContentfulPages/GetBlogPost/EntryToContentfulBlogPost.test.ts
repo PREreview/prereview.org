@@ -73,7 +73,7 @@ it.effect.each<{
           src="https://images.ctfassets.net/66hjlpng9xzg/6BmOyODL93skgyxtdKpoXT/35795ed414b2f2f7ce0e459dab0a73cf/PRW-for-newsletter-300x300-1.png"
           width="300"
           height="300"
-          alt=""
+          alt="Peer Review Week logo"
         />
         <p>
           <span>
@@ -119,7 +119,7 @@ it.effect.each<{
           src="https://images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png"
           width="300"
           height="300"
-          alt=""
+          alt="Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
         />
         <p>
           <span>
@@ -209,7 +209,7 @@ it.effect.each<{
           src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
           width="300"
           height="300"
-          alt=""
+          alt="A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
         />
         <p>
           <span>
@@ -265,7 +265,7 @@ it.effect.each<{
           src="https://images.ctfassets.net/66hjlpng9xzg/6YLGkTOchGcjmM8pnmcmgk/6439ef7448cd7320b707da998d02c7b4/Newsletter-images---small--300-x-300-px---5-.jpg"
           width="300"
           height="300"
-          alt=""
+          alt="Continuous Science Foundation and PREreview logos joined by a plus sign, representing collaboration."
         />
         <p>
           <span>
@@ -298,7 +298,7 @@ it.effect.each<{
           src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
           width="300"
           height="300"
-          alt=""
+          alt="A red megaphone icon outlined in black against a white background."
         />
         <p>
           <span><b>Upcoming events</b></span>
@@ -375,7 +375,7 @@ it.effect.each<{
           src="https://images.ctfassets.net/66hjlpng9xzg/3D56aYtUlBhKOXXDh1Q34d/7549db830de79805d575f2adb2c0c282/Slack-highlights---300x300.png"
           width="300"
           height="300"
-          alt=""
+          alt="The PREreview logo at the top and Slack logo at the bottom with the image of a paper in white on a red background"
         />
         <ul>
           <li>

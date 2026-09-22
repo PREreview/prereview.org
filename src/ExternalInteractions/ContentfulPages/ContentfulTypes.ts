@@ -37,5 +37,6 @@ export const MediaEntry = Schema.Struct({
   }),
   fields: Schema.Struct({
     file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
+    altText: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString })),
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'MediaEntry'))
