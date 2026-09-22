@@ -1099,6 +1099,36 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     joinLink: new URL('https://join.slack.com/t/openboxscience/shared_invite/zt-1cjr8dt6c-hRnnCmmAG8JeRo1271O5aA'),
   },
   {
+    id: Uuid('91421a59-2a56-4b1f-990f-ff71e16ebf3a'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('Open Research Community of Tanzania'),
+    },
+    slug: Slug('open-research-community-tanzania'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          The Open Research Community of Tanzania (ORCT) is a network of researchers, students and knowledge advocates
+          working to advance open science practices in Tanzania.
+        </p>
+        <p>
+          The community promotes principles of open science including open access publishing, open peer review,
+          transparent data sharing and inclusive research practices among Tanzanian and African researchers.
+        </p>
+        <p>
+          Drawing on ties to global initiatives including eLife, PREreview and INASP, the community offers training and
+          mentorship to early career researchers on open publishing and peer review, while also supporting institutional
+          change through open science policy development at universities. Its goal is to make African research more
+          visible, more accessible and better connected to global open science conversations.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-22'),
+    leads: [OrcidId('0009-0001-8993-7427')],
+  },
+  {
     id: Uuid('980658e9-e025-46ff-9cee-f46ff02fc3f8'),
     status: 'inactive',
     name: {
