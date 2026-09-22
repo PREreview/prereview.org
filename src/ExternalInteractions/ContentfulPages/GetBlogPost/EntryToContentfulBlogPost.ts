@@ -22,6 +22,9 @@ const BlogPostEntry = Schema.Struct({
     authors: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyArray(AuthorEntry) }),
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) }),
+    firstPublishedAtOverride: Schema.optional(
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: InstantSchema }),
+    ),
   }),
 })
 
@@ -46,7 +49,9 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
       onSome: () => locale,
       onNone: () => DefaultLocale,
     }),
-    publishedAt: entry.sys.createdAt,
+    publishedAt: entry.fields.firstPublishedAtOverride
+      ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)
+      : entry.sys.createdAt,
   })
 })
 

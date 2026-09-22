@@ -24,7 +24,7 @@ it.effect.each<{
     expected: new ContentfulBlogPost({
       title: html`PREreview platform news, 31 October 2025`,
       authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
-      publishedAt: Instant.from('2026-09-11T11:00:46.542Z'),
+      publishedAt: Instant.from('2025-10-31T14:00:00Z'),
       html: html`
         <p>
           <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
@@ -59,7 +59,7 @@ it.effect.each<{
     expected: new ContentfulBlogPost({
       title: html`PREreview August 2026 Newsletter`,
       authors: [new Author({ name: Name('Pia Tavella') })],
-      publishedAt: Instant.from('2026-09-11T11:01:13.152Z'),
+      publishedAt: Instant.from('2026-08-21T14:13:47Z'),
       html: html`
         <p>
           <span>
