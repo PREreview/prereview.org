@@ -4,7 +4,6 @@ import { expect, it } from '@effect/vitest'
 import { assertEquals } from '@effect/vitest/utils'
 import resolveResponse from 'contentful-resolve-response'
 import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
-import { writeFileSync } from 'fs'
 import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlogPost/EntryToContentfulBlogPost.ts'
@@ -19,41 +18,41 @@ it.effect.each<{
   index: number
   expected: ContentfulBlogPost
 }>([
-  // {
-  //   response: 'blog-posts-multiple-authors',
-  //   index: 0,
-  //   expected: new ContentfulBlogPost({
-  //     title: html`PREreview platform news, 31 October 2025`,
-  //     authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
-  //     publishedAt: Instant.from('2026-09-11T11:00:46.542Z'),
-  //     html: html`
-  //       <p>
-  //         <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
-  //       </p>
-  //       <h1><span>What’s new at PREreview?</span></h1>
-  //       <p>
-  //         <span
-  //           >We’re continuing to improve
-  //           <a href="https://content.prereview.org/now-you-can-review-datasets-on-prereview-org/"
-  //             >our new dataset review workflow</a
-  //           >
-  //           this week. Soon, we’ll display dataset reviews alongside preprint reviews on our webpage and community
-  //           Slack. We’ve also added support for more registrant DOIs from Dryad to allow for the review of older
-  //           datasets. We’ll automate the process for adding multiple authors shortly, as well.</span
-  //         >
-  //       </p>
-  //       <h1><span>What’s next?</span></h1>
-  //       <p>
-  //         <span
-  //           >Up next we’ll add our-use-of-AI declaration step to the dataset review workflow. Next month, we’re
-  //           prototyping more individualized matchmaking between community members and reviews and requests that might
-  //           interest them. We’re also prepping for our next all-hands retreat in November.</span
-  //         >
-  //       </p>
-  //     `,
-  //     locale: DefaultLocale,
-  //   }),
-  // },
+  {
+    response: 'blog-posts-multiple-authors',
+    index: 0,
+    expected: new ContentfulBlogPost({
+      title: html`PREreview platform news, 31 October 2025`,
+      authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
+      publishedAt: Instant.from('2026-09-11T11:00:46.542Z'),
+      html: html`
+        <p>
+          <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
+        </p>
+        <h1><span>What’s new at PREreview?</span></h1>
+        <p>
+          <span
+            >We’re continuing to improve
+            <a href="https://content.prereview.org/now-you-can-review-datasets-on-prereview-org/"
+              >our new dataset review workflow</a
+            >
+            this week. Soon, we’ll display dataset reviews alongside preprint reviews on our webpage and community
+            Slack. We’ve also added support for more registrant DOIs from Dryad to allow for the review of older
+            datasets. We’ll automate the process for adding multiple authors shortly, as well.</span
+          >
+        </p>
+        <h1><span>What’s next?</span></h1>
+        <p>
+          <span
+            >Up next we’ll add our-use-of-AI declaration step to the dataset review workflow. Next month, we’re
+            prototyping more individualized matchmaking between community members and reviews and requests that might
+            interest them. We’re also prepping for our next all-hands retreat in November.</span
+          >
+        </p>
+      `,
+      locale: DefaultLocale,
+    }),
+  },
   {
     response: 'blog-posts-newsletter',
     index: 0,
@@ -468,8 +467,6 @@ it.effect.each<{
       Effect.andThen(Array.get(index)),
       Effect.andThen(_.EntryToContentfulBlogPost),
     )
-
-    writeFileSync('data/actual.html', actual.html.toString())
 
     expect(Struct.omit(actual, 'html')).toStrictEqual(Struct.omit(expected, 'html'))
     assertEquals(actual.html, expected.html)
