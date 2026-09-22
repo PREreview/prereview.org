@@ -111,7 +111,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
       `,
     },
     added: Temporal.PlainDate.from('2023-07-31'),
-    leads: [OrcidId('0000-0003-1040-3607'), OrcidId('0000-0002-0596-7590'), OrcidId('0000-0001-6666-9426')],
+    leads: [OrcidId('0000-0003-1040-3607'), OrcidId('0009-0006-6065-9650'), OrcidId('0009-0008-6783-3601')],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
   {
