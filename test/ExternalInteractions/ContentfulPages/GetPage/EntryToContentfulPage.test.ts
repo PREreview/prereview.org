@@ -853,24 +853,26 @@ it.effect.each<{
   ),
 )
 
-it.effect.each([['banners', 'blog-posts-multiple-authors']])("can't parse a record (%s)", ([response]) =>
-  Effect.gen(function* () {
-    const actual = yield* pipe(
-      FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknown(Entries)),
-      Effect.andThen(Struct.get('items')),
-      Effect.andThen(Array.map(item => _.EntryToContentfulPage(item))),
-      Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
-    )
+it.effect.each([['banners', 'blog-posts-multiple-authors', 'blog-posts-newsletter']])(
+  "can't parse a record (%s)",
+  ([response]) =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        FileSystem.FileSystem,
+        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
+        Effect.map(ResolveEntries),
+        Effect.andThen(Schema.decodeUnknown(Entries)),
+        Effect.andThen(Struct.get('items')),
+        Effect.andThen(Array.map(item => _.EntryToContentfulPage(item))),
+        Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
+      )
 
-    actual.forEach(result => {
-      expect(result).toMatchObject({ _tag: 'Left' })
-    })
-  }).pipe(
-    Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
-  ),
+      actual.forEach(result => {
+        expect(result).toMatchObject({ _tag: 'Left' })
+      })
+    }).pipe(
+      Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
+    ),
 )
 
 const ResolveEntries = (response: string) => {
