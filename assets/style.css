@@ -382,6 +382,12 @@ em {
   }
 }
 
+hr {
+  margin-block: var(--space-xl-2xl);
+  border: none;
+  border-block-start: var(--width-divider-narrow) solid var(--color-divider);
+}
+
 .header {
   display: flex;
   align-items: center;

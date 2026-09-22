@@ -114,6 +114,7 @@ it.effect.each<{
             on the website. Feel free to extend the invite to colleagues and reshare it on social media.
           </span>
         </p>
+        <hr />
         <h3><span>PREreview in Dialogue</span></h3>
         <figure>
           <img
@@ -211,8 +212,8 @@ it.effect.each<{
             de Investigaciones Jurídicas y Sociales &quot;Ambrosio Gioja&quot;, and PREreview.
           </span>
         </p>
+        <hr />
         <h3><span>PREreview Champions in Action!</span></h3>
-
         <figure>
           <img
             src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
@@ -275,6 +276,7 @@ it.effect.each<{
             >
           </li>
         </ul>
+        <hr />
         <h3><span>Modular Peer Review Working Group: Learnings and Next Steps</span></h3>
         <img
           src="https://images.ctfassets.net/66hjlpng9xzg/6YLGkTOchGcjmM8pnmcmgk/6439ef7448cd7320b707da998d02c7b4/Newsletter-images---small--300-x-300-px---5-.jpg"
@@ -308,6 +310,7 @@ it.effect.each<{
         <a href="https://articles.continuousfoundation.org/articles/modular-peer-review/report" class="button">
           <span>READ THE FINAL REPORT</span>
         </a>
+        <hr />
         <h3><span>Events</span></h3>
         <figure>
           <img
@@ -390,6 +393,7 @@ it.effect.each<{
             >
           </li>
         </ul>
+        <hr />
         <h3><span>Highlights from our Slack Community</span></h3>
         <img
           src="https://images.ctfassets.net/66hjlpng9xzg/3D56aYtUlBhKOXXDh1Q34d/7549db830de79805d575f2adb2c0c282/Slack-highlights---300x300.png"

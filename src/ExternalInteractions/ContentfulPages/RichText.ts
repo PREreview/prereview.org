@@ -89,7 +89,7 @@ const BlockElementToHtml = Match.typeTags<
     Effect.map(BlockContentToHtml(heading2), content => Option.some(html`<h2><span>${content}</span></h2> `)),
   Heading3: heading3 =>
     Effect.map(BlockContentToHtml(heading3), content => Option.some(html`<h3><span>${content}</span></h3>`)),
-  HorizontalRule: () => Effect.succeedNone,
+  HorizontalRule: () => Effect.succeedSome(html`<hr />`),
   ListItem: listItem =>
     Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(listItem), content =>
       Option.some(html`<li><span>${content}</span></li>`),
