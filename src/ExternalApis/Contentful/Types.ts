@@ -29,6 +29,7 @@ export type Block =
   | TableHeaderCell
   | EmbeddedAssetBlock
   | EmbeddedEntryBlock
+  | HorizontalRule
 
 export type Inline = EntryHyperlink | Hyperlink
 
@@ -172,6 +173,10 @@ class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntry
   }),
 }) {}
 
+class HorizontalRule extends Schema.Class<HorizontalRule>('HorizontalRule')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('hr', 'HorizontalRule')).pipe(Schema.fromKey('nodeType')),
+}) {}
+
 export class Document extends Schema.Class<Document>('Document')({
   _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(
@@ -185,6 +190,7 @@ export class Document extends Schema.Class<Document>('Document')({
       Table,
       EmbeddedAssetBlock,
       EmbeddedEntryBlock,
+      HorizontalRule,
     ),
   ),
 }) {}

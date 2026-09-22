@@ -65,6 +65,7 @@ const BlockElementToHtml = Match.typeTags<
     Effect.map(BlockContentToHtml(heading2), content => Option.some(html`<h2><span>${content}</span></h2> `)),
   Heading3: heading3 =>
     Effect.map(BlockContentToHtml(heading3), content => Option.some(html`<h3><span>${content}</span></h3>`)),
+  HorizontalRule: () => Effect.succeedNone,
   ListItem: listItem =>
     Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(listItem), content =>
       Option.some(html`<li><span>${content}</span></li>`),
@@ -116,7 +117,7 @@ const BlockElementToHtml = Match.typeTags<
 })
 
 export const BlockContentToHtml = (
-  block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
+  block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
 ): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale> =>
   Effect.forEach(
     block.content,
@@ -135,7 +136,7 @@ export const BlockContentToHtml = (
   ).pipe(Effect.andThen(Array.getSomes))
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
-  block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock'>,
+  block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
 ): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])

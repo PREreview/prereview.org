@@ -1,0 +1,1660 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "15ni1dnv8FQ8RNelQlgt11",
+        "type": "Entry",
+        "createdAt": "2026-09-11T11:01:13.152Z",
+        "updatedAt": "2026-09-11T11:01:13.152Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "PREreview August 2026 Newsletter" },
+        "slug": { "en-US": "august-newsletter" },
+        "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "66F6kozbr5x3SFQM3NxEeA" } }] },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Last Days to Register for our Review-a-thon with your Club!",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "4VdZHKADNKafHGGn9hw2wt", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "To celebrate 2026 ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://peerreviewweek.net/" },
+                    "content": [
+                      { "nodeType": "text", "value": "Peer Review Week", "marks": [{ "type": "bold" }], "data": {} }
+                    ]
+                  },
+                  { "nodeType": "text", "value": " (September 14-18)", "marks": [{ "type": "bold" }], "data": {} },
+                  { "nodeType": "text", "value": ", PREreview is organizing a ", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "Review-a-thon", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ": a global event where newly-formed and existing ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org/clubs" },
+                    "content": [{ "nodeType": "text", "value": "PREreview Clubs", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " synchronously carry out collaborative reviews of preprints and datasets. Our goal is to showcase how human, community-driven peer review can help drive change in the research evaluation culture.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Participating Clubs that organize and carry out at least one collaborative review during Peer Review Week, and publish the resulting PREreview(s)—co-authored by two or more people—within the following two weeks will be entered into a ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "raffle for a 500 USD fund",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": " to support their future group activities.", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Registration for the Review-a-thon is open through ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "August 31, 2026", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ". We especially want to encourage participation from communities that review in ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "languages other than English",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": ", ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "groups reviewing datasets and data papers",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": ", as well as clubs specializing in ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "social sciences and humanities",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". Gather your lab, classroom, journal club, department, or scholarly community to give constructive feedback on a research output as a team!",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "4Mth9RflfVKgrIAIljZKeH", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "💌 Please let us know if you have any questions at ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "mailto:community@prereview.org" },
+                    "content": [{ "nodeType": "text", "value": "community@prereview.org", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ", and check out the", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://sites.google.com/prereview.org/review-a-thon/faqs?authuser=4" },
+                    "content": [{ "nodeType": "text", "value": " FAQs section", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " on the website. Feel free to extend the invite to colleagues and reshare it on social media.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "PREreview in Dialogue", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "3onMU2OV1LNMg3hMwfRYMo", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Pia Tavella at the IV Encuentro de la Red Chilena de Revistas Científicas de Acceso Abierto",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "The ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://redrevistascientificas.uestatales.cl/" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Red Chilena de Revistas Científicas de Acceso Abierto",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " (Chilean Network for Open Access Journals) convenes more than 200 scientific journals managed by 15 public universities to strengthen shared capacities and professionalize the editorial teams. On the 10th and 11th of August, journal editors, librarians, university administrators, and researchers gathered at the network’s fourth annual meeting held in Santiago de Chile to share their reflections and experiences in scholarly communications. The event agenda spanned from academic integrity, new technologies applied to editorial workflows and data privacy, to trends in open science, scientometrics and open peer review.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Pia Tavella", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": ", PREreview’s Communications and Engagement Officer, gave both a ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://doi.org/10.5281/zenodo.21777105" },
+                    "content": [
+                      { "nodeType": "text", "value": "talk on Open Peer Review models", "marks": [], "data": {} }
+                    ]
+                  },
+                  { "nodeType": "text", "value": " and a more interactive ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://doi.org/10.5281/zenodo.21880647" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "workshop about pathways for early-career researchers and journal editors to engage with PREreview",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". The meeting was a unique opportunity to exchange knowledge on the challenges and initiatives shaping scholarly communications, and to build relationships with the open access ecosystem in Latin America.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Daniela Saderi at September 2026 OpenCon Librarian Community Call",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://www.opencon.community/" },
+                    "content": [{ "nodeType": "text", "value": "OpenCon", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " supports a dynamic, diverse, and growing community that works year-round to advance Open Access, Open Education, and Open Data. On September 8, 2026, they’re holding a Community Call aimed at folks working at the intersection of libraries and Open.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "In this session, PREreview Executive Director and Co-founder",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": " Daniela Saderi", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": " will explore how open review models can expand participation, create new opportunities for learning and dialogue, and strengthen trust in research. The talk will also address the role librarians can play as educators, connectors, and stewards of open scholarly infrastructure in helping shape a future where knowledge is held in trust by the many, rather than controlled by the few.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "OpenCon Community Calls are not recorded to support a safer environment for honest discussion. While the September 2026 OpenCon Librarian Community Call is only open for library staff to register, the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://docs.google.com/document/d/17Vp0oQIn66aFkq7ZBKUyodWQwLbqIkYzjbTXtTP96Lc/edit?usp=sharing"
+                    },
+                    "content": [{ "nodeType": "text", "value": "notes", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " will be made public.", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Rosario Rogel Salazar at open peer review workshop organized by Red de Politólogas",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://sites.google.com/view/reddepolitologas/inicio?authuser=0" },
+                    "content": [{ "nodeType": "text", "value": "Red de Politólogas", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " is an international network that brings together one of the largest communities of female political scientists in the world. Their mission is to strengthen the visibility, leadership, and professional development of women in political science, an historically male-dominated field. The network has several ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://sites.google.com/view/reddepolitologas/liderazgo-editorial?authuser=0" },
+                    "content": [
+                      { "nodeType": "text", "value": "members with leadership roles", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " in specialized scientific journals who advocate for more gender diversity in editorial boards.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "On August 21st, 2026, ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "PREreview Champion Rosario Rogel Salazar ",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "is delivering a members-only workshop on open peer review for scientific journals. The activity is collaboratively organized by the Red de Politólogas together with Revista Argentina de Ciencia Política, Revista Mexicana de Derecho Electoral, Revista de Ciencia Política (Santiago), Revista Mexicana de Ciencias Políticas y Sociales, Iconos, Revista de Ciencias Sociales, Brazilian Political Sciences Review, Revista SAAP, Revista Electrónica del Instituto de Investigaciones Jurídicas y Sociales \"Ambrosio Gioja\", and PREreview.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "PREreview Champions in Action!", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "5h14xaFv8vXAg3pZMP3IRT", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "For the past couple of months, 2026 PREreview Champions have been spreading out the word about open peer review across their local communities and building opportunities for others to engage with the Open Science movement.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "In June:", "marks": [{ "type": "bold" }], "data": {} }]
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          { "nodeType": "text", "value": "2026 PREreview Champions ", "marks": [], "data": {} },
+                          { "nodeType": "text", "value": "Daniel Adediran", "marks": [{ "type": "bold" }], "data": {} },
+                          { "nodeType": "text", "value": ", ", "marks": [], "data": {} },
+                          { "nodeType": "text", "value": "Morlai Sesay", "marks": [{ "type": "bold" }], "data": {} },
+                          { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                          {
+                            "nodeType": "text",
+                            "value": "Mabel B. Omoniwa",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": " organized the \"Democratizing Peer Review: Empowering Early-Career Researchers through Open and Collaborative Science\" webinar, joined by 2024 PREreview Champion ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          { "nodeType": "text", "value": "Seun Olufemi", "marks": [{ "type": "bold" }], "data": {} },
+                          { "nodeType": "text", "value": " as an invited speaker.", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "In July:", "marks": [{ "type": "bold" }], "data": {} }]
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          { "nodeType": "text", "value": "Shitondo Yahila", "marks": [{ "type": "bold" }], "data": {} },
+                          {
+                            "nodeType": "text",
+                            "value": " organized an Open Research Symposium with support from The University of Zambia Medical Students Association. The event was targeted at undergraduate healthcare students and early-career researchers. A total of 80+ people participated in three different sessions, including a Live Review!",
+                            "marks": [],
+                            "data": {}
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          { "nodeType": "text", "value": "Daniel Adediran", "marks": [{ "type": "bold" }], "data": {} },
+                          { "nodeType": "text", "value": ", ", "marks": [], "data": {} },
+                          { "nodeType": "text", "value": "Morlai Sesay", "marks": [{ "type": "bold" }], "data": {} },
+                          { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                          {
+                            "nodeType": "text",
+                            "value": "Deborah Mariama Kamara",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": " hosted a webinar on \"Empowering Undergraduate and Postgraduate Students as Agents of Change in Peer Review Across All Communities\".",
+                            "marks": [],
+                            "data": {}
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Alan Colin Arce ",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "published an insights report for the Open Scholarship Policy Observatory under the title “Perceptions, Impact, and the State of Open Peer Review”. Available in ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": {
+                              "uri": "https://ospolicyobservatory.uvic.ca/perceptions-impact-and-the-state-of-open-peer-review/"
+                            },
+                            "content": [{ "nodeType": "text", "value": "English", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://ospolicyobservatory.uvic.ca/evaluation-ouverte/" },
+                            "content": [{ "nodeType": "text", "value": "French", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Modular Peer Review Working Group: Learnings and Next Steps",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "150UFl1dsHPNdWcQbs76Df", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Research is an iterative process: questions evolve, methods change, and analyses get refined. What if peer review could arrive at those moments where it has the greatest potential to improve the work, rather than centering only on the final output?",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "That concept was core to the Modular Peer Review Working Group endeavour between January and July, 2026. Convened by the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://continuousfoundation.org/" },
+                    "content": [
+                      { "nodeType": "text", "value": "Continuous Science Foundation", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " & PREreview, more than 60 researchers, infrastructure builders, publishers, and community members generated practical, testable ideas for integrating useful and timely feedback across the research lifecycle.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "PREreview deeply thanks everyone who participated and contributed their thoughts to the Modular Peer Review Working Group. The final report captures not only the foundations we built together, but is also an ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "open invitation for others in the scholarly communications ecosystem",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to help shape what comes next. Please reach out to share your questions, feedback, and collaboration proposals to expand on this work.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "6SnL32wCaLzZodgZZNg9k8", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Events", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "BOTYP1gWkN6LKUjHvNAMe", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Upcoming events", "marks": [{ "type": "bold" }], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "August 26, 2026 - 13:00 UTC —",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": " “Metadata for All with Wikidata” free webinar. Speakers will address FAIR open data principles, strategies to mitigate systemic information gaps, and the value of public access to reference datasets for elevating marginalized demographics and promoting scholarly dissemination. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://force11.org/post/webinar-metadata-for-all-with-wikidata/" },
+                            "content": [
+                              { "nodeType": "text", "value": "More info and registration", "marks": [], "data": {} }
+                            ]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "September 8, 2026 - 19:00 UTC —",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": " “Are You That White Ally? Recognizing & Interrupting White Narcissism in NPs” free-of-charge strategy session by Healing Equity United. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": {
+                              "uri": "https://www.eventbrite.com/e/are-you-that-white-ally-recognizing-interrupting-white-narcissism-in-nps-tickets-1992842143497?aff=oddtdtcreator"
+                            },
+                            "content": [
+                              { "nodeType": "text", "value": "More info and registration", "marks": [], "data": {} }
+                            ]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "September 14-18, 2026",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          { "nodeType": "text", "value": " ", "marks": [], "data": {} },
+                          { "nodeType": "text", "value": "—", "marks": [{ "type": "bold" }], "data": {} },
+                          { "nodeType": "text", "value": " ", "marks": [], "data": {} },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://peerreviewweek.net/events.php" },
+                            "content": [
+                              {
+                                "nodeType": "text",
+                                "value": "Peer Review Week events & activities",
+                                "marks": [],
+                                "data": {}
+                              }
+                            ]
+                          },
+                          { "nodeType": "text", "value": " from around the globe.", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "September 15, 2026 - 12:00 UTC —",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          { "nodeType": "text", "value": " ", "marks": [], "data": {} },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://www.rcmcooperative.com/#" },
+                            "content": [{ "nodeType": "text", "value": "RCM Cooperative", "marks": [], "data": {} }]
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": " is launching a monthly meetup series, open to anyone working in or around research community management. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://www.rcmcooperative.com/blog/introducing-monthly-meetups/" },
+                            "content": [
+                              { "nodeType": "text", "value": "Learn more and register", "marks": [], "data": {} }
+                            ]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Recent events", "marks": [{ "type": "bold" }], "data": {} }]
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "August 12, 2026 — ",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "“Metadata health check: A tour of the Crossref Participation Reports tool”, about how to assess your metadata quality, understand why complete metadata matters, and identify ways to improve the completeness and quality of your Crossref metadata. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://youtu.be/d9i9Ko1PCiE?si=D-HFj6xTUz-rzfL2" },
+                            "content": [{ "nodeType": "text", "value": "Recording available", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          { "nodeType": "text", "value": "June 2, 2026 — ", "marks": [{ "type": "bold" }], "data": {} },
+                          {
+                            "nodeType": "text",
+                            "value": "CHORUS Forum: Future of Preprints. Speakers: Katie Corker (ASAPbio), Dawn Melley (IEEE), Ben Mudrak (American Chemical Society/ChemRxiv), Kelly Cohen (Optica Publishing Group), and Samantha Hindle (bioRxiv & medRxiv). ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://youtu.be/Z3egFUvw7q4?si=xtpi3DHQvz87iKBe" },
+                            "content": [{ "nodeType": "text", "value": "Recording available", "marks": [], "data": {} }]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "June 2-4, 2026 — ",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "European Association of Science Editors (EASE) Summer Symposium 2026. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://sh1.sendinblue.com/amzp8hmkclpfe.html?t=1782740530901" },
+                            "content": [
+                              {
+                                "nodeType": "text",
+                                "value": "Recordings of the free sessions",
+                                "marks": [],
+                                "data": {}
+                              }
+                            ]
+                          },
+                          { "nodeType": "text", "value": " are available.", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Highlights from our Slack Community", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "YWDzstFoOxino0wGYYNTz", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "What we are reading:",
+                            "marks": [{ "type": "bold" }, { "type": "bold" }, { "type": "bold" }],
+                            "data": {}
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "-", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://upstream.force11.org/community-peer-review-to-build-resilience/" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Community Peer Review for Resistance and Resilience",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", by Christopher Steven Marcum & Daniela Saderi (PREreview)",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "-", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://sciencepolitics.org/2026/08/17/science-doesnt-need-better-journals-it-needs-better-incentives/"
+                    },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Science Doesn’t Need Better Journals. It Needs Better Incentives",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": ", by JP Flores & Hannah Frank", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "-", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://www.inasp.info/publications/support-preprint-sharing-six-levers-equitable-research-access"
+                    },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "How to Support Preprint Sharing: Six Levers to Advance Equitable Research Access",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": ", a policy paper published by INASP", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "-", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://katinamagazine.org/content/article/open-knowledge/2026/equity-in-open-access-means-thinking-beyond-fees"
+                    },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Equity in Open Access Means Thinking Beyond Fees",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": ", by Johan Rooryck", "marks": [], "data": {} },
+                  { "nodeType": "text", "value": "-", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://doi.org/10.6084/m9.figshare.32685351" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "The Future of Peer Review: A system-wide perspective",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ", the report of the Research on Research Institute (RoRI) project conducted from 2023-2026",
+                    "marks": [],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "-", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://reseaucirce.org/en/nouvelles/vers-une-evaluation-ouverte-repenser-levaluation-par-les-pairs-en-contexte-de-science-ouverte/"
+                    },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Towards open assessment: rethinking peer review in the context of open science",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  { "nodeType": "text", "value": ",", "marks": [{ "type": "italic" }], "data": {} },
+                  { "nodeType": "text", "value": " a report by the Circé Network in Canada", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "unordered-list",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          { "nodeType": "text", "value": "The ", "marks": [], "data": {} },
+                          { "nodeType": "text", "value": "OSPARK Bootcamp", "marks": [{ "type": "bold" }], "data": {} },
+                          {
+                            "nodeType": "text",
+                            "value": " (20 September - 12 November, 2026) is a hands-on programme designed to help Open Research ambassadors build practical outreach and marketing skills. The bootcamp combines a ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "6-week online course with a 2-day in-person workshop ",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "in Zurich (Switzerland), giving participants the tools, feedback, and community to develop a communication strategy for their own initiative. Participation is free, with a limited number of travel stipends available. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://events.digital-research.academy/event/137/" },
+                            "content": [
+                              { "nodeType": "text", "value": "Apply by August 23, 2026", "marks": [], "data": {} }
+                            ]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          { "nodeType": "text", "value": "openRxiv is looking for an ", "marks": [], "data": {} },
+                          {
+                            "nodeType": "text",
+                            "value": "Engineering Manager",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": " who combines hands-on technical depth with people-first management, all while championing openRxiv’s mission of accelerating open, accessible science. Remote, full-time position, based in the U.S. or some international countries. ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://openrxiv.applytojob.com/apply/ggcbCVGkSQ/Engineering-Manager" },
+                            "content": [{ "nodeType": "text", "value": "Apply here", "marks": [], "data": {} }]
+                          },
+                          { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "list-item",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "paragraph",
+                        "data": {},
+                        "content": [
+                          {
+                            "nodeType": "hyperlink",
+                            "data": { "uri": "https://translate-science.codeberg.page/prereview.html" },
+                            "content": [{ "nodeType": "text", "value": "Translate Science", "marks": [], "data": {} }]
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": ", una comunidad unida en torno a su interés por la ciencia abierta multilingüe, está organizando una ",
+                            "marks": [],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "revisión en vivo en español para participar del Review-a-thon",
+                            "marks": [{ "type": "bold" }],
+                            "data": {}
+                          },
+                          {
+                            "nodeType": "text",
+                            "value": "! La sesión está programada para el 16 de septiembre, de 14:00 a 15:30 UTC. Visita el sitio web para conocer más sobre su Club de PREreview y sumarte a su lista de correos.",
+                            "marks": [],
+                            "data": {}
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "If you are looking for your next career step, check out the openings in our ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereviewcommunity.slack.com/archives/C05B18Z33B9" },
+                    "content": [{ "nodeType": "text", "value": "#jobs-and-opportunities", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " channel, and share any of your own.", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "You can also find lots of preprint authors requesting feedback on their work in our ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereviewcommunity.slack.com/archives/C05B95LEN5C" },
+                    "content": [{ "nodeType": "text", "value": "#request-a-review", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " channel.", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "4gh5zhot6fF3UpIw4VajjS", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2026-08-21T14:13:47.000+00:00" },
+        "publishedAtOverride": { "en-US": "2026-08-21T14:30:26.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "150UFl1dsHPNdWcQbs76Df",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:51:00.016Z",
+          "updatedAt": "2026-09-11T10:51:00.016Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": {
+            "en-US": "Continuous Science Foundation and PREreview logos joined by a plus sign, representing collaboration."
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6YLGkTOchGcjmM8pnmcmgk" } } },
+          "altText": {
+            "en-US": "Continuous Science Foundation and PREreview logos joined by a plus sign, representing collaboration."
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "3onMU2OV1LNMg3hMwfRYMo",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:50:58.270Z",
+          "updatedAt": "2026-09-11T10:50:58.270Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Credits: by Getillustrations. Canva Pro licensed content." },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "text",
+                      "value": "Credits: by Getillustrations. Canva Pro licensed content.",
+                      "marks": [],
+                      "data": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7xeXutu3K4YyrmbEh5h38m" } } },
+          "altText": {
+            "en-US": "Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4Mth9RflfVKgrIAIljZKeH",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:42:44.760Z",
+          "updatedAt": "2026-09-11T10:42:44.760Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
+        },
+        "fields": {
+          "text": { "en-US": "LEARN MORE & REGISTER" },
+          "url": { "en-US": "https://sites.google.com/prereview.org/review-a-thon/about?authuser=4" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4VdZHKADNKafHGGn9hw2wt",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:50:58.243Z",
+          "updatedAt": "2026-09-11T10:50:58.243Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Peer Review Week logo" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6BmOyODL93skgyxtdKpoXT" } } },
+          "altText": { "en-US": "Peer Review Week logo" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4gh5zhot6fF3UpIw4VajjS",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:42:45.420Z",
+          "updatedAt": "2026-09-11T10:42:45.420Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
+        },
+        "fields": { "text": { "en-US": "JOIN THE CONVERSATION" }, "url": { "en-US": "https://bit.ly/PREreview-Slack" } }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5h14xaFv8vXAg3pZMP3IRT",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:50:59.565Z",
+          "updatedAt": "2026-09-11T10:50:59.565Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Credits: “Diverse Hands Making Heart” by Vectorfair Y. Canva Pro licensed content" },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "text",
+                      "value": "Credits: “Diverse Hands Making Heart” by Vectorfair Y. Canva Pro licensed content",
+                      "marks": [],
+                      "data": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7LIsbgSGrQUNlIkYmj0q1K" } } },
+          "altText": {
+            "en-US": "A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "66F6kozbr5x3SFQM3NxEeA",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:41:53.856Z",
+          "updatedAt": "2026-09-11T10:41:53.856Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Pia Tavella" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "4p0GGE9I6DohL1ZIC5sLLR" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6SnL32wCaLzZodgZZNg9k8",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:42:44.782Z",
+          "updatedAt": "2026-09-11T10:42:44.782Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
+        },
+        "fields": {
+          "text": { "en-US": "READ THE FINAL REPORT" },
+          "url": { "en-US": "https://articles.continuousfoundation.org/articles/modular-peer-review/report" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "BOTYP1gWkN6LKUjHvNAMe",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:51:00.212Z",
+          "updatedAt": "2026-09-11T10:51:00.212Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Credits: Wena Vega from sketchify" },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    { "nodeType": "text", "value": "Credits: Wena Vega from sketchify", "marks": [], "data": {} }
+                  ]
+                }
+              ]
+            }
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "4ZisgVJ2U8zfBoTrQ3G7LG" } } },
+          "altText": { "en-US": "A red megaphone icon outlined in black against a white background." }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "YWDzstFoOxino0wGYYNTz",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:51:00.629Z",
+          "updatedAt": "2026-09-11T10:51:00.629Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": {
+            "en-US": "The PREreview logo at the top and Slack logo at the bottom with the image of a paper in white on a red background"
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "3D56aYtUlBhKOXXDh1Q34d" } } },
+          "altText": {
+            "en-US": "The PREreview logo at the top and Slack logo at the bottom with the image of a paper in white on a red background"
+          }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "3D56aYtUlBhKOXXDh1Q34d",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:44:11.179Z",
+          "updatedAt": "2026-09-11T10:44:11.179Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Slack-highlights---300x300.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/3D56aYtUlBhKOXXDh1Q34d/7549db830de79805d575f2adb2c0c282/Slack-highlights---300x300.png",
+              "details": { "size": 12850, "image": { "width": 300, "height": 300 } },
+              "fileName": "Slack-highlights---300x300.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4ZisgVJ2U8zfBoTrQ3G7LG",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:44:12.440Z",
+          "updatedAt": "2026-09-11T10:44:12.440Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "2025-newsletter-images--1-.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png",
+              "details": { "size": 15862, "image": { "width": 300, "height": 300 } },
+              "fileName": "2025-newsletter-images--1-.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4p0GGE9I6DohL1ZIC5sLLR",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:42:37.738Z",
+          "updatedAt": "2026-09-11T10:42:37.738Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Pia Tavella profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/4p0GGE9I6DohL1ZIC5sLLR/21ebe46652f0ede8f85698996e2002fd/Pia-bw-1.jpg",
+              "details": { "size": 279126, "image": { "width": 2000, "height": 2000 } },
+              "fileName": "Pia-bw-1.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6BmOyODL93skgyxtdKpoXT",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:44:03.378Z",
+          "updatedAt": "2026-09-11T10:44:03.378Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "PRW-for-newsletter-300x300-1.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/6BmOyODL93skgyxtdKpoXT/35795ed414b2f2f7ce0e459dab0a73cf/PRW-for-newsletter-300x300-1.png",
+              "details": { "size": 37505, "image": { "width": 300, "height": 300 } },
+              "fileName": "PRW-for-newsletter-300x300-1.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6YLGkTOchGcjmM8pnmcmgk",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:44:09.152Z",
+          "updatedAt": "2026-09-11T10:44:09.152Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Newsletter-images---small--300-x-300-px---5-.jpg" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/6YLGkTOchGcjmM8pnmcmgk/6439ef7448cd7320b707da998d02c7b4/Newsletter-images---small--300-x-300-px---5-.jpg",
+              "details": { "size": 8194, "image": { "width": 300, "height": 300 } },
+              "fileName": "Newsletter-images---small--300-x-300-px---5-.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "7LIsbgSGrQUNlIkYmj0q1K",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:44:10.140Z",
+          "updatedAt": "2026-09-11T10:44:10.140Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "champions-300x300.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png",
+              "details": { "size": 29044, "image": { "width": 300, "height": 300 } },
+              "fileName": "champions-300x300.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "7xeXutu3K4YyrmbEh5h38m",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:44:03.743Z",
+          "updatedAt": "2026-09-11T10:44:03.743Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "dialogue-newsletter-inside-image-300x300.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png",
+              "details": { "size": 21496, "image": { "width": 300, "height": 300 } },
+              "fileName": "dialogue-newsletter-inside-image-300x300.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
