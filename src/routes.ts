@@ -95,6 +95,11 @@ const EmptyStringAsOptional = <A, R>(schema: Schema.Schema<A, string, R>) =>
     encode: Option.filter(value => typeof value === 'string' && value !== ''),
   })
 
+const PageNumberSchema = Schema.optionalToRequired(Schema.NumberFromString, Schema.NonNegativeInt, {
+  decode: Option.getOrElse(() => 1),
+  encode: Option.liftPredicate(page => page !== 1),
+})
+
 const PreprintIdSchema = Schema.transform(
   Schema.compose(
     Schema.String,
@@ -158,10 +163,7 @@ export const VerifyEmailAddress = QueryRoute({
 export const Blog = QueryRoute({
   path: '/blog',
   schema: Schema.Struct({
-    page: Schema.optionalToRequired(Schema.NumberFromString, Schema.NonNegativeInt, {
-      decode: Option.getOrElse(() => 1),
-      encode: Option.liftPredicate(page => page !== 1),
-    }),
+    page: PageNumberSchema,
   }),
 })
 
@@ -194,10 +196,7 @@ export const ReviewRequests = QueryRoute({
   schema: Schema.Struct({
     field: EmptyStringAsOptional(FieldIdSchema),
     language: EmptyStringAsOptional(Iso639.Iso6391Schema),
-    page: Schema.optionalToRequired(Schema.NumberFromString, Schema.NonNegativeInt, {
-      decode: Option.getOrElse(() => 1),
-      encode: Option.liftPredicate(page => page !== 1),
-    }),
+    page: PageNumberSchema,
     server: EmptyStringAsOptional(Schema.NonEmptyString),
   }),
 })
