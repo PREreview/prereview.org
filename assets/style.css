@@ -2332,6 +2332,14 @@ skip-link {
       inset: 0;
     }
 
+    > div {
+      margin-block-start: var(--space-xs);
+
+      > :first-child {
+        margin-block-start: 0;
+      }
+    }
+
     > img {
       margin-block-start: var(--space-xs);
     }
