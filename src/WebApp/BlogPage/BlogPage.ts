@@ -53,5 +53,6 @@ export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlo
       </nav>
     `,
     canonical: Routes.Blog.href({ page: currentPage }),
+    current: 'blog',
   })
 }

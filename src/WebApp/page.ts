@@ -17,6 +17,7 @@ export interface Page {
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly current?:
     | 'about-us'
+    | 'blog'
     | 'champions-program'
     | 'choose-locale'
     | 'clubs'
@@ -297,7 +298,11 @@ export const page = ({
                         <h3>${t('header', 'findOutMore')()}</h3>
                         <ul>
                           <li>
-                            <a href="${Routes.Blog.href({ page: 1 })}">${t('header', 'menuBlog')()}</a>
+                            <a
+                              href="${Routes.Blog.href({ page: 1 })}"
+                              ${current === 'blog' ? html`aria-current="page"` : ''}
+                              >${t('header', 'menuBlog')()}</a
+                            >
                           </li>
                           <li>
                             <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
@@ -542,7 +547,11 @@ export const page = ({
                         >${t('footer', 'menuPrivacyPolicy')()}</a
                       >
                     </li>
-                    <li><a href="${Routes.Blog.href({ page: 1 })}">${t('footer', 'menuBlog')()}</a></li>
+                    <li>
+                      <a href="${Routes.Blog.href({ page: 1 })}" ${current === 'blog' ? html`aria-current="page"` : ''}
+                        >${t('footer', 'menuBlog')()}</a
+                      >
+                    </li>
                     <li>
                       <a href="${Routes.Partners}" ${current === 'partners' ? html`aria-current="page"` : ''}
                         >${t('footer', 'menuPartners')()}</a
