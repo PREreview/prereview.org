@@ -155,6 +155,16 @@ export const VerifyEmailAddress = QueryRoute({
   }),
 })
 
+export const Blog = QueryRoute({
+  path: '/blog',
+  schema: Schema.Struct({
+    page: Schema.optionalToRequired(Schema.NumberFromString, Schema.NonNegativeInt, {
+      decode: Option.getOrElse(() => 1),
+      encode: Option.liftPredicate(page => page !== 1),
+    }),
+  }),
+})
+
 export const BlogPost = Route({
   path: '/blog/:slug',
   href: params => `/blog/${params.slug}`,

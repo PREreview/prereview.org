@@ -4,6 +4,7 @@ import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import * as Routes from '../../routes.ts'
 import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
+import { BlogPage } from '../BlogPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../ClubProfilePage/index.ts'
 import { ClubsData } from '../clubs-data/index.ts'
@@ -558,7 +559,7 @@ const DataRouter = HttpRouter.fromIterable([
 ]).pipe(HttpRouter.use(HttpMiddleware.requireScietyListToken))
 
 const BlogRouter = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', '/blog', PageNotFound),
+  MakeQueryRoute('GET', Routes.Blog, BlogPage),
   MakeRoute(
     'GET',
     Routes.BlogPost,
