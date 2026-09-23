@@ -11,16 +11,17 @@
         "id": "15ni1dnv8FQ8RNelQlgt11",
         "type": "Entry",
         "createdAt": "2026-09-11T11:01:13.152Z",
-        "updatedAt": "2026-09-11T11:01:13.152Z",
+        "updatedAt": "2026-09-23T14:09:57.473Z",
         "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
-        "publishedVersion": 1,
-        "revision": 1,
+        "publishedVersion": 4,
+        "revision": 2,
         "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
       },
       "fields": {
         "title": { "en-US": "PREreview August 2026 Newsletter" },
         "slug": { "en-US": "august-newsletter" },
         "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "66F6kozbr5x3SFQM3NxEeA" } }] },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "1WEOBiqw4FrZE31p0cmFyO" } } },
         "content": {
           "en-US": {
             "nodeType": "document",
@@ -1262,6 +1263,53 @@
         "metadata": { "tags": [], "concepts": [] },
         "sys": {
           "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "1WEOBiqw4FrZE31p0cmFyO",
+          "type": "Entry",
+          "createdAt": "2026-09-23T14:09:53.389Z",
+          "updatedAt": "2026-09-23T14:09:53.389Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 4,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "August newsletter" },
+          "caption": {
+            "en-US": {
+              "data": {},
+              "content": [
+                {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "marks": [],
+                      "value": "“Raindrops creating ripples on water reflecting sunset colors” shared on ",
+                      "nodeType": "text"
+                    },
+                    {
+                      "data": { "uri": "https://www.pickpik.com/en/free-stock-photo-yvjvu" },
+                      "content": [{ "data": {}, "marks": [], "value": "PickPik", "nodeType": "text" }],
+                      "nodeType": "hyperlink"
+                    },
+                    { "data": {}, "marks": [], "value": " under Open License", "nodeType": "text" }
+                  ],
+                  "nodeType": "paragraph"
+                }
+              ],
+              "nodeType": "document"
+            }
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7aBxOS0x2pdbBGdTG4wNDy" } } },
+          "altText": {
+            "en-US": "\"PREreview August Newsletter\" header over photo of raindrops creating ripples on a water surface"
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
           "id": "3onMU2OV1LNMg3hMwfRYMo",
           "type": "Entry",
           "createdAt": "2026-09-11T10:50:58.270Z",
@@ -1626,6 +1674,31 @@
               "url": "//images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png",
               "details": { "size": 29044, "image": { "width": 300, "height": 300 } },
               "fileName": "champions-300x300.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "7aBxOS0x2pdbBGdTG4wNDy",
+          "type": "Asset",
+          "createdAt": "2026-09-23T14:09:50.461Z",
+          "updatedAt": "2026-09-23T14:09:50.461Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 3,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "August-newsletter-featured-image" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png",
+              "details": { "size": 1984894, "image": { "width": 1200, "height": 675 } },
+              "fileName": "August-newsletter-featured-image.png",
               "contentType": "image/png"
             }
           }

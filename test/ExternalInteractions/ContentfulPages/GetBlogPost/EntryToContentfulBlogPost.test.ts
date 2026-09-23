@@ -61,7 +61,22 @@ it.effect.each<{
       title: html`PREreview August 2026 Newsletter`,
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-21T14:13:47Z'),
-      heroImage: undefined,
+      heroImage: {
+        url: new URL(
+          'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png',
+        ),
+        width: 1200,
+        height: 675,
+        altText: '"PREreview August Newsletter" header over photo of raindrops creating ripples on a water surface',
+        caption: html`
+          <p>
+            <span>
+              “Raindrops creating ripples on water reflecting sunset colors” shared on
+              <a href="https://www.pickpik.com/en/free-stock-photo-yvjvu">PickPik</a> under Open License
+            </span>
+          </p>
+        `,
+      },
       html: html`
         <p>
           <span>
@@ -495,6 +510,8 @@ it.effect.each<{
         ),
         width: 1200,
         height: 675,
+        altText: undefined,
+        caption: undefined,
       },
       html: html`
         <p>

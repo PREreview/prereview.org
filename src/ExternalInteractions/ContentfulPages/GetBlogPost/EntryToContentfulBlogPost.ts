@@ -34,10 +34,6 @@ const BlogPostEntry = Schema.Struct({
 
 const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: typeof BlogPostEntry.Type) {
   const locale = yield* Locale
-  const heroImage = entry.fields.heroImage ? getValueForDefaultLocale(entry.fields.heroImage) : undefined
-  const heroImageFile = heroImage
-    ? getValueForDefaultLocale(getValueForDefaultLocale(heroImage.fields.file).fields.file)
-    : undefined
 
   return new ContentfulBlogPost({
     authors: Array.map(
@@ -48,9 +44,27 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
       onSome: title => html`${title}`,
       onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
     }),
-    heroImage: heroImageFile
-      ? { url: heroImageFile.url, width: heroImageFile.details.image.width, height: heroImageFile.details.image.height }
-      : undefined,
+    heroImage: yield* Effect.gen(function* () {
+      if (!entry.fields.heroImage) {
+        return undefined
+      }
+
+      const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
+      const file = getValueForDefaultLocale(heroImage.fields.file)
+      const asset = getValueForDefaultLocale(file.fields.file)
+      const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText) : undefined
+      const caption = yield* heroImage.fields.caption
+        ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
+        : Effect.succeed([])
+
+      return {
+        url: asset.url,
+        width: asset.details.image.width,
+        height: asset.details.image.height,
+        altText,
+        caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
+      }
+    }),
     html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
       onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
       onNone: () =>

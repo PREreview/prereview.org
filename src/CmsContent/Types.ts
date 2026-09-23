@@ -29,6 +29,8 @@ export class BlogPost extends Schema.Class<BlogPost>('BlogPost')({
       url: Schema.URLFromSelf,
       width: Schema.NonNegativeInt,
       height: Schema.NonNegativeInt,
+      altText: Schema.optional(Schema.NonEmptyTrimmedString),
+      caption: Schema.optional(HtmlSchema),
     }),
   ),
   html: HtmlSchema,

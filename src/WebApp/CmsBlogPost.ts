@@ -23,7 +23,30 @@ export const CmsBlogPostPage = Effect.fnUntraced(
       title: plainText(content.title),
       main: html`
         <header>
-          ${content.heroImage ? html`<img src="${content.heroImage.url.href}" width="${content.heroImage.width}" height="${content.heroImage.height}" alt="" />` : ''}
+          ${
+            content.heroImage?.caption
+              ? html`
+                  <figure>
+                    <img
+                      src="${content.heroImage.url.href}"
+                      width="${content.heroImage.width}"
+                      height="${content.heroImage.height}"
+                      alt="${content.heroImage.altText ?? ''}"
+                    />
+                    <figcaption>${content.heroImage.caption}</figcaption>
+                  </figure>
+                `
+              : content.heroImage
+                ? html`
+                    <img
+                      src="${content.heroImage.url.href}"
+                      width="${content.heroImage.width}"
+                      height="${content.heroImage.height}"
+                      alt="${content.heroImage.altText ?? ''}"
+                    />
+                  `
+                : ''
+          }
 
           <h1><span ${languageAttributesFor(content.locale)}>${content.title}</span></h1>
 
