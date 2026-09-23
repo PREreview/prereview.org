@@ -4,6 +4,7 @@ import type { Contentful } from '../../ExternalApis/Contentful/index.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import { GetBlogPost } from './GetBlogPost/index.ts'
 import { GetPage } from './GetPage/index.ts'
+import { GetPageOfBlogPosts } from './GetPageOfBlogPosts/index.ts'
 
 export class ContentfulPages extends Context.Tag('ContentfulPages')<
   ContentfulPages,
@@ -22,6 +23,13 @@ export class ContentfulPages extends Context.Tag('ContentfulPages')<
       Effect.Effect.Error<ReturnType<typeof GetPage>>,
       Locale
     >
+    getPageOfBlogPosts: (
+      ...args: Parameters<typeof GetPageOfBlogPosts>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof GetPageOfBlogPosts>>,
+      Effect.Effect.Error<ReturnType<typeof GetPageOfBlogPosts>>,
+      Locale
+    >
   }
 >() {
   static readonly layer = Layer.effect(
@@ -32,6 +40,7 @@ export class ContentfulPages extends Context.Tag('ContentfulPages')<
       return {
         getBlogPost: flow(GetBlogPost, Effect.provide(context)),
         getPage: flow(GetPage, Effect.provide(context)),
+        getPageOfBlogPosts: flow(GetPageOfBlogPosts, Effect.provide(context)),
       }
     }),
   ).pipe(Layer.provide(DynamicEmbedder.layer))
