@@ -29,6 +29,7 @@ export type Block =
   | TableHeaderCell
   | EmbeddedAssetBlock
   | EmbeddedEntryBlock
+  | BlockQuote
   | HorizontalRule
 
 export type Inline = EntryHyperlink | Hyperlink
@@ -173,6 +174,11 @@ class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntry
   }),
 }) {}
 
+class BlockQuote extends Schema.Class<BlockQuote>('BlockQuote')({
+  _tag: Schema.propertySignature(Schema.transformLiteral('blockquote', 'BlockQuote')).pipe(Schema.fromKey('nodeType')),
+  content: Schema.NonEmptyArray(Schema.Union(Paragraph)),
+}) {}
+
 class HorizontalRule extends Schema.Class<HorizontalRule>('HorizontalRule')({
   _tag: Schema.propertySignature(Schema.transformLiteral('hr', 'HorizontalRule')).pipe(Schema.fromKey('nodeType')),
 }) {}
@@ -190,6 +196,7 @@ export class Document extends Schema.Class<Document>('Document')({
       Table,
       EmbeddedAssetBlock,
       EmbeddedEntryBlock,
+      BlockQuote,
       HorizontalRule,
     ),
   ),

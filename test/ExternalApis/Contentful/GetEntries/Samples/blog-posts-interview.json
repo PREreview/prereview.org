@@ -1,0 +1,697 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "2xKZmyxXpbAjYyfuOJWnA0",
+        "type": "Entry",
+        "createdAt": "2026-09-11T11:01:13.881Z",
+        "updatedAt": "2026-09-11T11:01:13.881Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "An interview with PREreview Champion Mabel Omoniwa" },
+        "slug": { "en-US": "interview-prereview-champion-mabel-omoniwa" },
+        "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "66F6kozbr5x3SFQM3NxEeA" } }] },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Why did you decide to apply for the PREreview Champions program?",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      { "nodeType": "text", "value": "I applied for the ", "marks": [], "data": {} },
+                      {
+                        "nodeType": "hyperlink",
+                        "data": { "uri": "https://prereview.org/champions-program" },
+                        "content": [{ "nodeType": "text", "value": "Champions program", "marks": [], "data": {} }]
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": " because I was increasingly interested in how research can become more open, collaborative, and accessible, particularly for early-career researchers. I was already developing an interest in research and scholarly communication, but I wanted to understand open peer review beyond simply knowing what it meant. I wanted to learn how researchers could actively participate in the review process, contribute constructively to scientific discussions, and help make research communication more inclusive.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "I was also particularly drawn to the community aspect of the program. Coming from Nigeria, I see how ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": "differences in access to mentorship, research networks, publishing opportunities, and scholarly resources can shape who gets heard in science",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": ". I saw PREreview Champions as an opportunity not only to develop my own skills but also to take what I learned back to my community.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Ultimately, I applied because I wanted to move from being interested in open science to becoming someone who actively contributes to it.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "How was your experience during the training part of the program?",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "The training experience exceeded my expectations. I came into the program interested in Open Science and peer review, but the training gave me a much broader understanding of the principles, history, and practical realities behind them. I particularly appreciated learning how different components of Open Science connect and why openness in research communication matters.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "One of my favorite aspects was the opportunity to learn collaboratively with other Champions. It was valuable to hear perspectives from people working in different contexts and to ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": "think together about how we could translate what we were learning into meaningful activities within our own communities",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Another highlight was moving from theory to practice. The programme encouraged us to think beyond simply understanding open peer review, and actually consider how we could facilitate conversations, engage researchers, and create opportunities for others to participate.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "If I had to identify a less-favorite part, it would probably be the challenge of balancing the programme activities with my other academic and professional commitments. However, that also taught me an important lesson about planning and communicating consistently within a team.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "To complete the program, Champions have to organize and deliver their own engagement activities in their local communities. Tell us a bit about yours",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Our engagement activity was a virtual webinar and practical preprint review session titled “",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "hyperlink",
+                        "data": {
+                          "uri": "https://www.linkedin.com/posts/mabel-omoniwa-192794293_reflecting-on-our-prereview-champions-webinar-activity-7476485670501482496-Gg3s?utm_source=share&utm_medium=member_desktop&rcm=ACoAADyWEY4Bw_pSnR5WrSl0dYsaJArj_UNwX6A"
+                        },
+                        "content": [
+                          {
+                            "nodeType": "text",
+                            "value": "Democratizing Peer Review: Empowering Early-Career Researchers through Open and Collaborative Science",
+                            "marks": [],
+                            "data": {}
+                          }
+                        ]
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": ".” It was designed primarily for early-career researchers, students, and others interested in research and scholarly communication within the wider African research community.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "The session introduced 26 participants to the history and principles of open peer review, the role of preprints, bias in peer review, and the practical process of engaging with preprints. We also incorporated a live preprint review component so",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": " participants could move from learning about open peer review to experiencing it in practice",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "The feedback we got through the post-event survey was very encouraging. Confidence in writing constructive reviewer comments increased from 2.77/5 to 4.29/5, while confidence in submitting to a preprint server increased from 2.15/5 to 3.43/5. Every survey respondent said they would recommend the workshop to a colleague.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "My biggest takeaway was that there is significant interest in open peer review, but many early-career researchers simply need exposure, mentorship, and a safe environment to participate.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "What impacts do you think open peer review practices can have on the scholarly communications landscape in your country and region?",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "I think open peer review could contribute significantly to making scholarly communication more transparent, inclusive, and participatory in Nigeria and across Africa. Traditional research and publishing systems can sometimes feel difficult to navigate, particularly for early-career researchers who may have limited access to experienced mentors and established research networks.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Open peer review creates an opportunity to make the review process more visible and to help researchers develop reviewing skills earlier in their careers. It can also ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": "encourage constructive scientific dialogue rather than positioning peer review purely as a gatekeeping mechanism",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "For researchers in resource-constrained settings, open practices can also support ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": "greater visibility and participation in global research conversations",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": ". Preprints, collaborative review, and recognition for review contributions can create additional pathways for researchers to share their work and contribute to the work of others.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      { "nodeType": "text", "value": "However, ", "marks": [], "data": {} },
+                      {
+                        "nodeType": "text",
+                        "value": "I believe adoption will require awareness-building and capacity development",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": ". Researchers need practical guidance on how these models work, how to review responsibly, and how to navigate concerns around bias, ethics, and research quality. That is why community-based initiatives and mentorship are particularly important.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Would you recommend participating in the PREreview Champions program to others?",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Absolutely. I would particularly recommend the PREreview Champions program to early-career researchers, students, researchers who are interested in scholarly communication, and anyone curious about Open Science but unsure about how to begin engaging with it.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "One thing I appreciated about the program is that you do not have to arrive as an expert. It provides an ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": "environment where you can learn, ask questions, collaborate with others, and gradually develop the confidence to engage with open peer review",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "I would especially encourage researchers from underrepresented or resource-constrained research communities to consider opportunities like this. Open Science can feel like a complex global conversation, but programmes such as PREreview Champions create opportunities to bring that conversation into local communities and adapt it to their realities.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "For me, the greatest value was not only learning about open peer review but also being challenged to become an active contributor.",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": " You leave with knowledge, a community, and the opportunity to turn what you have learned into something that benefits others.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Before we wrap up, is there anything else you’d like to share?",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "One of my biggest reflections from this experience is that Open Science becomes much more meaningful when people are given opportunities to participate, rather than simply being told about its principles. The PREreview Champions program gave me the opportunity to move from learning about open peer review to facilitating conversations around it within my community.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "I would like to continue building on that experience by supporting more practical engagement with preprints and open peer review. I am particularly interested in facilitating ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "hyperlink",
+                        "data": { "uri": "https://prereview.org/live-reviews" },
+                        "content": [{ "nodeType": "text", "value": "Live Review", "marks": [], "data": {} }]
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": " sessions where early-career researchers can learn by doing, and I am also exploring the process of preparing and sharing research as a preprint.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "More broadly, I hope to continue working at the intersection of biomedical research, health innovation, and evidence-informed practice, while advocating for approaches that make scientific knowledge more accessible and collaborative.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "If there is one message I would leave with other early-career researchers, it is this: ",
+                        "marks": [],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": "you do not have to wait until you are a senior researcher to contribute to the research ecosystem",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      },
+                      {
+                        "nodeType": "text",
+                        "value": ". There are meaningful ways to participate, learn, review, collaborate, and help others learn alongside you.",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2026-08-26T13:04:49.000+00:00" },
+        "publishedAtOverride": { "en-US": "2026-08-26T13:04:49.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "66F6kozbr5x3SFQM3NxEeA",
+          "type": "Entry",
+          "createdAt": "2026-09-11T10:41:53.856Z",
+          "updatedAt": "2026-09-11T10:41:53.856Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Pia Tavella" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "4p0GGE9I6DohL1ZIC5sLLR" } } }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4p0GGE9I6DohL1ZIC5sLLR",
+          "type": "Asset",
+          "createdAt": "2026-09-11T10:42:37.738Z",
+          "updatedAt": "2026-09-11T10:42:37.738Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Pia Tavella profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/4p0GGE9I6DohL1ZIC5sLLR/21ebe46652f0ede8f85698996e2002fd/Pia-bw-1.jpg",
+              "details": { "size": 279126, "image": { "width": 2000, "height": 2000 } },
+              "fileName": "Pia-bw-1.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
