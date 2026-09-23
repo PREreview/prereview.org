@@ -11,16 +11,17 @@
         "id": "2xKZmyxXpbAjYyfuOJWnA0",
         "type": "Entry",
         "createdAt": "2026-09-11T11:01:13.881Z",
-        "updatedAt": "2026-09-11T11:01:13.881Z",
+        "updatedAt": "2026-09-23T14:00:25.376Z",
         "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
-        "publishedVersion": 1,
-        "revision": 1,
+        "publishedVersion": 7,
+        "revision": 3,
         "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
       },
       "fields": {
         "title": { "en-US": "An interview with PREreview Champion Mabel Omoniwa" },
         "slug": { "en-US": "interview-prereview-champion-mabel-omoniwa" },
         "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "66F6kozbr5x3SFQM3NxEeA" } }] },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "1rzwDDMjCQFyxXOBtbRJ4O" } } },
         "content": {
           "en-US": {
             "nodeType": "document",
@@ -652,6 +653,24 @@
         "metadata": { "tags": [], "concepts": [] },
         "sys": {
           "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "1rzwDDMjCQFyxXOBtbRJ4O",
+          "type": "Entry",
+          "createdAt": "2026-09-23T14:00:19.284Z",
+          "updatedAt": "2026-09-23T14:00:19.284Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 4,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Mabel-blog-header-2" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5s0piRdgTblQmCygABe2gj" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
           "id": "66F6kozbr5x3SFQM3NxEeA",
           "type": "Entry",
           "createdAt": "2026-09-11T10:41:53.856Z",
@@ -688,6 +707,31 @@
               "details": { "size": 279126, "image": { "width": 2000, "height": 2000 } },
               "fileName": "Pia-bw-1.jpg",
               "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5s0piRdgTblQmCygABe2gj",
+          "type": "Asset",
+          "createdAt": "2026-09-23T14:00:19.283Z",
+          "updatedAt": "2026-09-23T14:00:19.283Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 3,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Mabel-blog-header-2" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png",
+              "details": { "size": 501931, "image": { "width": 1200, "height": 675 } },
+              "fileName": "Mabel-blog-header-2.png",
+              "contentType": "image/png"
             }
           }
         }

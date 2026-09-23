@@ -25,6 +25,7 @@ it.effect.each<{
       title: html`PREreview platform news, 31 October 2025`,
       authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
       publishedAt: Instant.from('2025-10-31T14:00:00Z'),
+      heroImage: undefined,
       html: html`
         <p>
           <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
@@ -60,6 +61,7 @@ it.effect.each<{
       title: html`PREreview August 2026 Newsletter`,
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-21T14:13:47Z'),
+      heroImage: undefined,
       html: html`
         <p>
           <span>
@@ -487,6 +489,13 @@ it.effect.each<{
       title: html`An interview with PREreview Champion Mabel Omoniwa`,
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-26T13:04:49Z'),
+      heroImage: {
+        url: new URL(
+          'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png',
+        ),
+        width: 1200,
+        height: 675,
+      },
       html: html`
         <p>
           <span>

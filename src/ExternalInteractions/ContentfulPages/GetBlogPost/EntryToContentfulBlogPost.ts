@@ -5,6 +5,7 @@ import { html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
+import { MediaEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
 import { BlockContentToHtml } from '../RichText.ts'
 import { Author, ContentfulBlogPost } from '../Types.ts'
@@ -21,6 +22,9 @@ const BlogPostEntry = Schema.Struct({
   fields: Schema.Struct({
     authors: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyArray(AuthorEntry) }),
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+    heroImage: Schema.optional(
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(MediaEntry) }),
+    ),
     content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) }),
     firstPublishedAtOverride: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: InstantSchema }),
@@ -30,6 +34,10 @@ const BlogPostEntry = Schema.Struct({
 
 const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: typeof BlogPostEntry.Type) {
   const locale = yield* Locale
+  const heroImage = entry.fields.heroImage ? getValueForDefaultLocale(entry.fields.heroImage) : undefined
+  const heroImageFile = heroImage
+    ? getValueForDefaultLocale(getValueForDefaultLocale(heroImage.fields.file).fields.file)
+    : undefined
 
   return new ContentfulBlogPost({
     authors: Array.map(
@@ -40,6 +48,9 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
       onSome: title => html`${title}`,
       onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
     }),
+    heroImage: heroImageFile
+      ? { url: heroImageFile.url, width: heroImageFile.details.image.width, height: heroImageFile.details.image.height }
+      : undefined,
     html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
       onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
       onNone: () =>

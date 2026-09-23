@@ -23,6 +23,8 @@ export const CmsBlogPostPage = Effect.fnUntraced(
       title: plainText(content.title),
       main: html`
         <header>
+          ${content.heroImage ? html`<img src="${content.heroImage.url.href}" width="${content.heroImage.width}" height="${content.heroImage.height}" alt="" />` : ''}
+
           <h1><span ${languageAttributesFor(content.locale)}>${content.title}</span></h1>
 
           <div class="byline">
@@ -41,6 +43,7 @@ export const CmsBlogPostPage = Effect.fnUntraced(
         </header>
 
         ${content.locale !== locale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
+
         <div ${languageAttributesFor(content.locale)}>${fixHeadingLevels(1, content.html)}</div>
       `,
       canonical: Routes.BlogPost.href({ slug }),

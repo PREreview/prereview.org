@@ -24,6 +24,13 @@ class Author extends Schema.Class<Author>('Author')({
 export class BlogPost extends Schema.Class<BlogPost>('BlogPost')({
   authors: Schema.NonEmptyArray(Author),
   title: InlineHtmlSchema,
+  heroImage: Schema.optional(
+    Schema.Struct({
+      url: Schema.URLFromSelf,
+      width: Schema.NonNegativeInt,
+      height: Schema.NonNegativeInt,
+    }),
+  ),
   html: HtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   publishedAt: InstantSchema,
