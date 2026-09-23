@@ -52,7 +52,7 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
     excerpt:
       typeof entry.fields.excerpt !== 'undefined'
         ? Option.getOrElse(getValueForLocale(entry.fields.excerpt, locale), () =>
-            getValueForDefaultLocale(entry.fields.excerpt!),
+            getValueForDefaultLocale(entry.fields.excerpt as never),
           )
         : undefined,
   })

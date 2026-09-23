@@ -36,7 +36,11 @@ export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlo
                       `
                     : ''
                 }
-                ${blogPost.excerpt ? html`<div><span ${languageAttributesFor(blogPost.locale)}>${blogPost.excerpt}</span></div>` : ''}
+                ${
+                  typeof blogPost.excerpt === 'string'
+                    ? html`<div><span ${languageAttributesFor(blogPost.locale)}>${blogPost.excerpt}</span></div>`
+                    : ''
+                }
 
                 <a href="${Routes.BlogPost.href({ slug: blogPost.slug })}" class="more">
                   Read
