@@ -4,6 +4,7 @@ import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index
 import { html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
+import { MediaEntry } from '../ContentfulTypes.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
 
 const BlogPostEntry = Schema.Struct({
@@ -13,6 +14,9 @@ const BlogPostEntry = Schema.Struct({
   fields: Schema.Struct({
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     slug: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: SlugSchema }),
+    heroImage: Schema.optional(
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(MediaEntry) }),
+    ),
   }),
 })
 
@@ -29,6 +33,21 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
       onNone: () => DefaultLocale,
     }),
     slug: getValueForDefaultLocale(entry.fields.slug),
+    heroImage: yield* Effect.sync(() => {
+      if (!entry.fields.heroImage) {
+        return undefined
+      }
+
+      const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
+      const file = getValueForDefaultLocale(heroImage.fields.file)
+      const asset = getValueForDefaultLocale(file.fields.file)
+
+      return {
+        url: asset.url,
+        width: asset.details.image.width,
+        height: asset.details.image.height,
+      }
+    }),
   })
 })
 

@@ -44,18 +44,33 @@ const blogPost1 = {
   title: html`An interview with PREreview Champion Shitondo Yahila`,
   locale: 'en-US',
   slug: Slug('interview-prereview-champion-shitondo-yahila'),
+  heroImage: {
+    url: new URL('https://placehold.co/600x400'),
+    width: 600,
+    height: 400,
+  },
 } satisfies BlogPostTitle
 
 const blogPost2 = {
   title: html`PREreview platform news, 4 September 2026`,
   locale: 'en-US',
   slug: Slug('prereview-platform-news-4-september-2026'),
+  heroImage: {
+    url: new URL('https://placehold.co/500x400'),
+    width: 500,
+    height: 400,
+  },
 } satisfies BlogPostTitle
 
 const blogPost3 = {
   title: html`Register for PREreview's Review-a-thon`,
   locale: 'en-US',
   slug: Slug('register-for-review-a-thon'),
+  heroImage: {
+    url: new URL('https://placehold.co/500x500'),
+    width: 500,
+    height: 500,
+  },
 } satisfies BlogPostTitle
 
 const blogPost4 = {

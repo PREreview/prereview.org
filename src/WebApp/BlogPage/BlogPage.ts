@@ -23,6 +23,20 @@ export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlo
                     <span ${languageAttributesFor(blogPost.locale)}>${blogPost.title}</span>
                   </h2>
                 </header>
+
+                ${
+                  blogPost.heroImage
+                    ? html`
+                        <img
+                          src="${blogPost.heroImage.url.href}"
+                          width="${blogPost.heroImage.width}"
+                          height="${blogPost.heroImage.height}"
+                          alt=""
+                        />
+                      `
+                    : ''
+                }
+
                 <a href="${Routes.BlogPost.href({ slug: blogPost.slug })}" class="more">
                   Read
                   <span class="visually-hidden"

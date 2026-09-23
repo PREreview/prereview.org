@@ -2332,6 +2332,27 @@ skip-link {
       inset: 0;
     }
 
+    > img {
+      margin-block-start: var(--space-xs);
+    }
+
+    @media screen {
+      @media (width >= 30em) {
+        &:has(> img) {
+          padding-inline-end: calc((var(--space-s) * 2) + 30%);
+        }
+
+        > img {
+          position: absolute;
+          inset-block-start: var(--space-xs);
+          inset-inline-end: var(--space-s);
+          max-block-size: calc(100% - (var(--space-xs) * 2));
+          inline-size: 30%;
+          margin-block-start: 0;
+        }
+      }
+    }
+
     &:has(> :any-link:hover) {
       &::after {
         @media screen {

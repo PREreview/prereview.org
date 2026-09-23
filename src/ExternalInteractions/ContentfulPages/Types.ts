@@ -42,6 +42,13 @@ export class ContentfulBlogPostTitle extends Schema.Class<ContentfulBlogPostTitl
   title: InlineHtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   slug: SlugSchema,
+  heroImage: Schema.optional(
+    Schema.Struct({
+      url: Schema.URLFromSelf,
+      width: Schema.NonNegativeInt,
+      height: Schema.NonNegativeInt,
+    }),
+  ),
 }) {}
 
 export class ContentfulPageOfBlogPosts extends Schema.Class<ContentfulPageOfBlogPosts>('ContentfulPageOfBlogPosts')({

@@ -42,6 +42,13 @@ export class BlogPostTitle extends Schema.Class<BlogPostTitle>('BlogPostTitle')(
   title: InlineHtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   slug: SlugSchema,
+  heroImage: Schema.optional(
+    Schema.Struct({
+      url: Schema.URLFromSelf,
+      width: Schema.NonNegativeInt,
+      height: Schema.NonNegativeInt,
+    }),
+  ),
 }) {}
 
 export class PageOfBlogPosts extends Schema.Class<PageOfBlogPosts>('PageOfBlogPosts')({

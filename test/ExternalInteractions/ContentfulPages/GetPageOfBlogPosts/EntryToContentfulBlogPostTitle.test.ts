@@ -32,6 +32,13 @@ it.effect.each<{
       title: html`PREreview August 2026 Newsletter`,
       locale: DefaultLocale,
       slug: Slug('august-newsletter'),
+      heroImage: {
+        url: new URL(
+          'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png',
+        ),
+        width: 1200,
+        height: 675,
+      },
     }),
   },
   {
@@ -41,6 +48,13 @@ it.effect.each<{
       title: html`An interview with PREreview Champion Mabel Omoniwa`,
       locale: DefaultLocale,
       slug: Slug('interview-prereview-champion-mabel-omoniwa'),
+      heroImage: {
+        url: new URL(
+          'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png',
+        ),
+        width: 1200,
+        height: 675,
+      },
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
