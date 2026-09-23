@@ -480,6 +480,275 @@ it.effect.each<{
       locale: DefaultLocale,
     }),
   },
+  {
+    response: 'blog-posts-interview',
+    index: 0,
+    expected: new ContentfulBlogPost({
+      title: html`An interview with PREreview Champion Mabel Omoniwa`,
+      authors: [new Author({ name: Name('Pia Tavella') })],
+      publishedAt: Instant.from('2026-08-26T13:04:49Z'),
+      html: html`
+        <p>
+          <span>
+            In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and
+            scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.
+          </span>
+        </p>
+        <h3><span>Why did you decide to apply for the PREreview Champions program?</span></h3>
+        <blockquote>
+          <p>
+            <span>
+              I applied for the <a href="/champions-program">Champions program</a> because I was increasingly interested
+              in how research can become more open, collaborative, and accessible, particularly for early-career
+              researchers. I was already developing an interest in research and scholarly communication, but I wanted to
+              understand open peer review beyond simply knowing what it meant. I wanted to learn how researchers could
+              actively participate in the review process, contribute constructively to scientific discussions, and help
+              make research communication more inclusive.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              I was also particularly drawn to the community aspect of the program. Coming from Nigeria, I see how
+              <b
+                >differences in access to mentorship, research networks, publishing opportunities, and scholarly
+                resources can shape who gets heard in science</b
+              >. I saw PREreview Champions as an opportunity not only to develop my own skills but also to take what I
+              learned back to my community.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              Ultimately, I applied because I wanted to move from being interested in open science to becoming someone
+              who actively contributes to it.
+            </span>
+          </p>
+        </blockquote>
+        <h3><span>How was your experience during the training part of the program?</span></h3>
+        <blockquote>
+          <p>
+            <span>
+              The training experience exceeded my expectations. I came into the program interested in Open Science and
+              peer review, but the training gave me a much broader understanding of the principles, history, and
+              practical realities behind them. I particularly appreciated learning how different components of Open
+              Science connect and why openness in research communication matters.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              One of my favorite aspects was the opportunity to learn collaboratively with other Champions. It was
+              valuable to hear perspectives from people working in different contexts and to
+              <b
+                >think together about how we could translate what we were learning into meaningful activities within our
+                own communities</b
+              >.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              Another highlight was moving from theory to practice. The programme encouraged us to think beyond simply
+              understanding open peer review, and actually consider how we could facilitate conversations, engage
+              researchers, and create opportunities for others to participate.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              If I had to identify a less-favorite part, it would probably be the challenge of balancing the programme
+              activities with my other academic and professional commitments. However, that also taught me an important
+              lesson about planning and communicating consistently within a team.
+            </span>
+          </p>
+        </blockquote>
+        <h3>
+          <span>
+            To complete the program, Champions have to organize and deliver their own engagement activities in their
+            local communities. Tell us a bit about yours
+          </span>
+        </h3>
+        <blockquote>
+          <p>
+            <span>
+              Our engagement activity was a virtual webinar and practical preprint review session titled “<a
+                href="https://www.linkedin.com/posts/mabel-omoniwa-192794293_reflecting-on-our-prereview-champions-webinar-activity-7476485670501482496-Gg3s?utm_source=share&amp;utm_medium=member_desktop&amp;rcm=ACoAADyWEY4Bw_pSnR5WrSl0dYsaJArj_UNwX6A"
+                >Democratizing Peer Review: Empowering Early-Career Researchers through Open and Collaborative
+                Science</a
+              >.” It was designed primarily for early-career researchers, students, and others interested in research
+              and scholarly communication within the wider African research community.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              The session introduced 26 participants to the history and principles of open peer review, the role of
+              preprints, bias in peer review, and the practical process of engaging with preprints. We also incorporated
+              a live preprint review component so<b>
+                participants could move from learning about open peer review to experiencing it in practice</b
+              >.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              The feedback we got through the post-event survey was very encouraging. Confidence in writing constructive
+              reviewer comments increased from 2.77/5 to 4.29/5, while confidence in submitting to a preprint server
+              increased from 2.15/5 to 3.43/5. Every survey respondent said they would recommend the workshop to a
+              colleague.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              My biggest takeaway was that there is significant interest in open peer review, but many early-career
+              researchers simply need exposure, mentorship, and a safe environment to participate.
+            </span>
+          </p>
+        </blockquote>
+        <h3>
+          <span>
+            What impacts do you think open peer review practices can have on the scholarly communications landscape in
+            your country and region?
+          </span>
+        </h3>
+        <blockquote>
+          <p>
+            <span>
+              I think open peer review could contribute significantly to making scholarly communication more
+              transparent, inclusive, and participatory in Nigeria and across Africa. Traditional research and
+              publishing systems can sometimes feel difficult to navigate, particularly for early-career researchers who
+              may have limited access to experienced mentors and established research networks.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              Open peer review creates an opportunity to make the review process more visible and to help researchers
+              develop reviewing skills earlier in their careers. It can also
+              <b
+                >encourage constructive scientific dialogue rather than positioning peer review purely as a gatekeeping
+                mechanism</b
+              >.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              For researchers in resource-constrained settings, open practices can also support
+              <b>greater visibility and participation in global research conversations</b>. Preprints, collaborative
+              review, and recognition for review contributions can create additional pathways for researchers to share
+              their work and contribute to the work of others.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              However, <b>I believe adoption will require awareness-building and capacity development</b>. Researchers
+              need practical guidance on how these models work, how to review responsibly, and how to navigate concerns
+              around bias, ethics, and research quality. That is why community-based initiatives and mentorship are
+              particularly important.
+            </span>
+          </p>
+        </blockquote>
+        <h3><span>Would you recommend participating in the PREreview Champions program to others?</span></h3>
+        <blockquote>
+          <p>
+            <span>
+              Absolutely. I would particularly recommend the PREreview Champions program to early-career researchers,
+              students, researchers who are interested in scholarly communication, and anyone curious about Open Science
+              but unsure about how to begin engaging with it.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              One thing I appreciated about the program is that you do not have to arrive as an expert. It provides an
+              <b
+                >environment where you can learn, ask questions, collaborate with others, and gradually develop the
+                confidence to engage with open peer review</b
+              >.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              I would especially encourage researchers from underrepresented or resource-constrained research
+              communities to consider opportunities like this. Open Science can feel like a complex global conversation,
+              but programmes such as PREreview Champions create opportunities to bring that conversation into local
+              communities and adapt it to their realities.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              <b
+                >For me, the greatest value was not only learning about open peer review but also being challenged to
+                become an active contributor.</b
+              >
+              You leave with knowledge, a community, and the opportunity to turn what you have learned into something
+              that benefits others.
+            </span>
+          </p>
+        </blockquote>
+        <h3><span>Before we wrap up, is there anything else you’d like to share?</span></h3>
+        <blockquote>
+          <p>
+            <span>
+              One of my biggest reflections from this experience is that Open Science becomes much more meaningful when
+              people are given opportunities to participate, rather than simply being told about its principles. The
+              PREreview Champions program gave me the opportunity to move from learning about open peer review to
+              facilitating conversations around it within my community.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              I would like to continue building on that experience by supporting more practical engagement with
+              preprints and open peer review. I am particularly interested in facilitating
+              <a href="/live-reviews">Live Review</a> sessions where early-career researchers can learn by doing, and I
+              am also exploring the process of preparing and sharing research as a preprint.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              More broadly, I hope to continue working at the intersection of biomedical research, health innovation,
+              and evidence-informed practice, while advocating for approaches that make scientific knowledge more
+              accessible and collaborative.
+            </span>
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span>
+              If there is one message I would leave with other early-career researchers, it is this:
+              <b>you do not have to wait until you are a senior researcher to contribute to the research ecosystem</b>.
+              There are meaningful ways to participate, learn, review, collaborate, and help others learn alongside you.
+            </span>
+          </p>
+        </blockquote>
+      `,
+      locale: DefaultLocale,
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

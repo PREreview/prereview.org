@@ -1163,7 +1163,13 @@ p {
 }
 
 blockquote {
-  margin-block-start: var(--space-xs-s);
+  margin-block-start: var(--space-s);
+  border-inline-start: var(--width-divider-wide) solid var(--color-divider);
+  padding-inline: var(--space-s);
+
+  & > :first-child {
+    margin-block-start: 0;
+  }
 }
 
 details {

@@ -64,7 +64,8 @@ const BlockElementToHtml = Match.typeTags<
   Block,
   Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale>
 >()({
-  BlockQuote: blockQuote => Effect.map(BlockContentToHtml(blockQuote), content => Option.some(html`${content}`)),
+  BlockQuote: blockQuote =>
+    Effect.map(BlockContentToHtml(blockQuote), content => Option.some(html`<blockquote>${content}</blockquote>`)),
   Document: document => Effect.map(BlockContentToHtml(document), content => Option.some(html`${content}`)),
   EmbeddedAssetBlock: embeddedAssetBlock => {
     const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
