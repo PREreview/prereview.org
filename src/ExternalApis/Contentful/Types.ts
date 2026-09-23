@@ -237,5 +237,6 @@ export class Entry extends Schema.Class<Entry>('Entry')({
 }) {}
 
 export class Entries extends Schema.Class<Entries>('Entries')({
+  total: Schema.NonNegativeInt,
   items: Schema.Array(Entry),
 }) {}

@@ -3756,6 +3756,7 @@ export const showSpotlight: Fixtures<
       query: { content_type: 'banner', limit: 1, order: 'sys.createdAt' },
       response: {
         body: {
+          total: 1,
           items: [
             {
               sys: {
