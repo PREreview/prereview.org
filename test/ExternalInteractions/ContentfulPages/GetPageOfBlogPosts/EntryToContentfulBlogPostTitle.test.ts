@@ -39,6 +39,8 @@ it.effect.each<{
         width: 1200,
         height: 675,
       },
+      excerpt:
+        'In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further.',
     }),
   },
   {
@@ -55,6 +57,8 @@ it.effect.each<{
         width: 1200,
         height: 675,
       },
+      excerpt:
+        'In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.',
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
