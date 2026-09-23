@@ -55,7 +55,7 @@ export const createMenuPage = ({
           <h2>${t('findOutMore')()}</h2>
           <ul>
             <li>
-              <a href="https://content.prereview.org/">${t('menuBlog')()}</a>
+              <a href="${Routes.Blog.href({ page: 1 })}">${t('menuBlog')()}</a>
             </li>
             <li>
               <a href="${Routes.AboutUs}">${t('menuAboutUs')()}</a>
