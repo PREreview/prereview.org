@@ -16,8 +16,8 @@ describe('ReviewRequestsPage', () => {
       fc.option(fc.fieldId(), { nil: undefined }),
       fc.option(fc.languageCode(), { nil: undefined }),
       fc.record({
-        currentPage: fc.integer({ min: 0 }),
-        totalPages: fc.integer(),
+        currentPage: fc.integer({ min: 1 }),
+        totalPages: fc.integer({ min: 1 }),
         field: fc.option(fc.fieldId(), { nil: undefined }),
         language: fc.option(fc.languageCode(), { nil: undefined }),
         reviewRequests: fc.nonEmptyArray(

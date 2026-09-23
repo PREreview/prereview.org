@@ -95,7 +95,9 @@ const EmptyStringAsOptional = <A, R>(schema: Schema.Schema<A, string, R>) =>
     encode: Option.filter(value => typeof value === 'string' && value !== ''),
   })
 
-const PageNumberSchema = Schema.optionalToRequired(Schema.NumberFromString, Schema.NonNegativeInt, {
+const PositiveInt = Schema.Positive.pipe(Schema.int()).annotations({ identifier: 'PositiveInt' })
+
+const PageNumberSchema = Schema.optionalToRequired(Schema.NumberFromString, PositiveInt, {
   decode: Option.getOrElse(() => 1),
   encode: Option.liftPredicate(page => page !== 1),
 })
