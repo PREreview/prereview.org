@@ -49,6 +49,7 @@ export class ContentfulBlogPostTitle extends Schema.Class<ContentfulBlogPostTitl
       height: Schema.NonNegativeInt,
     }),
   ),
+  excerpt: Schema.optional(Schema.NonEmptyTrimmedString),
 }) {}
 
 export class ContentfulPageOfBlogPosts extends Schema.Class<ContentfulPageOfBlogPosts>('ContentfulPageOfBlogPosts')({

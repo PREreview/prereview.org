@@ -22,6 +22,9 @@
         "slug": { "en-US": "august-newsletter" },
         "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "66F6kozbr5x3SFQM3NxEeA" } }] },
         "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "1WEOBiqw4FrZE31p0cmFyO" } } },
+        "excerpt": {
+          "en-US": "In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further."
+        },
         "content": {
           "en-US": {
             "nodeType": "document",

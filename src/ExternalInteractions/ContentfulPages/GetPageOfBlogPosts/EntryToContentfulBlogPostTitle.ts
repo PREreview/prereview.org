@@ -17,6 +17,7 @@ const BlogPostEntry = Schema.Struct({
     heroImage: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(MediaEntry) }),
     ),
+    excerpt: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString })),
   }),
 })
 
@@ -48,6 +49,12 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
         height: asset.details.image.height,
       }
     }),
+    excerpt:
+      typeof entry.fields.excerpt !== 'undefined'
+        ? Option.getOrElse(getValueForLocale(entry.fields.excerpt, locale), () =>
+            getValueForDefaultLocale(entry.fields.excerpt!),
+          )
+        : undefined,
   })
 })
 

@@ -49,6 +49,8 @@ const blogPost1 = {
     width: 600,
     height: 400,
   },
+  excerpt:
+    'In this feature, Shitondo stresses out the importance of concentrating Open Science advocacy efforts in low-resource settings and educational institutions for a broader adoption of its principles and practices.',
 } satisfies BlogPostTitle
 
 const blogPost2 = {
@@ -60,6 +62,8 @@ const blogPost2 = {
     width: 500,
     height: 400,
   },
+  excerpt:
+    'We’re testing out an algorithm to suggest preprints for review based on your ORCID public profile. Take part in our second matchmaking experiment and help us with your valuable feedback!',
 } satisfies BlogPostTitle
 
 const blogPost3 = {
@@ -83,4 +87,6 @@ const blogPost5 = {
   title: html`Strategic Plan Community Call: What we learned`,
   locale: 'en-US',
   slug: Slug('strategic-plan-community-call-what-we-learned'),
+  excerpt:
+    'For PREreview, community input is the most reliable compass. In February, we shared our strategic goals with you in a community call designed to listen deeply, learn together, and imagine what’s possible.',
 } satisfies BlogPostTitle
