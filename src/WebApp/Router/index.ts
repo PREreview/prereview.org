@@ -558,6 +558,7 @@ const DataRouter = HttpRouter.fromIterable([
 ]).pipe(HttpRouter.use(HttpMiddleware.requireScietyListToken))
 
 const BlogRouter = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', '/blog', PageNotFound),
   MakeRoute(
     'GET',
     Routes.BlogPost,
@@ -582,7 +583,8 @@ const BlogRouter = HttpRouter.fromIterable([
     HttpMiddleware.make(app =>
       Effect.if(FeatureFlags.loadBlogFromContentful, {
         onTrue: () => app,
-        onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
+        onFalse: () =>
+          pipe(Response.RedirectResponse({ location: 'https://content.prereview.org' }), Response.toHttpServerResponse),
       }),
     ),
   ),

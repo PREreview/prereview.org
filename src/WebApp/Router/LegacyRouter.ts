@@ -103,7 +103,6 @@ export const LegacyRouter = HttpRouter.fromIterable([
       ),
     ),
   ),
-  MakeRoute('/blog', movedPermanently('https://content.prereview.org/')),
   MakeRoute('/coc', movedPermanently(Routes.CodeOfConduct)),
   MakeRoute('/communities', movedPermanently(Routes.Clubs)),
   MakeRoute(

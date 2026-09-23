@@ -21,7 +21,6 @@ describe('LegacyRouter', () => {
       '/author-invite/0d062cd7-d41c-49b9-90ce-d8e1beb8687d/verify-email-address?verify=988349ad-ef61-46e4-860b-f6c0610ab56f',
       '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fauthor-invite%2F0d062cd7-d41c-49b9-90ce-d8e1beb8687d%2Fcheck-your-prereview',
     ],
-    ['/blog?articles_format=grid', 'https://content.prereview.org/'],
     ['/coc', '/code-of-conduct'],
     ['/communities', '/clubs'],
     ['/communities?page=1', '/clubs'],
