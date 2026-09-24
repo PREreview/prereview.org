@@ -21,6 +21,8 @@ const EntryFields = Schema.Struct({
     title: Schema.Struct({ 'en-US': Schema.String }),
     slug: Schema.Struct({ 'en-US': Schema.String }),
     authors: Schema.Struct({ 'en-US': Schema.Array(EntryLink) }),
+    heroImage: Schema.optional(Schema.Struct({ 'en-US': EntryLink })),
+    excerpt: Schema.optional(Schema.Struct({ 'en-US': Schema.String })),
     content: Schema.Struct({ 'en-US': Schema.Unknown }),
     firstPublishedAtOverride: Schema.Struct({ 'en-US': Schema.String }),
     publishedAtOverride: Schema.Struct({ 'en-US': Schema.String }),
@@ -65,7 +67,10 @@ void pipe(
     const entries = yield* Effect.forEach(jsonFiles, file =>
       Effect.gen(function* () {
         const raw = yield* fs.readFileString(path.join(importDir, file))
-        const body = yield* Schema.decodeUnknown(EntryFields)(JSON.parse(raw))
+        // Excess properties are an error rather than being silently dropped, so that a field
+        // added to the content model and written by ghost-to-contentful.ts but not listed in
+        // EntryFields fails the import instead of quietly never reaching Contentful.
+        const body = yield* Schema.decodeUnknown(EntryFields)(JSON.parse(raw), { onExcessProperty: 'error' })
         return { slug: body.fields.slug['en-US'], body }
       }),
     )
