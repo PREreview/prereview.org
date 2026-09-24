@@ -77,17 +77,17 @@ class EntryHyperlink extends Schema.Class<EntryHyperlink>('EntryHyperlink')({
   content: Schema.NonEmptyArray(Text),
 }) {}
 
-class Heading1 extends Schema.Class<Heading1>('Heading1')({
+export class Heading1 extends Schema.Class<Heading1>('Heading1')({
   _tag: Schema.propertySignature(Schema.transformLiteral('heading-1', 'Heading1')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Text),
 }) {}
 
-class Heading2 extends Schema.Class<Heading2>('Heading2')({
+export class Heading2 extends Schema.Class<Heading2>('Heading2')({
   _tag: Schema.propertySignature(Schema.transformLiteral('heading-2', 'Heading2')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Text),
 }) {}
 
-class Heading3 extends Schema.Class<Heading3>('Heading3')({
+export class Heading3 extends Schema.Class<Heading3>('Heading3')({
   _tag: Schema.propertySignature(Schema.transformLiteral('heading-3', 'Heading3')).pipe(Schema.fromKey('nodeType')),
   content: Schema.NonEmptyArray(Text),
 }) {}

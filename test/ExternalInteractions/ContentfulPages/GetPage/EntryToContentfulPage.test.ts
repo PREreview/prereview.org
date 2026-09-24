@@ -23,7 +23,7 @@ it.effect.each<{
     expected: new ContentfulPage({
       title: html`How we’re funded`,
       html: html`
-        <h1><span>Fiscal Sponsor</span></h1>
+        <h1 id="fiscal-sponsor"><span>Fiscal Sponsor</span></h1>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/I28uS78afIF2uFWUkoKD7/b1f93b4b5f4efc1cf8df24e9db60f1b1/CSandSSquare5.svg"
           width="800"
@@ -78,7 +78,7 @@ it.effect.each<{
           Note: we also run 2-hour community workshops every quarter of the year which are open to individual sign-ups.
           Read below for more information on the next available workshop and how to register.
         </span></p>
-        <h1><span>PREreview Open Reviewers</span></h1>
+        <h1 id="prereview-open-reviewers"><span>PREreview Open Reviewers</span></h1>
         <p><span>
           The Open Reviewers Workshop is an interactive and hands-on training program designed for researchers at all
           career levels who are interested in engaging in ethical and constructive manuscript peer review. With a focus
@@ -86,25 +86,25 @@ it.effect.each<{
           and knowledge to conduct equitable peer reviews with the use of materials from
           <a href="/resources">The Open Reviewers Toolkit</a>.
         </span></p>
-        <h2><span>2-hour workshop</span></h2>
+        <h2 id="2-hour-workshop"><span>2-hour workshop</span></h2>
         <p><span>
           This stand-alone introductory workshop focuses on the basics of open, preprint peer review and becoming aware
           of biases present in the scholarly publication process.
         </span></p>
-        <h3><span>Learning Objectives</span></h3>
+        <h3 id="learning-objectives"><span>Learning Objectives</span></h3>
         <ul>
           <li><span>A general understanding of journal-organized and independent review processes</li>
           <li><span>An introduction to how systems of oppression manifest in the manuscript review process</li>
           <li><span>An introduction to strategies to self-assess and mitigate bias in the context of manuscript review</li>
         </ul>
-        <h2><span>Multi-session workshops</span></h2>
+        <h2 id="multi-session-workshops"><span>Multi-session workshops</span></h2>
         <p><span>
           These multi-session training run for 4-6 hours and offer greater opportunities for practical review experience
           following a structured approach to writing a review, keeping issues of bias and systemic oppression front of
           mind. These workshops culminate in a <a href="/live-reviews">Live Review</a> session facilitated by PREreview
           staff where participants select and review a preprint together.
         </span></p>
-        <h3><span>Learning Objectives</span></h3>
+        <h3 id="learning-objectives"><span>Learning Objectives</span></h3>
         <ul>
           <li><span>A general understanding of journal-organized and independent review processes</li>
           <li><span>A detailed understanding of how systems of oppression manifest in the manuscript review process</li>
@@ -118,19 +118,19 @@ it.effect.each<{
             resulting preprint review on PREreview.org
           </li>
         </ul>
-        <h1><span>PREreview Open Grant Reviewers</span></h1>
+        <h1 id="prereview-open-grant-reviewers"><span>PREreview Open Grant Reviewers</span></h1>
         <p><span>
           The PREreview Open Grant Reviewers workshop is designed to guide grant reviewers in the equitable assessment
           of grant applications. Our goal is to engage and train a pool of diverse, socially conscious grant reviewers.
         </span></p>
-        <h2><span>2-hour workshop</span></h2>
+        <h2 id="2-hour-workshop"><span>2-hour workshop</span></h2>
         <p><span>
           Open Grant Reviewers is currently offered as a 2-hour workshop but can be modified to provide greater support
           and depth of learning. Throughout the workshop, reviewers are encouraged to identify and address biases in the
           grant review process using our <a href="/resources">training materials</a>, which include a Bias Reflection
           Guide. Our curriculum includes space for debate-based learning and open discussions among the reviewers.
         </span></p>
-        <h3><span>Learning Objectives</span></h3>
+        <h3 id="learning-objectives"><span>Learning Objectives</span></h3>
         <ul>
           <li><span>
             A broad understanding of what systems of oppression are and how they manifest in the grant review process
@@ -145,7 +145,7 @@ it.effect.each<{
             bring greater transparency and equity into the review process
           </li>
         </ul>
-        <h3><span>Pricing</span></h3>
+        <h3 id="pricing"><span>Pricing</span></h3>
         <p><span>
           The pricing across all our workshop offerings is as follows (in USD). Please note that these prices are for up
           to 30 participants but more can be added at an additional cost.
@@ -218,7 +218,7 @@ it.effect.each<{
           <a href="https://carpentries.org/workshops/">The Carpentries</a>, and
           <a href="https://www.crossref.org/gem/">Crossref’s GEM program</a>.
         </span></p>
-        <h1><span>Past and present collaborators include</span></h1>
+        <h1 id="past-and-present-collaborators-include"><span>Past and present collaborators include</span></h1>
         <ul>
           <li><span><a href="https://info.africarxiv.org/">AfricArXiv</a></li>
           <li><span><a href="https://www.asu.edu/">Arizona State University</a></li>
@@ -234,7 +234,7 @@ it.effect.each<{
           <li><span><a href="https://www.exeter.ac.uk/">University of Exeter</a></li>
           <li><span><a href="https://www.icm.uu.se/">Uppsala University Department of Cell and Molecular Biology</a></li>
         </ul>
-        <h1><span>PREreview Champions Program</span></h1>
+        <h1 id="prereview-champions-program"><span>PREreview Champions Program</span></h1>
         <p><span>
           The <a href="/champions-program">PREreview Champions Program</a> is a program designed to equip PREreview
           community members with the resources, skills, and support to facilitate the adaptation and adoption of open
@@ -266,7 +266,7 @@ it.effect.each<{
             constructive peer feedback.
           </span>
         </p>
-        <h1><span>How can I start a PREreview Club?</span></h1>
+        <h1 id="how-can-i-start-a-prereview-club"><span>How can I start a PREreview Club?</span></h1>
         <p>
           <span>
             Anyone who wants to form a collaborative preprint reviewing group can ask to start a Club. While we plan to
@@ -305,7 +305,7 @@ it.effect.each<{
         <a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN" class="button">
           <span>Start a Club!</span>
         </a>
-        <h1><span>Can I join an existing PREreview Club?</span></h1>
+        <h1 id="can-i-join-an-existing-prereview-club"><span>Can I join an existing PREreview Club?</span></h1>
         <p>
           <span>
             Yes, you can if the club is open to accepting new members. Some clubs are dedicated to particular groups or
@@ -315,7 +315,7 @@ it.effect.each<{
         {{list-of-active-clubs}}
         <p><span>Here is the list of inactive PREreview Clubs:</span></p>
         {{list-of-inactive-clubs}}
-        <h1><span>Share your PREreview Clubs feedback</span></h1>
+        <h1 id="share-your-prereview-clubs-feedback"><span>Share your PREreview Clubs feedback</span></h1>
         <p>
           <span>
             If you have feedback to give about your PREreview Clubs experience, please feel welcome to schedule a user
@@ -325,7 +325,7 @@ it.effect.each<{
             call, as well. Whenever possible, we compensate interviewees.
           </span>
         </p>
-        <h1><span>Join the PREreview community Slack</span></h1>
+        <h1 id="join-the-prereview-community-slack"><span>Join the PREreview community Slack</span></h1>
         <p>
           <span>
             The PREreview community is now on Slack! Join us to connect with like-minded peers and to continue
@@ -377,8 +377,10 @@ it.effect.each<{
             <b>Aurelia Munene</b>,<b> Malvika Sharan</b>, and <b>Kirstie Whitaker </b>(AC Treasurer).
           </span>
         </p>
-        <h1><span>Staff</span></h1>
-        <h2><span>Vanessa Fairhurst (she/her) – Head of Community</span></h2>
+        <h1 id="staff"><span>Staff</span></h1>
+        <h2 id="vanessa-fairhurst-she-her-head-of-community">
+          <span>Vanessa Fairhurst (she/her) – Head of Community</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png"
           width="250"
@@ -397,7 +399,9 @@ it.effect.each<{
             empowering researchers around the globe to improve the research process.
           </span>
         </p>
-        <h2><span>Daniela Saderi, Ph.D. (she/her) – Executive Director, Co-Founder</span></h2>
+        <h2 id="daniela-saderi-ph-d-she-her-executive-director-co-founder">
+          <span>Daniela Saderi, Ph.D. (she/her) – Executive Director, Co-Founder</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png"
           width="250"
@@ -422,7 +426,7 @@ it.effect.each<{
           </span>
         </p>
         <p><span>Outside of work, she enjoys reading and spending time with her family and friends.</span></p>
-        <h2><span>Chad Sansing (he/him) – Head of Product</span></h2>
+        <h2 id="chad-sansing-he-him-head-of-product"><span>Chad Sansing (he/him) – Head of Product</span></h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png"
           width="250"
@@ -441,7 +445,9 @@ it.effect.each<{
             find him reading, playing games, and hanging out with friends and family.
           </span>
         </p>
-        <h2><span>María Pía Tavella, Ph.D. (she/her) - Communications and Engagement Officer</span></h2>
+        <h2 id="mar-a-p-a-tavella-ph-d-she-her-communications-and-engagement-officer">
+          <span>María Pía Tavella, Ph.D. (she/her) - Communications and Engagement Officer</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg"
           width="250"
@@ -466,7 +472,9 @@ it.effect.each<{
             immersing herself in nature.
           </span>
         </p>
-        <h2><span>Chris Wilkinson (he/him) – Head of Technology</span></h2>
+        <h2 id="chris-wilkinson-he-him-head-of-technology">
+          <span>Chris Wilkinson (he/him) – Head of Technology</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg"
           width="250"
@@ -485,7 +493,7 @@ it.effect.each<{
             web-based software, iteratively developed in close collaboration with the wider team.
           </span>
         </p>
-        <h2><span>Daniel Haarhoff – Software Engineer (eLife)</span></h2>
+        <h2 id="daniel-haarhoff-software-engineer-elife"><span>Daniel Haarhoff – Software Engineer (eLife)</span></h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg"
           width="250"
@@ -501,7 +509,9 @@ it.effect.each<{
             volunteers and the Cambridge Makespace.
           </span>
         </p>
-        <h2><span>María Sol Ruiz, Ph.D. (she/her) – Champion Fellow</span></h2>
+        <h2 id="mar-a-sol-ruiz-ph-d-she-her-champion-fellow">
+          <span>María Sol Ruiz, Ph.D. (she/her) – Champion Fellow</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png"
           width="250"
@@ -524,7 +534,7 @@ it.effect.each<{
             worked towards improving access to scientific resources and educational tools in disadvantaged groups.
           </span>
         </p>
-        <h1><span>Advisory Committee</span></h1>
+        <h1 id="advisory-committee"><span>Advisory Committee</span></h1>
         <p>
           <span>
             PREreview’s Advisory Committee is responsible for hiring and evaluating the Executive Director, providing
@@ -534,7 +544,9 @@ it.effect.each<{
             responsibilities through meetings, regular correspondence, and collaboration via email and online platforms.
           </span>
         </p>
-        <h2><span>Samantha Hindle, Ph.D. (she/her) – Co-Founder, Advisory Committee Secretary</span></h2>
+        <h2 id="samantha-hindle-ph-d-she-her-co-founder-advisory-committee-secretary">
+          <span>Samantha Hindle, Ph.D. (she/her) – Co-Founder, Advisory Committee Secretary</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg"
           width="250"
@@ -552,7 +564,9 @@ it.effect.each<{
             communities, paths that led her to co-found PREreview in 2017.
           </span>
         </p>
-        <h2><span>Monica Granados, Ph.D. (she/her) – Co-Founder, Advisory Committee Co-Chair</span></h2>
+        <h2 id="monica-granados-ph-d-she-her-co-founder-advisory-committee-co-chair">
+          <span>Monica Granados, Ph.D. (she/her) – Co-Founder, Advisory Committee Co-Chair</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png"
           width="250"
@@ -568,7 +582,9 @@ it.effect.each<{
             initiative and on Environment and Climate Change Canada’s Open Science Action Plan.
           </span>
         </p>
-        <h2><span>Christopher Steven Marcum, Ph.D., F.G.S.A. (he/him/they/them) – Advisory Committee Chair</span></h2>
+        <h2 id="christopher-steven-marcum-ph-d-f-g-s-a-he-him-they-them-advisory-committee-chair">
+          <span>Christopher Steven Marcum, Ph.D., F.G.S.A. (he/him/they/them) – Advisory Committee Chair</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg"
           width="250"
@@ -599,7 +615,9 @@ it.effect.each<{
             life course. He has written over 80 scholarly articles and thought pieces.
           </span>
         </p>
-        <h2>
+        <h2
+          id="lamis-yahia-mohamed-elkheir-ph-d-she-her-director-of-training-resource-development-at-african-reproducibility-network-aren"
+        >
           <span>
             Lamis Yahia Mohamed Elkheir, Ph.D. (she/her) - Director of Training &amp; Resource Development at African
             Reproducibility Network (AREN)
@@ -633,7 +651,9 @@ it.effect.each<{
             participate meaningfully in shaping research culture and evaluation.
           </span>
         </p>
-        <h2><span>Aurelia Munene (she/her) – Founder and CEO at Eider Africa</span></h2>
+        <h2 id="aurelia-munene-she-her-founder-and-ceo-at-eider-africa">
+          <span>Aurelia Munene (she/her) – Founder and CEO at Eider Africa</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png"
           width="250"
@@ -665,7 +685,7 @@ it.effect.each<{
             Strathmore University in Kenya.
           </span>
         </p>
-        <h2>
+        <h2 id="malvika-sharan-ph-d-she-her-senior-director-of-data-science-at-st-jude-children-s-research-hospital">
           <span>
             Malvika Sharan, Ph.D. (she/her) - Senior Director of Data Science at St. Jude Children’s Research Hospital
           </span>
@@ -699,7 +719,9 @@ it.effect.each<{
             research, community building, collaboration, governance, and ethical practices in data science and AI.
           </span>
         </p>
-        <h2>
+        <h2
+          id="kirstie-whitaker-ph-d-she-her-executive-director-at-berkeley-institute-for-data-science-advisory-committee-treasurer"
+        >
           <span>
             Kirstie Whitaker, Ph.D. (she/her) - Executive Director at Berkeley Institute for Data Science, Advisory
             Committee Treasurer
@@ -731,8 +753,10 @@ it.effect.each<{
             research and innovation.
           </span>
         </p>
-        <h1><span>Former Staff</span></h1>
-        <h2><span>Grace Park - Former Communications and Engagement Officer</span></h2>
+        <h1 id="former-staff"><span>Former Staff</span></h1>
+        <h2 id="grace-park-former-communications-and-engagement-officer">
+          <span>Grace Park - Former Communications and Engagement Officer</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png"
           width="250"
@@ -746,7 +770,9 @@ it.effect.each<{
             Review and the Champions program, championing the achievements and efforts of many community members.
           </span>
         </p>
-        <h2><span>Arturo Garduño-Magaña (he/him) – Former Open Grant Reviewers Program Manager and Trainer</span></h2>
+        <h2 id="arturo-gardu-o-maga-a-he-him-former-open-grant-reviewers-program-manager-and-trainer">
+          <span>Arturo Garduño-Magaña (he/him) – Former Open Grant Reviewers Program Manager and Trainer</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG"
           width="250"
@@ -762,7 +788,9 @@ it.effect.each<{
             DataCite as the Regional Engagement Specialist, Latin America.
           </span>
         </p>
-        <h2><span>Antoinette Foster, Ph.D.(she/her) – Former Open Reviewers Program Manager</span></h2>
+        <h2 id="antoinette-foster-ph-d-she-her-former-open-reviewers-program-manager">
+          <span>Antoinette Foster, Ph.D.(she/her) – Former Open Reviewers Program Manager</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png"
           width="250"
@@ -784,7 +812,9 @@ it.effect.each<{
             internalized and interpersonal racism by empowering her community to become active agents of change.
           </span>
         </p>
-        <h2><span>Katrina Murphy (she/her) – Former Project Manager</span></h2>
+        <h2 id="katrina-murphy-she-her-former-project-manager">
+          <span>Katrina Murphy (she/her) – Former Project Manager</span>
+        </h2>
         <img
           src="https://images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg"
           width="250"
@@ -804,7 +834,7 @@ it.effect.each<{
             intersection of conventional and integrative healthcare practices.
           </span>
         </p>
-        <h1><span>Former Advisory Committee Members</span></h1>
+        <h1 id="former-advisory-committee-members"><span>Former Advisory Committee Members</span></h1>
         <ul>
           <li>
             <span>

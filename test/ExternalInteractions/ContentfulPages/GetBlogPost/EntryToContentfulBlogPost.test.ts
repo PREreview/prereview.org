@@ -30,7 +30,7 @@ it.effect.each<{
         <p>
           <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
         </p>
-        <h1><span>What’s new at PREreview?</span></h1>
+        <h1 id="what-s-new-at-prereview"><span>What’s new at PREreview?</span></h1>
         <p>
           <span
             >We’re continuing to improve
@@ -42,7 +42,7 @@ it.effect.each<{
             datasets. We’ll automate the process for adding multiple authors shortly, as well.</span
           >
         </p>
-        <h1><span>What’s next?</span></h1>
+        <h1 id="what-s-next"><span>What’s next?</span></h1>
         <p>
           <span
             >Up next we’ll add our-use-of-AI declaration step to the dataset review workflow. Next month, we’re
@@ -85,7 +85,9 @@ it.effect.each<{
             further.
           </span>
         </p>
-        <h3><span>Last Days to Register for our Review-a-thon with your Club!</span></h3>
+        <h3 id="last-days-to-register-for-our-review-a-thon-with-your-club">
+          <span>Last Days to Register for our Review-a-thon with your Club!</span>
+        </h3>
         <img
           src="https://images.ctfassets.net/66hjlpng9xzg/6BmOyODL93skgyxtdKpoXT/35795ed414b2f2f7ce0e459dab0a73cf/PRW-for-newsletter-300x300-1.png"
           width="300"
@@ -132,7 +134,7 @@ it.effect.each<{
           </span>
         </p>
         <hr />
-        <h3><span>PREreview in Dialogue</span></h3>
+        <h3 id="prereview-in-dialogue"><span>PREreview in Dialogue</span></h3>
         <figure>
           <img
             src="https://images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png"
@@ -230,7 +232,7 @@ it.effect.each<{
           </span>
         </p>
         <hr />
-        <h3><span>PREreview Champions in Action!</span></h3>
+        <h3 id="prereview-champions-in-action"><span>PREreview Champions in Action!</span></h3>
         <figure>
           <img
             src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
@@ -294,7 +296,9 @@ it.effect.each<{
           </li>
         </ul>
         <hr />
-        <h3><span>Modular Peer Review Working Group: Learnings and Next Steps</span></h3>
+        <h3 id="modular-peer-review-working-group-learnings-and-next-steps">
+          <span>Modular Peer Review Working Group: Learnings and Next Steps</span>
+        </h3>
         <img
           src="https://images.ctfassets.net/66hjlpng9xzg/6YLGkTOchGcjmM8pnmcmgk/6439ef7448cd7320b707da998d02c7b4/Newsletter-images---small--300-x-300-px---5-.jpg"
           width="300"
@@ -328,7 +332,7 @@ it.effect.each<{
           <span>READ THE FINAL REPORT</span>
         </a>
         <hr />
-        <h3><span>Events</span></h3>
+        <h3 id="events"><span>Events</span></h3>
         <figure>
           <img
             src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
@@ -411,7 +415,7 @@ it.effect.each<{
           </li>
         </ul>
         <hr />
-        <h3><span>Highlights from our Slack Community</span></h3>
+        <h3 id="highlights-from-our-slack-community"><span>Highlights from our Slack Community</span></h3>
         <img
           src="https://images.ctfassets.net/66hjlpng9xzg/3D56aYtUlBhKOXXDh1Q34d/7549db830de79805d575f2adb2c0c282/Slack-highlights---300x300.png"
           width="300"
@@ -520,7 +524,9 @@ it.effect.each<{
             scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.
           </span>
         </p>
-        <h3><span>Why did you decide to apply for the PREreview Champions program?</span></h3>
+        <h3 id="why-did-you-decide-to-apply-for-the-prereview-champions-program">
+          <span>Why did you decide to apply for the PREreview Champions program?</span>
+        </h3>
         <blockquote>
           <p>
             <span>
@@ -553,7 +559,9 @@ it.effect.each<{
             </span>
           </p>
         </blockquote>
-        <h3><span>How was your experience during the training part of the program?</span></h3>
+        <h3 id="how-was-your-experience-during-the-training-part-of-the-program">
+          <span>How was your experience during the training part of the program?</span>
+        </h3>
         <blockquote>
           <p>
             <span>
@@ -594,7 +602,9 @@ it.effect.each<{
             </span>
           </p>
         </blockquote>
-        <h3>
+        <h3
+          id="to-complete-the-program-champions-have-to-organize-and-deliver-their-own-engagement-activities-in-their-local-communities-tell-us-a-bit-about-yours"
+        >
           <span>
             To complete the program, Champions have to organize and deliver their own engagement activities in their
             local communities. Tell us a bit about yours
@@ -641,7 +651,9 @@ it.effect.each<{
             </span>
           </p>
         </blockquote>
-        <h3>
+        <h3
+          id="what-impacts-do-you-think-open-peer-review-practices-can-have-on-the-scholarly-communications-landscape-in-your-country-and-region"
+        >
           <span>
             What impacts do you think open peer review practices can have on the scholarly communications landscape in
             your country and region?
@@ -689,7 +701,9 @@ it.effect.each<{
             </span>
           </p>
         </blockquote>
-        <h3><span>Would you recommend participating in the PREreview Champions program to others?</span></h3>
+        <h3 id="would-you-recommend-participating-in-the-prereview-champions-program-to-others">
+          <span>Would you recommend participating in the PREreview Champions program to others?</span>
+        </h3>
         <blockquote>
           <p>
             <span>
@@ -732,7 +746,9 @@ it.effect.each<{
             </span>
           </p>
         </blockquote>
-        <h3><span>Before we wrap up, is there anything else you’d like to share?</span></h3>
+        <h3 id="before-we-wrap-up-is-there-anything-else-you-d-like-to-share">
+          <span>Before we wrap up, is there anything else you’d like to share?</span>
+        </h3>
         <blockquote>
           <p>
             <span>

@@ -1,8 +1,9 @@
 import { Array, Effect, Match, Option, type ParseResult, pipe, Predicate, Record, Schema, type Types } from 'effect'
 import { Locale } from '../../Context.ts'
-import type { Block, Inline, Mark, Text } from '../../ExternalApis/Contentful/index.ts'
+import type { Block, Heading1, Heading2, Heading3, Inline, Mark, Text } from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html } from '../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
+import { Slug } from '../../types/Slug.ts'
 import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry } from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 
@@ -86,11 +87,17 @@ const BlockElementToHtml = Match.typeTags<
       Effect.asSome,
     ),
   Heading1: heading1 =>
-    Effect.map(BlockContentToHtml(heading1), content => Option.some(html`<h1><span>${content}</span></h1>`)),
+    Effect.map(BlockContentToHtml(heading1), content =>
+      Option.some(html`<h1 id="${SlugFromHeading(heading1)}"><span>${content}</span></h1>`),
+    ),
   Heading2: heading2 =>
-    Effect.map(BlockContentToHtml(heading2), content => Option.some(html`<h2><span>${content}</span></h2> `)),
+    Effect.map(BlockContentToHtml(heading2), content =>
+      Option.some(html`<h2 id="${SlugFromHeading(heading2)}"><span>${content}</span></h2> `),
+    ),
   Heading3: heading3 =>
-    Effect.map(BlockContentToHtml(heading3), content => Option.some(html`<h3><span>${content}</span></h3>`)),
+    Effect.map(BlockContentToHtml(heading3), content =>
+      Option.some(html`<h3 id="${SlugFromHeading(heading3)}"><span>${content}</span></h3>`),
+    ),
   HorizontalRule: () => Effect.succeedSome(html`<hr />`),
   ListItem: listItem =>
     Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(listItem), content =>
@@ -141,6 +148,19 @@ const BlockElementToHtml = Match.typeTags<
       ),
     ),
 })
+
+const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
+  const text = heading.content.map(element => element.value).join(' ')
+
+  const slugified = text
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-')
+
+  return Slug(slugified)
+}
 
 export const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
