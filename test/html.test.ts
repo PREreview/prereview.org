@@ -8,6 +8,7 @@ import * as fc from './fc.ts'
 test.each([
   ['html variable', _.html`${_.rawHtml('<p>a</p>')}`, '<p>a</p>'],
   ['plain text variable ', _.html`${_.plainText('a')}`, 'a'],
+  ['plain text variable with entities', _.html`${_.plainText('&amp;&lt;&gt;&copy;')}`, '&amp;&lt;&gt;©'],
   ['array variable ', _.html`${[_.rawHtml('<p>a</p>'), _.rawHtml('<p>b</p>')]}`, '<p>a</p><p>b</p>'],
   ['string variable', _.html`${'<p>a</p>'}`, '&lt;p&gt;a&lt;/p&gt;'],
   ['number variable ', _.html`${1}`, '1'],

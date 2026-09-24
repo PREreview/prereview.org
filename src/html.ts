@@ -55,7 +55,6 @@ const encodePlaceholder = (placeholder: Exclude<Placeholder, ReadonlyArray<unkno
 const handlePlaceholder = pipe(
   Match.type<Exclude<Placeholder, ReadonlyArray<unknown>>>(),
   Match.tag('Html', html => html.value),
-  Match.tag('PlainText', plainText => plainText.value),
   Match.orElse(encodePlaceholder),
 )
 
