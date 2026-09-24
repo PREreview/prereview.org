@@ -90,6 +90,16 @@ interface AuthorRecord {
   entryId?: string
 }
 
+interface HeroImageRecord {
+  slug: string
+  title: string
+  src: string
+  alt: string | null
+  captionHtml: string | null
+  assetId?: string
+  entryId?: string
+}
+
 interface RichText {
   nodeType: 'document'
   data: Record<string, never>
@@ -385,6 +395,7 @@ const GhostPost = Schema.Struct({
   authors: Schema.Array(Schema.partial(GhostPostAuthor)),
   published_at: Schema.NonEmptyTrimmedString,
   updated_at: Schema.NonEmptyTrimmedString,
+  custom_excerpt: Schema.NullOr(Schema.String),
 })
 
 const GhostPosts = Schema.Array(Schema.partial(GhostPost))
@@ -399,6 +410,7 @@ const inputFile = path.resolve(import.meta.dirname, '..', 'contentful-import', '
 const imagesFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-images.json')
 const buttonsFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-buttons.json')
 const authorsFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-authors.json')
+const heroImagesFile = path.resolve(import.meta.dirname, '..', 'contentful-import', 'blog-post-hero-images.json')
 
 const ImageRecordsSchema = Schema.Array(
   Schema.Struct({
@@ -421,6 +433,18 @@ const AuthorRecordsSchema = Schema.Array(
     slug: Schema.String,
     name: Schema.String,
     profileImageSrc: Schema.NullOr(Schema.String),
+    assetId: Schema.optional(Schema.String),
+    entryId: Schema.optional(Schema.String),
+  }),
+)
+
+const HeroImageRecordsSchema = Schema.Array(
+  Schema.Struct({
+    slug: Schema.String,
+    title: Schema.String,
+    src: Schema.String,
+    alt: Schema.NullOr(Schema.String),
+    captionHtml: Schema.NullOr(Schema.String),
     assetId: Schema.optional(Schema.String),
     entryId: Schema.optional(Schema.String),
   }),
@@ -461,6 +485,14 @@ void pipe(
       authorLookup.set(record.slug, record)
     }
 
+    const heroImagesRaw = yield* fs.readFileString(heroImagesFile)
+    const heroImageRecords = Array.from(yield* Schema.decodeUnknown(HeroImageRecordsSchema)(JSON.parse(heroImagesRaw)))
+
+    const heroImageLookup = new Map<string, HeroImageRecord>()
+    for (const record of heroImageRecords) {
+      heroImageLookup.set(record.slug, record)
+    }
+
     const raw = yield* fs.readFileString(inputFile)
     const posts = yield* Schema.decodeUnknown(GhostPosts)(JSON.parse(raw))
 
@@ -471,7 +503,8 @@ void pipe(
         p.html !== undefined &&
         p.authors !== undefined &&
         p.published_at !== undefined &&
-        p.updated_at !== undefined,
+        p.updated_at !== undefined &&
+        p.custom_excerpt !== undefined,
     )
 
     console.log(`Writing ${valid.length} entries to ${outputDir}`)
@@ -495,11 +528,25 @@ void pipe(
             }
           }
 
+          const heroImageRecord = heroImageLookup.get(post.slug)
+          let heroImage: { sys: { type: 'Link'; linkType: 'Entry'; id: string } } | undefined
+          if (heroImageRecord !== undefined) {
+            if (heroImageRecord.entryId !== undefined) {
+              heroImage = { sys: { type: 'Link', linkType: 'Entry', id: heroImageRecord.entryId } }
+            } else {
+              console.log(
+                `[warn] Hero image not found or not yet uploaded to Contentful — https://content.prereview.org/${post.slug}`,
+              )
+            }
+          }
+
           const entry = {
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
               authors: { 'en-US': authorLinks },
+              ...(heroImage !== undefined ? { heroImage: { 'en-US': heroImage } } : {}),
+              ...(post.custom_excerpt !== null ? { excerpt: { 'en-US': post.custom_excerpt } } : {}),
               content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup, buttonLookup) },
               firstPublishedAtOverride: { 'en-US': post.published_at },
               publishedAtOverride: { 'en-US': post.updated_at },
