@@ -61,7 +61,7 @@ void pipe(
               HttpClientRequest.bodyJson({
                 fields: {
                   text: { 'en-US': record.text },
-                  target: { 'en-US': record.target },
+                  url: { 'en-US': record.target },
                 },
               }),
             ),
