@@ -10,19 +10,63 @@ if [[ -z "${CONTENTFUL_MANAGEMENT_TOKEN:-}" ]]; then
   exit 1
 fi
 
-ids=$(curl -sf "${BASE_URL}/assets?limit=1000" \
-  -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}" \
-  | jq -r '.items[].sys.id')
+# Fetches every id in a paginated collection (entries or assets).
+fetch_all_ids() {
+  local resource="$1"
+  local skip=0
+  local limit=1000
+  local ids=""
 
-count=$(echo "$ids" | grep -c .) || true
-echo "Deleting ${count} assets…"
+  while true; do
+    local page
+    page=$(curl -sf "${BASE_URL}/${resource}?limit=${limit}&skip=${skip}" \
+      -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}")
 
-echo "$ids" | while read -r id; do
-  curl -sf -X DELETE "${BASE_URL}/assets/${id}/published" \
-    -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}" || true
-  curl -sf -X DELETE "${BASE_URL}/assets/${id}" \
-    -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}"
-  echo "Deleted ${id}"
-done
+    local page_ids
+    page_ids=$(echo "$page" | jq -r '.items[].sys.id')
+    if [[ -n "$page_ids" ]]; then
+      ids="${ids}${ids:+$'\n'}${page_ids}"
+    fi
+
+    local total
+    total=$(echo "$page" | jq -r '.total')
+    skip=$((skip + limit))
+    if ((skip >= total)); then
+      break
+    fi
+  done
+
+  echo "$ids"
+}
+
+# Unpublishes (if published) and deletes every id for a resource type.
+delete_all() {
+  local resource="$1"
+  local ids
+  ids=$(fetch_all_ids "$resource")
+
+  local count=0
+  if [[ -n "$ids" ]]; then
+    count=$(echo "$ids" | grep -c .)
+  fi
+  echo "Deleting ${count} ${resource}…"
+
+  if [[ "$count" -eq 0 ]]; then
+    return
+  fi
+
+  echo "$ids" | while read -r id; do
+    curl -sf -X DELETE "${BASE_URL}/${resource}/${id}/published" \
+      -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}" || true
+    curl -sf -X DELETE "${BASE_URL}/${resource}/${id}" \
+      -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}"
+    echo "Deleted ${resource}/${id}"
+  done
+}
+
+# Entries first (blog posts, hero images, authors, media, CTAs) so nothing
+# is left pointing at assets, then the assets themselves.
+delete_all "entries"
+delete_all "assets"
 
 echo "Done"
