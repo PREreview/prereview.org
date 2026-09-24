@@ -663,11 +663,11 @@
           "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
           "publishedVersion": 4,
           "revision": 1,
-          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
         },
         "fields": {
           "title": { "en-US": "Mabel-blog-header-2" },
-          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5s0piRdgTblQmCygABe2gj" } } }
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5s0piRdgTblQmCygABe2gj" } } }
         }
       },
       {

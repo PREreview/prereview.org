@@ -5,7 +5,7 @@ import { html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
-import { MediaEntry } from '../ContentfulTypes.ts'
+import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
 import { BlockContentToHtml } from '../RichText.ts'
 import { Author, ContentfulBlogPost } from '../Types.ts'
@@ -23,7 +23,7 @@ const BlogPostEntry = Schema.Struct({
     authors: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyArray(AuthorEntry) }),
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     heroImage: Schema.optional(
-      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(MediaEntry) }),
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
     ),
     content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) }),
     firstPublishedAtOverride: Schema.optional(
@@ -50,8 +50,8 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
       }
 
       const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
-      const file = getValueForDefaultLocale(heroImage.fields.file)
-      const asset = getValueForDefaultLocale(file.fields.file)
+      const image = getValueForDefaultLocale(heroImage.fields.image)
+      const asset = getValueForDefaultLocale(image.fields.file)
       const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText) : undefined
       const caption = yield* heroImage.fields.caption
         ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))

@@ -4,7 +4,7 @@ import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index
 import { html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
-import { MediaEntry } from '../ContentfulTypes.ts'
+import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
 
 const BlogPostEntry = Schema.Struct({
@@ -15,7 +15,7 @@ const BlogPostEntry = Schema.Struct({
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     slug: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: SlugSchema }),
     heroImage: Schema.optional(
-      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(MediaEntry) }),
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
     ),
     excerpt: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString })),
   }),
@@ -40,8 +40,8 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
       }
 
       const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
-      const file = getValueForDefaultLocale(heroImage.fields.file)
-      const asset = getValueForDefaultLocale(file.fields.file)
+      const image = getValueForDefaultLocale(heroImage.fields.image)
+      const asset = getValueForDefaultLocale(image.fields.file)
 
       return {
         url: asset.url,

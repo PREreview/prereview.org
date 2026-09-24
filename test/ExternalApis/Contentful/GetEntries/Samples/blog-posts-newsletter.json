@@ -1273,7 +1273,7 @@
           "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
           "publishedVersion": 4,
           "revision": 1,
-          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
         },
         "fields": {
           "title": { "en-US": "August newsletter" },
@@ -1303,7 +1303,7 @@
               "nodeType": "document"
             }
           },
-          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7aBxOS0x2pdbBGdTG4wNDy" } } },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7aBxOS0x2pdbBGdTG4wNDy" } } },
           "altText": {
             "en-US": "\"PREreview August Newsletter\" header over photo of raindrops creating ripples on a water surface"
           }
