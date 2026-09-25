@@ -119,6 +119,30 @@
         "allow": ["src/types"]
       }
     ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          "fp-ts/lib/Array.js",
+          "fp-ts/lib/boolean.js",
+          "fp-ts/lib/Eq.js",
+          "fp-ts/lib/function.js",
+          "fp-ts/lib/Identity.js",
+          "fp-ts/lib/NonEmptyArray.js",
+          "fp-ts/lib/Option.js",
+          "fp-ts/lib/Ord.js",
+          "fp-ts/lib/Ordering.js",
+          "fp-ts/lib/Predicate.js",
+          "fp-ts/lib/ReadonlyArray.js",
+          "fp-ts/lib/ReadonlyNonEmptyArray.js",
+          "fp-ts/lib/ReadonlyRecord.js",
+          "fp-ts/lib/ReadonlySet.js",
+          "fp-ts/lib/ReadonlyTuple.js",
+          "fp-ts/lib/Refinement.js",
+          "fp-ts/lib/string.js"
+        ]
+      }
+    ],
     "no-comments/disallowComments": [
       "error",
       {
@@ -319,7 +343,20 @@
     {
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
-        "typescript/no-base-to-string": "off"
+        "typescript/no-base-to-string": "off",
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": ["**/assets/**"]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/RefactoringUtilities/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
     },
     {
       "files": ["integration/**/*.ts", "scripts/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
