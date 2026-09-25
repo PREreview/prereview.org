@@ -18,12 +18,12 @@ check: format lint-ts lint-css typecheck test-fast
 update-incontext-locale:
 	source .env && crowdin download --language=lol --token=$${CROWDIN_PERSONAL_TOKEN}
 
-src/locales: node_modules $(shell find locales -type f)
+.cache/locales.stamp: node_modules $(shell find locales -type f)
 	echo 'building locales'
 	node scripts/intlc.ts
-	touch src/locales
+	@mkdir -p $(@D) && touch $@
 
-src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -v assets/locales)
+src/manifest.json: node_modules .cache/locales.stamp $(shell find assets -type f | grep -v assets/locales)
 	npx vite build --mode development
 	touch src/manifest.json
 
@@ -38,7 +38,7 @@ start-app: .env node_modules start-services src/manifest.json
 
 .PHONY: start
 start:
-	watchexec --restart --watch assets --watch locales --ignore assets/locales/ -- make start-app
+	watchexec --restart --watch assets --watch locales --ignore assets/locales -- make start-app
 
 .PHONY: prod
 prod: .env
