@@ -30,7 +30,7 @@ it.effect.each<{
         <p>
           <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
         </p>
-        <h1 id="what-s-new-at-prereview"><span>What’s new at PREreview?</span></h1>
+        <h1 id="whats-new-at-prereview"><span>What’s new at PREreview?</span></h1>
         <p>
           <span
             >We’re continuing to improve
@@ -42,7 +42,7 @@ it.effect.each<{
             datasets. We’ll automate the process for adding multiple authors shortly, as well.</span
           >
         </p>
-        <h1 id="what-s-next"><span>What’s next?</span></h1>
+        <h1 id="whats-next"><span>What’s next?</span></h1>
         <p>
           <span
             >Up next we’ll add our-use-of-AI declaration step to the dataset review workflow. Next month, we’re
@@ -746,7 +746,7 @@ it.effect.each<{
             </span>
           </p>
         </blockquote>
-        <h3 id="before-we-wrap-up-is-there-anything-else-you-d-like-to-share">
+        <h3 id="before-we-wrap-up-is-there-anything-else-youd-like-to-share">
           <span>Before we wrap up, is there anything else you’d like to share?</span>
         </h3>
         <blockquote>

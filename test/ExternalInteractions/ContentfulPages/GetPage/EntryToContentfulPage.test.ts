@@ -399,7 +399,7 @@ it.effect.each<{
             empowering researchers around the globe to improve the research process.
           </span>
         </p>
-        <h2 id="daniela-saderi-ph-d-she-her-executive-director-co-founder">
+        <h2 id="daniela-saderi-phd-she-her-executive-director-co-founder">
           <span>Daniela Saderi, Ph.D. (she/her) – Executive Director, Co-Founder</span>
         </h2>
         <img
@@ -445,7 +445,7 @@ it.effect.each<{
             find him reading, playing games, and hanging out with friends and family.
           </span>
         </p>
-        <h2 id="mar-a-p-a-tavella-ph-d-she-her-communications-and-engagement-officer">
+        <h2 id="maria-pia-tavella-phd-she-her-communications-and-engagement-officer">
           <span>María Pía Tavella, Ph.D. (she/her) - Communications and Engagement Officer</span>
         </h2>
         <img
@@ -509,7 +509,7 @@ it.effect.each<{
             volunteers and the Cambridge Makespace.
           </span>
         </p>
-        <h2 id="mar-a-sol-ruiz-ph-d-she-her-champion-fellow">
+        <h2 id="maria-sol-ruiz-phd-she-her-champion-fellow">
           <span>María Sol Ruiz, Ph.D. (she/her) – Champion Fellow</span>
         </h2>
         <img
@@ -544,7 +544,7 @@ it.effect.each<{
             responsibilities through meetings, regular correspondence, and collaboration via email and online platforms.
           </span>
         </p>
-        <h2 id="samantha-hindle-ph-d-she-her-co-founder-advisory-committee-secretary">
+        <h2 id="samantha-hindle-phd-she-her-co-founder-advisory-committee-secretary">
           <span>Samantha Hindle, Ph.D. (she/her) – Co-Founder, Advisory Committee Secretary</span>
         </h2>
         <img
@@ -564,7 +564,7 @@ it.effect.each<{
             communities, paths that led her to co-found PREreview in 2017.
           </span>
         </p>
-        <h2 id="monica-granados-ph-d-she-her-co-founder-advisory-committee-co-chair">
+        <h2 id="monica-granados-phd-she-her-co-founder-advisory-committee-co-chair">
           <span>Monica Granados, Ph.D. (she/her) – Co-Founder, Advisory Committee Co-Chair</span>
         </h2>
         <img
@@ -582,7 +582,7 @@ it.effect.each<{
             initiative and on Environment and Climate Change Canada’s Open Science Action Plan.
           </span>
         </p>
-        <h2 id="christopher-steven-marcum-ph-d-f-g-s-a-he-him-they-them-advisory-committee-chair">
+        <h2 id="christopher-steven-marcum-phd-fgsa-he-him-they-them-advisory-committee-chair">
           <span>Christopher Steven Marcum, Ph.D., F.G.S.A. (he/him/they/them) – Advisory Committee Chair</span>
         </h2>
         <img
@@ -616,7 +616,7 @@ it.effect.each<{
           </span>
         </p>
         <h2
-          id="lamis-yahia-mohamed-elkheir-ph-d-she-her-director-of-training-resource-development-at-african-reproducibility-network-aren"
+          id="lamis-yahia-mohamed-elkheir-phd-she-her-director-of-training-and-resource-development-at-african-reproducibility-network-aren"
         >
           <span>
             Lamis Yahia Mohamed Elkheir, Ph.D. (she/her) - Director of Training &amp; Resource Development at African
@@ -685,7 +685,7 @@ it.effect.each<{
             Strathmore University in Kenya.
           </span>
         </p>
-        <h2 id="malvika-sharan-ph-d-she-her-senior-director-of-data-science-at-st-jude-children-s-research-hospital">
+        <h2 id="malvika-sharan-phd-she-her-senior-director-of-data-science-at-st-jude-childrens-research-hospital">
           <span>
             Malvika Sharan, Ph.D. (she/her) - Senior Director of Data Science at St. Jude Children’s Research Hospital
           </span>
@@ -720,7 +720,7 @@ it.effect.each<{
           </span>
         </p>
         <h2
-          id="kirstie-whitaker-ph-d-she-her-executive-director-at-berkeley-institute-for-data-science-advisory-committee-treasurer"
+          id="kirstie-whitaker-phd-she-her-executive-director-at-berkeley-institute-for-data-science-advisory-committee-treasurer"
         >
           <span>
             Kirstie Whitaker, Ph.D. (she/her) - Executive Director at Berkeley Institute for Data Science, Advisory
@@ -770,7 +770,7 @@ it.effect.each<{
             Review and the Champions program, championing the achievements and efforts of many community members.
           </span>
         </p>
-        <h2 id="arturo-gardu-o-maga-a-he-him-former-open-grant-reviewers-program-manager-and-trainer">
+        <h2 id="arturo-garduno-magana-he-him-former-open-grant-reviewers-program-manager-and-trainer">
           <span>Arturo Garduño-Magaña (he/him) – Former Open Grant Reviewers Program Manager and Trainer</span>
         </h2>
         <img
@@ -788,7 +788,7 @@ it.effect.each<{
             DataCite as the Regional Engagement Specialist, Latin America.
           </span>
         </p>
-        <h2 id="antoinette-foster-ph-d-she-her-former-open-reviewers-program-manager">
+        <h2 id="antoinette-foster-phdshe-her-former-open-reviewers-program-manager">
           <span>Antoinette Foster, Ph.D.(she/her) – Former Open Reviewers Program Manager</span>
         </h2>
         <img

@@ -152,6 +152,9 @@ importers:
       sanitize-html:
         specifier: ^2.17.7
         version: 2.17.7
+      slugify:
+        specifier: ^1.6.9
+        version: 1.6.9
       striptags:
         specifier: ^3.2.0
         version: 3.2.0
@@ -4866,6 +4869,10 @@ packages:
 
   slick@1.12.2:
     resolution: {integrity: sha512-4qdtOGcBjral6YIBCWJ0ljFSKNLz9KkhbWtuGvUyRowl1kxfuE1x/Z/aJcaiilpb3do9bl5K7/1h9XC5wWpY/A==}
+
+  slugify@1.6.9:
+    resolution: {integrity: sha512-vZ7rfeehZui7wQs438JXBckYLkIIdfHOXsaVEUMyS5fHo1483l1bMdo0EDSWYclY0yZKFOipDy4KHuKs6ssvdg==}
+    engines: {node: '>=8.0.0'}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -10215,6 +10222,8 @@ snapshots:
       is-fullwidth-code-point: 3.0.0
 
   slick@1.12.2: {}
+
+  slugify@1.6.9: {}
 
   source-map-js@1.2.1: {}
 

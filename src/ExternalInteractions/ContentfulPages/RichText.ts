@@ -1,4 +1,5 @@
 import { Array, Effect, Match, Option, type ParseResult, pipe, Predicate, Record, Schema, type Types } from 'effect'
+import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import type { Block, Heading1, Heading2, Heading3, Inline, Mark, Text } from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html } from '../../html.ts'
@@ -152,12 +153,7 @@ const BlockElementToHtml = Match.typeTags<
 const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
   const text = heading.content.map(element => element.value).join(' ')
 
-  const slugified = text
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-{2,}/g, '-')
+  const slugified = slugify(text.replaceAll('/', ' '), { lower: true, strict: true })
 
   return Slug(slugified)
 }
