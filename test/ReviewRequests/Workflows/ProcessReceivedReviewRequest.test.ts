@@ -15,7 +15,7 @@ describe('ProcessReceivedReviewRequest', () => {
         Effect.gen(function* () {
           const acceptReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['acceptReviewRequest']
-          >(_ => Effect.void)
+          >(() => Effect.void)
 
           yield* TestClock.setTime(acceptedAt.epochMilliseconds)
 
@@ -105,7 +105,7 @@ describe('ProcessReceivedReviewRequest', () => {
         Effect.gen(function* () {
           const rejectReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['rejectReviewRequest']
-          >(_ => Effect.void)
+          >(() => Effect.void)
 
           yield* TestClock.setTime(rejectedAt.epochMilliseconds)
 

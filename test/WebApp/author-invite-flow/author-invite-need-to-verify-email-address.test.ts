@@ -39,8 +39,8 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ([inviteId, [user, invite], locale, prereview, contactEmailAddress]) =>
         Effect.gen(function* () {
           const runtime = yield* Effect.runtime<ContactEmailAddresses>()
-          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-          const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+          const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({

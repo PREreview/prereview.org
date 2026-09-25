@@ -39,7 +39,7 @@ describe('authorInviteDecline', () => {
         [fc.uuid(), fc.openAuthorInvite(), fc.supportedLocale()],
         ([inviteId, invite, locale]) =>
           Effect.gen(function* () {
-            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
             const actual = yield* Effect.promise(
               _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({
@@ -63,7 +63,7 @@ describe('authorInviteDecline', () => {
         [fc.uuid(), fc.openAuthorInvite(), fc.supportedLocale()],
         ([inviteId, invite, locale]) =>
           Effect.gen(function* () {
-            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.left('unavailable'))
+            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.left('unavailable'))
 
             const actual = yield* Effect.promise(
               _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({

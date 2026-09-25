@@ -19,7 +19,7 @@ describe('disconnectOrcid', () => {
           [fc.oauth(), fc.user(), fc.supportedLocale(), fc.orcidToken()],
           ([orcidOauth, user, locale, orcidToken]) =>
             Effect.gen(function* () {
-              const deleteOrcidToken = vi.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(_ => TE.right(undefined))
+              const deleteOrcidToken = vi.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(() => TE.right(undefined))
               const fetch = fetchMock.createInstance().postOnce({
                 url: orcidOauth.revokeUrl.href,
                 matcherFunction: ({ options }) =>
@@ -111,7 +111,7 @@ describe('disconnectOrcid', () => {
       [fc.oauth(), fc.user(), fc.supportedLocale(), fc.string()],
       ([orcidOauth, user, locale, method]) =>
         Effect.gen(function* () {
-          const getOrcidToken = vi.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
+          const getOrcidToken = vi.fn<GetOrcidTokenEnv['getOrcidToken']>(() => TE.left('not-found'))
 
           const actual = yield* Effect.promise(
             _.disconnectOrcid({ locale, method, user })({

@@ -13,7 +13,7 @@ describe('connectOrcid', () => {
   describe('when the user is logged in', () => {
     it.effect.prop('when ORCID is not already connected', [fc.user(), fc.supportedLocale()], ([user, locale]) =>
       Effect.gen(function* () {
-        const getOrcidToken = vi.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
+        const getOrcidToken = vi.fn<GetOrcidTokenEnv['getOrcidToken']>(() => TE.left('not-found'))
 
         const actual = yield* Effect.promise(
           _.connectOrcid({ locale, user })({

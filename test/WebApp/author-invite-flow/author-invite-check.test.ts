@@ -52,12 +52,12 @@ describe('authorInvite', () => {
         ],
         ([inviteId, [user, invite], publicPersona, pseudonymPersona, prereview, contactEmailAddress, locale]) =>
           Effect.gen(function* () {
-            const addAuthorToPrereview = vi.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(_ =>
+            const addAuthorToPrereview = vi.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(() =>
               TE.right(undefined),
             )
-            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
+            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
             const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
@@ -125,7 +125,7 @@ describe('authorInvite', () => {
         ],
         ([inviteId, [user, invite], publicPersona, pseudonymPersona, prereview, contactEmailAddress, locale]) =>
           Effect.gen(function* () {
-            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
             const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
@@ -187,8 +187,8 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], publicPersona, pseudonymPersona, method, prereview, contactEmailAddress, locale]) =>
         Effect.gen(function* () {
-          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-          const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+          const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
           const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 
@@ -250,7 +250,7 @@ describe('authorInvite', () => {
       ([inviteId, [user, invite], method, prereview, contactEmailAddress, locale]) =>
         Effect.gen(function* () {
           const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
-            _ => contactEmailAddress,
+            () => contactEmailAddress,
           )
 
           const runtime = yield* Effect.provide(

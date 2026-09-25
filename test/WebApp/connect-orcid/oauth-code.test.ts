@@ -70,7 +70,7 @@ describe('connectOrcidCode', () => {
                 status: StatusCodes.OK,
               },
             })
-          const saveOrcidToken = vi.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
+          const saveOrcidToken = vi.fn<EditOrcidTokenEnv['saveOrcidToken']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.connectOrcidCode({ code, locale, user })({
@@ -129,7 +129,7 @@ describe('connectOrcidCode', () => {
               },
             },
           })
-          const saveOrcidToken = vi.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
+          const saveOrcidToken = vi.fn<EditOrcidTokenEnv['saveOrcidToken']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.connectOrcidCode({ code, locale, user })({

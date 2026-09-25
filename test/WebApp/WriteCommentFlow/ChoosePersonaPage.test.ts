@@ -213,10 +213,10 @@ describe('ChoosePersonaSubmission', () => {
           ],
           ([commentId, [comment, user], locale, body, nextCommand]) =>
             Effect.gen(function* () {
-              const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+              const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
               const getNextExpectedCommandForUserOnAComment = vi.fn<
                 typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-              >(_ => Effect.succeed(Either.right(nextCommand)))
+              >(() => Effect.succeed(Either.right(nextCommand)))
 
               const actual = yield* _.ChoosePersonaSubmission({ body, commentId }).pipe(
                 Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),

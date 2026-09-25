@@ -14,7 +14,7 @@ describe('requestReview', () => {
     [fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.preprintId() }), fc.supportedLocale()],
     ([preprintId, user, preprint, locale]) =>
       Effect.gen(function* () {
-        const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+        const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(() =>
           Effect.succeed(preprint),
         )
 
@@ -43,7 +43,7 @@ describe('requestReview', () => {
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
         const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(
-          _ => new Preprints.PreprintIsNotFound({}),
+          () => new Preprints.PreprintIsNotFound({}),
         )
 
         const actual = yield* Effect.provide(
@@ -69,7 +69,7 @@ describe('requestReview', () => {
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
         const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(
-          _ => new Preprints.PreprintIsUnavailable({}),
+          () => new Preprints.PreprintIsUnavailable({}),
         )
 
         const actual = yield* Effect.provide(

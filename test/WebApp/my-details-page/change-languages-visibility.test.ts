@@ -40,7 +40,7 @@ describe('changeLanguagesVisibility', () => {
     [fc.languagesVisibility(), fc.user(), fc.supportedLocale(), fc.languages()],
     ([visibility, user, locale, existingLanguages]) =>
       Effect.gen(function* () {
-        const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+        const saveLanguages = vi.fn<_.Env['saveLanguages']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeLanguagesVisibility({
@@ -101,7 +101,7 @@ describe('changeLanguagesVisibility', () => {
     ],
     ([body, user, locale, languages]) =>
       Effect.gen(function* () {
-        const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+        const saveLanguages = vi.fn<_.Env['saveLanguages']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({

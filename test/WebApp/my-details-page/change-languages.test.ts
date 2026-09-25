@@ -47,7 +47,7 @@ describe('changeLanguages', () => {
       [fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.languages()],
       ([languages, user, locale, existingLanguages]) =>
         Effect.gen(function* () {
-          const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+          const saveLanguages = vi.fn<_.Env['saveLanguages']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeLanguages({ body: { languages }, locale, method: 'POST', user })({
@@ -74,7 +74,7 @@ describe('changeLanguages', () => {
       [fc.nonEmptyString(), fc.user(), fc.supportedLocale()],
       ([languages, user, locale]) =>
         Effect.gen(function* () {
-          const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+          const saveLanguages = vi.fn<_.Env['saveLanguages']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeLanguages({ body: { languages }, locale, method: 'POST', user })({
@@ -128,7 +128,7 @@ describe('changeLanguages', () => {
     [fc.record({ languages: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()],
     ([body, user, locale]) =>
       Effect.gen(function* () {
-        const deleteLanguages = vi.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))
+        const deleteLanguages = vi.fn<_.Env['deleteLanguages']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeLanguages({ body, locale, method: 'POST', user })({

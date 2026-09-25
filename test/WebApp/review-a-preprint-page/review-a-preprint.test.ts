@@ -65,7 +65,7 @@ describe('reviewAPreprint', () => {
       ],
       ([locale, [value, expected], resolved]) =>
         Effect.gen(function* () {
-          const resolvePreprintId = vi.fn<(typeof Preprints.Service)['resolvePreprintId']>(_ =>
+          const resolvePreprintId = vi.fn<(typeof Preprints.Service)['resolvePreprintId']>(() =>
             Effect.succeed(resolved),
           )
 

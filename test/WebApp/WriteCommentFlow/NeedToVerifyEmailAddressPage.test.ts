@@ -30,10 +30,10 @@ describe('NeedToVerifyEmailAddressPage', () => {
           ],
           ([commentId, [comment, user], locale, contactEmailAddress, nextCommand]) =>
             Effect.gen(function* () {
-              const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+              const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
               const getNextExpectedCommandForUserOnAComment = vi.fn<
                 typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-              >(_ => Effect.succeed(Either.right(nextCommand)))
+              >(() => Effect.succeed(Either.right(nextCommand)))
 
               const actual = yield* _.NeedToVerifyEmailAddressPage({ commentId }).pipe(
                 Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
@@ -185,7 +185,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
           Effect.gen(function* () {
             const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-            >(_ => Effect.succeed(Either.right(nextCommand)))
+            >(() => Effect.succeed(Either.right(nextCommand)))
 
             const actual = yield* Effect.provideService(
               _.NeedToVerifyEmailAddressPage({ commentId }),

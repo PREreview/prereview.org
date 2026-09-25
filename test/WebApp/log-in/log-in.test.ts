@@ -292,7 +292,7 @@ describe('authenticate', () => {
     ([code, referer, orcidOauth, locale, accessToken, sessionCookie]) =>
       Effect.gen(function* () {
         const sessionStore = new Keyv()
-        const isUserBlocked = vi.fn<typeof _.IsUserBlocked.Service>(_ => true)
+        const isUserBlocked = vi.fn<typeof _.IsUserBlocked.Service>(() => true)
 
         const actual = yield* pipe(
           _.authenticate(code, referer.href),

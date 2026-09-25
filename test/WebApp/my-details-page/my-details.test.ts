@@ -135,7 +135,7 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
+            const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(() => TE.right(undefined))
 
             const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
 

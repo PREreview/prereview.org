@@ -83,7 +83,7 @@ describe('when the last known position is none', () => {
     ],
     ([event, filter, otherEvents]) =>
       Effect.gen(function* () {
-        const publish = vi.fn<PubSub.PubSub<Events.Event>['publish']>(_ => Effect.succeed(true))
+        const publish = vi.fn<PubSub.PubSub<Events.Event>['publish']>(() => Effect.succeed(true))
 
         const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
@@ -114,7 +114,7 @@ describe('when the last known position has not changed', () => {
     [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
     ([existingEvents, event]) =>
       Effect.gen(function* () {
-        const publish = vi.fn<PubSub.PubSub<unknown>['publish']>(_ => Effect.succeed(true))
+        const publish = vi.fn<PubSub.PubSub<unknown>['publish']>(() => Effect.succeed(true))
 
         const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 

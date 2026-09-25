@@ -240,7 +240,7 @@ describe('CheckPageSubmission', () => {
         ],
         ([commentId, locale, [comment, user]]) =>
           Effect.gen(function* () {
-            const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+            const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
 
             const actual = yield* Effect.provideService(
               _.CheckPageSubmission({ commentId }),

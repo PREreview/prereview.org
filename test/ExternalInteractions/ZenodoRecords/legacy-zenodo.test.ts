@@ -805,7 +805,7 @@ describe('getPrereviewFromZenodo', () => {
           },
         }
 
-        const getPreprint = vi.fn(_ => Effect.succeed(preprint))
+        const getPreprint = vi.fn(() => Effect.succeed(preprint))
 
         const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprint }))
 
@@ -862,7 +862,7 @@ describe('getPrereviewFromZenodo', () => {
 
   it.effect.prop('when the review was removed', [fc.integer()], ([id]) =>
     Effect.gen(function* () {
-      const wasPrereviewRemoved = vi.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(_ => true)
+      const wasPrereviewRemoved = vi.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(() => true)
 
       const runtime = yield* Effect.runtime<Preprints>()
 
@@ -4462,8 +4462,8 @@ describe('createRecordOnZenodo', () => {
       ],
       ([newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi]) =>
         Effect.gen(function* () {
-          const getPreprintSubjects = vi.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
-          const isReviewRequested = vi.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => TE.right(requested))
+          const getPreprintSubjects = vi.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(() => T.of(subjects))
+          const isReviewRequested = vi.fn<_.IsReviewRequestedEnv['isReviewRequested']>(() => TE.right(requested))
 
           const emptyDeposition: EmptyDeposition = {
             id: 1,
@@ -4652,8 +4652,8 @@ ${newPrereview.review.toString()}`,
       ],
       ([newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi]) =>
         Effect.gen(function* () {
-          const getPreprintSubjects = vi.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
-          const isReviewRequested = vi.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => TE.right(requested))
+          const getPreprintSubjects = vi.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(() => T.of(subjects))
+          const isReviewRequested = vi.fn<_.IsReviewRequestedEnv['isReviewRequested']>(() => TE.right(requested))
 
           const emptyDeposition: EmptyDeposition = {
             id: 1,

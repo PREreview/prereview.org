@@ -79,15 +79,15 @@ describe('profile', () => {
           clubs,
         ]) =>
           Effect.gen(function* () {
-            const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
-            const getName = vi.fn<_.Env['getName']>(_ => TE.of(name))
-            const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
-            const getCareerStage = vi.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
-            const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
-            const getLocation = vi.fn<_.Env['getLocation']>(_ => TE.fromEither(location))
-            const getLanguages = vi.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
-            const getSlackUser = vi.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
-            const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
+            const getAvatar = vi.fn<_.Env['getAvatar']>(() => TE.of(avatar))
+            const getName = vi.fn<_.Env['getName']>(() => TE.of(name))
+            const getPrereviews = vi.fn<_.Env['getPrereviews']>(() => TE.of(prereviews))
+            const getCareerStage = vi.fn<_.Env['getCareerStage']>(() => TE.fromEither(careerStage))
+            const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(() => TE.fromEither(researchInterests))
+            const getLocation = vi.fn<_.Env['getLocation']>(() => TE.fromEither(location))
+            const getLanguages = vi.fn<_.Env['getLanguages']>(() => TE.fromEither(languages))
+            const getSlackUser = vi.fn<_.Env['getSlackUser']>(() => TE.fromEither(slackUser))
+            const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(() => TE.fromEither(openForRequests))
             const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
@@ -917,7 +917,7 @@ describe('profile', () => {
         ],
         ([locale, profile, prereviews]) =>
           Effect.gen(function* () {
-            const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+            const getPrereviews = vi.fn<_.Env['getPrereviews']>(() => TE.of(prereviews))
             const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(

@@ -34,9 +34,9 @@ describe('ChooseYourPersonaPage', () => {
         ([preprintId, user, publicPersona, pseudonymPersona, reviewRequest, preprintTitle, locale]) =>
           Effect.gen(function* () {
             const getPersonaChoice = vi.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
-              _ => Effect.succeed(reviewRequest),
+              () => Effect.succeed(reviewRequest),
             )
-            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(() =>
               Effect.succeed(preprintTitle),
             )
 
@@ -226,16 +226,16 @@ describe('ChooseYourPersonaSubmission', () => {
         ([preprintId, user, reviewRequest, preprintTitle, body, locale, nextExpectedCommand]) =>
           Effect.gen(function* () {
             const getPersonaChoice = vi.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
-              _ => Effect.succeed(reviewRequest),
+              () => Effect.succeed(reviewRequest),
             )
             const getNextExpectedCommandForAUserOnAReviewRequest = vi.fn<
               (typeof ReviewRequests.ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']
-            >(_ => Effect.succeed(nextExpectedCommand))
-            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+            >(() => Effect.succeed(nextExpectedCommand))
+            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(() =>
               Effect.succeed(preprintTitle),
             )
             const choosePersona = vi.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['choosePersona']>(
-              _ => Effect.void,
+              () => Effect.void,
             )
 
             const actual = yield* Effect.provide(

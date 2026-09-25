@@ -31,8 +31,8 @@ describe('reviewPage', () => {
     ],
     ([locale, id, prereview, comments]) =>
       Effect.gen(function* () {
-        const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-        const getComments = vi.fn<_.GetCommentsEnv['getComments']>(_ => TE.right(comments))
+        const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
+        const getComments = vi.fn<_.GetCommentsEnv['getComments']>(() => TE.right(comments))
 
         const actual = yield* Effect.promise(
           _.reviewPage({ id, locale })({

@@ -108,7 +108,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
         const resendVerificationEmail = vi.fn<(typeof ContactEmailAddresses.Service)['resendVerificationEmail']>(
-          _ => Effect.void,
+          () => Effect.void,
         )
 
         const runtime = yield* Effect.provide(

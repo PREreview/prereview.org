@@ -18,7 +18,7 @@ describe('NotifyPreprintServer', () => {
         [fc.origin(), fc.integer(), fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() }), fc.uuid()],
         ([publicUrl, reviewId, review, uuid]) =>
           Effect.gen(function* () {
-            const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
+            const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(() => Effect.void)
 
             const actual = yield* pipe(
               _.NotifyPreprintServer(reviewId),
@@ -59,7 +59,7 @@ describe('NotifyPreprintServer', () => {
         [fc.origin(), fc.integer(), fc.prereview(), fc.uuid()],
         ([publicUrl, reviewId, review, uuid]) =>
           Effect.gen(function* () {
-            const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
+            const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(() => Effect.void)
 
             const actual = yield* pipe(
               _.NotifyPreprintServer(reviewId),

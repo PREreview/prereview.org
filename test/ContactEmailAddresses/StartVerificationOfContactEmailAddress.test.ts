@@ -84,7 +84,9 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, Readonly
     )
     const lastKnownPosition = yield* Effect.map(eventStore.all, Option.map(Struct.get('lastKnownPosition')))
 
-    const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(_ => Effect.void)
+    const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(
+      () => Effect.void,
+    )
 
     const actualReturn = yield* Effect.either(
       Effect.provide(_.StartVerificationOfContactEmailAddress(input), [

@@ -26,7 +26,7 @@ describe('getAvatarFromCloudinary', () => {
     ],
     ([cloudinaryApi, orcid, imageId]) =>
       Effect.gen(function* () {
-        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(imageId))
+        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(() => TE.right(imageId))
 
         const actual = yield* Effect.promise(
           _.getAvatarFromCloudinary(orcid)({
@@ -132,8 +132,8 @@ describe('saveAvatarOnCloudinary', () => {
               ),
             response: { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
           })
-          const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
-          const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
+          const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(() => TE.left('not-found'))
+          const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(() =>
             TE.right(undefined),
           )
 
@@ -216,8 +216,8 @@ describe('saveAvatarOnCloudinary', () => {
                 ),
               response: { status: StatusCodes.OK, body: { result: 'ok' } },
             })
-          const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
-          const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
+          const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(() => TE.right(existing))
+          const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(() =>
             TE.right(undefined),
           )
 
@@ -275,8 +275,8 @@ describe('saveAvatarOnCloudinary', () => {
               body: { public_id: `prereview-profile/${imageId}` },
             })
             .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`, response)
-          const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
-          const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
+          const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(() => TE.right(existing))
+          const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(() =>
             TE.right(undefined),
           )
 
@@ -333,7 +333,7 @@ describe('saveAvatarOnCloudinary', () => {
             status: StatusCodes.OK,
             body: { public_id: `prereview-profile/${imageId}` },
           })
-        const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
+        const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(() =>
           TE.left('unavailable'),
         )
 
@@ -464,7 +464,7 @@ describe('removeAvatarFromCloudinary', () => {
     ],
     ([date, cloudinaryApi, orcid, avatar]) =>
       Effect.gen(function* () {
-        const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+        const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(() =>
           TE.right(undefined),
         )
         const fetch = fetchMock.createInstance().postOnce({
@@ -517,7 +517,7 @@ describe('removeAvatarFromCloudinary', () => {
     ],
     ([date, cloudinaryApi, orcid, avatar, response]) =>
       Effect.gen(function* () {
-        const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+        const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(() =>
           TE.right(undefined),
         )
         const fetch = fetchMock
@@ -557,7 +557,7 @@ describe('removeAvatarFromCloudinary', () => {
     ],
     ([date, cloudinaryApi, orcid, avatar]) =>
       Effect.gen(function* () {
-        const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+        const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(() =>
           TE.left('unavailable'),
         )
 
@@ -590,7 +590,7 @@ describe('removeAvatarFromCloudinary', () => {
     ],
     ([date, cloudinaryApi, orcid]) =>
       Effect.gen(function* () {
-        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('unavailable'))
+        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(() => TE.left('unavailable'))
 
         const actual = yield* Effect.promise(
           _.removeAvatarFromCloudinary(orcid)({
@@ -621,7 +621,7 @@ describe('removeAvatarFromCloudinary', () => {
     ],
     ([date, cloudinaryApi, orcid]) =>
       Effect.gen(function* () {
-        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
+        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(() => TE.left('not-found'))
 
         const actual = yield* Effect.promise(
           _.removeAvatarFromCloudinary(orcid)({

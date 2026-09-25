@@ -19,7 +19,7 @@ describe('CmsPage', () => {
     ],
     ([locale, page, slug, current, preview]) =>
       Effect.gen(function* () {
-        const getPage = vi.fn<(typeof CmsContent.Service)['getPage']>(_ => Effect.succeed(page))
+        const getPage = vi.fn<(typeof CmsContent.Service)['getPage']>(() => Effect.succeed(page))
 
         const actual = yield* _.CmsPage({ canonical: `/${slug}`, current, preview }).pipe(
           Effect.provide(Layer.mock(CmsContent, { getPage })),

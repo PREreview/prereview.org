@@ -40,7 +40,7 @@ describe('makeDecision', () => {
       ],
       ([[value, expected], preprintId]) =>
         Effect.gen(function* () {
-          const resolvePreprintId = vi.fn<(typeof Preprints.Preprints.Service)['resolvePreprintId']>(_ =>
+          const resolvePreprintId = vi.fn<(typeof Preprints.Preprints.Service)['resolvePreprintId']>(() =>
             Effect.succeed(preprintId),
           )
 

@@ -222,8 +222,8 @@ describe('writeReviewPublish', () => {
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
-        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
-        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
+        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
@@ -312,8 +312,8 @@ describe('writeReviewPublish', () => {
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
-        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
-        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
+        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({

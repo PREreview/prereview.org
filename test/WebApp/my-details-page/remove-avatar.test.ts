@@ -14,7 +14,7 @@ describe('removeAvatar', () => {
     [fc.user(), fc.supportedLocale(), fc.url()],
     ([user, locale, avatar]) =>
       Effect.gen(function* () {
-        const deleteAvatar = vi.fn<_.Env['deleteAvatar']>(_ => TE.right(undefined))
+        const deleteAvatar = vi.fn<_.Env['deleteAvatar']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.removeAvatar({ locale, method: 'POST', user })({
@@ -37,7 +37,7 @@ describe('removeAvatar', () => {
     [fc.user(), fc.supportedLocale(), fc.url()],
     ([user, locale, avatar]) =>
       Effect.gen(function* () {
-        const deleteAvatar = vi.fn<_.Env['deleteAvatar']>(_ => TE.left('unavailable'))
+        const deleteAvatar = vi.fn<_.Env['deleteAvatar']>(() => TE.left('unavailable'))
 
         const actual = yield* Effect.promise(
           _.removeAvatar({ locale, method: 'POST', user })({
@@ -85,7 +85,7 @@ describe('removeAvatar', () => {
 
   it.effect.prop('when there is no avatar', [fc.string(), fc.user(), fc.supportedLocale()], ([method, user, locale]) =>
     Effect.gen(function* () {
-      const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.left('not-found'))
+      const getAvatar = vi.fn<_.Env['getAvatar']>(() => TE.left('not-found'))
 
       const actual = yield* Effect.promise(
         _.removeAvatar({ locale, method, user })({
@@ -108,7 +108,7 @@ describe('removeAvatar', () => {
     [fc.string(), fc.user(), fc.supportedLocale()],
     ([method, user, locale]) =>
       Effect.gen(function* () {
-        const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.left('unavailable'))
+        const getAvatar = vi.fn<_.Env['getAvatar']>(() => TE.left('unavailable'))
 
         const actual = yield* Effect.promise(
           _.removeAvatar({ locale, method, user })({

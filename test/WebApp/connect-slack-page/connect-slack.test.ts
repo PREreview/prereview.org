@@ -93,7 +93,7 @@ describe('connectSlackStart', () => {
     ([slackOauth, locale, publicUrl, uuid, user]) =>
       Effect.gen(function* () {
         const generateUuid = vi.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
-        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(
           _.connectSlackStart({ locale, user })({
@@ -162,8 +162,8 @@ describe('connectSlackCode', () => {
     ],
     ([code, user, locale, oauth, publicUrl, userId, scopes, accessToken, state]) =>
       Effect.gen(function* () {
-        const saveSlackUserId = vi.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
-        const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(_ => TE.right(state))
+        const saveSlackUserId = vi.fn<EditSlackUserIdEnv['saveSlackUserId']>(() => TE.right(undefined))
+        const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(() => TE.right(state))
 
         const actual = yield* Effect.promise(
           _.connectSlackCode({ code, locale, state, user })({

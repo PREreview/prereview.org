@@ -33,7 +33,7 @@ describe('ClubProfilePage', () => {
     ],
     ([slug, club, prereviews, locale, publicPersona]) =>
       Effect.gen(function* () {
-        const getForClub = vi.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
+        const getForClub = vi.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(() => Effect.succeed(prereviews))
 
         const actual = yield* pipe(
           _.ClubProfilePage({ slug }),

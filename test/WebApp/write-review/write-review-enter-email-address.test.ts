@@ -112,7 +112,7 @@ describe('writeReviewEnterEmailAddress', () => {
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
         const startVerificationOfContactEmailAddress = vi.fn<
           (typeof ContactEmailAddresses.Service)['startVerificationOfContactEmailAddress']
-        >(_ => Effect.void)
+        >(() => Effect.void)
 
         const runtime = yield* Effect.provide(
           Effect.runtime<ContactEmailAddresses | Locale | Preprints>(),

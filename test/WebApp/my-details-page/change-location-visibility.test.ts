@@ -40,7 +40,7 @@ describe('changeLocationVisibility', () => {
     [fc.locationVisibility(), fc.user(), fc.supportedLocale(), fc.location()],
     ([visibility, user, locale, existingLocation]) =>
       Effect.gen(function* () {
-        const saveLocation = vi.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+        const saveLocation = vi.fn<_.Env['saveLocation']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeLocationVisibility({
@@ -101,7 +101,7 @@ describe('changeLocationVisibility', () => {
     ],
     ([body, user, locale, location]) =>
       Effect.gen(function* () {
-        const saveLocation = vi.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+        const saveLocation = vi.fn<_.Env['saveLocation']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeLocationVisibility({ body, locale, method: 'POST', user })({

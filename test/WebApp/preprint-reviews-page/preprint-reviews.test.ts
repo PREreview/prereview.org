@@ -56,9 +56,9 @@ describe('preprintReviews', () => {
     ],
     ([locale, preprint, prereviews, rapidPrereviews]) =>
       Effect.gen(function* () {
-        const getPreprint = vi.fn<(typeof Preprints.Service)['getPreprint']>(_ => Effect.succeed(preprint))
-        const getPrereviews = vi.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
-        const getRapidPrereviews = vi.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
+        const getPreprint = vi.fn<(typeof Preprints.Service)['getPreprint']>(() => Effect.succeed(preprint))
+        const getPrereviews = vi.fn<_.GetPrereviewsEnv['getPrereviews']>(() => TE.right(prereviews))
+        const getRapidPrereviews = vi.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(() => TE.right(rapidPrereviews))
 
         const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprint }))
 

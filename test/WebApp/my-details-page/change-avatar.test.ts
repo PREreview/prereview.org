@@ -68,7 +68,7 @@ describe('changeAvatar', () => {
     ],
     ([file, user, locale]) =>
       Effect.gen(function* () {
-        const saveAvatar = vi.fn<_.Env['saveAvatar']>(_ => TE.left('unavailable'))
+        const saveAvatar = vi.fn<_.Env['saveAvatar']>(() => TE.left('unavailable'))
 
         const actual = yield* Effect.promise(
           _.changeAvatar({ body: Either.right({ avatar: [file] }), locale, method: 'POST', user })({

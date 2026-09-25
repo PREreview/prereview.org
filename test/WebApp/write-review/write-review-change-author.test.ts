@@ -240,7 +240,7 @@ describe('writeReviewChangeAuthor', () => {
     ([id, body, method, number, user, locale]) =>
       Effect.gen(function* () {
         const getPreprintTitle = vi.fn<(typeof Preprints.Service)['getPreprintTitle']>(
-          _ => new PreprintIsUnavailable({}),
+          () => new PreprintIsUnavailable({}),
         )
 
         const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
