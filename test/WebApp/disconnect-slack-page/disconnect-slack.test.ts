@@ -17,7 +17,7 @@ describe('disconnectSlack', () => {
       [fc.user(), fc.supportedLocale(), fc.string().filter(method => method !== 'POST')],
       ([user, locale, method]) =>
         Effect.gen(function* () {
-          const isSlackUser = vi.fn<IsSlackUserEnv['isSlackUser']>(_ => TE.right(true))
+          const isSlackUser = vi.fn<IsSlackUserEnv['isSlackUser']>(() => TE.right(true))
 
           const actual = yield* Effect.promise(
             _.disconnectSlack({ locale, method, user })({
@@ -41,7 +41,7 @@ describe('disconnectSlack', () => {
 
     it.effect.prop('when the form is submitted', [fc.user(), fc.supportedLocale()], ([user, locale]) =>
       Effect.gen(function* () {
-        const deleteSlackUserId = vi.fn<DeleteSlackUserIdEnv['deleteSlackUserId']>(_ => TE.right(undefined))
+        const deleteSlackUserId = vi.fn<DeleteSlackUserIdEnv['deleteSlackUserId']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.disconnectSlack({ locale, method: 'POST', user })({

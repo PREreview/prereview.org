@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch, writeReviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -240,7 +240,7 @@ describe('writeReviewChangeAuthor', () => {
     ([id, body, method, number, user, locale]) =>
       Effect.gen(function* () {
         const getPreprintTitle = vi.fn<(typeof Preprints.Service)['getPreprintTitle']>(
-          _ => new PreprintIsUnavailable({}),
+          () => new PreprintIsUnavailable({}),
         )
 
         const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))

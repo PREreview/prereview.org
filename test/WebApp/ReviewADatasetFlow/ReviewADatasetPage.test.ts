@@ -39,7 +39,7 @@ describe('ReviewADatasetSubmission', () => {
     ],
     ([locale, [value, expected], resolved]) =>
       Effect.gen(function* () {
-        const resolveDatasetId = vi.fn<(typeof Datasets.Datasets.Service)['resolveDatasetId']>(_ =>
+        const resolveDatasetId = vi.fn<(typeof Datasets.Datasets.Service)['resolveDatasetId']>(() =>
           Effect.succeed(resolved),
         )
 

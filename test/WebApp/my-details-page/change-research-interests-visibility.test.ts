@@ -46,7 +46,7 @@ describe('changeResearchInterestsVisibility', () => {
     [fc.researchInterestsVisibility(), fc.user(), fc.supportedLocale(), fc.researchInterests()],
     ([visibility, user, locale, existingResearchInterests]) =>
       Effect.gen(function* () {
-        const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+        const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeResearchInterestsVisibility({
@@ -112,7 +112,7 @@ describe('changeResearchInterestsVisibility', () => {
     ],
     ([body, user, locale, researchInterests]) =>
       Effect.gen(function* () {
-        const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+        const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeResearchInterestsVisibility({ body, locale, method: 'POST', user })({

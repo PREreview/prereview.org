@@ -29,7 +29,7 @@ describe('CheckYourRequestPage', () => {
       ],
       ([preprintId, user, publicPersona, pseudonymPersona, reviewRequest, preprintTitle, locale]) =>
         Effect.gen(function* () {
-          const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+          const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(() =>
             Effect.succeed(preprintTitle),
           )
 
@@ -140,7 +140,7 @@ describe('CheckYourRequestPage', () => {
         Effect.gen(function* () {
           const getReviewRequestReadyToBePublished = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
-          >(_ => new ReviewRequests.UnknownReviewRequest({}))
+          >(() => new ReviewRequests.UnknownReviewRequest({}))
 
           const actual = yield* Effect.provide(
             _.CheckYourRequestPage({ preprintId }),
@@ -177,7 +177,7 @@ describe('CheckYourRequestPage', () => {
         Effect.gen(function* () {
           const getReviewRequestReadyToBePublished = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
-          >(_ => new Queries.UnableToQuery({}))
+          >(() => new Queries.UnableToQuery({}))
 
           const actual = yield* Effect.provide(
             _.CheckYourRequestPage({ preprintId }),
@@ -247,7 +247,7 @@ describe('CheckYourRequestSubmission', () => {
           Effect.gen(function* () {
             const publishReviewRequest = vi.fn<
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
-            >(_ => Effect.void)
+            >(() => Effect.void)
 
             const actual = yield* Effect.provide(
               _.CheckYourRequestSubmission({ preprintId }),
@@ -286,7 +286,7 @@ describe('CheckYourRequestSubmission', () => {
           Effect.gen(function* () {
             const publishReviewRequest = vi.fn<
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
-            >(_ => new Commands.UnableToHandleCommand({}))
+            >(() => new Commands.UnableToHandleCommand({}))
 
             const actual = yield* Effect.provide(
               _.CheckYourRequestSubmission({ preprintId }),
@@ -331,7 +331,7 @@ describe('CheckYourRequestSubmission', () => {
           Effect.gen(function* () {
             const publishReviewRequest = vi.fn<
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
-            >(_ => error)
+            >(() => error)
 
             const actual = yield* Effect.provide(
               _.CheckYourRequestSubmission({ preprintId }),
@@ -423,7 +423,7 @@ describe('CheckYourRequestSubmission', () => {
         Effect.gen(function* () {
           const getReviewRequestReadyToBePublished = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
-          >(_ => new ReviewRequests.UnknownReviewRequest({}))
+          >(() => new ReviewRequests.UnknownReviewRequest({}))
 
           const actual = yield* Effect.provide(
             _.CheckYourRequestSubmission({ preprintId }),
@@ -459,7 +459,7 @@ describe('CheckYourRequestSubmission', () => {
         Effect.gen(function* () {
           const getReviewRequestReadyToBePublished = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
-          >(_ => new Queries.UnableToQuery({}))
+          >(() => new Queries.UnableToQuery({}))
 
           const actual = yield* Effect.provide(
             _.CheckYourRequestSubmission({ preprintId }),

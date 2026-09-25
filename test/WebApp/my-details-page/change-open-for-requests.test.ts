@@ -46,7 +46,7 @@ describe('changeOpenForRequests', () => {
       [fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale(), fc.isOpenForRequests()],
       ([openForRequests, user, locale, existingOpenForRequests]) =>
         Effect.gen(function* () {
-          const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+          const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
@@ -77,7 +77,7 @@ describe('changeOpenForRequests', () => {
       [fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale()],
       ([openForRequests, user, locale]) =>
         Effect.gen(function* () {
-          const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+          const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({

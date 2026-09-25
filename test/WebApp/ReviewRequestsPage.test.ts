@@ -68,7 +68,7 @@ describe('ReviewRequestsPage', () => {
     ([locale, page, field, language]) =>
       Effect.gen(function* () {
         const search = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
-          _ => new ReviewRequests.ReviewRequestsAreUnavailable({}),
+          () => new ReviewRequests.ReviewRequestsAreUnavailable({}),
         )
 
         const actual = yield* Effect.provide(
@@ -98,7 +98,7 @@ describe('ReviewRequestsPage', () => {
     ([locale, field, language]) =>
       Effect.gen(function* () {
         const search = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
-          _ => new ReviewRequests.ReviewRequestsNotFound({}),
+          () => new ReviewRequests.ReviewRequestsNotFound({}),
         )
 
         const actual = yield* Effect.provide(
@@ -132,7 +132,7 @@ describe('ReviewRequestsPage', () => {
     ([locale, page, field, language]) =>
       Effect.gen(function* () {
         const search = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
-          _ => new ReviewRequests.ReviewRequestsNotFound({}),
+          () => new ReviewRequests.ReviewRequestsNotFound({}),
         )
 
         const actual = yield* Effect.provide(

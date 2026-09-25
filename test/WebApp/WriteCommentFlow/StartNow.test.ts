@@ -28,10 +28,10 @@ describe('StartNow', () => {
         ],
         ([id, locale, user, prereview, commentId, nextCommand]) =>
           Effect.gen(function* () {
-            const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+            const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
             const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-            >(_ => Effect.succeed(Either.right(nextCommand)))
+            >(() => Effect.succeed(Either.right(nextCommand)))
 
             const actual = yield* _.StartNow({ id }).pipe(
               Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),

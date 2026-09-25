@@ -27,12 +27,14 @@ const program = Effect.fnUntraced(function* ({
   )
 
   if (dryRun) {
-    return yield* Console.log({
+    yield* Console.log({
       language: preprint.language,
       keywords: categories.keywords,
       topics: categories.topics,
       reviewRequestId: reviewRequest.id,
     })
+
+    return
   }
 
   yield* ReviewRequests.categorizeReviewRequest({

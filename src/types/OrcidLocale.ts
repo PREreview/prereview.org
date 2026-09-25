@@ -39,7 +39,7 @@ export const parse = (s: string): Option.Option<OrcidLocale> => {
     // Do nothing
   }
 
-  for (const candidate of candidates.reverse()) {
+  for (const candidate of candidates.toReversed()) {
     if (isOrcidLocale(candidate)) {
       return Option.some(candidate)
     }

@@ -14,7 +14,7 @@ describe('MyReviewRequestsPage', () => {
     [fc.supportedLocale(), fc.user(), fc.constant([])],
     ([locale, user, reviewRequests]) =>
       Effect.gen(function* () {
-        const listForPrereviewer = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['listForPrereviewer']>(_ =>
+        const listForPrereviewer = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['listForPrereviewer']>(() =>
           Effect.succeed(reviewRequests),
         )
 

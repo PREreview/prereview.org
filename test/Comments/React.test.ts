@@ -17,7 +17,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
     ],
     ([commentId, comment, verifiedEmailAddress]) =>
       Effect.gen(function* () {
-        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
 
         yield* Effect.provideService(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -119,7 +119,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
     [fc.uuid(), fc.inputForCommentZenodoRecord(), fc.integer(), fc.doi()],
     ([commentId, inputForCommentZenodoRecord, id, doi]) =>
       Effect.gen(function* () {
-        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
 
         yield* Effect.provideService(
           _.AssignCommentADoiWhenPublicationWasRequested({
@@ -181,7 +181,7 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
     ],
     ([[commentId, event]]) =>
       Effect.gen(function* () {
-        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
 
         yield* Effect.provideService(
           _.PublishCommentWhenCommentWasAssignedADoi(event),

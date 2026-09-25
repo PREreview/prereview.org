@@ -30,13 +30,13 @@ describe('SendAuthorInviteEmails', () => {
         ],
         ([reviewId, review, dataset, publicPersona, pseudonymPersona, invitations]) =>
           Effect.gen(function* () {
-            const inviteAuthorToReview = vi.fn<(typeof Email.Email.Service)['inviteAuthorToReview']>(_ => Effect.void)
+            const inviteAuthorToReview = vi.fn<(typeof Email.Email.Service)['inviteAuthorToReview']>(() => Effect.void)
             const hasAnEmailToInviteAuthorBeenSent = vi.fn<
               (typeof AuthorInvites.AuthorInvites.Service)['hasAnEmailToInviteAuthorBeenSent']
             >(() => Effect.succeed(false))
             const recordEmailSentToInviteAuthor = vi.fn<
               (typeof AuthorInvites.AuthorInvites.Service)['recordEmailSentToInviteAuthor']
-            >(_ => Effect.void)
+            >(() => Effect.void)
 
             const actual = yield* pipe(
               _.SendAuthorInviteEmails(reviewId),

@@ -56,7 +56,7 @@ describe('reviewsPage', () => {
     ],
     ([locale, page, field, query, recentPrereviews]) =>
       Effect.gen(function* () {
-        const getRecentPrereviews = vi.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(_ =>
+        const getRecentPrereviews = vi.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(() =>
           TE.right(recentPrereviews),
         )
 

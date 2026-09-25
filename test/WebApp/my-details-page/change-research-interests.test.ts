@@ -47,7 +47,7 @@ describe('changeResearchInterests', () => {
       [fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.researchInterests()],
       ([researchInterests, user, locale, existingResearchInterests]) =>
         Effect.gen(function* () {
-          const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+          const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeResearchInterests({ body: { researchInterests }, locale, method: 'POST', user })({
@@ -74,7 +74,7 @@ describe('changeResearchInterests', () => {
       [fc.nonEmptyString(), fc.user(), fc.supportedLocale()],
       ([researchInterests, user, locale]) =>
         Effect.gen(function* () {
-          const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+          const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeResearchInterests({ body: { researchInterests }, locale, method: 'POST', user })({
@@ -131,7 +131,7 @@ describe('changeResearchInterests', () => {
     [fc.record({ researchInterests: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()],
     ([body, user, locale]) =>
       Effect.gen(function* () {
-        const deleteResearchInterests = vi.fn<_.Env['deleteResearchInterests']>(_ => TE.right(undefined))
+        const deleteResearchInterests = vi.fn<_.Env['deleteResearchInterests']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeResearchInterests({ body, locale, method: 'POST', user })({

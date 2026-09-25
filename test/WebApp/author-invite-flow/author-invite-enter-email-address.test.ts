@@ -41,14 +41,14 @@ describe('authorInviteEnterEmailAddress', () => {
         ],
         ([inviteId, [user, invite], locale, prereview, contactEmailAddress]) =>
           Effect.gen(function* () {
-            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
             const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
-              _ => contactEmailAddress,
+              () => contactEmailAddress,
             )
-            const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+            const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
             const useAuthorInviteEmailAddress = vi.fn<
               (typeof ContactEmailAddresses.Service)['useAuthorInviteEmailAddress']
-            >(_ => Effect.void)
+            >(() => Effect.void)
 
             const runtime = yield* Effect.provide(
               Effect.runtime<ContactEmailAddresses | Locale>(),
@@ -100,14 +100,14 @@ describe('authorInviteEnterEmailAddress', () => {
         ],
         ([inviteId, [user, invite], locale, otherEmailAddress, prereview, contactEmailAddress]) =>
           Effect.gen(function* () {
-            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
             const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
-              _ => contactEmailAddress,
+              () => contactEmailAddress,
             )
-            const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+            const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
             const startVerificationOfContactEmailAddress = vi.fn<
               (typeof ContactEmailAddresses.Service)['startVerificationOfContactEmailAddress']
-            >(_ => Effect.void)
+            >(() => Effect.void)
 
             const runtime = yield* Effect.provide(
               Effect.runtime<ContactEmailAddresses | Locale>(),
@@ -272,8 +272,8 @@ describe('authorInviteEnterEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, method, body, prereview, contactEmailAddress]) =>
         Effect.gen(function* () {
-          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-          const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+          const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
           const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
 

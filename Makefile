@@ -12,7 +12,7 @@ node_modules: package.json pnpm-lock.yaml pnpm-workspace.yaml
 	touch node_modules
 
 .PHONY: check
-check: format lint-ts lint-ts-oxlint lint-css typecheck test-fast
+check: format lint-ts lint-css typecheck test-fast
 
 .PHONY: update-incontext-locale
 update-incontext-locale:
@@ -60,12 +60,12 @@ format: node_modules
 fix-format: node_modules
 	npx prettier --write --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
-.PHONY: lint-ts
-lint-ts: node_modules src/manifest.json
+.PHONY: lint-ts-eslint
+lint-ts-eslint: node_modules src/manifest.json
 	npx eslint --cache --cache-location ".cache/eslint/" --max-warnings 0
 
-.PHONY: lint-ts-oxlint
-lint-ts-oxlint: node_modules src/manifest.json
+.PHONY: lint-ts
+lint-ts: node_modules src/manifest.json
 	npx oxlint
 
 .PHONY: lint-css

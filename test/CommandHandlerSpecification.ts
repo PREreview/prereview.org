@@ -28,6 +28,7 @@ export const CommandHandlerSpecification = {
           const result = decide(state)(command)
 
           return {
+            // oxlint-disable-next-line no-thenable
             then: expectedEvent => {
               expect(result).toStrictEqual(Either.right(Option.some(expectedEvent)))
             },

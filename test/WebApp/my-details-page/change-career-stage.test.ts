@@ -47,7 +47,7 @@ describe('changeCareerStage', () => {
       [fc.careerStageValue(), fc.user(), fc.supportedLocale(), fc.careerStage()],
       ([careerStage, user, locale, existingCareerStage]) =>
         Effect.gen(function* () {
-          const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+          const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
@@ -74,7 +74,7 @@ describe('changeCareerStage', () => {
       [fc.careerStageValue(), fc.user(), fc.supportedLocale()],
       ([careerStage, user, locale]) =>
         Effect.gen(function* () {
-          const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+          const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
@@ -125,7 +125,7 @@ describe('changeCareerStage', () => {
 
   it.effect.prop('when the form has been skipped', [fc.user(), fc.supportedLocale()], ([user, locale]) =>
     Effect.gen(function* () {
-      const deleteCareerStage = vi.fn<_.Env['deleteCareerStage']>(_ => TE.right(undefined))
+      const deleteCareerStage = vi.fn<_.Env['deleteCareerStage']>(() => TE.right(undefined))
 
       const actual = yield* Effect.promise(
         _.changeCareerStage({ body: { careerStage: 'skip' }, locale, method: 'POST', user })({

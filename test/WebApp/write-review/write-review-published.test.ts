@@ -24,7 +24,7 @@ describe('writeReviewPublished', () => {
     ],
     ([preprintId, preprintTitle, publicUrl, publishedReview, user, locale]) =>
       Effect.gen(function* () {
-        const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(_ =>
+        const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(() =>
           TE.of(PublishedReviewC.encode(publishedReview)),
         )
 

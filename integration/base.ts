@@ -18,7 +18,7 @@ import { Config, Effect, Fiber, Layer, Logger, LogLevel, Option, pipe, Redacted,
 import fetchMock, { type FetchMock } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import nodemailer, { type SendMailOptions } from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import { URL } from 'url'

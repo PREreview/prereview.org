@@ -29,10 +29,10 @@ describe('requestReviewStart', () => {
           Effect.gen(function* () {
             const findReviewRequestByAPrereviewer = vi.fn<
               (typeof ReviewRequests.ReviewRequestQueries.Service)['findReviewRequestByAPrereviewer']
-            >(_ => Effect.succeedNone)
+            >(() => Effect.succeedNone)
             const getNextExpectedCommandForAUserOnAReviewRequest = vi.fn<
               (typeof ReviewRequests.ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']
-            >(_ => Effect.succeed(nextExpectedCommand))
+            >(() => Effect.succeed(nextExpectedCommand))
 
             const actual = yield* Effect.provide(
               _.StartNow({ preprintId }),

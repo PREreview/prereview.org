@@ -25,7 +25,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
 
       const results = yield* _.constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user })
 
-      expect(Array.map(results, result => result.href).sort()).toStrictEqual(expectedUrls.sort())
+      expect(Array.map(results, result => result.href).toSorted()).toStrictEqual(expectedUrls.toSorted())
     }).pipe(
       Effect.provideService(Zenodo.ZenodoApi, { key: Redacted.make('key'), origin: new URL('http://zenodo.test') }),
     ),

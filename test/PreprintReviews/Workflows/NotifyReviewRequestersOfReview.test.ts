@@ -24,15 +24,15 @@ describe('NotifyReviewRequestersOfReview', () => {
         ],
         ([reviewId, review, requesters, contactDetails]) =>
           Effect.gen(function* () {
-            const getContactDetails = vi.fn<(typeof Prereviewers.Prereviewers.Service)['getContactDetails']>(_ =>
+            const getContactDetails = vi.fn<(typeof Prereviewers.Prereviewers.Service)['getContactDetails']>(() =>
               Effect.succeed(contactDetails),
             )
             const notifyRequesterOfReview = vi.fn<(typeof Email.Email.Service)['notifyRequesterOfReview']>(
-              _ => Effect.void,
+              () => Effect.void,
             )
             const recordEmailSentToNotifyPrereviewerOfAPrereview = vi.fn<
               (typeof PreprintReviews.PreprintReviews.Service)['recordEmailSentToNotifyPrereviewerOfAPrereview']
-            >(_ => Effect.void)
+            >(() => Effect.void)
 
             const actual = yield* pipe(
               _.NotifyReviewRequestersOfReview(reviewId),

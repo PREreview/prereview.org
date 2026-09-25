@@ -80,7 +80,7 @@ describe('requestReviewPublished', () => {
         Effect.gen(function* () {
           const getPublishedReviewRequestByAPrereviewer = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['getPublishedReviewRequestByAPrereviewer']
-          >(_ => new Queries.UnableToQuery({}))
+          >(() => new Queries.UnableToQuery({}))
 
           const actual = yield* Effect.provide(
             _.PublishedPage({ preprintId }),

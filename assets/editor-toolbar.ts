@@ -81,10 +81,7 @@ export class EditorToolbar extends HTMLElement {
   }
 
   private setFocusToLastCandidate(items: ReadonlyArray<HTMLButtonElement>) {
-    const last = items
-      .slice()
-      .reverse()
-      .find(button => !button.disabled)
+    const last = items.findLast(button => !button.disabled)
 
     if (!last) {
       return

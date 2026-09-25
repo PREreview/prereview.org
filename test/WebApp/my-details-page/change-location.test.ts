@@ -47,7 +47,7 @@ describe('changeLocation', () => {
       [fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.location()],
       ([location, user, locale, existingLocation]) =>
         Effect.gen(function* () {
-          const saveLocation = vi.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+          const saveLocation = vi.fn<_.Env['saveLocation']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeLocation({ body: { location }, locale, method: 'POST', user })({
@@ -74,7 +74,7 @@ describe('changeLocation', () => {
       [fc.nonEmptyString(), fc.user(), fc.supportedLocale()],
       ([location, user, locale]) =>
         Effect.gen(function* () {
-          const saveLocation = vi.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+          const saveLocation = vi.fn<_.Env['saveLocation']>(() => TE.right(undefined))
 
           const actual = yield* Effect.promise(
             _.changeLocation({ body: { location }, locale, method: 'POST', user })({
@@ -128,7 +128,7 @@ describe('changeLocation', () => {
     [fc.record({ location: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()],
     ([body, user, locale]) =>
       Effect.gen(function* () {
-        const deleteLocation = vi.fn<_.Env['deleteLocation']>(_ => TE.right(undefined))
+        const deleteLocation = vi.fn<_.Env['deleteLocation']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeLocation({ body, locale, method: 'POST', user })({

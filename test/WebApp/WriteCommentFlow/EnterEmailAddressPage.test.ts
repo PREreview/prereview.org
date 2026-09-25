@@ -30,10 +30,10 @@ describe('EnterEmailAddressPage', () => {
           ],
           ([commentId, [comment, user], locale, contactEmailAddress, nextCommand]) =>
             Effect.gen(function* () {
-              const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+              const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
               const getNextExpectedCommandForUserOnAComment = vi.fn<
                 typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-              >(_ => Effect.succeed(Either.right(nextCommand)))
+              >(() => Effect.succeed(Either.right(nextCommand)))
 
               const actual = yield* _.EnterEmailAddressPage({ commentId }).pipe(
                 Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
@@ -188,7 +188,7 @@ describe('EnterEmailAddressPage', () => {
           Effect.gen(function* () {
             const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-            >(_ => Effect.succeed(Either.right(nextCommand)))
+            >(() => Effect.succeed(Either.right(nextCommand)))
 
             const actual = yield* Effect.provideService(
               _.EnterEmailAddressPage({ commentId }),
@@ -413,7 +413,7 @@ describe('EnterEmailAddressSubmission', () => {
             Effect.gen(function* () {
               const startVerificationOfContactEmailAddress = vi.fn<
                 (typeof ContactEmailAddresses.Service)['startVerificationOfContactEmailAddress']
-              >(_ => Effect.void)
+              >(() => Effect.void)
 
               const actual = yield* _.EnterEmailAddressSubmission({ body, commentId }).pipe(
                 Effect.provide(Layer.mock(ContactEmailAddresses, { startVerificationOfContactEmailAddress })),

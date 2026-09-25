@@ -35,9 +35,9 @@ describe('authorInviteStart', () => {
         ],
         ([inviteId, user, locale, invite, prereview]) =>
           Effect.gen(function* () {
-            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
+            const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
             const actual = yield* Effect.promise(
               _.authorInviteStart({ id: inviteId, locale, user })({
@@ -80,8 +80,8 @@ describe('authorInviteStart', () => {
         ],
         ([inviteId, [user, invite], locale, prereview]) =>
           Effect.gen(function* () {
-            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
             const actual = yield* Effect.promise(
               _.authorInviteStart({ id: inviteId, locale, user })({
@@ -158,8 +158,8 @@ describe('authorInviteStart', () => {
         ],
         ([inviteId, [user, invite], locale, prereview]) =>
           Effect.gen(function* () {
-            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+            const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+            const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
             const actual = yield* Effect.promise(
               _.authorInviteStart({ id: inviteId, locale, user })({
@@ -195,8 +195,8 @@ describe('authorInviteStart', () => {
       ],
       ([inviteId, invite, locale, prereview]) =>
         Effect.gen(function* () {
-          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-          const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
+          const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
           const actual = yield* Effect.promise(
             _.authorInviteStart({ id: inviteId, locale })({

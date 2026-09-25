@@ -51,7 +51,7 @@ import {
 import type * as Prereviewers from '../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
-import * as Prereview from '../../Prereviews/Prereview.ts'
+import * as Prereview from '../../Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
 import { reviewMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
@@ -112,7 +112,7 @@ describe('writeReviewEnterEmailAddress', () => {
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
         const startVerificationOfContactEmailAddress = vi.fn<
           (typeof ContactEmailAddresses.Service)['startVerificationOfContactEmailAddress']
-        >(_ => Effect.void)
+        >(() => Effect.void)
 
         const runtime = yield* Effect.provide(
           Effect.runtime<ContactEmailAddresses | Locale | Preprints>(),

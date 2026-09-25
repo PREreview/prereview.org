@@ -3,7 +3,7 @@ import { Effect, Struct } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../../src/routes.ts'
 import type { EditSlackUserIdEnv } from '../../../src/slack-user-id.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -93,7 +93,7 @@ describe('connectSlackStart', () => {
     ([slackOauth, locale, publicUrl, uuid, user]) =>
       Effect.gen(function* () {
         const generateUuid = vi.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
-        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(
           _.connectSlackStart({ locale, user })({
@@ -162,8 +162,8 @@ describe('connectSlackCode', () => {
     ],
     ([code, user, locale, oauth, publicUrl, userId, scopes, accessToken, state]) =>
       Effect.gen(function* () {
-        const saveSlackUserId = vi.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
-        const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(_ => TE.right(state))
+        const saveSlackUserId = vi.fn<EditSlackUserIdEnv['saveSlackUserId']>(() => TE.right(undefined))
+        const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(() => TE.right(state))
 
         const actual = yield* Effect.promise(
           _.connectSlackCode({ code, locale, state, user })({

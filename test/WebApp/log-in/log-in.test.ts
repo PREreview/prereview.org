@@ -2,7 +2,7 @@ import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
 import { describe, expect, it, test, vi } from '@effect/vitest'
 import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
 import fetchMock from 'fetch-mock'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale, SessionStore } from '../../../src/Context.ts'
 import { CookieSignature } from '../../../src/CookieSignature.ts'
@@ -292,7 +292,7 @@ describe('authenticate', () => {
     ([code, referer, orcidOauth, locale, accessToken, sessionCookie]) =>
       Effect.gen(function* () {
         const sessionStore = new Keyv()
-        const isUserBlocked = vi.fn<typeof _.IsUserBlocked.Service>(_ => true)
+        const isUserBlocked = vi.fn<typeof _.IsUserBlocked.Service>(() => true)
 
         const actual = yield* pipe(
           _.authenticate(code, referer.href),

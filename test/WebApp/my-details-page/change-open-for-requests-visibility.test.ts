@@ -45,7 +45,7 @@ describe('changeOpenForRequestsVisibility', () => {
     [fc.isOpenForRequestsVisibility(), fc.user(), fc.supportedLocale(), fc.isOpenForRequestsVisibility()],
     ([visibility, user, locale, existingVisibility]) =>
       Effect.gen(function* () {
-        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeOpenForRequestsVisibility({
@@ -106,7 +106,7 @@ describe('changeOpenForRequestsVisibility', () => {
     ],
     ([body, user, locale, visibility]) =>
       Effect.gen(function* () {
-        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeOpenForRequestsVisibility({ body, locale, method: 'POST', user })({

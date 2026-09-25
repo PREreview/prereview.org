@@ -40,7 +40,7 @@ describe('changeCareerStageVisibility', () => {
     [fc.careerStageVisibility(), fc.user(), fc.supportedLocale(), fc.careerStage()],
     ([visibility, user, locale, existingCareerStage]) =>
       Effect.gen(function* () {
-        const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+        const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeCareerStageVisibility({
@@ -106,7 +106,7 @@ describe('changeCareerStageVisibility', () => {
     ],
     ([body, user, locale, careerStage]) =>
       Effect.gen(function* () {
-        const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+        const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(() => TE.right(undefined))
 
         const actual = yield* Effect.promise(
           _.changeCareerStageVisibility({ body, locale, method: 'POST', user })({

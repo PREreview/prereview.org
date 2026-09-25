@@ -14,6 +14,7 @@ import {
   flow,
   pipe,
 } from 'effect'
+// oxlint-disable  module-boundaries/use-index
 import * as AuthorInviteEvents from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as ContactEmailAddressesEvents from './ContactEmailAddresses/Events.ts' // eslint-disable-line import/no-internal-modules
