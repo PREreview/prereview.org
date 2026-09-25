@@ -243,6 +243,9 @@ jobs:
       - name: 'Run the linter'
         run: npm run lint:ts
 
+      - name: 'Run the new linter'
+        run: npx oxlint
+
   test:
     name: 'Test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-26.04
