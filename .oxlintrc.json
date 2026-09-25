@@ -3,7 +3,7 @@
   "plugins": ["typescript", "import", "unicorn"],
   "jsPlugins": ["eslint-plugin-wc", "eslint-plugin-no-comments", "./.dev/module-boundaries.mjs"],
   "categories": {
-    "correctness": "off"
+    "correctness": "error"
   },
   "options": {
     "typeAware": true,
@@ -183,6 +183,7 @@
     "typescript/no-meaningless-void-operator": "error",
     "typescript/no-misused-new": "error",
     "typescript/no-misused-promises": "error",
+    "typescript/no-misused-spread": "off",
     "typescript/no-mixed-enums": "error",
     "typescript/no-namespace": "error",
     "typescript/no-non-null-asserted-nullish-coalescing": "error",
