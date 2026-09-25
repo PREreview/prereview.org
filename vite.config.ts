@@ -174,7 +174,7 @@ function prereviewManifestPlugin({
         }
       }
 
-      const orderedManifest = Object.fromEntries(Object.entries(manifest).sort(([a], [b]) => a.localeCompare(b)))
+      const orderedManifest = Object.fromEntries(Object.entries(manifest).toSorted(([a], [b]) => a.localeCompare(b)))
 
       mkdirSync(path.dirname(outputPath), { recursive: true })
       writeFileSync(outputPath, JSON.stringify(orderedManifest, null, 2))
