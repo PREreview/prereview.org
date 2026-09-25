@@ -66,7 +66,7 @@ describe('PseudonymSchema', () => {
 })
 
 describe('isPseudonym', () => {
-  it.prop(
+  it.prop<[fc.Arbitrary<string>]>(
     'with a pseudonym',
     [fc.pseudonym()],
     ([string]) => {
@@ -75,17 +75,17 @@ describe('isPseudonym', () => {
     {
       fastCheck: {
         examples: [
-          ['Orange Panda' as _.Pseudonym],
-          ['Orange Panda 0' as _.Pseudonym],
-          ['Orange Panda 1' as _.Pseudonym],
-          ['Orange Panda 123' as _.Pseudonym],
-          ['Green Hawk' as _.Pseudonym],
-          ['Blue Sheep' as _.Pseudonym],
-          ['Red Hummingbird' as _.Pseudonym],
-          ['White Frog' as _.Pseudonym],
-          ['Pink Jellyfish' as _.Pseudonym],
-          ['Sapphire Kangaroo' as _.Pseudonym],
-          ['Black Dog' as _.Pseudonym],
+          ['Orange Panda'],
+          ['Orange Panda 0'],
+          ['Orange Panda 1'],
+          ['Orange Panda 123'],
+          ['Green Hawk'],
+          ['Blue Sheep'],
+          ['Red Hummingbird'],
+          ['White Frog'],
+          ['Pink Jellyfish'],
+          ['Sapphire Kangaroo'],
+          ['Black Dog'],
         ],
       },
     },
