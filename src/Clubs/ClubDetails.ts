@@ -150,7 +150,7 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
       `,
     },
     added: Temporal.PlainDate.from('2023-07-27'),
-    leads: [OrcidId('0000-0001-6478-3815'), OrcidId('0000-0001-9039-9219')],
+    leads: [OrcidId('0000-0001-6478-3815')],
   },
   {
     id: Uuid('317d0a13-5a10-44fc-9bcd-fb548e01e9cb'),
