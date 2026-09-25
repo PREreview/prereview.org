@@ -5,7 +5,7 @@ import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import type { Doi, OrcidId, Pseudonym } from '../../types/index.ts'
 // eslint-disable-next-line import/no-internal-modules
-import * as ReviewPage from '../../WebApp/review-page/comments.ts'
+import * as ReviewPage from '../../WebApp/review-page/comments.ts' // oxlint-disable-line module-boundaries/use-index
 import { addCommentText } from './AddCommentText.ts'
 import { getCommunityRecords } from './CommunityRecords.ts'
 import { constructCommentListUrl } from './ConstructCommentListUrl.ts'

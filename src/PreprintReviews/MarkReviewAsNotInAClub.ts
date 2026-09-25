@@ -4,7 +4,8 @@ import type { Keyv } from '../keyv.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import { getForm, saveForm, updateForm } from '../WebApp/write-review/form.ts' // eslint-disable-line import/no-internal-modules
+// eslint-disable-next-line import/no-internal-modules
+import { getForm, saveForm, updateForm } from '../WebApp/write-review/form.ts' // oxlint-disable-line module-boundaries/use-index
 import * as Errors from './Errors.ts'
 
 export interface Input {
