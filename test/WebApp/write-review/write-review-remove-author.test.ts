@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewAddAuthorsMatch, writeReviewMatch, writeReviewRemoveAuthorMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

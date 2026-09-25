@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
-import Keyv from 'keyv'
+import { Keyv } from 'keyv'
 import { merge } from 'ts-deepmerge'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../../src/routes.ts'
