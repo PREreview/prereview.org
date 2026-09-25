@@ -37,12 +37,7 @@
     "no-useless-constructor": "error",
     "no-empty-function": "error",
     "import/export": "error",
-    "import/no-duplicates": [
-      "error",
-      {
-        "prefer-inline": true
-      }
-    ],
+    "import/no-duplicates": ["error", { "prefer-inline": true }],
     "wc/no-constructor-attributes": "error",
     "wc/no-invalid-element-name": "error",
     "wc/no-self-class": "error",
@@ -57,12 +52,7 @@
     "wc/require-listener-teardown": "error",
     "import/no-cycle": "error",
     "import/extensions": ["error", "ignorePackages"],
-    "module-boundaries/use-index": [
-      "error",
-      {
-        "allow": ["src/types"]
-      }
-    ],
+    "module-boundaries/use-index": ["error", { "allow": ["src/types"] }],
     "no-restricted-imports": [
       "error",
       {
@@ -104,12 +94,7 @@
       }
     ],
     "object-shorthand": "error",
-    "typescript/ban-ts-comment": [
-      "error",
-      {
-        "minimumDescriptionLength": 10
-      }
-    ],
+    "typescript/ban-ts-comment": ["error", { "minimumDescriptionLength": 10 }],
     "typescript/no-dynamic-delete": "error",
     "typescript/no-empty-object-type": "error",
     "typescript/no-explicit-any": "error",
@@ -154,22 +139,12 @@
         "allowRegExp": false
       }
     ],
-    "typescript/restrict-template-expressions": [
-      "error",
-      {
-        "allowNumber": true
-      }
-    ],
+    "typescript/restrict-template-expressions": ["error", { "allowNumber": true }],
     "typescript/return-await": ["error", "error-handling-correctness-only"],
     "typescript/unified-signatures": "error",
     "typescript/use-unknown-in-catch-callback-variable": "error",
     "typescript/adjacent-overload-signatures": "error",
-    "typescript/array-type": [
-      "error",
-      {
-        "default": "generic"
-      }
-    ],
+    "typescript/array-type": ["error", { "default": "generic" }],
     "typescript/ban-tslint-comment": "error",
     "typescript/class-literal-property-style": "error",
     "typescript/consistent-generic-constructors": "error",
@@ -184,27 +159,12 @@
     "typescript/prefer-for-of": "error",
     "typescript/prefer-function-type": "error",
     "typescript/prefer-includes": "error",
-    "typescript/prefer-nullish-coalescing": [
-      "error",
-      {
-        "ignoreConditionalTests": true
-      }
-    ],
+    "typescript/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
     "typescript/prefer-optional-chain": "error",
     "typescript/prefer-regexp-exec": "error",
     "typescript/prefer-string-starts-ends-with": "error",
-    "typescript/consistent-type-exports": [
-      "error",
-      {
-        "fixMixedExportsWithInlineTypeSpecifier": true
-      }
-    ],
-    "typescript/consistent-type-imports": [
-      "error",
-      {
-        "fixStyle": "inline-type-imports"
-      }
-    ],
+    "typescript/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": true }],
+    "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "typescript/no-import-type-side-effects": "error",
     "typescript/strict-boolean-expressions": "error"
   },
@@ -239,12 +199,7 @@
       "files": ["**/*.test.ts"],
       "rules": {
         "no-comments/disallowComments": "off",
-        "no-unused-vars": [
-          "warn",
-          {
-            "argsIgnorePattern": "^_"
-          }
-        ],
+        "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
         "typescript/no-non-null-assertion": "off",
         "typescript/no-unsafe-argument": "off",
         "typescript/no-unsafe-assignment": "off",
@@ -267,12 +222,7 @@
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "typescript/no-base-to-string": "off",
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": ["**/assets/**"]
-          }
-        ]
+        "no-restricted-imports": ["error", { "patterns": ["**/assets/**"] }]
       }
     },
     {
