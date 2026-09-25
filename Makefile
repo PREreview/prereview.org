@@ -64,6 +64,10 @@ fix-format: node_modules
 lint-ts: node_modules src/manifest.json
 	npx eslint --cache --cache-location ".cache/eslint/" --max-warnings 0
 
+.PHONY: lint-ts-oxlint
+lint-ts-oxlint: node_modules src/manifest.json
+	npx oxlint
+
 .PHONY: lint-css
 lint-css: node_modules
 	npx stylelint '**/*.css'

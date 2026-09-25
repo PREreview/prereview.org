@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "options": {
+    "denyWarnings": true
+  },
   "plugins": ["typescript", "import", "unicorn"],
   "jsPlugins": ["eslint-plugin-wc", "eslint-plugin-no-comments"],
   "categories": {
