@@ -1,5 +1,4 @@
 import { Array, Effect, pipe } from 'effect'
-import type { Locale } from '../../../Context.ts'
 import { Contentful } from '../../../ExternalApis/Contentful/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
 import { PageNotFound } from '../Errors.ts'
@@ -8,7 +7,7 @@ import { EntryToContentfulBlogPostTitle } from './EntryToContentfulBlogPostTitle
 
 export const GetPageOfBlogPosts: (
   page: number,
-) => Effect.Effect<ContentfulPageOfBlogPosts, UnableToQuery | PageNotFound, Contentful | Locale> = Effect.fn(
+) => Effect.Effect<ContentfulPageOfBlogPosts, UnableToQuery | PageNotFound, Contentful> = Effect.fn(
   'ContentfulPages.getPageOfBlogPosts',
 )(
   function* (page) {

@@ -2,7 +2,7 @@ import { Array, Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, 
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
-import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
+import { DefaultLocale } from '../../../locales/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
@@ -33,17 +33,12 @@ const BlogPostEntry = Schema.Struct({
 })
 
 const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: typeof BlogPostEntry.Type) {
-  const locale = yield* Locale
-
   return new ContentfulBlogPost({
     authors: Array.map(
       getValueForDefaultLocale(entry.fields.authors),
       author => new Author({ name: getValueForDefaultLocale(author.fields.name) }),
     ),
-    title: Option.match(getValueForLocale(entry.fields.title, locale), {
-      onSome: title => html`${title}`,
-      onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
-    }),
+    title: html`${getValueForDefaultLocale(entry.fields.title)}`,
     heroImage: yield* Effect.gen(function* () {
       if (!entry.fields.heroImage) {
         return undefined
@@ -65,31 +60,23 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
         caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
       }
     }),
-    html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
-      onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
-      onNone: () =>
-        Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), content => html`${content}`),
-    }),
-    locale: Option.match(getValueForLocale(entry.fields.title, locale), {
-      onSome: () => locale,
-      onNone: () => DefaultLocale,
-    }),
+    html: yield* Effect.map(
+      BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)),
+      content => html`${content}`,
+    ),
+    locale: DefaultLocale,
     publishedAt: entry.fields.firstPublishedAtOverride
       ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)
       : entry.sys.createdAt,
   })
 })
 
-export const EntryToContentfulBlogPost: (
-  entry: Entry,
-) => Effect.Effect<ContentfulBlogPost, ParseResult.ParseError, Locale> = flow(
-  Schema.decodeUnknown(Schema.typeSchema(BlogPostEntry)),
-  Effect.andThen(BlogPostEntryToContentfulBlogPost),
-  Effect.provide(Layer.mock(DynamicEmbedder, {})),
-)
-
-const getValueForLocale = <T>(values: Record<string, T | undefined>, locale: SupportedLocale): Option.Option<T> =>
-  pipe(Record.get(values, locale), Option.filter(Predicate.isNotUndefined))
+export const EntryToContentfulBlogPost: (entry: Entry) => Effect.Effect<ContentfulBlogPost, ParseResult.ParseError> =
+  flow(
+    Schema.decodeUnknown(Schema.typeSchema(BlogPostEntry)),
+    Effect.andThen(BlogPostEntryToContentfulBlogPost),
+    Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale)]),
+  )
 
 const getValueForDefaultLocale = <T>(values: Record<string, T | undefined>): T =>
   pipe(

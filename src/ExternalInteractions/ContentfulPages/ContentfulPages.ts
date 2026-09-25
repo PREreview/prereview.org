@@ -13,8 +13,7 @@ export class ContentfulPages extends Context.Tag('ContentfulPages')<
       ...args: Parameters<typeof GetBlogPost>
     ) => Effect.Effect<
       Effect.Effect.Success<ReturnType<typeof GetBlogPost>>,
-      Effect.Effect.Error<ReturnType<typeof GetBlogPost>>,
-      Locale
+      Effect.Effect.Error<ReturnType<typeof GetBlogPost>>
     >
     getPage: (
       ...args: Parameters<typeof GetPage>
@@ -27,8 +26,7 @@ export class ContentfulPages extends Context.Tag('ContentfulPages')<
       ...args: Parameters<typeof GetPageOfBlogPosts>
     ) => Effect.Effect<
       Effect.Effect.Success<ReturnType<typeof GetPageOfBlogPosts>>,
-      Effect.Effect.Error<ReturnType<typeof GetPageOfBlogPosts>>,
-      Locale
+      Effect.Effect.Error<ReturnType<typeof GetPageOfBlogPosts>>
     >
   }
 >() {

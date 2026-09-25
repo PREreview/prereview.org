@@ -1,8 +1,8 @@
-import { Effect, flow, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import { Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
-import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
+import { DefaultLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
@@ -22,17 +22,9 @@ const BlogPostEntry = Schema.Struct({
 })
 
 const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entry: typeof BlogPostEntry.Type) {
-  const locale = yield* Locale
-
   return new ContentfulBlogPostTitle({
-    title: Option.match(getValueForLocale(entry.fields.title, locale), {
-      onSome: title => html`${title}`,
-      onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
-    }),
-    locale: Option.match(getValueForLocale(entry.fields.title, locale), {
-      onSome: () => locale,
-      onNone: () => DefaultLocale,
-    }),
+    title: html`${getValueForDefaultLocale(entry.fields.title)}`,
+    locale: DefaultLocale,
     slug: getValueForDefaultLocale(entry.fields.slug),
     heroImage: yield* Effect.sync(() => {
       if (!entry.fields.heroImage) {
@@ -56,13 +48,11 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
 
 export const EntryToContentfulBlogPostTitle: (
   entry: Entry,
-) => Effect.Effect<ContentfulBlogPostTitle, ParseResult.ParseError, Locale> = flow(
+) => Effect.Effect<ContentfulBlogPostTitle, ParseResult.ParseError> = flow(
   Schema.decodeUnknown(Schema.typeSchema(BlogPostEntry)),
   Effect.andThen(BlogPostEntryToContentfulBlogPostTitle),
+  Effect.provide(Layer.succeed(Locale, DefaultLocale)),
 )
-
-const getValueForLocale = <T>(values: Record<string, T | undefined>, locale: SupportedLocale): Option.Option<T> =>
-  pipe(Record.get(values, locale), Option.filter(Predicate.isNotUndefined))
 
 const getValueForDefaultLocale = <T>(values: Record<string, T | undefined>): T =>
   pipe(
