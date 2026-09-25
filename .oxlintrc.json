@@ -1,14 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "typescript",
-    "import",
-    "unicorn"
-  ],
-  "jsPlugins": [
-    "eslint-plugin-wc",
-    "eslint-plugin-no-comments"
-  ],
+  "plugins": ["typescript", "import", "unicorn"],
+  "jsPlugins": ["eslint-plugin-wc", "eslint-plugin-no-comments"],
   "categories": {
     "correctness": "off"
   },
@@ -76,6 +69,7 @@
     "no-sparse-arrays": "error",
     "no-this-before-super": "error",
     "no-unassigned-vars": "error",
+    "no-undef": "error",
     "no-unreachable": "error",
     "no-unsafe-finally": "error",
     "no-unsafe-negation": "error",
@@ -83,6 +77,7 @@
     "no-unused-labels": "error",
     "no-unused-private-class-members": "error",
     "no-unused-vars": "error",
+    "no-useless-assignment": "error",
     "no-useless-backreference": "error",
     "no-useless-catch": "error",
     "no-useless-escape": "error",
@@ -97,6 +92,7 @@
     "no-empty-function": "error",
     "import/namespace": "error",
     "import/default": "error",
+    "import/export": "error",
     "import/no-duplicates": [
       "error",
       {
@@ -116,10 +112,7 @@
     "wc/no-typos": "error",
     "wc/require-listener-teardown": "error",
     "import/no-cycle": "error",
-    "import/extensions": [
-      "error",
-      "ignorePackages"
-    ],
+    "import/extensions": ["error", "ignorePackages"],
     "no-comments/disallowComments": [
       "error",
       {
@@ -169,6 +162,7 @@
     "typescript/no-require-imports": "error",
     "typescript/no-this-alias": "error",
     "typescript/no-unnecessary-boolean-literal-compare": "error",
+    "typescript/no-unnecessary-condition": "error",
     "typescript/no-unnecessary-template-expression": "error",
     "typescript/no-unnecessary-type-arguments": "error",
     "typescript/no-unnecessary-type-assertion": "error",
@@ -211,10 +205,7 @@
         "allowNumber": true
       }
     ],
-    "typescript/return-await": [
-      "error",
-      "error-handling-correctness-only"
-    ],
+    "typescript/return-await": ["error", "error-handling-correctness-only"],
     "typescript/triple-slash-reference": "error",
     "typescript/unbound-method": "error",
     "typescript/unified-signatures": "error",
@@ -246,6 +237,7 @@
         "ignoreConditionalTests": true
       }
     ],
+    "typescript/prefer-optional-chain": "error",
     "typescript/prefer-regexp-exec": "error",
     "typescript/prefer-string-starts-ends-with": "error",
     "typescript/consistent-type-exports": [
@@ -265,12 +257,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "rules": {
         "constructor-super": "off",
         "getter-return": "off",
@@ -285,6 +272,7 @@
         "no-redeclare": "off",
         "no-setter-return": "off",
         "no-this-before-super": "off",
+        "no-undef": "off",
         "no-unreachable": "off",
         "no-unsafe-negation": "off",
         "no-var": "error",
@@ -295,9 +283,7 @@
       }
     },
     {
-      "files": [
-        "**/*.test.ts"
-      ],
+      "files": ["**/*.test.ts"],
       "rules": {
         "no-comments/disallowComments": "off",
         "no-unused-vars": [
@@ -315,26 +301,17 @@
         "typescript/prefer-promise-reject-errors": "off",
         "typescript/restrict-template-expressions": "off"
       },
-      "jsPlugins": [
-        "eslint-plugin-no-comments"
-      ]
+      "jsPlugins": ["eslint-plugin-no-comments"]
     },
     {
-      "files": [
-        "integration/**/*.ts",
-        "visual-regression/**/*.ts"
-      ],
+      "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "no-empty-pattern": "off",
         "typescript/unbound-method": "off"
       }
     },
     {
-      "files": [
-        "integration/**/*.ts",
-        "test/**/*.ts",
-        "visual-regression/**/*.ts"
-      ],
+      "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "typescript/no-base-to-string": "off"
       }
