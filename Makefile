@@ -12,7 +12,7 @@ node_modules: package.json pnpm-lock.yaml pnpm-workspace.yaml
 	touch node_modules
 
 .PHONY: check
-check: format lint-ts lint-css typecheck test-fast
+check: format lint-ts lint-ts-oxlint lint-css typecheck test-fast
 
 .PHONY: update-incontext-locale
 update-incontext-locale:
