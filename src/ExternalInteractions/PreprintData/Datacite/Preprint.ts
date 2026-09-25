@@ -206,7 +206,7 @@ const getAbstract = (
 const detectLanguageForServer = ({
   id,
   text,
-  recordLanguage: recordLanguage,
+  recordLanguage,
 }: {
   id: DatacitePreprintId
   text: Html
