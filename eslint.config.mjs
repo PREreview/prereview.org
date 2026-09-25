@@ -94,7 +94,19 @@ export default defineConfig([
       'import/no-named-as-default-member': 'off',
       'no-comments/disallowComments': [
         'error',
-        { allow: ['\\* @deprecated', '\\[sic\\]', 'eslint', 'https://', 'Do', 'Unfortunately', 'Refs', 'represents'] },
+        {
+          allow: [
+            '\\* @deprecated',
+            '\\[sic\\]',
+            'eslint',
+            'oxlint',
+            'https://',
+            'Do',
+            'Unfortunately',
+            'Refs',
+            'represents',
+          ],
+        },
       ],
       'no-restricted-syntax': [
         'error',
