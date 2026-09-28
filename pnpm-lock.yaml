@@ -249,9 +249,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260707.2
         version: 7.0.0-dev.20260707.2
-      '@vitest/expect':
-        specifier: ^5.0.1
-        version: 5.0.1
       eslint:
         specifier: ^10.10.0
         version: 10.10.0(jiti@2.6.1)(supports-color@10.2.2)
@@ -6960,6 +6957,7 @@ snapshots:
       '@vitest/utils': 5.0.1
       chai: 6.2.2
       tinyrainbow: 3.1.1
+    optional: true
 
   '@vitest/mocker@5.0.1(vite@8.3.0(@types/node@24.13.5)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))':
     dependencies:
@@ -6973,6 +6971,7 @@ snapshots:
   '@vitest/pretty-format@5.0.1':
     dependencies:
       tinyrainbow: 3.1.1
+    optional: true
 
   '@vitest/spy@5.0.1': {}
 
@@ -6981,6 +6980,7 @@ snapshots:
       '@vitest/pretty-format': 5.0.1
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.1
+    optional: true
 
   '@xml-tools/parser@1.0.11':
     dependencies:
@@ -7280,7 +7280,8 @@ snapshots:
     dependencies:
       fast-copy: 3.0.2
 
-  convert-source-map@2.0.0: {}
+  convert-source-map@2.0.0:
+    optional: true
 
   cookie-signature@1.2.2: {}
 
@@ -10366,7 +10367,8 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
 
-  tinyrainbow@3.1.1: {}
+  tinyrainbow@3.1.1:
+    optional: true
 
   to-regex-range@5.0.1:
     dependencies:

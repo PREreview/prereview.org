@@ -1,5 +1,4 @@
-import { addEqualityTesters, expect } from '@effect/vitest'
-import type { ExpectationResult, MatcherState } from '@vitest/expect'
+import { type MatcherResult, type MatcherState, addEqualityTesters, expect } from '@effect/vitest'
 import * as fc from 'fast-check'
 import { Html, PlainText } from '../src/html.ts'
 
@@ -9,7 +8,7 @@ if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
 
 addEqualityTesters()
 
-function htmlContaining(this: MatcherState, actual: unknown, sample: Html | string): ExpectationResult {
+function htmlContaining(this: MatcherState, actual: unknown, sample: Html | string): MatcherResult {
   if (!(actual instanceof Html)) {
     throw new TypeError('Not Html')
   }
@@ -27,7 +26,7 @@ function htmlContaining(this: MatcherState, actual: unknown, sample: Html | stri
   }
 }
 
-function plainTextContaining(this: MatcherState, actual: unknown, sample: string): ExpectationResult {
+function plainTextContaining(this: MatcherState, actual: unknown, sample: string): MatcherResult {
   if (!(actual instanceof PlainText)) {
     throw new TypeError('Not PlainText')
   }
