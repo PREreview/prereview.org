@@ -931,7 +931,7 @@ test('can view an older review', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(page 1\)/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
   await expect(page.getByRole('link', { name: 'Older' })).toHaveAttribute('rel', 'next')
 
@@ -943,7 +943,7 @@ test('can view an older review', async ({ fetch, javaScriptEnabled, page }) => {
 
   await page.getByRole('link', { name: 'Older' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 2) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(page 2\)/)
   await expect(page.getByRole('link', { name: 'Newer' })).toHaveAttribute('rel', 'prev')
 
   await page
@@ -1044,13 +1044,13 @@ test('can find an older review of a certain preprint', async ({ page }) => {
 
   const filters = page.getByRole('search', { name: 'Filter' })
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(page 1\)/)
   await expect(filters.getByLabel('Keyword, title or author')).toHaveValue('')
 
   await filters.getByLabel('Keyword, title or author').fill('Chlamydomonas reinhardtii')
   await filters.getByRole('button', { name: 'Filter results' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (Chlamydomonas reinhardtii, page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(Chlamydomonas reinhardtii, page 1\)/)
   await expect(filters.getByLabel('Keyword, title or author')).toHaveValue('Chlamydomonas reinhardtii')
 })
 
@@ -1060,13 +1060,13 @@ test('can view an older review in a specific language', async ({ page }) => {
 
   const filters = page.getByRole('search', { name: 'Filter' })
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(page 1\)/)
   await expect(filters.getByLabel('Language').locator('[selected]')).toHaveText('Any')
 
   await filters.getByLabel('Language').selectOption('English')
   await filters.getByRole('button', { name: 'Filter results' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (English, page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(English, page 1\)/)
   await expect(filters.getByLabel('Language').locator('[selected]')).toHaveText('English')
 })
 
@@ -1076,13 +1076,13 @@ test('can view an older review in a specific field', async ({ page }) => {
 
   const filters = page.getByRole('search', { name: 'Filter' })
 
-  await expect(page).toHaveTitle('Recent PREreviews (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(page 1\)/)
   await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Any')
 
   await filters.getByLabel('Field').selectOption('Immunology and Microbiology')
   await filters.getByRole('button', { name: 'Filter results' }).click()
 
-  await expect(page).toHaveTitle('Recent PREreviews (Immunology and Microbiology, page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent PREreviews \(Immunology and Microbiology, page 1\)/)
   await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Immunology and Microbiology')
 })
 

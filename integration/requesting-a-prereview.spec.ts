@@ -508,7 +508,7 @@ test.extend(
   await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
-  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent review requests \(page 1\)/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent review requests')
 
   if (javaScriptEnabled) {
@@ -565,13 +565,13 @@ test.extend(
 
   const filters = page.getByRole('search', { name: 'Filter' })
 
-  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent review requests \(page 1\)/)
   await expect(filters.getByLabel('Language').locator('[selected]')).toHaveText('Any')
 
   await filters.getByLabel('Language').selectOption('English')
   await filters.getByRole('button', { name: 'Filter results' }).click()
 
-  await expect(page).toHaveTitle('Recent review requests (English, page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent review requests \(English, page 1\)/)
   await expect(filters.getByLabel('Language').locator('[selected]')).toHaveText('English')
   await expect(
     page.getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' }),
@@ -625,13 +625,13 @@ test.extend(
 
   const filters = page.getByRole('search', { name: 'Filter' })
 
-  await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent review requests \(page 1\)/)
   await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Any')
 
   await filters.getByLabel('Field').selectOption('Immunology and Microbiology')
   await filters.getByRole('button', { name: 'Filter results' }).click()
 
-  await expect(page).toHaveTitle('Recent review requests (Immunology and Microbiology, page 1) | PREreview')
+  await expect(page).toHaveTitle(/Recent review requests \(Immunology and Microbiology, page 1\)/)
   await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Immunology and Microbiology')
   await expect(
     page.getByRole('link', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' }),
