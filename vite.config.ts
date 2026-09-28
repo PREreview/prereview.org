@@ -50,6 +50,7 @@ export default defineConfig(({ mode }) => ({
           features: {
             'custom-properties': false,
             'custom-selectors': true,
+            'is-pseudo-class': { onComplexSelector: undefined },
             'nesting-rules': true,
           },
           preserve: false,
