@@ -1,7 +1,7 @@
 import { Array, Boolean, HashMap, type HashSet, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { type Html, type PlainText, html } from '../html.ts'
-import { languageAttributesFor } from '../Locales.ts'
+import { getDirectionMarkFor, languageAttributesFor } from '../Locales.ts'
 import { CrowdinInContextLocale, type SupportedLocale, type UserSelectableLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as Routes from '../routes.ts'
@@ -88,7 +88,7 @@ export const page = ({
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
+        <title>${getDirectionMarkFor(locale)}${current !== 'home' ? html`⁨${title}⁩ | ⁨PREreview⁩` : title}</title>
 
         <link href="${assets['style.css']}" rel="stylesheet" />
 

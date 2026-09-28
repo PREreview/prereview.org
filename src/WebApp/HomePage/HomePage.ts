@@ -28,7 +28,7 @@ export const createPage = ({
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({
-    title: plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
+    title: plainText`⁨PREreview⁩: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
     main: html`
       <div class="hero">
         <div>

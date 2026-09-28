@@ -24,3 +24,19 @@ describe('languageAttributesFor', () => {
     expect(actual.toString()).toMatch(`lang="${locale}" dir="`)
   })
 })
+
+describe('getDirectionMarkFor', () => {
+  it.each([
+    ['ar', '\u061c'],
+    ['arb', '\u061c'],
+    ['en', '\u200e'],
+    ['es-419', '\u200e'],
+    ['he', '\u200f'],
+    ['uz-Arab', '\u061c'],
+    ['uz-Latn', '\u200e'],
+  ])('%s', (locale, expected) => {
+    const actual = _.getDirectionMarkFor(locale)
+
+    expect(actual).toBe(expected)
+  })
+})
