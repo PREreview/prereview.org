@@ -89,7 +89,6 @@
     "@typescript/analyze-trace": "^0.11.1",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitest/expect": "^5.0.1",
-    "del-cli": "^7.0.0",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
@@ -124,19 +123,5 @@
     "typescript-eslint": "^8.70.0",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
-  },
-  "scripts": {
-    "prebuild": "del assets/locales dist src/locales src/manifest.json",
-    "build": "run-s build:translations build:assets build:app",
-    "build:app": "tsc --project tsconfig.build.json",
-    "build:assets": "vite build",
-    "build:translations": "node scripts/intlc.ts",
-    "format": "prettier --ignore-unknown --check '**'",
-    "format:fix": "npm run format -- --write",
-    "lint:css": "stylelint '**/*.css'",
-    "lint:ts": "eslint --max-warnings 0",
-    "test": "vitest run",
-    "test:integration": "docker run --rm --volume \"$(pwd)\"/integration-results:/app/integration-results",
-    "typecheck": "tsc --noEmit"
   }
 }

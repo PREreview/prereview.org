@@ -71,7 +71,7 @@ COPY assets/ assets/
 COPY --from=build-intlc /app/assets/locales/ assets/locales/
 COPY --from=build-intlc /app/src/locales/ src/locales/
 
-RUN npm run build:assets && npm run build:app
+RUN npx vite build && npx tsc --project tsconfig.build.json
 
 #
 # Stage: Integration test environment

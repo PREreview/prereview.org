@@ -57,7 +57,7 @@ jobs:
           path: assets/locales
 
       - name: 'Build assets'
-        run: npm run build:assets
+        run: npx vite build
 
       - name: 'Upload assets'
         uses: actions/upload-artifact@v7.0.1
@@ -168,7 +168,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Run formatter'
-        run: npm run format
+        run: npx prettier --ignore-unknown --check '**'
 
   lint-css:
     name: 'Lint CSS'
@@ -194,7 +194,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Run the linter'
-        run: npm run lint:css
+        run: npx stylelint '**/*.css'
 
   lint-ts:
     name: 'Lint TypeScript'
@@ -241,7 +241,7 @@ jobs:
           path: assets/locales
 
       - name: 'Run the linter'
-        run: npm run lint:ts
+        run: npx eslint --max-warnings 0
 
       - name: 'Run the new linter'
         run: npx oxlint
@@ -289,7 +289,7 @@ jobs:
           path: src/locales
 
       - name: 'Run the tests'
-        run: npm run test -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: npx vitest run --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
   test-integration:
     name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
@@ -504,7 +504,7 @@ jobs:
           path: assets/locales
 
       - name: 'Run typechecker'
-        run: npm run typecheck
+        run: npx tsc
 
   push:
     name: 'Push image'
