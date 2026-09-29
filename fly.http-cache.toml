@@ -10,12 +10,12 @@ cpu_kind = 'shared'
 cpus = 1
 
 [experimental]
-exec = ["redis-server", "--maxmemory", "300mb", "--maxmemory-policy", "allkeys-lru"]
+exec = ['redis-server', '--maxmemory', '300mb', '--maxmemory-policy', 'allkeys-lru']
 
 [checks]
 [checks.redis]
-grace_period = "30s"
-interval = "15s"
+grace_period = '30s'
+interval = '15s'
 port = 6379
-timeout = "5s"
-type = "tcp"
+timeout = '5s'
+type = 'tcp'

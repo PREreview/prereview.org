@@ -1,48 +1,48 @@
-app = "prereview-sandbox"
-primary_region = "iad"
+app = 'prereview-sandbox'
+primary_region = 'iad'
 
 [[vm]]
-size = "shared-cpu-2x"
-memory = "1gb"
+size = 'shared-cpu-2x'
+memory = '1gb'
 
 [deploy]
-strategy = "bluegreen"
+strategy = 'bluegreen'
 
 [env]
-ADD_PREREVIEW_STAFF_CLUB = "true"
-CAN_ADD_MULTIPLE_AUTHORS = "true"
-CAN_CLUB_LEADS_ADD_REVIEWS_TO_CLUBS = "true"
-CAN_LOG_IN_AS_DEMO_USER = "true"
-CAN_PREVIEW_CONTENT_FROM_CONTENTFUL = "true"
-ENVIRONMENT_LABEL = "sandbox"
-FATHOM_SITE_ID = "BGNKWQNI"
-HTTP_CACHE_REDIS_URI_TEMPLATE = "redis://{region}.http-cache-sandbox.internal?family=6"
-HTTP_CACHE_READONLY_FALLBACK_REDIS_URI = "redis://localhost:6379"
-LOAD_PAGES_FROM_CONTENTFUL = "true"
-LOG_FORMAT = "json"
-ORCID_API_URL = "https://api.orcid.org/"
-PUBLIC_URL = "https://sandbox.prereview.org/"
-SEND_COAR_NOTIFY_MESSAGES = "sandbox"
-SLACK_REQUEST_REVIEW_CHANNEL_ID = "C05N0JHBC1Y"
-SLACK_SHARE_REVIEW_CHANNEL_ID = "C05V6TXHETS"
-ZENODO_URL = "https://sandbox.zenodo.org/"
+ADD_PREREVIEW_STAFF_CLUB = 'true'
+CAN_ADD_MULTIPLE_AUTHORS = 'true'
+CAN_CLUB_LEADS_ADD_REVIEWS_TO_CLUBS = 'true'
+CAN_LOG_IN_AS_DEMO_USER = 'true'
+CAN_PREVIEW_CONTENT_FROM_CONTENTFUL = 'true'
+ENVIRONMENT_LABEL = 'sandbox'
+FATHOM_SITE_ID = 'BGNKWQNI'
+HTTP_CACHE_REDIS_URI_TEMPLATE = 'redis://{region}.http-cache-sandbox.internal?family=6'
+HTTP_CACHE_READONLY_FALLBACK_REDIS_URI = 'redis://localhost:6379'
+LOAD_PAGES_FROM_CONTENTFUL = 'true'
+LOG_FORMAT = 'json'
+ORCID_API_URL = 'https://api.orcid.org/'
+PUBLIC_URL = 'https://sandbox.prereview.org/'
+SEND_COAR_NOTIFY_MESSAGES = 'sandbox'
+SLACK_REQUEST_REVIEW_CHANNEL_ID = 'C05N0JHBC1Y'
+SLACK_SHARE_REVIEW_CHANNEL_ID = 'C05V6TXHETS'
+ZENODO_URL = 'https://sandbox.zenodo.org/'
 
 [http_service]
 internal_port = 3000
 force_https = true
-auto_stop_machines = "suspend"
+auto_stop_machines = 'suspend'
 auto_start_machines = true
 min_machines_running = 0
 
 [http_service.concurrency]
-type = "requests"
+type = 'requests'
 hard_limit = 30
 soft_limit = 20
 
 [[http_service.checks]]
-grace_period = "15s"
-interval = "5s"
-method = "get"
-path = "/health"
-protocol = "http"
-timeout = "1s"
+grace_period = '15s'
+interval = '5s'
+method = 'get'
+path = '/health'
+protocol = 'http'
+timeout = '1s'
