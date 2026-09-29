@@ -15,6 +15,7 @@ import {
   hasAVerifiedEmailAddress,
   hasAnUnverifiedEmailAddress,
   test,
+  usePostgresDB,
   waitForNotBusy,
   willPublishAReview,
 } from './base.ts'
@@ -298,7 +299,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can format a PREreview',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
