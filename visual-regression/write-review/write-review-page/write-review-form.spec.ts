@@ -15,6 +15,27 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when hovering over a button', async ({
+  showPage,
+  browserName,
+  javaScriptEnabled,
+}, testInfo) => {
+  const response = writeReviewForm(preprint, { review: E.right(undefined) }, DefaultLocale)
+
+  const content = await showPage(response)
+
+  testInfo.fail(!javaScriptEnabled)
+  await expect(content.getByRole('button', { name: 'Bold' })).toBeVisible()
+
+  await content.getByRole('button', { name: 'Bold' }).hover()
+
+  testInfo.fail(browserName !== 'chromium')
+  await expect(content.locator('[popover]', { hasText: 'Bold' })).toBeVisible()
+
+  const contentBox = await content.boundingBox()
+  await expect(content.page()).toHaveScreenshot(contentBox ? { clip: contentBox } : {})
+})
+
 test('content looks right when there is a review', async ({ showPage }) => {
   const response = writeReviewForm(preprint, { review: E.right(review) }, DefaultLocale)
 
