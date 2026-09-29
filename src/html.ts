@@ -26,7 +26,7 @@ import stripTags from 'striptags'
 export class Html extends Data.TaggedClass('Html')<{
   value: string
 }> {
-  toString() {
+  override toString() {
     return this.value
   }
 
@@ -42,7 +42,7 @@ export class Html extends Data.TaggedClass('Html')<{
 export class PlainText extends Data.TaggedClass('PlainText')<{
   value: string
 }> {
-  toString() {
+  override toString() {
     return this.value
   }
 }
