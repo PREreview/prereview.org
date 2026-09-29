@@ -1585,6 +1585,30 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
     leads: [OrcidId('0000-0001-5457-8965')],
   },
   {
+    id: Uuid('8320d1cd-543b-49e3-8dd8-e2aa2da291f6'),
+    status: 'active',
+    name: {
+      language: 'en',
+      text: Name('Skyline College Human Physiology Club'),
+    },
+    slug: Slug('skyline-college-human-physiology'),
+    description: {
+      language: 'en',
+      text: html`
+        <p>
+          Skyline College offers over 100 degree and certificate programs, including B.S. in Respiratory Care, to help
+          learners reach their academic goals.
+        </p>
+        <p>
+          The club provides Skyline College Human Physiology students with an opportunity to gain peer-reviewing
+          experience.
+        </p>
+      `,
+    },
+    added: Temporal.PlainDate.from('2026-09-29'),
+    leads: [OrcidId('0000-0002-4524-1196')],
+  },
+  {
     id: Uuid('292651fd-e6d6-45e4-a46a-42912396a269'),
     status: 'active',
     name: {
