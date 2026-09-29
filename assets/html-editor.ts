@@ -128,6 +128,7 @@ export class HtmlEditor extends HTMLElement {
         }),
         Typography,
       ],
+      injectCSS: false,
       content: new DOMParser().parseFromString(input.innerHTML, 'text/html').documentElement.textContent,
     })
 
