@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from '@effect/vitest'
-import { Effect, Equal, Hash } from 'effect'
+import { Effect, Equal, Hash, Tuple } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/html.ts'
@@ -139,15 +139,39 @@ describe('Html Equal', () => {
 })
 
 describe('Html Hash', () => {
-  it.prop('with the same value', [fc.html()], value => {
-    expect(Hash.hash(value)).toStrictEqual(Hash.hash(value))
-  })
+  it.prop(
+    'with the same value',
+    [fc.html().map(html => Tuple.make(html, html))],
+    ([[a, b]]) => {
+      expect(Hash.hash(a)).toStrictEqual(Hash.hash(b))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[_.rawHtml('<p>Foo</p>'), _.rawHtml('<p>Foo</p>')]], // identical strings
+          [[_.rawHtml('<p class="a" id="b">Foo</p>'), _.rawHtml('<p id="b" class="a">Foo</p>')]], // different attribute order
+          [[_.rawHtml('<div>\n  <p>Foo</p>\n</div>'), _.rawHtml('<div><p>Foo</p></div>')]], // collapsed whitespace between tags
+          [[_.rawHtml('<p>Foo   Bar</p>'), _.rawHtml('<p>Foo Bar</p>')]], // collapsed whitespace within text
+        ],
+      },
+    },
+  )
 
   it.prop(
     'with a different value',
     [fc.tuple(fc.html(), fc.html()).filter(([a, b]) => !Equal.equals(a, b))],
     ([[a, b]]) => {
       expect(Hash.hash(a)).not.toStrictEqual(Hash.hash(b))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[_.rawHtml('<p><b>Foo</b> <i>Bar</i></p>'), _.rawHtml('<p><b>Foo</b><i>Bar</i></p>')]], // meaningful inter-element space kept
+          [[_.rawHtml('<p>Foo</p>'), _.rawHtml('<p>Bar</p>')]], // different text content
+          [[_.rawHtml('<p>Foo</p>'), _.rawHtml('<div>Foo</div>')]], // different tag names
+          [[_.rawHtml('<p id="a">Foo</p>'), _.rawHtml('<p id="b">Foo</p>')]], // different attribute values
+        ],
+      },
     },
   )
 })
