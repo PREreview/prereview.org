@@ -143,9 +143,13 @@ describe('Html Hash', () => {
     expect(Hash.hash(value)).toStrictEqual(Hash.hash(value))
   })
 
-  it.prop('with a different value', [fc.html(), fc.html()], ([a, b]) => {
-    expect(Hash.hash(a)).not.toStrictEqual(Hash.hash(b))
-  })
+  it.prop(
+    'with a different value',
+    [fc.tuple(fc.html(), fc.html()).filter(([a, b]) => !Equal.equals(a, b))],
+    ([[a, b]]) => {
+      expect(Hash.hash(a)).not.toStrictEqual(Hash.hash(b))
+    },
+  )
 })
 
 describe('sanitizeHtml', () => {
