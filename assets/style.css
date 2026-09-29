@@ -1405,7 +1405,8 @@ label {
   border: var(--width-divider) solid currentcolor;
   background-color: var(--color-background);
   color: var(--color-text);
-  font: inherit;
+  font-size: var(--step--1);
+  line-height: 1;
   user-select: none;
   touch-action: manipulation;
 
