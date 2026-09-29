@@ -1304,7 +1304,7 @@ label {
   margin: 3px;
   padding-block: var(--space-4xs);
   padding-inline: var(--space-3xs);
-  border: 0;
+  border: var(--width-divider-narrow) solid transparent;
   background-color: var(--color-text);
   color: var(--color-background);
   font-size: var(--step--2);
