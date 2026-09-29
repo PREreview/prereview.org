@@ -374,6 +374,11 @@ function fetchSvg(path: string) {
     })
 }
 
+const div = document.createElement('div')
+div.popover = 'hint'
+const supportsPopoverHint = div.popover === 'hint'
+const supportsInterestFor = CSS.supports('interest-delay', '0s')
+
 async function createButton(
   label: HTMLSpanElement,
   id: string,
@@ -394,12 +399,20 @@ async function createButton(
     return [button]
   }
 
+  if (!supportsPopoverHint || !supportsInterestFor) {
+    label.classList.add('visually-hidden')
+    button.append(label)
+
+    return [button]
+  }
+
   const tooltip = document.createElement('span')
   tooltip.id = `tooltip-${id}`
-  tooltip.classList.add('visually-hidden')
+  tooltip.setAttribute('popover', 'hint')
   tooltip.append(label)
 
   button.setAttribute('aria-labelledby', tooltip.id)
+  button.setAttribute('interestfor', tooltip.id)
 
   return [button, tooltip]
 }

@@ -1285,6 +1285,22 @@ label {
   }
 }
 
+[popover] {
+  position: fixed;
+  position-area: block-start;
+  position-try:
+    flip-block,
+    flip-inline,
+    flip-block flip-inline;
+  margin: 3px;
+  padding-block: var(--space-4xs);
+  padding-inline: var(--space-3xs);
+  border: 0;
+  background-color: var(--color-text);
+  color: var(--color-background);
+  font-size: var(--step--2);
+}
+
 :--button {
   display: inline-block;
   position: relative;
