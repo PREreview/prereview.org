@@ -59,16 +59,16 @@ export class HtmlEditor extends HTMLElement {
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
     const toolbarButtons = Promise.all([
-      createButton(translate(locale, 'html-editor', 'bold')(), boldIcon),
-      createButton(translate(locale, 'html-editor', 'italic')(), italicIcon),
-      createButton(translate(locale, 'html-editor', 'subscript')(), subscriptIcon),
-      createButton(translate(locale, 'html-editor', 'superscript')(), superscriptIcon),
-      createButton(translate(locale, 'html-editor', 'link')(), linkIcon),
-      createButton(translate(locale, 'html-editor', 'headingLevel1')(), heading1Icon),
-      createButton(translate(locale, 'html-editor', 'headingLevel2')(), heading2Icon),
-      createButton(translate(locale, 'html-editor', 'headingLevel3')(), heading3Icon),
-      createButton(translate(locale, 'html-editor', 'bulletedList')(), bulletedListIcon),
-      createButton(translate(locale, 'html-editor', 'numberedList')(), numberedListIcon),
+      createButton(translate(locale, 'html-editor', 'bold')(), 'bold', boldIcon),
+      createButton(translate(locale, 'html-editor', 'italic')(), 'italic', italicIcon),
+      createButton(translate(locale, 'html-editor', 'subscript')(), 'subscript', subscriptIcon),
+      createButton(translate(locale, 'html-editor', 'superscript')(), 'superscript', superscriptIcon),
+      createButton(translate(locale, 'html-editor', 'link')(), 'link', linkIcon),
+      createButton(translate(locale, 'html-editor', 'headingLevel1')(), 'headingLevel1', heading1Icon),
+      createButton(translate(locale, 'html-editor', 'headingLevel2')(), 'headingLevel2', heading2Icon),
+      createButton(translate(locale, 'html-editor', 'headingLevel3')(), 'headingLevel3', heading3Icon),
+      createButton(translate(locale, 'html-editor', 'bulletedList')(), 'bulletedList', bulletedListIcon),
+      createButton(translate(locale, 'html-editor', 'numberedList')(), 'numberedList', numberedListIcon),
     ])
 
     const toolbar = document.createElement('editor-toolbar')
@@ -85,12 +85,35 @@ export class HtmlEditor extends HTMLElement {
 
     const [{ Editor }, { Subscript }, { Superscript }, { Typography }, { StarterKit }] = await deps
 
-    const [bold, italic, subscript, superscript, link, heading1, heading2, heading3, bulletedList, numberedList] =
-      await toolbarButtons
+    const [
+      [bold, boldTooltip],
+      [italic, italicTooltip],
+      [subscript, subscriptTooltip],
+      [superscript, superscriptTooltip],
+      [link, linkTooltip],
+      [heading1, heading1Tooltip],
+      [heading2, heading2Tooltip],
+      [heading3, heading3Tooltip],
+      [bulletedList, bulletedListTooltip],
+      [numberedList, numberedListTooltip],
+    ] = await toolbarButtons
+
+    const tooltips = [
+      boldTooltip,
+      italicTooltip,
+      subscriptTooltip,
+      superscriptTooltip,
+      linkTooltip,
+      heading1Tooltip,
+      heading2Tooltip,
+      heading3Tooltip,
+      bulletedListTooltip,
+      numberedListTooltip,
+    ].filter(value => value instanceof HTMLSpanElement)
 
     formatting.append(bold, italic, subscript, superscript)
     styles.append(heading1, heading2, heading3, bulletedList, numberedList)
-    toolbar.append(formatting, link, styles)
+    toolbar.append(formatting, link, styles, ...tooltips)
 
     const editor = new Editor({
       editorProps: {
@@ -351,21 +374,32 @@ function fetchSvg(path: string) {
     })
 }
 
-async function createButton(label: HTMLSpanElement, icon: string) {
+async function createButton(
+  label: HTMLSpanElement,
+  id: string,
+  icon: string,
+): Promise<[HTMLButtonElement, HTMLSpanElement?]> {
   const button = document.createElement('button')
   button.type = 'button'
   button.setAttribute('aria-pressed', 'false')
   button.setAttribute('aria-disabled', 'true')
-  button.append(label)
 
   try {
     const svg = await fetchSvg(icon)
     svg.setAttribute('aria-hidden', 'true')
     button.append(svg)
-    label.classList.add('visually-hidden')
   } catch {
-    // Do nothing
+    button.append(label)
+
+    return [button]
   }
 
-  return button
+  const tooltip = document.createElement('span')
+  tooltip.id = `tooltip-${id}`
+  tooltip.classList.add('visually-hidden')
+  tooltip.append(label)
+
+  button.setAttribute('aria-labelledby', tooltip.id)
+
+  return [button, tooltip]
 }
