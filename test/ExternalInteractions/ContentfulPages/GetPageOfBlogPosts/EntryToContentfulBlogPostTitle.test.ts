@@ -34,10 +34,10 @@ it.effect.each<{
       slug: Slug('august-newsletter'),
       heroImage: {
         url: new URL(
-          'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png',
+          'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png?w=600',
         ),
-        width: 1200,
-        height: 675,
+        width: 600,
+        height: 338,
       },
       excerpt:
         'In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further.',
@@ -52,10 +52,10 @@ it.effect.each<{
       slug: Slug('interview-prereview-champion-mabel-omoniwa'),
       heroImage: {
         url: new URL(
-          'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png',
+          'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png?w=600',
         ),
-        width: 1200,
-        height: 675,
+        width: 600,
+        height: 338,
       },
       excerpt:
         'In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.',

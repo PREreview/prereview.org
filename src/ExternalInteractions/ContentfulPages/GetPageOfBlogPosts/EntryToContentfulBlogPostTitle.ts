@@ -1,3 +1,4 @@
+import { Url, UrlParams } from '@effect/platform'
 import { Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index.ts'
@@ -35,10 +36,18 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
       const image = getValueForDefaultLocale(heroImage.fields.image)
       const asset = getValueForDefaultLocale(image.fields.file)
 
+      if (asset.details.image.width <= 600) {
+        return {
+          url: asset.url,
+          width: asset.details.image.width,
+          height: asset.details.image.height,
+        }
+      }
+
       return {
-        url: asset.url,
-        width: asset.details.image.width,
-        height: asset.details.image.height,
+        url: Url.modifyUrlParams(asset.url, UrlParams.set('w', '600')),
+        width: 600,
+        height: Math.round((asset.details.image.height * 600) / asset.details.image.width),
       }
     }),
     excerpt:
