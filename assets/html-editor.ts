@@ -374,10 +374,24 @@ function fetchSvg(path: string) {
     })
 }
 
-const div = document.createElement('div')
-div.popover = 'hint'
-const supportsPopoverHint = div.popover === 'hint'
+let supportsPopoverHintResult: boolean
+
+function supportsPopoverHint(): boolean {
+  if (typeof supportsPopoverHintResult === 'boolean') {
+    return supportsPopoverHintResult
+  }
+
+  const div = document.createElement('div')
+  div.popover = 'hint'
+  supportsPopoverHintResult = div.popover === 'hint'
+
+  console.log('supportsPopoverHint', supportsPopoverHintResult)
+  return supportsPopoverHintResult
+}
+
 const supportsInterestFor = CSS.supports('interest-delay', '0s')
+
+console.log('supportsInterestFor', supportsInterestFor)
 
 async function createButton(
   label: HTMLSpanElement,
@@ -399,7 +413,7 @@ async function createButton(
     return [button]
   }
 
-  if (!supportsPopoverHint || !supportsInterestFor) {
+  if (!supportsPopoverHint()) {
     label.classList.add('visually-hidden')
     button.append(label)
 
@@ -412,6 +426,19 @@ async function createButton(
   tooltip.append(label)
 
   button.setAttribute('aria-labelledby', tooltip.id)
+
+  if (!supportsInterestFor) {
+    tooltip.style.positionAnchor = `--${id}`
+    button.style.anchorName = `--${id}`
+
+    button.addEventListener('mouseenter', () => tooltip.showPopover())
+    button.addEventListener('focus', () => tooltip.showPopover())
+    button.addEventListener('mouseleave', () => tooltip.hidePopover())
+    button.addEventListener('blur', () => tooltip.hidePopover())
+
+    return [button, tooltip]
+  }
+
   button.setAttribute('interestfor', tooltip.id)
 
   return [button, tooltip]
