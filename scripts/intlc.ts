@@ -1,6 +1,5 @@
 import { Command, FileSystem } from '@effect/platform'
 import { NodeContext, NodeRuntime } from '@effect/platform-node'
-import { pascalCase } from 'case-anything'
 import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, Stream, String, Tuple } from 'effect'
 import Handlebars from 'handlebars'
 
@@ -167,7 +166,7 @@ const BuildAssetsModule = Effect.fnUntraced(function* ({ module, target }: { mod
     defaultLocaleDir,
     locales,
     realLocales: Array.filter(locales, locale => locale !== crowdinInContextLocale),
-    moduleName: pascalCase(module),
+    moduleName: kebabToPascal(module),
   })
 
   yield* fileSystem.writeFileString(target, rendered)
@@ -189,7 +188,7 @@ const BuildSrcModule = Effect.fnUntraced(function* ({ module, target }: { module
     locales,
     html: true,
     realLocales: Array.filter(locales, locale => locale !== crowdinInContextLocale),
-    moduleName: pascalCase(module),
+    moduleName: kebabToPascal(module),
   })
 
   yield* fileSystem.writeFileString(target, rendered)
@@ -211,7 +210,7 @@ const BuildAssets = Effect.fnUntraced(function* (target: string) {
     defaultLocale,
     languages,
     locales,
-    moduleNames: Record.fromEntries(Array.map(assetsModules, module => Tuple.make(pascalCase(module), module))),
+    moduleNames: Record.fromEntries(Array.map(assetsModules, module => Tuple.make(kebabToPascal(module), module))),
   })
 
   yield* fileSystem.writeFileString(target, rendered)
@@ -234,7 +233,7 @@ const BuildSrc = Effect.fnUntraced(function* (target: string) {
     defaultLocale,
     languages,
     locales,
-    moduleNames: Record.fromEntries(Array.map(modules, module => Tuple.make(pascalCase(module), module))),
+    moduleNames: Record.fromEntries(Array.map(modules, module => Tuple.make(kebabToPascal(module), module))),
   })
 
   yield* fileSystem.writeFileString(target, rendered)
@@ -341,3 +340,5 @@ program.pipe(
   ),
   NodeRuntime.runMain({ disableErrorReporting: true }),
 )
+
+const kebabToPascal = flow(String.kebabToSnake, String.snakeToPascal)

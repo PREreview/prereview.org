@@ -62,9 +62,6 @@ importers:
       '@opentelemetry/sdk-trace-node':
         specifier: ^2.11.0
         version: 2.11.0(@opentelemetry/api@1.9.1)
-      case-anything:
-        specifier: ^3.1.5
-        version: 3.1.5
       cdigit:
         specifier: ^5.0.1
         version: 5.0.1
@@ -2387,10 +2384,6 @@ packages:
 
   caniuse-lite@1.0.30001810:
     resolution: {integrity: sha512-TITQPUkaz+aVk5GL6NhOdwk1aEaNTSDPsGFWrTuhKGtjTF70jL/Oht2W4c6rXUe5fu7Ie19VIahAXHIIiWWNeg==}
-
-  case-anything@3.1.5:
-    resolution: {integrity: sha512-okCU7H20JIYSlLAZ7/6ckVILKrEy7LehwIIt3jGWM9sNm6BiSZ/1mir7QiFhDUTAvc+9MuN6gGocvjjm7wBoTg==}
-    engines: {node: '>=18'}
 
   cdigit@5.0.1:
     resolution: {integrity: sha512-AW6HKtdmEM50gj5QSg2z9MiG3qyL3z0czyQvV0yJ1fJKgBtp+GmvEbFi6LIQCzwuQmTyjxgCXC92SMF2hsKWFw==}
@@ -7150,8 +7143,6 @@ snapshots:
       lodash.uniq: 4.5.0
 
   caniuse-lite@1.0.30001810: {}
-
-  case-anything@3.1.5: {}
 
   cdigit@5.0.1:
     dependencies:

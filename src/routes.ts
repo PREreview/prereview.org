@@ -1,6 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { capitalCase } from 'case-anything'
-import { Array, Data, Match, Option, Record, Schema, Tuple, flow, identity, pipe } from 'effect'
+import { Array, Data, Match, Option, Record, Schema, String, Tuple, flow, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -552,6 +551,8 @@ const SlugC = C.make(
     encode: string => string.toLowerCase().replaceAll(' ', '-'),
   },
 )
+
+const capitalCase = (string: string) => string.replaceAll(/\b[a-z]/g, String.toUpperCase)
 
 const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(PseudonymC))
 
