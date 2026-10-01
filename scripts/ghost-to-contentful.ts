@@ -131,15 +131,12 @@ type BoilerplateBlock =
 // - 'button'  : a kg-button-card whose href matches any hrefPattern
 const BOILERPLATE_BLOCKS: ReadonlyArray<BoilerplateBlock> = [
   { kind: 'class', name: 'Donate CTA header', cssClass: 'kg-header-card' },
-  { kind: 'section', name: 'Stay connected', ids: ['stay-connected'] },
   {
     kind: 'section',
     name: 'Donation CTA',
     ids: ['consider-supporting-us'],
     idPrefixes: ['interested-in-supporting'],
   },
-  { kind: 'section', name: 'Let us know what you think', ids: ['let-us-know-what-you-think'] },
-  { kind: 'section', name: 'Help us CTA', ids: ['help-us-out', 'help-us-help-you'] },
 ]
 
 function matchesSectionStart(block: Extract<BoilerplateBlock, { kind: 'section' }>, id: string): boolean {
