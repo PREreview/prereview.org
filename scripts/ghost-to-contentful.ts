@@ -400,6 +400,17 @@ const GhostPost = Schema.Struct({
 
 const GhostPosts = Schema.Array(Schema.partial(GhostPost))
 
+type Tag = 'newsletter' | 'weeknote'
+
+// "Exciting platform news for PREreview in 2023" is an announcement rather than a weeknote,
+// so match on the full series prefix rather than just "platform news".
+function tagForTitle(title: string): Tag | undefined {
+  const lower = title.toLowerCase()
+  if (lower.includes('newsletter')) return 'newsletter'
+  if (lower.includes('prereview platform news')) return 'weeknote'
+  return undefined
+}
+
 interface SkipReport {
   slug: string
   skipped: Array<string>
@@ -540,11 +551,14 @@ void pipe(
             }
           }
 
+          const tag = tagForTitle(post.title)
+
           const entry = {
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
               authors: { 'en-US': authorLinks },
+              ...(tag !== undefined ? { tag: { 'en-US': tag } } : {}),
               ...(heroImage !== undefined ? { heroImage: { 'en-US': heroImage } } : {}),
               ...(post.custom_excerpt !== null ? { excerpt: { 'en-US': post.custom_excerpt } } : {}),
               content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup, buttonLookup) },
