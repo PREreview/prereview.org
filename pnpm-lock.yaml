@@ -172,8 +172,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(postcss@8.5.28)
       '@effect/language-service':
-        specifier: ^0.87.2
-        version: 0.87.2
+        specifier: ^0.87.3
+        version: 0.87.3
       '@effect/sql-libsql':
         specifier: ^0.42.0
         version: 0.42.0(@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2)(ioredis@5.11.1(supports-color@10.2.2)))(@effect/platform@0.97.2(effect@3.22.2))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2)(ioredis@5.11.1(supports-color@10.2.2)))(@effect/platform@0.97.2(effect@3.22.2))(effect@3.22.2))(effect@3.22.2)
@@ -771,8 +771,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.87.2':
-    resolution: {integrity: sha512-CfiSoaVQO8pZgaMZGw5VvMvRGybsJ2LaSDoLYaqiVGvo/YYPYVR2GzUKY0h1NtIweq/+SQ5XLrvtzPIttWQ0GQ==}
+  '@effect/language-service@0.87.3':
+    resolution: {integrity: sha512-g1OmRBZF5chbW9QMNoirPo5Bb4zzU2HfP88tR7/VSZEUxHJ1/qVb8AQ0kUh2ggctLH1I715yCwP4gkw56PTjpQ==}
     hasBin: true
 
   '@effect/opentelemetry@0.64.1':
@@ -5756,7 +5756,7 @@ snapshots:
     optionalDependencies:
       ioredis: 5.11.1(supports-color@10.2.2)
 
-  '@effect/language-service@0.87.2': {}
+  '@effect/language-service@0.87.3': {}
 
   '@effect/opentelemetry@0.64.1(@effect/platform@0.97.2(effect@3.22.2))(@opentelemetry/api@1.9.1)(@opentelemetry/resources@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-logs@0.222.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-metrics@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-node@2.11.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-web@2.8.0(@opentelemetry/api@1.9.1))(@opentelemetry/semantic-conventions@1.43.0)(effect@3.22.2)':
     dependencies:
