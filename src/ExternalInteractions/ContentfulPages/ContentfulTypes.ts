@@ -62,6 +62,7 @@ export const HeroImageEntry = Schema.Struct({
 
 export const YouTubeEntry = Schema.Struct({
   sys: Schema.Struct({
+    id: ContentfulId,
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('youTube')) }) }),
   }),
   fields: Schema.Struct({

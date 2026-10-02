@@ -149,15 +149,14 @@ it.effect.each<{
           </figcaption>
         </figure>
         <figure>
-          <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-            <img
-              src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
-              width="480"
-              height="360"
-              alt="PREreview in Dialogue"
-            />
+          <a
+            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            aria-label="Watch on YouTube: PREreview in Dialogue"
+            aria-describedby="youtube-caption-2YtVid3oEmb3dXmPlE0aBc"
+          >
+            <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" width="480" height="360" alt="" />
           </a>
-          <figcaption>
+          <figcaption id="youtube-caption-2YtVid3oEmb3dXmPlE0aBc">
             <p>
               <span>A conversation about <i>open peer review</i></span>
             </p>

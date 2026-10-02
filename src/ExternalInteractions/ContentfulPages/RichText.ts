@@ -68,26 +68,35 @@ const EmbeddedEntryToHtml = Match.typeTags<
       ? BlockContentToHtml(getValueForDefaultLocale(youTube.fields.caption))
       : Effect.succeed([])
 
-    const link = Option.match(YouTubeVideoId.fromUrl(url), {
-      onSome: videoId => html`
-        <a href="${url.href}">
-          <img src="${YouTubeVideoId.thumbnailUrl(videoId).href}" width="480" height="360" alt="${title}" />
-        </a>
-      `,
-      onNone: () => html`<a href="${url.href}">Watch on YouTube: ${title}</a>`,
-    })
+    if (!Array.isNonEmptyReadonlyArray(caption)) {
+      return YouTubeLink({ url, title })
+    }
 
-    return Array.match(caption, {
-      onNonEmpty: caption => html`
-        <figure>
-          ${link}
-          <figcaption>${caption}</figcaption>
-        </figure>
-      `,
-      onEmpty: () => link,
-    })
+    const captionId = `youtube-caption-${youTube.sys.id}`
+
+    return html`
+      <figure>
+        ${YouTubeLink({ url, title, describedBy: captionId })}
+        <figcaption id="${captionId}">${caption}</figcaption>
+      </figure>
+    `
   }),
 })
+
+const YouTubeLink = ({ url, title, describedBy }: { url: URL; title: string; describedBy?: string }): Html => {
+  const describedByAttribute = describedBy === undefined ? '' : html`aria-describedby="${describedBy}"`
+  const videoId = YouTubeVideoId.fromUrl(url)
+
+  if (Option.isNone(videoId)) {
+    return html`<a href="${url.href}" ${describedByAttribute}>Watch on YouTube: ${title}</a>`
+  }
+
+  return html`
+    <a href="${url.href}" aria-label="Watch on YouTube: ${title}" ${describedByAttribute}>
+      <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" />
+    </a>
+  `
+}
 
 const BlockElementToHtml = Match.typeTags<
   Block,
