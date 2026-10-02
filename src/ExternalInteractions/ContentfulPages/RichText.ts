@@ -92,10 +92,12 @@ const YouTubeLink = ({ url, title, describedBy }: { url: URL; title: string; des
   }
 
   return html`
-    <a href="${url.href}" class="youtube-video" aria-label="Watch on YouTube: ${title}" ${describedByAttribute}>
-      <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" />
-      <span>Watch on YouTube</span>
-    </a>
+    <youtube-embed data-video-id="${videoId.value}" data-title="${title}">
+      <a href="${url.href}" class="youtube-video" aria-label="Watch on YouTube: ${title}" ${describedByAttribute}>
+        <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" />
+        <span>Watch on YouTube</span>
+      </a>
+    </youtube-embed>
   `
 }
 
