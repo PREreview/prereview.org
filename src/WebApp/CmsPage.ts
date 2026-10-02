@@ -36,6 +36,7 @@ export const CmsPage = Effect.fnUntraced(
       `,
       canonical,
       current,
+      js: ['youtube-embed.js'],
     })
   },
   Effect.catchAll(() => HavingProblemsPage),

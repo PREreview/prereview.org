@@ -33,7 +33,7 @@ describe('CmsPage', () => {
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
-          js: [],
+          js: ['youtube-embed.js'],
         })
         expect(getPage).toHaveBeenCalledWith(slug, preview ?? false)
       }).pipe(Effect.provideService(Locale, locale)),

@@ -70,6 +70,7 @@ export const CmsBlogPostPage = Effect.fnUntraced(
         <div ${languageAttributesFor(content.locale)}>${fixHeadingLevels(1, content.html)}</div>
       `,
       canonical: Routes.BlogPost.href({ slug }),
+      js: ['youtube-embed.js'],
     })
   },
   Effect.catchAll(() => HavingProblemsPage),

@@ -16,7 +16,7 @@
 
 @custom-selector :--button
   button:not([aria-pressed], [aria-expanded]),
-  [role='button']:not([aria-pressed], [aria-expanded]),
+  [role='button']:not([aria-pressed], [aria-expanded], .unstyled-button),
   .button;
 @custom-selector :--heading h1, h2, h3, h4, h5, h6;
 @custom-selector :--input [type='text'], :--textarea;
@@ -603,11 +603,24 @@ figcaption {
   font-size: var(--step--1);
 }
 
+youtube-embed {
+  display: block;
+
+  & > iframe {
+    block-size: auto;
+    inline-size: 480px;
+    max-inline-size: 100%;
+    border: 0;
+    aspect-ratio: 16 / 9;
+  }
+}
+
 .youtube-video {
   display: grid;
   inline-size: fit-content;
   max-inline-size: 100%;
   text-decoration-line: none;
+  cursor: pointer;
   place-items: center;
 
   & > * {

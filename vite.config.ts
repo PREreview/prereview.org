@@ -30,6 +30,7 @@ const entries = {
   'skip-link': path.resolve('assets', 'skip-link.ts'),
   'spotlight-banner': path.resolve('assets', 'spotlight-banner.ts'),
   'style.css': path.resolve('assets', 'style.css'),
+  'youtube-embed': path.resolve('assets', 'youtube-embed.ts'),
   ...imageEntries,
 }
 
@@ -81,6 +82,7 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       input: entries,
       output: {
+        comments: { legal: true },
         entryFileNames: '[name].[hash].js',
         chunkFileNames: '[name].[hash].js',
         assetFileNames: assetInfo => {

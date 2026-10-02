@@ -10,6 +10,8 @@ const crowdin = {
   crossOriginEmbedderPolicy: 'unsafe-none' as const,
 }
 
+const youTubeFrameSrc = ['https://www.youtube-nocookie.com/embed/']
+
 const scriptSrc = ["'self'", 'cdn.usefathom.com']
 
 const imgSrc = [
@@ -42,7 +44,7 @@ export const securityHeaders = (
         'font-src': ["'self'", 'https:', 'data:'],
         'form-action': "'self'",
         'frame-ancestors': ["'self'"].concat(enableContentfulPreview ? ['https://app.contentful.com'] : []),
-        'frame-src': useCrowdinInContext ? crowdin.frameSrc : "'none'",
+        'frame-src': useCrowdinInContext ? youTubeFrameSrc.concat(crowdin.frameSrc) : youTubeFrameSrc,
         'object-src': "'none'",
         'script-src-attr': useCrowdinInContext ? "'unsafe-inline'" : "'none'",
         'style-src': ["'self'", 'https:'].concat(useCrowdinInContext ? crowdin.styleSrc : []),
