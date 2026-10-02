@@ -17,7 +17,10 @@ export const CallToActionEntry = Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('callToAction')) }) }),
   }),
   fields: Schema.Struct({
-    text: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+    text: Schema.Record({
+      key: Schema.NonEmptyTrimmedString,
+      value: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+    }),
     url: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.URL }),
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'CallToActionEntry'))
@@ -38,7 +41,9 @@ export const MediaEntry = Schema.Struct({
   fields: Schema.Struct({
     caption: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) })),
     file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
-    altText: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString })),
+    altText: Schema.optional(
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.compose(Schema.Trim, Schema.NonEmptyString) }),
+    ),
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'MediaEntry'))
 
@@ -49,7 +54,9 @@ export const HeroImageEntry = Schema.Struct({
   fields: Schema.Struct({
     caption: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) })),
     image: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
-    altText: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString })),
+    altText: Schema.optional(
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.compose(Schema.Trim, Schema.NonEmptyString) }),
+    ),
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'HeroImageEntry'))
 

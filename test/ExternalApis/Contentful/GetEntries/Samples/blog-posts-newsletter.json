@@ -1346,7 +1346,7 @@
           },
           "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "7aBxOS0x2pdbBGdTG4wNDy" } } },
           "altText": {
-            "en-US": "\"PREreview August Newsletter\" header over photo of raindrops creating ripples on a water surface"
+            "en-US": "\"PREreview August Newsletter\" header over photo of raindrops creating ripples on a water surface "
           }
         }
       },
@@ -1405,7 +1405,7 @@
           "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
         },
         "fields": {
-          "text": { "en-US": "LEARN MORE & REGISTER" },
+          "text": { "en-US": "LEARN MORE & REGISTER " },
           "url": { "en-US": "https://sites.google.com/prereview.org/review-a-thon/about?authuser=4" }
         }
       },
@@ -1425,7 +1425,7 @@
         "fields": {
           "title": { "en-US": "Peer Review Week logo" },
           "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6BmOyODL93skgyxtdKpoXT" } } },
-          "altText": { "en-US": "Peer Review Week logo" }
+          "altText": { "en-US": "Peer Review Week logo " }
         }
       },
       {

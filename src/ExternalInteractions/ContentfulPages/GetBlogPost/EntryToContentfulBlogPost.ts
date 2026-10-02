@@ -47,7 +47,7 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
       const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
       const image = getValueForDefaultLocale(heroImage.fields.image)
       const asset = getValueForDefaultLocale(image.fields.file)
-      const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText) : undefined
+      const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText).trim() : undefined
       const caption = yield* heroImage.fields.caption
         ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
         : Effect.succeed([])
