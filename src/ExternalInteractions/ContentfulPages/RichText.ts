@@ -7,6 +7,7 @@ import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import { Slug } from '../../types/Slug.ts'
 import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry, YouTubeEntry } from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
+import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, YouTubeEntry)
 
@@ -60,7 +61,32 @@ const EmbeddedEntryToHtml = Match.typeTags<
       `,
     })
   }),
-  YouTubeEntry: () => Effect.succeed(html``),
+  YouTubeEntry: Effect.fnUntraced(function* (youTube) {
+    const url = getValueForDefaultLocale(youTube.fields.url)
+    const title = getValueForDefaultLocale(youTube.fields.title)
+    const caption = yield* youTube.fields.caption
+      ? BlockContentToHtml(getValueForDefaultLocale(youTube.fields.caption))
+      : Effect.succeed([])
+
+    const link = Option.match(YouTubeVideoId.fromUrl(url), {
+      onSome: videoId => html`
+        <a href="${url.href}">
+          <img src="${YouTubeVideoId.thumbnailUrl(videoId).href}" width="480" height="360" alt="${title}" />
+        </a>
+      `,
+      onNone: () => html`<a href="${url.href}">Watch on YouTube: ${title}</a>`,
+    })
+
+    return Array.match(caption, {
+      onNonEmpty: caption => html`
+        <figure>
+          ${link}
+          <figcaption>${caption}</figcaption>
+        </figure>
+      `,
+      onEmpty: () => link,
+    })
+  }),
 })
 
 const BlockElementToHtml = Match.typeTags<

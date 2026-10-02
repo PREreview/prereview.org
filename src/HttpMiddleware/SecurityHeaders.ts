@@ -18,6 +18,7 @@ const imgSrc = [
   'avatars.slack-edge.com',
   'cdn.usefathom.com',
   'content.prereview.org',
+  'https://i.ytimg.com/vi/',
   'images.ctfassets.net',
   'res.cloudinary.com',
   'secure.gravatar.com',

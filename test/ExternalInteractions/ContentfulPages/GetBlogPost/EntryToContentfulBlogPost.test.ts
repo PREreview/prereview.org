@@ -148,6 +148,21 @@ it.effect.each<{
             </p>
           </figcaption>
         </figure>
+        <figure>
+          <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            <img
+              src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+              width="480"
+              height="360"
+              alt="PREreview in Dialogue"
+            />
+          </a>
+          <figcaption>
+            <p>
+              <span>A conversation about <i>open peer review</i></span>
+            </p>
+          </figcaption>
+        </figure>
         <p>
           <span>
             <b>Pia Tavella at the IV Encuentro de la Red Chilena de Revistas Científicas de Acceso Abierto</b>
