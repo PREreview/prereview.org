@@ -1,4 +1,4 @@
-// oxlint-disable no-comments/disallowComments
+/* eslint-disable no-comments/disallowComments */
 /**
  * @license
  * Adapted from lite-youtube-embed (https://github.com/paulirish/lite-youtube-embed)
