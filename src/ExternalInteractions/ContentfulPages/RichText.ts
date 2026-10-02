@@ -5,10 +5,10 @@ import type { Block, Heading1, Heading2, Heading3, Inline, Mark, Text } from '..
 import { type Html, html } from '../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import { Slug } from '../../types/Slug.ts'
-import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry } from './ContentfulTypes.ts'
+import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry, YouTubeEntry } from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 
-const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry)
+const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, YouTubeEntry)
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
@@ -60,6 +60,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
       `,
     })
   }),
+  YouTubeEntry: () => Effect.succeed(html``),
 })
 
 const BlockElementToHtml = Match.typeTags<

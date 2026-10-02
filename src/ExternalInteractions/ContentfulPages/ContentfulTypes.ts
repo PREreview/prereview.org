@@ -52,3 +52,17 @@ export const HeroImageEntry = Schema.Struct({
     altText: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString })),
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'HeroImageEntry'))
+
+export const YouTubeEntry = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('youTube')) }) }),
+  }),
+  fields: Schema.Struct({
+    title: Schema.Record({
+      key: Schema.NonEmptyTrimmedString,
+      value: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+    }),
+    url: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.URL }),
+    caption: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) })),
+  }),
+}).pipe(Schema.attachPropertySignature('_tag', 'YouTubeEntry'))

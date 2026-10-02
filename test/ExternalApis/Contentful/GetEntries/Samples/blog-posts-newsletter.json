@@ -209,6 +209,13 @@
                 "content": []
               },
               {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2YtVid3oEmb3dXmPlE0aBc", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
                 "nodeType": "paragraph",
                 "data": {},
                 "content": [
@@ -1239,6 +1246,40 @@
   ],
   "includes": {
     "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "2YtVid3oEmb3dXmPlE0aBc",
+          "type": "Entry",
+          "createdAt": "2026-10-01T10:35:12.104Z",
+          "updatedAt": "2026-10-01T10:35:12.104Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "youTube" } }
+        },
+        "fields": {
+          "title": { "en-US": "PREreview in Dialogue " },
+          "url": { "en-US": "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    { "nodeType": "text", "value": "A conversation about ", "marks": [], "data": {} },
+                    { "nodeType": "text", "value": "open peer review", "marks": [{ "type": "italic" }], "data": {} }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
       {
         "metadata": { "tags": [], "concepts": [] },
         "sys": {
