@@ -151,10 +151,12 @@ it.effect.each<{
         <figure>
           <a
             href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            class="youtube-video"
             aria-label="Watch on YouTube: PREreview in Dialogue"
             aria-describedby="youtube-caption-2YtVid3oEmb3dXmPlE0aBc"
           >
             <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" width="480" height="360" alt="" />
+            <span>Watch on YouTube</span>
           </a>
           <figcaption id="youtube-caption-2YtVid3oEmb3dXmPlE0aBc">
             <p>
