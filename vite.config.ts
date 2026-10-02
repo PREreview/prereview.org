@@ -35,6 +35,7 @@ const entries = {
 
 export default defineConfig(({ mode }) => ({
   cacheDir: path.resolve('.cache/vite'),
+  envDir: false,
   css: {
     postcss: {
       plugins: [
