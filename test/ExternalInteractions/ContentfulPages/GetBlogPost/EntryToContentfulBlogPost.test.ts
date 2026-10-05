@@ -26,6 +26,7 @@ it.effect.each<{
       authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
       publishedAt: Instant.from('2025-10-31T14:00:00Z'),
       heroImage: undefined,
+      excerpt: undefined,
       html: html`
         <p>
           <span>Thanks for checking out the latest update from the product team at <a href="/">PREreview.org</a>.</span>
@@ -85,6 +86,8 @@ it.effect.each<{
           </p>
         `,
       },
+      excerpt:
+        'In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further.',
       html: html`
         <p>
           <span>
@@ -635,6 +638,8 @@ it.effect.each<{
         altText: undefined,
         caption: undefined,
       },
+      excerpt:
+        'In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.',
       html: html`
         <p>
           <span>
@@ -933,6 +938,8 @@ it.effect.each<{
         altText: '"PREreview Advisory Committee Meeting Minutes - March 3, 2026" banner',
         caption: undefined,
       },
+      excerpt:
+        'Welcome to new AC members, goodbye and gratitude to Kristen Ratan. Overview of PREreview governance and the role of the Advisory Committee. Review of strategic plan activities and finance overview.',
       html: html`
         <p><span>2026 Quarter 1 Meeting: March 3, 2026 - 16:30 to 18:00 UTC</span></p>
         <h3 id="attendees"><span>Attendees</span></h3>

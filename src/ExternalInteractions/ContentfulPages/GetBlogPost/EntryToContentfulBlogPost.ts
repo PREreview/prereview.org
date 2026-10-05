@@ -26,6 +26,7 @@ const BlogPostEntry = Schema.Struct({
     heroImage: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
     ),
+    excerpt: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyString })),
     content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) }),
     firstPublishedAtOverride: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: InstantSchema }),
@@ -79,6 +80,8 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
         caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
       }
     }),
+    excerpt:
+      typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
     html: yield* Effect.map(
       BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)),
       content => html`${content}`,

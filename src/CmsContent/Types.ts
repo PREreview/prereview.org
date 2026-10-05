@@ -37,6 +37,7 @@ export class BlogPost extends Schema.Class<BlogPost>('BlogPost')({
       caption: Schema.optional(HtmlSchema),
     }),
   ),
+  excerpt: Schema.optional(Schema.NonEmptyTrimmedString),
   html: HtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   publishedAt: InstantSchema,

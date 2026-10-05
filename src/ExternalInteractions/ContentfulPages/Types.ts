@@ -37,6 +37,7 @@ export class ContentfulBlogPost extends Schema.Class<ContentfulBlogPost>('Conten
       caption: Schema.optional(HtmlSchema),
     }),
   ),
+  excerpt: Schema.optional(Schema.NonEmptyTrimmedString),
   html: HtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   publishedAt: InstantSchema,

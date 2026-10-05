@@ -21,6 +21,7 @@ export const CmsBlogPostPage = Effect.fnUntraced(
 
     return PageResponse({
       title: plainText(content.title),
+      description: typeof content.excerpt === 'string' ? plainText(content.excerpt) : undefined,
       nav: html`<a href="${Routes.Blog.href({ page: 1 })}" class="back">${t('forms', 'backLink')()}</a>`,
       main: html`
         <header>
