@@ -15,13 +15,18 @@ export const GetPageOfBlogPosts: (
 
     const contentful = yield* Contentful
 
-    const { items, total } = yield* contentful.getEntries({
+    const batchIndex = Math.floor((page - 1) / (50 / 5))
+    const pageIndexInBatch = (page - 1) % (50 / 5)
+
+    const { items: batchedItems, total } = yield* contentful.getEntries({
       content_type: 'blogPost',
-      limit: 5,
-      skip: (page - 1) * 5,
+      limit: 50,
+      skip: batchIndex * 50,
       order: '-sys.createdAt',
       select: Array.join(['sys', 'fields.title', 'fields.slug', 'fields.heroImage', 'fields.excerpt'], ','),
     })
+
+    const items = batchedItems.slice(pageIndexInBatch * 5, (pageIndexInBatch + 1) * 5)
 
     if (!Array.isNonEmptyReadonlyArray(items)) {
       return yield* new PageNotFound({})
