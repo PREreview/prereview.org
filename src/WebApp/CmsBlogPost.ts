@@ -27,6 +27,7 @@ export const CmsBlogPostPage = Effect.fnUntraced(
             url: content.heroImage.url.default,
             width: content.heroImage.width,
             height: content.heroImage.height,
+            altText: content.heroImage.altText,
           }
         : undefined,
       nav: html`<a href="${Routes.Blog.href({ page: 1 })}" class="back">${t('forms', 'backLink')()}</a>`,

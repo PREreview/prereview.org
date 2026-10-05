@@ -16,6 +16,7 @@ export interface Page {
     url: URL
     width: number
     height: number
+    altText?: string
   }
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html
@@ -160,6 +161,7 @@ export const page = ({
                 <meta property="og:image" content="${image.url.href}" />
                 <meta property="og:image:width" content="${image.width}" />
                 <meta property="og:image:height" content="${image.height}" />
+                ${typeof image.altText === 'string' ? html`<meta property="og:image:alt" content="${image.altText}" />` : ''}
               `
             : ''
         }
