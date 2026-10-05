@@ -1,7 +1,16 @@
 import { Array, Effect, Match, Option, type ParseResult, pipe, Predicate, Record, Schema, type Types } from 'effect'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
-import type { Block, Heading1, Heading2, Heading3, Inline, Mark, Text } from '../../ExternalApis/Contentful/index.ts'
+import type {
+  Asset,
+  Block,
+  Heading1,
+  Heading2,
+  Heading3,
+  Inline,
+  Mark,
+  Text,
+} from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html } from '../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import { Slug } from '../../types/Slug.ts'
@@ -32,8 +41,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
     return yield* dynamicEmbedded[getValueForDefaultLocale(dynamicEmbed.fields.key)]
   }),
   MediaEntry: Effect.fnUntraced(function* (media) {
-    const file = getValueForDefaultLocale(media.fields.file)
-    const asset = getValueForDefaultLocale(file.fields.file)
+    const asset = getValueForDefaultLocale(media.fields.file)
     const altText = media.fields.altText ? getValueForDefaultLocale(media.fields.altText) : ''
     const caption = yield* media.fields.caption
       ? BlockContentToHtml(getValueForDefaultLocale(media.fields.caption))
@@ -42,23 +50,11 @@ const EmbeddedEntryToHtml = Match.typeTags<
     return Array.match(caption, {
       onNonEmpty: caption => html`
         <figure>
-          <img
-            src="${asset.url.href}"
-            width="${asset.details.image.width}"
-            height="${asset.details.image.height}"
-            alt="${altText}"
-          />
+          ${ImageAssetToHtml({ asset, altText })}
           <figcaption>${caption}</figcaption>
         </figure>
       `,
-      onEmpty: () => html`
-        <img
-          src="${asset.url.href}"
-          width="${asset.details.image.width}"
-          height="${asset.details.image.height}"
-          alt="${altText}"
-        />
-      `,
+      onEmpty: () => ImageAssetToHtml({ asset, altText }),
     })
   }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
@@ -101,6 +97,19 @@ const YouTubeLink = ({ url, title, describedBy }: { url: URL; title: string; des
   `
 }
 
+const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) => {
+  const file = getValueForDefaultLocale(asset.fields.file)
+
+  return html`
+    <img
+      src="${file.url.href}"
+      width="${file.details.image.width}"
+      height="${file.details.image.height}"
+      alt="${altText}"
+    />
+  `
+}
+
 const BlockElementToHtml = Match.typeTags<
   Block,
   Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale>
@@ -108,18 +117,8 @@ const BlockElementToHtml = Match.typeTags<
   BlockQuote: blockQuote =>
     Effect.map(BlockContentToHtml(blockQuote), content => Option.some(html`<blockquote>${content}</blockquote>`)),
   Document: document => Effect.map(BlockContentToHtml(document), content => Option.some(html`${content}`)),
-  EmbeddedAssetBlock: embeddedAssetBlock => {
-    const file = getValueForDefaultLocale(embeddedAssetBlock.data.target.fields.file)
-
-    return Effect.succeedSome(
-      html`<img
-        src="${file.url.href}"
-        width="${file.details.image.width}"
-        height="${file.details.image.height}"
-        alt=""
-      />`,
-    )
-  },
+  EmbeddedAssetBlock: embeddedAssetBlock =>
+    Effect.succeedSome(ImageAssetToHtml({ asset: embeddedAssetBlock.data.target, altText: '' })),
   EmbeddedEntryBlock: embeddedEntryBlock =>
     pipe(
       Schema.decodeUnknown(EmbeddedEntry)(embeddedEntryBlock.data.target),
