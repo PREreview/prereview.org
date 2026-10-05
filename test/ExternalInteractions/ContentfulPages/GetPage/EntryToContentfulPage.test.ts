@@ -874,7 +874,8 @@ it.effect.each<{
       Effect.andThen(_.EntryToContentfulPage),
     )
 
-    assertEquals(actual, expected)
+    expect(Struct.omit(actual, 'html')).toStrictEqual(Struct.omit(expected, 'html'))
+    assertEquals(actual.html, expected.html)
   }).pipe(
     Effect.provide([
       Layer.mock(DynamicEmbedder, {
