@@ -12,7 +12,7 @@ import { Name, OrcidId, Pseudonym, Slug, Uuid } from '../../src/types/index.ts'
 import { createPage } from '../../src/WebApp/HomePage/HomePage.ts'
 import { expect, test } from '../base.ts'
 
-test('content looks right', async ({ showPage }) => {
+test('content looks right', async ({ showPage, baseURL }) => {
   const response = createPage({
     recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     recentReviewRequests: [
@@ -24,6 +24,7 @@ test('content looks right', async ({ showPage }) => {
     ],
     statistics,
     locale: DefaultLocale,
+    publicUrl: new URL(baseURL),
   })
 
   const content = await showPage(response)
@@ -31,12 +32,13 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when empty', async ({ showPage }) => {
+test('content looks right when empty', async ({ showPage, baseURL }) => {
   const response = createPage({
     recentPrereviews: [],
     recentReviewRequests: [],
     statistics,
     locale: DefaultLocale,
+    publicUrl: new URL(baseURL),
   })
 
   const content = await showPage(response)

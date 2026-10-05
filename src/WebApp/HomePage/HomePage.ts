@@ -21,11 +21,13 @@ export const createPage = ({
   recentPrereviews,
   recentReviewRequests,
   statistics,
+  publicUrl,
 }: {
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview | Prereviews.RecentDatasetPrereview>
   recentReviewRequests: ReadonlyArray<ReviewRequests.ReviewRequest>
   statistics: { prereviews: number; servers: number; users: number }
+  publicUrl: URL
 }) =>
   PageResponse({
     title: plainText`⁨PREreview⁩: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
@@ -468,6 +470,11 @@ export const createPage = ({
         </ol>
       </section>
     `,
+    image: {
+      url: new URL(assets['prereview-og.png'].path, publicUrl.origin),
+      width: assets['prereview-og.png'].width,
+      height: assets['prereview-og.png'].height,
+    },
     canonical: Routes.HomePage,
     current: 'home',
   })

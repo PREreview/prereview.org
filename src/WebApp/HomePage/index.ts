@@ -2,6 +2,7 @@ import { Effect, pipe } from 'effect'
 import { Locale } from '../../Context.ts'
 import { ServerNames } from '../../Preprints/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
+import { PublicUrl } from '../../public-url.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import type { PageResponse } from '../Response/index.ts'
 import { createPage } from './HomePage.ts'
@@ -9,7 +10,7 @@ import { createPage } from './HomePage.ts'
 export const HomePage: Effect.Effect<
   PageResponse,
   never,
-  Prereviews.Prereviews | ReviewRequests.ReviewRequests | Locale
+  Prereviews.Prereviews | ReviewRequests.ReviewRequests | Locale | PublicUrl
 > = pipe(
   Effect.Do,
   Effect.bindAll(
@@ -17,6 +18,7 @@ export const HomePage: Effect.Effect<
       locale: Locale,
       recentPrereviews: Prereviews.getFiveMostRecent,
       recentReviewRequests: ReviewRequests.getFiveMostRecent,
+      publicUrl: PublicUrl,
     }),
     { concurrency: 'inherit' },
   ),

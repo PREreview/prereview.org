@@ -16,6 +16,8 @@ import {
 export { expect } from '@playwright/test'
 
 interface ShowPage {
+  baseURL: string
+
   showPage(
     response: PageResponse | StreamlinePageResponse,
     extra?: Omit<Partial<Parameters<typeof toPage>[0]>, 'response'>,
@@ -131,11 +133,10 @@ export const test = baseTest.extend<ShowPage>({
       }
     })
   },
-  templatePage: async ({ baseURL }, use) => {
+  templatePage: async ({}, use) => {
     await use(page =>
       templatePage({
         page,
-        publicUrl: new URL(baseURL ?? ''),
         useCrowdinInContext: false,
         enabledLocales: HashSet.make<ReadonlyArray<UserSelectableLocale>>('en-US', 'es-419', 'pt-BR'),
       }),

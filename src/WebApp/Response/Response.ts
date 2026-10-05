@@ -15,6 +15,7 @@ export interface PageResponse {
   readonly status: StatusCodes.StatusCode
   readonly title: Page['title']
   readonly description?: Page['description']
+  readonly image?: Page['image']
   readonly nav?: Html
   readonly main: Html
   readonly skipToLabel: 'form' | 'main' | 'prereview'
@@ -30,6 +31,7 @@ export interface StreamlinePageResponse {
   readonly status: StatusCodes.StatusCode
   readonly title: Page['title']
   readonly description?: Page['description']
+  readonly image?: Page['image']
   readonly nav?: Html
   readonly main: Html
   readonly skipToLabel: 'form' | 'main'
@@ -42,6 +44,7 @@ export interface TwoUpPageResponse {
   readonly canonical: string
   readonly title: Page['title']
   readonly description?: Page['description']
+  readonly image?: Page['image']
   readonly h1: Html
   readonly aside: Html
   readonly main: Html

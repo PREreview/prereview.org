@@ -12,6 +12,11 @@ export interface Page {
   readonly locale: SupportedLocale
   readonly title: PlainText
   readonly description?: PlainText
+  readonly image?: {
+    url: URL
+    width: number
+    height: number
+  }
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
@@ -49,6 +54,7 @@ export const page = ({
     locale,
     title,
     description,
+    image,
     type,
     content,
     skipLinks = [],
@@ -60,7 +66,6 @@ export const page = ({
   },
   environmentLabel,
   fathomId,
-  publicUrl,
   canLogInAsDemoUser = false,
   useCrowdinInContext,
   enabledLocales,
@@ -68,7 +73,6 @@ export const page = ({
   page: Page
   environmentLabel?: 'dev' | 'sandbox'
   fathomId?: string
-  publicUrl: URL
   canLogInAsDemoUser?: boolean
   useCrowdinInContext: boolean
   enabledLocales: HashSet.HashSet<UserSelectableLocale>
@@ -151,11 +155,11 @@ export const page = ({
         <meta property="og:title" content="${title}" />
         ${description ? html` <meta property="og:description" content="${description}" />` : ''}
         ${
-          current === 'home'
+          image
             ? html`
-                <meta property="og:image" content="${new URL(assets['prereview-og.png'].path, publicUrl).href}" />
-                <meta property="og:image:width" content="${assets['prereview-og.png'].width}" />
-                <meta property="og:image:height" content="${assets['prereview-og.png'].height}" />
+                <meta property="og:image" content="${image.url.href}" />
+                <meta property="og:image:width" content="${image.width}" />
+                <meta property="og:image:height" content="${image.height}" />
               `
             : ''
         }

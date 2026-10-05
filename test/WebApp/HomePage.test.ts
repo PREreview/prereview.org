@@ -2,13 +2,14 @@ import { expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
+import { PublicUrl } from '../../src/public-url.ts'
 import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/HomePage/index.ts'
 import * as fc from '../fc.ts'
 
-it.effect.prop('HomePage', [fc.supportedLocale()], ([locale]) =>
+it.effect.prop('HomePage', [fc.supportedLocale(), fc.origin()], ([locale, publicUrl]) =>
   Effect.gen(function* () {
     const actual = yield* _.HomePage
 
@@ -18,6 +19,7 @@ it.effect.prop('HomePage', [fc.supportedLocale()], ([locale]) =>
       current: 'home',
       status: StatusCodes.OK,
       title: expect.anything(),
+      image: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
       js: [],
@@ -34,5 +36,6 @@ it.effect.prop('HomePage', [fc.supportedLocale()], ([locale]) =>
       }),
     ),
     Effect.provideService(Locale, locale),
+    Effect.provideService(PublicUrl, publicUrl),
   ),
 )

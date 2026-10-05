@@ -32,6 +32,7 @@ export const toPage = ({
         locale,
         title: response.title,
         description: response.description,
+        image: response.image,
         content: html`
           <aside
             id="${response.type}-details"
@@ -69,6 +70,7 @@ export const toPage = ({
         locale,
         title: response.title,
         description: response.description,
+        image: response.image,
         content: html`
           ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
