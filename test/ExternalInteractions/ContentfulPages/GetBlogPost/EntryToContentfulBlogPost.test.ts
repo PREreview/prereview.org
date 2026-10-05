@@ -983,7 +983,6 @@ it.effect.each<{
           </span>
         </p>
         <p><span>b. Finances and funding opportunities overview</span></p>
-        <p><span> </span></p>
       `,
       locale: DefaultLocale,
     }),

@@ -228,7 +228,12 @@ export const BlockContentToHtml = (
       return BlockElementToHtml(element)
     },
     { concurrency: 'inherit' },
-  ).pipe(Effect.andThen(Array.getSomes))
+  ).pipe(
+    Effect.andThen(Array.getSomes),
+    Effect.andThen(content =>
+      Array.some(content, html => html.toString().trim() === html.toString()) ? content : Array.empty(),
+    ),
+  )
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
