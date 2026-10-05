@@ -38,14 +38,22 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
 
       if (asset.details.image.width <= 600) {
         return {
-          url: asset.url,
+          url: {
+            avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
+            webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
+            default: asset.url,
+          },
           width: asset.details.image.width,
           height: asset.details.image.height,
         }
       }
 
       return {
-        url: Url.modifyUrlParams(asset.url, UrlParams.set('w', '600')),
+        url: {
+          avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '600', fm: 'avif' })),
+          webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '600', fm: 'webp' })),
+          default: Url.modifyUrlParams(asset.url, UrlParams.set('w', '600')),
+        },
         width: 600,
         height: Math.round((asset.details.image.height * 600) / asset.details.image.width),
       }

@@ -27,12 +27,16 @@ export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlo
                 ${
                   blogPost.heroImage
                     ? html`
-                        <img
-                          src="${blogPost.heroImage.url.href}"
-                          width="${blogPost.heroImage.width}"
-                          height="${blogPost.heroImage.height}"
-                          alt=""
-                        />
+                        <picture>
+                          <source srcset="${blogPost.heroImage.url.avif.href}" type="image/avif" />
+                          <source srcset="${blogPost.heroImage.url.webp.href}" type="image/webp" />
+                          <img
+                            src="${blogPost.heroImage.url.default.href}"
+                            width="${blogPost.heroImage.width}"
+                            height="${blogPost.heroImage.height}"
+                            alt=""
+                          />
+                        </picture>
                       `
                     : ''
                 }

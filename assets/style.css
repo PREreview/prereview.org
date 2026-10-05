@@ -2437,17 +2437,19 @@ skip-link {
       }
     }
 
-    > img {
+    > img,
+    > picture > img {
       margin-block-start: var(--space-xs);
     }
 
     @media screen {
       @media (width >= 30em) {
-        &:has(> img) {
+        &:has(> img, > picture > img) {
           padding-inline-end: calc((var(--space-s) * 2) + 30%);
         }
 
-        > img {
+        > img,
+        > picture > img {
           position: absolute;
           inset-block-start: var(--space-xs);
           inset-inline-end: var(--space-s);

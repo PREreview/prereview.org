@@ -45,7 +45,11 @@ const blogPost1 = {
   locale: 'en-US',
   slug: Slug('interview-prereview-champion-shitondo-yahila'),
   heroImage: {
-    url: new URL('https://placehold.co/600x400'),
+    url: {
+      avif: new URL('https://placehold.co/600x400/avif'),
+      webp: new URL('https://placehold.co/600x400/webp'),
+      default: new URL('https://placehold.co/600x400'),
+    },
     width: 600,
     height: 400,
   },
@@ -58,7 +62,11 @@ const blogPost2 = {
   locale: 'en-US',
   slug: Slug('prereview-platform-news-4-september-2026'),
   heroImage: {
-    url: new URL('https://placehold.co/500x400'),
+    url: {
+      avif: new URL('https://placehold.co/500x400/avif'),
+      webp: new URL('https://placehold.co/500x400/webp'),
+      default: new URL('https://placehold.co/500x400'),
+    },
     width: 500,
     height: 400,
   },
@@ -71,7 +79,11 @@ const blogPost3 = {
   locale: 'en-US',
   slug: Slug('register-for-review-a-thon'),
   heroImage: {
-    url: new URL('https://placehold.co/500x500'),
+    url: {
+      avif: new URL('https://placehold.co/500x500/avif'),
+      webp: new URL('https://placehold.co/500x500/webp'),
+      default: new URL('https://placehold.co/500x500'),
+    },
     width: 500,
     height: 500,
   },
