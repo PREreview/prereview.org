@@ -574,6 +574,11 @@ body > footer {
   }
 }
 
+picture {
+  display: block;
+  inline-size: fit-content;
+}
+
 img {
   object-fit: contain;
   display: block;
@@ -763,6 +768,23 @@ header {
     &:has(+ :--list) {
       border-block-end: var(--width-divider-narrow) solid var(--color-red-60);
       padding-block-end: var(--space-4xs);
+    }
+  }
+}
+
+main {
+  & > :first-child {
+    margin-block-start: 0;
+
+    & > :first-child,
+    & > :first-child > :first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  nav + & {
+    & > :first-child {
+      margin-block-start: var(--space-s-m);
     }
   }
 }
