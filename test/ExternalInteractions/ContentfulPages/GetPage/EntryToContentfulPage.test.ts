@@ -381,12 +381,14 @@ it.effect.each<{
         <h2 id="vanessa-fairhurst-she-her-head-of-community">
           <span>Vanessa Fairhurst (she/her) – Head of Community</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Vanessa joined the PREreview team in November 2022. She studied her undergraduate in European Languages and
@@ -402,12 +404,14 @@ it.effect.each<{
         <h2 id="daniela-saderi-phd-she-her-executive-director-co-founder">
           <span>Daniela Saderi, Ph.D. (she/her) – Executive Director, Co-Founder</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Daniela is an Italian-born neuroscientist, community builder, and advocate for open and collaborative
@@ -427,12 +431,14 @@ it.effect.each<{
         </p>
         <p><span>Outside of work, she enjoys reading and spending time with her family and friends.</span></p>
         <h2 id="chad-sansing-he-him-head-of-product"><span>Chad Sansing (he/him) – Head of Product</span></h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Chad joined the PREreview team in late October 2022. Prior to joining PREreview, he worked for the Mozilla
@@ -448,12 +454,14 @@ it.effect.each<{
         <h2 id="maria-pia-tavella-phd-she-her-communications-and-engagement-officer">
           <span>María Pía Tavella, Ph.D. (she/her) - Communications and Engagement Officer</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Pía joined the PREreview team in December 2025. She is an Argentine anthropologist, science communicator and
@@ -475,12 +483,14 @@ it.effect.each<{
         <h2 id="chris-wilkinson-he-him-head-of-technology">
           <span>Chris Wilkinson (he/him) – Head of Technology</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Chris joined PREreview as the Head of Technology in August 2024. Prior to that, he was Tech Lead Manager at
@@ -494,12 +504,14 @@ it.effect.each<{
           </span>
         </p>
         <h2 id="daniel-haarhoff-software-engineer-elife"><span>Daniel Haarhoff – Software Engineer (eLife)</span></h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Daniel has been supporting Chris and the development of PREreview part-time since 2023. He has been part of
@@ -512,12 +524,14 @@ it.effect.each<{
         <h2 id="maria-sol-ruiz-phd-she-her-champion-fellow">
           <span>María Sol Ruiz, Ph.D. (she/her) – Champion Fellow</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Sol joined the PREreview team as a part-time staff in January 2026 to provide support to the PREreview
@@ -547,12 +561,14 @@ it.effect.each<{
         <h2 id="samantha-hindle-phd-she-her-co-founder-advisory-committee-secretary">
           <span>Samantha Hindle, Ph.D. (she/her) – Co-Founder, Advisory Committee Secretary</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Sam has a Ph.D. in Neuroscience where she characterized neurodegenerative disorders in <i>Drosophila</i>.
@@ -567,12 +583,14 @@ it.effect.each<{
         <h2 id="monica-granados-phd-she-her-co-founder-advisory-committee-co-chair">
           <span>Monica Granados, Ph.D. (she/her) – Co-Founder, Advisory Committee Co-Chair</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Dr. Monica Granados is Director of Open Science at Creative Commons where she works on increasing the
@@ -585,12 +603,14 @@ it.effect.each<{
         <h2 id="christopher-steven-marcum-phd-fgsa-he-him-they-them-advisory-committee-chair">
           <span>Christopher Steven Marcum, Ph.D., F.G.S.A. (he/him/they/them) – Advisory Committee Chair</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Dr. <a href="https://orcid.org/0000-0002-0899-6143">Christopher Steven Marcum</a> is an open science
@@ -623,12 +643,14 @@ it.effect.each<{
             Reproducibility Network (AREN)
           </span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/1I3JNZt7Pge1YVbj2cP47Q/60f1585ec7e34703d03694ec6bceac08/Lamis-headshot-250x250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/1I3JNZt7Pge1YVbj2cP47Q/60f1585ec7e34703d03694ec6bceac08/Lamis-headshot-250x250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Dr. Lamis Elkheir is an open science leader and academic whose work focuses on shaping how open research
@@ -654,12 +676,14 @@ it.effect.each<{
         <h2 id="aurelia-munene-she-her-founder-and-ceo-at-eider-africa">
           <span>Aurelia Munene (she/her) – Founder and CEO at Eider Africa</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Aurelia Muthoni Munene is the Founder of <a href="https://eiderafricaltd.org/">Eider Africa</a>, and
@@ -690,12 +714,14 @@ it.effect.each<{
             Malvika Sharan, Ph.D. (she/her) - Senior Director of Data Science at St. Jude Children’s Research Hospital
           </span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/134ZBeQJGlHrGNe1uOoDmE/021352bb9cbb0b08b9caedc975848a9b/Malvika-headshot-250x250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/134ZBeQJGlHrGNe1uOoDmE/021352bb9cbb0b08b9caedc975848a9b/Malvika-headshot-250x250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Dr. Malvika Sharan is the Senior Director of Data Science at the newly established Office of Data Science at
@@ -727,12 +753,14 @@ it.effect.each<{
             Committee Treasurer
           </span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/6xEO2yZgZyLetqkwJbaJVI/53e62918158c6c779294c5785566f0a3/Kirstie-headshot-250x250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/6xEO2yZgZyLetqkwJbaJVI/53e62918158c6c779294c5785566f0a3/Kirstie-headshot-250x250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Dr. Kirstie Whitaker is the Executive Director at the
@@ -757,12 +785,14 @@ it.effect.each<{
         <h2 id="grace-park-former-communications-and-engagement-officer">
           <span>Grace Park - Former Communications and Engagement Officer</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Grace joined PREreview as the first Communications and Engagement Officer from December 2024 to June 2025.
@@ -773,12 +803,14 @@ it.effect.each<{
         <h2 id="arturo-garduno-magana-he-him-former-open-grant-reviewers-program-manager-and-trainer">
           <span>Arturo Garduño-Magaña (he/him) – Former Open Grant Reviewers Program Manager and Trainer</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Arturo worked with PREreview from February 2022 to July 2023 as the Open Grant Reviewers Program Manager and
@@ -791,12 +823,14 @@ it.effect.each<{
         <h2 id="antoinette-foster-phdshe-her-former-open-reviewers-program-manager">
           <span>Antoinette Foster, Ph.D.(she/her) – Former Open Reviewers Program Manager</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Antoinette Foster has a Ph.D. in Neuroscience and is passionate about establishing racial equity within the
@@ -815,12 +849,14 @@ it.effect.each<{
         <h2 id="katrina-murphy-she-her-former-project-manager">
           <span>Katrina Murphy (she/her) – Former Project Manager</span>
         </h2>
-        <img
-          src="https://images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg"
-          width="250"
-          height="250"
-          alt=""
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </picture>
         <p>
           <span>
             Katrina joined the PREreview team in April 2020 and stayed with us as PREreview Project Manager until

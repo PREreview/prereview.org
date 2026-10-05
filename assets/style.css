@@ -582,7 +582,8 @@ img {
   inline-size: auto;
   max-inline-size: 100%;
 
-  :--heading:not(.visually-hidden) + & {
+  :--heading:not(.visually-hidden) + &,
+  :--heading:not(.visually-hidden) + picture > & {
     margin-block-start: var(--space-xs);
   }
 

@@ -100,13 +100,26 @@ const YouTubeLink = ({ url, title, describedBy }: { url: URL; title: string; des
 const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) => {
   const file = getValueForDefaultLocale(asset.fields.file)
 
+  if (file.contentType === 'image/svg+xml') {
+    return html`
+      <img
+        src="${file.url.href}"
+        width="${file.details.image.width}"
+        height="${file.details.image.height}"
+        alt="${altText}"
+      />
+    `
+  }
+
   return html`
-    <img
-      src="${file.url.href}"
-      width="${file.details.image.width}"
-      height="${file.details.image.height}"
-      alt="${altText}"
-    />
+    <picture>
+      <img
+        src="${file.url.href}"
+        width="${file.details.image.width}"
+        height="${file.details.image.height}"
+        alt="${altText}"
+      />
+    </picture>
   `
 }
 

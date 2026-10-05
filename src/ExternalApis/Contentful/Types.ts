@@ -150,6 +150,7 @@ export class Asset extends Schema.Class<Asset>('Asset')({
       value: Schema.Struct({
         url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
         details: Schema.Struct({ image: Schema.Struct({ width: Schema.Int, height: Schema.Int }) }),
+        contentType: Schema.Literal('image/jpeg', 'image/png', 'image/svg+xml'),
       }),
     }),
   }),

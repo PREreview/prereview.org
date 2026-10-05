@@ -88,12 +88,14 @@ it.effect.each<{
         <h3 id="last-days-to-register-for-our-review-a-thon-with-your-club">
           <span>Last Days to Register for our Review-a-thon with your Club!</span>
         </h3>
-        <img
-          src="https://images.ctfassets.net/66hjlpng9xzg/6BmOyODL93skgyxtdKpoXT/35795ed414b2f2f7ce0e459dab0a73cf/PRW-for-newsletter-300x300-1.png"
-          width="300"
-          height="300"
-          alt="Peer Review Week logo"
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/6BmOyODL93skgyxtdKpoXT/35795ed414b2f2f7ce0e459dab0a73cf/PRW-for-newsletter-300x300-1.png"
+            width="300"
+            height="300"
+            alt="Peer Review Week logo"
+          />
+        </picture>
         <p>
           <span>
             To celebrate 2026 <a href="https://peerreviewweek.net/"><b>Peer Review Week</b></a
@@ -136,12 +138,14 @@ it.effect.each<{
         <hr />
         <h3 id="prereview-in-dialogue"><span>PREreview in Dialogue</span></h3>
         <figure>
-          <img
-            src="https://images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png"
-            width="300"
-            height="300"
-            alt="Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
-          />
+          <picture>
+            <img
+              src="https://images.ctfassets.net/66hjlpng9xzg/7xeXutu3K4YyrmbEh5h38m/a9f7226e0e3d12c522d0cf9924e61c8c/dialogue-newsletter-inside-image-300x300.png"
+              width="300"
+              height="300"
+              alt="Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
+            />
+          </picture>
           <figcaption>
             <p>
               <span>Credits: by Getillustrations. Canva Pro licensed content.</span>
@@ -252,12 +256,14 @@ it.effect.each<{
         <hr />
         <h3 id="prereview-champions-in-action"><span>PREreview Champions in Action!</span></h3>
         <figure>
-          <img
-            src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
-            width="300"
-            height="300"
-            alt="A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
-          />
+          <picture>
+            <img
+              src="https://images.ctfassets.net/66hjlpng9xzg/7LIsbgSGrQUNlIkYmj0q1K/a8c103d8fdf0efb746df210a08a23d20/champions-300x300.png"
+              width="300"
+              height="300"
+              alt="A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
+            />
+          </picture>
           <figcaption>
             <p>
               <span>Credits: “Diverse Hands Making Heart” by Vectorfair Y. Canva Pro licensed content</span>
@@ -317,12 +323,14 @@ it.effect.each<{
         <h3 id="modular-peer-review-working-group-learnings-and-next-steps">
           <span>Modular Peer Review Working Group: Learnings and Next Steps</span>
         </h3>
-        <img
-          src="https://images.ctfassets.net/66hjlpng9xzg/6YLGkTOchGcjmM8pnmcmgk/6439ef7448cd7320b707da998d02c7b4/Newsletter-images---small--300-x-300-px---5-.jpg"
-          width="300"
-          height="300"
-          alt="Continuous Science Foundation and PREreview logos joined by a plus sign, representing collaboration."
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/6YLGkTOchGcjmM8pnmcmgk/6439ef7448cd7320b707da998d02c7b4/Newsletter-images---small--300-x-300-px---5-.jpg"
+            width="300"
+            height="300"
+            alt="Continuous Science Foundation and PREreview logos joined by a plus sign, representing collaboration."
+          />
+        </picture>
         <p>
           <span>
             Research is an iterative process: questions evolve, methods change, and analyses get refined. What if peer
@@ -352,12 +360,14 @@ it.effect.each<{
         <hr />
         <h3 id="events"><span>Events</span></h3>
         <figure>
-          <img
-            src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
-            width="300"
-            height="300"
-            alt="A red megaphone icon outlined in black against a white background."
-          />
+          <picture>
+            <img
+              src="https://images.ctfassets.net/66hjlpng9xzg/4ZisgVJ2U8zfBoTrQ3G7LG/5a1e57841869e6358ceca1230436e92a/2025-newsletter-images--1-.png"
+              width="300"
+              height="300"
+              alt="A red megaphone icon outlined in black against a white background."
+            />
+          </picture>
           <figcaption>
             <p><span>Credits: Wena Vega from sketchify</span></p>
           </figcaption>
@@ -434,12 +444,14 @@ it.effect.each<{
         </ul>
         <hr />
         <h3 id="highlights-from-our-slack-community"><span>Highlights from our Slack Community</span></h3>
-        <img
-          src="https://images.ctfassets.net/66hjlpng9xzg/3D56aYtUlBhKOXXDh1Q34d/7549db830de79805d575f2adb2c0c282/Slack-highlights---300x300.png"
-          width="300"
-          height="300"
-          alt="The PREreview logo at the top and Slack logo at the bottom with the image of a paper in white on a red background"
-        />
+        <picture>
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/3D56aYtUlBhKOXXDh1Q34d/7549db830de79805d575f2adb2c0c282/Slack-highlights---300x300.png"
+            width="300"
+            height="300"
+            alt="The PREreview logo at the top and Slack logo at the bottom with the image of a paper in white on a red background"
+          />
+        </picture>
         <ul>
           <li>
             <span
