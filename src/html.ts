@@ -313,7 +313,11 @@ function parseToCanonical(input: string): ReadonlyArray<CanonicalNode | string> 
       onopentag(name, attribs) {
         const node: CanonicalNode = {
           tag: name.toLowerCase(),
-          attrs: pipe(Record.toEntries(attribs), Array.sort(attrOrder)),
+          attrs: pipe(
+            Record.toEntries(attribs),
+            Array.map(Tuple.mapSecond(value => value.trim())),
+            Array.sort(attrOrder),
+          ),
           children: [],
         }
         currentChildren().push(node)

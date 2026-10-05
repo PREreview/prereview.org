@@ -44,6 +44,7 @@ describe('Html Equal', () => {
     ['different tag names', '<p>Foo</p>', '<div>Foo</div>', false],
     ['different attribute values', '<p id="a">Foo</p>', '<p id="b">Foo</p>', false],
     ['extra attribute', '<p id="a">Foo</p>', '<p>Foo</p>', false],
+    ['whitespace around attribute value', '<p id="a">', '<p id="\n  a\n">', true],
     ['nested structure difference', '<div><p>Foo</p></div>', '<div><span>Foo</span></div>', false],
     ['whitespace preserved inside <pre>', '<pre>  Foo   Bar  </pre>', '<pre>Foo Bar</pre>', false],
     [
