@@ -26,7 +26,11 @@ export class ContentfulBlogPost extends Schema.Class<ContentfulBlogPost>('Conten
   title: InlineHtmlSchema,
   heroImage: Schema.optional(
     Schema.Struct({
-      url: Schema.URLFromSelf,
+      url: Schema.Struct({
+        avif: Schema.URLFromSelf,
+        webp: Schema.URLFromSelf,
+        default: Schema.URLFromSelf,
+      }),
       width: Schema.NonNegativeInt,
       height: Schema.NonNegativeInt,
       altText: Schema.optional(Schema.NonEmptyTrimmedString),

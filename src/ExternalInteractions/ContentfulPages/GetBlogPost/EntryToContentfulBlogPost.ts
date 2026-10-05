@@ -1,3 +1,4 @@
+import { Url, UrlParams } from '@effect/platform'
 import { Array, Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
@@ -53,7 +54,11 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
         : Effect.succeed([])
 
       return {
-        url: asset.url,
+        url: {
+          avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
+          webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
+          default: asset.url,
+        },
         width: asset.details.image.width,
         height: asset.details.image.height,
         altText,

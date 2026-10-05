@@ -62,9 +62,17 @@ it.effect.each<{
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-21T14:13:47Z'),
       heroImage: {
-        url: new URL(
-          'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png',
-        ),
+        url: {
+          avif: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png?fm=avif',
+          ),
+          webp: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png?fm=webp',
+          ),
+          default: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/7aBxOS0x2pdbBGdTG4wNDy/ea85d7b23b575a26734e1185c9dfcb04/August-newsletter-featured-image.png',
+          ),
+        },
         width: 1200,
         height: 675,
         altText: '"PREreview August Newsletter" header over photo of raindrops creating ripples on a water surface',
@@ -611,9 +619,17 @@ it.effect.each<{
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-26T13:04:49Z'),
       heroImage: {
-        url: new URL(
-          'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png',
-        ),
+        url: {
+          avif: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png?fm=avif',
+          ),
+          webp: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png?fm=webp',
+          ),
+          default: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5s0piRdgTblQmCygABe2gj/41b32f59679824ca6a1e61113b011538/Mabel-blog-header-2.png',
+          ),
+        },
         width: 1200,
         height: 675,
         altText: undefined,

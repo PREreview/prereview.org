@@ -27,23 +27,31 @@ export const CmsBlogPostPage = Effect.fnUntraced(
             content.heroImage?.caption
               ? html`
                   <figure>
-                    <img
-                      src="${content.heroImage.url.href}"
-                      width="${content.heroImage.width}"
-                      height="${content.heroImage.height}"
-                      alt="${content.heroImage.altText ?? ''}"
-                    />
+                    <picture>
+                      <source srcset="${content.heroImage.url.avif.href}" type="image/avif" />
+                      <source srcset="${content.heroImage.url.webp.href}" type="image/webp" />
+                      <img
+                        src="${content.heroImage.url.default.href}"
+                        width="${content.heroImage.width}"
+                        height="${content.heroImage.height}"
+                        alt="${content.heroImage.altText ?? ''}"
+                      />
+                    </picture>
                     <figcaption>${content.heroImage.caption}</figcaption>
                   </figure>
                 `
               : content.heroImage
                 ? html`
-                    <img
-                      src="${content.heroImage.url.href}"
-                      width="${content.heroImage.width}"
-                      height="${content.heroImage.height}"
-                      alt="${content.heroImage.altText ?? ''}"
-                    />
+                    <picture>
+                      <source srcset="${content.heroImage.url.avif.href}" type="image/avif" />
+                      <source srcset="${content.heroImage.url.webp.href}" type="image/webp" />
+                      <img
+                        src="${content.heroImage.url.default.href}"
+                        width="${content.heroImage.width}"
+                        height="${content.heroImage.height}"
+                        alt="${content.heroImage.altText ?? ''}"
+                      />
+                    </picture>
                   `
                 : ''
           }

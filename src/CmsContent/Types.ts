@@ -26,7 +26,11 @@ export class BlogPost extends Schema.Class<BlogPost>('BlogPost')({
   title: InlineHtmlSchema,
   heroImage: Schema.optional(
     Schema.Struct({
-      url: Schema.URLFromSelf,
+      url: Schema.Struct({
+        avif: Schema.URLFromSelf,
+        webp: Schema.URLFromSelf,
+        default: Schema.URLFromSelf,
+      }),
       width: Schema.NonNegativeInt,
       height: Schema.NonNegativeInt,
       altText: Schema.optional(Schema.NonEmptyTrimmedString),
