@@ -382,6 +382,18 @@ it.effect.each<{
           <span>Vanessa Fairhurst (she/her) – Head of Community</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/6IDInBIr6jbVwbQYjQD9bt/9305ded7186031a0b631a933c9c9961e/image-2.png"
             width="250"
@@ -405,6 +417,18 @@ it.effect.each<{
           <span>Daniela Saderi, Ph.D. (she/her) – Executive Director, Co-Founder</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/3IVE2OuH5vwEfPkqzeqh3Q/19170a355d75e21bddb7b1d26aaeb310/image-3.png"
             width="250"
@@ -432,6 +456,18 @@ it.effect.each<{
         <p><span>Outside of work, she enjoys reading and spending time with her family and friends.</span></p>
         <h2 id="chad-sansing-he-him-head-of-product"><span>Chad Sansing (he/him) – Head of Product</span></h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/7cOxbgJTA5aHAvOAF3mMms/f907cfeb048467d8753016ec3e5756a7/chad-sansing-pic-bw-250.png"
             width="250"
@@ -455,6 +491,18 @@ it.effect.each<{
           <span>María Pía Tavella, Ph.D. (she/her) - Communications and Engagement Officer</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/69hG0LgJNaqAujlRdGkTYi/bc8669174601b05a2461c7cf99c764fd/pia-250.jpg"
             width="250"
@@ -484,6 +532,18 @@ it.effect.each<{
           <span>Chris Wilkinson (he/him) – Head of Technology</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/3gNTZjNi1shtnoJc7MbOio/1fbfb72f89c7d6164c7dc8d2f2dad8d1/Chris-250.jpeg"
             width="250"
@@ -505,6 +565,18 @@ it.effect.each<{
         </p>
         <h2 id="daniel-haarhoff-software-engineer-elife"><span>Daniel Haarhoff – Software Engineer (eLife)</span></h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/UNYKBory9dn6gayYHGpeM/473958d6103608878bd7b7e70dc02b5a/cropped-bw-hff.jpg"
             width="250"
@@ -525,6 +597,18 @@ it.effect.each<{
           <span>María Sol Ruiz, Ph.D. (she/her) – Champion Fellow</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/7oJ2Vtn4niB7Jd1w2quAp4/6ff20b029ca55e0850e526b5e27ead6c/sol-resized.png"
             width="250"
@@ -562,6 +646,18 @@ it.effect.each<{
           <span>Samantha Hindle, Ph.D. (she/her) – Co-Founder, Advisory Committee Secretary</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/2b9P62mj1ai5jTlINxgYoc/42e369e5df9251c5d7d15c7c1d0eb847/sam_bw_small-1.jpg"
             width="250"
@@ -584,6 +680,18 @@ it.effect.each<{
           <span>Monica Granados, Ph.D. (she/her) – Co-Founder, Advisory Committee Co-Chair</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/77lEV2ipgbkEEqyUEzsXxF/771d4aa7f6742554802d8bdbae3255dd/monica_bw_small-1.png"
             width="250"
@@ -604,6 +712,18 @@ it.effect.each<{
           <span>Christopher Steven Marcum, Ph.D., F.G.S.A. (he/him/they/them) – Advisory Committee Chair</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/42mYMlcNAjNXARJcS6LD9H/97f7ac31fa73dd86ae6c573e7f0aa18a/unnamed-2.jpg"
             width="250"
@@ -644,6 +764,18 @@ it.effect.each<{
           </span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/1I3JNZt7Pge1YVbj2cP47Q/60f1585ec7e34703d03694ec6bceac08/Lamis-headshot-250x250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/1I3JNZt7Pge1YVbj2cP47Q/60f1585ec7e34703d03694ec6bceac08/Lamis-headshot-250x250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/1I3JNZt7Pge1YVbj2cP47Q/60f1585ec7e34703d03694ec6bceac08/Lamis-headshot-250x250.png"
             width="250"
@@ -677,6 +809,18 @@ it.effect.each<{
           <span>Aurelia Munene (she/her) – Founder and CEO at Eider Africa</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/6iCPvoP1ELMnc8XZc8GilW/c8f6c365ed9afc4bee307377be33daf0/aurelia-250x250.png"
             width="250"
@@ -715,6 +859,18 @@ it.effect.each<{
           </span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/134ZBeQJGlHrGNe1uOoDmE/021352bb9cbb0b08b9caedc975848a9b/Malvika-headshot-250x250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/134ZBeQJGlHrGNe1uOoDmE/021352bb9cbb0b08b9caedc975848a9b/Malvika-headshot-250x250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/134ZBeQJGlHrGNe1uOoDmE/021352bb9cbb0b08b9caedc975848a9b/Malvika-headshot-250x250.png"
             width="250"
@@ -754,6 +910,18 @@ it.effect.each<{
           </span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/6xEO2yZgZyLetqkwJbaJVI/53e62918158c6c779294c5785566f0a3/Kirstie-headshot-250x250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/6xEO2yZgZyLetqkwJbaJVI/53e62918158c6c779294c5785566f0a3/Kirstie-headshot-250x250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/6xEO2yZgZyLetqkwJbaJVI/53e62918158c6c779294c5785566f0a3/Kirstie-headshot-250x250.png"
             width="250"
@@ -786,6 +954,18 @@ it.effect.each<{
           <span>Grace Park - Former Communications and Engagement Officer</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/61bqShbwFWJ8WYBrEdXntm/39a14d510286f0e447c2f7b2119e7f43/grace-250.png"
             width="250"
@@ -804,6 +984,18 @@ it.effect.each<{
           <span>Arturo Garduño-Magaña (he/him) – Former Open Grant Reviewers Program Manager and Trainer</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/4WXPBOm0QUXbULBRXLFPN8/d2e67272da17bf97fec8951fbdadd881/agm_250-wbg-1.JPG"
             width="250"
@@ -824,6 +1016,18 @@ it.effect.each<{
           <span>Antoinette Foster, Ph.D.(she/her) – Former Open Reviewers Program Manager</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/7yOVIeLbKKEuprTqBbmSgR/e6c5703edd561130f0aa256e938d6704/NGP_Antionette_Foster_250.png"
             width="250"
@@ -850,6 +1054,18 @@ it.effect.each<{
           <span>Katrina Murphy (she/her) – Former Project Manager</span>
         </h2>
         <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg?fm=webp
+            "
+            type="image/webp"
+          />
           <img
             src="https://images.ctfassets.net/dapbmjoaf8gb/5tkBquqVgG2x8JMmldE2AE/02ece46abf566a44061eb60cc1237331/KatrinaMurphy_Headshot_Square_250.jpg"
             width="250"

@@ -113,6 +113,8 @@ const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string })
 
   return html`
     <picture>
+      <source srcset="${file.url.href}?fm=avif" type="image/avif" />
+      <source srcset="${file.url.href}?fm=webp" type="image/webp" />
       <img
         src="${file.url.href}"
         width="${file.details.image.width}"
