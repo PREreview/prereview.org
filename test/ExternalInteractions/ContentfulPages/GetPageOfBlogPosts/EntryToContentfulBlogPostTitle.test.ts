@@ -17,6 +17,32 @@ it.effect.each<{
   expected: ContentfulBlogPostTitle
 }>([
   {
+    response: 'blog-posts-listing',
+    index: 0,
+    expected: new ContentfulBlogPostTitle({
+      title: html`An interview with PREreview Champion Shitondo Yahila`,
+      locale: DefaultLocale,
+      slug: Slug('interview-prereview-champion-shitondo-yahila'),
+      heroImage: {
+        url: {
+          avif: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/4w63WGPvit2LVAysL1GhO4/f552bfef43529db9947a9eb24f869394/Shitondo-blog-header.png?w=600&fm=avif',
+          ),
+          webp: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/4w63WGPvit2LVAysL1GhO4/f552bfef43529db9947a9eb24f869394/Shitondo-blog-header.png?w=600&fm=webp',
+          ),
+          default: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/4w63WGPvit2LVAysL1GhO4/f552bfef43529db9947a9eb24f869394/Shitondo-blog-header.png?w=600',
+          ),
+        },
+        width: 600,
+        height: 338,
+      },
+      excerpt:
+        'In this feature, Shitondo stresses out the importance of concentrating Open Science advocacy efforts in low-resource settings and educational institutions for a broader adoption of its principles and practices.',
+    }),
+  },
+  {
     response: 'blog-posts-multiple-authors',
     index: 0,
     expected: new ContentfulBlogPostTitle({

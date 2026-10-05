@@ -20,6 +20,7 @@ export const GetPageOfBlogPosts: (
       limit: 5,
       skip: (page - 1) * 5,
       order: '-sys.createdAt',
+      select: Array.join(['sys', 'fields.title', 'fields.slug', 'fields.heroImage', 'fields.excerpt'], ','),
     })
 
     if (!Array.isNonEmptyReadonlyArray(items)) {

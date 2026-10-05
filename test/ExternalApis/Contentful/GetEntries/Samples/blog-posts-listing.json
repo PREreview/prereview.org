@@ -1,0 +1,366 @@
+{
+  "sys": { "type": "Array" },
+  "total": 214,
+  "skip": 0,
+  "limit": 5,
+  "items": [
+    {
+      "fields": {
+        "title": { "en-US": "An interview with PREreview Champion Shitondo Yahila" },
+        "slug": { "en-US": "interview-prereview-champion-shitondo-yahila" },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "tEl2h67YNhYHMLBSGhuKX" } } },
+        "excerpt": {
+          "en-US": "In this feature, Shitondo stresses out the importance of concentrating Open Science advocacy efforts in low-resource settings and educational institutions for a broader adoption of its principles and practices."
+        }
+      },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "6FNOWXGcgE5kCGR9a48be0",
+        "type": "Entry",
+        "createdAt": "2026-10-01T10:00:19.886Z",
+        "updatedAt": "2026-10-01T10:00:19.886Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      }
+    },
+    {
+      "fields": {
+        "title": { "en-US": "PREreview platform news, 4 September 2026" },
+        "slug": { "en-US": "prereview-platform-news-4-september-2026" },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "28AIZ2id3xhfUgayU1mLAI" } } },
+        "excerpt": {
+          "en-US": "We’re testing out an algorithm to suggest preprints for review based on your ORCID public profile. Take part in our second matchmaking experiment and help us with your valuable feedback!"
+        }
+      },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "21aDv21LIehQdwkQM2Ew5v",
+        "type": "Entry",
+        "createdAt": "2026-10-01T10:00:19.184Z",
+        "updatedAt": "2026-10-01T10:00:19.184Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      }
+    },
+    {
+      "fields": {
+        "title": { "en-US": "PREreview platform news, 28 August 2026" },
+        "slug": { "en-US": "prereview-platform-news-28-august-2026" },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "37xDpSlpjUSqN3PqE5EkP0" } } },
+        "excerpt": {
+          "en-US": "This week we’ve reached another multilingual milestone by adding African French to the site. We also sent out invitations to PREreview Champions and Club leads to give us feedback on our second matchmaking experiment. "
+        }
+      },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "1ceRkEgcCHfP1p2o68lbG9",
+        "type": "Entry",
+        "createdAt": "2026-10-01T10:00:18.463Z",
+        "updatedAt": "2026-10-01T10:00:18.463Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      }
+    },
+    {
+      "fields": {
+        "title": { "en-US": "An interview with PREreview Champion Mabel Omoniwa" },
+        "slug": { "en-US": "interview-prereview-champion-mabel-omoniwa" },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "70ziHUUOQbuqXF0XhL7N1J" } } },
+        "excerpt": {
+          "en-US": "In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption."
+        }
+      },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "4EYzoj6QjyUY1p7ME96xXJ",
+        "type": "Entry",
+        "createdAt": "2026-10-01T10:00:17.691Z",
+        "updatedAt": "2026-10-01T10:00:17.691Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      }
+    },
+    {
+      "fields": {
+        "title": { "en-US": "PREreview August 2026 Newsletter" },
+        "slug": { "en-US": "august-newsletter" },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "75J3eUFgFfWqfwV1aZSKDK" } } },
+        "excerpt": {
+          "en-US": "In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further."
+        }
+      },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "DTXe0D6Q0nBpyJsg6VEfA",
+        "type": "Entry",
+        "createdAt": "2026-10-01T10:00:16.716Z",
+        "updatedAt": "2026-10-01T10:00:16.716Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "28AIZ2id3xhfUgayU1mLAI",
+          "type": "Entry",
+          "createdAt": "2026-09-24T15:01:23.579Z",
+          "updatedAt": "2026-09-24T15:01:23.579Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "PREreview platform news, 4 September 2026" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "BRUSYPOdvkjf2dLia4Hu3" } } },
+          "altText": { "en-US": "The PREreview logo and the title “WEEKNOTE” in white over a bright purple background" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "37xDpSlpjUSqN3PqE5EkP0",
+          "type": "Entry",
+          "createdAt": "2026-09-24T15:01:24.272Z",
+          "updatedAt": "2026-09-24T15:01:24.272Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "PREreview platform news, 28 August 2026" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "1SdnJiXZ4z0muH62YqCUEH" } } },
+          "altText": { "en-US": "The PREreview logo and the title “WEEKNOTE” in white over a bright purple background" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "70ziHUUOQbuqXF0XhL7N1J",
+          "type": "Entry",
+          "createdAt": "2026-09-24T15:01:24.290Z",
+          "updatedAt": "2026-09-24T15:01:24.290Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "An interview with PREreview Champion Mabel Omoniwa" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6HNTeEHUTI9ex2hoACyRxa" } } },
+          "altText": {
+            "en-US": "“PREreview COMMUNITY FEATURES: PREreview Champions series\" banner, with headshot of the interviewee Mabel Omoniwa"
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "75J3eUFgFfWqfwV1aZSKDK",
+          "type": "Entry",
+          "createdAt": "2026-09-24T15:01:25.053Z",
+          "updatedAt": "2026-09-24T15:01:25.053Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "PREreview August 2026 Newsletter" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "6mic2QNUzuahA7v0eAG0Pi" } } },
+          "altText": {
+            "en-US": "\"PREreview August Newsletter\" header over photo of raindrops creating ripples on a water surface"
+          },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "text",
+                      "value": "“Raindrops creating ripples on water reflecting sunset colors” shared on ",
+                      "marks": [],
+                      "data": {}
+                    },
+                    {
+                      "nodeType": "hyperlink",
+                      "data": { "uri": "https://www.pickpik.com/en/free-stock-photo-yvjvu" },
+                      "content": [{ "nodeType": "text", "value": "PickPik", "marks": [], "data": {} }]
+                    },
+                    { "nodeType": "text", "value": " under Open License", "marks": [], "data": {} }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "tEl2h67YNhYHMLBSGhuKX",
+          "type": "Entry",
+          "createdAt": "2026-09-24T15:01:23.542Z",
+          "updatedAt": "2026-09-24T15:01:23.542Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "An interview with PREreview Champion Shitondo Yahila" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "4w63WGPvit2LVAysL1GhO4" } } },
+          "altText": {
+            "en-US": "“PREreview COMMUNITY FEATURES: PREreview Champions series\" banner, with medium shot of the interviewee Shitondo Yahila"
+          }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "1SdnJiXZ4z0muH62YqCUEH",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:22:36.494Z",
+          "updatedAt": "2026-09-24T15:22:36.494Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Product-weeknote-header.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/1SdnJiXZ4z0muH62YqCUEH/1412e369011e6b2e5acd1e18d1e2b93c/Product-weeknote-header.png",
+              "details": { "size": 26805, "image": { "width": 1200, "height": 675 } },
+              "fileName": "Product-weeknote-header.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "4w63WGPvit2LVAysL1GhO4",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:22:36.495Z",
+          "updatedAt": "2026-09-24T15:22:36.495Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Shitondo-blog-header.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/4w63WGPvit2LVAysL1GhO4/f552bfef43529db9947a9eb24f869394/Shitondo-blog-header.png",
+              "details": { "size": 364503, "image": { "width": 1200, "height": 675 } },
+              "fileName": "Shitondo-blog-header.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6HNTeEHUTI9ex2hoACyRxa",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:22:36.491Z",
+          "updatedAt": "2026-09-24T15:22:36.491Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Mabel-blog-header-2.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/6HNTeEHUTI9ex2hoACyRxa/e6654bf457dd2dde061bbf8c4f104313/Mabel-blog-header-2.png",
+              "details": { "size": 501931, "image": { "width": 1200, "height": 675 } },
+              "fileName": "Mabel-blog-header-2.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6mic2QNUzuahA7v0eAG0Pi",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:22:36.490Z",
+          "updatedAt": "2026-09-24T15:22:36.490Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "August-newsletter-featured-image.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/6mic2QNUzuahA7v0eAG0Pi/6aaee153dc93a4b9c70427c22ae1d899/August-newsletter-featured-image.png",
+              "details": { "size": 1984894, "image": { "width": 1200, "height": 675 } },
+              "fileName": "August-newsletter-featured-image.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "BRUSYPOdvkjf2dLia4Hu3",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:22:36.494Z",
+          "updatedAt": "2026-09-24T15:22:36.494Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Product-weeknote-header.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/BRUSYPOdvkjf2dLia4Hu3/9777d5275c7bf3e4d3936e7b84af01ad/Product-weeknote-header.png",
+              "details": { "size": 26805, "image": { "width": 1200, "height": 675 } },
+              "fileName": "Product-weeknote-header.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

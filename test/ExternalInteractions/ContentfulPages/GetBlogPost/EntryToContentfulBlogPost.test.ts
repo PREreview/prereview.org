@@ -1007,6 +1007,7 @@ it.effect.each<{
 it.effect.each([
   [
     'banners',
+    'blog-posts-listing',
     'pages-assets',
     'pages-cta-dynamic-embed',
     'pages-marks',

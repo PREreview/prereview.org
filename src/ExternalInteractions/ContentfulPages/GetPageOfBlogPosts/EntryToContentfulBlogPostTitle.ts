@@ -8,7 +8,7 @@ import { SlugSchema } from '../../../types/Slug.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
 
-const BlogPostEntry = Schema.Struct({
+export const BlogPostEntry = Schema.Struct({
   sys: Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('blogPost')) }) }),
   }),
