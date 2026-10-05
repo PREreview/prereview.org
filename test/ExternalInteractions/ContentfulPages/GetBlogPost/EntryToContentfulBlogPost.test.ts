@@ -909,6 +909,85 @@ it.effect.each<{
       locale: DefaultLocale,
     }),
   },
+  {
+    response: 'blog-posts-large-hero-image',
+    index: 0,
+    expected: new ContentfulBlogPost({
+      title: html`2026 Q1 PREreview Advisory Committee Meeting Minutes`,
+      authors: [new Author({ name: Name('Sam Hindle') })],
+      publishedAt: Instant.from('2026-03-31T16:47:11Z'),
+      heroImage: {
+        url: {
+          avif: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png?w=1600&fm=avif',
+          ),
+          webp: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png?w=1600&fm=webp',
+          ),
+          default: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png?w=1600',
+          ),
+        },
+        width: 1600,
+        height: 900,
+        altText: '"PREreview Advisory Committee Meeting Minutes - March 3, 2026" banner',
+        caption: undefined,
+      },
+      html: html`
+        <p><span>2026 Quarter 1 Meeting: March 3, 2026 - 16:30 to 18:00 UTC</span></p>
+        <h3 id="attendees"><span>Attendees</span></h3>
+        <p>
+          <span>
+            Daniela Saderi, Christopher Marcum, Aurelia Munene, Monica Granados, Malvika Sharan, Kristen Ratan, Sam
+            Hindle, Kirstie Whitaker, Lamis Elkheir
+          </span>
+        </p>
+        <h3 id="agenda"><span>Agenda</span></h3>
+        <p>
+          <span>
+            <b>I. </b
+            ><a
+              href="https://content.prereview.org/change-is-in-the-air-for-our-advisory-committee-welcomes-goodbyes-and-deep-gratitude-to-all/"
+              ><b>Welcomes and goodbyes</b></a
+            ><b
+              >: New AC members, and celebrate Kristen’s departure from the AC after 6 years of service - Thank you,
+              Kristen!</b
+            >
+          </span>
+        </p>
+        <p>
+          <span>
+            <b>II. Overview of PREreview governance and the role of the Advisory Committee</b>a. Advisory Committee
+            Handbook and Charter discussed
+          </span>
+        </p>
+        <p>
+          <span>
+            b. Governance and decision-making at PREreview presented and discussed. Public Slide deck: PREreview. (2026,
+            March 31). <i>Governance and Decision-Making at PREreview</i>. Zenodo.
+            <a href="https://doi.org/10.5281/zenodo.19355617">https://doi.org/10.5281/zenodo.19355617</a>
+          </span>
+        </p>
+        <p>
+          <span>
+            c. Discussed vacancy for the Treasurer role and the possibility of having a Finance Committee of several AC
+            members
+          </span>
+        </p>
+        <p>
+          <span>
+            <b>III. Review of strategic plan activities and finance overview</b>a. PREreview
+            <a href="https://zenodo.org/records/18261903">3Y Strategic Plan document</a> and
+            <a href="https://zenodo.org/records/18612994">deck</a> discussed1) AC discussed how PREreview measures
+            impact and implements feedback from the community, in relation to shaping KRs and strategic plan.
+          </span>
+        </p>
+        <p><span>b. Finances and funding opportunities overview</span></p>
+        <p><span> </span></p>
+      `,
+      locale: DefaultLocale,
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

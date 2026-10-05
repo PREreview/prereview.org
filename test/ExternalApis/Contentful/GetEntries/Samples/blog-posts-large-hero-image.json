@@ -1,0 +1,302 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "4Nm2xRGnUHaScthYHSdfT1",
+        "type": "Entry",
+        "createdAt": "2026-10-01T09:59:59.420Z",
+        "updatedAt": "2026-10-01T09:59:59.420Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 1,
+        "revision": 1,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "2026 Q1 PREreview Advisory Committee Meeting Minutes" },
+        "slug": { "en-US": "2026-q1-prereview-advisory-committee-meeting-minutes" },
+        "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "1OWcAZExmETcyn6QWnl59j" } }] },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "kQtEQCyJtEEsaMRoVOC9A" } } },
+        "excerpt": {
+          "en-US": "Welcome to new AC members, goodbye and gratitude to Kristen Ratan. Overview of PREreview governance and the role of the Advisory Committee. Review of strategic plan activities and finance overview."
+        },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "2026 Quarter 1 Meeting: March 3, 2026 - 16:30 to 18:00 UTC",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Attendees", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Daniela Saderi, Christopher Marcum, Aurelia Munene, Monica Granados, Malvika Sharan, Kristen Ratan, Sam Hindle, Kirstie Whitaker, Lamis Elkheir",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Agenda", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "I. ", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://content.prereview.org/change-is-in-the-air-for-our-advisory-committee-welcomes-goodbyes-and-deep-gratitude-to-all/"
+                    },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Welcomes and goodbyes",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ": New AC members, and celebrate Kristen’s departure from the AC after 6 years of service - Thank you, Kristen!",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "II. Overview of PREreview governance and the role of the Advisory Committee",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "a. Advisory Committee Handbook and Charter discussed",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "b. Governance and decision-making at PREreview presented and discussed. Public Slide deck: PREreview. (2026, March 31). ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "Governance and Decision-Making at PREreview",
+                    "marks": [{ "type": "italic" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": ". Zenodo. ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://doi.org/10.5281/zenodo.19355617" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "https://doi.org/10.5281/zenodo.19355617",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "c. Discussed vacancy for the Treasurer role and the possibility of having a Finance Committee of several AC members",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "III. Review of strategic plan activities and finance overview",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": "a. PREreview ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://zenodo.org/records/18261903" },
+                    "content": [{ "nodeType": "text", "value": "3Y Strategic Plan document", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://zenodo.org/records/18612994" },
+                    "content": [{ "nodeType": "text", "value": "deck", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": " discussed", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "1) AC discussed how PREreview measures impact and implements feedback from the community, in relation to shaping KRs and strategic plan.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "b. Finances and funding opportunities overview",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": " ", "marks": [], "data": {} }]
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2026-03-31T16:47:11.000+00:00" },
+        "publishedAtOverride": { "en-US": "2026-03-31T16:47:11.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "1OWcAZExmETcyn6QWnl59j",
+          "type": "Entry",
+          "createdAt": "2026-09-24T14:59:38.360Z",
+          "updatedAt": "2026-09-24T14:59:38.360Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Sam Hindle" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "3S7sP7yATHVxY2l0l0dLd6" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "kQtEQCyJtEEsaMRoVOC9A",
+          "type": "Entry",
+          "createdAt": "2026-09-24T15:01:31.368Z",
+          "updatedAt": "2026-09-24T15:01:31.368Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "2026 Q1 PREreview Advisory Committee Meeting Minutes" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5ZrxgBlBK24JRfVuxp5Xu4" } } },
+          "altText": { "en-US": "\"PREreview Advisory Committee Meeting Minutes - March 3, 2026\" banner" }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "3S7sP7yATHVxY2l0l0dLd6",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:22:36.501Z",
+          "updatedAt": "2026-09-24T15:22:36.501Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Sam Hindle profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/3S7sP7yATHVxY2l0l0dLd6/d430197640baf7224576e84ea7215a26/sam2_bw.jpg",
+              "details": { "size": 42910, "image": { "width": 721, "height": 721 } },
+              "fileName": "sam2_bw.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5ZrxgBlBK24JRfVuxp5Xu4",
+          "type": "Asset",
+          "createdAt": "2026-09-24T15:00:53.018Z",
+          "updatedAt": "2026-09-24T15:00:53.018Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "AC-meeting-minutes-banner.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png",
+              "details": { "size": 67954, "image": { "width": 2000, "height": 1125 } },
+              "fileName": "AC-meeting-minutes-banner.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

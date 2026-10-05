@@ -53,14 +53,28 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: ty
         ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
         : Effect.succeed([])
 
+      if (asset.details.image.width <= 1600) {
+        return {
+          url: {
+            avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
+            webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
+            default: asset.url,
+          },
+          width: asset.details.image.width,
+          height: asset.details.image.height,
+          altText,
+          caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
+        }
+      }
+
       return {
         url: {
-          avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
-          webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
-          default: asset.url,
+          avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'avif' })),
+          webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'webp' })),
+          default: Url.modifyUrlParams(asset.url, UrlParams.set('w', '1600')),
         },
-        width: asset.details.image.width,
-        height: asset.details.image.height,
+        width: 1600,
+        height: Math.round((asset.details.image.height * 1600) / asset.details.image.width),
         altText,
         caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
       }

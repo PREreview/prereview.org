@@ -77,6 +77,32 @@ it.effect.each<{
         'In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.',
     }),
   },
+  {
+    response: 'blog-posts-large-hero-image',
+    index: 0,
+    expected: new ContentfulBlogPostTitle({
+      title: html`2026 Q1 PREreview Advisory Committee Meeting Minutes`,
+      locale: DefaultLocale,
+      slug: Slug('2026-q1-prereview-advisory-committee-meeting-minutes'),
+      heroImage: {
+        url: {
+          avif: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png?w=600&fm=avif',
+          ),
+          webp: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png?w=600&fm=webp',
+          ),
+          default: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/5ZrxgBlBK24JRfVuxp5Xu4/239db95c59d28f4f56a7d2573c6fe9c9/AC-meeting-minutes-banner.png?w=600',
+          ),
+        },
+        width: 600,
+        height: 338,
+      },
+      excerpt:
+        'Welcome to new AC members, goodbye and gratitude to Kristen Ratan. Overview of PREreview governance and the role of the Advisory Committee. Review of strategic plan activities and finance overview.',
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

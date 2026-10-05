@@ -1140,7 +1140,7 @@ it.effect.each<{
   ),
 )
 
-it.effect.each([['banners', 'blog-posts-multiple-authors', 'blog-posts-newsletter']])(
+it.effect.each([['banners', 'blog-posts-multiple-authors', 'blog-posts-newsletter', 'blog-posts-large-hero-image']])(
   "can't parse a record (%s)",
   ([response]) =>
     Effect.gen(function* () {
