@@ -48,7 +48,9 @@ export class PlainText extends Data.TaggedClass('PlainText')<{
   }
 }
 
-export const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+export const HtmlFromSelfSchema: Schema.Schema<Html> = Schema.instanceOf(Html)
+
+export const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
   strict: true,
   decode: rawHtml,
   encode: String,

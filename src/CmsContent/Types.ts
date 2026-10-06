@@ -1,17 +1,17 @@
 import { Schema } from 'effect'
-import { Html, sanitizeHtml } from '../html.ts'
+import { type Html, HtmlFromSelfSchema, sanitizeHtml } from '../html.ts'
 import { SupportedLocales } from '../locales/index.ts'
 import { NameSchema } from '../types/Name.ts'
 import { SlugSchema } from '../types/Slug.ts'
 import { InstantSchema } from '../types/Temporal.ts'
 
-const InlineHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+const InlineHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
   strict: true,
   decode: string => sanitizeHtml(string, { allowBlockLevel: false, trusted: true }),
   encode: String,
 })
 
-const BlockHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+const BlockHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
   strict: true,
   decode: string => sanitizeHtml(string, { trusted: true }),
   encode: String,

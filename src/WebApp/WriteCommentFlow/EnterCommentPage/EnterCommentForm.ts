@@ -1,7 +1,7 @@
 import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
 import markdownIt from 'markdown-it'
 import type * as Comments from '../../../Comments/index.ts'
-import { Html, sanitizeHtml } from '../../../html.ts'
+import { type Html, HtmlFromSelfSchema, sanitizeHtml } from '../../../html.ts'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type EnterCommentForm = EmptyForm | InvalidForm | CompletedForm
@@ -32,7 +32,7 @@ export const fromComment = pipe(
   Match.exhaustive,
 )
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
   strict: true,
   decode: string => sanitizeHtml(markdownIt({ html: true }).render(string)),
   encode: String,

@@ -1,7 +1,7 @@
 import { Schema } from 'effect'
-import { Html, sanitizeHtml } from '../html.ts'
+import { type Html, HtmlFromSelfSchema, sanitizeHtml } from '../html.ts'
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
   strict: true,
   decode: string => sanitizeHtml(string, { allowBlockLevel: false, trusted: true }),
   encode: String,
