@@ -1946,7 +1946,10 @@ export const receivedReviewRequest = (): fc.Arbitrary<ReviewRequests.ReceivedRev
   })
 
 export const reviewRequestToAcknowledge = (): fc.Arbitrary<ReviewRequests.ReviewRequestToAcknowledge> =>
-  fc.record({ requester: fc.record({ name: name(), emailAddress: emailAddress() }) })
+  fc.record({
+    requester: fc.record({ name: name(), emailAddress: emailAddress() }),
+    preprintId: indeterminatePreprintId(),
+  })
 
 export const commentWasStarted = ({
   commentId,

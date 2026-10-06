@@ -328,6 +328,7 @@ describe('GetReviewRequestToAcknowledge', () => {
           .map(([requester, received, accepted]) =>
             Tuple.make(Array.make<Array.NonEmptyArray<Events.Event>>(received, accepted), reviewRequestId, {
               requester,
+              preprintId: received.preprintId,
             }),
           ),
       ],
@@ -348,6 +349,7 @@ describe('GetReviewRequestToAcknowledge', () => {
                     name: Name.Name('Josiah Carberry'),
                     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
                   },
+                  preprintId: reviewRequestForAPreprintWasReceived1.preprintId,
                 },
               ],
             ], // accepted
@@ -365,6 +367,7 @@ describe('GetReviewRequestToAcknowledge', () => {
                     name: Name.Name('Jean-Baptiste Botul'),
                     emailAddress: EmailAddress.EmailAddress('jbbotul@example.com'),
                   },
+                  preprintId: reviewRequestForAPreprintWasReceived2.preprintId,
                 },
               ],
             ], // multiple times
@@ -383,6 +386,7 @@ describe('GetReviewRequestToAcknowledge', () => {
                     name: Name.Name('Josiah Carberry'),
                     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
                   },
+                  preprintId: reviewRequestForAPreprintWasReceived1.preprintId,
                 },
               ],
             ], // other requests

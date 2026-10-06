@@ -1,11 +1,13 @@
 import { Array, Either, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
+import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { EmailAddress, Name, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface ReviewRequestToAcknowledge {
   readonly requester: { name: Name.Name; emailAddress: EmailAddress.EmailAddress }
+  readonly preprintId: Preprints.IndeterminatePreprintId
 }
 
 export interface Input {
@@ -61,7 +63,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
 
     return yield* Option.match(requester, {
       onNone: () => Either.left(new Errors.ReviewRequestCannotBeAcknowledged({})),
-      onSome: requester => Either.right({ requester }),
+      onSome: requester => Either.right({ requester, preprintId: received.preprintId }),
     })
   })
 
