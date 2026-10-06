@@ -1,21 +1,13 @@
 import { Schema } from 'effect'
-import { type Html, HtmlFromSelfSchema, sanitizeHtml } from '../../html.ts'
+import { SanitizeHtmlSchema } from '../../html.ts'
 import { SupportedLocales } from '../../locales/index.ts'
 import { NameSchema } from '../../types/Name.ts'
 import { SlugSchema } from '../../types/Slug.ts'
 import { InstantSchema } from '../../types/Temporal.ts'
 
-const InlineHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
-  strict: true,
-  decode: string => sanitizeHtml(string, { allowBlockLevel: false, trusted: true }),
-  encode: String,
-})
+const InlineHtmlSchema = SanitizeHtmlSchema({ allowBlockLevel: false, trusted: true })
 
-const BlockHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
-  strict: true,
-  decode: string => sanitizeHtml(string, { trusted: true }),
-  encode: String,
-})
+const BlockHtmlSchema = SanitizeHtmlSchema({ trusted: true })
 
 export class Author extends Schema.Class<Author>('Author')({
   name: NameSchema,

@@ -56,6 +56,13 @@ export const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.S
   encode: String,
 })
 
+export const SanitizeHtmlSchema = (options: Parameters<typeof sanitizeHtml>[1] = {}): Schema.Schema<Html, string> =>
+  Schema.transform(Schema.String, HtmlFromSelfSchema, {
+    strict: true,
+    decode: string => sanitizeHtml(string, options),
+    encode: String,
+  })
+
 export const PlainTextFromSelfSchema: Schema.Schema<PlainText> = Schema.instanceOf(PlainText)
 
 export const PlainTextSchema: Schema.Schema<PlainText, string> = Schema.transform(
