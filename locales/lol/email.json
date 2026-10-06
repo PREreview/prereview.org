@@ -48,7 +48,7 @@
     "message": "crwdns6524:0crwdne6524:0"
   },
   "thanksReviewRequest": {
-    "message": "crwdns6526:0crwdne6526:0"
+    "message": "crwdns8305:0{preprintTitle}crwdne8305:0"
   },
   "reviewRequestSharedWithCommunity": {
     "message": "crwdns6528:0{slackChannel}crwdne6528:0"
