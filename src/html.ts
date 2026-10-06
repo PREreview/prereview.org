@@ -56,6 +56,14 @@ export const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.S
   encode: String,
 })
 
+export const PlainTextFromSelfSchema: Schema.Schema<PlainText> = Schema.instanceOf(PlainText)
+
+export const PlainTextSchema: Schema.Schema<PlainText, string> = Schema.transform(
+  Schema.String,
+  PlainTextFromSelfSchema,
+  { strict: true, decode: plainText, encode: String },
+)
+
 type Placeholder = ReadonlyArray<Html | PlainText> | Html | PlainText | string | number
 
 const encodePlaceholder = (placeholder: Exclude<Placeholder, ReadonlyArray<unknown>>) =>
