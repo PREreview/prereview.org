@@ -1,11 +1,15 @@
 import { Effect } from 'effect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
 import { DefaultLocale, translate } from '../../../locales/index.ts'
+import type * as Preprints from '../../../Preprints/index.ts'
 import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
 
-export type ReviewRequest = Omit<ReviewRequests.ReviewRequestToAcknowledge, 'preprintId'>
+export type ReviewRequest = Omit<ReviewRequests.ReviewRequestToAcknowledge, 'preprintId'> & {
+  readonly preprint: Preprints.PreprintTitle
+}
 
 export const CreateEmail: (reviewRequest: ReviewRequest) => Effect.Effect<Nodemailer.Email> = Effect.fnUntraced(
   function* (reviewRequest) {
@@ -17,11 +21,20 @@ export const CreateEmail: (reviewRequest: ReviewRequest) => Effect.Effect<Nodema
       subject: plainText(t('acknowledgeReviewRequestTitle')()).toString(),
       html: yield* mjmlToHtml(html`
         <mjml>
+          <mj-head>
+            <mj-style inline="inline"> cite { font-style: normal; } </mj-style>
+          </mj-head>
           <mj-body>
             <mj-section>
               <mj-column>
                 <mj-text>${t('hiName')({ name: reviewRequest.requester.name })}</mj-text>
-                <mj-text>${t('thanksReviewRequest')()}</mj-text>
+                <mj-text
+                  >${t('thanksReviewRequest')({
+                    preprintTitle: html`<cite ${languageAttributesFor(reviewRequest.preprint.language)}
+                      >${reviewRequest.preprint.title}</cite
+                    >`,
+                  })}</mj-text
+                >
                 <mj-text>${t('reviewRequestSharedWithCommunity')({ slackChannel: '#request-a-review' })}</mj-text>
                 <mj-text>
                   ${t('reviewRequestSlackCommunity')({
@@ -61,7 +74,7 @@ export const CreateEmail: (reviewRequest: ReviewRequest) => Effect.Effect<Nodema
       text: plainText`
 ${t('hiName')({ name: reviewRequest.requester.name })}
 
-${t('thanksReviewRequest')()}
+${t('thanksReviewRequest')({ preprintTitle: reviewRequest.preprint.title })}
 
 ${t('reviewRequestSharedWithCommunity')({ slackChannel: '#request-a-review' })}
 

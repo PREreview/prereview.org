@@ -2,6 +2,7 @@ import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
 import { Nodemailer } from '../../../src/ExternalApis/index.ts'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
+import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Workflows/AcknowledgeReviewRequest.ts'
@@ -11,8 +12,8 @@ describe('AcknowledgeReviewRequest', () => {
   describe('when the request can be acknowledged', () => {
     it.effect.prop(
       'when the command can be completed',
-      [fc.uuid(), fc.reviewRequestToAcknowledge()],
-      ([reviewRequestId, reviewRequest]) =>
+      [fc.uuid(), fc.reviewRequestToAcknowledge(), fc.preprintTitle()],
+      ([reviewRequestId, reviewRequest, preprint]) =>
         Effect.gen(function* () {
           const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
 
@@ -20,6 +21,7 @@ describe('AcknowledgeReviewRequest', () => {
         }).pipe(
           Effect.provide([
             Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {
               recordEmailSentToAcknowledgeReviewRequest: () => Effect.void,
             }),
@@ -34,9 +36,10 @@ describe('AcknowledgeReviewRequest', () => {
       [
         fc.uuid(),
         fc.reviewRequestToAcknowledge(),
+        fc.preprintTitle(),
         fc.anything().map(cause => new ReviewRequests.UnableToHandleCommand({ cause })),
       ],
-      ([reviewRequestId, reviewRequest, error]) =>
+      ([reviewRequestId, reviewRequest, preprint, error]) =>
         Effect.gen(function* () {
           const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
 
@@ -46,6 +49,7 @@ describe('AcknowledgeReviewRequest', () => {
         }).pipe(
           Effect.provide([
             Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {
               recordEmailSentToAcknowledgeReviewRequest: () => error,
             }),
@@ -62,7 +66,36 @@ describe('AcknowledgeReviewRequest', () => {
     [
       fc.uuid(),
       fc.reviewRequestToAcknowledge(),
+      fc.preprintTitle(),
       fc.anything().map(cause => new Nodemailer.UnableToSendEmail({ cause })),
+    ],
+    ([reviewRequestId, reviewRequest, preprint, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+
+        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
+      }).pipe(
+        Effect.provide([
+          Layer.mock(Email.Email, { acknowledgeReviewRequest: () => error }),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
+      ),
+  )
+
+  it.effect.prop(
+    "when the preprint can't be loaded",
+    [
+      fc.uuid(),
+      fc.reviewRequestToAcknowledge(),
+      fc
+        .anything()
+        .chain(cause =>
+          fc.constantFrom(new Preprints.PreprintIsNotFound({ cause }), new Preprints.PreprintIsUnavailable({ cause })),
+        ),
     ],
     ([reviewRequestId, reviewRequest, error]) =>
       Effect.gen(function* () {
@@ -71,7 +104,8 @@ describe('AcknowledgeReviewRequest', () => {
         expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
       }).pipe(
         Effect.provide([
-          Layer.mock(Email.Email, { acknowledgeReviewRequest: () => error }),
+          Layer.mock(Email.Email, {}),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => error }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
@@ -101,6 +135,7 @@ describe('AcknowledgeReviewRequest', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),
+          Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestToAcknowledge: () => error }),
         ]),
@@ -130,6 +165,7 @@ describe('AcknowledgeReviewRequest', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),
+          Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestToAcknowledge: () => error }),
         ]),

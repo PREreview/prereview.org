@@ -64,7 +64,7 @@
     "description": "The title of the email sent to a user when they have requested a PREreview of their preprint."
   },
   "thanksReviewRequest": {
-    "message": "Thank you for requesting a review from PREreview.",
+    "message": "Thank you for requesting a review of “{preprintTitle}” from PREreview.",
     "description": "Text in the email titled “Review requested from the PREreview community”."
   },
   "reviewRequestSharedWithCommunity": {
