@@ -11,6 +11,7 @@ import {
   pipe,
   Predicate,
   Record,
+  Schema,
   Struct,
   Tuple,
 } from 'effect'
@@ -46,6 +47,12 @@ export class PlainText extends Data.TaggedClass('PlainText')<{
     return this.value
   }
 }
+
+export const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+  strict: true,
+  decode: rawHtml,
+  encode: String,
+})
 
 type Placeholder = ReadonlyArray<Html | PlainText> | Html | PlainText | string | number
 

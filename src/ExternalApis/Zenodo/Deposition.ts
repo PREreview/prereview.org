@@ -1,5 +1,5 @@
 import { Array, Schema } from 'effect'
-import { Html, plainText, PlainText, rawHtml } from '../../html.ts'
+import { HtmlSchema, plainText, PlainText } from '../../html.ts'
 import { Doi, OrcidId } from '../../types/index.ts'
 
 export type DepositMetadata = typeof DepositMetadata.Type
@@ -7,12 +7,6 @@ export type DepositMetadata = typeof DepositMetadata.Type
 export type UnsubmittedDeposition = typeof UnsubmittedDeposition.Type
 
 export type SubmittedDeposition = typeof SubmittedDeposition.Type
-
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
-  strict: true,
-  decode: rawHtml,
-  encode: String,
-})
 
 const PlainTextSchema: Schema.Schema<PlainText, string> = Schema.transform(
   Schema.String,
