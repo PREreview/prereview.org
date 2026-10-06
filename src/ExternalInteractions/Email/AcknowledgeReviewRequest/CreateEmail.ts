@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
-import { DefaultLocale, translate } from '../../../locales/index.ts'
+import { DefaultLocale, getLocaleForLanguage, isUserSelectableLanguage, translate } from '../../../locales/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
@@ -13,7 +13,10 @@ export type ReviewRequest = Omit<ReviewRequests.ReviewRequestToAcknowledge, 'pre
 
 export const CreateEmail: (reviewRequest: ReviewRequest) => Effect.Effect<Nodemailer.Email> = Effect.fnUntraced(
   function* (reviewRequest) {
-    const t = translate(DefaultLocale, 'email')
+    const locale = isUserSelectableLanguage(reviewRequest.preprint.language)
+      ? getLocaleForLanguage(reviewRequest.preprint.language)
+      : DefaultLocale
+    const t = translate(locale, 'email')
 
     return {
       from: { name: 'PREreview', address: EmailAddress.EmailAddress('help@prereview.org') },
