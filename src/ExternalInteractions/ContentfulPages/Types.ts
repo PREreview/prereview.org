@@ -11,7 +11,7 @@ const InlineHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.St
   encode: String,
 })
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
+const BlockHtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,
   decode: string => sanitizeHtml(string, { trusted: true }),
   encode: String,
@@ -34,11 +34,11 @@ export class ContentfulBlogPost extends Schema.Class<ContentfulBlogPost>('Conten
       width: Schema.NonNegativeInt,
       height: Schema.NonNegativeInt,
       altText: Schema.optional(Schema.NonEmptyTrimmedString),
-      caption: Schema.optional(HtmlSchema),
+      caption: Schema.optional(BlockHtmlSchema),
     }),
   ),
   excerpt: Schema.optional(Schema.NonEmptyTrimmedString),
-  html: HtmlSchema,
+  html: BlockHtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   publishedAt: InstantSchema,
 }) {}
@@ -69,6 +69,6 @@ export class ContentfulPageOfBlogPosts extends Schema.Class<ContentfulPageOfBlog
 
 export class ContentfulPage extends Schema.Class<ContentfulPage>('ContentfulPage')({
   title: InlineHtmlSchema,
-  html: HtmlSchema,
+  html: BlockHtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
 }) {}
