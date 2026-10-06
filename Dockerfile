@@ -3,9 +3,9 @@ ENV NODE_OPTIONS="--unhandled-rejections=strict --enable-source-maps"
 WORKDIR /app
 
 #
-# Stage: NPM environment
+# Stage: PNPM environment
 #
-FROM node AS npm
+FROM node AS pnpm
 RUN apt-get update && apt-get install --yes \
   build-essential \
   python3 \
@@ -27,18 +27,18 @@ ADD --chmod=+x https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-
 FROM intlc-$BUILDARCH AS intlc
 
 #
-# Stage: Development NPM install
+# Stage: Development PNPM install
 #
-FROM npm AS npm-dev
+FROM pnpm AS pnpm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 RUN pnpm install --frozen-lockfile \
   && rm --recursive --force node_modules/cld/deps/*
 
 #
-# Stage: Production NPM install
+# Stage: Production PNPM install
 #
-FROM npm AS npm-prod
+FROM pnpm AS pnpm-prod
 
 RUN pnpm install --frozen-lockfile --prod \
   && rm --recursive --force node_modules/cld/deps/*
@@ -46,12 +46,12 @@ RUN pnpm install --frozen-lockfile --prod \
 #
 # Stage: Intlc build
 #
-FROM npm AS build-intlc
+FROM pnpm AS build-intlc
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
 COPY --from=intlc /usr/local/bin/intlc /usr/local/bin/intlc
-COPY --from=npm-dev /app/node_modules/ node_modules/
+COPY --from=pnpm-dev /app/node_modules/ node_modules/
 COPY .dev/ .dev/
 COPY scripts/ scripts/
 COPY locales/ locales/
@@ -61,10 +61,10 @@ RUN node scripts/intlc.ts
 #
 # Stage: Production build
 #
-FROM npm AS build-prod
+FROM pnpm AS build-prod
 ENV NODE_ENV=production
 
-COPY --from=npm-dev /app/node_modules/ node_modules/
+COPY --from=pnpm-dev /app/node_modules/ node_modules/
 COPY tsconfig.build.json tsconfig.json vite.config.ts ./
 COPY src/ src/
 COPY assets/ assets/
@@ -79,7 +79,7 @@ RUN npx vite build && npx tsc --project tsconfig.build.json
 FROM mcr.microsoft.com/playwright:v1.58.2-jammy AS test-integration
 WORKDIR /app
 
-COPY --from=npm-dev /app/ .
+COPY --from=pnpm-dev /app/ .
 COPY --from=build-prod /app/dist/assets/ dist/assets/
 COPY --from=build-prod /app/src/ src/
 COPY integration/ integration/
@@ -111,7 +111,7 @@ RUN apt-get update && apt-get install --yes \
 COPY --from=hivemind /go/bin/hivemind /app/
 
 RUN mkdir data && chown node:node data && echo '{"type": "module"}' > /app/package.json
-COPY --from=npm-prod /app/node_modules/ node_modules/
+COPY --from=pnpm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
 COPY .dev/Procfile /app/
 COPY --from=redis /usr/local/bin/redis-server /app/
