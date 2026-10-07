@@ -1,8 +1,16 @@
-import { Option, pipe, String } from 'effect'
+import { Option, pipe, Schema, String } from 'effect'
 
-const videoIdPattern = /^[A-Za-z0-9_-]{11}$/
+const YouTubeVideoIdBrand: unique symbol = Symbol.for('YouTubeVideoId')
 
-export const fromUrl = (url: URL): Option.Option<string> => {
+export type YouTubeVideoId = typeof YouTubeVideoId.Type
+
+export const YouTubeVideoId = pipe(
+  Schema.String,
+  Schema.pattern(/^[A-Za-z0-9_-]{11}$/),
+  Schema.brand(YouTubeVideoIdBrand),
+)
+
+export const fromUrl = (url: URL): Option.Option<YouTubeVideoId> => {
   const host = url.hostname.replace(/^(?:www\.|m\.)/, '')
 
   const candidate =
@@ -14,11 +22,7 @@ export const fromUrl = (url: URL): Option.Option<string> => {
           : Option.fromNullable(/^\/(?:embed|shorts|live)\/([^/]+)/.exec(url.pathname)?.[1])
         : Option.none()
 
-  return pipe(
-    candidate,
-    Option.map(String.trim),
-    Option.filter(id => videoIdPattern.test(id)),
-  )
+  return pipe(candidate, Option.map(String.trim), Option.filter(Schema.is(YouTubeVideoId)))
 }
 
-export const thumbnailUrl = (videoId: string): URL => new URL(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`)
+export const thumbnailUrl = (videoId: YouTubeVideoId): URL => new URL(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`)

@@ -31,5 +31,7 @@ describe('fromUrl', () => {
 })
 
 it('thumbnailUrl', () => {
-  expect(_.thumbnailUrl('dQw4w9WgXcQ').href).toBe('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg')
+  expect(_.thumbnailUrl(_.YouTubeVideoId.make('dQw4w9WgXcQ')).href).toBe(
+    'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+  )
 })
