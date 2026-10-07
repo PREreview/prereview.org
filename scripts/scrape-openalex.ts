@@ -251,17 +251,6 @@ const GetSubfields: Effect.Effect<
   ),
   Stream.runCollect,
   Effect.andThen(Chunk.sortWith(subfield => subfield.id, Order.number)),
-  Effect.andThen(
-    Chunk.map(subfield =>
-      subfield.id === 2311
-        ? ({
-            ...subfield,
-            display_name: 'Waste Management and Disposal',
-            description: undefined,
-          } satisfies typeof SubfieldSchema.Type)
-        : subfield,
-    ),
-  ),
 )
 
 const GetTopics: Effect.Effect<
