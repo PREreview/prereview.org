@@ -35,9 +35,7 @@ import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, YouTubeEntry)
 
-const RequiredJsSchema = Schema.HashSetFromSelf(Schema.Literal('youtube-embed.js'))
-
-export class RequiredJs extends Context.Tag('RequiredJs')<RequiredJs, Ref.Ref<typeof RequiredJsSchema.Type>>() {}
+export class RequiredJs extends Context.Tag('RequiredJs')<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>() {}
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
