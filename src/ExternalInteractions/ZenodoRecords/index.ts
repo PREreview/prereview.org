@@ -5,6 +5,7 @@ import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import type { Doi, OrcidId, Pseudonym } from '../../types/index.ts'
 // eslint-disable-next-line import/no-internal-modules
+import type { PublicUrl } from '../../public-url.ts'
 import * as ReviewPage from '../../WebApp/review-page/comments.ts' // oxlint-disable-line module-boundaries/use-index
 import { addCommentText } from './AddCommentText.ts'
 import { getCommunityRecords } from './CommunityRecords.ts'
@@ -103,7 +104,7 @@ export const invalidatePrereviewInCache = ({
   prereviewId: number
   preprintId?: PreprintId
   user: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym }
-}): Effect.Effect<void, never, ZenodoApi.ZenodoApi | CachingHttpClient.HttpCache> =>
+}): Effect.Effect<void, never, ZenodoApi.ZenodoApi | PublicUrl | CachingHttpClient.HttpCache> =>
   pipe(
     constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
     Effect.andThen(Array.map(invalidateCacheEntry)),
