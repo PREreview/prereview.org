@@ -1452,7 +1452,7 @@ label {
     }
   }
 
-  :not(:where(.button-group)) > & {
+  :not(:where(.button-group, .support-us)) > & {
     margin-block-start: var(--space-m-l);
   }
 
@@ -3096,6 +3096,29 @@ spotlight-banner {
         }
       }
     }
+  }
+}
+
+.support-us {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-block-start: var(--space-2xl-3xl);
+  margin-inline: calc(50% - 50vi);
+  padding-block: var(--space-l-xl);
+  padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
+  border-block: var(--width-divider) solid transparent;
+  background-color: var(--color-background-alt);
+  text-align: center;
+  row-gap: var(--space-xs-s);
+
+  & > * {
+    margin-block-start: 0;
+    text-wrap-style: balance;
+  }
+
+  & > .button {
+    margin-block-start: var(--space-2xs);
   }
 }
 

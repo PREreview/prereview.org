@@ -86,6 +86,21 @@ export const CmsBlogPostPage = Effect.fnUntraced(
         ${content.locale !== locale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
 
         <div ${languageAttributesFor(content.locale)}>${fixHeadingLevels(1, content.html)}</div>
+
+        <aside class="support-us">
+          <h2><span ${languageAttributesFor('en')}>Consider supporting us</span></h2>
+
+          <p>
+            <span ${languageAttributesFor('en')}
+              >Together, we are creating a more open, equitable, and collaborative future for knowledge sharing and
+              evaluation.</span
+            >
+          </p>
+
+          <a href="https://donorbox.org/prereview" class="button">
+            <span ${languageAttributesFor('en')}>Donate to PREreview</span>
+          </a>
+        </aside>
       `,
       canonical: Routes.BlogPost.href({ slug }),
       js: ['youtube-embed.js'],
