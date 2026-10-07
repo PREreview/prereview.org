@@ -197,7 +197,7 @@ it.effect.each<{
               aria-describedby="youtube-caption-2YtVid3oEmb3dXmPlE0aBc"
             >
               <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" width="480" height="360" alt="" />
-              <span>Watch on YouTube</span>
+              <span lang="en" dir="ltr">Watch on YouTube</span>
             </a>
           </youtube-embed>
           <figcaption id="youtube-caption-2YtVid3oEmb3dXmPlE0aBc">

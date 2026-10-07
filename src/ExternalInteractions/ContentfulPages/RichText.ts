@@ -26,6 +26,7 @@ import type {
   Text,
 } from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html } from '../../html.ts'
+import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import { Slug } from '../../types/Slug.ts'
 import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry, YouTubeEntry } from './ContentfulTypes.ts'
@@ -121,7 +122,7 @@ const YouTubeLink = Effect.fnUntraced(function* ({
     <youtube-embed data-video-id="${videoId.value}" data-title="${title}">
       <a href="${url.href}" class="youtube-video" aria-label="Watch on YouTube: ${title}" ${describedByAttribute}>
         <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" />
-        <span>Watch on YouTube</span>
+        <span ${languageAttributesFor('en')}>Watch on YouTube</span>
       </a>
     </youtube-embed>
   `

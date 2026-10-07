@@ -31,6 +31,8 @@ export class YouTubeEmbed extends HTMLElement {
     const label = link.querySelector('span')
 
     if (label instanceof HTMLSpanElement) {
+      label.lang = 'en'
+      label.dir = 'ltr'
       label.textContent = 'Watch Video'
     }
 
