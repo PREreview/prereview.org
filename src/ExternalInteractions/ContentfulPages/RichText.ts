@@ -113,7 +113,9 @@ const YouTubeLink = Effect.fnUntraced(function* ({
   const videoId = YouTubeVideoId.fromUrl(url)
 
   if (Option.isNone(videoId)) {
-    return html`<a href="${url.href}" ${describedByAttribute}>Watch on YouTube: ${title}</a>`
+    return html`<a href="${url.href}" ${describedByAttribute}>
+      <span ${languageAttributesFor('en')}>Watch on YouTube: ${title}</span></a
+    > `
   }
 
   yield* Ref.update(requiredJs, HashSet.add('youtube-embed.js'))
