@@ -673,7 +673,11 @@ youtube-embed {
     background-color: var(--color-red-600);
 
     @media (forced-colors: active) {
-      background-color: Canvas;
+      text-decoration-line: underline;
+      text-decoration-thickness: max(3px, 0.1875rem, 0.12em);
+      text-underline-offset: 0.1em;
+      text-decoration-skip-ink: none;
+      text-decoration-skip: none;
     }
   }
 }
