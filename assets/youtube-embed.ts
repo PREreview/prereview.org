@@ -26,14 +26,13 @@ export class YouTubeEmbed extends HTMLElement {
     link.setAttribute('role', 'button')
     link.classList.add('unstyled-button')
     link.setAttribute('tabindex', '0')
-    link.setAttribute('aria-label', `Watch video: ${title}`)
 
     const label = link.querySelector('span')
 
     if (label instanceof HTMLSpanElement) {
       label.lang = 'en'
       label.dir = 'ltr'
-      label.textContent = 'Watch Video'
+      label.innerHTML = 'Watch <cite class="visually-hidden">' + title + '</cite>'
     }
 
     link.addEventListener('click', () => {

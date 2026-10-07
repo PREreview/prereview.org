@@ -193,11 +193,12 @@ it.effect.each<{
             <a
               href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
               class="youtube-video"
-              aria-label="Watch on YouTube: PREreview in Dialogue"
               aria-describedby="youtube-caption-2YtVid3oEmb3dXmPlE0aBc"
             >
               <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" width="480" height="360" alt="" />
-              <span lang="en" dir="ltr">Watch on YouTube</span>
+              <span lang="en" dir="ltr">
+                Watch <cite class="visually-hidden">PREreview in Dialogue</cite> on YouTube
+              </span>
             </a>
           </youtube-embed>
           <figcaption id="youtube-caption-2YtVid3oEmb3dXmPlE0aBc">

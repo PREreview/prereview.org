@@ -114,7 +114,7 @@ const YouTubeLink = Effect.fnUntraced(function* ({
 
   if (Option.isNone(videoId)) {
     return html`<a href="${url.href}" ${describedByAttribute}>
-      <span ${languageAttributesFor('en')}>Watch on YouTube: ${title}</span></a
+      <span ${languageAttributesFor('en')}>Watch <cite>${title}</cite> on YouTube</span></a
     > `
   }
 
@@ -122,9 +122,9 @@ const YouTubeLink = Effect.fnUntraced(function* ({
 
   return html`
     <youtube-embed data-video-id="${videoId.value}" data-title="${title}">
-      <a href="${url.href}" class="youtube-video" aria-label="Watch on YouTube: ${title}" ${describedByAttribute}>
+      <a href="${url.href}" class="youtube-video" ${describedByAttribute}>
         <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" />
-        <span ${languageAttributesFor('en')}>Watch on YouTube</span>
+        <span ${languageAttributesFor('en')}>Watch <cite class="visually-hidden">${title}</cite> on YouTube</span>
       </a>
     </youtube-embed>
   `
