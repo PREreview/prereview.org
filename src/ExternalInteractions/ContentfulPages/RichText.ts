@@ -44,13 +44,15 @@ const EmbeddedEntryToHtml = Match.typeTags<
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
 
-    const text = Option.getOrElse(getValueForLocale(callToAction.fields.text, locale), () =>
-      getValueForDefaultLocale(callToAction.fields.text),
-    )
+    const text = Option.match(getValueForLocale(callToAction.fields.text, locale), {
+      onSome: text => html`<span>${text}</span>`,
+      onNone: () =>
+        html`<span ${languageAttributesFor(DefaultLocale)}
+          >${getValueForDefaultLocale(callToAction.fields.text)}</span
+        >`,
+    })
 
-    return html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button"
-      ><span>${text}</span></a
-    >`
+    return html`<a href="${getValueForDefaultLocale(callToAction.fields.url).href}" class="button">${text}</a>`
   }),
   DynamicEmbedEntry: Effect.fnUntraced(function* (dynamicEmbed) {
     const dynamicEmbedded = yield* DynamicEmbedder
