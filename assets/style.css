@@ -625,9 +625,14 @@ youtube-embed {
   display: grid;
   inline-size: fit-content;
   max-inline-size: 100%;
+  outline-offset: 0;
   text-decoration-line: none;
   cursor: pointer;
   place-items: center;
+
+  @media (forced-colors: active) {
+    outline-offset: var(--space-3xs);
+  }
 
   & > * {
     grid-area: 1 / 1;
