@@ -1,4 +1,5 @@
-import { Option, pipe, Schema, String } from 'effect'
+import { Url, UrlParams } from '@effect/platform'
+import { Option, pipe, Schema } from 'effect'
 
 const YouTubeVideoIdBrand: unique symbol = Symbol.for('YouTubeVideoId')
 
@@ -13,16 +14,23 @@ export const YouTubeVideoId = pipe(
 export const fromUrl = (url: URL): Option.Option<YouTubeVideoId> => {
   const host = url.hostname.replace(/^(?:www\.|m\.)/, '')
 
-  const candidate =
-    host === 'youtu.be'
-      ? Option.some(url.pathname.slice(1))
-      : host === 'youtube.com' || host === 'youtube-nocookie.com'
-        ? url.pathname === '/watch'
-          ? Option.fromNullable(url.searchParams.get('v'))
-          : Option.fromNullable(/^\/(?:embed|shorts|live)\/([^/]+)/.exec(url.pathname)?.[1])
-        : Option.none()
+  if (host === 'youtu.be') {
+    return Schema.decodeOption(YouTubeVideoId)(url.pathname.slice(1))
+  }
 
-  return pipe(candidate, Option.map(String.trim), Option.filter(Schema.is(YouTubeVideoId)))
+  if (host !== 'youtube.com' && host !== 'youtube-nocookie.com') {
+    return Option.none()
+  }
+
+  if (url.pathname === '/watch') {
+    return pipe(Url.urlParams(url), UrlParams.getFirst('v'), Option.andThen(Schema.decodeOption(YouTubeVideoId)))
+  }
+
+  return pipe(
+    Option.fromNullable(/^\/(?:embed|shorts|live)\/([^/]+)/.exec(url.pathname)),
+    Option.flatMapNullable(matches => matches[1]),
+    Option.andThen(Schema.decodeOption(YouTubeVideoId)),
+  )
 }
 
 export const thumbnailUrl = (videoId: YouTubeVideoId): URL => new URL(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`)
