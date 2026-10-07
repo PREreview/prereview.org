@@ -1,5 +1,18 @@
 import { Url, UrlParams } from '@effect/platform'
-import { Array, Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import {
+  Array,
+  Effect,
+  flow,
+  HashSet,
+  Layer,
+  Option,
+  type ParseResult,
+  pipe,
+  Predicate,
+  Record,
+  Ref,
+  Schema,
+} from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
@@ -8,7 +21,7 @@ import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
-import { BlockContentToHtml } from '../RichText.ts'
+import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { Author, ContentfulBlogPost } from '../Types.ts'
 
 const AuthorEntry = Schema.Struct({
@@ -34,64 +47,70 @@ const BlogPostEntry = Schema.Struct({
   }),
 })
 
-const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(function* (entry: typeof BlogPostEntry.Type) {
-  return new ContentfulBlogPost({
-    authors: Array.map(
-      getValueForDefaultLocale(entry.fields.authors),
-      author => new Author({ name: getValueForDefaultLocale(author.fields.name) }),
-    ),
-    title: html`${getValueForDefaultLocale(entry.fields.title)}`,
-    heroImage: yield* Effect.gen(function* () {
-      if (!entry.fields.heroImage) {
-        return undefined
-      }
+const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
+  function* (entry: typeof BlogPostEntry.Type) {
+    const requiredJs = yield* RequiredJs
 
-      const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
-      const image = getValueForDefaultLocale(heroImage.fields.image)
-      const asset = getValueForDefaultLocale(image.fields.file)
-      const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText).trim() : undefined
-      const caption = yield* heroImage.fields.caption
-        ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
-        : Effect.succeed([])
+    return new ContentfulBlogPost({
+      authors: Array.map(
+        getValueForDefaultLocale(entry.fields.authors),
+        author => new Author({ name: getValueForDefaultLocale(author.fields.name) }),
+      ),
+      title: html`${getValueForDefaultLocale(entry.fields.title)}`,
+      heroImage: yield* Effect.gen(function* () {
+        if (!entry.fields.heroImage) {
+          return undefined
+        }
 
-      if (asset.details.image.width <= 1600) {
+        const heroImage = getValueForDefaultLocale(entry.fields.heroImage)
+        const image = getValueForDefaultLocale(heroImage.fields.image)
+        const asset = getValueForDefaultLocale(image.fields.file)
+        const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText).trim() : undefined
+        const caption = yield* heroImage.fields.caption
+          ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
+          : Effect.succeed([])
+
+        if (asset.details.image.width <= 1600) {
+          return {
+            url: {
+              avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
+              webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
+              default: asset.url,
+            },
+            width: asset.details.image.width,
+            height: asset.details.image.height,
+            altText,
+            caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
+          }
+        }
+
         return {
           url: {
-            avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
-            webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
-            default: asset.url,
+            avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'avif' })),
+            webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'webp' })),
+            default: Url.modifyUrlParams(asset.url, UrlParams.set('w', '1600')),
           },
-          width: asset.details.image.width,
-          height: asset.details.image.height,
+          width: 1600,
+          height: Math.round((asset.details.image.height * 1600) / asset.details.image.width),
           altText,
           caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
         }
-      }
-
-      return {
-        url: {
-          avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'avif' })),
-          webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'webp' })),
-          default: Url.modifyUrlParams(asset.url, UrlParams.set('w', '1600')),
-        },
-        width: 1600,
-        height: Math.round((asset.details.image.height * 1600) / asset.details.image.width),
-        altText,
-        caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
-      }
-    }),
-    excerpt:
-      typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
-    html: yield* Effect.map(
-      BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)),
-      content => html`${content}`,
-    ),
-    locale: DefaultLocale,
-    publishedAt: entry.fields.firstPublishedAtOverride
-      ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)
-      : entry.sys.createdAt,
-  })
-})
+      }),
+      excerpt:
+        typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
+      html: yield* Effect.map(
+        BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)),
+        content => html`${content}`,
+      ),
+      locale: DefaultLocale,
+      publishedAt: entry.fields.firstPublishedAtOverride
+        ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)
+        : entry.sys.createdAt,
+      js: yield* Ref.get(requiredJs),
+    })
+  },
+  Effect.provideServiceEffect(RequiredJs, Ref.make(HashSet.empty())),
+)
 
 export const EntryToContentfulBlogPost: (entry: Entry) => Effect.Effect<ContentfulBlogPost, ParseResult.ParseError> =
   flow(

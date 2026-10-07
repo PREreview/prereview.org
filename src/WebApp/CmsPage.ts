@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, HashSet } from 'effect'
 import { CmsContent } from '../CmsContent/index.ts'
 import { Locale } from '../Context.ts'
 import { fixHeadingLevels, html, plainText } from '../html.ts'
@@ -36,7 +36,7 @@ export const CmsPage = Effect.fnUntraced(
       `,
       canonical,
       current,
-      js: ['youtube-embed.js'],
+      js: HashSet.toValues(content.js),
     })
   },
   Effect.catchAll(() => HavingProblemsPage),

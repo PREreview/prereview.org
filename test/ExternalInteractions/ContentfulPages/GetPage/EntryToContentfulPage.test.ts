@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '@effect/vitest'
 import { assertEquals } from '@effect/vitest/utils'
 import resolveResponse from 'contentful-resolve-response'
-import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
+import { Array, Effect, HashSet, Layer, pipe, Schema, Struct } from 'effect'
 import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import { DynamicEmbedder } from '../../../../src/ExternalInteractions/ContentfulPages/DynamicEmbedder.ts'
@@ -42,6 +42,7 @@ it.effect.each<{
         </p>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
   {
@@ -251,6 +252,7 @@ it.effect.each<{
         </span></p>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
   {
@@ -342,6 +344,7 @@ it.effect.each<{
         </a>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
   {
@@ -1112,6 +1115,7 @@ it.effect.each<{
         <p><span>This page was last updated on 18 February 2026.</span></p>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>

@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '@effect/vitest'
 import { assertEquals } from '@effect/vitest/utils'
 import resolveResponse from 'contentful-resolve-response'
-import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
+import { Array, Effect, HashSet, Layer, pipe, Schema, Struct } from 'effect'
 import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlogPost/EntryToContentfulBlogPost.ts'
@@ -53,6 +53,7 @@ it.effect.each<{
         </p>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
   {
@@ -612,6 +613,7 @@ it.effect.each<{
         </a>
       `,
       locale: DefaultLocale,
+      js: HashSet.make('youtube-embed.js' as const),
     }),
   },
   {
@@ -912,6 +914,7 @@ it.effect.each<{
         </blockquote>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
   {
@@ -992,6 +995,7 @@ it.effect.each<{
         <p><span>b. Finances and funding opportunities overview</span></p>
       `,
       locale: DefaultLocale,
+      js: HashSet.empty(),
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>

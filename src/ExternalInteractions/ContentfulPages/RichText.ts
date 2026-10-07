@@ -1,4 +1,18 @@
-import { Array, Effect, Match, Option, type ParseResult, pipe, Predicate, Record, Schema, type Types } from 'effect'
+import {
+  Array,
+  Context,
+  Effect,
+  HashSet,
+  Match,
+  Option,
+  type ParseResult,
+  pipe,
+  Predicate,
+  Record,
+  Ref,
+  Schema,
+  type Types,
+} from 'effect'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import type {
@@ -20,9 +34,13 @@ import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, YouTubeEntry)
 
+const RequiredJsSchema = Schema.HashSetFromSelf(Schema.Literal('youtube-embed.js'))
+
+export class RequiredJs extends Context.Tag('RequiredJs')<RequiredJs, Ref.Ref<typeof RequiredJsSchema.Type>>() {}
+
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
-  Effect.Effect<Html, ParseResult.ParseError, DynamicEmbedder | Locale>
+  Effect.Effect<Html, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs>
 >()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
@@ -65,27 +83,39 @@ const EmbeddedEntryToHtml = Match.typeTags<
       : Effect.succeed([])
 
     if (!Array.isNonEmptyReadonlyArray(caption)) {
-      return YouTubeLink({ url, title })
+      return yield* YouTubeLink({ url, title })
     }
 
     const captionId = `youtube-caption-${youTube.sys.id}`
 
     return html`
       <figure>
-        ${YouTubeLink({ url, title, describedBy: captionId })}
+        ${yield* YouTubeLink({ url, title, describedBy: captionId })}
         <figcaption id="${captionId}">${caption}</figcaption>
       </figure>
     `
   }),
 })
 
-const YouTubeLink = ({ url, title, describedBy }: { url: URL; title: string; describedBy?: string }): Html => {
+const YouTubeLink = Effect.fnUntraced(function* ({
+  url,
+  title,
+  describedBy,
+}: {
+  url: URL
+  title: string
+  describedBy?: string
+}): Effect.fn.Return<Html, never, RequiredJs> {
+  const requiredJs = yield* RequiredJs
+
   const describedByAttribute = describedBy === undefined ? '' : html`aria-describedby="${describedBy}"`
   const videoId = YouTubeVideoId.fromUrl(url)
 
   if (Option.isNone(videoId)) {
     return html`<a href="${url.href}" ${describedByAttribute}>Watch on YouTube: ${title}</a>`
   }
+
+  yield* Ref.update(requiredJs, HashSet.add('youtube-embed.js'))
 
   return html`
     <youtube-embed data-video-id="${videoId.value}" data-title="${title}">
@@ -95,7 +125,7 @@ const YouTubeLink = ({ url, title, describedBy }: { url: URL; title: string; des
       </a>
     </youtube-embed>
   `
-}
+})
 
 const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) => {
   const file = getValueForDefaultLocale(asset.fields.file)
@@ -127,7 +157,7 @@ const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string })
 
 const BlockElementToHtml = Match.typeTags<
   Block,
-  Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale>
+  Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs>
 >()({
   BlockQuote: blockQuote =>
     Effect.map(BlockContentToHtml(blockQuote), content => Option.some(html`<blockquote>${content}</blockquote>`)),
@@ -213,7 +243,7 @@ const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
 
 export const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale> =>
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -237,7 +267,7 @@ export const BlockContentToHtml = (
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale> => {
+): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }

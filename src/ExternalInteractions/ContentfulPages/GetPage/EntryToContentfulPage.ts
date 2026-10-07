@@ -1,10 +1,10 @@
-import { Effect, flow, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import { Effect, flow, HashSet, Option, type ParseResult, pipe, Predicate, Record, Ref, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
 import type { DynamicEmbedder } from '../DynamicEmbedder.ts'
-import { BlockContentToHtml } from '../RichText.ts'
+import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { ContentfulPage } from '../Types.ts'
 
 const PageEntry = Schema.Struct({
@@ -17,25 +17,30 @@ const PageEntry = Schema.Struct({
   }),
 })
 
-const PageEntryToContentfulPage = Effect.fnUntraced(function* (entry: typeof PageEntry.Type) {
-  const locale = yield* Locale
+const PageEntryToContentfulPage = Effect.fnUntraced(
+  function* (entry: typeof PageEntry.Type) {
+    const locale = yield* Locale
+    const requiredJs = yield* RequiredJs
 
-  return new ContentfulPage({
-    title: Option.match(getValueForLocale(entry.fields.title, locale), {
-      onSome: title => html`${title}`,
-      onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
-    }),
-    html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
-      onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
-      onNone: () =>
-        Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), content => html`${content}`),
-    }),
-    locale: Option.match(getValueForLocale(entry.fields.title, locale), {
-      onSome: () => locale,
-      onNone: () => DefaultLocale,
-    }),
-  })
-})
+    return new ContentfulPage({
+      title: Option.match(getValueForLocale(entry.fields.title, locale), {
+        onSome: title => html`${title}`,
+        onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
+      }),
+      html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
+        onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
+        onNone: () =>
+          Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), content => html`${content}`),
+      }),
+      locale: Option.match(getValueForLocale(entry.fields.title, locale), {
+        onSome: () => locale,
+        onNone: () => DefaultLocale,
+      }),
+      js: yield* Ref.get(requiredJs),
+    })
+  },
+  Effect.provideServiceEffect(RequiredJs, Ref.make(HashSet.empty())),
+)
 
 export const EntryToContentfulPage: (
   entry: Entry,

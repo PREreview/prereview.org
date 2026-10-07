@@ -5,6 +5,8 @@ import { NameSchema } from '../types/Name.ts'
 import { SlugSchema } from '../types/Slug.ts'
 import { InstantSchema } from '../types/Temporal.ts'
 
+const RequiredJsSchema = Schema.HashSetFromSelf(Schema.Literal('youtube-embed.js'))
+
 const InlineHtmlSchema = SanitizeHtmlSchema({ allowBlockLevel: false, trusted: true })
 
 const BlockHtmlSchema = SanitizeHtmlSchema({ trusted: true })
@@ -33,6 +35,7 @@ export class BlogPost extends Schema.Class<BlogPost>('BlogPost')({
   html: BlockHtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
   publishedAt: InstantSchema,
+  js: RequiredJsSchema,
 }) {}
 
 export class BlogPostTitle extends Schema.Class<BlogPostTitle>('BlogPostTitle')({
@@ -63,6 +66,7 @@ export class Page extends Schema.Class<Page>('Page')({
   title: InlineHtmlSchema,
   html: BlockHtmlSchema,
   locale: Schema.Literal(...SupportedLocales),
+  js: RequiredJsSchema,
 }) {}
 
 export type PageId =

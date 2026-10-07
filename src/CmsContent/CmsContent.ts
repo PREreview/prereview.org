@@ -1,4 +1,4 @@
-import { Context, Effect, Layer, Option, pipe, Record } from 'effect'
+import { Context, Effect, HashSet, Layer, Option, pipe, Record } from 'effect'
 import type { Locale } from '../Context.ts'
 import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import { GhostPage } from '../ExternalInteractions/index.ts'
@@ -37,7 +37,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
                     Effect.gen(function* () {
                       const page = yield* getPageFromGhost(slug)
 
-                      return { ...page, title: getTitle(slug, page.locale) }
+                      return { ...page, title: getTitle(slug, page.locale), js: HashSet.empty() }
                     }),
                   ),
                   Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
@@ -55,7 +55,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
                 Effect.gen(function* () {
                   const page = yield* getPageFromGhost(slug)
 
-                  return { ...page, title: getTitle(slug, page.locale) }
+                  return { ...page, title: getTitle(slug, page.locale), js: HashSet.empty() }
                 }),
                 Effect.catchTag('PageIsUnavailable', error => new UnableToQuery({ cause: error })),
               ),

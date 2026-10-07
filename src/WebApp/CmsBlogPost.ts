@@ -1,4 +1,4 @@
-import { Array, Effect, flow, pipe } from 'effect'
+import { Array, Effect, flow, HashSet, pipe } from 'effect'
 import { CmsContent } from '../CmsContent/index.ts'
 import { Locale } from '../Context.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../html.ts'
@@ -103,7 +103,7 @@ export const CmsBlogPostPage = Effect.fnUntraced(
         </aside>
       `,
       canonical: Routes.BlogPost.href({ slug }),
-      js: ['youtube-embed.js'],
+      js: HashSet.toValues(content.js),
     })
   },
   Effect.catchAll(() => HavingProblemsPage),

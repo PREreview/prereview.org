@@ -1578,6 +1578,7 @@ export const cmsPage = (): fc.Arbitrary<Page> =>
     title: html(),
     html: html(),
     locale: supportedLocale(),
+    js: hashSet(fc.constant('youtube-embed.js')),
   })
 
 export const ghostPage = (): fc.Arbitrary<GhostPage.GhostPage> =>
