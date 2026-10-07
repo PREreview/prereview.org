@@ -19,7 +19,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
 
       const expectedUrls = [
         'http://zenodo.test/api/records/12345',
-        'http://zenodo.test/api/communities/prereview-reviews/records?q=related.identifier%3A%2210.1101%2F12345%22&size=100&sort=publication-desc&resource_type=publication%3A%3Apublication-peerreview&access_status=open',
+        'http://zenodo.test/api/communities/prereview-reviews/records?q=metadata.related_identifiers.resource_type.id%3A%22publication-preprint%22+AND+related.identifier%3A%2210.1101%2F12345%22&size=100&sort=publication-desc&resource_type=publication%3A%3Apublication-peerreview&access_status=open',
         'http://zenodo.test/api/communities/prereview-reviews/records?q=metadata.creators.person_or_org.identifiers.identifier%3A0000-0002-1825-0097+metadata.creators.person_or_org.name%3A%22Orange+Panda%22&size=100&sort=publication-desc&resource_type=publication%3A%3Apublication-peerreview&access_status=open',
       ]
 
