@@ -15,5 +15,6 @@ export const CreateRequest = Effect.fnUntraced(function* (urlParams: UrlParams.I
     usePreviewApi ? HttpClientRequest.setHeader('Cache-Control', 'no-store') : identity,
     HttpClientRequest.setUrlParams(urlParams),
     HttpClientRequest.setUrlParam('locale', '*'),
+    HttpClientRequest.setUrlParam('include', '10'),
   )
 })

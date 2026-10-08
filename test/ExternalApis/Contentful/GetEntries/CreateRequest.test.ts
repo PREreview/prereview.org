@@ -25,7 +25,9 @@ describe('CreateRequest', () => {
         expect(actual.url).toStrictEqual(
           `https://cdn.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
         )
-        expect(actual.urlParams).toStrictEqual(UrlParams.set(params, 'locale', '*'))
+        expect(UrlParams.toRecord(actual.urlParams)).toStrictEqual(
+          UrlParams.toRecord(UrlParams.setAll(params, { locale: '*', include: '10' })),
+        )
       }).pipe(Effect.provide(Layer.succeed(ContentfulConfig, config))),
     )
 
@@ -36,7 +38,9 @@ describe('CreateRequest', () => {
         expect(actual.url).toStrictEqual(
           `https://preview.contentful.com/spaces/${config.spaceId}/environments/${config.environmentId}/entries`,
         )
-        expect(actual.urlParams).toStrictEqual(UrlParams.set(params, 'locale', '*'))
+        expect(UrlParams.toRecord(actual.urlParams)).toStrictEqual(
+          UrlParams.toRecord(UrlParams.setAll(params, { locale: '*', include: '10' })),
+        )
       }).pipe(Effect.provide([Layer.succeed(UsePreviewApi, true), Layer.succeed(ContentfulConfig, config)])),
     )
   })
