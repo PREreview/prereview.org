@@ -21,6 +21,7 @@ import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
+import { fallbackFormat } from '../ImageUrl.ts'
 import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { Author, ContentfulBlogPost } from '../Types.ts'
 
@@ -75,7 +76,7 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
             url: {
               avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
               webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
-              default: asset.url,
+              default: Url.modifyUrlParams(asset.url, UrlParams.appendAll(fallbackFormat(asset.contentType))),
             },
             width: asset.details.image.width,
             height: asset.details.image.height,
@@ -88,7 +89,10 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
           url: {
             avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'avif' })),
             webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'webp' })),
-            default: Url.modifyUrlParams(asset.url, UrlParams.set('w', '1600')),
+            default: Url.modifyUrlParams(
+              asset.url,
+              flow(UrlParams.set('w', '1600'), UrlParams.appendAll(fallbackFormat(asset.contentType))),
+            ),
           },
           width: 1600,
           height: Math.round((asset.details.image.height * 1600) / asset.details.image.width),

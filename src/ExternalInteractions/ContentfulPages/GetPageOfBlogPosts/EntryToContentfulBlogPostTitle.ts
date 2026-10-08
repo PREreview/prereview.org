@@ -6,6 +6,7 @@ import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
+import { fallbackFormat } from '../ImageUrl.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
 
 export const BlogPostEntry = Schema.Struct({
@@ -41,7 +42,7 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
           url: {
             avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
             webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
-            default: asset.url,
+            default: Url.modifyUrlParams(asset.url, UrlParams.appendAll(fallbackFormat(asset.contentType))),
           },
           width: asset.details.image.width,
           height: asset.details.image.height,
@@ -52,7 +53,10 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
         url: {
           avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '600', fm: 'avif' })),
           webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '600', fm: 'webp' })),
-          default: Url.modifyUrlParams(asset.url, UrlParams.set('w', '600')),
+          default: Url.modifyUrlParams(
+            asset.url,
+            flow(UrlParams.set('w', '600'), UrlParams.appendAll(fallbackFormat(asset.contentType))),
+          ),
         },
         width: 600,
         height: Math.round((asset.details.image.height * 600) / asset.details.image.width),
