@@ -21,7 +21,7 @@ const EntryFields = Schema.Struct({
     title: Schema.Struct({ 'en-US': Schema.String }),
     slug: Schema.Struct({ 'en-US': Schema.String }),
     authors: Schema.Struct({ 'en-US': Schema.Array(EntryLink) }),
-    tag: Schema.optional(Schema.Struct({ 'en-US': Schema.Literal('newsletter', 'weeknote') })),
+    channel: Schema.Struct({ 'en-US': Schema.Literal('newsletter', 'weeknote', 'blog') }),
     heroImage: Schema.optional(Schema.Struct({ 'en-US': EntryLink })),
     excerpt: Schema.optional(Schema.Struct({ 'en-US': Schema.String })),
     content: Schema.Struct({ 'en-US': Schema.Unknown }),
