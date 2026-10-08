@@ -22,6 +22,7 @@ const EntryFields = Schema.Struct({
     slug: Schema.Struct({ 'en-US': Schema.String }),
     authors: Schema.Struct({ 'en-US': Schema.Array(EntryLink) }),
     channel: Schema.Struct({ 'en-US': Schema.Literal('newsletter', 'weeknote', 'blog') }),
+    tags: Schema.optional(Schema.Struct({ 'en-US': Schema.Array(Schema.Literal('champions-program')) })),
     heroImage: Schema.optional(Schema.Struct({ 'en-US': EntryLink })),
     excerpt: Schema.optional(Schema.Struct({ 'en-US': Schema.String })),
     content: Schema.Struct({ 'en-US': Schema.Unknown }),

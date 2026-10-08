@@ -385,11 +385,16 @@ const GhostPostAuthor = Schema.Struct({
   slug: Schema.NonEmptyTrimmedString,
 })
 
+const GhostPostTag = Schema.Struct({
+  slug: Schema.NonEmptyTrimmedString,
+})
+
 const GhostPost = Schema.Struct({
   title: Schema.NonEmptyTrimmedString,
   slug: Schema.NonEmptyTrimmedString,
   html: Schema.String,
   authors: Schema.Array(Schema.partial(GhostPostAuthor)),
+  tags: Schema.Array(GhostPostTag),
   published_at: Schema.NonEmptyTrimmedString,
   updated_at: Schema.NonEmptyTrimmedString,
   custom_excerpt: Schema.NullOr(Schema.String),
@@ -406,6 +411,16 @@ function channelForTitle(title: string): Channel {
   if (lower.includes('newsletter')) return 'newsletter'
   if (lower.includes('prereview platform news')) return 'weeknote'
   return 'blog'
+}
+
+type ContentfulTag = 'champions-program'
+
+const contentfulTagForGhostTag: ReadonlyMap<string, ContentfulTag> = new Map([
+  ['prereview-champion', 'champions-program'],
+])
+
+function contentfulTagsFor(ghostTags: ReadonlyArray<typeof GhostPostTag.Type>): Array<ContentfulTag> {
+  return [...new Set(ghostTags.flatMap(({ slug }) => contentfulTagForGhostTag.get(slug) ?? []))]
 }
 
 interface SkipReport {
@@ -510,6 +525,7 @@ void pipe(
         p.slug !== undefined &&
         p.html !== undefined &&
         p.authors !== undefined &&
+        p.tags !== undefined &&
         p.published_at !== undefined &&
         p.updated_at !== undefined &&
         p.custom_excerpt !== undefined,
@@ -548,12 +564,15 @@ void pipe(
             }
           }
 
+          const tags = contentfulTagsFor(post.tags)
+
           const entry = {
             fields: {
               title: { 'en-US': post.title },
               slug: { 'en-US': post.slug },
               authors: { 'en-US': authorLinks },
               channel: { 'en-US': channelForTitle(post.title) },
+              ...(tags.length > 0 ? { tags: { 'en-US': tags } } : {}),
               ...(heroImage !== undefined ? { heroImage: { 'en-US': heroImage } } : {}),
               ...(post.custom_excerpt !== null ? { excerpt: { 'en-US': post.custom_excerpt } } : {}),
               content: { 'en-US': htmlToRichText(post.html, skipped, post.slug, imageLookup, buttonLookup) },
