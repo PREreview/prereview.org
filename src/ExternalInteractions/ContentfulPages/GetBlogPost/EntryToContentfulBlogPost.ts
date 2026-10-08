@@ -1,4 +1,3 @@
-import { Url, UrlParams } from '@effect/platform'
 import {
   Array,
   Effect,
@@ -21,7 +20,7 @@ import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
-import { fallbackFormat } from '../ImageUrl.ts'
+import * as ImageUrl from '../ImageUrl.ts'
 import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { Author, ContentfulBlogPost } from '../Types.ts'
 
@@ -71,31 +70,16 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
           ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
           : Effect.succeed([])
 
-        if (asset.details.image.width <= 1600) {
-          return {
-            url: {
-              avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
-              webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
-              default: Url.modifyUrlParams(asset.url, UrlParams.appendAll(fallbackFormat(asset.contentType))),
-            },
-            width: asset.details.image.width,
-            height: asset.details.image.height,
-            altText,
-            caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
-          }
-        }
+        const width = Math.min(asset.details.image.width, 1600)
 
         return {
           url: {
-            avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'avif' })),
-            webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '1600', fm: 'webp' })),
-            default: Url.modifyUrlParams(
-              asset.url,
-              flow(UrlParams.set('w', '1600'), UrlParams.appendAll(fallbackFormat(asset.contentType))),
-            ),
+            avif: ImageUrl.avif(asset, 1600),
+            webp: ImageUrl.webp(asset, 1600),
+            default: ImageUrl.fallback(asset, 1600),
           },
-          width: 1600,
-          height: Math.round((asset.details.image.height * 1600) / asset.details.image.width),
+          width,
+          height: Math.round((asset.details.image.height * width) / asset.details.image.width),
           altText,
           caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
         }

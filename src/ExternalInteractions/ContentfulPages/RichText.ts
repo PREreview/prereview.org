@@ -1,4 +1,3 @@
-import { Url, UrlParams } from '@effect/platform'
 import {
   Array,
   Context,
@@ -32,7 +31,7 @@ import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import { Slug } from '../../types/Slug.ts'
 import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry, YouTubeEntry } from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
-import { fallbackFormat } from './ImageUrl.ts'
+import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
 const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, YouTubeEntry)
@@ -148,10 +147,10 @@ const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string })
 
   return html`
     <picture>
-      <source srcset="${file.url.href}?fm=avif" type="image/avif" />
-      <source srcset="${file.url.href}?fm=webp" type="image/webp" />
+      <source srcset="${ImageUrl.avif(file).href}" type="image/avif" />
+      <source srcset="${ImageUrl.webp(file).href}" type="image/webp" />
       <img
-        src="${Url.modifyUrlParams(file.url, UrlParams.appendAll(fallbackFormat(file.contentType))).href}"
+        src="${ImageUrl.fallback(file).href}"
         width="${file.details.image.width}"
         height="${file.details.image.height}"
         alt="${altText}"

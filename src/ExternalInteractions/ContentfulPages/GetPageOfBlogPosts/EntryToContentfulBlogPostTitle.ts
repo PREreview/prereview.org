@@ -1,4 +1,3 @@
-import { Url, UrlParams } from '@effect/platform'
 import { Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index.ts'
@@ -6,7 +5,7 @@ import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
-import { fallbackFormat } from '../ImageUrl.ts'
+import * as ImageUrl from '../ImageUrl.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
 
 export const BlogPostEntry = Schema.Struct({
@@ -37,29 +36,16 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
       const image = getValueForDefaultLocale(heroImage.fields.image)
       const asset = getValueForDefaultLocale(image.fields.file)
 
-      if (asset.details.image.width <= 600) {
-        return {
-          url: {
-            avif: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'avif')),
-            webp: Url.modifyUrlParams(asset.url, UrlParams.set('fm', 'webp')),
-            default: Url.modifyUrlParams(asset.url, UrlParams.appendAll(fallbackFormat(asset.contentType))),
-          },
-          width: asset.details.image.width,
-          height: asset.details.image.height,
-        }
-      }
+      const width = Math.min(asset.details.image.width, 600)
 
       return {
         url: {
-          avif: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '600', fm: 'avif' })),
-          webp: Url.modifyUrlParams(asset.url, UrlParams.setAll({ w: '600', fm: 'webp' })),
-          default: Url.modifyUrlParams(
-            asset.url,
-            flow(UrlParams.set('w', '600'), UrlParams.appendAll(fallbackFormat(asset.contentType))),
-          ),
+          avif: ImageUrl.avif(asset, 600),
+          webp: ImageUrl.webp(asset, 600),
+          default: ImageUrl.fallback(asset, 600),
         },
-        width: 600,
-        height: Math.round((asset.details.image.height * 600) / asset.details.image.width),
+        width,
+        height: Math.round((asset.details.image.height * width) / asset.details.image.width),
       }
     }),
     excerpt:
