@@ -221,7 +221,13 @@ export class Entry extends Schema.Class<Entry>('Entry')({
       key: NonEmptyStringSchema,
       value: Schema.suspend(
         (): Schema.Schema<
-          Instant | NonEmptyString | Document | Asset | Entry | Array.NonEmptyReadonlyArray<Entry>,
+          | Instant
+          | NonEmptyString
+          | Document
+          | Asset
+          | Entry
+          | Array.NonEmptyReadonlyArray<Entry>
+          | Array.NonEmptyReadonlyArray<NonEmptyString>,
           unknown
         > =>
           Schema.Union(
@@ -231,6 +237,7 @@ export class Entry extends Schema.Class<Entry>('Entry')({
             Asset,
             Entry,
             Schema.NonEmptyArray(Entry),
+            Schema.NonEmptyArray(NonEmptyStringSchema),
           ) as never,
       ),
     }),
