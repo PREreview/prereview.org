@@ -10,6 +10,33 @@ if [[ -z "${CONTENTFUL_MANAGEMENT_TOKEN:-}" ]]; then
   exit 1
 fi
 
+# Calls the Management API and prints the response body. Fails, printing the
+# status and body to stderr, unless the status is 2xx or one of the extra
+# allowed statuses.
+api() {
+  local method="$1"
+  local path="$2"
+  shift 2
+
+  local response
+  if ! response=$(curl -s -w '\n%{http_code}' -X "$method" "${BASE_URL}${path}" \
+    -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}"); then
+    echo "${method} ${path} failed: could not reach Contentful" >&2
+    return 1
+  fi
+
+  local status="${response##*$'\n'}"
+  local body="${response%$'\n'*}"
+
+  if [[ "$status" != 2?? && " $* " != *" ${status} "* ]]; then
+    echo "${method} ${path} failed with status ${status}:" >&2
+    echo "$body" >&2
+    return 1
+  fi
+
+  echo "$body"
+}
+
 # Fetches every id in a paginated collection (entries or assets).
 fetch_all_ids() {
   local resource="$1"
@@ -19,8 +46,8 @@ fetch_all_ids() {
 
   while true; do
     local page
-    page=$(curl -sf "${BASE_URL}/${resource}?limit=${limit}&skip=${skip}" \
-      -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}")
+    # Command substitution doesn't inherit `set -e`, so exit explicitly.
+    page=$(api GET "/${resource}?limit=${limit}&skip=${skip}") || exit 1
 
     local page_ids
     page_ids=$(echo "$page" | jq -r '.items[].sys.id')
@@ -56,10 +83,9 @@ delete_all() {
   fi
 
   echo "$ids" | while read -r id; do
-    curl -sf -X DELETE "${BASE_URL}/${resource}/${id}/published" \
-      -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}" || true
-    curl -sf -X DELETE "${BASE_URL}/${resource}/${id}" \
-      -H "Authorization: Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}"
+    # 400 means it wasn't published.
+    api DELETE "/${resource}/${id}/published" 400 >/dev/null
+    api DELETE "/${resource}/${id}" >/dev/null
     echo "Deleted ${resource}/${id}"
   done
 }
