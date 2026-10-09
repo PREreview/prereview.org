@@ -603,11 +603,40 @@ video {
 }
 
 figure {
-  margin-block: var(--space-m-l);
+  :not(:where(.media-gallery)) > & {
+    margin-block: var(--space-m-l);
+  }
 }
 
 figcaption {
   font-size: var(--step--1);
+}
+
+.media-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-block: var(--space-m-l);
+  gap: var(--space-xs-s);
+
+  & > * {
+    flex: 0 1 100%;
+    min-inline-size: 0;
+
+    @media (width >= 40em) {
+      flex-basis: calc((100% - var(--space-xs-s)) / 2);
+    }
+
+    @media (width >= 70em) {
+      flex-basis: calc((100% - (2 * var(--space-xs-s))) / 3);
+    }
+  }
+
+  @media screen {
+    margin-inline: calc(50% - 50vi);
+    padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - (var(--grid-max-width) * 1.5)) / 2));
+  }
 }
 
 youtube-embed {

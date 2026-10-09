@@ -108,7 +108,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
       { concurrency: 'inherit' },
     )
 
-    return html`${itemsHtml}`
+    return html`<div class="media-gallery">${itemsHtml}</div>`
   }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
     const url = getValueForDefaultLocale(youTube.fields.url)
