@@ -31,12 +31,19 @@ import { type Html, html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
 import { Slug } from '../../types/Slug.ts'
-import { CallToActionEntry, DynamicEmbedEntry, MediaEntry, PageEntry, YouTubeEntry } from './ContentfulTypes.ts'
+import {
+  CallToActionEntry,
+  DynamicEmbedEntry,
+  MediaEntry,
+  MediaGalleryEntry,
+  PageEntry,
+  YouTubeEntry,
+} from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
-const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, YouTubeEntry)
+const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, YouTubeEntry)
 
 export class RequiredJs extends Context.Tag('RequiredJs')<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>() {}
 
@@ -78,6 +85,30 @@ const EmbeddedEntryToHtml = Match.typeTags<
       `,
       onNone: () => AssetToHtml({ asset, altText }),
     })
+  }),
+  MediaGalleryEntry: Effect.fnUntraced(function* (mediaGallery) {
+    const items = getValueForDefaultLocale(mediaGallery.fields.items)
+
+    const itemsHtml = yield* Effect.forEach(
+      items,
+      Effect.fnUntraced(function* (media) {
+        const asset = getValueForDefaultLocale(media.fields.file)
+        const altText = media.fields.altText ? getValueForDefaultLocale(media.fields.altText) : ''
+        const caption = yield* media.fields.caption
+          ? BlockContentToHtml(getValueForDefaultLocale(media.fields.caption))
+          : Effect.succeedNone
+
+        return html`
+          <figure>
+            ${AssetToHtml({ asset, altText })}
+            ${Option.match(caption, { onSome: caption => html`<figcaption>${caption}</figcaption>`, onNone: () => '' })}
+          </figure>
+        `
+      }),
+      { concurrency: 'inherit' },
+    )
+
+    return html`${itemsHtml}`
   }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
     const url = getValueForDefaultLocale(youTube.fields.url)

@@ -50,6 +50,15 @@ export const MediaEntry = Schema.Struct({
   }),
 }).pipe(Schema.attachPropertySignature('_tag', 'MediaEntry'))
 
+export const MediaGalleryEntry = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('mediaGallery')) }) }),
+  }),
+  fields: Schema.Struct({
+    items: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyArray(MediaEntry) }),
+  }),
+}).pipe(Schema.attachPropertySignature('_tag', 'MediaGalleryEntry'))
+
 export const HeroImageEntry = Schema.Struct({
   sys: Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('heroImage')) }) }),
