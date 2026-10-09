@@ -126,7 +126,7 @@ const YouTubeLink = Effect.fnUntraced(function* ({
   return html`
     <youtube-embed data-video-id="${videoId.value}" data-title="${title}">
       <a href="${url.href}" class="youtube-video" ${describedByAttribute}>
-        <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" />
+        <img src="${YouTubeVideoId.thumbnailUrl(videoId.value).href}" width="480" height="360" alt="" loading="lazy" />
         <span ${languageAttributesFor('en')}>Watch <cite class="visually-hidden">${title}</cite> on YouTube</span>
       </a>
     </youtube-embed>
@@ -149,6 +149,7 @@ const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: stri
         width="${file.details.image.width}"
         height="${file.details.image.height}"
         alt="${altText}"
+        loading="lazy"
       />
     `
   }
@@ -162,6 +163,7 @@ const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: stri
         width="${file.details.image.width}"
         height="${file.details.image.height}"
         alt="${altText}"
+        loading="lazy"
       />
     </picture>
   `

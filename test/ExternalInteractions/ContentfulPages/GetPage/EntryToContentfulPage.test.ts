@@ -29,6 +29,7 @@ it.effect.each<{
           width="800"
           height="800"
           alt=""
+          loading="lazy"
         />
         <p>
           <span>
@@ -402,6 +403,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -437,6 +439,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -476,6 +479,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -511,6 +515,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -552,6 +557,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -585,6 +591,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -617,6 +624,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -666,6 +674,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -700,6 +709,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -732,6 +742,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -784,6 +795,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -829,6 +841,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -879,6 +892,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -930,6 +944,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -974,6 +989,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -1004,6 +1020,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -1036,6 +1053,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>
@@ -1074,6 +1092,7 @@ it.effect.each<{
             width="250"
             height="250"
             alt=""
+            loading="lazy"
           />
         </picture>
         <p>

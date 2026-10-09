@@ -118,6 +118,7 @@ it.effect.each<{
             width="300"
             height="300"
             alt="Peer Review Week logo"
+            loading="lazy"
           />
         </picture>
         <p>
@@ -180,6 +181,7 @@ it.effect.each<{
               width="300"
               height="300"
               alt="Hand-drawn sketch of two male and one female characters chatting with papers in their hands and a cellphone. A hand-written phrase reads “let’s chat” in the bottom-left corner."
+              loading="lazy"
             />
           </picture>
           <figcaption>
@@ -195,7 +197,13 @@ it.effect.each<{
               class="youtube-video"
               aria-describedby="youtube-caption-2YtVid3oEmb3dXmPlE0aBc"
             >
-              <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" width="480" height="360" alt="" />
+              <img
+                src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                width="480"
+                height="360"
+                alt=""
+                loading="lazy"
+              />
               <span lang="en" dir="ltr">
                 Watch <cite class="visually-hidden">PREreview in Dialogue</cite> on YouTube
               </span>
@@ -311,6 +319,7 @@ it.effect.each<{
               width="300"
               height="300"
               alt="A group of eight hands and arms with all different skin tones, accessories, and clothes creating a heart shape around the PREreview logo."
+              loading="lazy"
             />
           </picture>
           <figcaption>
@@ -390,6 +399,7 @@ it.effect.each<{
             width="300"
             height="300"
             alt="Continuous Science Foundation and PREreview logos joined by a plus sign, representing collaboration."
+            loading="lazy"
           />
         </picture>
         <p>
@@ -439,6 +449,7 @@ it.effect.each<{
               width="300"
               height="300"
               alt="A red megaphone icon outlined in black against a white background."
+              loading="lazy"
             />
           </picture>
           <figcaption>
@@ -535,6 +546,7 @@ it.effect.each<{
             width="300"
             height="300"
             alt="The PREreview logo at the top and Slack logo at the bottom with the image of a paper in white on a red background"
+            loading="lazy"
           />
         </picture>
         <ul>
@@ -1028,6 +1040,7 @@ it.effect.each<{
               width="1312"
               height="590"
               alt=""
+              loading="lazy"
             />
           </picture>
 
