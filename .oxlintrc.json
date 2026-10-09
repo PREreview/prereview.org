@@ -37,6 +37,7 @@
     "no-useless-constructor": "error",
     "no-empty-function": "error",
     "no-unused-vars": ["error", { "reportVarsOnlyUsedAsTypes": true }],
+    "eslint/no-irregular-whitespace": ["error", { "skipRegExps": false, "skipTemplates": false }],
     "import/export": "error",
     "import/no-duplicates": ["error", { "prefer-inline": true }],
     "wc/no-constructor-attributes": "error",
