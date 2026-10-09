@@ -16,6 +16,7 @@ import {
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import type {
+  Asset,
   Block,
   Heading1,
   Heading2,
@@ -131,9 +132,9 @@ const YouTubeLink = Effect.fnUntraced(function* ({
   `
 })
 
-const AssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) =>
+const AssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) =>
   Match.valueTags(asset, {
-    ImageAsset: () => ImageAssetToHtml({ asset, altText }),
+    ImageAsset: asset => ImageAssetToHtml({ asset, altText }),
   })
 
 const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) => {
