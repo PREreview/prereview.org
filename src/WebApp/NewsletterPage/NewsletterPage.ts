@@ -12,8 +12,11 @@ export const createNewsletterPage = ({ currentPage, totalPages, blogPosts }: Pag
     main: html`
       <h1><span ${languageAttributesFor('en')}>Newsletter</span></h1>
 
-      <a href="${Routes.Blog.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Blog</span></a>
-      <a href="${Routes.Weeknotes.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Weeknotes</span></a>
+      <div class="blog-nav">
+        <span><span ${languageAttributesFor('en')}>See also:</span></span>
+        <a href="${Routes.Blog.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Blog</span></a>
+        <a href="${Routes.Weeknotes.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Weeknotes</span></a>
+      </div>
 
       <ol class="cards" id="results">
         ${Array.map(

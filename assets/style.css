@@ -1542,6 +1542,20 @@ label {
   }
 }
 
+.blog-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-block-start: var(--space-xs);
+  column-gap: var(--space-2xs);
+  row-gap: var(--space-3xs-2xs);
+
+  & :any-link {
+    padding-block: var(--space-4xs-3xs);
+    padding-inline: var(--space-4xs-3xs);
+  }
+}
+
 [role='toolbar'] {
   display: flex;
   flex-wrap: wrap;

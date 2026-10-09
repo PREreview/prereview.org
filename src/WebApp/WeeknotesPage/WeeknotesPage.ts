@@ -17,8 +17,11 @@ export const createWeeknotesPage = (
     main: html`
       <h1><span ${languageAttributesFor('en')}>Weeknotes</span></h1>
 
-      <a href="${Routes.Blog.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Blog</span></a>
-      <a href="${Routes.Newsletter.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Newsletter</span></a>
+      <div class="blog-nav">
+        <span><span ${languageAttributesFor('en')}>See also:</span></span>
+        <a href="${Routes.Blog.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Blog</span></a>
+        <a href="${Routes.Newsletter.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Newsletter</span></a>
+      </div>
 
       <ol class="cards" id="results">
         ${Array.map(

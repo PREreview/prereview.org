@@ -12,8 +12,11 @@ export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlo
     main: html`
       <h1><span ${languageAttributesFor('en')}>Blog</span></h1>
 
-      <a href="${Routes.Newsletter.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Newsletter</span></a>
-      <a href="${Routes.Weeknotes.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Weeknotes</span></a>
+      <div class="blog-nav">
+        <span><span ${languageAttributesFor('en')}>See also:</span></span>
+        <a href="${Routes.Newsletter.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Newsletter</span></a>
+        <a href="${Routes.Weeknotes.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Weeknotes</span></a>
+      </div>
 
       <ol class="cards" id="results">
         ${Array.map(
