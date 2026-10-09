@@ -171,7 +171,7 @@ const VideoAssetToHtml = ({ asset, altText }: { asset: VideoAsset; altText: stri
   const file = getValueForDefaultLocale(asset.fields.file)
 
   return html`
-    <video controls>
+    <video controls loading="lazy" preload="metadata">
       <source src="${file.url.href}" type="${file.contentType}" />
       ${altText ? html`<span>${altText}</span>` : ''}
     </video>

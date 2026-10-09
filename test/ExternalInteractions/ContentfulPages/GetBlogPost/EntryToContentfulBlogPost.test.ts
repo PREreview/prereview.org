@@ -1096,7 +1096,7 @@ it.effect.each<{
           </span>
         </p>
         <p><span>Below is a How-To Video on how to engage on Outbreak Science Rapid PREreview.</span></p>
-        <video controls>
+        <video controls loading="lazy" preload="metadata">
           <source
             src="https://videos.ctfassets.net/dapbmjoaf8gb/3tR7iNkeOL3cpnBDAhARZA/bc040658c7c8377b05f3f82ad505eda1/How-To_Evaluate_Preprints_on_Outbreak_Science_Rapid_PREreview.mp4"
             type="video/mp4"
