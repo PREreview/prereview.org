@@ -70,11 +70,11 @@ const EmbeddedEntryToHtml = Match.typeTags<
     return Option.match(caption, {
       onSome: caption => html`
         <figure>
-          ${ImageAssetToHtml({ asset, altText })}
+          ${AssetToHtml({ asset, altText })}
           <figcaption>${caption}</figcaption>
         </figure>
       `,
-      onNone: () => ImageAssetToHtml({ asset, altText }),
+      onNone: () => AssetToHtml({ asset, altText }),
     })
   }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
@@ -131,6 +131,11 @@ const YouTubeLink = Effect.fnUntraced(function* ({
   `
 })
 
+const AssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) =>
+  Match.valueTags(asset, {
+    ImageAsset: () => ImageAssetToHtml({ asset, altText }),
+  })
+
 const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) => {
   const file = getValueForDefaultLocale(asset.fields.file)
 
@@ -170,7 +175,7 @@ const BlockElementToHtml = Match.typeTags<
     ),
   Document: document => BlockContentToHtml(document),
   EmbeddedAssetBlock: embeddedAssetBlock =>
-    Effect.succeedSome(ImageAssetToHtml({ asset: embeddedAssetBlock.data.target, altText: '' })),
+    Effect.succeedSome(AssetToHtml({ asset: embeddedAssetBlock.data.target, altText: '' })),
   EmbeddedEntryBlock: embeddedEntryBlock =>
     pipe(
       Schema.decodeUnknown(EmbeddedEntry)(embeddedEntryBlock.data.target),
