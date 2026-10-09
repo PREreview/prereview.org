@@ -1067,7 +1067,7 @@ it.effect.each<{
             <a href="https://oaspa.org/scholarly-publishers-working-together-during-covid-19-pandemic/"
               >announcing a joint initiative</a
             >
-            that makes a direct call to the community—publishers, editors, reviewers,  and authors—to work together to
+            that makes a direct call to the community—publishers, editors, reviewers, and authors—to work together to
             maximize the efficiency of peer review of COVID-19 research from preprints to journal submission and beyond.
           </span>
         </p>

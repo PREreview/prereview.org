@@ -336,7 +336,9 @@ const InlineElementToHtml = Match.typeTags<Inline, Option.Option<Html>>()({
 const InlineContentToHtml = (inline: Inline): ReadonlyArray<Html> => Array.filterMap(inline.content, TextToHtml)
 
 const TextToHtml = (text: Text): Option.Option<Html> =>
-  text.value === '' ? Option.none() : Option.some(Array.reduce(text.marks, html`${text.value}`, MarkToHtml))
+  text.value === ''
+    ? Option.none()
+    : Option.some(Array.reduce(text.marks, html`${text.value.replaceAll(/\s+/g, ' ')}`, MarkToHtml))
 
 const MarkToHtml: (text: Html, mark: Mark) => Html = (text, mark) =>
   Match.valueTags(mark, {
