@@ -38,6 +38,7 @@ export const securityHeaders = (
       directives: {
         'script-src': useCrowdinInContext ? scriptSrc.concat(crowdin.scriptSrc) : scriptSrc,
         'img-src': useCrowdinInContext ? imgSrc.concat(crowdin.imgSrc) : imgSrc,
+        'media-src': ["'self'", 'videos.ctfassets.net'],
         'upgrade-insecure-requests': protocol === 'https:',
         'default-src': "'self'",
         'base-uri': "'self'",
