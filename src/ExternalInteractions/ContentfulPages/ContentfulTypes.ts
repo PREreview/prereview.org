@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { Asset, ContentfulId, Document } from '../../ExternalApis/Contentful/index.ts'
+import { ContentfulId, Document, ImageAsset } from '../../ExternalApis/Contentful/index.ts'
 import { SlugSchema } from '../../types/Slug.ts'
 import { DynamicEmbed } from './DynamicEmbedder.ts'
 
@@ -40,7 +40,7 @@ export const MediaEntry = Schema.Struct({
   }),
   fields: Schema.Struct({
     caption: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) })),
-    file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
+    file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(ImageAsset) }),
     altText: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.compose(Schema.Trim, Schema.NonEmptyString) }),
     ),
@@ -53,7 +53,7 @@ export const HeroImageEntry = Schema.Struct({
   }),
   fields: Schema.Struct({
     caption: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) })),
-    image: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Asset) }),
+    image: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(ImageAsset) }),
     altText: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.compose(Schema.Trim, Schema.NonEmptyString) }),
     ),

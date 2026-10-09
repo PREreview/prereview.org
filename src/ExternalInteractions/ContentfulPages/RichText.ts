@@ -16,11 +16,11 @@ import {
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import type {
-  Asset,
   Block,
   Heading1,
   Heading2,
   Heading3,
+  ImageAsset,
   Inline,
   Mark,
   Text,
@@ -131,7 +131,7 @@ const YouTubeLink = Effect.fnUntraced(function* ({
   `
 })
 
-const ImageAssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) => {
+const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) => {
   const file = getValueForDefaultLocale(asset.fields.file)
 
   if (file.contentType === 'image/svg+xml') {

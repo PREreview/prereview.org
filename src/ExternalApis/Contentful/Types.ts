@@ -138,7 +138,7 @@ class Table extends Schema.Class<Table>('Table')({
   content: Schema.NonEmptyArray(TableRow),
 }) {}
 
-export class Asset extends Schema.Class<Asset>('Asset')({
+export class ImageAsset extends Schema.Class<ImageAsset>('ImageAsset')({
   sys: Schema.Struct({
     id: ContentfulId,
     locale: Schema.optional(Schema.NonEmptyString),
@@ -154,7 +154,13 @@ export class Asset extends Schema.Class<Asset>('Asset')({
       }),
     }),
   }),
-}) {}
+}) {
+  readonly _tag = 'ImageAsset'
+}
+
+export type Asset = typeof Asset.Type
+
+export const Asset = Schema.Union(ImageAsset)
 
 class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAssetBlock')({
   _tag: Schema.propertySignature(Schema.transformLiteral('embedded-asset-block', 'EmbeddedAssetBlock')).pipe(
