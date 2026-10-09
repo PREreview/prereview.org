@@ -35,6 +35,10 @@ const BlogPostEntry = Schema.Struct({
   }),
   fields: Schema.Struct({
     authors: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyArray(AuthorEntry) }),
+    channel: Schema.Record({
+      key: Schema.NonEmptyTrimmedString,
+      value: Schema.Literal('blog', 'newsletter', 'weeknote'),
+    }),
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
     heroImage: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
@@ -56,6 +60,7 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
         getValueForDefaultLocale(entry.fields.authors),
         author => new Author({ name: getValueForDefaultLocale(author.fields.name) }),
       ),
+      channel: getValueForDefaultLocale(entry.fields.channel),
       title: html`${getValueForDefaultLocale(entry.fields.title)}`,
       heroImage: yield* Effect.gen(function* () {
         if (!entry.fields.heroImage) {

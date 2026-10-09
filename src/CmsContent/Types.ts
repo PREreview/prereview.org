@@ -18,6 +18,7 @@ class Author extends Schema.Class<Author>('Author')({
 export class BlogPost extends Schema.Class<BlogPost>('BlogPost')({
   authors: Schema.NonEmptyArray(Author),
   title: InlineHtmlSchema,
+  channel: Schema.Literal('blog', 'newsletter', 'weeknote'),
   heroImage: Schema.optional(
     Schema.Struct({
       url: Schema.Struct({

@@ -23,6 +23,7 @@ it.effect.each<{
     index: 0,
     expected: new ContentfulBlogPost({
       title: html`PREreview platform news, 31 October 2025`,
+      channel: 'weeknote',
       authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
       publishedAt: Instant.from('2025-10-31T14:00:00Z'),
       heroImage: undefined,
@@ -61,6 +62,7 @@ it.effect.each<{
     index: 0,
     expected: new ContentfulBlogPost({
       title: html`PREreview August 2026 Newsletter`,
+      channel: 'newsletter',
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-21T14:13:47Z'),
       heroImage: {
@@ -634,6 +636,7 @@ it.effect.each<{
     index: 0,
     expected: new ContentfulBlogPost({
       title: html`An interview with PREreview Champion Mabel Omoniwa`,
+      channel: 'blog',
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-26T13:04:49Z'),
       heroImage: {
@@ -935,6 +938,7 @@ it.effect.each<{
     index: 0,
     expected: new ContentfulBlogPost({
       title: html`2026 Q1 PREreview Advisory Committee Meeting Minutes`,
+      channel: 'blog',
       authors: [new Author({ name: Name('Sam Hindle') })],
       publishedAt: Instant.from('2026-03-31T16:47:11Z'),
       heroImage: {
@@ -1016,6 +1020,7 @@ it.effect.each<{
     index: 0,
     expected: new ContentfulBlogPost({
       title: html`Call to Help Rapidly Review COVID-19 Preprints`,
+      channel: 'blog',
       authors: [new Author({ name: Name('Daniela Saderi') })],
       publishedAt: Instant.from('2020-09-22T21:08:05Z'),
       heroImage: undefined,
@@ -1137,6 +1142,7 @@ it.effect.each<{
     index: 0,
     expected: new ContentfulBlogPost({
       title: html`PREreview August 2026 Newsletter`,
+      channel: 'newsletter',
       authors: [new Author({ name: Name('Pia Tavella') })],
       publishedAt: Instant.from('2026-08-21T14:13:47Z'),
       heroImage: {

@@ -1,5 +1,5 @@
-import { Array, Effect, flow, HashSet, pipe } from 'effect'
-import { CmsContent } from '../CmsContent/index.ts'
+import { Array, Effect, flow, HashSet, Match, pipe } from 'effect'
+import { type BlogPost, CmsContent } from '../CmsContent/index.ts'
 import { Locale } from '../Context.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../html.ts'
 import { languageAttributesFor } from '../Locales.ts'
@@ -30,7 +30,7 @@ export const CmsBlogPostPage = Effect.fnUntraced(
             altText: content.heroImage.altText,
           }
         : undefined,
-      nav: html`<a href="${Routes.Blog.href({ page: 1 })}" class="back">${t('forms', 'backLink')()}</a>`,
+      nav: html`<a href="${back(content.channel)}" class="back">${t('forms', 'backLink')()}</a>`,
       main: html`
         <header>
           ${
@@ -107,6 +107,14 @@ export const CmsBlogPostPage = Effect.fnUntraced(
     })
   },
   Effect.catchAll(() => HavingProblemsPage),
+)
+
+const back = pipe(
+  Match.type<BlogPost['channel']>(),
+  Match.when('blog', () => Routes.Blog.href({ page: 1 })),
+  Match.when('newsletter', () => Routes.Newsletter.href({ page: 1 })),
+  Match.when('weeknote', () => Routes.Weeknotes.href({ page: 1 })),
+  Match.exhaustive,
 )
 
 function displayAuthor({ name }: { name: Name }) {

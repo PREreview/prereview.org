@@ -15,6 +15,7 @@ export class Author extends Schema.Class<Author>('Author')({
 
 export class ContentfulBlogPost extends Schema.Class<ContentfulBlogPost>('ContentfulBlogPost')({
   authors: Schema.NonEmptyArray(Author),
+  channel: Schema.Literal('blog', 'newsletter', 'weeknote'),
   title: InlineHtmlSchema,
   heroImage: Schema.optional(
     Schema.Struct({

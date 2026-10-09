@@ -26,6 +26,7 @@
             { "sys": { "type": "Link", "linkType": "Entry", "id": "5r3zaemc6ZFh98N7UrmOlE" } }
           ]
         },
+        "channel": { "en-US": "weeknote" },
         "content": {
           "en-US": {
             "nodeType": "document",

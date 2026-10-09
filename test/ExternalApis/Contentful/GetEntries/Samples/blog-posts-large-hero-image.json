@@ -21,6 +21,7 @@
         "title": { "en-US": "2026 Q1 PREreview Advisory Committee Meeting Minutes" },
         "slug": { "en-US": "2026-q1-prereview-advisory-committee-meeting-minutes" },
         "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "1OWcAZExmETcyn6QWnl59j" } }] },
+        "channel": { "en-US": "blog" },
         "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "kQtEQCyJtEEsaMRoVOC9A" } } },
         "excerpt": {
           "en-US": "Welcome to new AC members, goodbye and gratitude to Kristen Ratan. Overview of PREreview governance and the role of the Advisory Committee. Review of strategic plan activities and finance overview."
