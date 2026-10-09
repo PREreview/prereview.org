@@ -68,7 +68,7 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
         const altText = heroImage.fields.altText ? getValueForDefaultLocale(heroImage.fields.altText).trim() : undefined
         const caption = yield* heroImage.fields.caption
           ? BlockContentToHtml(getValueForDefaultLocale(heroImage.fields.caption))
-          : Effect.succeed([])
+          : Effect.succeedNone
 
         const width = Math.min(asset.details.image.width, 1600)
 
@@ -81,15 +81,12 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
           width,
           height: Math.round((asset.details.image.height * width) / asset.details.image.width),
           altText,
-          caption: Array.match(caption, { onNonEmpty: () => html`${caption}`, onEmpty: () => undefined }),
+          caption: Option.getOrUndefined(caption),
         }
       }),
       excerpt:
         typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
-      html: yield* Effect.map(
-        BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)),
-        content => html`${content}`,
-      ),
+      html: yield* Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), Option.getOrThrow),
       locale: DefaultLocale,
       publishedAt: entry.fields.firstPublishedAtOverride
         ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)

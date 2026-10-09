@@ -28,9 +28,8 @@ const PageEntryToContentfulPage = Effect.fnUntraced(
         onNone: () => html`${getValueForDefaultLocale(entry.fields.title)}`,
       }),
       html: yield* Option.match(getValueForLocale(entry.fields.content, locale), {
-        onSome: content => Effect.map(BlockContentToHtml(content), content => html`${content}`),
-        onNone: () =>
-          Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), content => html`${content}`),
+        onSome: content => Effect.map(BlockContentToHtml(content), Option.getOrThrow),
+        onNone: () => Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), Option.getOrThrow),
       }),
       locale: Option.match(getValueForLocale(entry.fields.title, locale), {
         onSome: () => locale,

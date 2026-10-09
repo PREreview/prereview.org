@@ -65,16 +65,16 @@ const EmbeddedEntryToHtml = Match.typeTags<
     const altText = media.fields.altText ? getValueForDefaultLocale(media.fields.altText) : ''
     const caption = yield* media.fields.caption
       ? BlockContentToHtml(getValueForDefaultLocale(media.fields.caption))
-      : Effect.succeed([])
+      : Effect.succeedNone
 
-    return Array.match(caption, {
-      onNonEmpty: caption => html`
+    return Option.match(caption, {
+      onSome: caption => html`
         <figure>
           ${ImageAssetToHtml({ asset, altText })}
           <figcaption>${caption}</figcaption>
         </figure>
       `,
-      onEmpty: () => ImageAssetToHtml({ asset, altText }),
+      onNone: () => ImageAssetToHtml({ asset, altText }),
     })
   }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
@@ -82,9 +82,9 @@ const EmbeddedEntryToHtml = Match.typeTags<
     const title = getValueForDefaultLocale(youTube.fields.title)
     const caption = yield* youTube.fields.caption
       ? BlockContentToHtml(getValueForDefaultLocale(youTube.fields.caption))
-      : Effect.succeed([])
+      : Effect.succeedNone
 
-    if (!Array.isNonEmptyReadonlyArray(caption)) {
+    if (Option.isNone(caption)) {
       return yield* YouTubeLink({ url, title })
     }
 
@@ -93,7 +93,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
     return html`
       <figure>
         ${yield* YouTubeLink({ url, title, describedBy: captionId })}
-        <figcaption id="${captionId}">${caption}</figcaption>
+        <figcaption id="${captionId}">${caption.value}</figcaption>
       </figure>
     `
   }),
@@ -164,8 +164,11 @@ const BlockElementToHtml = Match.typeTags<
   Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs>
 >()({
   BlockQuote: blockQuote =>
-    Effect.map(BlockContentToHtml(blockQuote), content => Option.some(html`<blockquote>${content}</blockquote>`)),
-  Document: document => Effect.map(BlockContentToHtml(document), content => Option.some(html`${content}`)),
+    Effect.map(
+      BlockContentToHtml(blockQuote),
+      Option.map(content => html`<blockquote>${content}</blockquote>`),
+    ),
+  Document: document => BlockContentToHtml(document),
   EmbeddedAssetBlock: embeddedAssetBlock =>
     Effect.succeedSome(ImageAssetToHtml({ asset: embeddedAssetBlock.data.target, altText: '' })),
   EmbeddedEntryBlock: embeddedEntryBlock =>
@@ -175,64 +178,79 @@ const BlockElementToHtml = Match.typeTags<
       Effect.asSome,
     ),
   Heading1: heading1 =>
-    Effect.map(BlockContentToHtml(heading1), content =>
-      Option.some(html`<h1 id="${SlugFromHeading(heading1)}"><span>${content}</span></h1>`),
+    Effect.map(
+      BlockContentToHtml(heading1),
+      Option.map(content => html`<h1 id="${SlugFromHeading(heading1)}"><span>${content}</span></h1>`),
     ),
   Heading2: heading2 =>
-    Effect.map(BlockContentToHtml(heading2), content =>
-      Option.some(html`<h2 id="${SlugFromHeading(heading2)}"><span>${content}</span></h2> `),
+    Effect.map(
+      BlockContentToHtml(heading2),
+      Option.map(content => html`<h2 id="${SlugFromHeading(heading2)}"><span>${content}</span></h2> `),
     ),
   Heading3: heading3 =>
-    Effect.map(BlockContentToHtml(heading3), content =>
-      Option.some(html`<h3 id="${SlugFromHeading(heading3)}"><span>${content}</span></h3>`),
+    Effect.map(
+      BlockContentToHtml(heading3),
+      Option.map(content => html`<h3 id="${SlugFromHeading(heading3)}"><span>${content}</span></h3>`),
     ),
   HorizontalRule: () => Effect.succeedSome(html`<hr />`),
   ListItem: listItem =>
-    Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(listItem), content =>
-      Option.some(html`<li><span>${content}</span></li>`),
+    Effect.map(
+      BlockContentToHtmlSkippingOverSingleParagraph(listItem),
+      Option.map(content => html`<li><span>${content}</span></li>`),
     ),
   OrderedList: orderedList =>
-    Effect.map(BlockContentToHtml(orderedList), content =>
-      Option.some(
-        html`<ol>
-          ${content}
-        </ol>`,
+    Effect.map(
+      BlockContentToHtml(orderedList),
+      Option.map(
+        content =>
+          html`<ol>
+            ${content}
+          </ol>`,
       ),
     ),
   Paragraph: paragraph =>
-    Effect.map(BlockContentToHtml(paragraph), content =>
-      Array.isNonEmptyReadonlyArray(content) ? Option.some(html`<p><span>${content}</span></p>`) : Option.none(),
+    Effect.map(
+      BlockContentToHtml(paragraph),
+      Option.map(content => html`<p><span>${content}</span></p>`),
     ),
   Table: table =>
-    Effect.map(BlockContentToHtml(table), content =>
-      Option.some(
-        html`<table>
-          ${content}
-        </table>`,
+    Effect.map(
+      BlockContentToHtml(table),
+      Option.map(
+        content =>
+          html`<table>
+            ${content}
+          </table>`,
       ),
     ),
   TableRow: tableRow =>
-    Effect.map(BlockContentToHtml(tableRow), content =>
-      Option.some(
-        html`<tr>
-          ${content}
-        </tr>`,
+    Effect.map(
+      BlockContentToHtml(tableRow),
+      Option.map(
+        content =>
+          html`<tr>
+            ${content}
+          </tr>`,
       ),
     ),
   TableCell: tableCell =>
-    Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(tableCell), content =>
-      Option.some(html`<td><span>${content}</span></td>`),
+    Effect.map(
+      BlockContentToHtmlSkippingOverSingleParagraph(tableCell),
+      Option.map(content => html`<td><span>${content}</span></td>`),
     ),
   TableHeaderCell: tableHeaderCell =>
-    Effect.map(BlockContentToHtmlSkippingOverSingleParagraph(tableHeaderCell), content =>
-      Option.some(html`<th><span>${content}</span></th>`),
+    Effect.map(
+      BlockContentToHtmlSkippingOverSingleParagraph(tableHeaderCell),
+      Option.map(content => html`<th><span>${content}</span></th>`),
     ),
   UnorderedList: unorderedList =>
-    Effect.map(BlockContentToHtml(unorderedList), content =>
-      Option.some(
-        html`<ul>
-          ${content}
-        </ul>`,
+    Effect.map(
+      BlockContentToHtml(unorderedList),
+      Option.map(
+        content =>
+          html`<ul>
+            ${content}
+          </ul>`,
       ),
     ),
 })
@@ -247,7 +265,7 @@ const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
 
 export const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> =>
+): Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -264,14 +282,13 @@ export const BlockContentToHtml = (
     { concurrency: 'inherit' },
   ).pipe(
     Effect.andThen(Array.getSomes),
-    Effect.andThen(content =>
-      Array.some(content, html => html.toString().trim() === html.toString()) ? content : Array.empty(),
-    ),
+    Effect.map(content => Option.some(html`${content}`)),
+    Effect.map(Option.filter(content => content.toString().trim() !== '')),
   )
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<ReadonlyArray<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> => {
+): Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }
