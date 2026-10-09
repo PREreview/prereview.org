@@ -135,6 +135,9 @@ const YouTubeLink = Effect.fnUntraced(function* ({
 const AssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) =>
   Match.valueTags(asset, {
     ImageAsset: asset => ImageAssetToHtml({ asset, altText }),
+    VideoAsset: () => {
+      throw new Error('not implemented')
+    },
   })
 
 const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) => {

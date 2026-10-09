@@ -158,9 +158,28 @@ export class ImageAsset extends Schema.Class<ImageAsset>('ImageAsset')({
   readonly _tag = 'ImageAsset'
 }
 
+export class VideoAsset extends Schema.Class<VideoAsset>('VideoAsset')({
+  sys: Schema.Struct({
+    id: ContentfulId,
+    locale: Schema.optional(Schema.NonEmptyString),
+  }),
+  fields: Schema.Struct({
+    title: Schema.Record({ key: NonEmptyStringSchema, value: NonEmptyStringSchema }),
+    file: Schema.Record({
+      key: NonEmptyStringSchema,
+      value: Schema.Struct({
+        url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
+        contentType: Schema.TemplateLiteral('video/', Schema.String),
+      }),
+    }),
+  }),
+}) {
+  readonly _tag = 'VideoAsset'
+}
+
 export type Asset = typeof Asset.Type
 
-export const Asset = Schema.Union(ImageAsset)
+export const Asset = Schema.Union(ImageAsset, VideoAsset)
 
 class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAssetBlock')({
   _tag: Schema.propertySignature(Schema.transformLiteral('embedded-asset-block', 'EmbeddedAssetBlock')).pipe(

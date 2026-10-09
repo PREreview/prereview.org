@@ -1,0 +1,392 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+        "id": "1s9xLYSv0uJ2QcEJlxTgYV",
+        "type": "Entry",
+        "createdAt": "2026-10-08T13:10:56.560Z",
+        "updatedAt": "2026-10-09T09:39:19.969Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 4,
+        "revision": 2,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "Call to Help Rapidly Review COVID-19 Preprints" },
+        "slug": { "en-US": "help-rapidly-review-covid-19-preprints" },
+        "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "39RllAUZAZkxYszVuMP3ZC" } }] },
+        "channel": { "en-US": "blog" },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "qI5G1avxGnPbrnB44kJnq", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "The COVID-19 pandemic is pushing the boundaries of research evaluation and dissemination towards more collaborative and open workflows that include sharing research as preprints and engaging the research community in the review of these early versions of research manuscripts. ",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "On April 2020, PREreview joined a group of publishers and scholarly communications organizations in ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://oaspa.org/scholarly-publishers-working-together-during-covid-19-pandemic/"
+                    },
+                    "content": [
+                      { "nodeType": "text", "value": "announcing a joint initiative", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " that makes a direct call to the community—publishers, editors, reviewers,  and authors—to work together to maximize the efficiency of peer review of COVID-19 research from preprints to journal submission and beyond. ",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "The focus so far has been the review of research already submitted to journals. To speed up the process even further, ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "WE NEED YOUR HELP to also triage preprints",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". Help us prioritize the most important work so that it can be more rapidly advanced through peer review, flagging any issues or concerns with the research as soon as possible. ",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Sign up ", "marks": [{ "type": "bold" }], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://docs.google.com/forms/d/e/1FAIpQLSf7MILluJtO9xV2QXznWVd66UQU4puow4wSk7iwLz7iYcykfA/viewform"
+                    },
+                    "content": [{ "nodeType": "text", "value": "here", "marks": [{ "type": "bold" }], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to be added to the rapid review list and received more information on how to help.",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "As part of this initiative, our goal at PREreview is to manage the engagement and recruitment of the volunteer rapid reviewers to review COVID-19 preprints on Outbreak Science Rapid PREreview (OSrPRE), connect them to journal editors, and ultimately expedite COVID-19 research publication.",
+                        "marks": [{ "type": "italic" }],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "This week we emailed the 1700+ researchers who have already volunteered to help, inviting them to rapidly review preprints on the free and open platform ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://outbreaksci.prereview.org" },
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Outbreak Science Rapid PREreview",
+                        "marks": [{ "type": "bold" }],
+                        "data": {}
+                      }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". There, any researcher with an ORCID iD can rapidly review outbreak-related preprints as well as request reviews from other community members. ",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Below is a How-To Video on how to engage on Outbreak Science Rapid PREreview.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "3opCTl3Hvmf951bqriiCGC", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "For general questions or concerns related to the use of the platform, please email us at ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "mailto:outbreaksci@prereview.org" },
+                    "content": [{ "nodeType": "text", "value": "outbreaksci@prereview.org", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "For questions or concerns relative to our role in this initiative, please email ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "mailto:c19rapidreview@prereview.org" },
+                    "content": [
+                      { "nodeType": "text", "value": "c19rapidreview@prereview.org", "marks": [], "data": {} }
+                    ]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2020-09-22T21:08:05.000+00:00" },
+        "publishedAtOverride": { "en-US": "2023-06-05T13:35:00.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "id": "39RllAUZAZkxYszVuMP3ZC",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:57:49.946Z",
+          "updatedAt": "2026-10-08T12:57:49.946Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Daniela Saderi" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "xoCUTu0HlgOR13rPaVdgG" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "id": "3opCTl3Hvmf951bqriiCGC",
+          "type": "Entry",
+          "createdAt": "2026-10-09T09:39:20.008Z",
+          "updatedAt": "2026-10-09T09:39:20.008Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 3,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "How-To Evaluate Preprints on Outbreak Science Rapid PREreview" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "3tR7iNkeOL3cpnBDAhARZA" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "id": "qI5G1avxGnPbrnB44kJnq",
+          "type": "Entry",
+          "createdAt": "2026-10-08T13:10:06.607Z",
+          "updatedAt": "2026-10-08T13:10:06.607Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": {
+            "en-US": "Organizations that have signed and endorsed the Open Letter published on April 27, 2020."
+          },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "text",
+                      "value": "Organizations that have signed and endorsed the ",
+                      "marks": [],
+                      "data": {}
+                    },
+                    {
+                      "nodeType": "hyperlink",
+                      "data": { "uri": "https://oaspa.org/covid-19-publishers-open-letter-of-intent-rapid-review/" },
+                      "content": [{ "nodeType": "text", "value": "Open Letter", "marks": [], "data": {} }]
+                    },
+                    { "nodeType": "text", "value": " published on April 27, 2020.", "marks": [], "data": {} }
+                  ]
+                }
+              ]
+            }
+          },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "13WMqACJmEZWeqJFMiDER7" } } }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "id": "13WMqACJmEZWeqJFMiDER7",
+          "type": "Asset",
+          "createdAt": "2026-10-08T13:07:52.453Z",
+          "updatedAt": "2026-10-08T13:07:52.453Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Screen-Shot-2020-09-14-at-10.58.31-AM.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/13WMqACJmEZWeqJFMiDER7/465e1be2e6acef1c34304b0200f545bf/Screen-Shot-2020-09-14-at-10.58.31-AM.png",
+              "details": { "size": 304604, "image": { "width": 1312, "height": 590 } },
+              "fileName": "Screen-Shot-2020-09-14-at-10.58.31-AM.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "id": "3tR7iNkeOL3cpnBDAhARZA",
+          "type": "Asset",
+          "createdAt": "2026-10-09T09:39:19.954Z",
+          "updatedAt": "2026-10-09T09:39:19.954Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 3,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "How-To Evaluate Preprints on Outbreak Science Rapid PREreview" },
+          "description": { "en-US": "" },
+          "file": {
+            "en-US": {
+              "url": "//videos.ctfassets.net/dapbmjoaf8gb/3tR7iNkeOL3cpnBDAhARZA/bc040658c7c8377b05f3f82ad505eda1/How-To_Evaluate_Preprints_on_Outbreak_Science_Rapid_PREreview.mp4",
+              "details": { "size": 36449178 },
+              "fileName": "How-To Evaluate Preprints on Outbreak Science Rapid PREreview.mp4",
+              "contentType": "video/mp4"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "dapbmjoaf8gb" } },
+          "id": "xoCUTu0HlgOR13rPaVdgG",
+          "type": "Asset",
+          "createdAt": "2026-10-08T13:12:23.293Z",
+          "updatedAt": "2026-10-08T13:12:23.293Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Daniela Saderi profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/dapbmjoaf8gb/xoCUTu0HlgOR13rPaVdgG/2f09dc00c8c44dcc00bff26ed0a2d18c/daniela2_bw.jpg",
+              "details": { "size": 77058, "image": { "width": 1000, "height": 1000 } },
+              "fileName": "daniela2_bw.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
