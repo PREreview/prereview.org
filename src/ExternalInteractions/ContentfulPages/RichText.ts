@@ -25,6 +25,7 @@ import type {
   Inline,
   Mark,
   Text,
+  VideoAsset,
 } from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -135,9 +136,7 @@ const YouTubeLink = Effect.fnUntraced(function* ({
 const AssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) =>
   Match.valueTags(asset, {
     ImageAsset: asset => ImageAssetToHtml({ asset, altText }),
-    VideoAsset: () => {
-      throw new Error('not implemented')
-    },
+    VideoAsset: asset => VideoAssetToHtml({ asset, altText }),
   })
 
 const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: string }) => {
@@ -165,6 +164,17 @@ const ImageAssetToHtml = ({ asset, altText }: { asset: ImageAsset; altText: stri
         alt="${altText}"
       />
     </picture>
+  `
+}
+
+const VideoAssetToHtml = ({ asset, altText }: { asset: VideoAsset; altText: string }) => {
+  const file = getValueForDefaultLocale(asset.fields.file)
+
+  return html`
+    <video controls>
+      <source src="${file.url.href}" type="${file.contentType}" />
+      ${altText ? html`<span>${altText}</span>` : ''}
+    </video>
   `
 }
 

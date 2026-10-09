@@ -999,6 +999,126 @@ it.effect.each<{
       js: HashSet.empty(),
     }),
   },
+  {
+    response: 'blog-posts-video',
+    index: 0,
+    expected: new ContentfulBlogPost({
+      title: html`Call to Help Rapidly Review COVID-19 Preprints`,
+      authors: [new Author({ name: Name('Daniela Saderi') })],
+      publishedAt: Instant.from('2020-09-22T21:08:05Z'),
+      heroImage: undefined,
+      excerpt: undefined,
+      html: html`
+        <figure>
+          <picture>
+            <source
+              srcset="
+                https://images.ctfassets.net/dapbmjoaf8gb/13WMqACJmEZWeqJFMiDER7/465e1be2e6acef1c34304b0200f545bf/Screen-Shot-2020-09-14-at-10.58.31-AM.png?fm=avif
+              "
+              type="image/avif"
+            />
+            <source
+              srcset="
+                https://images.ctfassets.net/dapbmjoaf8gb/13WMqACJmEZWeqJFMiDER7/465e1be2e6acef1c34304b0200f545bf/Screen-Shot-2020-09-14-at-10.58.31-AM.png?fm=webp
+              "
+              type="image/webp"
+            />
+            <img
+              src="https://images.ctfassets.net/dapbmjoaf8gb/13WMqACJmEZWeqJFMiDER7/465e1be2e6acef1c34304b0200f545bf/Screen-Shot-2020-09-14-at-10.58.31-AM.png"
+              width="1312"
+              height="590"
+              alt=""
+            />
+          </picture>
+
+          <figcaption>
+            <p>
+              <span>
+                Organizations that have signed and endorsed the
+                <a href="https://oaspa.org/covid-19-publishers-open-letter-of-intent-rapid-review/">Open Letter</a>
+                published on April 27, 2020.
+              </span>
+            </p>
+          </figcaption>
+        </figure>
+        <p>
+          <span>
+            The COVID-19 pandemic is pushing the boundaries of research evaluation and dissemination towards more
+            collaborative and open workflows that include sharing research as preprints and engaging the research
+            community in the review of these early versions of research manuscripts.
+          </span>
+        </p>
+        <p>
+          <span>
+            On April 2020, PREreview joined a group of publishers and scholarly communications organizations in
+            <a href="https://oaspa.org/scholarly-publishers-working-together-during-covid-19-pandemic/"
+              >announcing a joint initiative</a
+            >
+            that makes a direct call to the community—publishers, editors, reviewers,  and authors—to work together to
+            maximize the efficiency of peer review of COVID-19 research from preprints to journal submission and beyond.
+          </span>
+        </p>
+        <p>
+          <span>
+            The focus so far has been the review of research already submitted to journals. To speed up the process even
+            further, <b>WE NEED YOUR HELP to also triage preprints</b>. Help us prioritize the most important work so
+            that it can be more rapidly advanced through peer review, flagging any issues or concerns with the research
+            as soon as possible.
+          </span>
+        </p>
+        <p>
+          <span>
+            <b>Sign up </b
+            ><a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSf7MILluJtO9xV2QXznWVd66UQU4puow4wSk7iwLz7iYcykfA/viewform"
+              ><b>here</b></a
+            ><b> to be added to the rapid review list and received more information on how to help.</b>
+          </span>
+        </p>
+        <blockquote>
+          <p>
+            <span>
+              <i
+                >As part of this initiative, our goal at PREreview is to manage the engagement and recruitment of the
+                volunteer rapid reviewers to review COVID-19 preprints on Outbreak Science Rapid PREreview (OSrPRE),
+                connect them to journal editors, and ultimately expedite COVID-19 research publication.</i
+              >
+            </span>
+          </p>
+        </blockquote>
+        <p>
+          <span>
+            This week we emailed the 1700+ researchers who have already volunteered to help, inviting them to rapidly
+            review preprints on the free and open platform
+            <a href="https://outbreaksci.prereview.org"><b>Outbreak Science Rapid PREreview</b></a
+            >. There, any researcher with an ORCID iD can rapidly review outbreak-related preprints as well as request
+            reviews from other community members.
+          </span>
+        </p>
+        <p><span>Below is a How-To Video on how to engage on Outbreak Science Rapid PREreview.</span></p>
+        <video controls>
+          <source
+            src="https://videos.ctfassets.net/dapbmjoaf8gb/3tR7iNkeOL3cpnBDAhARZA/bc040658c7c8377b05f3f82ad505eda1/How-To_Evaluate_Preprints_on_Outbreak_Science_Rapid_PREreview.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <p>
+          <span>
+            For general questions or concerns related to the use of the platform, please email us at
+            <a href="mailto:outbreaksci@prereview.org">outbreaksci@prereview.org</a>.
+          </span>
+        </p>
+        <p>
+          <span>
+            For questions or concerns relative to our role in this initiative, please email
+            <a href="mailto:c19rapidreview@prereview.org">c19rapidreview@prereview.org</a>.
+          </span>
+        </p>
+      `,
+      locale: DefaultLocale,
+      js: HashSet.empty(),
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { ContentfulId, Document, ImageAsset } from '../../ExternalApis/Contentful/index.ts'
+import { ContentfulId, Document, ImageAsset, VideoAsset } from '../../ExternalApis/Contentful/index.ts'
 import { SlugSchema } from '../../types/Slug.ts'
 import { DynamicEmbed } from './DynamicEmbedder.ts'
 
@@ -40,7 +40,10 @@ export const MediaEntry = Schema.Struct({
   }),
   fields: Schema.Struct({
     caption: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) })),
-    file: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(ImageAsset) }),
+    file: Schema.Record({
+      key: Schema.NonEmptyTrimmedString,
+      value: Schema.typeSchema(Schema.Union(ImageAsset, VideoAsset)),
+    }),
     altText: Schema.optional(
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.compose(Schema.Trim, Schema.NonEmptyString) }),
     ),
