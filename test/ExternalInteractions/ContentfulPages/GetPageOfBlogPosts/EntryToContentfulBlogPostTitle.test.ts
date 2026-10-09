@@ -10,6 +10,7 @@ import { ContentfulBlogPostTitle } from '../../../../src/ExternalInteractions/Co
 import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
 import { Slug } from '../../../../src/types/Slug.ts'
+import { Instant } from '../../../../src/types/Temporal.ts'
 
 it.effect.each<{
   response: string
@@ -40,6 +41,7 @@ it.effect.each<{
       },
       excerpt:
         'In this feature, Shitondo stresses out the importance of concentrating Open Science advocacy efforts in low-resource settings and educational institutions for a broader adoption of its principles and practices.',
+      publishedAt: Instant.from('2026-10-01T10:00:19.886Z'),
     }),
   },
   {
@@ -49,6 +51,7 @@ it.effect.each<{
       title: html`PREreview platform news, 31 October 2025`,
       locale: DefaultLocale,
       slug: Slug('prereview-platform-news-31-october-2025'),
+      publishedAt: Instant.from('2025-10-31T14:00:00Z'),
     }),
   },
   {
@@ -75,6 +78,7 @@ it.effect.each<{
       },
       excerpt:
         'In the past couple of months, PREreview’s team and community members have been actively championing open research evaluation, while cultivating new relationships around the globe. Dive in, and help us ripple further.',
+      publishedAt: Instant.from('2026-08-21T14:13:47Z'),
     }),
   },
   {
@@ -101,6 +105,7 @@ it.effect.each<{
       },
       excerpt:
         'In this piece, Mabel weighs on the opportunities Open Peer Review presents to early-career researchers and scholars from resource-constrained settings, while considering the conditions needed to foster its adoption.',
+      publishedAt: Instant.from('2026-08-26T13:04:49Z'),
     }),
   },
   {
@@ -127,6 +132,7 @@ it.effect.each<{
       },
       excerpt:
         'Welcome to new AC members, goodbye and gratitude to Kristen Ratan. Overview of PREreview governance and the role of the Advisory Committee. Review of strategic plan activities and finance overview.',
+      publishedAt: Instant.from('2026-03-31T16:47:11Z'),
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>

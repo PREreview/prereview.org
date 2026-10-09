@@ -25,7 +25,10 @@ export const GetPageOfBlogPosts: (
       limit: 50,
       skip: batchIndex * 50,
       order: '-sys.createdAt',
-      select: Array.join(['sys', 'fields.title', 'fields.slug', 'fields.heroImage', 'fields.excerpt'], ','),
+      select: Array.join(
+        ['sys', 'fields.title', 'fields.slug', 'fields.heroImage', 'fields.excerpt', 'fields.firstPublishedAtOverride'],
+        ',',
+      ),
     })
 
     const items = batchedItems.slice(pageIndexInBatch * 5, (pageIndexInBatch + 1) * 5)

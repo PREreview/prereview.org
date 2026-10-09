@@ -2,10 +2,15 @@ import { Array } from 'effect'
 import type { PageOfBlogPosts } from '../../CmsContent/index.ts'
 import { html, plainText } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
+import { renderDate } from '../../time.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export const createWeeknotesPage = ({ currentPage, totalPages, blogPosts }: PageOfBlogPosts) => {
+export const createWeeknotesPage = (
+  { currentPage, totalPages, blogPosts }: PageOfBlogPosts,
+  locale: SupportedLocale,
+) => {
   return PageResponse({
     title: plainText`Weeknotes (page ${currentPage.toLocaleString('en')})`,
     extraSkipLink: [html`<span ${languageAttributesFor('en')}>Skip to results</span>`, '#results'],
@@ -23,26 +28,10 @@ export const createWeeknotesPage = ({ currentPage, totalPages, blogPosts }: Page
               <article aria-labelledby="blog-post-${index}-title">
                 <header>
                   <h2 id="blog-post-${index}-title">
-                    <span ${languageAttributesFor(blogPost.locale)}>${blogPost.title}</span>
+                    <span>${renderDate(locale)(blogPost.publishedAt.toZonedDateTimeISO('UTC').toPlainDate())}</span>
                   </h2>
                 </header>
 
-                ${
-                  blogPost.heroImage
-                    ? html`
-                        <picture>
-                          <source srcset="${blogPost.heroImage.url.avif.href}" type="image/avif" />
-                          <source srcset="${blogPost.heroImage.url.webp.href}" type="image/webp" />
-                          <img
-                            src="${blogPost.heroImage.url.default.href}"
-                            width="${blogPost.heroImage.width}"
-                            height="${blogPost.heroImage.height}"
-                            alt=""
-                          />
-                        </picture>
-                      `
-                    : ''
-                }
                 ${
                   typeof blogPost.excerpt === 'string'
                     ? html`<div><span ${languageAttributesFor(blogPost.locale)}>${blogPost.excerpt}</span></div>`

@@ -53,6 +53,7 @@ export class ContentfulBlogPostTitle extends Schema.Class<ContentfulBlogPostTitl
     }),
   ),
   excerpt: Schema.optional(Schema.NonEmptyTrimmedString),
+  publishedAt: InstantSchema,
 }) {}
 
 export class ContentfulPageOfBlogPosts extends Schema.Class<ContentfulPageOfBlogPosts>('ContentfulPageOfBlogPosts')({

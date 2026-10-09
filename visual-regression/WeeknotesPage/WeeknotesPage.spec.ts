@@ -1,15 +1,20 @@
 import type { BlogPostTitle } from '../../src/CmsContent/index.ts'
 import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
 import { Slug } from '../../src/types/Slug.ts'
+import { Instant } from '../../src/types/Temporal.ts'
 import * as _ from '../../src/WebApp/WeeknotesPage/WeeknotesPage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.createWeeknotesPage({
-    currentPage: 1,
-    totalPages: 3,
-    blogPosts: [blogPost1, blogPost2, blogPost3, blogPost4, blogPost5],
-  })
+  const response = _.createWeeknotesPage(
+    {
+      currentPage: 1,
+      totalPages: 3,
+      blogPosts: [blogPost1, blogPost2, blogPost3, blogPost4, blogPost5],
+    },
+    locale,
+  )
 
   const content = await showPage(response)
 
@@ -17,11 +22,14 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks on a middle page', async ({ showPage }) => {
-  const response = _.createWeeknotesPage({
-    currentPage: 2,
-    totalPages: 3,
-    blogPosts: [blogPost1, blogPost2, blogPost3, blogPost4, blogPost5],
-  })
+  const response = _.createWeeknotesPage(
+    {
+      currentPage: 2,
+      totalPages: 3,
+      blogPosts: [blogPost1, blogPost2, blogPost3, blogPost4, blogPost5],
+    },
+    locale,
+  )
 
   const content = await showPage(response)
 
@@ -29,16 +37,21 @@ test('content looks on a middle page', async ({ showPage }) => {
 })
 
 test('content looks on the last page', async ({ showPage }) => {
-  const response = _.createWeeknotesPage({
-    currentPage: 3,
-    totalPages: 3,
-    blogPosts: [blogPost1],
-  })
+  const response = _.createWeeknotesPage(
+    {
+      currentPage: 3,
+      totalPages: 3,
+      blogPosts: [blogPost1],
+    },
+    locale,
+  )
 
   const content = await showPage(response)
 
   await expect(content).toHaveScreenshot()
 })
+
+const locale = DefaultLocale
 
 const blogPost1 = {
   title: html`An interview with PREreview Champion Shitondo Yahila`,
@@ -55,6 +68,7 @@ const blogPost1 = {
   },
   excerpt:
     'In this feature, Shitondo stresses out the importance of concentrating Open Science advocacy efforts in low-resource settings and educational institutions for a broader adoption of its principles and practices.',
+  publishedAt: Instant.from('2026-09-10T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost2 = {
@@ -72,6 +86,7 @@ const blogPost2 = {
   },
   excerpt:
     'We’re testing out an algorithm to suggest preprints for review based on your ORCID public profile. Take part in our second matchmaking experiment and help us with your valuable feedback!',
+  publishedAt: Instant.from('2026-09-04T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost3 = {
@@ -87,12 +102,14 @@ const blogPost3 = {
     width: 500,
     height: 500,
   },
+  publishedAt: Instant.from('2026-09-01T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost4 = {
   title: html`PREreview June 2026 Newsletter`,
   locale: 'en-US',
   slug: Slug('prereview-june-2026-newsletter'),
+  publishedAt: Instant.from('2026-06-01T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost5 = {
@@ -101,4 +118,5 @@ const blogPost5 = {
   slug: Slug('strategic-plan-community-call-what-we-learned'),
   excerpt:
     'For PREreview, community input is the most reliable compass. In February, we shared our strategic goals with you in a community call designed to listen deeply, learn together, and imagine what’s possible.',
+  publishedAt: Instant.from('2026-02-01T00:00:00Z'),
 } satisfies BlogPostTitle

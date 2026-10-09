@@ -4,6 +4,7 @@ import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index
 import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
+import { InstantSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import * as ImageUrl from '../ImageUrl.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
@@ -11,6 +12,7 @@ import { ContentfulBlogPostTitle } from '../Types.ts'
 export const BlogPostEntry = Schema.Struct({
   sys: Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('blogPost')) }) }),
+    createdAt: InstantSchema,
   }),
   fields: Schema.Struct({
     title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
@@ -19,6 +21,9 @@ export const BlogPostEntry = Schema.Struct({
       Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
     ),
     excerpt: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyString })),
+    firstPublishedAtOverride: Schema.optional(
+      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: InstantSchema }),
+    ),
   }),
 })
 
@@ -50,6 +55,9 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
     }),
     excerpt:
       typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
+    publishedAt: entry.fields.firstPublishedAtOverride
+      ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)
+      : entry.sys.createdAt,
   })
 })
 

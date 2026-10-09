@@ -1,6 +1,7 @@
 import type { BlogPostTitle } from '../../src/CmsContent/index.ts'
 import { html } from '../../src/html.ts'
 import { Slug } from '../../src/types/Slug.ts'
+import { Instant } from '../../src/types/Temporal.ts'
 import * as _ from '../../src/WebApp/BlogPage/BlogPage.ts'
 import { expect, test } from '../base.ts'
 
@@ -55,6 +56,7 @@ const blogPost1 = {
   },
   excerpt:
     'In this feature, Shitondo stresses out the importance of concentrating Open Science advocacy efforts in low-resource settings and educational institutions for a broader adoption of its principles and practices.',
+  publishedAt: Instant.from('2026-09-10T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost2 = {
@@ -72,6 +74,7 @@ const blogPost2 = {
   },
   excerpt:
     'We’re testing out an algorithm to suggest preprints for review based on your ORCID public profile. Take part in our second matchmaking experiment and help us with your valuable feedback!',
+  publishedAt: Instant.from('2026-09-04T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost3 = {
@@ -87,12 +90,14 @@ const blogPost3 = {
     width: 500,
     height: 500,
   },
+  publishedAt: Instant.from('2026-09-01T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost4 = {
   title: html`PREreview June 2026 Newsletter`,
   locale: 'en-US',
   slug: Slug('prereview-june-2026-newsletter'),
+  publishedAt: Instant.from('2026-06-01T00:00:00Z'),
 } satisfies BlogPostTitle
 
 const blogPost5 = {
@@ -101,4 +106,5 @@ const blogPost5 = {
   slug: Slug('strategic-plan-community-call-what-we-learned'),
   excerpt:
     'For PREreview, community input is the most reliable compass. In February, we shared our strategic goals with you in a community call designed to listen deeply, learn together, and imagine what’s possible.',
+  publishedAt: Instant.from('2026-02-01T00:00:00Z'),
 } satisfies BlogPostTitle

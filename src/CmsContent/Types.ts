@@ -55,6 +55,7 @@ export class BlogPostTitle extends Schema.Class<BlogPostTitle>('BlogPostTitle')(
     }),
   ),
   excerpt: Schema.optional(Schema.NonEmptyTrimmedString),
+  publishedAt: InstantSchema,
 }) {}
 
 export class PageOfBlogPosts extends Schema.Class<PageOfBlogPosts>('PageOfBlogPosts')({
