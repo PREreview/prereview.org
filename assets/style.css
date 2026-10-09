@@ -579,7 +579,8 @@ picture {
   inline-size: fit-content;
 }
 
-img {
+img,
+video {
   object-fit: contain;
   display: block;
   block-size: auto;
