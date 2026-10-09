@@ -588,8 +588,8 @@ video {
   inline-size: auto;
   max-inline-size: 100%;
 
-  :--heading:not(.visually-hidden) + &,
-  :--heading:not(.visually-hidden) + picture > & {
+  :is(:--heading, p):not(.visually-hidden) + &,
+  :is(:--heading, p):not(.visually-hidden) + picture > & {
     margin-block-start: var(--space-xs);
   }
 
