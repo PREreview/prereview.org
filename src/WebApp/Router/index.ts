@@ -21,6 +21,7 @@ import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import * as MyDetails from '../MyDetails/index.ts'
 import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
+import { NewsletterPage } from '../NewsletterPage/index.ts'
 import type { Page } from '../page.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
@@ -32,6 +33,7 @@ import * as ReviewAPreprintFlow from '../ReviewAPreprintFlow/index.ts'
 import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
 import { RobotsTxt } from '../RobotsTxt.ts'
 import { VerifyEmailAddress } from '../VerifyEmailAddress/index.ts'
+import { WeeknotesPage } from '../WeeknotesPage/index.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
@@ -579,6 +581,8 @@ const BlogRouter = HttpRouter.fromIterable([
       Effect.andThen(CmsBlogPostPage),
     ),
   ),
+  MakeQueryRoute('GET', Routes.Newsletter, NewsletterPage),
+  MakeQueryRoute('GET', Routes.Weeknotes, WeeknotesPage),
 ]).pipe(
   HttpRouter.use(
     HttpMiddleware.make(app =>

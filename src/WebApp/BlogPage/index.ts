@@ -12,7 +12,7 @@ export const BlogPage: (query: { page: number }) => Effect.Effect<PageResponse, 
   function* ({ page }) {
     const cmsContent = yield* CmsContent
 
-    const blogPage = yield* cmsContent.getPageOfBlogPosts(page)
+    const blogPage = yield* cmsContent.getPageOfBlogPosts('blog', page)
 
     return createBlogPage(blogPage)
   },

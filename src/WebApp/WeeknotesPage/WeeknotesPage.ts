@@ -5,15 +5,15 @@ import { languageAttributesFor } from '../../Locales.ts'
 import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlogPosts) => {
+export const createWeeknotesPage = ({ currentPage, totalPages, blogPosts }: PageOfBlogPosts) => {
   return PageResponse({
-    title: plainText`Blog (page ${currentPage.toLocaleString('en')})`,
+    title: plainText`Weeknotes (page ${currentPage.toLocaleString('en')})`,
     extraSkipLink: [html`<span ${languageAttributesFor('en')}>Skip to results</span>`, '#results'],
     main: html`
-      <h1><span ${languageAttributesFor('en')}>Blog</span></h1>
+      <h1><span ${languageAttributesFor('en')}>Weeknotes</span></h1>
 
+      <a href="${Routes.Blog.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Blog</span></a>
       <a href="${Routes.Newsletter.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Newsletter</span></a>
-      <a href="${Routes.Weeknotes.href({ page: 1 })}"><span ${languageAttributesFor('en')}>Weeknotes</span></a>
 
       <ol class="cards" id="results">
         ${Array.map(
@@ -64,21 +64,20 @@ export const createBlogPage = ({ currentPage, totalPages, blogPosts }: PageOfBlo
       <nav class="pager">
         ${
           currentPage > 1
-            ? html`<a href="${Routes.Blog.href({ page: currentPage - 1 })}" rel="prev"
+            ? html`<a href="${Routes.Weeknotes.href({ page: currentPage - 1 })}" rel="prev"
                 ><span ${languageAttributesFor('en')}>Newer</span></a
               >`
             : ''
         }
         ${
           currentPage < totalPages
-            ? html`<a href="${Routes.Blog.href({ page: currentPage + 1 })}" rel="next"
+            ? html`<a href="${Routes.Weeknotes.href({ page: currentPage + 1 })}" rel="next"
                 ><span ${languageAttributesFor('en')}>Older</span></a
               >`
             : ''
         }
       </nav>
     `,
-    canonical: Routes.Blog.href({ page: currentPage }),
-    current: 'blog',
+    canonical: Routes.Weeknotes.href({ page: currentPage }),
   })
 }

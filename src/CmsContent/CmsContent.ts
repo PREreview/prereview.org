@@ -16,7 +16,10 @@ export class CmsContent extends Context.Tag('CmsContent')<
   {
     getPage: (slug: Slug, preview?: boolean) => Effect.Effect<Page, UnableToQuery, Locale>
     getBlogPost: (slug: Slug, preview?: boolean) => Effect.Effect<BlogPost, UnableToQuery, Locale>
-    getPageOfBlogPosts: (page: number) => Effect.Effect<PageOfBlogPosts, UnableToQuery | PageNotFound, Locale>
+    getPageOfBlogPosts: (
+      channel: 'blog' | 'newsletter' | 'weeknote',
+      page: number,
+    ) => Effect.Effect<PageOfBlogPosts, UnableToQuery | PageNotFound, Locale>
   }
 >() {
   static readonly layer = Layer.effect(

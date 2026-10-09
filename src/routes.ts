@@ -174,6 +174,20 @@ export const BlogPost = Route({
   schema: Schema.Struct({ slug: SlugSchema }),
 })
 
+export const Newsletter = QueryRoute({
+  path: '/newsletter',
+  schema: Schema.Struct({
+    page: PageNumberSchema,
+  }),
+})
+
+export const Weeknotes = QueryRoute({
+  path: '/weeknotes',
+  schema: Schema.Struct({
+    page: PageNumberSchema,
+  }),
+})
+
 export const ClubProfile = Route({
   path: '/clubs/:slug',
   href: params => `/clubs/${params.slug}`,

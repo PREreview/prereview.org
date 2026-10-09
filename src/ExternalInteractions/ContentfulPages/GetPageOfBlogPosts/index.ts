@@ -6,11 +6,12 @@ import type { ContentfulPageOfBlogPosts } from '../index.ts'
 import { EntryToContentfulBlogPostTitle } from './EntryToContentfulBlogPostTitle.ts'
 
 export const GetPageOfBlogPosts: (
+  channel: 'blog' | 'newsletter' | 'weeknote',
   page: number,
 ) => Effect.Effect<ContentfulPageOfBlogPosts, UnableToQuery | PageNotFound, Contentful> = Effect.fn(
   'ContentfulPages.getPageOfBlogPosts',
 )(
-  function* (page) {
+  function* (channel, page) {
     yield* Effect.annotateCurrentSpan({ page })
 
     const contentful = yield* Contentful
@@ -20,6 +21,7 @@ export const GetPageOfBlogPosts: (
 
     const { items: batchedItems, total } = yield* contentful.getEntries({
       content_type: 'blogPost',
+      'fields.channel': channel,
       limit: 50,
       skip: batchIndex * 50,
       order: '-sys.createdAt',
