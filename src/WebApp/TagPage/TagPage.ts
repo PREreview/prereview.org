@@ -61,14 +61,14 @@ export const createTagPage = ({ currentPage, totalPages, blogPosts }: PageOfBlog
       <nav class="pager">
         ${
           currentPage > 1
-            ? html`<a href="${Routes.Blog.href({ page: currentPage - 1 })}" rel="prev"
+            ? html`<a href="${Routes.Tag.href({ page: currentPage - 1 })}" rel="prev"
                 ><span ${languageAttributesFor('en')}>Newer</span></a
               >`
             : ''
         }
         ${
           currentPage < totalPages
-            ? html`<a href="${Routes.Blog.href({ page: currentPage + 1 })}" rel="next"
+            ? html`<a href="${Routes.Tag.href({ page: currentPage + 1 })}" rel="next"
                 ><span ${languageAttributesFor('en')}>Older</span></a
               >`
             : ''
