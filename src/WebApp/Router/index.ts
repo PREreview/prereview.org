@@ -32,6 +32,7 @@ import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import * as ReviewAPreprintFlow from '../ReviewAPreprintFlow/index.ts'
 import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
 import { RobotsTxt } from '../RobotsTxt.ts'
+import { TagPage } from '../TagPage/index.ts'
 import { VerifyEmailAddress } from '../VerifyEmailAddress/index.ts'
 import { WeeknotesPage } from '../WeeknotesPage/index.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
@@ -579,6 +580,15 @@ const BlogRouter = HttpRouter.fromIterable([
         }),
       ),
       Effect.andThen(CmsBlogPostPage),
+    ),
+  ),
+  MakeQueryRoute(
+    'GET',
+    Routes.Tag,
+    flow(
+      Effect.succeed,
+      Effect.let('tag', () => 'champions-program' as const),
+      Effect.andThen(TagPage),
     ),
   ),
   MakeQueryRoute('GET', Routes.Newsletter, NewsletterPage),

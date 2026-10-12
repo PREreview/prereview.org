@@ -174,6 +174,13 @@ export const BlogPost = Route({
   schema: Schema.Struct({ slug: SlugSchema }),
 })
 
+export const Tag = QueryRoute({
+  path: '/blog/tag/champions-program',
+  schema: Schema.Struct({
+    page: PageNumberSchema,
+  }),
+})
+
 export const Newsletter = QueryRoute({
   path: '/newsletter',
   schema: Schema.Struct({
