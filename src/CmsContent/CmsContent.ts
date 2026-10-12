@@ -20,6 +20,10 @@ export class CmsContent extends Context.Tag('CmsContent')<
       channel: 'blog' | 'newsletter' | 'weeknote',
       page: number,
     ) => Effect.Effect<PageOfBlogPosts, UnableToQuery | PageNotFound, Locale>
+    getPageOfBlogPostsForTag: (
+      tag: 'champions-program',
+      page: number,
+    ) => Effect.Effect<PageOfBlogPosts, UnableToQuery | PageNotFound, Locale>
   }
 >() {
   static readonly layer = Layer.effect(
@@ -34,6 +38,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
           getPage: contentfulPages.getPage,
           getBlogPost: contentfulPages.getBlogPost,
           getPageOfBlogPosts: contentfulPages.getPageOfBlogPosts,
+          getPageOfBlogPostsForTag: contentfulPages.getPageOfBlogPostsForTag,
         }
       }
 
@@ -51,6 +56,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
               ),
         getBlogPost: () => new UnableToQuery({ cause: 'not implemented' }),
         getPageOfBlogPosts: () => new UnableToQuery({ cause: 'not implemented' }),
+        getPageOfBlogPostsForTag: () => new UnableToQuery({ cause: 'not implemented' }),
       }
     }),
   )
