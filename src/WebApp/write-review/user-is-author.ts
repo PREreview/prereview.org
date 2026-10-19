@@ -1,5 +1,4 @@
-import { Array, Equivalence, Option, Predicate } from 'effect'
-import * as E from 'fp-ts/lib/Either.js'
+import { Array, Either, Equivalence, Option, Predicate } from 'effect'
 import type { Preprint } from '../../Preprints/index.ts'
 import { type OrcidId, OrcidIdEquivalence } from '../../types/OrcidId.ts'
 import type { User } from '../../user.ts'
@@ -10,7 +9,7 @@ interface IsAuthor {
 }
 
 export const ensureUserIsNotAnAuthor = (preprint: Preprint) =>
-  E.fromPredicate(
+  Either.liftPredicate(
     Predicate.not((user: User) => Array.containsWith(EquivalenceAuthorByOrcid)(preprint.authors, user)),
     user => ({ type: 'is-author', user }) satisfies IsAuthor,
   )
