@@ -1,23 +1,16 @@
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import type { CompletedForm } from '../../src/PreprintReviews/index.ts'
 import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
-import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { Name } from '../../src/types/Name.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { publishedPage } from '../../src/WebApp/write-review/published-page/published-page.ts'
+import type { PublishedReview } from '../../src/WebApp/write-review/published-review.ts'
 import { expect, test } from '../base.ts'
 
 const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
   const response = publishedPage({
-    review: {
-      doi: Doi('10.5281/zenodo.10779310'),
-      id: 10779310,
-      form,
-    },
+    review,
     preprint,
     url: new URL('http://example.com/review'),
     locale,
@@ -30,11 +23,7 @@ test('content looks right', async ({ showPage }) => {
 
 test('content looks right when using a pseudonym', async ({ showPage }) => {
   const response = publishedPage({
-    review: {
-      doi: Doi('10.5281/zenodo.10779310'),
-      id: 10779310,
-      form: { ...form, persona: 'pseudonym' },
-    },
+    review: { ...review, persona: 'pseudonym' },
     preprint,
     url: new URL('http://example.com/review'),
     locale,
@@ -47,11 +36,7 @@ test('content looks right when using a pseudonym', async ({ showPage }) => {
 
 test('content looks right when the preprint is not on Sciety', async ({ showPage }) => {
   const response = publishedPage({
-    review: {
-      doi: Doi('10.5281/zenodo.10779310'),
-      id: 10779310,
-      form,
-    },
+    review,
     preprint: {
       id: new PhilsciPreprintId({ value: 21986 }),
       title: html`Philosophy of Open Science`,
@@ -68,19 +53,7 @@ test('content looks right when the preprint is not on Sciety', async ({ showPage
 
 test('content looks right when there are more authors', async ({ showPage }) => {
   const response = publishedPage({
-    review: {
-      doi: Doi('10.5281/zenodo.10779310'),
-      id: 10779310,
-      form: {
-        ...form,
-        moreAuthors: 'yes',
-        otherAuthors: [
-          { name: Name('Jean-Baptiste Botul'), emailAddress: EmailAddress('jbbotul@example.com') },
-          { name: Name('Arne Saknussemm'), emailAddress: EmailAddress('asaknussemm@example.com') },
-          { name: Name('Otto Lidenbrock'), emailAddress: EmailAddress('olidenbrock@example.com') },
-        ],
-      },
-    },
+    review: { ...review, moreAuthors: 'yes', otherAuthors: 3 },
     preprint,
     url: new URL('http://example.com/review'),
     locale,
@@ -97,16 +70,10 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
-const form = {
-  reviewType: 'freeform',
-  alreadyWritten: 'no',
-  review: html`<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>`,
-  persona: 'public',
+const review = {
+  doi: Doi('10.5281/zenodo.10779310'),
+  id: 10779310,
   moreAuthors: 'no',
-  generativeAiIdeas: 'no',
-  competingInterests: 'yes',
-  competingInterestsDetails: NonEmptyString(
-    'In dictum consequat nibh, quis dapibus justo consequat quis. Duis nec mi orci. Phasellus tincidunt erat vitae ex sollicitudin molestie. Mauris faucibus erat sit amet felis viverra aliquam. Quisque eget mattis ante. Nam volutpat mattis ante, porttitor porta magna auctor ut. Praesent id ipsum quis nisl suscipit feugiat at non enim. Duis placerat est id dui pulvinar, ac viverra tortor feugiat. Morbi auctor lobortis vestibulum. Nullam bibendum consequat mi. Proin accumsan eros ut eros hendrerit, quis congue eros hendrerit. Suspendisse ac gravida diam.',
-  ),
-  conduct: 'yes',
-} satisfies CompletedForm
+  otherAuthors: 0,
+  persona: 'public',
+} satisfies PublishedReview

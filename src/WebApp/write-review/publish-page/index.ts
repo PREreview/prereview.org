@@ -266,7 +266,15 @@ const handlePublishForm = ({
         ),
       ),
     ),
-    RTE.chainFirstW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
+    RTE.chainFirstW(([doi, id]) =>
+      storeInformationForWriteReviewPublishedPage(
+        doi,
+        form.moreAuthors,
+        form.moreAuthors === 'yes' ? form.otherAuthors.length : 0,
+        form.persona,
+        id,
+      ),
+    ),
     RTE.matchW(
       () => failureMessage(locale),
       () => RedirectResponse({ location: format(writeReviewPublishedMatch.formatter, { id: preprint.id }) }),

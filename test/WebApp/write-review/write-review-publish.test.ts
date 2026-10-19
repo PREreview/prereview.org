@@ -253,7 +253,9 @@ describe('writeReviewPublish', () => {
         })
         expect(addToSession).toHaveBeenCalledWith('published-review', {
           doi: reviewDoi,
-          form: CompletedFormC.encode(newReview) as never,
+          moreAuthors: newReview.moreAuthors,
+          otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors.length : 0,
+          persona: newReview.persona,
           id: reviewId,
         })
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
@@ -343,7 +345,9 @@ describe('writeReviewPublish', () => {
         })
         expect(addToSession).toHaveBeenCalledWith('published-review', {
           doi: reviewDoi,
-          form: FormC.encode(CompletedFormC.encode(newReview)),
+          moreAuthors: newReview.moreAuthors,
+          otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors.length : 0,
+          persona: newReview.persona,
           id: reviewId,
         })
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)

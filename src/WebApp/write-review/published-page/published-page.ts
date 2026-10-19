@@ -8,7 +8,7 @@ import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { PublishedReview } from '../published-review.ts'
 
 export const publishedPage = ({
-  review: { doi, form },
+  review: { doi, moreAuthors, otherAuthors, persona },
   preprint,
   url,
   locale,
@@ -55,18 +55,18 @@ export const publishedPage = ({
       </p>
 
       ${
-        form.moreAuthors === 'yes' && form.otherAuthors.length === 0
+        moreAuthors === 'yes' && otherAuthors === 0
           ? html`
               <div class="inset">
                 <p>${t('write-review', 'letUsKnowAuthorDetails')({ mailtoHelp })}</p>
               </div>
             `
-          : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
+          : moreAuthors === 'yes' && otherAuthors > 0
             ? html`<p>${t('write-review', 'sentEmailsToAuthors')()}</p> `
             : ''
       }
       ${
-        form.persona === 'public'
+        persona === 'public'
           ? html`
               <h2>${t('write-review', 'shareYourReview')()}</h2>
 
