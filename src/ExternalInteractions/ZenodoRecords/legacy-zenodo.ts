@@ -37,6 +37,7 @@ import {
 import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
+import type { NewPrereview } from '../../PreprintReviews/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
@@ -51,7 +52,6 @@ import {
 import type * as Prereviewers from '../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
-import type { NewPrereview } from '../../PreprintReviews/index.ts'
 import * as Prereview from '../../Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
 import { reviewMatch } from '../../routes.ts'
