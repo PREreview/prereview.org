@@ -5,6 +5,7 @@ import type { ClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
+import type { CompletedForm } from '../../../PreprintReviews/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -30,7 +31,6 @@ import {
 } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { CompletedForm } from '../completed-form.ts'
 import { backNav } from '../shared-elements.ts'
 
 export function publishForm(

@@ -13,6 +13,8 @@ import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import {
+  type CompletedForm,
+  CompletedFormC,
   type Form,
   type FormStoreEnv,
   deleteForm,
@@ -40,7 +42,6 @@ import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { AddToSessionEnv } from '../../session.ts'
-import { type CompletedForm, CompletedFormC } from '../completed-form.ts'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.ts'
 import { failureMessage } from './failure-message.ts'
 import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.ts'

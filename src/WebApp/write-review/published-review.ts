@@ -2,10 +2,9 @@ import { pipe } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
-import { FormC } from '../../PreprintReviews/index.ts'
+import { type CompletedForm, CompletedFormC, FormC } from '../../PreprintReviews/index.ts'
 import { type Doi, DoiC } from '../../types/Doi.ts'
 import { addToSession, popFromSession } from '../session.ts'
-import { type CompletedForm, CompletedFormC } from './completed-form.ts'
 
 export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
 

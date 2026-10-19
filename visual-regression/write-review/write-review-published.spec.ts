@@ -1,11 +1,11 @@
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
+import type { CompletedForm } from '../../src/PreprintReviews/index.ts'
 import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import type { CompletedForm } from '../../src/WebApp/write-review/completed-form.ts'
 import { publishedPage } from '../../src/WebApp/write-review/published-page/published-page.ts'
 import { expect, test } from '../base.ts'
 
