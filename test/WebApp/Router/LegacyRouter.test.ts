@@ -146,6 +146,8 @@ describe('LegacyRouter', () => {
     ['/dashboard/new?page=2'],
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
     ['/extension'],
+    ['/author/chad'],
+    ['/author/chris'],
     ['/tag/community'],
     ['/tag/prereview-clubs'],
   ])('removed page for %s', ([path]) =>

@@ -90,6 +90,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('/admin', showRemovedForNowMessage),
   MakeRoute('/api', showRemovedForNowMessage),
   MakeRoute('/api/*', showRemovedForNowMessage),
+  MakeRoute('/author/:author', showRemovedPermanentlyMessage),
   MakeQueryRoute('/author-invite/:id/verify-email-address', Schema.Struct({ verify: UuidSchema }), ({ verify }) =>
     pipe(
       HttpRouter.schemaParams(Schema.Struct({ id: UuidSchema })),
