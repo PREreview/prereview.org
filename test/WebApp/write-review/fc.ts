@@ -1,6 +1,6 @@
 import { merge } from 'ts-deepmerge'
+import type { Form } from '../../../src/PreprintReviews/index.ts'
 import { type CompletedForm, CompletedFormC } from '../../../src/WebApp/write-review/completed-form.ts'
-import type { Form } from '../../../src/WebApp/write-review/form.ts'
 import * as fc from '../../fc.ts'
 
 export * from '../../fc.ts'

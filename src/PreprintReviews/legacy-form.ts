@@ -7,8 +7,8 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type Keyv from 'keyv'
 import { P, match } from 'ts-pattern'
-import { RawHtmlC } from '../../html.ts'
-import type { PreprintId } from '../../Preprints/index.ts'
+import { RawHtmlC } from '../html.ts'
+import type { PreprintId } from '../Preprints/index.ts'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -27,13 +27,13 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
   writeReviewUseOfAiMatch,
-} from '../../routes.ts'
-import { isDoi } from '../../types/Doi.ts'
-import { EmailAddressC } from '../../types/EmailAddress.ts'
-import { NameC } from '../../types/Name.ts'
-import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
-import type { OrcidId } from '../../types/OrcidId.ts'
-import { UuidC } from '../../types/Uuid.ts'
+} from '../routes.ts'
+import { isDoi } from '../types/Doi.ts'
+import { EmailAddressC } from '../types/EmailAddress.ts'
+import { NameC } from '../types/Name.ts'
+import { NonEmptyStringC } from '../types/NonEmptyString.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+import { UuidC } from '../types/Uuid.ts'
 
 export type Form = C.TypeOf<typeof FormC>
 

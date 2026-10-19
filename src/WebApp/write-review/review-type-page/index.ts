@@ -8,6 +8,15 @@ import { P, match } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
+  type Form,
+  type FormStoreEnv,
+  createForm,
+  getForm,
+  nextFormPath,
+  saveForm,
+  updateForm,
+} from '../../../PreprintReviews/index.ts'
+import {
   type IndeterminatePreprintId,
   type PreprintTitle,
   type Preprints,
@@ -23,7 +32,6 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, createForm, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { ownPreprintPage } from '../own-preprint-page.ts'
 import { ensureUserIsNotAnAuthor } from '../user-is-author.ts'
 import { reviewTypeForm } from './review-type-form.ts'

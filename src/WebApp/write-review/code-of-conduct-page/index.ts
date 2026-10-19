@@ -8,6 +8,14 @@ import { match, P } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
+  type Form,
+  type FormStoreEnv,
+  getForm,
+  nextFormPath,
+  saveForm,
+  updateForm,
+} from '../../../PreprintReviews/index.ts'
+import {
   getPreprintTitle,
   type IndeterminatePreprintId,
   type Preprints,
@@ -18,7 +26,6 @@ import { writeReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormPath, saveForm, updateForm } from '../form.ts'
 import { codeOfConductForm } from './code-of-conduct-form.ts'
 
 export const writeReviewConduct = ({

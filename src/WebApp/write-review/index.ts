@@ -7,7 +7,6 @@ export { writeReviewCompetingInterests } from './competing-interests-page/index.
 export { writeReviewDataPresentation } from './data-presentation-page/index.ts'
 export { writeReviewEnterEmailAddress } from './enter-email-address-page/index.ts'
 export { writeReviewFindingsNextSteps } from './findings-next-steps/index.ts'
-export type { FormStoreEnv } from './form.ts'
 export { writeReviewIntroductionMatches } from './introduction-matches-page/index.ts'
 export { writeReviewLanguageEditing } from './language-editing-page/index.ts'
 export { writeReviewMethodsAppropriate } from './methods-appropriate-page/index.ts'

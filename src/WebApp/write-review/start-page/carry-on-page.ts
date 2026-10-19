@@ -2,10 +2,10 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
+import { nextFormPath, type Form } from '../../../PreprintReviews/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
-import { nextFormPath, type Form } from '../form.ts'
 
 const cite = (lang: PreprintTitle['language']) => (text: Html) =>
   html`<cite ${languageAttributesFor(lang)}>${text}</cite>`

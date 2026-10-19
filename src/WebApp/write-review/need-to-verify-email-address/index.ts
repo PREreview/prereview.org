@@ -6,6 +6,7 @@ import { match } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type FormStoreEnv, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,
@@ -29,7 +30,6 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import { type FormStoreEnv, getForm, nextFormPath } from '../form.ts'
 import { needToVerifyEmailAddressMessage } from './need-to-verify-email-address-message.ts'
 
 export const writeReviewNeedToVerifyEmailAddress = ({

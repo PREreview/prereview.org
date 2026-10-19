@@ -4,6 +4,7 @@ import { format } from 'fp-ts-routing'
 import { Keyv } from 'keyv'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
+import { FormC, formKey } from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import {
   writeReviewMatch,
@@ -11,7 +12,6 @@ import {
   writeReviewPublishMatch,
 } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
-import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
 import * as fc from './fc.ts'
 

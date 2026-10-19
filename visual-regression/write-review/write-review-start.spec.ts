@@ -1,8 +1,8 @@
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
+import type { Form } from '../../src/PreprintReviews/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
-import type { Form } from '../../src/WebApp/write-review/form.ts'
 import { carryOnPage } from '../../src/WebApp/write-review/start-page/carry-on-page.ts'
 import { expect, test } from '../base.ts'
 
