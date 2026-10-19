@@ -23,6 +23,11 @@ updates:
     open-pull-requests-limit: 10
     schedule:
       interval: 'daily'
+    ignore:
+      - dependency-name: 'effect'
+        versions: ['>=4.0.0']
+      - dependency-name: '@effect/*'
+        versions: ['>=4.0.0']
     groups:
       effect:
         patterns:
