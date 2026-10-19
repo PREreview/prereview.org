@@ -654,6 +654,7 @@ export const Router = pipe(
   HttpRouter.get('/health', HealthCheck),
   HttpRouter.get('/robots.txt', RobotsTxt),
   HttpRouter.concat(LegacyRouter),
+  HttpRouter.withRouterConfig({ maxParamLength: 256 }),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
   Effect.catchTag('RouteNotFound', () =>
     Effect.interruptible(Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
