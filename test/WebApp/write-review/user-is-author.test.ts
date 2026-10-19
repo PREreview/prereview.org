@@ -25,7 +25,7 @@ describe('ensureUserIsNotAnAuthor', () => {
     ([[user, preprint]]) => {
       const actual = _.ensureUserIsNotAnAuthor(preprint)(user)
 
-      expect(actual).toStrictEqual(Either.left({ type: 'is-author', user }))
+      expect(actual).toStrictEqual(Either.left(new _.IsAuthor({ user })))
     },
   )
 })

@@ -1,17 +1,16 @@
-import { Array, Either, Equivalence, Option, Predicate } from 'effect'
+import { Array, Data, Either, Equivalence, Option, Predicate } from 'effect'
 import type { Preprint } from '../../Preprints/index.ts'
 import { type OrcidId, OrcidIdEquivalence } from '../../types/OrcidId.ts'
 import type { User } from '../../user.ts'
 
-interface IsAuthor {
-  readonly type: 'is-author'
-  readonly user: User
-}
+export class IsAuthor extends Data.TaggedError('IsAuthor')<{
+  user: User
+}> {}
 
 export const ensureUserIsNotAnAuthor = (preprint: Preprint) =>
   Either.liftPredicate(
     Predicate.not((user: User) => Array.containsWith(EquivalenceAuthorByOrcid)(preprint.authors, user)),
-    user => ({ type: 'is-author', user }) satisfies IsAuthor,
+    user => new IsAuthor({ user }),
   )
 
 const EquivalenceAuthorByOrcid = Equivalence.mapInput(
