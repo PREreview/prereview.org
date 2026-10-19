@@ -13,7 +13,7 @@ export { writeReviewMethodsAppropriate } from './methods-appropriate-page/index.
 export { writeReviewNeedToVerifyEmailAddress } from './need-to-verify-email-address/index.ts'
 export { writeReviewNovel } from './novel-page/index.ts'
 export { writeReviewPersona } from './persona/index.ts'
-export { writeReviewPublish, type NewPrereview, type PublishPrereviewEnv } from './publish-page/index.ts'
+export { writeReviewPublish } from './publish-page/index.ts'
 export { writeReviewPublished } from './published-page/index.ts'
 export { writeReviewReadyFullReview } from './ready-full-review-page/index.ts'
 export { writeReviewRemoveAuthor } from './remove-author-page/index.ts'

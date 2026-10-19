@@ -8,7 +8,7 @@ import { Clubs } from '../../../src/Clubs/index.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
-import { CompletedFormC, FormC, formKey } from '../../../src/PreprintReviews/index.ts'
+import { CompletedFormC, FormC, formKey, type PublishPrereviewEnv } from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -221,7 +221,7 @@ describe('writeReviewPublish', () => {
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
-        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
+        const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
@@ -311,7 +311,7 @@ describe('writeReviewPublish', () => {
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
-        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
+        const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>

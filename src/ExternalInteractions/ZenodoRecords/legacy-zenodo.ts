@@ -51,6 +51,7 @@ import {
 import type * as Prereviewers from '../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
+import type { NewPrereview } from '../../PreprintReviews/index.ts'
 import * as Prereview from '../../Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
 import { reviewMatch } from '../../routes.ts'
@@ -67,7 +68,6 @@ import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
 import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
 import type { Prereview as ScietyPrereview } from '../../WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
-import type { NewPrereview } from '../../WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean
