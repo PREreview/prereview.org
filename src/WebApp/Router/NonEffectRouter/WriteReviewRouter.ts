@@ -1,23 +1,17 @@
-import { Array, Effect, flow, Option, pipe, Redacted } from 'effect'
+import { Array, Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
-import { Clubs } from '../../../Clubs/index.ts'
-import type { Locale } from '../../../Context.ts'
-import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
+import type { OpenAuthorInvite } from '../../../author-invite.ts'
+import { OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import * as PreprintReviews from '../../../PreprintReviews/index.ts'
+import { publishPrereview } from '../../../PreprintReviews/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -25,7 +19,6 @@ import { Uuid } from '../../../types/index.ts'
 import { generateUuidIO } from '../../../types/Uuid.ts'
 import type * as Response from '../../Response/index.ts'
 import {
-  type NewPrereview,
   writeReview,
   writeReviewAddAuthor,
   writeReviewAddAuthors,
@@ -477,70 +470,3 @@ export const WriteReviewRouter = pipe(
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
-
-const publishPrereview = (newPrereview: NewPrereview) =>
-  pipe(
-    EffectToFpts.toReaderTaskEither(
-      Effect.gen(function* () {
-        const clubs = yield* Clubs
-
-        const club = yield* Effect.transposeOption(Option.map(newPrereview.club, clubs.getClubName))
-
-        return { ...newPrereview, club }
-      }).pipe(Effect.catchTag('ClubNotFound', () => Effect.fail('unavailable' as const))),
-    ),
-    RTE.chainW(ZenodoRecords.createRecordOnZenodo),
-    RTE.chainFirstReaderTaskKW(([, review]) =>
-      RT.asksReaderTaskW((env: EffectToFpts.EffectEnv<Locale | Email.Email> & L.LoggerEnv) =>
-        pipe(
-          newPrereview.otherAuthors,
-          RT.traverseSeqArray(otherAuthor =>
-            pipe(
-              createAuthorInvite({ status: 'open', emailAddress: otherAuthor.emailAddress, review }),
-              RTE.chainTaskEitherK(authorInviteId =>
-                pipe(
-                  EffectToFpts.toTaskEither(
-                    Email.inviteAuthor({
-                      person: otherAuthor,
-                      authorInviteId,
-                      newPrereview: {
-                        ...newPrereview,
-                        author: Prereviewers.getPersonaName(newPrereview.persona),
-                      },
-                    }),
-                    env.runtime,
-                  ),
-                  TE.mapLeft(() => 'unavailable' as const),
-                ),
-              ),
-              RTE.matchEW(
-                () => RT.of(undefined),
-                () => RT.fromReaderIO(L.error('Failed to invite author to a review')),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-    RTE.chainFirstReaderTaskKW(([, reviewId]) =>
-      EffectToFpts.toReaderTaskEither(
-        Effect.all(
-          [
-            PreprintReviews.NotifyCommunitySlackOfPreprintReview.execute({ reviewId }, { discard: true }),
-            PreprintReviews.NotifyPreprintServerOfReview.execute({ reviewId }, { discard: true }),
-            PreprintReviews.NotifyReviewRequestersOfReview.execute({ reviewId }, { discard: true }),
-          ],
-          { concurrency: 'inherit' },
-        ),
-      ),
-    ),
-    RTE.chainFirstW(([, review]) =>
-      EffectToFpts.toReaderTaskEither(
-        ZenodoRecords.invalidatePrereviewInCache({
-          prereviewId: review,
-          preprintId: newPrereview.preprint.id,
-          user: newPrereview.user,
-        }),
-      ),
-    ),
-  )
