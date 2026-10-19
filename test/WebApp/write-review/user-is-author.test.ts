@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@effect/vitest'
-import * as E from 'fp-ts/lib/Either.js'
+import { Either } from 'effect'
 import * as _ from '../../../src/WebApp/write-review/user-is-author.ts'
 import * as fc from './fc.ts'
 
@@ -7,7 +7,7 @@ describe('ensureUserIsNotAnAuthor', () => {
   it.prop('when user is not an author', [fc.user(), fc.preprint()], ([user, preprint]) => {
     const actual = _.ensureUserIsNotAnAuthor(preprint)(user)
 
-    expect(actual).toStrictEqual(E.right(user))
+    expect(actual).toStrictEqual(Either.right(user))
   })
 
   it.prop(
@@ -25,7 +25,7 @@ describe('ensureUserIsNotAnAuthor', () => {
     ([[user, preprint]]) => {
       const actual = _.ensureUserIsNotAnAuthor(preprint)(user)
 
-      expect(actual).toStrictEqual(E.left({ type: 'is-author', user }))
+      expect(actual).toStrictEqual(Either.left(new _.IsAuthor({ user })))
     },
   )
 })

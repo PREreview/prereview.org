@@ -24,9 +24,9 @@ import {
 } from 'effect'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
-import fs from 'fs'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import type {
   AssignedAuthorInvite,
   AuthorInvite,

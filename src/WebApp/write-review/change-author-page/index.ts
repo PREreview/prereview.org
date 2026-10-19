@@ -7,6 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../../../PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,
@@ -20,7 +21,6 @@ import { type Name, NameC } from '../../../types/Name.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../form.ts'
 import { changeAuthorForm } from './change-author-form.ts'
 
 export const writeReviewChangeAuthor = ({

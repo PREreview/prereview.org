@@ -39,6 +39,7 @@ describe('LegacyRouter', () => {
       '/my-details/change-email-address?verify=4a4316a0-6a9c-463e-9297-fbc49ec0a5e5',
       '/verify-email-address?verificationToken=4a4316a0-6a9c-463e-9297-fbc49ec0a5e5',
     ],
+    ['/october-2026-newsletter', '/blog/october-2026-newsletter'],
     ['/preprint-journal-clubs', '/live-reviews'],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
     ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
@@ -62,6 +63,7 @@ describe('LegacyRouter', () => {
       '/preprints/philsci-22206/write-a-prereview/verify-email-address?verify=988349ad-ef61-46e4-860b-f6c0610ab56f',
       '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fpreprints%2Fphilsci-22206%2Fwrite-a-prereview%2Fcheck-your-prereview',
     ],
+    ['/prereview-hello-world', '/blog/prereview-hello-world'],
     ['/prereview.org', '/'],
     ['/PREreview.org', '/'],
     ['/reviews/new', '/review-a-preprint'],
@@ -70,6 +72,7 @@ describe('LegacyRouter', () => {
       '/write-a-comment/0d062cd7-d41c-49b9-90ce-d8e1beb8687d/verify-email-address?token=988349ad-ef61-46e4-860b-f6c0610ab56f',
       '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fwrite-a-comment%2F0d062cd7-d41c-49b9-90ce-d8e1beb8687d%2Fneed-to-verify-email-address',
     ],
+    ['/tag/prereview-champion', '/blog/tags/champions-program'],
     ['/)', '/'],
     ['/),', '/'],
   ])('redirects %s', ([path, expected]) =>
@@ -145,6 +148,10 @@ describe('LegacyRouter', () => {
     ['/dashboard/new?page=2'],
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
     ['/extension'],
+    ['/author/chad'],
+    ['/author/chris'],
+    ['/tag/community'],
+    ['/tag/prereview-clubs'],
   ])('removed page for %s', ([path]) =>
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))

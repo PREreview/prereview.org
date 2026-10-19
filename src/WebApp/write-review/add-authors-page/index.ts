@@ -4,6 +4,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type Form, type FormStoreEnv, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,
@@ -20,7 +21,6 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormPath } from '../form.ts'
 import { addAuthorsForm } from './add-authors-form.ts'
 
 export const writeReviewAddAuthors = ({

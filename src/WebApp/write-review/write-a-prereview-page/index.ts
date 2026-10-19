@@ -39,7 +39,7 @@ export const writeReview = ({
           RTE.matchW(
             error =>
               match(error)
-                .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewMatch.formatter, locale))
+                .with({ _tag: 'IsAuthor' }, () => ownPreprintPage(preprint.id, writeReviewMatch.formatter, locale))
                 .with('no-session', () => startPage(preprint, locale, false))
                 .exhaustive(),
             () => startPage(preprint, locale, true),

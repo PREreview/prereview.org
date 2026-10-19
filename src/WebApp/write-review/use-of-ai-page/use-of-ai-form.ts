@@ -60,64 +60,62 @@ export function useOfAiForm(
         <p>${t('write-review', 'understandHowCreated')()}</p>
 
         <div ${rawHtml(E.isLeft(form.generativeAiIdeas) ? 'class="error"' : '')}>
-          <conditional-inputs>
-            <fieldset
-              role="group"
-              ${rawHtml(
-                E.isLeft(form.generativeAiIdeas)
-                  ? 'aria-invalid="true" aria-errormessage="generative-ai-ideas-error"'
-                  : '',
-              )}
-            >
-              <legend>
-                <h2>${t('write-review', otherAuthors ? 'didAuthorsUseAi' : 'didYouUseAi')()}</h2>
-              </legend>
+          <fieldset
+            role="group"
+            ${rawHtml(
+              E.isLeft(form.generativeAiIdeas)
+                ? 'aria-invalid="true" aria-errormessage="generative-ai-ideas-error"'
+                : '',
+            )}
+          >
+            <legend>
+              <h2>${t('write-review', otherAuthors ? 'didAuthorsUseAi' : 'didYouUseAi')()}</h2>
+            </legend>
 
-              ${
-                E.isLeft(form.generativeAiIdeas)
-                  ? html`
-                      <div class="error-message" id="generative-ai-ideas-error">
-                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.generativeAiIdeas.left, {
-                          MissingE: () =>
-                            t('write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
-                        })}
-                      </div>
-                    `
-                  : ''
-              }
+            ${
+              E.isLeft(form.generativeAiIdeas)
+                ? html`
+                    <div class="error-message" id="generative-ai-ideas-error">
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                      ${Match.valueTags(form.generativeAiIdeas.left, {
+                        MissingE: () =>
+                          t('write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
+                      })}
+                    </div>
+                  `
+                : ''
+            }
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="generativeAiIdeas"
-                      id="generative-ai-ideas-no"
-                      type="radio"
-                      value="no"
-                      ${match(form.generativeAiIdeas)
-                        .with({ right: 'no' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    ${t('write-review', 'no')()}
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="generativeAiIdeas"
-                      type="radio"
-                      value="yes"
-                      ${match(form.generativeAiIdeas)
-                        .with({ right: 'yes' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    ${t('write-review', 'yes')()}
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
-          </conditional-inputs>
+            <ol>
+              <li>
+                <label>
+                  <input
+                    name="generativeAiIdeas"
+                    id="generative-ai-ideas-no"
+                    type="radio"
+                    value="no"
+                    ${match(form.generativeAiIdeas)
+                      .with({ right: 'no' }, () => 'checked')
+                      .otherwise(() => '')}
+                  />
+                  ${t('write-review', 'no')()}
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input
+                    name="generativeAiIdeas"
+                    type="radio"
+                    value="yes"
+                    ${match(form.generativeAiIdeas)
+                      .with({ right: 'yes' }, () => 'checked')
+                      .otherwise(() => '')}
+                  />
+                  ${t('write-review', 'yes')()}
+                </label>
+              </li>
+            </ol>
+          </fieldset>
         </div>
 
         ${saveAndContinueButton(locale)}

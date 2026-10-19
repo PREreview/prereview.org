@@ -1,4 +1,4 @@
-import { URL } from 'url'
+import { URL } from 'node:url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'

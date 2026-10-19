@@ -16,12 +16,12 @@ import {
 } from '@playwright/test'
 import { Config, Effect, Fiber, Layer, Logger, LogLevel, Option, pipe, Redacted, Schedule } from 'effect'
 import fetchMock, { type FetchMock } from 'fetch-mock'
-import * as fs from 'fs/promises'
-import http from 'http'
 import { Keyv } from 'keyv'
+import * as fs from 'node:fs/promises'
+import http from 'node:http'
+import { URL } from 'node:url'
 import nodemailer, { type SendMailOptions } from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
-import { URL } from 'url'
 import { v4 } from 'uuid'
 import {
   EmptyDepositionC,

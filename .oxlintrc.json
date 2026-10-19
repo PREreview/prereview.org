@@ -168,7 +168,8 @@
     "typescript/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": true }],
     "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "typescript/no-import-type-side-effects": "error",
-    "typescript/strict-boolean-expressions": "error"
+    "typescript/strict-boolean-expressions": "error",
+    "unicorn/prefer-node-protocol": "error"
   },
   "overrides": [
     {

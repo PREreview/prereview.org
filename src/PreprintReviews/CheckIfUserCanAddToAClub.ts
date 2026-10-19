@@ -5,9 +5,8 @@ import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
-// eslint-disable-next-line import/no-internal-modules
-import { getForm } from '../WebApp/write-review/form.ts' // oxlint-disable-line module-boundaries/use-index
 import * as Errors from './Errors.ts'
+import { getForm } from './legacy-form.ts'
 
 export interface Input {
   preprintId: PreprintId

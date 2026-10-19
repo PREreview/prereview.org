@@ -9,6 +9,7 @@ import { ContactEmailAddresses, type UnverifiedContactEmailAddress } from '../..
 import type { Locale } from '../../../Context.ts'
 import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type FormStoreEnv, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,
@@ -22,7 +23,6 @@ import type { User } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
-import { type FormStoreEnv, getForm, nextFormPath } from '../form.ts'
 import { enterEmailAddressPage } from './enter-email-address-page.ts'
 
 export const writeReviewEnterEmailAddress = ({

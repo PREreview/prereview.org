@@ -8,6 +8,7 @@ import { Clubs } from '../../../src/Clubs/index.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
+import { CompletedFormC, FormC, formKey, type PublishPrereviewEnv } from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -15,8 +16,6 @@ import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublish
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { localeToIso6391 } from '../../../src/types/iso639.ts'
 import type { AddToSessionEnv } from '../../../src/WebApp/session.ts'
-import { CompletedFormC } from '../../../src/WebApp/write-review/completed-form.ts'
-import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
@@ -222,7 +221,7 @@ describe('writeReviewPublish', () => {
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
-        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
+        const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
@@ -254,7 +253,9 @@ describe('writeReviewPublish', () => {
         })
         expect(addToSession).toHaveBeenCalledWith('published-review', {
           doi: reviewDoi,
-          form: CompletedFormC.encode(newReview) as never,
+          moreAuthors: newReview.moreAuthors,
+          otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors.length : 0,
+          persona: newReview.persona,
           id: reviewId,
         })
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
@@ -312,7 +313,7 @@ describe('writeReviewPublish', () => {
         >()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
-        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
+        const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
@@ -344,7 +345,9 @@ describe('writeReviewPublish', () => {
         })
         expect(addToSession).toHaveBeenCalledWith('published-review', {
           doi: reviewDoi,
-          form: FormC.encode(CompletedFormC.encode(newReview)),
+          moreAuthors: newReview.moreAuthors,
+          otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors.length : 0,
+          persona: newReview.persona,
           id: reviewId,
         })
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)

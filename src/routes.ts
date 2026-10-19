@@ -175,7 +175,7 @@ export const BlogPost = Route({
 })
 
 export const Tag = QueryRoute({
-  path: '/blog/tag/champions-program',
+  path: '/blog/tags/champions-program',
   schema: Schema.Struct({
     page: PageNumberSchema,
   }),

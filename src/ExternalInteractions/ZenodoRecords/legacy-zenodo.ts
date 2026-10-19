@@ -13,8 +13,8 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
+import { URL } from 'node:url'
 import { P, match } from 'ts-pattern'
-import { URL } from 'url'
 import {
   type DepositMetadata,
   type Deposition,
@@ -37,6 +37,7 @@ import {
 import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
+import type { NewPrereview } from '../../PreprintReviews/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
@@ -67,7 +68,6 @@ import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
 import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
 import type { Prereview as ScietyPrereview } from '../../WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
-import type { NewPrereview } from '../../WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

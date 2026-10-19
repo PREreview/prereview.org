@@ -16,7 +16,7 @@ import {
   pipe,
 } from 'effect'
 import type { NonEmptyReadonlyArray } from 'effect/Array'
-import path from 'path'
+import path from 'node:path'
 import { ContactAddressImported, Event, type EventTypes } from '../src/Events.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'

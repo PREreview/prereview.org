@@ -17,6 +17,7 @@ import { IsOpenForRequestsC } from './is-open-for-requests.ts'
 import { LanguagesC } from './languages.ts'
 import { LocationC } from './location.ts'
 import { OrcidTokenC } from './orcid-token.ts'
+import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
@@ -24,7 +25,6 @@ import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { UuidC } from './types/Uuid.ts'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.ts'
-import type { FormStoreEnv } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export { Keyv } from 'keyv'
 

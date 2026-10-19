@@ -1,3 +1,6 @@
 export * from './Errors.ts'
+export * from './legacy-completed-form.ts'
+export * from './legacy-form.ts'
+export * from './legacy-publish-review.ts'
 export * from './PreprintReviews.ts'
 export * from './Workflows/index.ts'

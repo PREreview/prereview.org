@@ -1,5 +1,5 @@
+import path from 'node:path'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import path from 'path'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import {
   areLoggedIn,

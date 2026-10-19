@@ -21,7 +21,7 @@ import {
   pipe,
   Schema,
 } from 'effect'
-import { createServer } from 'http'
+import { createServer } from 'node:http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'

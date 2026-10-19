@@ -3,15 +3,26 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ClubName, Clubs } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
-import { type Html, fixHeadingLevels, html } from '../../../html.ts'
+import { fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import {
+  type CompletedForm,
+  CompletedFormC,
+  type Form,
+  type FormStoreEnv,
+  type NewPrereview,
+  type PublishPrereviewEnv,
+  deleteForm,
+  getForm,
+  nextFormPath,
+  saveForm,
+} from '../../../PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,
@@ -22,39 +33,14 @@ import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'
-import type { Doi } from '../../../types/Doi.ts'
-import type { EmailAddress } from '../../../types/EmailAddress.ts'
-import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
-import type { Name } from '../../../types/Name.ts'
-import type { Uuid } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { AddToSessionEnv } from '../../session.ts'
-import { type CompletedForm, CompletedFormC } from '../completed-form.ts'
-import { type Form, type FormStoreEnv, deleteForm, getForm, nextFormPath, saveForm } from '../form.ts'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.ts'
 import { failureMessage } from './failure-message.ts'
 import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.ts'
-
-export interface NewPrereview {
-  conduct: 'yes'
-  otherAuthors: ReadonlyArray<{ name: Name; emailAddress: EmailAddress }>
-  persona: Prereviewers.Persona
-  club: Option.Option<Uuid>
-  preprint: PreprintTitle
-  review: Html
-  language: Option.Option<LanguageCode>
-  license: 'CC0-1.0' | 'CC-BY-4.0'
-  locale: SupportedLocale
-  structured: boolean
-  user: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym }
-}
-
-export interface PublishPrereviewEnv {
-  publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
-}
 
 export const writeReviewPublish = ({
   id,
@@ -280,7 +266,15 @@ const handlePublishForm = ({
         ),
       ),
     ),
-    RTE.chainFirstW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
+    RTE.chainFirstW(([doi, id]) =>
+      storeInformationForWriteReviewPublishedPage(
+        doi,
+        form.moreAuthors,
+        form.moreAuthors === 'yes' ? form.otherAuthors.length : 0,
+        form.persona,
+        id,
+      ),
+    ),
     RTE.matchW(
       () => failureMessage(locale),
       () => RedirectResponse({ location: format(writeReviewPublishedMatch.formatter, { id: preprint.id }) }),
