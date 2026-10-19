@@ -17,29 +17,17 @@ export const parseAuthors = (
           Option.firstSomeOf([
             Array.matchRight(parts, {
               onEmpty: () => Option.none(),
-              onNonEmpty: (init, last) => {
-                try {
-                  return Option.some({
-                    name: Name.Name(init.join(' ')),
-                    emailAddress: EmailAddress.EmailAddress(last),
-                  })
-                } catch {
-                  return Option.none()
-                }
-              },
+              onNonEmpty: Option.liftThrowable((init, last) => ({
+                name: Name.Name(init.join(' ')),
+                emailAddress: EmailAddress.EmailAddress(last),
+              })),
             }),
             Array.matchLeft(parts, {
               onEmpty: () => Option.none(),
-              onNonEmpty: (head, tail) => {
-                try {
-                  return Option.some({
-                    name: Name.Name(tail.join(' ')),
-                    emailAddress: EmailAddress.EmailAddress(head),
-                  })
-                } catch {
-                  return Option.none()
-                }
-              },
+              onNonEmpty: Option.liftThrowable((head, tail) => ({
+                name: Name.Name(tail.join(' ')),
+                emailAddress: EmailAddress.EmailAddress(head),
+              })),
             }),
           ]),
         ),
