@@ -1,5 +1,5 @@
 import { Context, type Option, type Redacted } from 'effect'
-import type { URL } from 'url'
+import type { URL } from 'node:url'
 
 export { PersonalDetails } from './PersonalDetails.ts'
 

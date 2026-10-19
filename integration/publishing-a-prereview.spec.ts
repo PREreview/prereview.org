@@ -1,6 +1,6 @@
 import { Duration, Function } from 'effect'
+import { URL } from 'node:url'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { Doi } from '../src/types/Doi.ts'

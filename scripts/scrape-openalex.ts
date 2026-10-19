@@ -7,7 +7,6 @@ import {
   UrlParams,
 } from '@effect/platform'
 import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
-import crypto from 'crypto'
 import {
   Chunk,
   Effect,
@@ -24,7 +23,8 @@ import {
   Stream,
   String,
 } from 'effect'
-import path from 'path'
+import crypto from 'node:crypto'
+import path from 'node:path'
 
 const NormalizedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, {
   strict: true,

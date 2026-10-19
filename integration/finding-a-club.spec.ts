@@ -1,5 +1,5 @@
 import { Duration } from 'effect'
-import { URL } from 'url'
+import { URL } from 'node:url'
 import { RecordC, RecordsC } from 'zenodo-ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'

@@ -13,8 +13,8 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
+import { URL } from 'node:url'
 import { P, match } from 'ts-pattern'
-import { URL } from 'url'
 import {
   type DepositMetadata,
   type Deposition,
