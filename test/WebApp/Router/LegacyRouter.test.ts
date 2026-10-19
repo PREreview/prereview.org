@@ -70,6 +70,7 @@ describe('LegacyRouter', () => {
       '/write-a-comment/0d062cd7-d41c-49b9-90ce-d8e1beb8687d/verify-email-address?token=988349ad-ef61-46e4-860b-f6c0610ab56f',
       '/verify-email-address?verificationToken=988349ad-ef61-46e4-860b-f6c0610ab56f&redirectTo=%2Fwrite-a-comment%2F0d062cd7-d41c-49b9-90ce-d8e1beb8687d%2Fneed-to-verify-email-address',
     ],
+    ['/tag/prereview-champion', '/blog/tags/champions-program'],
     ['/)', '/'],
     ['/),', '/'],
   ])('redirects %s', ([path, expected]) =>
@@ -145,6 +146,8 @@ describe('LegacyRouter', () => {
     ['/dashboard/new?page=2'],
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
     ['/extension'],
+    ['/tag/community'],
+    ['/tag/prereview-clubs'],
   ])('removed page for %s', ([path]) =>
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))

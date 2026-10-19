@@ -185,6 +185,8 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('/settings/api', showRemovedForNowMessage),
   MakeRoute('/settings/drafts', showRemovedForNowMessage),
   MakeRoute('/signup', movedPermanently(Routes.LogIn)),
+  MakeRoute('/tag/prereview-champion', movedPermanently(Routes.Tag.href({ page: 1 }))),
+  MakeRoute('/tag/:tag', showRemovedPermanentlyMessage),
   MakeQueryRoute(
     '/write-a-comment/:commentId/verify-email-address',
     Schema.Struct({ token: UuidSchema }),
