@@ -1,7 +1,7 @@
 import { Either, flow, Function, pipe, Schema } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { CareerStage } from '../../career-stage.ts'
+import type { CareerStage } from '../../Prereviewers/index.ts'
 import type { Location } from '../../location.ts'
 import { NonEmptyString, OrcidId, Temporal } from '../../types/index.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'

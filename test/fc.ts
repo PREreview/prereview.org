@@ -34,7 +34,6 @@ import type {
   DeclinedAuthorInvite,
   OpenAuthorInvite,
 } from '../src/author-invite.ts'
-import type { CareerStage } from '../src/career-stage.ts'
 import type * as Clubs from '../src/Clubs/index.ts'
 import type { Page } from '../src/CmsContent/index.ts'
 import * as Comments from '../src/Comments/index.ts'
@@ -117,6 +116,7 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
+import type { CareerStage } from '../src/Prereviewers/index.ts'
 import * as Prereviewers from '../src/Prereviewers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
