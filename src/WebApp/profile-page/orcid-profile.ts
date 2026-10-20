@@ -7,10 +7,10 @@ import {
   maybeGetCareerStage,
   maybeGetLanguages,
   maybeGetLocation,
+  maybeGetResearchInterests,
   maybeIsOpenForRequests,
 } from '../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
-import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { type SlackUser, maybeGetSlackUser } from '../../slack-user.ts'
 import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'

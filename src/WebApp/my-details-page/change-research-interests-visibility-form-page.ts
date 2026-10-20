@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import type { ResearchInterests } from '../../research-interests.ts'
+import type { ResearchInterests } from '../../Prereviewers/index.ts'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 

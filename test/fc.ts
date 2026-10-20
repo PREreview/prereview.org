@@ -113,10 +113,15 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
-import type { CareerStage, IsOpenForRequests, Languages, Location } from '../src/Prereviewers/index.ts'
+import type {
+  CareerStage,
+  IsOpenForRequests,
+  Languages,
+  Location,
+  ResearchInterests,
+} from '../src/Prereviewers/index.ts'
 import * as Prereviewers from '../src/Prereviewers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
-import type { ResearchInterests } from '../src/research-interests.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'

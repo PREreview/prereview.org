@@ -6,8 +6,13 @@ import { html, plainText, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { OrcidToken } from '../../orcid-token.ts'
 import type * as Prereviewers from '../../Prereviewers/index.ts'
-import type { CareerStage, IsOpenForRequests, Languages, Location } from '../../Prereviewers/index.ts'
-import type { ResearchInterests } from '../../research-interests.ts'
+import type {
+  CareerStage,
+  IsOpenForRequests,
+  Languages,
+  Location,
+  ResearchInterests,
+} from '../../Prereviewers/index.ts'
 import * as Routes from '../../routes.ts'
 import {
   changeAvatarMatch,

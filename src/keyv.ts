@@ -19,8 +19,8 @@ import { type CareerStage, CareerStageC } from './Prereviewers/legacy-career-sta
 import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
 import { LanguagesC } from './Prereviewers/legacy-languages.ts' // oxlint-disable-line module-boundaries/use-index
 import { LocationC } from './Prereviewers/legacy-location.ts' // oxlint-disable-line module-boundaries/use-index
+import { type ResearchInterests, ResearchInterestsC } from './Prereviewers/legacy-research-interests.ts' // oxlint-disable-line module-boundaries/use-index
 import { DataStoreRedis } from './Redis.ts'
-import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'

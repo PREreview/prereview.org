@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import type { ResearchInterests } from '../../research-interests.ts'
+import type { ResearchInterests } from '../../Prereviewers/index.ts'
 import { changeResearchInterestsMatch, myDetailsMatch } from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 
