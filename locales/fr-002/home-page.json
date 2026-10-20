@@ -41,6 +41,15 @@
   "clubsLink": {
     "message": "Découvrir nos nombreux clubs PREreview"
   },
+  "peerReviewWeek2026Title": {
+    "message": "Semaine de l’évaluation par les pairs 2026"
+  },
+  "peerReviewWeek2026Text": {
+    "message": "PREreview célèbre la Semaine de l’évaluation par les pairs 2026 avec un Review-a-thon mondial, au cours duquel les clubs évaluent ensemble des preprints et des jeux de données, dans tous les domaines et toutes les langues. L’objectif est de mettre en valeur la force transformatrice de l’évaluation par les pairs menée par des humains et dans un esprit de collaboration, au sein de la culture de l’évaluation de la recherche."
+  },
+  "peerReviewWeek2026Link": {
+    "message": "En savoir plus sur le Review-a-thon et les clubs participants"
+  },
   "missionTitle": {
     "message": "Pour les chercheurs insuffisamment accompagnés, il existe une meilleure façon de faire"
   },
