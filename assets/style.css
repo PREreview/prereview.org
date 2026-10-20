@@ -755,6 +755,7 @@ nav {
 
     &::before {
       content: '←\00a0';
+      text-decoration-skip-spaces: start;
     }
 
     &:dir(rtl) {
@@ -770,6 +771,7 @@ nav {
 
     &::after {
       content: '\00a0→';
+      text-decoration-skip-spaces: end;
     }
 
     &:dir(rtl) {
@@ -2313,6 +2315,7 @@ single-use-form {
 
   &::before {
     content: '‹\00a0';
+    text-decoration-skip-spaces: start;
   }
 
   &:any-link {
@@ -2331,6 +2334,7 @@ single-use-form {
 
   &::after {
     content: '\00a0›';
+    text-decoration-skip-spaces: end;
   }
 
   &:any-link {
@@ -2694,6 +2698,7 @@ skip-link {
 
   &::before {
     content: '\00a0›';
+    text-decoration-skip-spaces: end;
     order: 1;
   }
 
