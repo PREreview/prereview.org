@@ -1,4 +1,4 @@
-// eslint-disable-line import/no-internal-modules
+/* eslint-disable import/no-internal-modules */
 import KeyvRedis from '@keyv/redis'
 import { Context, Effect, flow, Layer, pipe, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
