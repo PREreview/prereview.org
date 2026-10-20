@@ -1,8 +1,13 @@
-import { pipe } from 'effect'
+import { Effect, type Option, pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
+import type { LanguageCode } from 'iso-639-1'
+import { match } from 'ts-pattern'
+import { Locale } from '../Context.ts'
+import { LanguageDetection } from '../ExternalInteractions/index.ts'
 import { RawHtmlC } from '../html.ts'
 import { EmailAddressC } from '../types/EmailAddress.ts'
+import { localeToIso6391 } from '../types/iso639.ts'
 import { NameC } from '../types/Name.ts'
 import { NonEmptyStringC } from '../types/NonEmptyString.ts'
 import { type Uuid, UuidC } from '../types/Uuid.ts'
@@ -222,3 +227,10 @@ export const CompletedFormC = pipe(
     }),
   ),
 ) satisfies C.Codec<Form, Form, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+
+export const guessLanguage = (form: CompletedForm) =>
+  match(form)
+    .returnType<Effect.Effect<Option.Option<LanguageCode>, never, Locale | LanguageDetection.LanguageDetection>>()
+    .with({ reviewType: 'questions' }, () => Effect.map(Locale, localeToIso6391))
+    .with({ reviewType: 'freeform' }, form => Effect.option(LanguageDetection.detectLanguage(form.review)))
+    .exhaustive()

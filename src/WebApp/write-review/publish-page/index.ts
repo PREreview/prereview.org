@@ -3,12 +3,11 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ClubName, Clubs } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
-import { Locale } from '../../../Context.ts'
-import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
+import type { Locale } from '../../../Context.ts'
+import type { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -21,6 +20,7 @@ import {
   type PublishPrereviewEnv,
   deleteForm,
   getForm,
+  guessLanguage,
   nextFormPath,
   saveForm,
 } from '../../../PreprintReviews/index.ts'
@@ -34,7 +34,6 @@ import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'
-import { localeToIso6391 } from '../../../types/iso639.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
@@ -218,18 +217,7 @@ const handlePublishForm = ({
     RTE.chainW(() =>
       pipe(
         RTE.Do,
-        RTE.apS(
-          'language',
-          EffectToFpts.toReaderTaskEither(
-            match(form)
-              .returnType<
-                Effect.Effect<Option.Option<LanguageCode>, never, Locale | LanguageDetection.LanguageDetection>
-              >()
-              .with({ reviewType: 'questions' }, () => Effect.map(Locale, localeToIso6391))
-              .with({ reviewType: 'freeform' }, form => Effect.option(LanguageDetection.detectLanguage(form.review)))
-              .exhaustive(),
-          ),
-        ),
+        RTE.apS('language', EffectToFpts.toReaderTaskEither(guessLanguage(form))),
         RTE.apSW(
           'persona',
           EffectToFpts.toReaderTaskEither(Prereviewers.getPersona({ orcidId: user.orcid, persona: form.persona })),
