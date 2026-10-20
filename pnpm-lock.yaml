@@ -138,8 +138,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       normalize-url:
-        specifier: ^9.0.1
-        version: 9.0.1
+        specifier: ^10.0.0
+        version: 10.0.0
       orcid-id-ts:
         specifier: ^0.1.3
         version: 0.1.3(fp-ts@2.16.11)
@@ -3985,9 +3985,9 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  normalize-url@9.0.1:
-    resolution: {integrity: sha512-ARftfC5HdUNu9jJeL8pHj8debUIHA2b91FizCoMzY4lG6dDX13jdvTK0TBe24IBDRf2HvJSzzwEPvmbkQWHRSg==}
-    engines: {node: '>=20'}
+  normalize-url@10.0.0:
+    resolution: {integrity: sha512-aZEiiOP3lVdNrCCdPELWvJHbjJjoPfbWRLPAZLSsGA6l4ckvPmZSB+uX6JB4QQu33SeXCsd6v75jKivr43n/EQ==}
+    engines: {node: '>=22'}
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
@@ -9222,7 +9222,7 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  normalize-url@9.0.1: {}
+  normalize-url@10.0.0: {}
 
   nth-check@2.1.1:
     dependencies:
