@@ -91,6 +91,19 @@ test("content looks right when it's live", async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test("content looks right when it's AI", async ({ showPage }) => {
+  const response = createPage({
+    id: 1234,
+    locale: DefaultLocale,
+    review: { ...review, license: 'CC0-1.0' },
+    comments: [],
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right with an addendum', async ({ showPage }) => {
   const response = createPage({
     id: 1234,

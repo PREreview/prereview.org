@@ -2944,6 +2944,11 @@ skip-link {
   }
 }
 
+.tag-ai {
+  background-color: var(--color-yellow-40);
+  color: var(--color-text);
+}
+
 .logos {
   display: flex;
   flex-wrap: wrap;
