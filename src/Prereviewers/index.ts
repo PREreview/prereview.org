@@ -1,4 +1,5 @@
 export * from './legacy-avatar.ts'
 export * from './legacy-career-stage.ts'
+export * from './legacy-is-open-for-requests.ts'
 export * from './Persona.ts'
 export * from './Prereviewers.ts'

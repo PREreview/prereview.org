@@ -13,12 +13,12 @@ import { Keyv } from 'keyv'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
-import { IsOpenForRequestsC } from './is-open-for-requests.ts'
 import { LanguagesC } from './languages.ts'
 import { LocationC } from './location.ts'
 import { OrcidTokenC } from './orcid-token.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { type CareerStage, CareerStageC } from './Prereviewers/legacy-career-stage.ts' // oxlint-disable-line module-boundaries/use-index
+import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
 import { DataStoreRedis } from './Redis.ts'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
 import { SlackUserIdC } from './slack-user-id.ts'

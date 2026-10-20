@@ -5,13 +5,13 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import type { EnvFor } from '../../Fpts.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import {
   isOpenForRequests,
   saveOpenForRequests,
   type IsOpenForRequests,
   type IsOpenForRequestsEnv,
-} from '../../is-open-for-requests.ts'
-import type { SupportedLocale } from '../../locales/index.ts'
+} from '../../Prereviewers/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
