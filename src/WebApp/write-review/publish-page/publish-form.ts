@@ -1,11 +1,11 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { match, P } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import type { ClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { CompletedForm } from '../../../PreprintReviews/index.ts'
+import { getCompetingInterests, getUseOfAi, type CompletedForm } from '../../../PreprintReviews/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -429,22 +429,3 @@ function formatList(
     rawHtml,
   )
 }
-
-export const getCompetingInterests = (form: CompletedForm, locale: SupportedLocale) =>
-  match(form)
-    .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)
-    .with({ competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') }, () =>
-      translate(locale, 'write-review', 'competingInterestsAuthorsNo')(),
-    )
-    .with({ competingInterests: 'no', moreAuthors: 'no' }, () =>
-      translate(locale, 'write-review', 'competingInterestsNo')(),
-    )
-    .exhaustive()
-
-export const getUseOfAi = (form: CompletedForm, locale: SupportedLocale) =>
-  match([form.generativeAiIdeas, form.moreAuthors])
-    .with(['yes', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'aiIdeasAuthorsStatement')())
-    .with(['yes', 'no'], () => translate(locale, 'write-review', 'aiIdeasStatement')())
-    .with(['no', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'noAiIdeasAuthorsStatement')())
-    .with(['no', 'no'], () => translate(locale, 'write-review', 'noAiIdeasStatement')())
-    .exhaustive()

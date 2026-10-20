@@ -2,10 +2,11 @@ import { Effect, type Option, pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import type { LanguageCode } from 'iso-639-1'
-import { match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { Locale } from '../Context.ts'
 import { LanguageDetection } from '../ExternalInteractions/index.ts'
 import { RawHtmlC } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
 import { EmailAddressC } from '../types/EmailAddress.ts'
 import { localeToIso6391 } from '../types/iso639.ts'
 import { NameC } from '../types/Name.ts'
@@ -233,4 +234,23 @@ export const guessLanguage = (form: CompletedForm) =>
     .returnType<Effect.Effect<Option.Option<LanguageCode>, never, Locale | LanguageDetection.LanguageDetection>>()
     .with({ reviewType: 'questions' }, () => Effect.map(Locale, localeToIso6391))
     .with({ reviewType: 'freeform' }, form => Effect.option(LanguageDetection.detectLanguage(form.review)))
+    .exhaustive()
+
+export const getCompetingInterests = (form: CompletedForm, locale: SupportedLocale) =>
+  match(form)
+    .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)
+    .with({ competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') }, () =>
+      translate(locale, 'write-review', 'competingInterestsAuthorsNo')(),
+    )
+    .with({ competingInterests: 'no', moreAuthors: 'no' }, () =>
+      translate(locale, 'write-review', 'competingInterestsNo')(),
+    )
+    .exhaustive()
+
+export const getUseOfAi = (form: CompletedForm, locale: SupportedLocale) =>
+  match([form.generativeAiIdeas, form.moreAuthors])
+    .with(['yes', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'aiIdeasAuthorsStatement')())
+    .with(['yes', 'no'], () => translate(locale, 'write-review', 'aiIdeasStatement')())
+    .with(['no', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'noAiIdeasAuthorsStatement')())
+    .with(['no', 'no'], () => translate(locale, 'write-review', 'noAiIdeasStatement')())
     .exhaustive()

@@ -19,7 +19,9 @@ import {
   type NewPrereview,
   type PublishPrereviewEnv,
   deleteForm,
+  getCompetingInterests,
   getForm,
+  getUseOfAi,
   guessLanguage,
   nextFormPath,
   saveForm,
@@ -40,7 +42,7 @@ import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { AddToSessionEnv } from '../../session.ts'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.ts'
 import { failureMessage } from './failure-message.ts'
-import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.ts'
+import { publishForm } from './publish-form.ts'
 
 export const writeReviewPublish = ({
   id,
