@@ -9,8 +9,7 @@ import { type ContactEmailAddress, ContactEmailAddresses } from '../../../Contac
 import type { Locale } from '../../../Context.ts'
 import type { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
-import { fixHeadingLevels, html } from '../../../html.ts'
-import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   type CompletedForm,
   CompletedFormC,
@@ -19,11 +18,10 @@ import {
   type NewPrereview,
   type PublishPrereviewEnv,
   deleteForm,
-  getCompetingInterests,
   getForm,
-  getUseOfAi,
   guessLanguage,
   nextFormPath,
+  renderReview,
   saveForm,
 } from '../../../PreprintReviews/index.ts'
 import {
@@ -286,159 +284,3 @@ const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ publishPrereview }: PublishPrereviewEnv) => publishPrereview(newPrereview)),
   )
-
-function renderReview(form: CompletedForm, locale: SupportedLocale) {
-  const t = translate(locale, 'write-review')
-
-  return html`${match(form)
-      .with(
-        { reviewType: 'questions' },
-        form =>
-          html` <dl>
-            <div>
-              <dt>${t('doesIntroductionExplain')()}</dt>
-              <dd>
-                ${match(form.introductionMatches)
-                  .with('yes', () => t('yes')())
-                  .with('partly', () => t('partly')())
-                  .with('no', () => t('no')())
-                  .with('skip', () => t('iDoNotKnow')())
-                  .exhaustive()}
-              </dd>
-              ${
-                form.introductionMatches !== 'skip' && form.introductionMatchesDetails
-                  ? html` <dd>${form.introductionMatchesDetails}</dd>`
-                  : ''
-              }
-            </div>
-            <div>
-              <dt>${t('methodsWellSuited')()}</dt>
-              <dd>
-                ${match(form.methodsAppropriate)
-                  .with('inappropriate', () => t('methodsHighlyInappropriate')())
-                  .with('somewhat-inappropriate', () => t('methodsSomewhatInappropriate')())
-                  .with('adequate', () => t('methodsNeitherAppropriateNorInappropriate')())
-                  .with('mostly-appropriate', () => t('methodsSomewhatAppropriate')())
-                  .with('highly-appropriate', () => t('methodsHighlyAppropriate')())
-                  .with('skip', () => t('iDoNotKnow')())
-                  .exhaustive()}
-              </dd>
-              ${
-                form.methodsAppropriate !== 'skip' && form.methodsAppropriateDetails
-                  ? html` <dd>${form.methodsAppropriateDetails}</dd>`
-                  : ''
-              }
-            </div>
-            <div>
-              <dt>${t('conclusionsSupported')()}</dt>
-              <dd>
-                ${match(form.resultsSupported)
-                  .with('not-supported', () => t('conclusionsHighlyUnsupported')())
-                  .with('partially-supported', () => t('conclusionsSomewhatUnsupported')())
-                  .with('neutral', () => t('conclusionsNeitherSupportedNorUnsupported')())
-                  .with('well-supported', () => t('conclusionsSomewhatSupported')())
-                  .with('strongly-supported', () => t('conclusionsHighlySupported')())
-                  .with('skip', () => t('iDoNotKnow')())
-                  .exhaustive()}
-              </dd>
-              ${
-                form.resultsSupported !== 'skip' && form.resultsSupportedDetails
-                  ? html` <dd>${form.resultsSupportedDetails}</dd>`
-                  : ''
-              }
-            </div>
-            <div>
-              <dt>${t('dataPresentationWellSuited')()}</dt>
-              <dd>
-                ${match(form.dataPresentation)
-                  .with('inappropriate-unclear', () => t('highlyInappropriate')())
-                  .with('somewhat-inappropriate-unclear', () => t('somewhatInappropriate')())
-                  .with('neutral', () => t('neitherAppropriateOrClear')())
-                  .with('mostly-appropriate-clear', () => t('somewhatAppropriate')())
-                  .with('highly-appropriate-clear', () => t('highlyAppropriateAndClear')())
-                  .with('skip', () => t('iDoNotKnow')())
-                  .exhaustive()}
-              </dd>
-              ${
-                form.dataPresentation !== 'skip' && form.dataPresentationDetails
-                  ? html` <dd>${form.dataPresentationDetails}</dd>`
-                  : ''
-              }
-            </div>
-            <div>
-              <dt>${t('clearDiscussion')()}</dt>
-              <dd>
-                ${match(form.findingsNextSteps)
-                  .with('inadequately', () => t('veryUnclearly')())
-                  .with('insufficiently', () => t('somewhatUnclearly')())
-                  .with('adequately', () => t('neitherClearlyNorUnclearly')())
-                  .with('clearly-insightfully', () => t('somewhatClearly')())
-                  .with('exceptionally', () => t('veryClearly')())
-                  .with('skip', () => t('iDoNotKnow')())
-                  .exhaustive()}
-              </dd>
-              ${
-                form.findingsNextSteps !== 'skip' && form.findingsNextStepsDetails
-                  ? html` <dd>${form.findingsNextStepsDetails}</dd>`
-                  : ''
-              }
-            </div>
-            <div>
-              <dt>${t('advanceKnowledge')()}</dt>
-              <dd>
-                ${match(form.novel)
-                  .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
-                  .with('limited', () => t('advanceKnowledgeNotLikely')())
-                  .with('some', () => t('advanceKnowledgeModeratelyLikely')())
-                  .with('substantial', () => t('advanceKnowledgeSomewhatLikely')())
-                  .with('highly', () => t('advanceKnowledgeHighlyLikely')())
-                  .with('skip', () => t('iDoNotKnow')())
-                  .exhaustive()}
-              </dd>
-              ${form.novel !== 'skip' && form.novelDetails ? html` <dd>${form.novelDetails}</dd>` : ''}
-            </div>
-            <div>
-              <dt>${t('benefitFromEditing')()}</dt>
-              <dd>
-                ${match(form.languageEditing)
-                  .with('no', () => t('no')())
-                  .with('yes', () => t('yes')())
-                  .exhaustive()}
-              </dd>
-              ${form.languageEditingDetails ? html` <dd>${form.languageEditingDetails}</dd>` : ''}
-            </div>
-            <div>
-              <dt>${t('wouldRecommend')()}</dt>
-              <dd>
-                ${match(form.shouldRead)
-                  .with('no', () => t('wouldRecommendNo')())
-                  .with('yes-but', () => t('wouldRecommendYesImproved')())
-                  .with('yes', () => t('wouldRecommendYes')())
-                  .exhaustive()}
-              </dd>
-              ${form.shouldReadDetails ? html` <dd>${form.shouldReadDetails}</dd>` : ''}
-            </div>
-            <div>
-              <dt>${t('readyForAttention')()}</dt>
-              <dd>
-                ${match(form.readyFullReview)
-                  .with('no', () => t('readyForAttentionNo')())
-                  .with('yes-changes', () => t('readyForAttentionMinorChanges')())
-                  .with('yes', () => t('readyForAttentionYes')())
-                  .exhaustive()}
-              </dd>
-              ${form.readyFullReviewDetails ? html` <dd>${form.readyFullReviewDetails}</dd>` : ''}
-            </div>
-          </dl>`,
-      )
-      .with({ reviewType: 'freeform' }, form => fixHeadingLevels(1, form.review))
-      .exhaustive()}
-
-    <h2>${t('competingInterests')()}</h2>
-
-    <p>${getCompetingInterests(form, locale)}</p>
-
-    <h2>${t('useOfAi')()}</h2>
-
-    <p>${getUseOfAi(form, locale)}</p>`
-}
