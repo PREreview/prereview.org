@@ -17,7 +17,7 @@ import {
   type FormStoreEnv,
   type NewPrereview,
   type PublishPrereviewEnv,
-  completedFormToNewPreview,
+  completedFormToNewPrereview,
   deleteForm,
   getForm,
   nextFormPath,
@@ -213,7 +213,7 @@ const handlePublishForm = ({
 }) =>
   pipe(
     deleteForm(user.orcid, preprint.id),
-    RTE.chainW(() => completedFormToNewPreview({ form, preprint, orcidId: user.orcid })),
+    RTE.chainW(() => completedFormToNewPrereview({ form, preprint, orcidId: user.orcid })),
     RTE.chainW(
       flow(
         publishPrereview,

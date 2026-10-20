@@ -44,7 +44,7 @@ export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
-export const completedFormToNewPreview = ({
+export const completedFormToNewPrereview = ({
   form,
   orcidId,
   preprint,
