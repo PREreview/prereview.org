@@ -5,7 +5,7 @@ import type { ClubName } from '../../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { getCompetingInterests, getUseOfAi, type CompletedForm } from '../../../PreprintReviews/index.ts'
+import { getCompetingInterests, getLicense, getUseOfAi, type CompletedForm } from '../../../PreprintReviews/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -376,16 +376,16 @@ export function publishForm(
 
           <p>
             ${t('weWillAssignLicense')({
-              licenseLink: match(review.generativeAiIdeas)
+              licenseLink: match(getLicense(review))
                 .with(
-                  'yes',
+                  'CC0-1.0',
                   () =>
                     html`<a href="https://creativecommons.org/publicdomain/zero/1.0/"
                       ><bdi translate="no">CC0&nbsp;1.0</bdi></a
                     >`,
                 )
                 .with(
-                  'no',
+                  'CC-BY-4.0',
                   () =>
                     html`<a href="https://creativecommons.org/licenses/by/4.0/"
                       ><bdi translate="no">CC&nbsp;BY&nbsp;4.0</bdi></a

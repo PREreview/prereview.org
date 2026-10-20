@@ -19,7 +19,13 @@ import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../types/index.ts'
 import type { Name } from '../types/Name.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import { getCompetingInterests, getUseOfAi, guessLanguage, type CompletedForm } from './legacy-completed-form.ts'
+import {
+  getCompetingInterests,
+  getLicense,
+  getUseOfAi,
+  guessLanguage,
+  type CompletedForm,
+} from './legacy-completed-form.ts'
 import {
   NotifyCommunitySlackOfPreprintReview,
   NotifyPreprintServerOfReview,
@@ -66,10 +72,7 @@ export const completedFormToNewPrereview = ({
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
           club: Option.fromNullable(form.club),
           language,
-          license: match(form.generativeAiIdeas)
-            .with('yes', () => 'CC0-1.0' as const)
-            .with('no', () => 'CC-BY-4.0' as const)
-            .exhaustive(),
+          license: getLicense(form),
           locale,
           persona,
           preprint,

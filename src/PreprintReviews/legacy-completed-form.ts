@@ -254,3 +254,9 @@ export const getUseOfAi = (form: CompletedForm, locale: SupportedLocale) =>
     .with(['no', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'noAiIdeasAuthorsStatement')())
     .with(['no', 'no'], () => translate(locale, 'write-review', 'noAiIdeasStatement')())
     .exhaustive()
+
+export const getLicense = (form: CompletedForm) =>
+  match(form.generativeAiIdeas)
+    .with('yes', () => 'CC0-1.0' as const)
+    .with('no', () => 'CC-BY-4.0' as const)
+    .exhaustive()
