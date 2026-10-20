@@ -7,6 +7,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import { type ClubName, Clubs } from '../../../Clubs/index.ts'
 import { type ContactEmailAddress, ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
+import { Locale } from '../../../Context.ts'
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { fixHeadingLevels, html } from '../../../html.ts'
@@ -61,6 +62,7 @@ export const writeReviewPublish = ({
       | ContactEmailAddresses
       | FeatureFlags
       | LanguageDetection.LanguageDetection
+      | Locale
       | Prereviewers.Prereviewers
       | Preprints
     >,
@@ -218,18 +220,13 @@ const handlePublishForm = ({
         RTE.Do,
         RTE.apS(
           'language',
-          RTE.rightReaderTask(
+          EffectToFpts.toReaderTaskEither(
             match(form)
               .returnType<
-                RT.ReaderTask<
-                  EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Prereviewers.Prereviewers>,
-                  Option.Option<LanguageCode>
-                >
+                Effect.Effect<Option.Option<LanguageCode>, never, Locale | LanguageDetection.LanguageDetection>
               >()
-              .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
-              .with({ reviewType: 'freeform' }, form =>
-                EffectToFpts.toReaderTask(Effect.option(LanguageDetection.detectLanguage(form.review))),
-              )
+              .with({ reviewType: 'questions' }, () => Effect.map(Locale, localeToIso6391))
+              .with({ reviewType: 'freeform' }, form => Effect.option(LanguageDetection.detectLanguage(form.review)))
               .exhaustive(),
           ),
         ),

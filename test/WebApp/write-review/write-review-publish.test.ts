@@ -6,6 +6,7 @@ import { Keyv } from 'keyv'
 import { merge } from 'ts-deepmerge'
 import { Clubs } from '../../../src/Clubs/index.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
+import { Locale } from '../../../src/Context.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import { CompletedFormC, FormC, formKey, type PublishPrereviewEnv } from '../../../src/PreprintReviews/index.ts'
@@ -39,6 +40,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -67,6 +69,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
           FeatureFlags.layer({ canClubLeadsAddReviewsToClubs: true }),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
@@ -92,6 +95,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -121,6 +125,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
@@ -145,6 +150,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -174,6 +180,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new ContactEmailAddressIsNotFound() }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
@@ -214,6 +221,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -265,6 +273,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
@@ -308,6 +317,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -357,6 +367,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
@@ -384,6 +395,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -410,6 +422,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
@@ -426,6 +439,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -450,6 +464,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, {}),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
@@ -466,6 +481,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -493,6 +509,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, {}),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsUnavailable({}) }),
         ]),
@@ -509,6 +526,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -536,6 +554,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, {}),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsNotFound({}) }),
         ]),
@@ -552,6 +571,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -576,6 +596,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, {}),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         ]),
@@ -614,6 +635,7 @@ describe('writeReviewPublish', () => {
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
           | LanguageDetection.LanguageDetection
+          | Locale
           | Prereviewers.Prereviewers
           | Preprints
         >()
@@ -646,6 +668,7 @@ describe('writeReviewPublish', () => {
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
+          Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {
             getPublicPersona: () => Effect.succeed(publicPersona),
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
