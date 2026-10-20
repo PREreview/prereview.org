@@ -6,12 +6,12 @@ import { match, P } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { maybeGetLocation } from '../../location.ts'
 import { maybeGetOrcidToken } from '../../orcid-token.ts'
 import {
   maybeGetAvatar,
   maybeGetCareerStage,
   maybeGetLanguages,
+  maybeGetLocation,
   maybeIsOpenForRequests,
   Prereviewers,
 } from '../../Prereviewers/index.ts'

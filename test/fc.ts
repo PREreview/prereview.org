@@ -60,7 +60,6 @@ import {
   type UserSelectableLocale,
   UserSelectableLocales,
 } from '../src/locales/index.ts'
-import type { Location } from '../src/location.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.ts'
 import {
@@ -114,7 +113,7 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
-import type { CareerStage, IsOpenForRequests, Languages } from '../src/Prereviewers/index.ts'
+import type { CareerStage, IsOpenForRequests, Languages, Location } from '../src/Prereviewers/index.ts'
 import * as Prereviewers from '../src/Prereviewers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
