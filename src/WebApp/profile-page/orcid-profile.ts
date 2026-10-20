@@ -2,9 +2,13 @@ import { Effect, flow, identity, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import { type ClubName, Clubs } from '../../Clubs/index.ts'
-import { maybeGetLanguages } from '../../languages.ts'
 import { maybeGetLocation } from '../../location.ts'
-import { maybeGetAvatar, maybeGetCareerStage, maybeIsOpenForRequests } from '../../Prereviewers/index.ts'
+import {
+  maybeGetAvatar,
+  maybeGetCareerStage,
+  maybeGetLanguages,
+  maybeIsOpenForRequests,
+} from '../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { type SlackUser, maybeGetSlackUser } from '../../slack-user.ts'

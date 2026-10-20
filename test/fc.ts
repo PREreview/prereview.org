@@ -52,7 +52,6 @@ import type { CrossrefPreprintId } from '../src/ExternalInteractions/PreprintDat
 import type { DatacitePreprintId } from '../src/ExternalInteractions/PreprintData/Datacite/PreprintId.ts'
 import type { JapanLinkCenterPreprintId } from '../src/ExternalInteractions/PreprintData/JapanLinkCenter/PreprintId.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
-import type { Languages } from '../src/languages.ts'
 import {
   type SupportedLocale,
   SupportedLocales,
@@ -115,7 +114,7 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
-import type { CareerStage, IsOpenForRequests } from '../src/Prereviewers/index.ts'
+import type { CareerStage, IsOpenForRequests, Languages } from '../src/Prereviewers/index.ts'
 import * as Prereviewers from '../src/Prereviewers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
