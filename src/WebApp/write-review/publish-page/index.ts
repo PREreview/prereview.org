@@ -1,4 +1,4 @@
-import { Effect, Match, Option, flow, pipe } from 'effect'
+import { Effect, Match, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -17,11 +17,10 @@ import {
   type FormStoreEnv,
   type NewPrereview,
   type PublishPrereviewEnv,
+  completedFormToNewPreview,
   deleteForm,
   getForm,
-  guessLanguage,
   nextFormPath,
-  renderReview,
   saveForm,
 } from '../../../PreprintReviews/index.ts'
 import {
@@ -214,33 +213,7 @@ const handlePublishForm = ({
 }) =>
   pipe(
     deleteForm(user.orcid, preprint.id),
-    RTE.chainW(() =>
-      pipe(
-        RTE.Do,
-        RTE.apS('language', EffectToFpts.toReaderTaskEither(guessLanguage(form))),
-        RTE.apSW(
-          'persona',
-          EffectToFpts.toReaderTaskEither(Prereviewers.getPersona({ orcidId: user.orcid, persona: form.persona })),
-        ),
-        RTE.apSW('pseudonymPersona', EffectToFpts.toReaderTaskEither(Prereviewers.getPseudonymPersona(user.orcid))),
-        RTE.map(({ language, persona, pseudonymPersona }) => ({
-          conduct: form.conduct,
-          otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
-          club: Option.fromNullable(form.club),
-          language,
-          license: match(form.generativeAiIdeas)
-            .with('yes', () => 'CC0-1.0' as const)
-            .with('no', () => 'CC-BY-4.0' as const)
-            .exhaustive(),
-          locale,
-          persona,
-          preprint,
-          review: renderReview(form, locale),
-          structured: form.reviewType === 'questions',
-          user: { orcidId: user.orcid, pseudonym: pseudonymPersona.pseudonym },
-        })),
-      ),
-    ),
+    RTE.chainW(() => completedFormToNewPreview({ form, preprint, orcidId: user.orcid })),
     RTE.chainW(
       flow(
         publishPrereview,

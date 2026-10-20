@@ -7,7 +7,7 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { createAuthorInvite } from '../author-invite.ts'
 import { Clubs } from '../Clubs/index.ts'
-import type { Locale } from '../Context.js'
+import { Locale } from '../Context.ts'
 import { Email, ZenodoRecords } from '../ExternalInteractions/index.ts'
 import { fixHeadingLevels, html, type Html } from '../html.ts'
 import { translate, type SupportedLocale } from '../locales/index.ts'
@@ -19,7 +19,7 @@ import type { EmailAddress } from '../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../types/index.ts'
 import type { Name } from '../types/Name.ts'
 import type { Uuid } from '../types/Uuid.ts'
-import { getCompetingInterests, getUseOfAi, type CompletedForm } from './legacy-completed-form.ts'
+import { getCompetingInterests, getUseOfAi, guessLanguage, type CompletedForm } from './legacy-completed-form.ts'
 import {
   NotifyCommunitySlackOfPreprintReview,
   NotifyPreprintServerOfReview,
@@ -43,6 +43,42 @@ export interface NewPrereview {
 export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
+
+export const completedFormToNewPreview = ({
+  form,
+  orcidId,
+  preprint,
+}: {
+  form: CompletedForm
+  orcidId: OrcidId.OrcidId
+  preprint: PreprintTitle
+}) =>
+  pipe(
+    RTE.Do,
+    RTE.apS('locale', EffectToFpts.toReaderTaskEither(Locale)),
+    RTE.apS('language', EffectToFpts.toReaderTaskEither(guessLanguage(form))),
+    RTE.apSW('persona', EffectToFpts.toReaderTaskEither(Prereviewers.getPersona({ orcidId, persona: form.persona }))),
+    RTE.apSW('pseudonymPersona', EffectToFpts.toReaderTaskEither(Prereviewers.getPseudonymPersona(orcidId))),
+    RTE.map(
+      ({ locale, language, persona, pseudonymPersona }) =>
+        ({
+          conduct: form.conduct,
+          otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
+          club: Option.fromNullable(form.club),
+          language,
+          license: match(form.generativeAiIdeas)
+            .with('yes', () => 'CC0-1.0' as const)
+            .with('no', () => 'CC-BY-4.0' as const)
+            .exhaustive(),
+          locale,
+          persona,
+          preprint,
+          review: renderReview(form, locale),
+          structured: form.reviewType === 'questions',
+          user: { orcidId, pseudonym: pseudonymPersona.pseudonym },
+        }) satisfies NewPrereview,
+    ),
+  )
 
 export const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
@@ -111,7 +147,7 @@ export const publishPrereview = (newPrereview: NewPrereview) =>
     ),
   )
 
-export function renderReview(form: CompletedForm, locale: SupportedLocale) {
+function renderReview(form: CompletedForm, locale: SupportedLocale) {
   const t = translate(locale, 'write-review')
 
   return html`${match(form)
