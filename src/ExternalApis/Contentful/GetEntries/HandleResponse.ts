@@ -21,7 +21,7 @@ const ResolveEntries = Effect.fnUntraced(function* (response: HttpClientResponse
 export const HandleResponse = flow(
   HttpClientResponse.filterStatus(Equal.equals(StatusCodes.OK)),
   Effect.andThen(ResolveEntries),
-  Effect.andThen(safeStableStringify),
+  Effect.andThen(safeStableStringify.configure({ circularValue: '[Circular]' })),
   Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
   Effect.catchTag('ResponseError', 'ParseError', error => new ContentfulIsUnavailable({ cause: error })),
 )
