@@ -6,6 +6,7 @@
   ],
   "plugins": ["stylelint-plugin-logical-css"],
   "rules": {
+    "at-rule-prelude-no-invalid": [true, { "ignoreAtRules": ["custom-selector"] }],
     "custom-property-pattern": "^[a-z]{1,}(-[a-z0-9]+|-{1,2}[0-9][a-z0-9]*)*$",
     "declaration-block-no-redundant-longhand-properties": [true, { "ignoreShorthands": ["gap"] }],
     "import-notation": "url",
