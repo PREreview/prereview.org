@@ -248,7 +248,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
-  async ({ browserName, context, javaScriptEnabled, page }, testInfo) => {
+  async ({ context, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
@@ -285,8 +285,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Control+V')
 
     if (javaScriptEnabled) {
-      testInfo.fail(browserName === 'webkit')
-
       await expect(page.getByLabel('Paste your PREreview').getByRole('heading', { level: 1 })).toHaveText('Lorem ipsum')
       await expect(page.getByLabel('Paste your PREreview').getByRole('listitem')).toHaveText([
         'Sed id nibh in felis porta ultricies.',
