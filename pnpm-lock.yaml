@@ -280,8 +280,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       oauth2-mock-server:
-        specifier: ^9.2.0
-        version: 9.2.0
+        specifier: ^9.3.0
+        version: 9.3.0
       oxlint:
         specifier: ^1.88.0
         version: 1.88.0(oxlint-tsgolint@7.0.2004)
@@ -3532,8 +3532,8 @@ packages:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
-  jose@6.2.11:
-    resolution: {integrity: sha512-A5NPn7g8EAzGU3IzRs+Yiq8K5n3ypYS75M5+KKiVHdUexfpWK1kP4ZMq7QnTGDoMj6TJ1dtcEJjW60yZDXS4hg==}
+  jose@6.2.12:
+    resolution: {integrity: sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==}
 
   js-base64@3.9.1:
     resolution: {integrity: sha512-U73qptcvf/HIOauFOmqT3a0mDUp0MYlfd15oqoe9kqZt5XhiXVb+HG09sLvI9PQ9tZIBFS4nlErai8zbWazP0g==}
@@ -3994,8 +3994,8 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
-  oauth2-mock-server@9.2.0:
-    resolution: {integrity: sha512-LKxnpwOaqmiKIenr3Uweppy4vrsWt8fCA1il7VQEh0QJoCqb94nWBjjeUoMyHvMLnWoHKrx4T8EmTt0aBrE3TA==}
+  oauth2-mock-server@9.3.0:
+    resolution: {integrity: sha512-nqdjiAfDSWWWKrLhD7DSCgNUkX35z2+h1oRHEgNdZqFwHXDNZp98RVJ7Cs45u3GPplbazTeGoBsO8SPfv5GOIw==}
     engines: {node: ^22.12 || ^24 || ^26}
     hasBin: true
 
@@ -8462,7 +8462,7 @@ snapshots:
   jiti@2.6.1:
     optional: true
 
-  jose@6.2.11: {}
+  jose@6.2.12: {}
 
   js-base64@3.9.1: {}
 
@@ -9234,10 +9234,10 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  oauth2-mock-server@9.2.0:
+  oauth2-mock-server@9.3.0:
     dependencies:
       basic-auth: 3.0.0
-      jose: 6.2.11
+      jose: 6.2.12
 
   object-inspect@1.13.4: {}
 
