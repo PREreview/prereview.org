@@ -1,5 +1,4 @@
 import { ParseResult, pipe, Schema } from 'effect'
-// eslint-disable-next-line import/no-internal-modules
 import topics from './data/topics.json' with { type: 'json' }
 import type { DomainId } from './domain.ts'
 import type { FieldId } from './field.ts'

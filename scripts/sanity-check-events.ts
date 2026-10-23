@@ -1,4 +1,3 @@
-/* eslint-disable import/no-internal-modules */
 import { SqlClient } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {

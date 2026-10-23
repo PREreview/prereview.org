@@ -63,7 +63,7 @@ export default defineConfig(({ mode }) => ({
           rtlPrefix: ':where([dir="rtl"])',
           runOnExit: true,
         }),
-        // eslint-disable-next-line no-comments/disallowComments
+        // oxlint-disable-next-line no-comments/disallowComments
         // @ts-expect-error https://github.com/FullHuman/purgecss/issues/1263
         postcssPurgecss({
           content: [...globSync('assets/**/*.ts'), ...globSync('src/**/*.ts')],

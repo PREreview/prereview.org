@@ -18,7 +18,7 @@ import * as StatusCodes from '../StatusCodes.ts'
 import { Uuid } from '../types/index.ts'
 import { UserOnboardingService } from '../user-onboarding.ts'
 import { EnsureUserIsLoggedIn, LoggedInUser, SessionId, UserSchema } from '../user.ts'
-import { FlashMessageSchema } from '../WebApp/Response/index.ts' // eslint-disable-line import/no-internal-modules
+import { FlashMessageSchema } from '../WebApp/Response/index.ts'
 import { detectLocale } from './DetectLocale.ts'
 import { forceLogIn } from './ForceLogIn.ts'
 import * as LocaleCookie from './LocaleCookie.ts'

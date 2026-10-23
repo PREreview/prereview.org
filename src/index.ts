@@ -44,7 +44,7 @@ import { Slug } from './types/Slug.ts'
 import { Uuid } from './types/Uuid.ts'
 import { isPrereviewTeam, PrereviewTeam } from './user.ts'
 import * as WebApp from './WebApp/index.ts'
-import { IsUserBlocked } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
+import { IsUserBlocked } from './WebApp/log-in/index.ts'
 
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({

@@ -10,16 +10,16 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
   ? Effect.Effect<R, UnableToQuery | Exclude<E | L, UnexpectedSequenceOfEvents>>
   : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export type FromOnDemandQuery<T extends OnDemandQuery<ReadonlyArray<any>, any, any>> = [T] extends [
   OnDemandQuery<infer Input, infer Result, infer Error>,
 ]
   ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
   : never
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export type FromStatefulQuery<T extends StatefulQuery<ReadonlyArray<any>, any, any, any>> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
   StatefulQuery<infer Input, infer Result, infer Error, any>,
 ]
   ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
