@@ -27,7 +27,7 @@ export class DynamicEmbedder extends Context.Tag('DynamicEmbedder')<
   )
 }
 
-export const ListOfActiveClubs = Effect.gen(function* () {
+const ListOfActiveClubs = Effect.gen(function* () {
   const locale = yield* Locale
   const clubs = yield* Clubs
 
@@ -52,7 +52,7 @@ export const ListOfActiveClubs = Effect.gen(function* () {
   `
 })
 
-export const ListOfInactiveClubs = Effect.gen(function* () {
+const ListOfInactiveClubs = Effect.gen(function* () {
   const locale = yield* Locale
   const clubs = yield* Clubs
 
