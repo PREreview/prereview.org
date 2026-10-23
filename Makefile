@@ -60,10 +60,6 @@ format: node_modules
 fix-format: node_modules
 	npx prettier --write --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
-.PHONY: lint-ts-eslint
-lint-ts-eslint: node_modules src/manifest.json
-	npx eslint --cache --cache-location ".cache/eslint/" --max-warnings 0
-
 .PHONY: lint-ts
 lint-ts: node_modules src/manifest.json
 	npx oxlint

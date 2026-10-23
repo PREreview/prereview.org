@@ -64,7 +64,6 @@
     "@effect/language-service": "^0.87.3",
     "@effect/sql-libsql": "^0.42.0",
     "@effect/vitest": "^0.30.0",
-    "@eslint/js": "^10.0.1",
     "@fast-check/vitest": "^0.5.0",
     "@fullhuman/postcss-purgecss": "^8.0.0",
     "@ibm/plex-mono": "^2.5.0",
@@ -86,10 +85,6 @@
     "@types/turndown": "^5.0.6",
     "@typescript/analyze-trace": "^0.11.1",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
-    "eslint": "^10.13.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-import-resolver-typescript": "^4.4.5",
-    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-no-comments": "^1.2.1",
     "eslint-plugin-wc": "^3.1.0",
     "fast-check": "^3.23.2",
@@ -117,7 +112,6 @@
     "stylelint-plugin-logical-css": "^2.1.0",
     "ts-deepmerge": "^8.0.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.3"
   }

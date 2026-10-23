@@ -241,9 +241,6 @@ jobs:
           path: assets/locales
 
       - name: 'Run the linter'
-        run: npx eslint --max-warnings 0
-
-      - name: 'Run the new linter'
         run: npx oxlint
 
   test:
