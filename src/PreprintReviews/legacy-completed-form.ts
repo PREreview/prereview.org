@@ -227,7 +227,7 @@ export const CompletedFormC = pipe(
       }),
     }),
   ),
-) satisfies C.Codec<Form, Form, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+) satisfies C.Codec<Form, Form, any> // oxlint-disable-line typescript/no-explicit-any
 
 export const guessLanguage = (form: CompletedForm) =>
   match(form)

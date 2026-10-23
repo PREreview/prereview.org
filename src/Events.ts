@@ -15,21 +15,21 @@ import {
   pipe,
 } from 'effect'
 // oxlint-disable  module-boundaries/use-index
-import * as AuthorInviteEvents from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
-import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
-import * as ContactEmailAddressesEvents from './ContactEmailAddresses/Events.ts' // eslint-disable-line import/no-internal-modules
-import * as DatasetReviewEvents from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
-import * as PreprintReviews from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
-import * as PrereviewerEvents from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
-import * as ReviewRequestsEvents from './ReviewRequests/Events.ts' // eslint-disable-line import/no-internal-modules
+import * as AuthorInviteEvents from './AuthorInvites/Events.ts'
+import * as CommentEvents from './Comments/Events.ts'
+import * as ContactEmailAddressesEvents from './ContactEmailAddresses/Events.ts'
+import * as DatasetReviewEvents from './DatasetReviews/Events.ts'
+import * as PreprintReviews from './PreprintReviews/Events.ts'
+import * as PrereviewerEvents from './Prereviewers/Events.ts'
+import * as ReviewRequestsEvents from './ReviewRequests/Events.ts'
 
-export * from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
-export * from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
-export * from './ContactEmailAddresses/Events.ts' // eslint-disable-line import/no-internal-modules
-export * from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
-export * from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
-export * from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
-export * from './ReviewRequests/Events.ts' // eslint-disable-line import/no-internal-modules
+export * from './AuthorInvites/Events.ts'
+export * from './Comments/Events.ts'
+export * from './ContactEmailAddresses/Events.ts'
+export * from './DatasetReviews/Events.ts'
+export * from './PreprintReviews/Events.ts'
+export * from './Prereviewers/Events.ts'
+export * from './ReviewRequests/Events.ts'
 
 export type Event = typeof Event.Type
 

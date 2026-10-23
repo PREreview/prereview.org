@@ -104,7 +104,7 @@ export const DataRouter = pipe(
         () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
       ),
       Effect.catchIf(
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        // oxlint-disable-next-line typescript/no-unnecessary-condition
         (error): error is 'forbidden' => error === 'forbidden',
         () => HttpServerResponse.empty({ status: StatusCodes.Forbidden }),
       ),

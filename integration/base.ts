@@ -2602,7 +2602,7 @@ export const usePostgresDB: Fixtures<{ postgresUrl: URL }, NoFixtures, Pick<AppF
 
         yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable-next-line typescript/no-non-null-assertion
         return Url.setPathname(new URL(Redacted.value(pgClient.config.url!)), databaseName)
       }),
       Effect.provide(PgClient.layerConfig({ url: Config.redacted(Config.string('POSTGRES_URL')) })),

@@ -55,7 +55,7 @@ import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
-import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
+import * as ReviewPage from './WebApp/review-page/index.ts'
 
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,

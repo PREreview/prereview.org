@@ -120,7 +120,7 @@ describe('writeReviewPublish', () => {
         })
       }).pipe(
         Effect.provide([
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+          // oxlint-disable-next-line typescript/strict-boolean-expressions
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.succeed(contactEmailAddress) }),
           FeatureFlags.layer({}),
@@ -175,7 +175,7 @@ describe('writeReviewPublish', () => {
         })
       }).pipe(
         Effect.provide([
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+          // oxlint-disable-next-line typescript/strict-boolean-expressions
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
           Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new ContactEmailAddressIsNotFound() }),
           FeatureFlags.layer({}),

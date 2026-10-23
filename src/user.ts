@@ -1,4 +1,4 @@
-/* eslint-disable no-comments/disallowComments */
+/* oxlint-disable no-comments/disallowComments */
 import { Context, Data, Effect, flow, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as C from 'io-ts/lib/Codec.js'

@@ -3,7 +3,7 @@ import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../Events.ts'
 import * as EventStore from '../EventStore.ts'
 import { UnableToQuery } from '../Queries.ts'
-import * as ReviewPage from '../WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
+import * as ReviewPage from '../WebApp/review-page/index.ts'
 import {
   UnableToHandleCommand,
   type CreateRecordOnZenodoForComment,

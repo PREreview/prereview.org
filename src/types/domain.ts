@@ -1,5 +1,4 @@
 import { ParseResult, pipe, Schema } from 'effect'
-// eslint-disable-next-line import/no-internal-modules
 import domains from './data/domains.json' with { type: 'json' }
 
 export type DomainId = keyof typeof domains

@@ -2,12 +2,12 @@ import { Context, Data, Effect, Option, pipe, Scope, type Either } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export type FromCommand<T extends Command<any, any, any>> = [T] extends [Command<infer Input, any, infer Error>]
   ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
   : never
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export type FromStatelessCommand<T extends StatelessCommand<any>> = [T] extends [StatelessCommand<infer Input>]
   ? (...input: Input) => Effect.Effect<void, UnableToHandleCommand>
   : never

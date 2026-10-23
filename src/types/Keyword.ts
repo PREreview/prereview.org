@@ -1,6 +1,5 @@
 import { ParseResult, pipe, Schema } from 'effect'
 import crypto from 'node:crypto'
-// eslint-disable-next-line import/no-internal-modules
 import keywords from './data/keywords.json' with { type: 'json' }
 
 export type KeywordId = keyof typeof keywords

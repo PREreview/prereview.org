@@ -1,7 +1,6 @@
 import { ParseResult, pipe, Schema } from 'effect'
 import type { Html } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-// eslint-disable-next-line import/no-internal-modules
 import subfields from './data/subfields.json' with { type: 'json' }
 import type { DomainId } from './domain.ts'
 import type { FieldId } from './field.ts'

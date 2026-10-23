@@ -2,7 +2,7 @@ import { Context, type HashSet, type Redacted } from 'effect'
 import type * as Keyv from './keyv.ts'
 import type { SupportedLocale, UserSelectableLocale } from './locales/index.ts'
 import type { NonEmptyString } from './types/index.ts'
-import type { FlashMessageSchema } from './WebApp/Response/index.ts' // eslint-disable-line import/no-internal-modules
+import type { FlashMessageSchema } from './WebApp/Response/index.ts'
 
 export class AllowSiteCrawlers extends Context.Tag('AllowSiteCrawlers')<AllowSiteCrawlers, boolean>() {}
 
