@@ -228,9 +228,6 @@ importers:
       '@types/node':
         specifier: ^24.19.2
         version: 24.19.2
-      '@types/rtl-detect':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@types/sanitize-html':
         specifier: ^2.16.2
         version: 2.16.2
@@ -1976,9 +1973,6 @@ packages:
 
   '@types/relateurl@0.2.33':
     resolution: {integrity: sha512-bTQCKsVbIdzLqZhLkF5fcJQreE4y1ro4DIyVrlDNSCJRRwHhB8Z+4zXXa8jN6eDvc2HbRsEYgbvrnGvi54EpSw==}
-
-  '@types/rtl-detect@1.0.3':
-    resolution: {integrity: sha512-qpstuHivwg/HoXxRrBo5/r/OVx5M2SkqJpVu2haasdLctt+jMGHWjqdbI0LL7Rk2wRmN/UHdHK4JZg9RUMcvKA==}
 
   '@types/sanitize-html@2.16.2':
     resolution: {integrity: sha512-kuAbgDCFv418flrp3z4o/4ufLA/5ovmXRH0L419iZCPGO7w00znjeDI5Wy/KZWNIBpDQc7hucCK+J5almB6FyA==}
@@ -6088,8 +6082,6 @@ snapshots:
   '@types/pegjs@0.10.6': {}
 
   '@types/relateurl@0.2.33': {}
-
-  '@types/rtl-detect@1.0.3': {}
 
   '@types/sanitize-html@2.16.2':
     dependencies:
