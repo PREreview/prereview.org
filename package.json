@@ -102,7 +102,7 @@
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-sh": "^0.20.2",
     "prettier-plugin-sql": "^0.20.0",
-    "prettier-plugin-toml": "^4.0.0",
+    "prettier-plugin-toml": "^4.1.0",
     "remixicon": "^4.9.1",
     "stylelint": "^17.16.0",
     "stylelint-config-property-sort-order-smacss": "^11.2.0",
