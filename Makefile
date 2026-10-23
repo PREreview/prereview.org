@@ -78,11 +78,11 @@ smoketest:
 
 .PHONY: typecheck
 typecheck: node_modules src/manifest.json
-	npx tsgo --incremental --tsBuildInfoFile ".cache/tsc"
+	npx tsc --incremental --tsBuildInfoFile ".cache/tsc"
 
 .PHONY: typecheck-watch
 typecheck-watch: node_modules src/manifest.json
-	npx tsgo --watch --incremental --tsBuildInfoFile ".cache/tsc"
+	npx tsc --watch --incremental --tsBuildInfoFile ".cache/tsc"
 
 .PHONY: typecheck-analyze
 typecheck-analyze: node_modules src/manifest.json
