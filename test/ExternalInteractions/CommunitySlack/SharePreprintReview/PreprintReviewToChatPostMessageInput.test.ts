@@ -1,5 +1,4 @@
-import { expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { expect, test } from '@effect/vitest'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReview/PreprintReviewToChatPostMessageInput.ts'
 

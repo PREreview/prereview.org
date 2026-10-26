@@ -1,5 +1,4 @@
-import { expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { expect, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'

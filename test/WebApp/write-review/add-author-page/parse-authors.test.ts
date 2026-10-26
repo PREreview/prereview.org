@@ -1,5 +1,4 @@
-import { describe, expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { describe, expect, test } from '@effect/vitest'
 import { Option } from 'effect'
 import * as _ from '../../../../src/WebApp/write-review/add-author-page/parse-authors.ts'
 

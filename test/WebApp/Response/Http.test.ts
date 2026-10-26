@@ -1,5 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Array, Either, Schema } from 'effect'
 import * as _ from '../../../src/WebApp/Response/Http.ts'
 import * as fc from '../../fc.ts'

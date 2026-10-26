@@ -1,5 +1,4 @@
-import { expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { expect, test } from '@effect/vitest'
 import { Either, Option } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetListOfInvitationsToAppearOnADatasetReview.ts'

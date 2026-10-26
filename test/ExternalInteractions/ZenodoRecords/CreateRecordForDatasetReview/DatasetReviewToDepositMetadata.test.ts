@@ -1,5 +1,4 @@
-import { expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { expect, test } from '@effect/vitest'
 import { Option } from 'effect'
 import * as Datasets from '../../../../src/Datasets/index.ts'
 import type { Zenodo } from '../../../../src/ExternalApis/index.ts'

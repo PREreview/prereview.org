@@ -35,10 +35,6 @@ updates:
           - 'effect'
         exclude-patterns:
           - '@effect/language-service'
-      fast-check:
-        patterns:
-          - '@fast-check/*'
-          - 'fast-check'
       ibm-plex:
         patterns:
           - '@ibm/plex-*'
