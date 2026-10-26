@@ -5,7 +5,7 @@ export class ShouldUpdateCommunitySlack extends Context.Tag('ShouldUpdateCommuni
   boolean
 >() {}
 
-export const shouldUpdateCommunitySlack = Effect.andThen(ShouldUpdateCommunitySlack, identity)
+export const shouldUpdateCommunitySlack = Effect.map(ShouldUpdateCommunitySlack, identity)
 
 export const layerShouldUpdateCommunitySlack = (
   shouldUpdateCommunitySlack: typeof ShouldUpdateCommunitySlack.Service,

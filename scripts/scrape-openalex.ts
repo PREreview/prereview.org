@@ -204,11 +204,11 @@ const GetDomains: Effect.Effect<
         }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(DomainSchema))),
       Effect.scoped,
-      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+      Effect.map(response => [response.results, response.meta.next_cursor]),
     ),
   ),
   Stream.runCollect,
-  Effect.andThen(Chunk.sortWith(domain => domain.id, Order.number)),
+  Effect.map(Chunk.sortWith(domain => domain.id, Order.number)),
 )
 
 const GetFields: Effect.Effect<
@@ -225,11 +225,11 @@ const GetFields: Effect.Effect<
         }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(FieldSchema))),
       Effect.scoped,
-      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+      Effect.map(response => [response.results, response.meta.next_cursor]),
     ),
   ),
   Stream.runCollect,
-  Effect.andThen(Chunk.sortWith(field => field.id, Order.number)),
+  Effect.map(Chunk.sortWith(field => field.id, Order.number)),
 )
 
 const GetSubfields: Effect.Effect<
@@ -246,11 +246,11 @@ const GetSubfields: Effect.Effect<
         }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(SubfieldSchema))),
       Effect.scoped,
-      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+      Effect.map(response => [response.results, response.meta.next_cursor]),
     ),
   ),
   Stream.runCollect,
-  Effect.andThen(Chunk.sortWith(subfield => subfield.id, Order.number)),
+  Effect.map(Chunk.sortWith(subfield => subfield.id, Order.number)),
 )
 
 const GetTopics: Effect.Effect<
@@ -267,11 +267,11 @@ const GetTopics: Effect.Effect<
         }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(TopicSchema))),
       Effect.scoped,
-      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+      Effect.map(response => [response.results, response.meta.next_cursor]),
     ),
   ),
   Stream.runCollect,
-  Effect.andThen(Chunk.sortWith(topic => topic.id, Order.number)),
+  Effect.map(Chunk.sortWith(topic => topic.id, Order.number)),
 )
 
 const GetKeywords: Effect.Effect<
@@ -288,11 +288,11 @@ const GetKeywords: Effect.Effect<
         }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(KeywordSchema))),
       Effect.scoped,
-      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+      Effect.map(response => [response.results, response.meta.next_cursor]),
     ),
   ),
   Stream.runCollect,
-  Effect.andThen(Chunk.sortWith(keyword => keyword.id, Order.string)),
+  Effect.map(Chunk.sortWith(keyword => keyword.id, Order.string)),
 )
 
 const WriteToFile = (filePath: string) => (content: string) =>
@@ -320,7 +320,7 @@ const FieldsToLocaleFile = flow(
     },
   })),
   Schema.encode(Schema.parseJson(LocaleFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('locales/en-US/fields.json')),
 )
 
@@ -341,7 +341,7 @@ const SubfieldsToLocaleFile = flow(
     },
   })),
   Schema.encode(Schema.parseJson(LocaleFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('locales/en-US/subfields.json')),
 )
 
@@ -351,7 +351,7 @@ const DomainsToTypesFile = flow(
     [domain.id]: { name: domain.display_name },
   })),
   Schema.encode(Schema.parseJson(DomainTypesFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/domains.json')),
 )
 
@@ -361,7 +361,7 @@ const FieldsToTypesFile = flow(
     [field.id]: { name: field.display_name, domain: field.domain.id },
   })),
   Schema.encode(Schema.parseJson(FieldTypesFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/fields.json')),
 )
 
@@ -371,7 +371,7 @@ const SubfieldsToTypesFile = flow(
     [subfield.id]: { name: subfield.display_name, domain: subfield.domain.id, field: subfield.field.id },
   })),
   Schema.encode(Schema.parseJson(SubfieldTypesFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/subfields.json')),
 )
 
@@ -386,7 +386,7 @@ const TopicsToTypesFile = flow(
     },
   })),
   Schema.encode(Schema.parseJson(TopicTypesFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/topics.json')),
 )
 
@@ -397,7 +397,7 @@ const KeywordsToTypesFile = flow(
   ]),
   Record.fromEntries,
   Schema.encode(Schema.parseJson(KeywordTypesFileSchema, { space: 2 })),
-  Effect.andThen(String.concat('\n')),
+  Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/keywords.json')),
 )
 
@@ -417,7 +417,7 @@ void pipe(
     pipe(
       Layer.effect(
         HttpClient.HttpClient,
-        Effect.andThen(
+        Effect.map(
           HttpClient.HttpClient,
           flow(
             HttpClient.mapRequest(

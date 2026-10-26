@@ -12,7 +12,7 @@ import { UnknownDatasetPage } from './UnknownDatasetPage.ts'
 import { UnsupportedDoiPage } from './UnsupportedDoiPage.ts'
 import { UnsupportedUrlPage } from './UnsupportedUrlPage.ts'
 
-export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.andThen(
+export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.map(
   Locale,
   locale => MakeResponse({ form: new ReviewADatasetForm.EmptyForm(), locale }),
 )

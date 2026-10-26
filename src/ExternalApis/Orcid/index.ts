@@ -20,7 +20,7 @@ export class Orcid extends Context.Tag('Orcid')<
 export const { getPersonalDetails } = Effect.serviceFunctions(Orcid)
 
 const make: Effect.Effect<typeof Orcid.Service, never, HttpClient.HttpClient | OrcidApi> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient | OrcidApi>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | OrcidApi>(), Context.omit(Scope.Scope))
 
   return {
     getPersonalDetails: flow(GetPersonalDetails, Effect.provide(context)),

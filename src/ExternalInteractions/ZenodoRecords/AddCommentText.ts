@@ -11,8 +11,8 @@ export const addCommentText = (
     HttpClient.get(commentWithoutText.textUrl),
     Effect.andThen(HttpClientResponse.filterStatusOk),
     Effect.andThen(response => response.text),
-    Effect.andThen(sanitizeHtml),
-    Effect.andThen(text => ({
+    Effect.map(sanitizeHtml),
+    Effect.map(text => ({
       ...commentWithoutText,
       text,
     })),

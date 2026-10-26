@@ -54,7 +54,7 @@ export const make: Effect.Effect<
   never,
   CommunitySlackChannelIds | LanguageModel.LanguageModel | PublicUrl.PublicUrl | Slack.Slack
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(
+  const context = yield* Effect.map(
     Effect.context<CommunitySlackChannelIds | LanguageModel.LanguageModel | PublicUrl.PublicUrl | Slack.Slack>(),
     Context.omit(Scope.Scope),
   )

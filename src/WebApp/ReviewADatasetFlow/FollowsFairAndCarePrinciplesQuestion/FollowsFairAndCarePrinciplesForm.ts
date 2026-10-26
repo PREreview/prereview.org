@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(FollowsFairAndCarePrinciplesFieldSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ followsFairAndCarePrinciples }) =>
         new CompletedForm({
           followsFairAndCarePrinciples,

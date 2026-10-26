@@ -18,7 +18,7 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
     Match.value(preprintId),
     Match.tag('PhilsciPreprintId', () => Effect.fail('no DOI available')),
     Match.orElse(preprintId => OpenAlex.getWork(preprintId.value)),
-    Effect.andThen(
+    Effect.map(
       work =>
         ({
           topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),

@@ -19,7 +19,7 @@ export class Datacite extends Context.Tag('Datacite')<
 export const { getRecord } = Effect.serviceFunctions(Datacite)
 
 const make: Effect.Effect<typeof Datacite.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     getRecord: flow(GetRecord, Effect.provide(context)),

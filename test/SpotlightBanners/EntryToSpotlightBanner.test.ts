@@ -73,7 +73,7 @@ it.effect.each<{
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
       Effect.andThen(Schema.decodeUnknown(Entries)),
-      Effect.andThen(Struct.get('items')),
+      Effect.map(Struct.get('items')),
       Effect.andThen(Array.get(index)),
       Effect.andThen(Schema.decodeUnknown(_.EntryToSpotlightBanner)),
     )
@@ -89,8 +89,8 @@ it.effect.each([['pages-assets']])("can't parse a record (%s)", ([response]) =>
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
       Effect.andThen(Schema.decodeUnknown(Entries)),
-      Effect.andThen(Struct.get('items')),
-      Effect.andThen(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
+      Effect.map(Struct.get('items')),
+      Effect.map(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
       Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
     )
 

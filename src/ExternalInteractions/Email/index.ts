@@ -56,7 +56,7 @@ export const {
 
 export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer | PublicUrl> = Effect.gen(
   function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<Nodemailer.Nodemailer | PublicUrl>(),
       Context.omit(Scope.Scope, Locale),
     )

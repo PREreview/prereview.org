@@ -108,7 +108,7 @@ const DataToRequestSchema = Schema.transformOrFail(
       Effect.gen(function* () {
         const server = yield* pipe(
           Preprints.getPreprintId(data.preprintId),
-          Effect.andThen(preprintIdToServer),
+          Effect.map(preprintIdToServer),
           Effect.catchTag('NotAPreprint', 'PreprintIsNotFound', () =>
             Effect.succeed('unable to determine server' as const),
           ),

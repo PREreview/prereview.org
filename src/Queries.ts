@@ -71,7 +71,7 @@ export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, 
 
         const events = yield* pipe(
           eventStore.query(filter),
-          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+          Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
         return yield* pipe(
@@ -131,7 +131,7 @@ export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Erro
 
         const events = yield* pipe(
           eventStore.query(filter),
-          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+          Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
         return yield* pipe(

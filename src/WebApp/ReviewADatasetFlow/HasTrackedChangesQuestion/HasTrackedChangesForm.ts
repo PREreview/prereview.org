@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(HasTrackedChangesFieldSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ hasTrackedChanges }) =>
         new CompletedForm({
           hasTrackedChanges,

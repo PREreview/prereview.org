@@ -5,7 +5,7 @@ import { rawHtml, sanitizeHtml } from '../../html.ts'
 export const getPage = (id: string) =>
   pipe(
     Ghost.getPage(id),
-    Effect.andThen(page =>
+    Effect.map(page =>
       rawHtml(
         sanitizeHtml(page.html.toString(), { trusted: true })
           .toString()

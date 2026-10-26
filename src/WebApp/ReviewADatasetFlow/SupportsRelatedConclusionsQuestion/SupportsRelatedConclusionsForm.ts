@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(SupportsRelatedConclusionsSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ supportsRelatedConclusions }) =>
         new CompletedForm({
           supportsRelatedConclusions,

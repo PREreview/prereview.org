@@ -25,7 +25,7 @@ export const AddInvitationToAppearPage = ({
       authorId: user.orcid,
     })
 
-    const otherAuthors = yield* Effect.andThen(
+    const otherAuthors = yield* Effect.map(
       DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId }),
       Array.isNonEmptyReadonlyArray,
     )
@@ -94,7 +94,7 @@ export const AddInvitationToAppearSubmission = ({
       ),
       InvalidForm: Effect.fnUntraced(
         function* (form: AddInvitationToAppearForm.InvalidForm) {
-          const otherAuthors = yield* Effect.andThen(
+          const otherAuthors = yield* Effect.map(
             DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId }),
             Array.isNonEmptyReadonlyArray,
           )

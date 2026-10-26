@@ -10,7 +10,7 @@ export class CookieSignature extends Context.Tag('CookieSignature')<
   }
 >() {}
 
-export const sign = (value: string) => Effect.andThen(CookieSignature, ({ sign }) => sign(value))
+export const sign = (value: string) => Effect.map(CookieSignature, ({ sign }) => sign(value))
 
 export const { unsign } = Effect.serviceFunctions(CookieSignature)
 

@@ -22,7 +22,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
         pipe(
           cache.get(keyForRequest(request)),
           Effect.fromNullable,
-          Effect.andThen(({ staleAt, response }) => ({
+          Effect.map(({ staleAt, response }) => ({
             staleAt,
             response: HttpClientResponse.fromWeb(
               request,
@@ -44,7 +44,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
             }
           }),
           Effect.andThen(Schema.encode(StoredResponseSchema)),
-          Effect.andThen(storedResponse => {
+          Effect.map(storedResponse => {
             cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
           }),
           Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),

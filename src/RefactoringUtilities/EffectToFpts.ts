@@ -31,7 +31,7 @@ export const toReaderTaskEitherK =
     toReaderTaskEither(f(...a))
 
 export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE.ReaderTaskEither<EffectEnv<R>, E, A> =>
-  toReaderTask(Effect.andThen(Effect.either(effect), either))
+  toReaderTask(Effect.map(Effect.either(effect), either))
 
 export const toTaskEitherK =
   <A extends ReadonlyArray<unknown>, B, E, R>(
@@ -44,7 +44,7 @@ export const toTaskEitherK =
 export const toTaskEither = <A, E, R>(
   effect: Effect.Effect<A, E, R>,
   runtime: Runtime.Runtime<R>,
-): TE.TaskEither<E, A> => toTask(Effect.andThen(Effect.either(effect), either), runtime)
+): TE.TaskEither<E, A> => toTask(Effect.map(Effect.either(effect), either), runtime)
 
 export const toReaderTaskK =
   <A extends ReadonlyArray<unknown>, B, R>(

@@ -9,6 +9,6 @@ export class FailedToGetSlackUser extends Data.TaggedError('FailedToGetSlackUser
 export const GetSlackUser = (userId: Slack.UserId) =>
   pipe(
     Slack.usersProfileGet(userId),
-    Effect.andThen(response => UsersProfileGetResponseToSlackUser(response, userId)),
+    Effect.map(response => UsersProfileGetResponseToSlackUser(response, userId)),
     Effect.catchAll(error => new FailedToGetSlackUser({ cause: error })),
   )

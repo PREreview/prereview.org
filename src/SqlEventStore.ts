@@ -28,10 +28,7 @@ export const make: Effect.Effect<
   SqlError.SqlError,
   Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(
-    Effect.context<SensitiveDataStore.SensitiveDataStore>(),
-    Context.omit(Scope.Scope),
-  )
+  const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
 
   const sql = yield* SqlClient.SqlClient
   const generateUuid = (yield* Uuid.GenerateUuid).v4()

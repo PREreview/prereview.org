@@ -17,7 +17,7 @@ export class Contentful extends Context.Tag('Contentful')<
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const context = yield* Effect.andThen(
+      const context = yield* Effect.map(
         Effect.context<ContentfulConfig | HttpClient.HttpClient>(),
         Context.omit(Scope.Scope),
       )

@@ -10,4 +10,4 @@ export class DetectLanguageApi extends Context.Tag('DetectLanguageApi')<
 export const layerApi = (options: typeof DetectLanguageApi.Service) => Layer.succeed(DetectLanguageApi, options)
 
 export const layerApiConfig = (options: Config.Config.Wrap<Parameters<typeof layerApi>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerApi))
+  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layerApi))

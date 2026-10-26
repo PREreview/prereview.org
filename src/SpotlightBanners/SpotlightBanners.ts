@@ -24,7 +24,7 @@ export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const context = yield* Effect.andThen(Effect.context<Contentful>(), Context.omit(Scope.Scope))
+      const context = yield* Effect.map(Effect.context<Contentful>(), Context.omit(Scope.Scope))
 
       return {
         getCurrentBanner: Effect.provide(GetCurrentBanner, context),

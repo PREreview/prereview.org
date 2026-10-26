@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(IsErrorFreeSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ isErrorFree }) =>
         new CompletedForm({
           isErrorFree,

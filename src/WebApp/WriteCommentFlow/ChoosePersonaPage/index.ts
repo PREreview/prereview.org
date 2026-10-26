@@ -37,7 +37,7 @@ export const ChoosePersonaPage = ({
     return yield* pipe(
       Match.value(comment),
       Match.tag('CommentInProgress', comment =>
-        Effect.andThen(
+        Effect.map(
           Effect.all(
             {
               publicPersona: Prereviewers.getPublicPersona(user.orcid),
@@ -56,7 +56,7 @@ export const ChoosePersonaPage = ({
         ),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
-        Effect.andThen(
+        Effect.map(
           Effect.all(
             {
               publicPersona: Prereviewers.getPublicPersona(user.orcid),
@@ -146,7 +146,7 @@ export const ChoosePersonaSubmission = ({
               }),
             ),
             Match.tag('InvalidForm', form =>
-              Effect.andThen(
+              Effect.map(
                 Effect.all(
                   {
                     publicPersona: Prereviewers.getPublicPersona(user.orcid),

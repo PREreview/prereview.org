@@ -39,4 +39,4 @@ export const optionsLayer = (options: typeof TemplatePageOptions.Service): Layer
   Layer.succeed(TemplatePageOptions, options)
 
 export const optionsLayerConfig = (options: Config.Config.Wrap<Parameters<typeof optionsLayer>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), optionsLayer))
+  Layer.unwrapEffect(Effect.map(Config.unwrap(options), optionsLayer))

@@ -10,7 +10,7 @@ import { getPreprintFromPhilsci } from './Philsci/index.ts'
 export const layer = Layer.effect(
   Preprints.Preprints,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<
         | Crossref.Crossref
         | Datacite.Datacite

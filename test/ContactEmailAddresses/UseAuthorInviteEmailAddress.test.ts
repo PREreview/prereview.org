@@ -104,8 +104,8 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ReadonlyArray<Eve
     )
     const actualEvents = yield* pipe(
       eventStore.all,
-      Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-      Effect.andThen(Array.map(Struct.get('_tag'))),
+      Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+      Effect.map(Array.map(Struct.get('_tag'))),
     )
 
     expect(actualReturn).toStrictEqual(expectedReturn)

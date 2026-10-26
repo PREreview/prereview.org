@@ -19,6 +19,6 @@ export const getDoiForPrereview = (prereviewId: number) =>
       HttpClientRequest.bearerToken(zenodoApi.key),
       HttpClient.execute,
       Effect.andThen(HttpClientResponse.schemaBodyJson(RecordSchema)),
-      Effect.andThen(record => record.metadata.doi),
+      Effect.map(record => record.metadata.doi),
     )
   })

@@ -96,8 +96,8 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, Readonly
     )
     const actualEvents = yield* pipe(
       Option.match(lastKnownPosition, { onNone: () => eventStore.all, onSome: eventStore.since }),
-      Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-      Effect.andThen(Array.map(Struct.get('_tag'))),
+      Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+      Effect.map(Array.map(Struct.get('_tag'))),
     )
 
     expect(actualReturn).toStrictEqual(expectedReturn)

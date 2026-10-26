@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(IsDetailedEnoughSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ isDetailedEnough }) =>
         new CompletedForm({
           isDetailedEnough,

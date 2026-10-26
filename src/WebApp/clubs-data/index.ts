@@ -19,7 +19,7 @@ const getClubs: Effect.Effect<Array.NonEmptyReadonlyArray<Club>, never, Clubs> =
 
   const clubsList = yield* pipe(
     clubs.listClubs,
-    Effect.andThen(Array.map(({ id }) => clubs.getClubDetails(id))),
+    Effect.map(Array.map(({ id }) => clubs.getClubDetails(id))),
     Effect.andThen(Effect.allWith({ concurrency: 'inherit' })),
   )
 

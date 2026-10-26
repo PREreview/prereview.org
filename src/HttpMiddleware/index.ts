@@ -226,7 +226,7 @@ export const getLocale = HttpMiddleware.make(app =>
 
     const localeFromPath = yield* pipe(
       HttpServerRequest.HttpServerRequest,
-      Effect.andThen(request => request.url),
+      Effect.map(request => request.url),
       Effect.andThen(LocaleInPath.getLocaleFromPath),
       Effect.flatten,
       Effect.orElseSucceed(() => undefined),
@@ -237,7 +237,7 @@ export const getLocale = HttpMiddleware.make(app =>
       return yield* pipe(response, LocaleCookie.setLocaleCookie(localeFromPath))
     }
 
-    const locale = yield* Effect.andThen(LocaleCookie.getLocaleFromCookie, Option.getOrUndefined)
+    const locale = yield* Effect.map(LocaleCookie.getLocaleFromCookie, Option.getOrUndefined)
 
     if (typeof locale === 'string') {
       return yield* Effect.provideService(app, Locale, locale)

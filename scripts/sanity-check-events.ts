@@ -286,7 +286,7 @@ const program = pipe(
   ),
   Effect.andThen(Schema.decodeUnknown(Schema.Array(EventRow))),
   Effect.tap(rows => Console.log(`Loaded ${rows.length} events`)),
-  Effect.andThen(rows => Array.map(rows, (row, i) => sanityCheck(Array.take(rows, i + 1)))),
+  Effect.map(rows => Array.map(rows, (row, i) => sanityCheck(Array.take(rows, i + 1)))),
   Effect.andThen(results =>
     Effect.gen(function* () {
       const failures = Array.flatten(Array.getLefts(results))

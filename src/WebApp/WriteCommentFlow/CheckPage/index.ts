@@ -36,7 +36,7 @@ export const CheckPage = ({
       Match.value(comment),
       Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', comment =>
-        Effect.andThen(Prereviewers.getPersona({ orcidId: user.orcid, persona: comment.persona }), persona =>
+        Effect.map(Prereviewers.getPersona({ orcidId: user.orcid, persona: comment.persona }), persona =>
           MakeResponse({
             competingInterests: comment.competingInterests,
             comment: comment.comment,

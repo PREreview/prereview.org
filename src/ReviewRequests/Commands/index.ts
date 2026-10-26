@@ -57,7 +57,7 @@ export const {
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
       Filter extends Events.EventFilter,
@@ -79,7 +79,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
 
           const { events, lastKnownPosition } = yield* pipe(
             EventStore.query(filter),
-            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
+            Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
           )
 
           yield* pipe(

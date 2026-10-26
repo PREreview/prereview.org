@@ -10,7 +10,7 @@ export const getGhostIdAndLocaleForPage = (
 ): Effect.Effect<{ id: string; locale: SupportedLocale }, never, Locale> =>
   pipe(
     Effect.Do,
-    Effect.bind('locale', () => Effect.andThen(Locale, locale => (locale in pageIds[page] ? locale : 'en-US'))),
+    Effect.bind('locale', () => Effect.map(Locale, locale => (locale in pageIds[page] ? locale : 'en-US'))),
     Effect.let('id', ({ locale }) => pageIds[page][locale as never]),
   )
 

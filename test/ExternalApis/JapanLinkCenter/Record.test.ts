@@ -267,7 +267,7 @@ describe('GetRecord', () => {
 
 const stubbedClient = (f: (request: HttpClientRequest.HttpClientRequest) => Response) =>
   HttpClient.makeWith<never, never, never, never>(
-    Effect.andThen(request => HttpClientResponse.fromWeb(request, f(request))),
+    Effect.map(request => HttpClientResponse.fromWeb(request, f(request))),
     Effect.succeed,
   )
 

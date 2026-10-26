@@ -32,7 +32,7 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
 export const layer = Layer.effect(
   ContactEmailAddresses,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid | EventStore>(),
       Context.omit(Scope.Scope),
     )

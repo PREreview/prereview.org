@@ -69,7 +69,7 @@ export const { getForClub, getForPreprint, getForProfile, getForUser, getPrerevi
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<
         Clubs | DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers | Preprints
       >(),

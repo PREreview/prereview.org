@@ -11,7 +11,7 @@ const toLogLevel = pipe(
 
 export const MakeDeprecatedLoggerEnv = Effect.gen(function* () {
   const runtime = yield* Effect.runtime()
-  const clock = yield* EffectToFpts.makeIO(Effect.andThen(DateTime.now, DateTime.toDate))
+  const clock = yield* EffectToFpts.makeIO(Effect.map(DateTime.now, DateTime.toDate))
 
   return {
     clock,

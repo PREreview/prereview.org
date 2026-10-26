@@ -97,7 +97,7 @@ const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefin
         onTrue: () =>
           pipe(
             HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
-            Effect.andThen(Struct.get('preview')),
+            Effect.map(Struct.get('preview')),
             Effect.orElseSucceed(() => false),
           ),
         onFalse: () => Effect.succeed(false),
@@ -573,7 +573,7 @@ const BlogRouter = HttpRouter.fromIterable([
           onTrue: () =>
             pipe(
               HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
-              Effect.andThen(Struct.get('preview')),
+              Effect.map(Struct.get('preview')),
               Effect.orElseSucceed(() => false),
             ),
           onFalse: () => Effect.succeed(false),

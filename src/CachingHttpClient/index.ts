@@ -43,7 +43,7 @@ export const CachingHttpClient = (
 
         const response = yield* pipe(
           cache.get(req),
-          Effect.andThen(Option.getOrUndefined),
+          Effect.map(Option.getOrUndefined),
           Effect.timeout(CacheTimeout),
           Effect.tapErrorTag('InternalHttpCacheFailure', error =>
             Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),

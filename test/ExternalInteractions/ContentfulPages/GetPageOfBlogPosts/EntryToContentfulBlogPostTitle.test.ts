@@ -142,7 +142,7 @@ it.effect.each<{
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
       Effect.andThen(Schema.decodeUnknown(Entries)),
-      Effect.andThen(Struct.get('items')),
+      Effect.map(Struct.get('items')),
       Effect.andThen(Array.get(index)),
       Effect.andThen(_.EntryToContentfulBlogPostTitle),
     )
@@ -167,8 +167,8 @@ it.effect.each([
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
       Effect.andThen(Schema.decodeUnknown(Entries)),
-      Effect.andThen(Struct.get('items')),
-      Effect.andThen(Array.map(item => _.EntryToContentfulBlogPostTitle(item))),
+      Effect.map(Struct.get('items')),
+      Effect.map(Array.map(item => _.EntryToContentfulBlogPostTitle(item))),
       Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
     )
 

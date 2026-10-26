@@ -70,7 +70,7 @@ export class DataStoreRedis extends Context.Tag('DataStoreRedis')<DataStoreRedis
 export const layerDataStore = flow(redisLifecycle, Layer.scoped(DataStoreRedis))
 
 export const layerDataStoreConfig = (options: Config.Config.Wrap<Parameters<typeof layerDataStore>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerDataStore))
+  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layerDataStore))
 
 export class HttpCacheRedis extends Context.Tag('HttpCacheRedis')<
   HttpCacheRedis,
@@ -93,7 +93,7 @@ const layerHttpCache = ({
   )
 
 export const layerHttpCacheConfig = (options: Config.Config.Wrap<Parameters<typeof layerHttpCache>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerHttpCache))
+  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layerHttpCache))
 
 export const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
   Config.orElse(() =>

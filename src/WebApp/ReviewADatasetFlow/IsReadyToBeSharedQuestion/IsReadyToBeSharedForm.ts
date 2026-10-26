@@ -34,7 +34,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(IsReadyToBeSharedSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ isReadyToBeShared }) =>
         new CompletedForm({
           isReadyToBeShared,

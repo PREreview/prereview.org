@@ -60,7 +60,7 @@ import * as ReviewPage from './WebApp/review-page/index.ts'
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<Prereviewers.Prereviewers | Prereviews.Prereviews>(),
       Context.omit(Scope.Scope),
     )
@@ -161,7 +161,7 @@ const publishComment = Layer.effect(
 const commentsForReview = Layer.effect(
   ReviewPage.CommentsForReview,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoApi>(),
       Context.omit(Scope.Scope),
     )

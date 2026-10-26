@@ -17,7 +17,7 @@ export class DynamicEmbedder extends Context.Tag('DynamicEmbedder')<
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const context = yield* Effect.andThen(Effect.context<Clubs>(), Context.omit(Scope.Scope))
+      const context = yield* Effect.map(Effect.context<Clubs>(), Context.omit(Scope.Scope))
 
       return {
         listOfActiveClubs: Effect.provide(ListOfActiveClubs, context),

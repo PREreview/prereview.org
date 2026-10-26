@@ -20,7 +20,7 @@ export class Nodemailer extends Context.Tag('Nodemailer')<
 export const { sendEmail } = Effect.serviceFunctions(Nodemailer)
 
 export const make: Effect.Effect<typeof Nodemailer.Service, never, NodemailerTransporter> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<NodemailerTransporter>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<NodemailerTransporter>(), Context.omit(Scope.Scope))
 
   return {
     sendEmail: flow(SendEmail, Effect.provide(context)),

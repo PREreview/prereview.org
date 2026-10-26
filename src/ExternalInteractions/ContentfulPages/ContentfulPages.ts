@@ -40,7 +40,7 @@ export class ContentfulPages extends Context.Tag('ContentfulPages')<
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const context = yield* Effect.andThen(Effect.context<Contentful | DynamicEmbedder>(), Context.omit(Scope.Scope))
+      const context = yield* Effect.map(Effect.context<Contentful | DynamicEmbedder>(), Context.omit(Scope.Scope))
 
       return {
         getBlogPost: flow(GetBlogPost, Effect.provide(context)),

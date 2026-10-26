@@ -7,7 +7,7 @@ import { GetDatasetFromDatacite, IsDataciteDatasetId } from './Datacite/index.ts
 export const layer = Layer.effect(
   Datasets.Datasets,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(
+    const context = yield* Effect.map(
       Effect.context<Datacite.Datacite | LanguageDetection.LanguageDetection>(),
       Context.omit(Scope.Scope),
     )
@@ -43,7 +43,7 @@ export const layer = Layer.effect(
       resolveDatasetId: (id: Datasets.DatasetId) =>
         pipe(
           GetDatasetFromSource(id),
-          Effect.andThen(Struct.get('id')),
+          Effect.map(Struct.get('id')),
           Effect.tapErrorTag('DatasetIsUnavailable', error =>
             Effect.annotateLogs(Effect.logError('Unable to resolve dataset ID'), { error }),
           ),

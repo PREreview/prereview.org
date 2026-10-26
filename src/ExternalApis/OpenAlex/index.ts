@@ -23,7 +23,7 @@ export const { getWork } = Effect.serviceFunctions(OpenAlex)
 const make: Effect.Effect<typeof OpenAlex.Service, never, HttpClient.HttpClient | OpenAlexApi> = Effect.gen(
   function* () {
     const openAlexApi = yield* OpenAlexApi
-    const httpClient = yield* Effect.andThen(
+    const httpClient = yield* Effect.map(
       HttpClient.HttpClient,
       HttpClient.mapRequest(HttpClientRequest.bearerToken(openAlexApi.key)),
     )

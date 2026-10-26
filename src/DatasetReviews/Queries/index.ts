@@ -197,7 +197,7 @@ const makeDatasetReviewQueries: Effect.Effect<
   never,
   EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return {
     checkIfReviewIsBeingPublished: yield* Queries.makeQuery(

@@ -58,13 +58,13 @@ export const layer = Layer.effect(
 
     const getRapidPrereviewsForAPreprint = yield* Queries.makeOnDemandQuery(GetRapidPrereviewsForAPreprint)
 
-    const clubIds = yield* Effect.andThen(clubs.listClubs, Array.map(Struct.get('id')))
+    const clubIds = yield* Effect.map(clubs.listClubs, Array.map(Struct.get('id')))
 
     return {
       getRapidPrereviewsForAPreprint: id =>
         pipe(
           getRapidPrereviewsForAPreprint(id),
-          Effect.andThen(
+          Effect.map(
             Array.map(
               Effect.fnUntraced(
                 function* (rapidPrereview) {

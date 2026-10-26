@@ -43,7 +43,7 @@ export class Zenodo extends Context.Tag('Zenodo')<
 export const { createDeposition, getDeposition, publishDeposition, uploadFile } = Effect.serviceFunctions(Zenodo)
 
 const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | ZenodoApi> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient | ZenodoApi>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | ZenodoApi>(), Context.omit(Scope.Scope))
 
   return {
     createDeposition: flow(CreateDeposition, Effect.provide(context)),

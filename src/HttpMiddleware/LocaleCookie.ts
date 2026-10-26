@@ -11,7 +11,7 @@ export const getLocaleFromCookie = Effect.gen(function* () {
 
   return yield* pipe(
     HttpServerRequest.schemaCookies(Schema.Struct({ locale: Schema.Literal(...enabledLocales) })),
-    Effect.andThen(({ locale }) => locale),
+    Effect.map(({ locale }) => locale),
     Effect.option,
   )
 })

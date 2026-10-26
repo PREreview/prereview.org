@@ -52,7 +52,7 @@ export const { createRecordForDatasetReview, getDoiForDatasetReviewRecord, publi
   Effect.serviceFunctions(ZenodoRecords)
 
 export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.Zenodo> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<ZenodoApi.Zenodo>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<ZenodoApi.Zenodo>(), Context.omit(Scope.Scope))
 
   return {
     createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
@@ -106,9 +106,9 @@ export const invalidatePrereviewInCache = ({
 }): Effect.Effect<void, never, ZenodoApi.ZenodoApi | PublicUrl | CachingHttpClient.HttpCache> =>
   pipe(
     constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
-    Effect.andThen(Array.map(invalidateCacheEntry)),
+    Effect.map(Array.map(invalidateCacheEntry)),
     Effect.andThen(Effect.allWith({ mode: 'either', concurrency: 'unbounded' })),
-    Effect.andThen(Array.getLefts),
+    Effect.map(Array.getLefts),
     Effect.andThen(
       Effect.forEach(error =>
         Effect.logError('Unable to invalidate URL for PREreview').pipe(Effect.annotateLogs({ error, prereviewId })),

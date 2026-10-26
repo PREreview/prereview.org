@@ -17,4 +17,4 @@ export const layerTransporter: (options: Parameters<typeof makeTransporter>[0]) 
   flow(makeTransporter, Layer.effect(NodemailerTransporter))
 
 export const layerTransporterConfig = (options: Config.Config.Wrap<Parameters<typeof layerTransporter>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layerTransporter))
+  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layerTransporter))

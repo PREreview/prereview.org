@@ -76,7 +76,7 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
             Effect.gen(function* () {
               const prereviewers = yield* Prereviewers
 
-              return yield* Effect.andThen(
+              return yield* Effect.map(
                 prereviewers.hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(user.orcid),
                 Match.valueTags({ HasOptedIn: () => true, HasNotOptedIn: () => false, HasOptedOut: () => false }),
               )

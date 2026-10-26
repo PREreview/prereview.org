@@ -55,7 +55,7 @@ const PostgresClientLayer = Layer.mergeAll(
 )
 
 const ClusterLayer = Layer.unwrapEffect(
-  Effect.andThen(
+  Effect.map(
     Effect.bind(
       Config.withDefault(
         Config.all({ runnerIp: Config.string('FLY_PRIVATE_IP'), listenHost: Config.succeed('fly-local-6pn') }),
@@ -76,7 +76,7 @@ const ClusterLayer = Layer.unwrapEffect(
 )
 
 const OpenTelemetry = Layer.unwrapEffect(
-  Effect.andThen(
+  Effect.map(
     Config.withDefault(Config.boolean('ENABLE_OPENTELEMETRY'), false),
     Boolean.match({
       onTrue: () =>
@@ -90,7 +90,7 @@ const OpenTelemetry = Layer.unwrapEffect(
 )
 
 const ClubsData = Layer.unwrapEffect(
-  Effect.andThen(
+  Effect.map(
     Config.withDefault(Config.boolean('ADD_PREREVIEW_STAFF_CLUB'), false),
     Boolean.match({
       onTrue: () =>
@@ -263,7 +263,7 @@ pipe(
   Layer.provide(
     Logger.replaceEffect(
       Logger.defaultLogger,
-      Effect.andThen(
+      Effect.map(
         Config.withDefault(Config.literal('json')('LOG_FORMAT'), 'pretty'),
         flow(
           Match.value,

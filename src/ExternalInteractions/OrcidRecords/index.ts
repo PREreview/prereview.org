@@ -19,7 +19,7 @@ export class OrcidRecords extends Context.Tag('OrcidRecords')<
 export const { getName } = Effect.serviceFunctions(OrcidRecords)
 
 const make: Effect.Effect<typeof OrcidRecords.Service, never, Orcid.Orcid> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))
 
   return {
     getName: flow(GetName, Effect.provide(context)),

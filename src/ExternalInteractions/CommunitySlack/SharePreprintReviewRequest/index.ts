@@ -27,7 +27,7 @@ export const SharePreprintReviewRequest = Effect.fn(
     return message
   },
   Effect.catchAll(error => new FailedToSharePreprintReviewRequest({ cause: error })),
-  Effect.andThen(message => ({ channelId: message.channel, messageTimestamp: message.ts })),
+  Effect.map(message => ({ channelId: message.channel, messageTimestamp: message.ts })),
 )
 
 function postMessageOnSlack(message: Slack.ChatPostMessageInput) {

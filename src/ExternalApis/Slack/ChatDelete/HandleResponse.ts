@@ -9,5 +9,5 @@ export const HandleResponse = flow(
     response => response.ok,
     error => new SlackError({ message: error.error }),
   ),
-  Effect.andThen(Struct.omit('ok')),
+  Effect.map(Struct.omit('ok')),
 )

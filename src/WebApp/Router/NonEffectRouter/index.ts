@@ -148,7 +148,7 @@ export const nonEffectRouter: Effect.Effect<
       pipe(
         Match.value(Option.getOrElse(Headers.get(request.headers, 'Content-Type'), () => 'application/octet-stream')),
         Match.when(String.includes('application/x-www-form-urlencoded'), () =>
-          Effect.andThen(request.urlParamsBody, Record.fromEntries),
+          Effect.map(request.urlParamsBody, Record.fromEntries),
         ),
         Match.when(String.includes('multipart/form-data'), () => Effect.either(request.multipart)),
         Match.orElse(() => Effect.void),

@@ -17,7 +17,7 @@ export const RequestedReviewNotificationsPage: Effect.Effect<Response, never, Lo
       const user = yield* LoggedInUser
       const prereviewers = yield* Prereviewers
 
-      const form = yield* Effect.andThen(
+      const form = yield* Effect.map(
         prereviewers.hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(user.orcid),
         Match.valueTags({
           HasNotOptedIn: () => new RequestedReviewNotificationsForm.EmptyForm(),

@@ -6,9 +6,9 @@ export class CommunitySlackChannelIds extends Context.Tag('CommunitySlackChannel
   { requestAReview: Slack.ChannelId; shareAReview: Slack.ChannelId }
 >() {}
 
-export const requestAReviewChannelId = Effect.andThen(CommunitySlackChannelIds, Struct.get('requestAReview'))
+export const requestAReviewChannelId = Effect.map(CommunitySlackChannelIds, Struct.get('requestAReview'))
 
-export const shareAReviewChannelId = Effect.andThen(CommunitySlackChannelIds, Struct.get('shareAReview'))
+export const shareAReviewChannelId = Effect.map(CommunitySlackChannelIds, Struct.get('shareAReview'))
 
 export const layerChannelIds = (
   options: typeof CommunitySlackChannelIds.Service,

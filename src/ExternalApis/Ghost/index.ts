@@ -22,7 +22,7 @@ export class Ghost extends Context.Tag('Ghost')<
 export const { getPage } = Effect.serviceFunctions(Ghost)
 
 const make: Effect.Effect<typeof Ghost.Service, never, GhostApi | HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<GhostApi | HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<GhostApi | HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     getPage: flow(GetPage, Effect.provide(context)),

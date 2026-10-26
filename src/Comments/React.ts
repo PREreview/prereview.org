@@ -32,7 +32,7 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
 
     const userHasAVerifiedEmailAddress = yield* pipe(
       contactEmailAddresses.getContactEmailAddress(comment.authorId),
-      Effect.andThen(emailAddress => emailAddress._tag === 'VerifiedContactEmailAddress'),
+      Effect.map(emailAddress => emailAddress._tag === 'VerifiedContactEmailAddress'),
       Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(false)),
     )
 

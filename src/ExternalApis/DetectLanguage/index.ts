@@ -20,7 +20,7 @@ export const { detect } = Effect.serviceFunctions(DetectLanguage)
 const make: Effect.Effect<typeof DetectLanguage.Service, never, HttpClient.HttpClient | DetectLanguageApi> = Effect.gen(
   function* () {
     const detectLanguageApi = yield* DetectLanguageApi
-    const httpClient = yield* Effect.andThen(
+    const httpClient = yield* Effect.map(
       HttpClient.HttpClient,
       HttpClient.mapRequest(flow(HttpClientRequest.acceptJson, HttpClientRequest.bearerToken(detectLanguageApi.key))),
     )

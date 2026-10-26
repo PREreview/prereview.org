@@ -184,7 +184,7 @@ const getSpotlightBanner: Effect.Effect<
     onTrue: () =>
       pipe(
         Url.fromString(request.url, 'http://example.com'),
-        Effect.andThen(Url.urlParams),
+        Effect.map(Url.urlParams),
         Effect.andThen(UrlParams.getFirst('preview-spotlight-banner')),
         Effect.orElseSucceed(() => undefined),
       ),

@@ -149,9 +149,9 @@ const makeDatasetReviewCommands: Effect.Effect<
   Clubs | EventStore.EventStore
 > = Effect.gen(function* () {
   const clubs = yield* Clubs
-  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  const clubIds = yield* Effect.andThen(clubs.listClubs, Array.map(Struct.get('id')))
+  const clubIds = yield* Effect.map(clubs.listClubs, Array.map(Struct.get('id')))
 
   const handleCommand = <
     Filter extends Events.EventFilter,
@@ -170,7 +170,7 @@ const makeDatasetReviewCommands: Effect.Effect<
 
         const { events, lastKnownPosition } = yield* pipe(
           EventStore.query(filter),
-          Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
+          Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
         )
 
         yield* pipe(

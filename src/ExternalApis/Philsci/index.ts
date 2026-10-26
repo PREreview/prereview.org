@@ -19,7 +19,7 @@ export class Philsci extends Context.Tag('Philsci')<
 export const { getEprint } = Effect.serviceFunctions(Philsci)
 
 const make: Effect.Effect<typeof Philsci.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     getEprint: flow(GetEprint, Effect.provide(context)),

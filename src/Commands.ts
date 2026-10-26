@@ -58,7 +58,7 @@ export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, 
     const { name, createFilter, foldState, decide } = command
     const authorize = 'authorize' in command ? command.authorize : () => true
 
-    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     return Effect.fn(name)(
       function* (...input: Input) {
@@ -66,7 +66,7 @@ export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, 
 
         const { events, lastKnownPosition } = yield* pipe(
           EventStore.query(filter),
-          Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
+          Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
         )
 
         const state = foldState(events, ...input)
@@ -102,7 +102,7 @@ export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
   EventStore.EventStore
 > =>
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     return Effect.fn(name)(
       function* (...input: Input) {

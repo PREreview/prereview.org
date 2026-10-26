@@ -42,8 +42,8 @@ const DiscoverSrcModules = Effect.gen(function* () {
   const modules = yield* fileSystem
     .readDirectory(`locales/${defaultLocale}`)
     .pipe(
-      Effect.andThen(Array.map(String.replace('.json', ''))),
-      Effect.andThen(Array.filter(module => !assetsModules.includes(module))),
+      Effect.map(Array.map(String.replace('.json', ''))),
+      Effect.map(Array.filter(module => !assetsModules.includes(module))),
     )
 
   yield* Effect.logDebug('Discovered modules', { locales: modules })
@@ -128,7 +128,7 @@ const BuildSrcTarget = Effect.fnUntraced(function* ({
       Boolean.match({
         onTrue: () =>
           RunIntlc({ locale, module }).pipe(
-            Effect.andThen(
+            Effect.map(
               flow(
                 String.concat(
                   'import { html, type Html, type PlainText } from "../../html.ts"\nimport type { NonEmptyString } from "../../types/NonEmptyString.ts"\n\n',
@@ -159,7 +159,7 @@ const BuildAssetsModule = Effect.fnUntraced(function* ({ module, target }: { mod
 
   const template = yield* fileSystem
     .readFileString('.dev/locale-module.ts.hbs')
-    .pipe(Effect.andThen(template => Handlebars.compile(template, { noEscape: true, strict: true })))
+    .pipe(Effect.map(template => Handlebars.compile(template, { noEscape: true, strict: true })))
 
   const rendered = template({
     defaultLocale,
@@ -180,7 +180,7 @@ const BuildSrcModule = Effect.fnUntraced(function* ({ module, target }: { module
 
   const template = yield* fileSystem
     .readFileString('.dev/locale-module.ts.hbs')
-    .pipe(Effect.andThen(template => Handlebars.compile(template, { noEscape: true, strict: true })))
+    .pipe(Effect.map(template => Handlebars.compile(template, { noEscape: true, strict: true })))
 
   const rendered = template({
     defaultLocale,
@@ -203,7 +203,7 @@ const BuildAssets = Effect.fnUntraced(function* (target: string) {
 
   const template = yield* fileSystem
     .readFileString('.dev/locale-index.ts.hbs')
-    .pipe(Effect.andThen(template => Handlebars.compile(template, { noEscape: true, strict: true })))
+    .pipe(Effect.map(template => Handlebars.compile(template, { noEscape: true, strict: true })))
 
   const rendered = template({
     crowdinInContextLocale,
@@ -220,13 +220,13 @@ const BuildSrc = Effect.fnUntraced(function* (target: string) {
   const fileSystem = yield* FileSystem.FileSystem
   const locales = yield* Locales
   const languages = yield* Languages
-  const modules = yield* SrcModules.pipe(Effect.andThen(Array.filter(module => !assetsModules.includes(module))))
+  const modules = yield* SrcModules.pipe(Effect.map(Array.filter(module => !assetsModules.includes(module))))
 
   yield* Effect.logDebug('Compile src')
 
   const template = yield* fileSystem
     .readFileString('.dev/locale-index.ts.hbs')
-    .pipe(Effect.andThen(template => Handlebars.compile(template, { noEscape: true, strict: true })))
+    .pipe(Effect.map(template => Handlebars.compile(template, { noEscape: true, strict: true })))
 
   const rendered = template({
     crowdinInContextLocale,
@@ -285,7 +285,7 @@ const BuildAssetsLocales = Effect.gen(function* () {
 const BuildSrcLocales = Effect.gen(function* () {
   const fileSystem = yield* FileSystem.FileSystem
   const locales = yield* Locales
-  const modules = yield* SrcModules.pipe(Effect.andThen(Array.filter(module => !assetsModules.includes(module))))
+  const modules = yield* SrcModules.pipe(Effect.map(Array.filter(module => !assetsModules.includes(module))))
 
   const tempDir = yield* fileSystem.makeTempDirectoryScoped()
   const tempDirBackup = yield* fileSystem.makeTempDirectoryScoped()

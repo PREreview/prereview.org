@@ -47,7 +47,7 @@ export const LogOut = Effect.gen(function* () {
 
   yield* pipe(
     Effect.serviceOptional(SessionId),
-    Effect.andThen(sessionId => store.delete(sessionId)),
+    Effect.andThen(sessionId => Effect.tryPromise(() => store.delete(sessionId))),
     Effect.ignore,
   )
 
@@ -132,14 +132,14 @@ export const authenticate = Effect.fn(
     error => error === 'blocked',
     () => Effect.succeed(FlashMessageResponse({ location: Routes.HomePage, message: 'blocked' })),
   ),
-  Effect.orElse(() => Effect.andThen(Locale, failureMessage)),
+  Effect.orElse(() => Effect.map(Locale, failureMessage)),
 )
 
 export const AuthenticateError = pipe(
   Match.type<{ error: string }>(),
   Match.withReturnType<Effect.Effect<PageResponse, never, Locale>>(),
-  Match.when({ error: 'access_denied' }, () => Effect.andThen(Locale, accessDeniedMessage)),
-  Match.orElse(() => Effect.andThen(Locale, failureMessage)),
+  Match.when({ error: 'access_denied' }, () => Effect.map(Locale, accessDeniedMessage)),
+  Match.orElse(() => Effect.map(Locale, failureMessage)),
 )
 
 const getReferer: (state: string) => Effect.Effect<string, never, PublicUrl> = flow(
@@ -187,7 +187,7 @@ const GetOrcidIdUsingAuthorizationCode = Effect.fnUntraced(function* (code: stri
         publicUrl,
       },
     ),
-    Effect.andThen(Struct.get('orcid')),
+    Effect.map(Struct.get('orcid')),
     Effect.tapError(error =>
       Effect.annotateLogs(Effect.logWarning('Unable to exchange authorization code'), { error }),
     ),

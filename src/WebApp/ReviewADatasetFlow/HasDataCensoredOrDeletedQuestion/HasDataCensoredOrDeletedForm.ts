@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(HasDataCensoredOrDeletedSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ hasDataCensoredOrDeleted }) =>
         new CompletedForm({
           hasDataCensoredOrDeleted,

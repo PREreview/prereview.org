@@ -60,5 +60,5 @@ const convertResponse = (
 ): Effect.Effect<Response, HttpClientError.ResponseError> =>
   pipe(
     response.text,
-    Effect.andThen(body => new Response(body, { headers: response.headers, status: response.status })),
+    Effect.map(body => new Response(body, { headers: response.headers, status: response.status })),
   )

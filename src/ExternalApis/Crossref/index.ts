@@ -19,7 +19,7 @@ export class Crossref extends Context.Tag('Crossref')<
 export const { getWork } = Effect.serviceFunctions(Crossref)
 
 const make: Effect.Effect<typeof Crossref.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   const concurrencyLimit = yield* Effect.makeSemaphore(3)
 

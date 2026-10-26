@@ -84,7 +84,7 @@ export const CheckYourReviewSubmission = ({
 
     return yield* pipe(
       DatasetReviews.publishDatasetReview({ datasetReviewId, requestedAt }),
-      Effect.andThen(
+      Effect.as(
         Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
       ),
       Effect.catchAll(() => HavingProblemsPage),

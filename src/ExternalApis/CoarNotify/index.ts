@@ -20,7 +20,7 @@ export class CoarNotify extends Context.Tag('CoarNotify')<
 export const { sendMessage } = Effect.serviceFunctions(CoarNotify)
 
 const make: Effect.Effect<typeof CoarNotify.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     sendMessage: flow(SendMessage, Effect.provide(context)),

@@ -41,7 +41,7 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
 
   return yield* pipe(
     Schema.decode(MattersToItsAudienceSchema)(body),
-    Effect.andThen(
+    Effect.map(
       ({ mattersToItsAudience }) =>
         new CompletedForm({
           mattersToItsAudience,

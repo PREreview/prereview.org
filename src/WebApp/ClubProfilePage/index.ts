@@ -21,7 +21,7 @@ export const ClubProfilePage = Effect.fn(
         club: pipe(
           Array.map(clubDetails.leads, prereviewers.getPublicPersona),
           Effect.allWith({ concurrency: 'inherit' }),
-          Effect.andThen(leads => ({ ...clubDetails, leads })),
+          Effect.map(leads => ({ ...clubDetails, leads })),
         ),
         prereviews: Prereviews.getForClub(clubDetails.id),
       },

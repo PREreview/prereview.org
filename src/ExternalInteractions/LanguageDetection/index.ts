@@ -28,7 +28,7 @@ export const { detectLanguage, detectLanguageFrom } = Effect.serviceFunctions(La
 export const layerDetectLanguage = Layer.effect(
   LanguageDetection,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<DetectLanguageApi.DetectLanguage>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.map(Effect.context<DetectLanguageApi.DetectLanguage>(), Context.omit(Scope.Scope))
 
     return {
       detectLanguage: flow(DetectLanguage.detectLanguage, Effect.provide(context)),

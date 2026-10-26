@@ -34,7 +34,7 @@ export const makeHandleCommentCommand: Effect.Effect<
   never,
   EventStore.EventStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return command =>
     Effect.gen(function* () {
@@ -43,7 +43,7 @@ export const makeHandleCommentCommand: Effect.Effect<
           types: CommentEventTypes,
           predicates: { commentId: command.commentId },
         }),
-        Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
+        Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
       )
 
       const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
@@ -79,13 +79,13 @@ export const makeHandleCommentCommand: Effect.Effect<
 
 export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore.EventStore> = Effect.gen(
   function* () {
-    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     return commentId =>
       Effect.gen(function* () {
         const events = yield* pipe(
           EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+          Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
         return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
@@ -103,13 +103,13 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
   never,
   EventStore.EventStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return ({ authorId, prereviewId }) =>
     Effect.gen(function* () {
       const events = yield* pipe(
         EventStore.query({ types: CommentEventTypes }),
-        Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+        Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
       return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
@@ -124,13 +124,13 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
   never,
   EventStore.EventStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return commentId =>
     Effect.gen(function* () {
       const events = yield* pipe(
         EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-        Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+        Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
       return Queries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
@@ -158,13 +158,13 @@ export const ReactToCommentEvents: Layer.Layer<
 
     yield* pipe(
       EventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
-      Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+      Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
       Effect.bindTo('commentId'),
       Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
         pipe(
           EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+          Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
           Effect.andThen(Queries.buildInputForCommentZenodoRecord),
         ),
       ),
@@ -186,7 +186,7 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.tag('PublicationOfCommentWasRequested', ({ commentId }) =>
             pipe(
               EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-              Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+              Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
               Effect.andThen(Queries.buildInputForCommentZenodoRecord),
               Effect.andThen(inputForCommentZenodoRecord =>
                 React.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),

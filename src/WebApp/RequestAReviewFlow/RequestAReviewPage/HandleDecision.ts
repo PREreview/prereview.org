@@ -17,11 +17,10 @@ export const handleDecision = Match.typeTags<Decision.Decision, Effect.Effect<Re
       Response.RedirectResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
     ),
   ShowError: () => HavingProblemsPage,
-  ShowFormWithErrors: ({ form }) => Effect.andThen(Locale, locale => RequestAPrereviewPage(form, locale)),
-  ShowNotAPreprint: () => Effect.andThen(Locale, locale => NotAPreprintPage(locale)),
-  ShowUnknownPreprint: ({ preprint }) => Effect.andThen(Locale, locale => UnknownPreprintPage(preprint, locale)),
-  ShowUnsupportedDoi: () => Effect.andThen(Locale, UnsupportedDoiPage),
-  ShowUnsupportedUrl: () => Effect.andThen(Locale, UnsupportedUrlPage),
-  ShowEmptyForm: () =>
-    Effect.andThen(Locale, locale => RequestAPrereviewPage(new RequestAReviewForm.EmptyForm(), locale)),
+  ShowFormWithErrors: ({ form }) => Effect.map(Locale, locale => RequestAPrereviewPage(form, locale)),
+  ShowNotAPreprint: () => Effect.map(Locale, locale => NotAPreprintPage(locale)),
+  ShowUnknownPreprint: ({ preprint }) => Effect.map(Locale, locale => UnknownPreprintPage(preprint, locale)),
+  ShowUnsupportedDoi: () => Effect.map(Locale, UnsupportedDoiPage),
+  ShowUnsupportedUrl: () => Effect.map(Locale, UnsupportedUrlPage),
+  ShowEmptyForm: () => Effect.map(Locale, locale => RequestAPrereviewPage(new RequestAReviewForm.EmptyForm(), locale)),
 })

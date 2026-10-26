@@ -35,9 +35,9 @@ const MakeQueryRoute = <A, I extends { readonly [K in keyof I]: string | Readonl
     ),
   )
 
-const showRemovedPermanentlyMessage = Effect.andThen(Locale, removedPermanentlyPage)
+const showRemovedPermanentlyMessage = Effect.map(Locale, removedPermanentlyPage)
 
-const showRemovedForNowMessage = Effect.andThen(Locale, removedForNowPage)
+const showRemovedForNowMessage = Effect.map(Locale, removedForNowPage)
 
 const PreprintIdWithDoiSchema = Schema.transform(
   Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),

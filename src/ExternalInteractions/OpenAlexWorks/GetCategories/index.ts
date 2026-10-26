@@ -7,6 +7,6 @@ export const GetCategories = (doi: Doi.Doi) =>
   pipe(
     OpenAlex.getWork(doi),
     Effect.timeout('2 seconds'),
-    Effect.andThen(CategoriesFromWork),
+    Effect.map(CategoriesFromWork),
     Effect.catchTag('TimeoutException', error => new OpenAlex.WorkIsUnavailable({ cause: error })),
   )

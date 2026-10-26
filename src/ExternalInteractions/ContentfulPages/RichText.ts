@@ -333,7 +333,7 @@ export const BlockContentToHtml = (
     },
     { concurrency: 'inherit' },
   ).pipe(
-    Effect.andThen(Array.getSomes),
+    Effect.map(Array.getSomes),
     Effect.map(content => Option.some(html`${content}`)),
     Effect.map(Option.filter(content => content.toString().trim() !== '')),
   )

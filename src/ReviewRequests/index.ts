@@ -79,7 +79,7 @@ export const layer = pipe(
   Layer.effect(
     ReviewRequests,
     Effect.gen(function* () {
-      const context = yield* Effect.andThen(
+      const context = yield* Effect.map(
         Effect.context<Preprints.Preprints | Queries.ReviewRequestQueries>(),
         Context.omit(Scope.Scope),
       )

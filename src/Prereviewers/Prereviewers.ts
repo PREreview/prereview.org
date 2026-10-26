@@ -76,13 +76,13 @@ export const layer = Layer.effect(
 
     const getAvailablePseudonym = yield* pipe(
       possiblePseudonyms,
-      Effect.andThen(GetAvailablePseudonym),
+      Effect.map(GetAvailablePseudonym),
       Effect.andThen(Queries.makeStatefulQuery),
     )
 
     const countAvailablePseudonyms = yield* pipe(
       possiblePseudonyms,
-      Effect.andThen(CountAvailablePseudonyms),
+      Effect.map(CountAvailablePseudonyms),
       Effect.andThen(Queries.makeOnDemandQuery),
     )
 
@@ -128,7 +128,7 @@ export const layer = Layer.effect(
         pipe(
           getPseudonym(orcidId),
           Effect.mapError(error => new UnableToGetPersona({ cause: error })),
-          Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
+          Effect.map(pseudonym => new PseudonymPersona({ pseudonym })),
         ),
       getPseudonym,
       isPseudonymInUse: yield* Queries.makeStatefulQuery(IsPseudonymInUse),
