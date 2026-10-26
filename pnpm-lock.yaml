@@ -3486,9 +3486,6 @@ packages:
   msgpackr@1.12.1:
     resolution: {integrity: sha512-4EUH9tQHnMmEgzW/MdAP0KIfa1T9AF+htl0ffe2n5vb2EKn9y2co8ccpgWko6S52Jy1PQZKwRnx5/KkYjtd9MQ==}
 
-  multipasta@0.2.8:
-    resolution: {integrity: sha512-ZPWuMKyv0cSO29f7hozp+k6+crZbQijV8ipMvxNxRf2SwtYGTX1ZX89Kd20VV4H9Znonx+EQn+iy1wGQsJ+b+Q==}
-
   multipasta@0.2.9:
     resolution: {integrity: sha512-kAovZHgxryqb0xTFz7OTCPxbas8UBTTwCDhfrlaNecp1/z6xcMfp5PVhDxsW7jONHyDF10/ccp30MxA2+66GJw==}
 
@@ -5270,7 +5267,7 @@ snapshots:
       effect: 3.22.4
       find-my-way-ts: 0.1.6
       msgpackr: 1.12.1
-      multipasta: 0.2.8
+      multipasta: 0.2.9
 
   '@effect/printer-ansi@0.51.0(@effect/typeclass@0.41.0(effect@3.22.4))(effect@3.22.4)':
     dependencies:
@@ -7936,8 +7933,6 @@ snapshots:
   msgpackr@1.12.1:
     optionalDependencies:
       msgpackr-extract: 3.0.4
-
-  multipasta@0.2.8: {}
 
   multipasta@0.2.9: {}
 
