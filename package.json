@@ -109,7 +109,7 @@
     "stylelint-plugin-logical-css": "^2.1.0",
     "ts-deepmerge": "^8.0.0",
     "typescript": "^7.0.2",
-    "vite": "^8.3.4",
+    "vite": "^8.3.5",
     "vitest": "^5.0.5"
   }
 }
