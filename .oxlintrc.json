@@ -38,7 +38,7 @@
     "no-array-constructor": "error",
     "no-empty-function": "error",
     "no-unused-vars": ["error", { "reportVarsOnlyUsedAsTypes": true }],
-    "eslint/no-irregular-whitespace": ["error", { "skipRegExps": false, "skipTemplates": false }],
+    "no-irregular-whitespace": ["error", { "skipRegExps": false, "skipTemplates": false }],
     "import/export": "error",
     "import/no-duplicates": ["error", { "prefer-inline": true }],
     "wc/no-constructor-attributes": "error",
@@ -179,18 +179,15 @@
       "files": ["**/*.test.ts"],
       "rules": {
         "no-comments/disallowComments": "off",
-        "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "typescript/no-non-null-assertion": "off",
         "typescript/no-unsafe-argument": "off",
         "typescript/no-unsafe-assignment": "off",
         "typescript/no-unsafe-member-access": "off",
         "typescript/no-unsafe-return": "off",
-        "typescript/no-useless-default-assignment": "off",
         "typescript/prefer-promise-reject-errors": "off",
-        "typescript/restrict-template-expressions": "off",
         "unicorn/consistent-function-scoping": "off"
-      },
-      "jsPlugins": ["eslint-plugin-no-comments"]
+      }
     },
     {
       "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
