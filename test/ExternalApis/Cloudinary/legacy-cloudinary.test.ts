@@ -6,6 +6,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Readable } from 'node:stream'
+import { setTimeout } from 'node:timers/promises'
 import { P, isMatching } from 'ts-pattern'
 import * as _ from '../../../src/ExternalApis/Cloudinary/legacy-cloudinary.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -237,7 +238,7 @@ describe('saveAvatarOnCloudinary', () => {
             }),
           )
 
-          yield* Effect.promise(() => new Promise(r => setTimeout(r, 10)))
+          yield* Effect.promise(() => setTimeout(10))
 
           expect(actual).toStrictEqual(E.right(undefined))
           expect(saveCloudinaryAvatar).toHaveBeenCalledWith(orcid, imageId)
@@ -296,7 +297,7 @@ describe('saveAvatarOnCloudinary', () => {
             }),
           )
 
-          yield* Effect.promise(() => new Promise(r => setTimeout(r, 10)))
+          yield* Effect.promise(() => setTimeout(10))
 
           expect(actual).toStrictEqual(E.right(undefined))
           expect(saveCloudinaryAvatar).toHaveBeenCalledWith(orcid, imageId)
@@ -494,7 +495,7 @@ describe('removeAvatarFromCloudinary', () => {
           }),
         )
 
-        yield* Effect.promise(() => new Promise(r => setTimeout(r, 10)))
+        yield* Effect.promise(() => setTimeout(10))
 
         expect(actual).toStrictEqual(E.right(undefined))
         expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
@@ -535,7 +536,7 @@ describe('removeAvatarFromCloudinary', () => {
           }),
         )
 
-        yield* Effect.promise(() => new Promise(r => setTimeout(r, 10)))
+        yield* Effect.promise(() => setTimeout(10))
 
         expect(actual).toStrictEqual(E.right(undefined))
         expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
