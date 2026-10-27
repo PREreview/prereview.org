@@ -1,5 +1,5 @@
 import { flow, identity, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
+import { format, type Match } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
@@ -8,7 +8,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import type Keyv from 'keyv'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html.ts'
-import type { PreprintId } from '../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -34,6 +34,7 @@ import { NameC } from '../types/Name.ts'
 import { NonEmptyStringC } from '../types/NonEmptyString.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { UuidC } from '../types/Uuid.ts'
+import { NextExpectedCommand } from './NextExpectedCommand.ts'
 
 export type Form = C.TypeOf<typeof FormC>
 
@@ -100,56 +101,28 @@ export function deleteForm(
 }
 
 export const nextFormPath = ({ form, preprintId }: { form: Form; preprintId: PreprintId }) =>
-  match(form)
-    .with({ alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) }, () =>
-      format(writeReviewReviewTypeMatch.formatter, { id: preprintId }),
-    )
-    .with({ alreadyWritten: 'yes', generativeAiIdeas: P.optional(undefined) }, () =>
-      format(writeReviewUseOfAiMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', introductionMatches: P.optional(undefined) }, () =>
-      format(writeReviewIntroductionMatchesMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', methodsAppropriate: P.optional(undefined) }, () =>
-      format(writeReviewMethodsAppropriateMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', resultsSupported: P.optional(undefined) }, () =>
-      format(writeReviewResultsSupportedMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', dataPresentation: P.optional(undefined) }, () =>
-      format(writeReviewDataPresentationMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', findingsNextSteps: P.optional(undefined) }, () =>
-      format(writeReviewFindingsNextStepsMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', novel: P.optional(undefined) }, () =>
-      format(writeReviewNovelMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () =>
-      format(writeReviewLanguageEditingMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () =>
-      format(writeReviewShouldReadMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () =>
-      format(writeReviewReadyFullReviewMatch.formatter, { id: preprintId }),
-    )
-    .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () =>
-      format(writeReviewReviewMatch.formatter, { id: preprintId }),
-    )
-    .with({ persona: P.optional(undefined) }, () => format(writeReviewPersonaMatch.formatter, { id: preprintId }))
-    .with({ moreAuthors: P.optional(undefined) }, () => format(writeReviewAuthorsMatch.formatter, { id: preprintId }))
-    .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () =>
-      format(writeReviewAuthorsMatch.formatter, { id: preprintId }),
-    )
-    .with({ generativeAiIdeas: P.optional(undefined) }, () =>
-      format(writeReviewUseOfAiMatch.formatter, { id: preprintId }),
-    )
-    .with({ competingInterests: P.optional(undefined) }, () =>
-      format(writeReviewCompetingInterestsMatch.formatter, { id: preprintId }),
-    )
-    .with({ conduct: P.optional(undefined) }, () => format(writeReviewConductMatch.formatter, { id: preprintId }))
-    .otherwise(() => format(writeReviewPublishMatch.formatter, { id: preprintId }))
+  format(commandMatches[NextExpectedCommand(form)].formatter, { id: preprintId })
+
+const commandMatches = {
+  ChooseReviewType: writeReviewReviewTypeMatch,
+  DeclareUseOfAi: writeReviewUseOfAiMatch,
+  AnswerIfTheIntroductionMatches: writeReviewIntroductionMatchesMatch,
+  AnswerIfTheMethodsAreAppropriate: writeReviewMethodsAppropriateMatch,
+  AnswerIfTheResultsAreSupported: writeReviewResultsSupportedMatch,
+  AnswerIfTheDataPresentationIsWellSuited: writeReviewDataPresentationMatch,
+  AnswerIfTheFindingsAndNextStepsAreClear: writeReviewFindingsNextStepsMatch,
+  AnswerIfThePreprintIsNovel: writeReviewNovelMatch,
+  AnswerIfTheLanguageNeedsEditing: writeReviewLanguageEditingMatch,
+  AnswerIfThePreprintShouldBeRead: writeReviewShouldReadMatch,
+  AnswerIfThePreprintIsReadyForAFullReview: writeReviewReadyFullReviewMatch,
+  WriteReview: writeReviewReviewMatch,
+  ChoosePersona: writeReviewPersonaMatch,
+  AnswerIfOthersNeedToBeListed: writeReviewAuthorsMatch,
+  AddOtherAuthors: writeReviewAuthorsMatch,
+  DeclareCompetingInterests: writeReviewCompetingInterestsMatch,
+  DeclareFollowingCodeOfConduct: writeReviewConductMatch,
+  PublishPreprintReview: writeReviewPublishMatch,
+} satisfies Record<NextExpectedCommand, Match<{ id: IndeterminatePreprintId }>>
 
 export const FormC = pipe(
   C.partial({
