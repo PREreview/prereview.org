@@ -53,8 +53,7 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
         height: Math.round((asset.details.image.height * width) / asset.details.image.width),
       }
     }),
-    excerpt:
-      typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
+    excerpt: entry.fields.excerpt !== undefined ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
     publishedAt: entry.fields.firstPublishedAtOverride
       ? getValueForDefaultLocale(entry.fields.firstPublishedAtOverride)
       : entry.sys.createdAt,

@@ -48,7 +48,7 @@ const QueryRoute = <
   Data.struct({
     path,
     href: flow(
-      Record.filter(value => typeof value !== 'undefined') as never,
+      Record.filter(value => value !== undefined) as never,
       Schema.encodeSync(UrlParams.schemaRecord(schema)),
       Array.match({
         onEmpty: () => path,

@@ -89,8 +89,7 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
           caption: Option.getOrUndefined(caption),
         }
       }),
-      excerpt:
-        typeof entry.fields.excerpt !== 'undefined' ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
+      excerpt: entry.fields.excerpt !== undefined ? getValueForDefaultLocale(entry.fields.excerpt).trim() : undefined,
       html: yield* Effect.map(BlockContentToHtml(getValueForDefaultLocale(entry.fields.content)), Option.getOrThrow),
       locale: DefaultLocale,
       publishedAt: entry.fields.firstPublishedAtOverride

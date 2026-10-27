@@ -221,7 +221,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   })
 
   const confirmedAuthors = Array.filterMap([...namedAuthors], ([orcidId, { persona, confirmedAt }]) =>
-    typeof persona === 'string' && typeof confirmedAt !== 'undefined'
+    typeof persona === 'string' && confirmedAt !== undefined
       ? Option.some({ orcidId, persona, confirmedAt })
       : Option.none(),
   )
