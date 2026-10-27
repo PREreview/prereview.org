@@ -29,7 +29,7 @@ test('content looks right when hovering over a button', async ({
 
   await content.getByRole('button', { name: 'Bold' }).hover()
 
-  testInfo.fail(browserName !== 'chromium')
+  testInfo.fail(browserName === 'webkit')
   await expect(content.locator('[popover]', { hasText: 'Bold' })).toBeVisible()
 
   const contentBox = await content.boundingBox()
