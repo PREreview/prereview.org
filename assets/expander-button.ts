@@ -103,6 +103,8 @@ export class ExpanderButton extends HTMLElement {
             button.focus()
           }
           break
+        case null:
+          break
         default:
           break
       }

@@ -152,6 +152,7 @@
     "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "typescript/no-import-type-side-effects": "error",
     "typescript/strict-boolean-expressions": "error",
+    "typescript/switch-exhaustiveness-check": "error",
     "unicorn/no-array-sort": "off",
     "unicorn/prefer-node-protocol": "error",
     "no-var": "error",
