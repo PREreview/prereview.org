@@ -11,6 +11,7 @@ import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as AddToAClubForm from './AddToAClubForm.ts'
 import { renderAddToAClubPage } from './AddToAClubPage.ts'
 
@@ -97,7 +98,12 @@ export const AddToAClubSubmission: ({
             })
           }
 
-          return RedirectResponse({ location: format(Routes.writeReviewPublishMatch.formatter, { id: preprint.id }) })
+          const nextExpectedCommand = yield* preprintReviews.getNextExpectedCommand({
+            preprintId: preprint.id,
+            orcidId: user.orcid,
+          })
+
+          return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
         }),
         InvalidForm: Effect.fnUntraced(function* (form: AddToAClubForm.InvalidForm) {
           return yield* Effect.succeed(renderAddToAClubPage({ clubs: ledClubs, form, locale, preprint }))
@@ -111,6 +117,7 @@ export const AddToAClubSubmission: ({
         PreprintReviewNotFound: () =>
           Effect.succeed(RedirectResponse({ location: format(Routes.writeReviewMatch.formatter, { id: preprintId }) })),
         UnableToHandleCommand: () => HavingProblemsPage,
+        UnableToQuery: () => HavingProblemsPage,
         UnknownClub: () => HavingProblemsPage,
       }),
   )
