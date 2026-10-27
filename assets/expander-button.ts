@@ -86,7 +86,7 @@ export class ExpanderButton extends HTMLElement {
 
       const focusableElements = getFocusableElements(controlled)
       const firstFocusableElement = focusableElements[0]
-      const lastFocusableElement = focusableElements[focusableElements.length - 1]
+      const lastFocusableElement = focusableElements.at(-1)
 
       switch (document.activeElement) {
         case lastFocusableElement:

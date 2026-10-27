@@ -32,7 +32,7 @@ export const removeTrailingSlashes = HttpMiddleware.make(app =>
     const request = yield* HttpServerRequest.HttpServerRequest
     const publicUrl = yield* PublicUrl
 
-    if (HttpMethod.hasBody(request.method) || '/' !== request.url[request.url.length - 1] || '/' === request.url) {
+    if (HttpMethod.hasBody(request.method) || '/' !== request.url.at(-1) || '/' === request.url) {
       return yield* app
     }
 
