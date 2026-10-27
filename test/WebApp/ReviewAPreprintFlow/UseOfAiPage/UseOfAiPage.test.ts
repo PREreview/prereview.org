@@ -242,6 +242,7 @@ function useOfAiDetails(): fc.Arbitrary<
 > {
   return fc.record({
     generativeAiIdeas: fc.maybe(fc.constantFrom('yes', 'no')),
+    generativeAiIdeasDetails: fc.maybe(fc.nonEmptyString()),
     moreAuthors: fc.constantFrom('yes', 'yes-private', 'no', undefined),
     alreadyWritten: fc.constantFrom('yes', 'no', undefined),
   })
