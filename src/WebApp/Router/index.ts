@@ -166,6 +166,16 @@ const ReviewAPreprintFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewAPreprintFlow.AddToAClubSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.ReviewAPreprintUseOfAi, ReviewAPreprintFlow.UseOfAiPage),
+  MakeRoute(
+    'POST',
+    Routes.ReviewAPreprintUseOfAi,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewAPreprintFlow.UseOfAiSubmission),
+    ),
+  ),
 ]).pipe(HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn))
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
