@@ -44,9 +44,11 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
             }
           }),
           Effect.andThen(Schema.encode(StoredResponseSchema)),
-          Effect.map(storedResponse => {
-            cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
-          }),
+          Effect.andThen(storedResponse =>
+            Effect.sync(() => {
+              cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
+            }),
+          ),
           Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
         ),
       delete: url => Effect.succeed(cache.delete(normalizeUrl(url))),

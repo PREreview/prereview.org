@@ -155,6 +155,7 @@
     "typescript/switch-exhaustiveness-check": "error",
     "unicorn/no-array-sort": "off",
     "unicorn/prefer-node-protocol": "error",
+    "array-callback-return": "error",
     "no-useless-return": "error",
     "no-var": "error",
     "prefer-const": "error",
