@@ -31,7 +31,6 @@ export function personaForm({
 }) {
   const error = hasAnError(form)
   const t = translate(locale, 'author-invite-flow')
-  const definition = (text: Html) => html`<dfn>${text}</dfn>`
 
   return StreamlinePageResponse({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
@@ -140,3 +139,5 @@ const toErrorItems = (locale: SupportedLocale) => (form: PersonaForm) => html`
       : ''
   }
 `
+
+const definition = (text: Html) => html`<dfn>${text}</dfn>`

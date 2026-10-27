@@ -26,7 +26,6 @@ export function addAuthorsForm({
   locale: SupportedLocale
 }) {
   const t = translate(locale)
-  const visuallyHidden = (s: Html) => html`<span class="visually-hidden">${s}</span>`
   const authorCount = authors.length
 
   return StreamlinePageResponse({
@@ -87,3 +86,5 @@ export function addAuthorsForm({
     skipToLabel: 'main',
   })
 }
+
+const visuallyHidden = (s: Html) => html`<span class="visually-hidden">${s}</span>`

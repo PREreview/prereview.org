@@ -143,6 +143,12 @@ export const {
   markDatasetReviewAsPublished,
 } = Effect.serviceFunctions(DatasetReviewCommands)
 
+const allDatasetReviewEvents = (datasetReviewId: Uuid.Uuid) =>
+  Events.EventFilter({
+    types: Events.DatasetReviewEventTypes,
+    predicates: { datasetReviewId },
+  })
+
 const makeDatasetReviewCommands: Effect.Effect<
   typeof DatasetReviewCommands.Service,
   never,
@@ -194,12 +200,6 @@ const makeDatasetReviewCommands: Effect.Effect<
       ),
       Effect.provide(context),
     )
-
-  const allDatasetReviewEvents = (datasetReviewId: Uuid.Uuid) =>
-    Events.EventFilter({
-      types: Events.DatasetReviewEventTypes,
-      predicates: { datasetReviewId },
-    })
 
   return {
     startDatasetReview: handleCommand(

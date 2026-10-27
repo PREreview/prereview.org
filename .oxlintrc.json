@@ -161,6 +161,7 @@
     "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "typescript/no-import-type-side-effects": "error",
     "typescript/strict-boolean-expressions": "error",
+    "unicorn/consistent-function-scoping": "error",
     "unicorn/prefer-node-protocol": "error",
     "no-var": "error",
     "prefer-const": "error",
@@ -180,7 +181,8 @@
         "typescript/no-unsafe-return": "off",
         "typescript/no-useless-default-assignment": "off",
         "typescript/prefer-promise-reject-errors": "off",
-        "typescript/restrict-template-expressions": "off"
+        "typescript/restrict-template-expressions": "off",
+        "unicorn/consistent-function-scoping": "off"
       },
       "jsPlugins": ["eslint-plugin-no-comments"]
     },
