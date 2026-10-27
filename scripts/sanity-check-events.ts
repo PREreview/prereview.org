@@ -204,7 +204,7 @@ const getPertinentPrecedingEvents = (
   for (const field of filter.matchingFields) {
     const value = event[field as never]
     if (typeof value !== 'string') {
-      throw new Error(`Field ${field} is not a string on event ${event._tag}`)
+      throw new TypeError(`Field ${field} is not a string on event ${event._tag}`)
     }
     matchingEntries.push([field, value])
   }

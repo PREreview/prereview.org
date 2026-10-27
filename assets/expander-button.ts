@@ -9,11 +9,11 @@ export class ExpanderButton extends HTMLElement {
     const button = this.querySelector<HTMLButtonElement>('button')
 
     if (!(link instanceof HTMLAnchorElement)) {
-      throw new Error('No link')
+      throw new TypeError('No link')
     }
 
     if (!(button instanceof HTMLButtonElement)) {
-      throw new Error('No button')
+      throw new TypeError('No button')
     }
 
     const controlled = document.getElementById(button.getAttribute('aria-controls') ?? '')

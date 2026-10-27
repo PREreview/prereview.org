@@ -7,15 +7,15 @@ export class PollRedirect extends HTMLElement {
     const completed = processing?.nextElementSibling
 
     if (!(initial instanceof HTMLDivElement)) {
-      throw new Error('No visible text')
+      throw new TypeError('No visible text')
     }
 
     if (!(processing instanceof HTMLDivElement)) {
-      throw new Error('No processing text')
+      throw new TypeError('No processing text')
     }
 
     if (!(completed instanceof HTMLDivElement)) {
-      throw new Error('No completed text')
+      throw new TypeError('No completed text')
     }
 
     this.setAttribute('aria-live', 'polite')

@@ -157,6 +157,7 @@
     "unicorn/no-array-sort": "off",
     "unicorn/prefer-node-protocol": "error",
     "unicorn/prefer-regexp-test": "error",
+    "unicorn/prefer-type-error": "error",
     "array-callback-return": "error",
     "eqeqeq": "error",
     "no-promise-executor-return": "error",

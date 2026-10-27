@@ -27,13 +27,13 @@ export class HtmlEditor extends HTMLElement {
     const textArea = this.firstElementChild
 
     if (!(textArea instanceof HTMLTextAreaElement)) {
-      throw new Error('No text area')
+      throw new TypeError('No text area')
     }
 
     const form = textArea.form
 
     if (!(form instanceof HTMLFormElement)) {
-      throw new Error('No form')
+      throw new TypeError('No form')
     }
 
     const buttons = form.querySelectorAll('button')
@@ -365,7 +365,7 @@ function fetchSvg(path: string) {
       const svg = document.createRange().createContextualFragment(body).firstElementChild
 
       if (!(svg instanceof SVGSVGElement)) {
-        throw new Error('Not an SVG')
+        throw new TypeError('Not an SVG')
       }
 
       svg.removeAttribute('xmlns')
