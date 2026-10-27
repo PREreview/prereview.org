@@ -88,6 +88,7 @@
     ],
     "object-shorthand": "error",
     "typescript/ban-ts-comment": ["error", { "minimumDescriptionLength": 10 }],
+    "typescript/ban-types": "error",
     "typescript/consistent-return": "off",
     "typescript/no-dynamic-delete": "error",
     "typescript/no-empty-object-type": "error",

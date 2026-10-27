@@ -16,7 +16,7 @@ declare module 'postcss-font-display' {
   import type { PluginCreator } from 'postcss'
 
   export interface PostcssFontDisplayOptions {
-    display?: 'auto' | 'block' | 'swap' | 'fallback' | 'optional' | (string & {})
+    display?: 'auto' | 'block' | 'swap' | 'fallback' | 'optional' | (string & Record<never, never>)
     replace?: boolean
   }
 
