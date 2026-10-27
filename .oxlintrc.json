@@ -158,7 +158,8 @@
     "no-var": "error",
     "prefer-const": "error",
     "prefer-rest-params": "error",
-    "prefer-spread": "error"
+    "prefer-spread": "error",
+    "radix": "error"
   },
   "overrides": [
     {

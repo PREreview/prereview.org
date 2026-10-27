@@ -127,7 +127,7 @@ const PreprintIdSchema = Schema.transform(
         Tuple.make('doi-' as const, id.substring(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
       ),
       Match.when(stringStartsWith('https://philsci-archive.pitt.edu/'), id =>
-        Tuple.make('philsci-' as const, Number.parseInt(id.slice(33, -1))),
+        Tuple.make('philsci-' as const, Number.parseInt(id.slice(33, -1), 10)),
       ),
       Match.exhaustive,
     ),
