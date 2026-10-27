@@ -179,7 +179,7 @@
       "files": ["**/*.test.ts"],
       "rules": {
         "no-comments/disallowComments": "off",
-        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "reportVarsOnlyUsedAsTypes": true }],
         "typescript/no-non-null-assertion": "off",
         "typescript/no-unsafe-argument": "off",
         "typescript/no-unsafe-assignment": "off",
