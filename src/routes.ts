@@ -227,67 +227,71 @@ export const RequestAReview = '/request-a-prereview'
 
 export const RequestAReviewOfThisPreprint = Route({
   path: '/preprints/:preprintId/request-a-prereview',
-  href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview`,
+  href: params =>
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewStartNow = Route({
   path: '/preprints/:preprintId/request-a-prereview/start-now',
-  href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/start-now`,
+  href: params =>
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/start-now`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewChooseYourPersona = Route({
   path: '/preprints/:preprintId/request-a-prereview/choose-name',
   href: params =>
-    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/choose-name`,
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/choose-name`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewEnterEmailAddress = Route({
   path: '/preprints/:preprintId/request-a-prereview/enter-email-address',
   href: params =>
-    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/enter-email-address`,
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/enter-email-address`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewNeedToVerifyEmailAddress = Route({
   path: '/preprints/:preprintId/request-a-prereview/need-to-verify-email-address',
   href: params =>
-    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/need-to-verify-email-address`,
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/need-to-verify-email-address`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewReceiveNotifications = Route({
   path: '/preprints/:preprintId/request-a-prereview/receive-notifications',
   href: params =>
-    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/receive-notifications`,
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/receive-notifications`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewCheckYourRequest = Route({
   path: '/preprints/:preprintId/request-a-prereview/check-your-request',
   href: params =>
-    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/check-your-request`,
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/check-your-request`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const RequestAReviewPublished = Route({
   path: '/preprints/:preprintId/request-a-prereview/request-published',
   href: params =>
-    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/request-published`,
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/request-a-prereview/request-published`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const ReviewAPreprintAddToAClub = Route({
   path: '/preprints/:preprintId/write-a-prereview/add-to-club',
-  href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/write-a-prereview/add-to-club`,
+  href: params =>
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/write-a-prereview/add-to-club`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const ReviewAPreprintUseOfAi = Route({
   path: '/preprints/:preprintId/write-a-prereview/use-of-ai',
-  href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/write-a-prereview/use-of-ai`,
+  href: params =>
+    `/preprints/${encodeURIComponent(Schema.encodeSync(PreprintIdSchema)(params.preprintId))}/write-a-prereview/use-of-ai`,
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
