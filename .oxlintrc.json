@@ -160,6 +160,7 @@
     "unicorn/prefer-type-error": "error",
     "array-callback-return": "error",
     "eqeqeq": "error",
+    "no-else-return": "error",
     "no-promise-executor-return": "error",
     "no-useless-return": "error",
     "no-var": "error",

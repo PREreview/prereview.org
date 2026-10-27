@@ -962,13 +962,13 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
     new P.Parser(r => {
       if (typeof r.parts[0] !== 'string') {
         return Option.none()
-      } else {
-        const head = r.parts[0]
-        const tail = r.parts.slice(1)
-        return Option.map(Option.getRight(FptsToEffect.either(type.decode(head))), a =>
-          Tuple.make(singleton(k, a), new P.Route(tail, r.query)),
-        )
       }
+
+      const head = r.parts[0]
+      const tail = r.parts.slice(1)
+      return Option.map(Option.getRight(FptsToEffect.either(type.decode(head))), a =>
+        Tuple.make(singleton(k, a), new P.Route(tail, r.query)),
+      )
     }),
     new P.Formatter((r, o) => new P.Route(r.parts.concat(type.encode(o[k])), r.query)),
   )
