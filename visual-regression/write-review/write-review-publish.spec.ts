@@ -96,6 +96,32 @@ test('content looks right when generative AI was used', async ({ showPage }) => 
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when generative AI was used with details', async ({ showPage }) => {
+  const response = publishForm(
+    preprint,
+    {
+      reviewType: 'freeform',
+      alreadyWritten: 'no',
+      review: html`<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>`,
+      persona: 'public',
+      moreAuthors: 'no',
+      generativeAiIdeas: 'yes',
+      generativeAiIdeasDetails: NonEmptyString(
+        'I used a large language model to suggest ideas for improving the methodology section.',
+      ),
+      competingInterests: 'no',
+      conduct: 'yes',
+    },
+    undefined,
+    publicPersona,
+    locale,
+  )
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test("content looks right when there's competing interests", async ({ showPage }) => {
   const response = publishForm(
     preprint,

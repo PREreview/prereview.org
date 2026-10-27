@@ -1183,6 +1183,10 @@ math {
   }
 
   & dd {
+    > :first-child {
+      margin-block-start: 0;
+    }
+
     & + dd:last-of-type {
       flex-shrink: 1;
 

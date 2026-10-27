@@ -141,7 +141,14 @@ export function publishForm(
 
               <div>
                 <dt>${t('useOfAiShort')()}</dt>
-                <dd>${getUseOfAi(review, locale)}</dd>
+                <dd>
+                  <p>${getUseOfAi(review, locale)}</p>
+                  ${
+                    review.generativeAiIdeas === 'yes' && review.generativeAiIdeasDetails
+                      ? html`<p>${review.generativeAiIdeasDetails}</p>`
+                      : ''
+                  }
+                </dd>
                 <dd>
                   <a href="${Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id })}"
                     >${t('changeUseOfAi')(visuallyHidden)}</a

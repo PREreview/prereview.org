@@ -303,5 +303,10 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
 
     <h2>${t('useOfAi')()}</h2>
 
-    <p>${getUseOfAi(form, locale)}</p>`
+    <p>${getUseOfAi(form, locale)}</p>
+    ${
+      form.generativeAiIdeas === 'yes' && form.generativeAiIdeasDetails
+        ? html`<p>${form.generativeAiIdeasDetails}</p>`
+        : ''
+    }`
 }
