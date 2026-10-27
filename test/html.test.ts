@@ -1405,15 +1405,11 @@ describe('RawHtmlC', () => {
       expect(actual).toStrictEqual(D.success(html))
     })
 
-    it.prop(
-      'with a non-string',
-      [fc.anything().filter(value => typeof value !== 'string' && !(value instanceof String))],
-      value => {
-        const actual = _.RawHtmlC.decode(value)
+    it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], value => {
+      const actual = _.RawHtmlC.decode(value)
 
-        expect(actual).toStrictEqual(E.left(expect.anything()))
-      },
-    )
+      expect(actual).toStrictEqual(E.left(expect.anything()))
+    })
   })
 
   it.prop('encode', [fc.html()], ([html]) => {
