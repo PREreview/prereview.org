@@ -1,7 +1,7 @@
 import { HttpClientResponse } from '@effect/platform'
 import resolveResponse from 'contentful-resolve-response'
 import { Effect, Equal, flow, Option, Schema } from 'effect'
-import safeStableStringify from 'safe-stable-stringify'
+import { configure } from 'safe-stable-stringify'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { ContentfulIsUnavailable } from '../Errors.ts'
 import { Entries } from '../Types.ts'
@@ -21,7 +21,7 @@ const ResolveEntries = Effect.fnUntraced(function* (response: HttpClientResponse
 export const HandleResponse = flow(
   HttpClientResponse.filterStatus(Equal.equals(StatusCodes.OK)),
   Effect.andThen(ResolveEntries),
-  Effect.map(safeStableStringify.configure({ circularValue: '[Circular]' })),
+  Effect.map(configure({ circularValue: '[Circular]' })),
   Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
   Effect.catchTag('ResponseError', 'ParseError', error => new ContentfulIsUnavailable({ cause: error })),
 )

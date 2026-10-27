@@ -20,7 +20,7 @@ import { Keyv } from 'keyv'
 import * as fs from 'node:fs/promises'
 import http from 'node:http'
 import { URL } from 'node:url'
-import nodemailer, { type SendMailOptions } from 'nodemailer'
+import { createTransport, type SendMailOptions } from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import { v4 } from 'uuid'
 import {
@@ -2389,7 +2389,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   },
   nodemailer: async ({ emails }, use) => {
     await use(
-      nodemailer.createTransport<unknown>({
+      createTransport<unknown>({
         name: 'test',
         version: '0.1.0',
         send: (mail, callback) => {

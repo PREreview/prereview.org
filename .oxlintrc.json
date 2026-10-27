@@ -40,6 +40,7 @@
     "eslint/no-irregular-whitespace": ["error", { "skipRegExps": false, "skipTemplates": false }],
     "import/export": "error",
     "import/no-duplicates": ["error", { "prefer-inline": true }],
+    "import/no-named-as-default-member": "error",
     "wc/no-constructor-attributes": "error",
     "wc/no-invalid-element-name": "error",
     "wc/no-self-class": "error",

@@ -19,7 +19,7 @@ import { decode, encode } from 'html-entities'
 import { Parser } from 'htmlparser2'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import katex from 'katex'
+import { renderToString } from 'katex'
 import processMjml from 'mjml'
 import sanitize from 'sanitize-html'
 import stripTags from 'striptags'
@@ -288,9 +288,10 @@ function texToMathml(input: string) {
     (original, mode: string, match: string) => {
       try {
         return sanitizeHtml(
-          katex
-            .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml', strict: false })
-            .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1'),
+          renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml', strict: false }).replace(
+            /^<span class="katex">([\s\S]*)<\/span>$/,
+            '$1',
+          ),
         ).toString()
       } catch {
         return original
