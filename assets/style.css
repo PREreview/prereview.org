@@ -2941,6 +2941,10 @@ skip-link {
     & + * {
       margin-block-start: var(--space-3xs-2xs);
     }
+
+    & + .tag {
+      margin-block-start: 0;
+    }
   }
 }
 
