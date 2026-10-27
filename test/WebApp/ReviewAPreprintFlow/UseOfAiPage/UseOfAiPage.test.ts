@@ -1,6 +1,6 @@
 import { UrlParams } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Either, Layer } from 'effect'
+import { Effect, Either, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
@@ -104,7 +104,9 @@ describe('UseOfAiSubmission', () => {
       return Effect.gen(function* () {
         const actual = yield* _.UseOfAiSubmission({ body: UrlParams.fromInput({ generativeAiIdeas }), preprintId })
 
-        expect(declarations).toStrictEqual([{ preprintId: preprint.id, orcidId: user.orcid, generativeAiIdeas }])
+        expect(declarations).toStrictEqual([
+          { preprintId: preprint.id, orcidId: user.orcid, generativeAiIdeas, generativeAiIdeasDetails: Option.none() },
+        ])
         expect(actual).toStrictEqual(
           RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) }),
         )

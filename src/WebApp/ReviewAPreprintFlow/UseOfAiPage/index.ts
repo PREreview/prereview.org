@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match } from 'effect'
+import { Effect, Match, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../Context.ts'
 import { PreprintReviews } from '../../../PreprintReviews/index.ts'
@@ -74,6 +74,7 @@ export const UseOfAiSubmission: ({
           preprintId: preprint.id,
           orcidId: user.orcid,
           generativeAiIdeas: form.generativeAiIdeas,
+          generativeAiIdeasDetails: Option.none(),
         })
 
         const nextExpectedCommand = yield* preprintReviews.getNextExpectedCommand({
