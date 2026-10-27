@@ -29,7 +29,9 @@ export const UseOfAiPage: ({
     const preprint = yield* preprints.getPreprintTitle(preprintId)
     const details = yield* preprintReviews.getUseOfAiDetails({ preprintId: preprint.id, orcidId: user.orcid })
 
-    const form = UseOfAiForm.fromAnswer(details.generativeAiIdeas)
+    const form = UseOfAiForm.fromAnswer(
+      Option.map(details.generativeAiIdeas, answer => ({ answer, detail: details.generativeAiIdeasDetails })),
+    )
 
     return renderUseOfAiPage({
       alreadyWritten: details.alreadyWritten,

@@ -39,7 +39,9 @@ describe('UseOfAiPage', () => {
         expect(actual).toStrictEqual(
           renderUseOfAiPage({
             alreadyWritten: details.alreadyWritten,
-            form: UseOfAiForm.fromAnswer(details.generativeAiIdeas),
+            form: UseOfAiForm.fromAnswer(
+              Option.map(details.generativeAiIdeas, answer => ({ answer, detail: details.generativeAiIdeasDetails })),
+            ),
             locale,
             moreAuthors: details.moreAuthors,
             preprint,
@@ -134,7 +136,10 @@ describe('UseOfAiSubmission', () => {
         expect(actual).toStrictEqual(
           renderUseOfAiPage({
             alreadyWritten: details.alreadyWritten,
-            form: new UseOfAiForm.InvalidForm({ generativeAiIdeas: Either.left(new UseOfAiForm.Missing()) }),
+            form: new UseOfAiForm.InvalidForm({
+              generativeAiIdeas: Either.left(new UseOfAiForm.Missing()),
+              generativeAiIdeasDetails: Option.none(),
+            }),
             locale,
             moreAuthors: details.moreAuthors,
             preprint,

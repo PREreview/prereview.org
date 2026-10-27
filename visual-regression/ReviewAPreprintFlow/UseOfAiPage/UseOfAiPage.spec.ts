@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
@@ -35,7 +35,10 @@ test('content looks right when there are other authors', async ({ showPage }) =>
 
 test('content looks right when use of AI for ideas is missing', async ({ showPage }) => {
   const response = _.renderUseOfAiPage({
-    form: new UseOfAiForm.InvalidForm({ generativeAiIdeas: Either.left(new UseOfAiForm.Missing()) }),
+    form: new UseOfAiForm.InvalidForm({
+      generativeAiIdeas: Either.left(new UseOfAiForm.Missing()),
+      generativeAiIdeasDetails: Option.none(),
+    }),
     locale,
     moreAuthors: 'no',
     preprint,
