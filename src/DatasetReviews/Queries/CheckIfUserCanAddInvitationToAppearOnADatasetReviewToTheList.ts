@@ -60,8 +60,6 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     if (!Equal.equals(needInvitations, Option.some('yes'))) {
       return yield* Either.left(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())
     }
-
-    return
   })
 
 export const CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList = Queries.OnDemandQuery({
