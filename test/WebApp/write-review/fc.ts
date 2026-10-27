@@ -229,6 +229,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             readyFullReviewDetails: readyFullReviewDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
+            generativeAiIdeasDetails: fc.nonEmptyString(),
             review: fc.html(),
             otherAuthors: otherAuthors(),
           },
@@ -260,6 +261,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
           {
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
+            generativeAiIdeasDetails: fc.nonEmptyString(),
             introductionMatches: introductionMatches(),
             introductionMatchesDetails: introductionMatchesDetails(),
             methodsAppropriate: methodsAppropriate(),
@@ -306,9 +308,20 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         readyFullReview: readyFullReview(),
         persona: personaType(),
         reviewType: fc.constant('questions'),
-        generativeAiIdeas: generativeAiIdeas(),
       }),
       fc.record({ club: fc.option(fc.uuid(), { nil: null }) }, { requiredKeys: [] }),
+      fc.oneof(
+        fc.record(
+          {
+            generativeAiIdeas: fc.constant('yes'),
+            generativeAiIdeasDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['generativeAiIdeas'] },
+        ),
+        fc.record({
+          generativeAiIdeas: fc.constant('no'),
+        }),
+      ),
       fc.oneof(
         fc.record({
           moreAuthors: fc.constant('yes'),
@@ -420,9 +433,20 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         persona: personaType(),
         review: fc.html(),
         reviewType: fc.constant('freeform'),
-        generativeAiIdeas: generativeAiIdeas(),
       }),
       fc.record({ club: fc.option(fc.uuid(), { nil: null }) }, { requiredKeys: [] }),
+      fc.oneof(
+        fc.record(
+          {
+            generativeAiIdeas: fc.constant('yes'),
+            generativeAiIdeasDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['generativeAiIdeas'] },
+        ),
+        fc.record({
+          generativeAiIdeas: fc.constant('no'),
+        }),
+      ),
       fc.oneof(
         fc.record({
           moreAuthors: fc.constant('yes'),

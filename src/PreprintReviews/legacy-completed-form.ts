@@ -21,11 +21,27 @@ export const CompletedFormC = pipe(
     conduct: C.literal('yes'),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     persona: C.literal('public', 'pseudonym'),
-    generativeAiIdeas: C.literal('yes', 'no'),
   }),
   C.intersect(
     C.partial({
       club: C.nullable(UuidC as C.Codec<unknown, Uuid, Uuid>),
+    }),
+  ),
+  C.intersect(
+    C.sum('generativeAiIdeas')({
+      yes: pipe(
+        C.struct({
+          generativeAiIdeas: C.literal('yes'),
+        }),
+        C.intersect(
+          C.partial({
+            generativeAiIdeasDetails: NonEmptyStringC,
+          }),
+        ),
+      ),
+      no: C.struct({
+        generativeAiIdeas: C.literal('no'),
+      }),
     }),
   ),
   C.intersect(

@@ -198,6 +198,7 @@ export const FormC = pipe(
       skip: NonEmptyStringC,
     }),
     generativeAiIdeas: C.literal('yes', 'no'),
+    generativeAiIdeasDetails: NonEmptyStringC,
     novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
     novelDetails: C.partial({
       no: NonEmptyStringC,
