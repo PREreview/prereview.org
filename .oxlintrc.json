@@ -156,6 +156,7 @@
     "typescript/switch-exhaustiveness-check": "error",
     "unicorn/no-array-sort": "off",
     "unicorn/prefer-at": "error",
+    "unicorn/prefer-code-point": "error",
     "unicorn/prefer-node-protocol": "error",
     "unicorn/prefer-regexp-test": "error",
     "unicorn/prefer-type-error": "error",

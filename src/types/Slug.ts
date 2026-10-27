@@ -14,8 +14,8 @@ export const SlugSchema = pipe(
     fc
       .array(
         fc.mapToConstant(
-          { num: 26, build: v => String.fromCharCode(v + 0x61) },
-          { num: 10, build: v => String.fromCharCode(v + 0x30) },
+          { num: 26, build: v => String.fromCodePoint(v + 0x61) },
+          { num: 10, build: v => String.fromCodePoint(v + 0x30) },
         ),
         { minLength: 1 },
       )
