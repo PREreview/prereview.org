@@ -7,6 +7,7 @@ import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
+import { DeclareUseOfAi } from './DeclareUseOfAi.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import * as GetUseOfAiDetails from './GetUseOfAiDetails.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
@@ -45,6 +46,7 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
     >
     addReviewToAClub: ReturnType<typeof AddReviewToAClub>
     markReviewAsNotInAClub: ReturnType<typeof MarkReviewAsNotInAClub>
+    declareUseOfAi: ReturnType<typeof DeclareUseOfAi>
   }
 >() {}
 
@@ -96,6 +98,7 @@ export const layer = Layer.effect(
       getUseOfAiDetails: GetUseOfAiDetails.GetUseOfAiDetails(formStore),
       addReviewToAClub: AddReviewToAClub(formStore, clubIds),
       markReviewAsNotInAClub: MarkReviewAsNotInAClub(formStore),
+      declareUseOfAi: DeclareUseOfAi(formStore),
     }
   }),
 )
