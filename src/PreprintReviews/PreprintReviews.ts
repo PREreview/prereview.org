@@ -8,6 +8,7 @@ import * as Queries from '../Queries.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { DeclareUseOfAi } from './DeclareUseOfAi.ts'
+import * as GetNextExpectedCommand from './GetNextExpectedCommand.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
 import * as GetUseOfAiDetails from './GetUseOfAiDetails.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
@@ -38,6 +39,12 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
       Either.Either.Right<CheckIfUserCanAddToAClub.Result>,
       Either.Either.Left<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
     >
+    getNextExpectedCommand: (
+      input: GetNextExpectedCommand.Input,
+    ) => Effect.Effect<
+      Either.Either.Right<GetNextExpectedCommand.Result>,
+      Either.Either.Left<GetNextExpectedCommand.Result> | Queries.UnableToQuery
+    >
     getUseOfAiDetails: (
       input: GetUseOfAiDetails.Input,
     ) => Effect.Effect<
@@ -55,6 +62,7 @@ export const {
   recordEmailSentToNotifyPrereviewerOfAPrereview,
   hasAPrereviewerBeenNotifiedOfAReview,
   checkIfUserCanAddToAClub,
+  getNextExpectedCommand,
   getUseOfAiDetails,
 } = Effect.serviceFunctions(PreprintReviews)
 
@@ -95,6 +103,7 @@ export const layer = Layer.effect(
       ),
       hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
       checkIfUserCanAddToAClub: CheckIfUserCanAddToAClub.CheckIfUserCanAddToAClub(formStore),
+      getNextExpectedCommand: GetNextExpectedCommand.GetNextExpectedCommand(formStore),
       getUseOfAiDetails: GetUseOfAiDetails.GetUseOfAiDetails(formStore),
       addReviewToAClub: AddReviewToAClub(formStore, clubIds),
       markReviewAsNotInAClub: MarkReviewAsNotInAClub(formStore),
