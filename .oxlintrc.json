@@ -77,7 +77,8 @@
           "fp-ts/lib/ReadonlyTuple.js",
           "fp-ts/lib/Refinement.js",
           "fp-ts/lib/string.js"
-        ]
+        ],
+        "patterns": ["**/assets/**"]
       }
     ],
     "no-comments/disallowComments": [
@@ -199,8 +200,7 @@
     {
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
-        "typescript/no-base-to-string": "off",
-        "no-restricted-imports": ["error", { "patterns": ["**/assets/**"] }]
+        "typescript/no-base-to-string": "off"
       }
     },
     {
