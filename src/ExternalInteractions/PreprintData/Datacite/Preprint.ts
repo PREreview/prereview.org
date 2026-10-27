@@ -105,8 +105,8 @@ const ensureIsAPreprint = (
     ['journalarticle', 'studyregistration'].includes(types.resourceTypeGeneral?.toLowerCase() as never)) ||
   (id._tag === 'AfricarxivUbuntunetPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
   (id._tag === 'ArxivPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
-  (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other') ||
-  (id._tag === 'RadialPreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other')
+  (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other') ||
+  (id._tag === 'RadialPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other')
     ? Either.void
     : Either.left(new Preprints.NotAPreprint({ cause: types }))
 

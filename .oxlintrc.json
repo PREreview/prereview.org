@@ -158,6 +158,7 @@
     "unicorn/prefer-node-protocol": "error",
     "unicorn/prefer-regexp-test": "error",
     "array-callback-return": "error",
+    "eqeqeq": "error",
     "no-useless-return": "error",
     "no-var": "error",
     "prefer-const": "error",
