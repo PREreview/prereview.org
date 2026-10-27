@@ -56,7 +56,7 @@ const DomainIdFromUrlSchema = Schema.transformOrFail(Schema.URL, DomainIdSchema,
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/domains/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(9)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(9)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: domainId => ParseResult.succeed(new URL(`https://openalex.org/domains/${encodeURIComponent(domainId)}`)),
 })
@@ -67,7 +67,7 @@ const FieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, FieldIdSchema, {
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/fields/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(8)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(8)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: fieldId => ParseResult.succeed(new URL(`https://openalex.org/fields/${encodeURIComponent(fieldId)}`)),
 })
@@ -78,7 +78,7 @@ const SubfieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, SubfieldIdSch
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/subfields/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(11)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(11)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: subfieldId =>
     ParseResult.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),
@@ -90,7 +90,7 @@ const TopicIdFromUrlSchema = Schema.transformOrFail(Schema.URL, TopicIdSchema, {
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/T')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(2)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(2)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: topicId => ParseResult.succeed(new URL(`https://openalex.org/T${encodeURIComponent(topicId)}`)),
 })
@@ -101,7 +101,7 @@ const KeywordIdFromUrlSchema = Schema.transformOrFail(Schema.URL, KeywordIdSchem
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/keywords/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(10)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(10)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: keywordId => ParseResult.succeed(new URL(`https://openalex.org/keywords/${encodeURIComponent(keywordId)}`)),
 })

@@ -15,7 +15,7 @@ export const SubfieldIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URL
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/subfields/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(11)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(11)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: subfieldId =>
     ParseResult.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),

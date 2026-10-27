@@ -14,7 +14,7 @@ export const FieldIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URL, F
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/fields/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(8)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(8)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: fieldId => ParseResult.succeed(new URL(`https://openalex.org/fields/${encodeURIComponent(fieldId)}`)),
 })

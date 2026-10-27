@@ -161,6 +161,7 @@
     "unicorn/prefer-node-protocol": "error",
     "unicorn/prefer-regexp-test": "error",
     "unicorn/prefer-string-replace-all": "error",
+    "unicorn/prefer-string-slice": "error",
     "unicorn/prefer-type-error": "error",
     "array-callback-return": "error",
     "eqeqeq": "error",

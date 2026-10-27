@@ -11,7 +11,7 @@ export const DomainIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URL, 
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/domains/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(9)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(9)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: domainId => ParseResult.succeed(new URL(`https://openalex.org/domains/${encodeURIComponent(domainId)}`)),
 })

@@ -15,7 +15,7 @@ export const KeywordIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URLF
       ? ParseResult.succeed(
           crypto
             .createHash('shake256', { outputLength: 10 })
-            .update(decodeURIComponent(url.pathname.substring(10)))
+            .update(decodeURIComponent(url.pathname.slice(10)))
             .digest('hex'),
         )
       : ParseResult.fail(new ParseResult.Type(ast, url)),

@@ -124,7 +124,7 @@ const PreprintIdSchema = Schema.transform(
     encode: flow(
       Match.value,
       Match.when(stringStartsWith('doi:'), id =>
-        Tuple.make('doi-' as const, id.substring(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
+        Tuple.make('doi-' as const, id.slice(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
       ),
       Match.when(stringStartsWith('https://philsci-archive.pitt.edu/'), id =>
         Tuple.make('philsci-' as const, Number.parseInt(id.slice(33, -1), 10)),
@@ -141,7 +141,7 @@ const DatasetIdSchema = Schema.transform(
     strict: true,
     decode: ([, match]) => `doi:${match.replaceAll('-', '/').replaceAll('+', '-')}` as const,
     encode: value =>
-      Tuple.make('doi-' as const, value.substring(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
+      Tuple.make('doi-' as const, value.slice(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
   },
 )
 

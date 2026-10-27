@@ -14,7 +14,7 @@ export const TopicIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URLFro
   strict: true,
   decode: (url, _, ast) =>
     url.origin === 'https://openalex.org' && url.pathname.startsWith('/T')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(2)))
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(2)))
       : ParseResult.fail(new ParseResult.Type(ast, url)),
   encode: topicId => ParseResult.succeed(new URL(`https://openalex.org/T${encodeURIComponent(topicId)}`)),
 })
