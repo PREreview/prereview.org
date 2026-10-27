@@ -44,8 +44,6 @@ import {
   writeReviewReviewType,
   writeReviewShouldRead,
   writeReviewStart,
-  writeReviewUseOfAi,
-  writeReviewUseOfAiSubmission,
 } from '../../write-review/index.ts'
 import type { Env } from './index.ts'
 
@@ -311,19 +309,6 @@ export const WriteReviewRouter = pipe(
               id,
               locale: env.locale,
               method: env.method,
-              user: env.loggedInUser,
-            }),
-      ),
-    ),
-    pipe(
-      Routes.writeReviewUseOfAiMatch.parser,
-      P.map(
-        ({ id }) =>
-          (env: Env) =>
-            (env.method === 'POST' ? writeReviewUseOfAiSubmission : writeReviewUseOfAi)({
-              body: env.body,
-              id,
-              locale: env.locale,
               user: env.loggedInUser,
             }),
       ),
