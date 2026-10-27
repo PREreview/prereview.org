@@ -6,11 +6,11 @@ import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
+import * as Routes from '../../../routes.ts'
 import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
-  writeReviewUseOfAiMatch,
 } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -32,12 +32,12 @@ export function competingInterestsForm(
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
-  const backMatch =
+  const backHref =
     alreadyWritten === 'yes'
-      ? moreAuthors === 'yes'
-        ? writeReviewAddAuthorsMatch
-        : writeReviewAuthorsMatch
-      : writeReviewUseOfAiMatch
+      ? format((moreAuthors === 'yes' ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch).formatter, {
+          id: preprint.id,
+        })
+      : Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id })
   const t = translate(locale)
 
   return StreamlinePageResponse({
@@ -48,7 +48,7 @@ export function competingInterestsForm(
       errorPrefix(locale, error),
       plainText,
     ),
-    nav: backNav(locale, format(backMatch.formatter, { id: preprint.id })),
+    nav: backNav(locale, backHref),
     main: html`
       <form
         method="post"

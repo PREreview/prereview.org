@@ -27,7 +27,6 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
-  writeReviewUseOfAiMatch,
 } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -144,7 +143,7 @@ export function publishForm(
                 <dt>${t('useOfAiShort')()}</dt>
                 <dd>${getUseOfAi(review, locale)}</dd>
                 <dd>
-                  <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
+                  <a href="${Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id })}"
                     >${t('changeUseOfAi')(visuallyHidden)}</a
                   >
                 </dd>

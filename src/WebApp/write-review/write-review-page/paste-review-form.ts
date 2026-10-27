@@ -6,7 +6,8 @@ import { type MissingE, hasAnError } from '../../../form.ts'
 import { type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { writeReviewReviewMatch, writeReviewUseOfAiMatch } from '../../../routes.ts'
+import { writeReviewReviewMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -24,7 +25,7 @@ export const pasteReviewForm = (preprint: PreprintTitle, form: PasteReviewForm, 
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('write-review', 'pasteYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
-      <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}" class="back"
+      <a href="${Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id })}" class="back"
         >${t('forms', 'backLink')()}</a
       >
     `,

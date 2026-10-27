@@ -9,6 +9,7 @@ import type Keyv from 'keyv'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
+import * as Routes from '../routes.ts'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -26,7 +27,6 @@ import {
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
-  writeReviewUseOfAiMatch,
 } from '../routes.ts'
 import { isDoi } from '../types/Doi.ts'
 import { EmailAddressC } from '../types/EmailAddress.ts'
@@ -101,28 +101,31 @@ export function deleteForm(
 }
 
 export const nextFormPath = ({ form, preprintId }: { form: Form; preprintId: PreprintId }) =>
-  format(commandMatches[NextExpectedCommand(form)].formatter, { id: preprintId })
+  commandHrefs[NextExpectedCommand(form)](preprintId)
 
-const commandMatches = {
-  ChooseReviewType: writeReviewReviewTypeMatch,
-  DeclareUseOfAi: writeReviewUseOfAiMatch,
-  AnswerIfTheIntroductionMatches: writeReviewIntroductionMatchesMatch,
-  AnswerIfTheMethodsAreAppropriate: writeReviewMethodsAppropriateMatch,
-  AnswerIfTheResultsAreSupported: writeReviewResultsSupportedMatch,
-  AnswerIfTheDataPresentationIsWellSuited: writeReviewDataPresentationMatch,
-  AnswerIfTheFindingsAndNextStepsAreClear: writeReviewFindingsNextStepsMatch,
-  AnswerIfThePreprintIsNovel: writeReviewNovelMatch,
-  AnswerIfTheLanguageNeedsEditing: writeReviewLanguageEditingMatch,
-  AnswerIfThePreprintShouldBeRead: writeReviewShouldReadMatch,
-  AnswerIfThePreprintIsReadyForAFullReview: writeReviewReadyFullReviewMatch,
-  WriteReview: writeReviewReviewMatch,
-  ChoosePersona: writeReviewPersonaMatch,
-  AnswerIfOthersNeedToBeListed: writeReviewAuthorsMatch,
-  AddOtherAuthors: writeReviewAuthorsMatch,
-  DeclareCompetingInterests: writeReviewCompetingInterestsMatch,
-  DeclareFollowingCodeOfConduct: writeReviewConductMatch,
-  PublishPreprintReview: writeReviewPublishMatch,
-} satisfies Record<NextExpectedCommand, Match<{ id: IndeterminatePreprintId }>>
+const legacyHref = (match: Match<{ id: IndeterminatePreprintId }>) => (preprintId: PreprintId) =>
+  format(match.formatter, { id: preprintId })
+
+const commandHrefs = {
+  ChooseReviewType: legacyHref(writeReviewReviewTypeMatch),
+  DeclareUseOfAi: (preprintId: PreprintId) => Routes.ReviewAPreprintUseOfAi.href({ preprintId }),
+  AnswerIfTheIntroductionMatches: legacyHref(writeReviewIntroductionMatchesMatch),
+  AnswerIfTheMethodsAreAppropriate: legacyHref(writeReviewMethodsAppropriateMatch),
+  AnswerIfTheResultsAreSupported: legacyHref(writeReviewResultsSupportedMatch),
+  AnswerIfTheDataPresentationIsWellSuited: legacyHref(writeReviewDataPresentationMatch),
+  AnswerIfTheFindingsAndNextStepsAreClear: legacyHref(writeReviewFindingsNextStepsMatch),
+  AnswerIfThePreprintIsNovel: legacyHref(writeReviewNovelMatch),
+  AnswerIfTheLanguageNeedsEditing: legacyHref(writeReviewLanguageEditingMatch),
+  AnswerIfThePreprintShouldBeRead: legacyHref(writeReviewShouldReadMatch),
+  AnswerIfThePreprintIsReadyForAFullReview: legacyHref(writeReviewReadyFullReviewMatch),
+  WriteReview: legacyHref(writeReviewReviewMatch),
+  ChoosePersona: legacyHref(writeReviewPersonaMatch),
+  AnswerIfOthersNeedToBeListed: legacyHref(writeReviewAuthorsMatch),
+  AddOtherAuthors: legacyHref(writeReviewAuthorsMatch),
+  DeclareCompetingInterests: legacyHref(writeReviewCompetingInterestsMatch),
+  DeclareFollowingCodeOfConduct: legacyHref(writeReviewConductMatch),
+  PublishPreprintReview: legacyHref(writeReviewPublishMatch),
+} satisfies Record<NextExpectedCommand, (preprintId: PreprintId) => string>
 
 export const FormC = pipe(
   C.partial({

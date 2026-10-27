@@ -3,12 +3,8 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import {
-  writeReviewAddAuthorsMatch,
-  writeReviewAuthorsMatch,
-  writeReviewReviewTypeMatch,
-  writeReviewUseOfAiMatch,
-} from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
+import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -48,7 +44,7 @@ export const renderUseOfAiPage = ({
       >${t('forms', 'backLink')()}</a
     >`,
     main: html`
-      <form method="post" action="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}" novalidate>
+      <form method="post" action="${Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(otherAuthors, locale), errorSummary(locale)) : ''}
 
         <h1>${t('useOfAi')()}</h1>
@@ -124,7 +120,7 @@ export const renderUseOfAiPage = ({
         ${saveAndContinueButton(locale)}
       </form>
     `,
-    canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprint.id }),
+    canonical: Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id }),
     skipToLabel: 'form',
     js: hasAnError ? ['error-summary.js'] : [],
   })

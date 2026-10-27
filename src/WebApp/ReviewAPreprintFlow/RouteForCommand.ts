@@ -16,7 +16,7 @@ const legacyRoute = (match: Match<{ id: IndeterminatePreprintId }>): RouteToPrep
 
 const commandRoutes = {
   ChooseReviewType: legacyRoute(Routes.writeReviewReviewTypeMatch),
-  DeclareUseOfAi: legacyRoute(Routes.writeReviewUseOfAiMatch),
+  DeclareUseOfAi: Routes.ReviewAPreprintUseOfAi,
   AnswerIfTheIntroductionMatches: legacyRoute(Routes.writeReviewIntroductionMatchesMatch),
   AnswerIfTheMethodsAreAppropriate: legacyRoute(Routes.writeReviewMethodsAppropriateMatch),
   AnswerIfTheResultsAreSupported: legacyRoute(Routes.writeReviewResultsSupportedMatch),
