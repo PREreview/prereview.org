@@ -18,7 +18,7 @@ export const OrcidIdSchema = pipe(Schema.String, Schema.filter(isOrcidId)).annot
         minLength: 4 + 4 + 4 + 3,
         maxLength: 4 + 4 + 4 + 3,
       })
-      .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
+      .map(value => mod11_2.generate(value).replaceAll(/.{4}(?=.)/g, '$&-'))
       .filter(isOrcidId),
 })
 

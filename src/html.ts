@@ -283,7 +283,7 @@ export const RawHtmlC = C.make(
 )
 
 function texToMathml(input: string) {
-  return input.replace(
+  return input.replaceAll(
     /(?<!\d(?:\s|&nbsp;|&#160;|&#xA0;|\u00a0)+?)(\${1,2}(?!(?:\s|&nbsp;|&#160;|&#xA0;|\u00a0)*\d+(?:[\s,.<$]|$)))([\s\S]+?)\1/g,
     (original, mode: string, match: string) => {
       try {
@@ -419,7 +419,7 @@ const blockElements = HashSet.make(
 )
 
 function normalizeText(text: string): string {
-  return text.replace(/[ \t\n\f\r]+/g, ' ')
+  return text.replaceAll(/[ \t\n\f\r]+/g, ' ')
 }
 
 function normalize(nodes: ReadonlyArray<CanonicalChild>, preserveWhitespace = false): ReadonlyArray<CanonicalChild> {

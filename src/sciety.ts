@@ -53,9 +53,9 @@ export const isScietyPreprint: Predicate.Refinement<PreprintId, PreprintIdSuppor
 export const scietyUrl = (preprint: PreprintIdSupportedBySciety) => {
   const url = new URL('https://sciety.org/articles/activity/')
   url.pathname = `articles/activity/${preprint.value
-    .replace(/%/g, '%25')
-    .replace(/\/(\.{1,2})\//g, '/$1%2F')
-    .replace(/\\/g, '%5C')}`
+    .replaceAll('%', '%25')
+    .replaceAll(/\/(\.{1,2})\//g, '/$1%2F')
+    .replaceAll('\\', '%5C')}`
 
   return url
 }
