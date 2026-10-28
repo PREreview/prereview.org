@@ -2293,15 +2293,13 @@ export const declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview = ({
 } = {}): fc.Arbitrary<Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview> =>
   datasetReviewId === undefined
     ? Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview)
-    : fc
-        .tuple(Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview), datasetReviewId)
-        .map(
-          ([event, datasetReviewId]) =>
-            new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
-              ...Struct.omit(event, '_tag'),
-              datasetReviewId,
-            }),
-        )
+    : fc.tuple(Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview), datasetReviewId).map(
+        ([event, datasetReviewId]) =>
+          new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+            ...Struct.omit(event, '_tag'),
+            datasetReviewId,
+          }),
+      )
 
 export const competingInterestsForADatasetReviewWereDeclared = ({
   datasetReviewId,
