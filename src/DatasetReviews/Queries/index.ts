@@ -22,6 +22,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience from './CheckIf
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as CheckIfUserCanChoosePersona from './CheckIfUserCanChoosePersona.ts'
 import * as CheckIfUserCanDeclareCompetingInterests from './CheckIfUserCanDeclareCompetingInterests.ts'
+import { CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas } from './CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas.ts'
 import * as CheckIfUserCanDeclareFollowingCodeOfConduct from './CheckIfUserCanDeclareFollowingCodeOfConduct.ts'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.ts'
 import { CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList } from './CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList.ts'
@@ -111,6 +112,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList: Queries.FromOnDemandQuery<
       typeof CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList
     >
+    checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas: Queries.FromOnDemandQuery<
+      typeof CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas
+    >
     checkIfUserCanDeclareCompetingInterests: Queries.Query<
       (input: CheckIfUserCanDeclareCompetingInterests.Input) => CheckIfUserCanDeclareCompetingInterests.Result
     >
@@ -164,6 +168,7 @@ export const {
   checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview,
   checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList,
   checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList,
+  checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas,
   checkIfUserCanDeclareCompetingInterests,
   checkIfUserCanDeclareFollowingCodeOfConduct,
   getPublishedReview,
@@ -278,6 +283,9 @@ const makeDatasetReviewQueries: Effect.Effect<
       'DatasetReviewQueries.checkIfUserCanChoosePersona',
       CheckIfUserCanChoosePersona.createFilter,
       CheckIfUserCanChoosePersona.query,
+    ),
+    checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas: yield* Queries.makeOnDemandQuery(
+      CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas,
     ),
     checkIfUserCanDeclareCompetingInterests: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfUserCanDeclareCompetingInterests',
