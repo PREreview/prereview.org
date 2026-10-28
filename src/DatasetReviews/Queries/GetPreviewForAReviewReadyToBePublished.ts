@@ -262,6 +262,7 @@ const requirementsToBeReady = [
   'AnsweredIfTheDatasetIsReadyToBeShared',
   'AnsweredIfTheDatasetIsMissingAnything',
   'PersonaForDatasetReviewWasChosen',
+  'AnsweredIfOthersNeedToBeListedOnTheReview',
   'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
   'CompetingInterestsForADatasetReviewWereDeclared',
   'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',

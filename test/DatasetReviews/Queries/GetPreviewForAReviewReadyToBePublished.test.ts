@@ -245,6 +245,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.answeredIfOthersNeedToBeListedOnTheReview({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.competingInterestsForADatasetReviewWereDeclared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc
                 .declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
@@ -260,7 +261,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
               author: { orcidId: events[0].authorId, persona: events[13].persona },
               dataset: events[0].datasetId,
-              competingInterests: events[14].competingInterests,
+              authorsToInvite: Option.none(),
+              competingInterests: events[15].competingInterests,
               qualityRating: { rating: events[1].rating, detail: events[1].detail },
               answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: events[2].answer, detail: events[2].detail },
               answerToIfTheDatasetHasEnoughMetadata: {
@@ -300,7 +302,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 detail: events[11].detail,
               },
               answerToIfTheDatasetIsMissingAnything: events[12].answer,
-              generativeAiIdeas: events[15].generativeAiIdeas,
+              generativeAiIdeas: events[16].generativeAiIdeas,
               license: 'CC-BY-4.0',
             }),
           ),
@@ -329,6 +331,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
                   personaForDatasetReviewWasChosen1,
+                  othersNeedToBeListedNo,
                   competingInterestsForADatasetReviewWereDeclared1,
                   declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -339,6 +342,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen1.persona,
                   },
+                  authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
                   qualityRating: {
@@ -421,6 +425,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetIsMissingAnything1,
                   answeredIfTheDatasetIsMissingAnything2,
                   personaForDatasetReviewWasChosen1,
+                  othersNeedToBeListedNo,
                   personaForDatasetReviewWasChosen2,
                   competingInterestsForADatasetReviewWereDeclared1,
                   competingInterestsForADatasetReviewWereDeclared2,
@@ -431,6 +436,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen2.persona,
                   },
+                  authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                   qualityRating: {
@@ -751,6 +757,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
                   personaForDatasetReviewWasChosen1,
+                  othersNeedToBeListedNo,
                   competingInterestsForADatasetReviewWereDeclared1,
                   declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -761,6 +768,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen1.persona,
                   },
+                  authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
                   qualityRating: {
@@ -829,6 +837,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
                   personaForDatasetReviewWasChosen1,
+                  othersNeedToBeListedNo,
                   competingInterestsForADatasetReviewWereDeclared1,
                   declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -839,6 +848,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen1.persona,
                   },
+                  authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
                   qualityRating: {
@@ -907,6 +917,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
                   personaForDatasetReviewWasChosen1,
+                  othersNeedToBeListedNo,
                   competingInterestsForADatasetReviewWereDeclared1,
                   declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -918,6 +929,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen1.persona,
                   },
+                  authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
                   qualityRating: {
@@ -1000,6 +1012,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 'AnsweredIfTheDatasetIsReadyToBeShared',
                 'AnsweredIfTheDatasetIsMissingAnything',
                 'PersonaForDatasetReviewWasChosen',
+                'AnsweredIfOthersNeedToBeListedOnTheReview',
                 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
                 'CompetingInterestsForADatasetReviewWereDeclared',
                 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
@@ -1035,6 +1048,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
         answeredIfTheDatasetIsReadyToBeShared1,
         answeredIfTheDatasetIsMissingAnything1,
         personaForDatasetReviewWasChosen1,
+        othersNeedToBeListedNo,
         competingInterestsForADatasetReviewWereDeclared1,
         declaredThatTheCodeOfConductWasFollowedForADatasetReview,
       ])
