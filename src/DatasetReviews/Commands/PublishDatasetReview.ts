@@ -2,6 +2,7 @@ import { Array, Data, Either, Function, Match, Option, pipe, type Types } from '
 import type { Temporal, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
+import { type RequirementToBePublished, RequirementsToBePublished } from '../RequirementsToBePublished.ts'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
@@ -19,25 +20,7 @@ export type State = NotStarted | NotReady | IsReady | IsBeingPublished | HasBeen
 export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
 export class NotReady extends Data.TaggedClass('NotReady')<{
-  missing: Array.NonEmptyReadonlyArray<
-    | 'RatedTheQualityOfTheDataset'
-    | 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'
-    | 'AnsweredIfTheDatasetHasEnoughMetadata'
-    | 'AnsweredIfTheDatasetHasTrackedChanges'
-    | 'AnsweredIfTheDatasetHasDataCensoredOrDeleted'
-    | 'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'
-    | 'AnsweredIfTheDatasetSupportsRelatedConclusions'
-    | 'AnsweredIfTheDatasetIsDetailedEnough'
-    | 'AnsweredIfTheDatasetMattersToItsAudience'
-    | 'AnsweredIfTheDatasetIsErrorFree'
-    | 'AnsweredIfTheDatasetIsReadyToBeShared'
-    | 'AnsweredIfTheDatasetIsMissingAnything'
-    | 'PersonaForDatasetReviewWasChosen'
-    | 'AnsweredIfOthersNeedToBeListedOnTheReview'
-    | 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'
-    | 'CompetingInterestsForADatasetReviewWereDeclared'
-    | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'
-  >
+  missing: Array.NonEmptyReadonlyArray<RequirementToBePublished>
 }> {}
 
 export class IsReady extends Data.TaggedClass('IsReady') {}
@@ -45,26 +28,6 @@ export class IsReady extends Data.TaggedClass('IsReady') {}
 export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
-
-const requirementToBeReady = [
-  'RatedTheQualityOfTheDataset',
-  'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
-  'AnsweredIfTheDatasetHasEnoughMetadata',
-  'AnsweredIfTheDatasetHasTrackedChanges',
-  'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
-  'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
-  'AnsweredIfTheDatasetSupportsRelatedConclusions',
-  'AnsweredIfTheDatasetIsDetailedEnough',
-  'AnsweredIfTheDatasetMattersToItsAudience',
-  'AnsweredIfTheDatasetIsErrorFree',
-  'AnsweredIfTheDatasetIsReadyToBeShared',
-  'AnsweredIfTheDatasetIsMissingAnything',
-  'PersonaForDatasetReviewWasChosen',
-  'AnsweredIfOthersNeedToBeListedOnTheReview',
-  'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
-  'CompetingInterestsForADatasetReviewWereDeclared',
-  'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
-] satisfies ReadonlyArray<NotReady['missing'][number]>
 
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
   if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
@@ -80,7 +43,7 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
   }
 
   return pipe(
-    Array.map(requirementToBeReady, requirement =>
+    Array.map(RequirementsToBePublished, requirement =>
       Either.fromOption(Array.findLast(events, hasTag(requirement)), () => requirement),
     ),
     Array.getLefts,

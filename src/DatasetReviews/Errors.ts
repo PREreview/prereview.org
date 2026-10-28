@@ -1,4 +1,5 @@
 import { type Array, Data, Schema } from 'effect'
+import type { RequirementToBePublished } from './RequirementsToBePublished.ts'
 
 export class DatasetReviewHasNotBeenStarted extends Data.TaggedError('DatasetReviewHasNotBeenStarted') {}
 
@@ -17,25 +18,7 @@ export class DatasetReviewIsBeingPublished extends Data.TaggedError('DatasetRevi
 export class DatasetReviewIsInProgress extends Data.TaggedError('DatasetReviewIsInProgress') {}
 
 export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('DatasetReviewNotReadyToBePublished')<{
-  missing: Array.NonEmptyReadonlyArray<
-    | 'RatedTheQualityOfTheDataset'
-    | 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'
-    | 'AnsweredIfTheDatasetHasEnoughMetadata'
-    | 'AnsweredIfTheDatasetHasTrackedChanges'
-    | 'AnsweredIfTheDatasetHasDataCensoredOrDeleted'
-    | 'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'
-    | 'AnsweredIfTheDatasetSupportsRelatedConclusions'
-    | 'AnsweredIfTheDatasetIsDetailedEnough'
-    | 'AnsweredIfTheDatasetMattersToItsAudience'
-    | 'AnsweredIfTheDatasetIsErrorFree'
-    | 'AnsweredIfTheDatasetIsReadyToBeShared'
-    | 'AnsweredIfTheDatasetIsMissingAnything'
-    | 'PersonaForDatasetReviewWasChosen'
-    | 'AnsweredIfOthersNeedToBeListedOnTheReview'
-    | 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'
-    | 'CompetingInterestsForADatasetReviewWereDeclared'
-    | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'
-  >
+  missing: Array.NonEmptyReadonlyArray<RequirementToBePublished>
 }> {}
 
 export class PublicationOfDatasetReviewWasNotRequested extends Data.TaggedError(

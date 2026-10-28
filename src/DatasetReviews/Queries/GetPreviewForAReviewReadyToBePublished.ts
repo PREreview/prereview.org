@@ -4,6 +4,7 @@ import * as Queries from '../../Queries.ts'
 import type { OrcidId } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import * as Errors from '../Errors.ts'
+import { RequirementsToBePublished } from '../RequirementsToBePublished.ts'
 import type * as Events from '../Events.ts'
 
 export interface DatasetReviewPreview {
@@ -78,7 +79,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
   }
 
   const missing = pipe(
-    Array.map(requirementsToBeReady, requirement =>
+    Array.map(RequirementsToBePublished, requirement =>
       Either.fromOption(Array.findLast(events, hasTag(requirement)), () => requirement),
     ),
     Array.getLefts,
@@ -249,26 +250,6 @@ export const GetPreviewForAReviewReadyToBePublished = (
     },
   )
 }
-
-const requirementsToBeReady = [
-  'RatedTheQualityOfTheDataset',
-  'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
-  'AnsweredIfTheDatasetHasEnoughMetadata',
-  'AnsweredIfTheDatasetHasTrackedChanges',
-  'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
-  'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
-  'AnsweredIfTheDatasetSupportsRelatedConclusions',
-  'AnsweredIfTheDatasetIsDetailedEnough',
-  'AnsweredIfTheDatasetMattersToItsAudience',
-  'AnsweredIfTheDatasetIsErrorFree',
-  'AnsweredIfTheDatasetIsReadyToBeShared',
-  'AnsweredIfTheDatasetIsMissingAnything',
-  'PersonaForDatasetReviewWasChosen',
-  'AnsweredIfOthersNeedToBeListedOnTheReview',
-  'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
-  'CompetingInterestsForADatasetReviewWereDeclared',
-  'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
-] satisfies ReadonlyArray<Errors.DatasetReviewNotReadyToBePublished['missing'][number]>
 
 function hasEvent(
   events: ReadonlyArray<Events.DatasetReviewEvent>,
