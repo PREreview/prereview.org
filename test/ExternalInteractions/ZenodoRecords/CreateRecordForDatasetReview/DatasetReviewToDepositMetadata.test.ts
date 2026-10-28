@@ -41,6 +41,7 @@ const cases = [
       answerToIfTheDatasetIsErrorFree: Option.some({ answer: 'unsure', detail: Option.none() }),
       answerToIfTheDatasetMattersToItsAudience: Option.some({ answer: 'very-consequential', detail: Option.none() }),
       answerToIfTheDatasetIsReadyToBeShared: Option.some({ answer: 'yes', detail: Option.none() }),
+      license: 'CC0-1.0',
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -224,6 +225,7 @@ const cases = [
         answer: 'yes',
         detail: NonEmptyString.fromString('Some detail about the yes.'),
       }),
+      license: 'CC-BY-4.0',
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -368,6 +370,7 @@ const cases = [
       answerToIfTheDatasetIsErrorFree: Option.none(),
       answerToIfTheDatasetMattersToItsAudience: Option.none(),
       answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+      license: 'CC-BY-4.0',
       answerToIfTheDatasetIsMissingAnything: Option.none(),
       url: new URL('http://example.com/dataset-review'),
     },

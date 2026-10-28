@@ -172,6 +172,16 @@ const competingInterestsForADatasetReviewWereDeclared2 =
     competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
+const declaredIfAiWasUsedToGenerateNewIdeasYes =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'yes', detail: NonEmptyString.fromString('Some detail about yes') },
+    datasetReviewId,
+  })
+const declaredIfAiWasUsedToGenerateNewIdeasNo =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'no' },
+    datasetReviewId,
+  })
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -222,6 +232,7 @@ describe('GetDataForZenodoRecord', () => {
             Tuple.make<[ReadonlyArray<Events.Event>, _.DataForZenodoRecord]>(events, {
               author: { orcidId: events[0].authorId, persona: events[13].persona },
               dataset: events[0].datasetId,
+              license: 'CC-BY-4.0',
               competingInterests: events[14].competingInterests,
               qualityRating: Option.some({ rating: events[1].rating, detail: events[1].detail }),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: events[2].answer, detail: events[2].detail },
@@ -285,6 +296,7 @@ describe('GetDataForZenodoRecord', () => {
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -344,6 +356,7 @@ describe('GetDataForZenodoRecord', () => {
                     persona: personaForDatasetReviewWasChosen2.persona,
                   },
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                   qualityRating: Option.some({
                     rating: ratedTheQualityOfTheDataset2.rating,
@@ -403,6 +416,7 @@ describe('GetDataForZenodoRecord', () => {
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -433,6 +447,7 @@ describe('GetDataForZenodoRecord', () => {
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -465,6 +480,7 @@ describe('GetDataForZenodoRecord', () => {
                   otherAuthors: [],
                   anonymousAuthors: 0,
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -498,6 +514,7 @@ describe('GetDataForZenodoRecord', () => {
                   otherAuthors: [],
                   anonymousAuthors: 1,
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -532,6 +549,7 @@ describe('GetDataForZenodoRecord', () => {
                   otherAuthors: [],
                   anonymousAuthors: 0,
                   dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -551,6 +569,100 @@ describe('GetDataForZenodoRecord', () => {
                 },
               ],
             ], // added and removed
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasYes,
+                  publicationOfDatasetReviewWasRequested,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC0-1.0',
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // AI was used
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
+                  publicationOfDatasetReviewWasRequested,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // AI was not used
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasYes,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
+                  publicationOfDatasetReviewWasRequested,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  dataset: datasetReviewWasStarted.datasetId,
+                  license: 'CC-BY-4.0',
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // AI answer changed
           ],
         },
       },

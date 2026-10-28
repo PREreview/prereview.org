@@ -48,6 +48,7 @@ export interface DataForZenodoRecord {
     Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>
   >
   readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
+  readonly license: 'CC-BY-4.0' | 'CC0-1.0'
 }
 
 export type Error =
@@ -139,6 +140,11 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
 
   const competingInterests = Array.findLast(filteredEvents, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
 
+  const declaredIfAiWasUsedToGenerateNewIdeas = Array.findLast(
+    filteredEvents,
+    hasTag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'),
+  )
+
   const anonymousAuthors = Option.match(
     Array.findLast(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')),
     {
@@ -223,6 +229,10 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
           answerToIfTheDatasetIsMissingAnything,
           Struct.get('answer'),
         ),
+        license: Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
+          onNone: () => 'CC-BY-4.0',
+          onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
+        }),
       }),
   })
 }

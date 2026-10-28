@@ -1912,6 +1912,7 @@ export const datasetReviewDataForZenodoRecord = ({
       answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
     ),
     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
+    license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
   })
 
 export const publishedPrereviewerReviewRequest = ({
