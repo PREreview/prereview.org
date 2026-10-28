@@ -72,6 +72,12 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+  await expect(page.getByRole('main')).toContainText(
+    'Use of AI The author declares that they did not use generative AI to come up with new ideas for their review.',
+  )
+  await expect(page.getByRole('main')).toContainText(
+    'We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a CC BY 4.0 license.',
+  )
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -211,6 +217,12 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+    await expect(page.getByRole('main')).toContainText(
+      'Use of AI The author declares that they used generative AI to come up with new ideas for their review. Vivamus egestas risus vel ex tincidunt.',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a CC0 1.0 license.',
+    )
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 

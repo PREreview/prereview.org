@@ -35,6 +35,7 @@ const review = {
     answer: 'yes',
     detail: NonEmptyString.fromString('Cras sit amet ligula a lacus faucibus porta.'),
   }),
+  license: 'CC0-1.0',
   dataset: new Datasets.DatasetTitle({
     id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,

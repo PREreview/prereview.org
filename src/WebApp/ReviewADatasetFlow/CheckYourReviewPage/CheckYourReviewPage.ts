@@ -11,7 +11,7 @@ import { ProfileId } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset' | 'license'> & {
+export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
   readonly author: Option.Option<Prereviewers.Persona>
   readonly dataset: Datasets.DatasetTitle
 }
@@ -497,6 +497,30 @@ export const CheckYourReviewPage = ({
           </div>
 
           <h2>${t('nowPublish')()}</h2>
+
+          <p>
+            <span ${languageAttributesFor('en')}
+              >We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
+              ${Match.value(review.license).pipe(
+                Match.when(
+                  'CC0-1.0',
+                  () =>
+                    html`<a href="https://creativecommons.org/publicdomain/zero/1.0/"
+                      ><bdi translate="no">CC0&nbsp;1.0</bdi></a
+                    >`,
+                ),
+                Match.when(
+                  'CC-BY-4.0',
+                  () =>
+                    html`<a href="https://creativecommons.org/licenses/by/4.0/"
+                      ><bdi translate="no">CC&nbsp;BY&nbsp;4.0</bdi></a
+                    >`,
+                ),
+                Match.exhaustive,
+              )}
+              license.</span
+            >
+          </p>
 
           <button>${t('publishPrereview')()}</button>
         </form>
