@@ -197,6 +197,8 @@ export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnADat
 
 export type { InvitationToAppear } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 
+export type { UseOfAi } from './CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas.ts'
+
 const makeDatasetReviewQueries: Effect.Effect<
   typeof DatasetReviewQueries.Service,
   never,

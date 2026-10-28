@@ -1,7 +1,7 @@
-import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
+import { Array, Either, Equal, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
-import type { OrcidId, Uuid } from '../../types/index.ts'
+import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {
@@ -9,8 +9,13 @@ export interface Input {
   authorId: OrcidId.OrcidId
 }
 
+export type UseOfAi =
+  | { _tag: 'AiWasUsed'; generativeAiIdeasDetails: Option.Option<NonEmptyString.NonEmptyString> }
+  | { _tag: 'AiWasNotUsed' }
+  | { _tag: 'NotAnswered' }
+
 export type Result = Either.Either<
-  Option.Option<Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']>,
+  UseOfAi,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -51,9 +56,15 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
       return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
     }
 
-    return Option.map(
+    return Option.match(
       Array.findLast(filteredEvents, hasTag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview')),
-      Struct.get('generativeAiIdeas'),
+      {
+        onNone: (): UseOfAi => ({ _tag: 'NotAnswered' }),
+        onSome: ({ generativeAiIdeas }): UseOfAi =>
+          generativeAiIdeas.answer === 'yes'
+            ? { _tag: 'AiWasUsed', generativeAiIdeasDetails: generativeAiIdeas.detail }
+            : { _tag: 'AiWasNotUsed' },
+      },
     )
   })
 

@@ -51,7 +51,7 @@ const published = new Events.DatasetReviewWasPublished({
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not declared', input, [started], Either.right(Option.none())],
+  ['not declared', input, [started], Either.right({ _tag: 'NotAnswered' })],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
@@ -64,19 +64,27 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     [started],
     Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
   ],
-  ['declared yes', input, [started, declaredYes], Either.right(Option.some(declaredYes.generativeAiIdeas))],
+  [
+    'declared yes',
+    input,
+    [started, declaredYes],
+    Either.right({ _tag: 'AiWasUsed', generativeAiIdeasDetails: Option.none() }),
+  ],
   [
     'declared yes with a detail',
     input,
     [started, declaredYesWithDetail],
-    Either.right(Option.some(declaredYesWithDetail.generativeAiIdeas)),
+    Either.right({
+      _tag: 'AiWasUsed',
+      generativeAiIdeasDetails: Option.some(NonEmptyString.NonEmptyString('Some details')),
+    }),
   ],
-  ['declared no', input, [started, declaredNo], Either.right(Option.some(declaredNo.generativeAiIdeas))],
+  ['declared no', input, [started, declaredNo], Either.right({ _tag: 'AiWasNotUsed' })],
   [
     'declared more than once',
     input,
     [started, declaredYesWithDetail, declaredNo],
-    Either.right(Option.some(declaredNo.generativeAiIdeas)),
+    Either.right({ _tag: 'AiWasNotUsed' }),
   ],
   [
     'publication requested',
