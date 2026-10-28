@@ -117,7 +117,7 @@ export const renderUseOfAiPage = ({
                   <div class="conditional" id="generative-ai-ideas-details-control">
                     <div>
                       <label for="generative-ai-ideas-details" class="textarea"
-                        >${otherAuthors ? 'How did you or the other authors use it?' : 'How did you use it?'}
+                        >${t(otherAuthors ? 'howDidAuthorsUseAi' : 'howDidYouUseAi')()}
                         ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea

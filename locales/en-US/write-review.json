@@ -623,6 +623,14 @@
     "message": "Did you, or any of the other authors, use AI to generate ideas for this review?",
     "description": "Question that asks the user if they or any of the other authors used AI to generate ideas for their PREreview."
   },
+  "howDidYouUseAi": {
+    "message": "How did you use it?",
+    "description": "Label for the input for providing details having selected the “Yes” option for the “Did you use AI to generate ideas for this review?” question."
+  },
+  "howDidAuthorsUseAi": {
+    "message": "How did you or the other authors use it?",
+    "description": "Label for the input for providing details having selected the “Yes” option for the “Did you, or any of the other authors, use AI to generate ideas for this review?” question."
+  },
   "selectYesIfUsedAi": {
     "message": "Select yes if you used AI to generate ideas for this review",
     "description": "Error message shown when the user tries to submit the “Did you use AI to generate ideas for this review?” form without selecting an option."
