@@ -288,6 +288,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               }),
               answerToIfTheDatasetIsMissingAnything: Option.some(events[12].answer),
               generativeAiIdeas: Option.none(),
+              license: 'CC-BY-4.0',
             }),
           ),
       ],
@@ -322,6 +323,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.none(),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // with answer
@@ -411,6 +413,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   }),
                   answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything2.answer),
                   generativeAiIdeas: Option.none(),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // with multiple answers
@@ -450,6 +453,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.none(),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // with authors to invite
@@ -485,6 +489,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.none(),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // with removed authors to invite
@@ -512,6 +517,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.none(),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // without authors to invite
@@ -542,6 +548,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasYes.generativeAiIdeas),
+                  license: 'CC0-1.0',
                 },
               ],
             ], // AI was used
@@ -572,6 +579,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // AI was not used
@@ -603,6 +611,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                   generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
+                  license: 'CC-BY-4.0',
                 },
               ],
             ], // AI answer changed

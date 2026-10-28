@@ -50,6 +50,7 @@ export interface DatasetReviewPreview {
   readonly generativeAiIdeas: Option.Option<
     Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
   >
+  readonly license: 'CC-BY-4.0' | 'CC0-1.0'
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -212,6 +213,10 @@ export const GetPreviewForAReviewReadyToBePublished = (
         ),
         answerToIfTheDatasetIsMissingAnything: Option.map(answerToIfTheDatasetIsMissingAnything, Struct.get('answer')),
         generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
+        license: Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
+          onNone: () => 'CC-BY-4.0',
+          onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
+        }),
       }),
   })
 }

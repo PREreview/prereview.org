@@ -1869,6 +1869,7 @@ export const datasetReviewPreview = ({
     generativeAiIdeas: maybe(
       declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
     ),
+    license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
   })
 
 export const datasetReviewDataForZenodoRecord = ({
