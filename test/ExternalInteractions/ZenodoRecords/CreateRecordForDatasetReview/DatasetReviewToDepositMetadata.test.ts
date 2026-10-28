@@ -42,7 +42,10 @@ const cases = [
       answerToIfTheDatasetMattersToItsAudience: Option.some({ answer: 'very-consequential', detail: Option.none() }),
       answerToIfTheDatasetIsReadyToBeShared: Option.some({ answer: 'yes', detail: Option.none() }),
       license: 'CC0-1.0',
-      generativeAiIdeas: Option.none(),
+      generativeAiIdeas: Option.some({
+        answer: 'yes',
+        detail: NonEmptyString.fromString('Cras sit amet ligula a lacus faucibus porta.'),
+      }),
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -142,6 +145,16 @@ const cases = [
       <p>
         Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
       </p>
+      
+            <h2>Use of Artificial Intelligence (AI)</h2>
+
+            
+                  <p>
+                    The authors declare that they used generative AI to come up with new ideas for their review.
+                  </p>
+                  <p>Cras sit amet ligula a lacus faucibus porta.</p>
+                
+          
     `),
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
@@ -228,7 +241,7 @@ const cases = [
         detail: NonEmptyString.fromString('Some detail about the yes.'),
       }),
       license: 'CC-BY-4.0',
-      generativeAiIdeas: Option.none(),
+      generativeAiIdeas: Option.some({ answer: 'no' }),
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -327,6 +340,15 @@ const cases = [
       <p>
         Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
       </p>
+      
+            <h2>Use of Artificial Intelligence (AI)</h2>
+
+            
+                  <p>
+                    The authors declare that they did not use generative AI to come up with new ideas for their review.
+                  </p>
+                
+          
     `),
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
@@ -412,6 +434,95 @@ const cases = [
       ),
       communities: [{ identifier: 'prereview-reviews' }],
       license: 'cc-by-4.0',
+      relatedIdentifiers: [
+        {
+          identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),
+          relation: 'reviews',
+          resourceType: 'dataset',
+          scheme: 'doi',
+        },
+        {
+          identifier: new URL('http://example.com/dataset-review'),
+          relation: 'isIdenticalTo',
+          resourceType: 'publication-peerreview',
+          scheme: 'url',
+        },
+      ],
+      uploadType: 'publication',
+      publicationType: 'peerreview',
+    },
+  ],
+  [
+    'AI was used by a single author',
+    {
+      author: new Prereviewers.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+      otherAuthors: [],
+      anonymousAuthors: 0,
+      dataset: new Datasets.DatasetTitle({
+        id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+        language: 'en',
+        title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+      }),
+      competingInterests: Option.none(),
+      qualityRating: Option.none(),
+      answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: 'yes', detail: Option.none() },
+      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+      answerToIfTheDatasetIsErrorFree: Option.none(),
+      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+      license: 'CC0-1.0',
+      generativeAiIdeas: Option.some({ answer: 'yes', detail: Option.none() }),
+      answerToIfTheDatasetIsMissingAnything: Option.none(),
+      url: new URL('http://example.com/dataset-review'),
+    },
+    {
+      creators: [{ name: 'Orange Panda' }],
+      description: rawHtml(`
+      <dl>
+        
+        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+        <dd>
+          <span>Yes</span>
+        </dd>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </dl>
+
+      <h2><span>Competing interests</span></h2>
+
+      <p>
+        <span>The author declares that they have no competing interests.</span>
+      </p>
+      
+            <h2>Use of Artificial Intelligence (AI)</h2>
+
+            
+                  <p>
+                    The author declares that they used generative AI to come up with new ideas for their review.
+                  </p>
+                  
+                
+          
+    `),
+      title: plainText(
+        'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      ),
+      communities: [{ identifier: 'prereview-reviews' }],
+      license: 'cc-zero',
       relatedIdentifiers: [
         {
           identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),

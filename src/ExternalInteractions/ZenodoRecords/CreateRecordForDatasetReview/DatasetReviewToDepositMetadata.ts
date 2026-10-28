@@ -267,6 +267,48 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
             : t('noCompetingInterestsStatement')(),
         )}
       </p>
+      ${Option.match(review.generativeAiIdeas, {
+        onNone: () => '',
+        onSome: generativeAiIdeas => {
+          const hasOtherAuthors = review.anonymousAuthors + review.otherAuthors.length > 0
+
+          return html`
+            <h2>Use of Artificial Intelligence (AI)</h2>
+
+            ${Match.value(generativeAiIdeas).pipe(
+              Match.when(
+                { answer: 'yes' },
+                ({ detail }) => html`
+                  <p>
+                    ${
+                      hasOtherAuthors
+                        ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
+                        : 'The author declares that they used generative AI to come up with new ideas for their review.'
+                    }
+                  </p>
+                  ${Option.match(detail, {
+                    onNone: () => '',
+                    onSome: detail => html`<p>${detail}</p>`,
+                  })}
+                `,
+              ),
+              Match.when(
+                { answer: 'no' },
+                () => html`
+                  <p>
+                    ${
+                      hasOtherAuthors
+                        ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
+                        : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
+                    }
+                  </p>
+                `,
+              ),
+              Match.exhaustive,
+            )}
+          `
+        },
+      })}
     `,
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${review.dataset.title}”` })),
     communities: [{ identifier: 'prereview-reviews' }],
