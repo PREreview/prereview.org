@@ -125,6 +125,11 @@ export const CheckYourReviewPage = ({
                                 Match.exhaustive,
                               )}
                             </dd>
+                            <dd>
+                              <a href="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}">
+                                <span ${languageAttributesFor('en')}>Change ${visuallyHidden(html`use of AI`)}</span>
+                              </a>
+                            </dd>
                           </div>
                         `
                       },
