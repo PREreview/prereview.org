@@ -26,6 +26,7 @@ const review = {
     name: Option.some(Name.Name('Josiah Carberry')),
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),
+  authorsToInvite: Option.none(),
   competingInterests: NonEmptyString.fromString(
     'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),

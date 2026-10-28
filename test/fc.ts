@@ -1834,6 +1834,7 @@ export const datasetReviewPreview = ({
 } = {}): fc.Arbitrary<DatasetReviews.DatasetReviewPreview> =>
   fc.record<DatasetReviews.DatasetReviewPreview>({
     author: author ?? fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') }),
+    authorsToInvite: maybe(nonEmptyArray(name())),
     dataset: datasetId(),
     competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
     qualityRating: ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail')),

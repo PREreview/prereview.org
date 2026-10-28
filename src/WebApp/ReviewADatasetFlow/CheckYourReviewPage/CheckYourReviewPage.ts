@@ -28,7 +28,7 @@ export const CheckYourReviewPage = ({
   locale: SupportedLocale
 }) => {
   const t = translate(locale, 'review-a-dataset-flow')
-  const hasOtherAuthors = review.authorsToInvite !== undefined && Option.isSome(review.authorsToInvite)
+  const hasOtherAuthors = Option.isSome(review.authorsToInvite)
 
   return StreamlinePageResponse({
     title: pipe(t('checkYourPrereview')(), plainText),
@@ -136,32 +136,27 @@ export const CheckYourReviewPage = ({
               </dl>
             </div>
           </div>
-          ${
-            review.authorsToInvite
-              ? html`
-                  <div class="summary-card">
-                    <div>
-                      <h2 id="invited-authors-label">${t('invitedAuthors')()}</h2>
 
-                      <a
-                        href="${Option.match(review.authorsToInvite, {
-                          onNone: () => Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
-                          onSome: () => Routes.ReviewADatasetCheckInvitationsToAppear,
-                        }).href({ datasetReviewId })}"
-                        >${t('changeInvitedAuthors')({ visuallyHidden })}</a
-                      >
-                    </div>
+          <div class="summary-card">
+            <div>
+              <h2 id="invited-authors-label">${t('invitedAuthors')()}</h2>
 
-                    <div aria-labelledby="invited-authors-label" role="region">
-                      ${Option.match(review.authorsToInvite, {
-                        onNone: () => html`<i>${t('invitedAuthorsNone')()}</i>`,
-                        onSome: formatList(locale),
-                      })}
-                    </div>
-                  </div>
-                `
-              : ''
-          }
+              <a
+                href="${Option.match(review.authorsToInvite, {
+                  onNone: () => Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+                  onSome: () => Routes.ReviewADatasetCheckInvitationsToAppear,
+                }).href({ datasetReviewId })}"
+                >${t('changeInvitedAuthors')({ visuallyHidden })}</a
+              >
+            </div>
+
+            <div aria-labelledby="invited-authors-label" role="region">
+              ${Option.match(review.authorsToInvite, {
+                onNone: () => html`<i>${t('invitedAuthorsNone')()}</i>`,
+                onSome: formatList(locale),
+              })}
+            </div>
+          </div>
 
           <div class="summary-card">
             <div>

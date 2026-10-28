@@ -11,7 +11,7 @@ export interface DatasetReviewPreview {
     readonly orcidId: OrcidId.OrcidId
     readonly persona: Events.PersonaForDatasetReviewWasChosen['persona']
   }
-  readonly authorsToInvite?: Option.Option<Array.NonEmptyReadonlyArray<NonEmptyString>>
+  readonly authorsToInvite: Option.Option<Array.NonEmptyReadonlyArray<NonEmptyString>>
   readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>
@@ -90,9 +90,9 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
-  const authorsToInvite = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
-    onNone: () => undefined,
-    onSome: ({ answer }) => {
+  const authorsToInvite = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')),
+    ({ answer }) => {
       if (answer === 'no') {
         return Option.none()
       }
@@ -119,7 +119,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
         Array.isNonEmptyArray,
       )
     },
-  })
+  )
 
   const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
@@ -170,6 +170,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
   return Option.match(
     Option.all({
       author,
+      authorsToInvite,
       competingInterests,
       qualityRating,
       answerToIfTheDatasetFollowsFairAndCarePrinciples,
@@ -189,6 +190,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
       onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
       onSome: ({
         author,
+        authorsToInvite,
         competingInterests,
         qualityRating,
         answerToIfTheDatasetFollowsFairAndCarePrinciples,
