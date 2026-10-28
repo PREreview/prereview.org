@@ -687,6 +687,41 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
+  'can publish a PREreview with details of the use of AI',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await waitForNotBusy(page)
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes').check()
+    await page.getByLabel('How did you use it? (optional)').fill('Maecenas sed dapibus massa.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText(
+      'Use of AI The author declares that they used generative AI to come up with new ideas for their review. Maecenas sed dapibus massa.',
+    )
+
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
@@ -849,10 +884,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('link', { name: 'Change use of AI' }).click()
 
     await page.getByLabel('Yes').check()
+    await page.getByLabel('How did you use it? (optional)').fill('Maecenas sed dapibus massa.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText(
-      'Use of AI The author declares that they used generative AI to come up with new ideas for their review.',
+      'Use of AI The author declares that they used generative AI to come up with new ideas for their review. Maecenas sed dapibus massa.',
     )
   },
 )
