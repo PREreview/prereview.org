@@ -411,6 +411,12 @@ export const ReviewADatasetCheckInvitationsToAppear = Route({
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 })
 
+export const ReviewADatasetUseOfAi = Route({
+  path: '/review-a-dataset/:datasetReviewId/use-of-ai',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/use-of-ai`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+})
+
 export const ReviewADatasetDeclareCompetingInterests = Route({
   path: '/review-a-dataset/:datasetReviewId/declare-competing-interests',
   href: params => `/review-a-dataset/${params.datasetReviewId}/declare-competing-interests`,

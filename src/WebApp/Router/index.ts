@@ -362,6 +362,8 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     Routes.ReviewADatasetCheckInvitationsToAppear,
     ReviewADatasetFlow.CheckInvitationsToAppearSubmission,
   ),
+  MakeRoute('GET', Routes.ReviewADatasetUseOfAi, ReviewADatasetFlow.UseOfAiPage),
+  MakeRoute('POST', Routes.ReviewADatasetUseOfAi, ReviewADatasetFlow.UseOfAiSubmission),
   MakeRoute('GET', Routes.ReviewADatasetDeclareCompetingInterests, ReviewADatasetFlow.DeclareCompetingInterestsPage),
   MakeRoute(
     'POST',
