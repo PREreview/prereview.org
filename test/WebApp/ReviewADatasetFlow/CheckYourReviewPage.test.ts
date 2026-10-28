@@ -268,6 +268,10 @@ describe('CheckYourReviewPage', () => {
             Routes.ReviewADatasetFollowsFairAndCarePrinciples,
           ),
           Tuple.make(['AnsweredIfTheDatasetHasEnoughMetadata'], Routes.ReviewADatasetHasEnoughMetadata),
+          Tuple.make(
+            ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
+            Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
+          ),
         ),
       ],
       ([datasetReviewId, locale, user, [missing, expected]]) =>

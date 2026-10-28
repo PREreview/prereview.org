@@ -112,7 +112,7 @@ const routeForMissing = {
   PersonaForDatasetReviewWasChosen: Routes.ReviewADatasetChooseYourPersona,
   DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview: Routes.ReviewADatasetUseOfAi,
   CompetingInterestsForADatasetReviewWereDeclared: Routes.ReviewADatasetDeclareCompetingInterests,
-  DeclaredThatTheCodeOfConductWasFollowedForADatasetReview: Routes.ReviewADatasetDeclareCompetingInterests,
+  DeclaredThatTheCodeOfConductWasFollowedForADatasetReview: Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
 } satisfies Record<
   DatasetReviews.DatasetReviewNotReadyToBePublished['missing'][number],
   Routes.Route<{ datasetReviewId: Uuid.Uuid }>
