@@ -31,6 +31,10 @@ const review = {
   competingInterests: NonEmptyString.fromString(
     'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),
+  generativeAiIdeas: Option.some({
+    answer: 'yes',
+    detail: NonEmptyString.fromString('Cras sit amet ligula a lacus faucibus porta.'),
+  }),
   dataset: new Datasets.DatasetTitle({
     id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,

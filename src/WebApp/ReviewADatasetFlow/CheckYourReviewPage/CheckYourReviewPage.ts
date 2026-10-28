@@ -11,10 +11,7 @@ import { ProfileId } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export type DatasetReviewPreview = Omit<
-  DatasetReviews.DatasetReviewPreview,
-  'author' | 'dataset' | 'generativeAiIdeas'
-> & {
+export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
   readonly author: Option.Option<Prereviewers.Persona>
   readonly dataset: Datasets.DatasetTitle
 }
@@ -81,6 +78,57 @@ export const CheckYourReviewPage = ({
                         </a>
                       </dd>
                     </div>
+
+                    ${Option.match(review.generativeAiIdeas, {
+                      onNone: () => '',
+                      onSome: generativeAiIdeas => {
+                        const hasOtherAuthors =
+                          review.authorsToInvite !== undefined && Option.isSome(review.authorsToInvite)
+
+                        return html`
+                          <div>
+                            <dt><span ${languageAttributesFor('en')}>Use of AI</span></dt>
+                            <dd>
+                              ${Match.value(generativeAiIdeas).pipe(
+                                Match.when(
+                                  { answer: 'yes' },
+                                  ({ detail }) => html`
+                                    <p>
+                                      <span ${languageAttributesFor('en')}>
+                                        ${
+                                          hasOtherAuthors
+                                            ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
+                                            : 'The author declares that they used generative AI to come up with new ideas for their review.'
+                                        }
+                                      </span>
+                                    </p>
+                                    ${Option.match(detail, {
+                                      onNone: () => '',
+                                      onSome: detail => html`<p>${detail}</p>`,
+                                    })}
+                                  `,
+                                ),
+                                Match.when(
+                                  { answer: 'no' },
+                                  () => html`
+                                    <p>
+                                      <span ${languageAttributesFor('en')}>
+                                        ${
+                                          hasOtherAuthors
+                                            ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
+                                            : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
+                                        }
+                                      </span>
+                                    </p>
+                                  `,
+                                ),
+                                Match.exhaustive,
+                              )}
+                            </dd>
+                          </div>
+                        `
+                      },
+                    })}
 
                     <div>
                       <dt>${t('competingInterests')()}</dt>
