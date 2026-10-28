@@ -14,7 +14,7 @@ import { TwoUpPageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<
   DatasetReviews.PublishedReview,
-  'author' | 'otherAuthors' | 'dataset' | 'clubId' | 'license'
+  'author' | 'otherAuthors' | 'dataset' | 'clubId' | 'license' | 'generativeAiIdeas'
 > & {
   readonly author: Prereviewers.Persona
   readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>

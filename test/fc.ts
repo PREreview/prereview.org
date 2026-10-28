@@ -1814,6 +1814,9 @@ export const publishedDatasetReview = ({
     }),
     competingInterests: maybe(nonEmptyString()),
     license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
+    generativeAiIdeas: maybe(
+      declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
+    ),
     published: plainDate(),
   })
 
