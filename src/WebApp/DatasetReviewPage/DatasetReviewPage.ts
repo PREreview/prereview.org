@@ -362,6 +362,52 @@ export const createDatasetReviewPage = ({
             : t('noCompetingInterestsStatement')(),
         )}
       </p>
+      ${Option.match(datasetReview.generativeAiIdeas, {
+        onNone: () => '',
+        onSome: generativeAiIdeas => {
+          const hasOtherAuthors = datasetReview.anonymousAuthors + datasetReview.otherAuthors.length > 0
+
+          return html`
+            <h2><span ${languageAttributesFor('en')}>Use of Artificial Intelligence (AI)</span></h2>
+
+            ${Match.value(generativeAiIdeas).pipe(
+              Match.when(
+                { answer: 'yes' },
+                ({ detail }) => html`
+                  <p>
+                    <span ${languageAttributesFor('en')}>
+                      ${
+                        hasOtherAuthors
+                          ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
+                          : 'The author declares that they used generative AI to come up with new ideas for their review.'
+                      }
+                    </span>
+                  </p>
+                  ${Option.match(detail, {
+                    onNone: () => '',
+                    onSome: detail => html`<p>${detail}</p>`,
+                  })}
+                `,
+              ),
+              Match.when(
+                { answer: 'no' },
+                () => html`
+                  <p>
+                    <span ${languageAttributesFor('en')}>
+                      ${
+                        hasOtherAuthors
+                          ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
+                          : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
+                      }
+                    </span>
+                  </p>
+                `,
+              ),
+              Match.exhaustive,
+            )}
+          `
+        },
+      })}
     `,
     skipToLabel: 'prereview',
     canonical: Routes.DatasetReview.href({ datasetReviewId: datasetReview.id }),

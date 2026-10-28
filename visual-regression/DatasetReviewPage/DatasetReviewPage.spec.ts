@@ -50,8 +50,22 @@ test('content looks right when AI was used', async ({ showPage }) => {
     datasetReview: {
       ...datasetReview,
       license: 'CC0-1.0',
-      generativeAiIdeas: Option.some({ answer: 'yes', detail: Option.none() }),
+      generativeAiIdeas: Option.some({
+        answer: 'yes',
+        detail: NonEmptyString.fromString('Detail about the use of AI.'),
+      }),
     },
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when AI was not used', async ({ showPage }) => {
+  const response = _.createDatasetReviewPage({
+    datasetReview: { ...datasetReview, generativeAiIdeas: Option.some({ answer: 'no' }) },
     locale: DefaultLocale,
   })
 
