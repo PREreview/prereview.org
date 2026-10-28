@@ -1,9 +1,10 @@
 import { expect, test } from '@effect/vitest'
-import { Option } from 'effect'
+import { assertEquals } from '@effect/vitest/utils'
+import { Option, Struct } from 'effect'
 import * as Datasets from '../../../../src/Datasets/index.ts'
 import type { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ZenodoRecords/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
-import { html, plainText, rawHtml } from '../../../../src/html.ts'
+import { html, plainText } from '../../../../src/html.ts'
 import * as Prereviewers from '../../../../src/Prereviewers/index.ts'
 import { Doi, Name, NonEmptyString, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
 
@@ -57,105 +58,85 @@ const cases = [
         { name: 'Arne Saknussemm', orcid: OrcidId.OrcidId('0000-0002-6109-0367') },
         { name: '2 other authors' },
       ],
-      description: rawHtml(`
-      <dl>
-        
-            <dt><span>How would you rate the quality of this data set?</span></dt>
-            <dd>
-              <span>Excellent</span>
-            </dd>
-            
-          
-        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
-        <dd>
-          <span>Yes</span>
-        </dd>
-        
-        
-            <dt><span>Does the dataset have enough metadata?</span></dt>
-            <dd>
-              <span>Partly</span>
-            </dd>
-            
-          
-        
-            <dt><span>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</span></dt>
-            <dd>
-              <span>No</span>
-            </dd>
-            
-          
-        
-            <dt><span>Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?</span></dt>
-            <dd>
-              <span>I don’t know</span>
-            </dd>
-            
-          
-        
-            <dt><span>Is the dataset well-suited to support its stated research purpose?</span></dt>
-            <dd>
-              <span>Yes</span>
-            </dd>
-            
-          
-        
-            <dt><span>Does this dataset support the researcher’s stated conclusions?</span></dt>
-            <dd>
-              <span>Partly</span>
-            </dd>
-            
-          
-        
-            <dt><span>Is the dataset granular enough to be a reliable standard of measurement?</span></dt>
-            <dd>
-              <span>No</span>
-            </dd>
-            
-          
-        
-            <dt><span>Is the dataset relatively error-free?</span></dt>
-            <dd>
-              <span>I don’t know</span>
-            </dd>
-            
-          
-        
-            <dt><span>Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?</span></dt>
-            <dd>
-              <span>Very consequential</span>
-            </dd>
-            
-          
-        
-            <dt><span>Is this dataset ready to be shared?</span></dt>
-            <dd>
-              <span>Yes</span>
-            </dd>
-            
-          
-        
-            <dt><span>What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?</span></dt>
-            <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
-          
-      </dl>
+      description: html`
+        <dl>
+          <dt><span>How would you rate the quality of this data set?</span></dt>
+          <dd>
+            <span>Excellent</span>
+          </dd>
+          <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+          <dt><span>Does the dataset have enough metadata?</span></dt>
+          <dd>
+            <span>Partly</span>
+          </dd>
+          <dt>
+            <span
+              >Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</span
+            >
+          </dt>
+          <dd>
+            <span>No</span>
+          </dd>
+          <dt>
+            <span
+              >Does this dataset show signs of alteration beyond instances of likely human error, such as censorship,
+              deletion, or redaction, that are not accounted for otherwise?</span
+            >
+          </dt>
+          <dd>
+            <span>I don’t know</span>
+          </dd>
+          <dt><span>Is the dataset well-suited to support its stated research purpose?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+          <dt><span>Does this dataset support the researcher’s stated conclusions?</span></dt>
+          <dd>
+            <span>Partly</span>
+          </dd>
+          <dt><span>Is the dataset granular enough to be a reliable standard of measurement?</span></dt>
+          <dd>
+            <span>No</span>
+          </dd>
+          <dt><span>Is the dataset relatively error-free?</span></dt>
+          <dd>
+            <span>I don’t know</span>
+          </dd>
+          <dt>
+            <span
+              >Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
+              researchers, or to the general public? How consequential is it likely to seem to that audience or those
+              audiences?</span
+            >
+          </dt>
+          <dd>
+            <span>Very consequential</span>
+          </dd>
+          <dt><span>Is this dataset ready to be shared?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+          <dt>
+            <span
+              >What else, if anything, would it be helpful for the researcher to include with this dataset to make it
+              easier to find, understand and reuse in ethical and responsible ways?</span
+            >
+          </dt>
+          <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
+        </dl>
 
-      <h2><span>Competing interests</span></h2>
+        <h2><span>Competing interests</span></h2>
 
-      <p>
-        Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
-      </p>
-      
-            <h2>Use of Artificial Intelligence (AI)</h2>
+        <p>Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.</p>
 
-            
-                  <p>
-                    The authors declare that they used generative AI to come up with new ideas for their review.
-                  </p>
-                  <p>Cras sit amet ligula a lacus faucibus porta.</p>
-                
-          
-    `),
+        <h2>Use of Artificial Intelligence (AI)</h2>
+
+        <p>The authors declare that they used generative AI to come up with new ideas for their review.</p>
+        <p>Cras sit amet ligula a lacus faucibus porta.</p>
+      `,
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
@@ -252,104 +233,95 @@ const cases = [
         { name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') },
         { name: '1 other author' },
       ],
-      description: rawHtml(`
-      <dl>
-        
-            <dt><span>How would you rate the quality of this data set?</span></dt>
-            <dd>
-              <span>Excellent</span>
-            </dd>
-            <dd>Some detail about the excellent rating.</dd>
-          
-        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
-        <dd>
-          <span>Yes</span>
-        </dd>
-        <dd>Some detail about the yes.</dd>
-        
-            <dt><span>Does the dataset have enough metadata?</span></dt>
-            <dd>
-              <span>Partly</span>
-            </dd>
-            <dd>Some detail about the partly.</dd>
-          
-        
-            <dt><span>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</span></dt>
-            <dd>
-              <span>No</span>
-            </dd>
-            <dd>Some detail about the no.</dd>
-          
-        
-            <dt><span>Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?</span></dt>
-            <dd>
-              <span>I don’t know</span>
-            </dd>
-            <dd>Some detail about the unsure.</dd>
-          
-        
-            <dt><span>Is the dataset well-suited to support its stated research purpose?</span></dt>
-            <dd>
-              <span>Yes</span>
-            </dd>
-            <dd>Some detail about the yes.</dd>
-          
-        
-            <dt><span>Does this dataset support the researcher’s stated conclusions?</span></dt>
-            <dd>
-              <span>Partly</span>
-            </dd>
-            <dd>Some detail about the partly.</dd>
-          
-        
-            <dt><span>Is the dataset granular enough to be a reliable standard of measurement?</span></dt>
-            <dd>
-              <span>No</span>
-            </dd>
-            <dd>Some detail about the no.</dd>
-          
-        
-            <dt><span>Is the dataset relatively error-free?</span></dt>
-            <dd>
-              <span>I don’t know</span>
-            </dd>
-            <dd>Some detail about the unsure.</dd>
-          
-        
-            <dt><span>Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?</span></dt>
-            <dd>
-              <span>Very consequential</span>
-            </dd>
-            <dd>Some detail about the very-consequential.</dd>
-          
-        
-            <dt><span>Is this dataset ready to be shared?</span></dt>
-            <dd>
-              <span>Yes</span>
-            </dd>
-            <dd>Some detail about the yes.</dd>
-          
-        
-            <dt><span>What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?</span></dt>
-            <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
-          
-      </dl>
+      description: html`
+        <dl>
+          <dt><span>How would you rate the quality of this data set?</span></dt>
+          <dd>
+            <span>Excellent</span>
+          </dd>
+          <dd>Some detail about the excellent rating.</dd>
+          <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+          <dd>Some detail about the yes.</dd>
+          <dt><span>Does the dataset have enough metadata?</span></dt>
+          <dd>
+            <span>Partly</span>
+          </dd>
+          <dd>Some detail about the partly.</dd>
+          <dt>
+            <span
+              >Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</span
+            >
+          </dt>
+          <dd>
+            <span>No</span>
+          </dd>
+          <dd>Some detail about the no.</dd>
+          <dt>
+            <span
+              >Does this dataset show signs of alteration beyond instances of likely human error, such as censorship,
+              deletion, or redaction, that are not accounted for otherwise?</span
+            >
+          </dt>
+          <dd>
+            <span>I don’t know</span>
+          </dd>
+          <dd>Some detail about the unsure.</dd>
+          <dt><span>Is the dataset well-suited to support its stated research purpose?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+          <dd>Some detail about the yes.</dd>
+          <dt><span>Does this dataset support the researcher’s stated conclusions?</span></dt>
+          <dd>
+            <span>Partly</span>
+          </dd>
+          <dd>Some detail about the partly.</dd>
+          <dt><span>Is the dataset granular enough to be a reliable standard of measurement?</span></dt>
+          <dd>
+            <span>No</span>
+          </dd>
+          <dd>Some detail about the no.</dd>
+          <dt><span>Is the dataset relatively error-free?</span></dt>
+          <dd>
+            <span>I don’t know</span>
+          </dd>
+          <dd>Some detail about the unsure.</dd>
+          <dt>
+            <span
+              >Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
+              researchers, or to the general public? How consequential is it likely to seem to that audience or those
+              audiences?</span
+            >
+          </dt>
+          <dd>
+            <span>Very consequential</span>
+          </dd>
+          <dd>Some detail about the very-consequential.</dd>
+          <dt><span>Is this dataset ready to be shared?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+          <dd>Some detail about the yes.</dd>
+          <dt>
+            <span
+              >What else, if anything, would it be helpful for the researcher to include with this dataset to make it
+              easier to find, understand and reuse in ethical and responsible ways?</span
+            >
+          </dt>
+          <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
+        </dl>
 
-      <h2><span>Competing interests</span></h2>
+        <h2><span>Competing interests</span></h2>
 
-      <p>
-        Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
-      </p>
-      
-            <h2>Use of Artificial Intelligence (AI)</h2>
+        <p>Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.</p>
 
-            
-                  <p>
-                    The authors declare that they did not use generative AI to come up with new ideas for their review.
-                  </p>
-                
-          
-    `),
+        <h2>Use of Artificial Intelligence (AI)</h2>
+
+        <p>The authors declare that they did not use generative AI to come up with new ideas for their review.</p>
+      `,
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
@@ -403,32 +375,20 @@ const cases = [
     },
     {
       creators: [{ name: 'Orange Panda' }],
-      description: rawHtml(`
-      <dl>
-        
-        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
-        <dd>
-          <span>Yes</span>
-        </dd>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      </dl>
+      description: html`
+        <dl>
+          <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+        </dl>
 
-      <h2><span>Competing interests</span></h2>
+        <h2><span>Competing interests</span></h2>
 
-      <p>
-        <span>The author declares that they have no competing interests.</span>
-      </p>
-    `),
+        <p>
+          <span>The author declares that they have no competing interests.</span>
+        </p>
+      `,
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
@@ -482,42 +442,24 @@ const cases = [
     },
     {
       creators: [{ name: 'Orange Panda' }],
-      description: rawHtml(`
-      <dl>
-        
-        <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
-        <dd>
-          <span>Yes</span>
-        </dd>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      </dl>
+      description: html`
+        <dl>
+          <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+          <dd>
+            <span>Yes</span>
+          </dd>
+        </dl>
 
-      <h2><span>Competing interests</span></h2>
+        <h2><span>Competing interests</span></h2>
 
-      <p>
-        <span>The author declares that they have no competing interests.</span>
-      </p>
-      
-            <h2>Use of Artificial Intelligence (AI)</h2>
+        <p>
+          <span>The author declares that they have no competing interests.</span>
+        </p>
 
-            
-                  <p>
-                    The author declares that they used generative AI to come up with new ideas for their review.
-                  </p>
-                  
-                
-          
-    `),
+        <h2>Use of Artificial Intelligence (AI)</h2>
+
+        <p>The author declares that they used generative AI to come up with new ideas for their review.</p>
+      `,
       title: plainText(
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
@@ -546,5 +488,6 @@ const cases = [
 test.each(cases)('DatasetReviewToDepositMetadata (%s)', (_name, datasetReview, expected) => {
   const actual = _.DatasetReviewToDepositMetadata(datasetReview)
 
-  expect(actual).toStrictEqual(expected)
+  expect(Struct.omit(actual, 'description')).toStrictEqual(Struct.omit(expected, 'description'))
+  assertEquals(actual.description, expected.description)
 })
