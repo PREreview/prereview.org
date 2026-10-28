@@ -119,23 +119,7 @@ it.effect.each<
   ],
   [
     'changed to no',
-    {
-      orcidId,
-      preprintId: preprintWithReviewAnsweredYesWithDetails,
-      generativeAiIdeas: 'no',
-      generativeAiIdeasDetails: Option.none(),
-    },
-    Either.void,
-    { generativeAiIdeas: 'no' },
-  ],
-  [
-    'changed to no, with details',
-    {
-      orcidId,
-      preprintId: preprintWithReviewAnsweredYesWithDetails,
-      generativeAiIdeas: 'no',
-      generativeAiIdeasDetails: Option.some(otherDetails),
-    },
+    { orcidId, preprintId: preprintWithReviewAnsweredYesWithDetails, generativeAiIdeas: 'no' },
     Either.void,
     { generativeAiIdeas: 'no' },
   ],

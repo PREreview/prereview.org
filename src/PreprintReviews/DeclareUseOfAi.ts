@@ -8,12 +8,12 @@ import type { OrcidId } from '../types/OrcidId.ts'
 import * as Errors from './Errors.ts'
 import { getForm, saveForm, updateForm } from './legacy-form.ts'
 
-export interface Input {
+export type Input = {
   preprintId: PreprintId
   orcidId: OrcidId
-  generativeAiIdeas: 'yes' | 'no'
-  generativeAiIdeasDetails: Option.Option<NonEmptyString>
-}
+} & (
+  { generativeAiIdeas: 'yes'; generativeAiIdeasDetails: Option.Option<NonEmptyString> } | { generativeAiIdeas: 'no' }
+)
 
 export type Error = Errors.PreprintReviewNotFound | UnableToHandleCommand
 
