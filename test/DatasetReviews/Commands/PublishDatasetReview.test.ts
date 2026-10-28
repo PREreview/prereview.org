@@ -78,6 +78,12 @@ const personaForDatasetReviewWasChosen = new DatasetReviews.PersonaForDatasetRev
   persona: 'public',
   datasetReviewId,
 })
+const declaredIfAiWasUsedToGenerateNewIdeas = new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview(
+  {
+    generativeAiIdeas: { answer: 'no' },
+    datasetReviewId,
+  },
+)
 const competingInterestsForADatasetReviewWereDeclared =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
     competingInterests: Option.none(),
@@ -137,6 +143,7 @@ describe('foldState', () => {
               'AnsweredIfTheDatasetIsReadyToBeShared',
               'AnsweredIfTheDatasetIsMissingAnything',
               'PersonaForDatasetReviewWasChosen',
+              'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
               'CompetingInterestsForADatasetReviewWereDeclared',
               'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
             ],
@@ -168,6 +175,7 @@ describe('foldState', () => {
                 'AnsweredIfTheDatasetIsReadyToBeShared',
                 'AnsweredIfTheDatasetIsMissingAnything',
                 'PersonaForDatasetReviewWasChosen',
+                'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
                 'CompetingInterestsForADatasetReviewWereDeclared',
                 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
               ],
@@ -189,6 +197,7 @@ describe('foldState', () => {
                 'AnsweredIfTheDatasetIsReadyToBeShared',
                 'AnsweredIfTheDatasetIsMissingAnything',
                 'PersonaForDatasetReviewWasChosen',
+                'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
                 'CompetingInterestsForADatasetReviewWereDeclared',
                 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
               ],
@@ -211,6 +220,7 @@ describe('foldState', () => {
                 answeredIfTheDatasetIsReadyToBeShared,
                 answeredIfTheDatasetIsMissingAnything,
                 personaForDatasetReviewWasChosen,
+                declaredIfAiWasUsedToGenerateNewIdeas,
                 competingInterestsForADatasetReviewWereDeclared,
               ],
               ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
@@ -241,6 +251,7 @@ describe('foldState', () => {
           fc.answeredIfTheDatasetIsReadyToBeShared(),
           fc.answeredIfTheDatasetIsMissingAnything(),
           fc.personaForDatasetReviewWasChosen(),
+          fc.declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview(),
           fc.competingInterestsForADatasetReviewWereDeclared(),
           fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
         )
@@ -270,6 +281,7 @@ describe('foldState', () => {
               answeredIfTheDatasetIsReadyToBeShared,
               answeredIfTheDatasetIsMissingAnything,
               personaForDatasetReviewWasChosen,
+              declaredIfAiWasUsedToGenerateNewIdeas,
               competingInterestsForADatasetReviewWereDeclared,
               declaredThatTheCodeOfConductWasFollowedForADatasetReview,
             ],
@@ -278,6 +290,7 @@ describe('foldState', () => {
             [
               declaredThatTheCodeOfConductWasFollowedForADatasetReview,
               competingInterestsForADatasetReviewWereDeclared,
+              declaredIfAiWasUsedToGenerateNewIdeas,
               personaForDatasetReviewWasChosen,
               answeredIfTheDatasetIsMissingAnything,
               answeredIfTheDatasetIsReadyToBeShared,

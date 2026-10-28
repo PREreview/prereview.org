@@ -33,6 +33,7 @@ export class NotReady extends Data.TaggedClass('NotReady')<{
     | 'AnsweredIfTheDatasetIsReadyToBeShared'
     | 'AnsweredIfTheDatasetIsMissingAnything'
     | 'PersonaForDatasetReviewWasChosen'
+    | 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'
     | 'CompetingInterestsForADatasetReviewWereDeclared'
     | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'
   >
@@ -58,6 +59,7 @@ const requirementToBeReady = [
   'AnsweredIfTheDatasetIsReadyToBeShared',
   'AnsweredIfTheDatasetIsMissingAnything',
   'PersonaForDatasetReviewWasChosen',
+  'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
   'CompetingInterestsForADatasetReviewWereDeclared',
   'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
 ] satisfies ReadonlyArray<NotReady['missing'][number]>
