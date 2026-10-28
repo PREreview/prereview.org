@@ -21,6 +21,7 @@ import * as AnswerIfTheDatasetMattersToItsAudience from './AnswerIfTheDatasetMat
 import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as ChoosePersona from './ChoosePersona.ts'
 import * as DeclareCompetingInterests from './DeclareCompetingInterests.ts'
+import { DeclareIfAiWasUsedToGenerateNewIdeas } from './DeclareIfAiWasUsedToGenerateNewIdeas.ts'
 import * as DeclareFollowingCodeOfConduct from './DeclareFollowingCodeOfConduct.ts'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.ts'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.ts'
@@ -85,6 +86,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     answerIfOthersNeedToBeListedOnTheReview: Commands.FromCommand<typeof AnswerIfOthersNeedToBeListedOnTheReview>
     addInvitationToAppearToTheList: Commands.FromCommand<typeof AddInvitationToAppearToTheList>
     removeInvitationToAppearFromTheList: Commands.FromCommand<typeof RemoveInvitationToAppearFromTheList>
+    declareIfAiWasUsedToGenerateNewIdeas: Commands.FromCommand<typeof DeclareIfAiWasUsedToGenerateNewIdeas>
     declareCompetingInterests: CommandHandler<DeclareCompetingInterests.Command, DeclareCompetingInterests.Error>
     declareFollowingCodeOfConduct: CommandHandler<
       DeclareFollowingCodeOfConduct.Command,
@@ -132,6 +134,7 @@ export const {
   answerIfOthersNeedToBeListedOnTheReview,
   addInvitationToAppearToTheList,
   removeInvitationToAppearFromTheList,
+  declareIfAiWasUsedToGenerateNewIdeas,
   declareCompetingInterests,
   declareFollowingCodeOfConduct,
   markRecordCreatedOnZenodo,
@@ -289,6 +292,7 @@ const makeDatasetReviewCommands: Effect.Effect<
     answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
     addInvitationToAppearToTheList: yield* Commands.makeCommand(AddInvitationToAppearToTheList),
     removeInvitationToAppearFromTheList: yield* Commands.makeCommand(RemoveInvitationToAppearFromTheList),
+    declareIfAiWasUsedToGenerateNewIdeas: yield* Commands.makeCommand(DeclareIfAiWasUsedToGenerateNewIdeas),
     declareCompetingInterests: handleCommand(
       DeclareCompetingInterests.createFilter,
       DeclareCompetingInterests.foldState,
