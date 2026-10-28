@@ -174,6 +174,16 @@ const invitationToAppearOnADatasetReviewRemovedFromTheList =
     invitationId: Uuid.Uuid('9af6576d-1733-4461-a000-a31d2b172e5d'),
     datasetReviewId,
   })
+const declaredIfAiWasUsedToGenerateNewIdeas1 =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'no' },
+    datasetReviewId,
+  })
+const declaredIfAiWasUsedToGenerateNewIdeas2 =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'yes', detail: Option.none() },
+    datasetReviewId,
+  })
 const competingInterestsForADatasetReviewWereDeclared1 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
     competingInterests: Option.none(),
@@ -286,7 +296,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
           answeredYesIfOthersNeedToBeListedOnTheReview,
           invitationToAppearOnADatasetReviewAddedToTheList,
         ],
-        'DeclareCompetingInterests',
+        'DeclareIfAiWasUsedToGenerateNewIdeas',
       ],
       [
         'added and removed an invitation',
@@ -333,7 +343,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
           invitationToAppearOnADatasetReviewRemovedFromTheList,
           invitationToAppearOnADatasetReviewAddedToTheList2,
         ],
-        'DeclareCompetingInterests',
+        'DeclareIfAiWasUsedToGenerateNewIdeas',
       ],
     ])('returns the next expected command', (_name, events, expected) => {
       const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
@@ -362,6 +372,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.personaForDatasetReviewWasChosen(),
             fc.answeredIfOthersNeedToBeListedOnTheReview(),
             fc.invitationToAppearOnADatasetReviewAddedToTheList(),
+            fc.declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview(),
             fc.competingInterestsForADatasetReviewWereDeclared(),
             fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
           )
@@ -539,7 +550,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 personaForDatasetReviewWasChosen1,
                 answeredNoIfOthersNeedToBeListedOnTheReview,
               ],
-              'DeclareCompetingInterests',
+              'DeclareIfAiWasUsedToGenerateNewIdeas',
             ], // persona chosen
             [
               [
@@ -558,6 +569,28 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
                 answeredNoIfOthersNeedToBeListedOnTheReview,
+                declaredIfAiWasUsedToGenerateNewIdeas1,
+              ],
+              'DeclareCompetingInterests',
+            ], // use of AI declared
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+                answeredIfTheDatasetIsMissingAnything1,
+                personaForDatasetReviewWasChosen1,
+                answeredNoIfOthersNeedToBeListedOnTheReview,
+                declaredIfAiWasUsedToGenerateNewIdeas1,
                 competingInterestsForADatasetReviewWereDeclared1,
               ],
               'DeclareFollowingCodeOfConduct',
@@ -579,6 +612,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
                 answeredNoIfOthersNeedToBeListedOnTheReview,
+                declaredIfAiWasUsedToGenerateNewIdeas1,
                 competingInterestsForADatasetReviewWereDeclared1,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
               ],
@@ -588,6 +622,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               [
                 datasetReviewWasStarted,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+                declaredIfAiWasUsedToGenerateNewIdeas1,
                 competingInterestsForADatasetReviewWereDeclared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 answeredIfTheDatasetIsReadyToBeShared1,
@@ -603,6 +638,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 ratedTheQualityOfTheDataset1,
                 personaForDatasetReviewWasChosen1,
                 answeredNoIfOthersNeedToBeListedOnTheReview,
+                declaredIfAiWasUsedToGenerateNewIdeas2,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
                 competingInterestsForADatasetReviewWereDeclared2,
                 answeredIfTheDatasetIsMissingAnything2,

@@ -109,6 +109,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
     }
   }
 
+  if (!hasEvent(events, 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview')) {
+    return Option.some('DeclareIfAiWasUsedToGenerateNewIdeas')
+  }
+
   if (!hasEvent(events, 'CompetingInterestsForADatasetReviewWereDeclared')) {
     return Option.some('DeclareCompetingInterests')
   }

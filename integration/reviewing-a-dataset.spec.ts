@@ -63,6 +63,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -123,6 +126,11 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('main')).toContainText(
     'Competing interests The author declares that they have no competing interests.',
   )
+  await expect(page.getByRole('main')).toContainText(
+    'Use of Artificial Intelligence (AI) The author declares that they did not use generative AI to come up with new ideas for their review.',
+  )
+  await expect(page.getByRole('main')).not.toContainText('AI Review')
+  await expect(page.getByRole('main')).toContainText('License CC BY 4.0')
 
   await page.getByRole('link', { name: 'Back to all reviews' }).click()
 
@@ -190,6 +198,10 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await page.getByLabel('Yes').check()
+    await page.getByLabel('How did you use it? (optional)').fill('Vivamus egestas risus vel ex tincidunt.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -253,6 +265,11 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await expect(page.getByRole('main')).toContainText(
       'Competing interests The author declares that they have no competing interests.',
     )
+    await expect(page.getByRole('main')).toContainText(
+      'Use of Artificial Intelligence (AI) The author declares that they used generative AI to come up with new ideas for their review. Vivamus egestas risus vel ex tincidunt.',
+    )
+    await expect(page.getByRole('main')).toContainText('AI Review')
+    await expect(page.getByRole('main')).toContainText('License CC0 1.0')
 
     await page.getByRole('link', { name: 'Back to all reviews' }).click()
 
@@ -330,6 +347,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishADatasetReview)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -382,6 +402,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishADatasetReview)(
     await expect(page.getByRole('main')).toContainText('by Josiah Carberry and 1 other author')
     await expect(page.getByRole('main')).toContainText(
       'Competing interests The authors declare that they have no competing interests.',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Use of Artificial Intelligence (AI) The authors declare that they did not use generative AI to come up with new ideas for their review.',
     )
 
     await page.getByRole('link', { name: 'Back to all reviews' }).click()
@@ -677,6 +700,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -684,6 +709,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   const review = page.getByRole('region', { name: 'Your review' })
 
   await expect(details).toContainText('Published name Josiah Carberry')
+  await expect(details).toContainText(
+    'Use of AI The author declares that they did not use generative AI to come up with new ideas for their review.',
+  )
   await expect(details).toContainText('Competing interests None declared')
   await expect(review).toContainText('How would you rate the quality of this data set? Fair Cras lobortis quam vitae.')
   await expect(review).toContainText(
@@ -730,6 +758,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(details).toContainText('Competing interests Maecenas sed dapibus massa.')
+
+  await page.getByRole('link', { name: 'Change use of AI' }).click()
+
+  await page.getByLabel('Yes').check()
+  await page.getByLabel('How did you use it? (optional)').fill('Vivamus egestas risus vel ex tincidunt.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(details).toContainText(
+    'Use of AI The author declares that they used generative AI to come up with new ideas for their review. Vivamus egestas risus vel ex tincidunt.',
+  )
 
   await page.getByRole('link', { name: 'Change how you rate the quality' }).click()
 
@@ -989,6 +1027,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
+  await page.getByLabel('How did you use it? (optional)').fill('Vivamus egestas risus vel ex tincidunt.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
@@ -1004,6 +1045,11 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await expect(page.getByLabel('Yes')).toBeChecked()
   await expect(page.getByLabel('What are they?')).toHaveValue('Maecenas sed dapibus massa.')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Yes')).toBeChecked()
+  await expect(page.getByLabel('How did you use it? (optional)')).toHaveValue('Vivamus egestas risus vel ex tincidunt.')
 
   await page.goBack()
 
@@ -1136,6 +1182,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
     .fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
