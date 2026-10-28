@@ -1,6 +1,6 @@
 import { UrlParams } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Either, Layer, Option } from 'effect'
+import { Effect, Either, Layer, Match, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
@@ -40,7 +40,12 @@ describe('UseOfAiPage', () => {
           renderUseOfAiPage({
             alreadyWritten: details.alreadyWritten,
             form: UseOfAiForm.fromAnswer(
-              Option.map(details.generativeAiIdeas, answer => ({ answer, detail: details.generativeAiIdeasDetails })),
+              Match.valueTags(details, {
+                AiWasUsed: ({ generativeAiIdeasDetails }) =>
+                  Option.some({ answer: 'yes' as const, detail: generativeAiIdeasDetails }),
+                AiWasNotUsed: () => Option.some({ answer: 'no' as const, detail: Option.none() }),
+                NotAnswered: () => Option.none(),
+              }),
             ),
             locale,
             moreAuthors: details.moreAuthors,
@@ -262,10 +267,17 @@ function services(
 function useOfAiDetails(): fc.Arbitrary<
   Effect.Effect.Success<ReturnType<PreprintReviews.PreprintReviews['Type']['getUseOfAiDetails']>>
 > {
-  return fc.record({
-    generativeAiIdeas: fc.maybe(fc.constantFrom('yes', 'no')),
-    generativeAiIdeasDetails: fc.maybe(fc.nonEmptyString()),
-    moreAuthors: fc.constantFrom('yes', 'yes-private', 'no', undefined),
-    alreadyWritten: fc.constantFrom('yes', 'no', undefined),
-  })
+  return fc
+    .tuple(
+      fc.oneof(
+        fc.record({ _tag: fc.constant('AiWasUsed' as const), generativeAiIdeasDetails: fc.maybe(fc.nonEmptyString()) }),
+        fc.record({ _tag: fc.constant('AiWasNotUsed' as const) }),
+        fc.record({ _tag: fc.constant('NotAnswered' as const) }),
+      ),
+      fc.record({
+        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no', undefined),
+        alreadyWritten: fc.constantFrom('yes', 'no', undefined),
+      }),
+    )
+    .map(([useOfAi, authors]) => ({ ...useOfAi, ...authors }))
 }

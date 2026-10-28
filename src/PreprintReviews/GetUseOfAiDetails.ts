@@ -13,12 +13,14 @@ export interface Input {
   orcidId: OrcidId
 }
 
-export interface UseOfAiDetails {
-  generativeAiIdeas: Option.Option<'yes' | 'no'>
-  generativeAiIdeasDetails: Option.Option<NonEmptyString>
+export type UseOfAiDetails = {
   moreAuthors: Form['moreAuthors']
   alreadyWritten: Form['alreadyWritten']
-}
+} & (
+  | { _tag: 'AiWasUsed'; generativeAiIdeasDetails: Option.Option<NonEmptyString> }
+  | { _tag: 'AiWasNotUsed' }
+  | { _tag: 'NotAnswered' }
+)
 
 export type Result = Either.Either<UseOfAiDetails, Errors.PreprintReviewNotFound | UnableToQuery>
 
@@ -38,11 +40,19 @@ export const GetUseOfAiDetails = (
       ),
     )
 
-    return {
-      generativeAiIdeas: Option.fromNullable(form.generativeAiIdeas),
-      generativeAiIdeasDetails:
-        form.generativeAiIdeas === 'yes' ? Option.fromNullable(form.generativeAiIdeasDetails) : Option.none(),
-      moreAuthors: form.moreAuthors,
-      alreadyWritten: form.alreadyWritten,
+    const authors = { moreAuthors: form.moreAuthors, alreadyWritten: form.alreadyWritten }
+
+    if (form.generativeAiIdeas === 'yes') {
+      return {
+        _tag: 'AiWasUsed',
+        generativeAiIdeasDetails: Option.fromNullable(form.generativeAiIdeasDetails),
+        ...authors,
+      }
     }
+
+    if (form.generativeAiIdeas === 'no') {
+      return { _tag: 'AiWasNotUsed', ...authors }
+    }
+
+    return { _tag: 'NotAnswered', ...authors }
   })

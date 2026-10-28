@@ -34,8 +34,7 @@ it.effect.each<[string, _.Input, _.Result]>([
     'not answered',
     { orcidId, preprintId: preprintWithReview },
     Either.right({
-      generativeAiIdeas: Option.none(),
-      generativeAiIdeasDetails: Option.none(),
+      _tag: 'NotAnswered',
       moreAuthors: undefined,
       alreadyWritten: undefined,
     }),
@@ -44,7 +43,7 @@ it.effect.each<[string, _.Input, _.Result]>([
     'answered',
     { orcidId, preprintId: preprintWithReviewAnswered },
     Either.right({
-      generativeAiIdeas: Option.some('yes'),
+      _tag: 'AiWasUsed',
       generativeAiIdeasDetails: Option.none(),
       moreAuthors: 'yes-private',
       alreadyWritten: 'no',
@@ -54,7 +53,7 @@ it.effect.each<[string, _.Input, _.Result]>([
     'answered with details',
     { orcidId, preprintId: preprintWithReviewAnsweredWithDetails },
     Either.right({
-      generativeAiIdeas: Option.some('yes'),
+      _tag: 'AiWasUsed',
       generativeAiIdeasDetails: Option.some(details),
       moreAuthors: undefined,
       alreadyWritten: undefined,
@@ -64,8 +63,7 @@ it.effect.each<[string, _.Input, _.Result]>([
     'answered no with leftover details',
     { orcidId, preprintId: preprintWithReviewAnsweredNoWithDetails },
     Either.right({
-      generativeAiIdeas: Option.some('no'),
-      generativeAiIdeasDetails: Option.none(),
+      _tag: 'AiWasNotUsed',
       moreAuthors: undefined,
       alreadyWritten: undefined,
     }),

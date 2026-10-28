@@ -30,7 +30,12 @@ export const UseOfAiPage: ({
     const details = yield* preprintReviews.getUseOfAiDetails({ preprintId: preprint.id, orcidId: user.orcid })
 
     const form = UseOfAiForm.fromAnswer(
-      Option.map(details.generativeAiIdeas, answer => ({ answer, detail: details.generativeAiIdeasDetails })),
+      Match.valueTags(details, {
+        AiWasUsed: ({ generativeAiIdeasDetails }) =>
+          Option.some({ answer: 'yes' as const, detail: generativeAiIdeasDetails }),
+        AiWasNotUsed: () => Option.some({ answer: 'no' as const, detail: Option.none() }),
+        NotAnswered: () => Option.none(),
+      }),
     )
 
     return renderUseOfAiPage({
