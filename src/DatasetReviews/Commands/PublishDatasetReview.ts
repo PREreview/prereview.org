@@ -1,8 +1,8 @@
-import { Array, Data, Either, Function, Match, Option, pipe, type Types } from 'effect'
+import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
 import type { Temporal, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
-import { type RequirementToBePublished, RequirementsToBePublished } from '../RequirementsToBePublished.ts'
+import { FindRequirementsToBePublished, type RequirementToBePublished } from '../RequirementsToBePublished.ts'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
@@ -42,16 +42,10 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
     return new IsBeingPublished()
   }
 
-  return pipe(
-    Array.map(RequirementsToBePublished, requirement =>
-      Either.fromOption(Array.findLast(events, hasTag(requirement)), () => requirement),
-    ),
-    Array.getLefts,
-    Array.match({
-      onNonEmpty: missing => new NotReady({ missing }),
-      onEmpty: () => new IsReady(),
-    }),
-  )
+  return Either.match(FindRequirementsToBePublished(events), {
+    onLeft: missing => new NotReady({ missing }),
+    onRight: () => new IsReady(),
+  })
 }
 
 export const decide: {
