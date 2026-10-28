@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { Data, Either, Option, pipe, Schema, Struct } from 'effect'
+import { Data, Either, Match, Option, pipe, Schema, Struct } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type UseOfAiForm = EmptyForm | InvalidForm | CompletedForm
@@ -47,17 +47,15 @@ export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
 }
 
 export const fromAnswer: (
-  answer: Option.Option<{
-    answer: 'yes' | 'no'
-    detail: Option.Option<NonEmptyString.NonEmptyString>
-  }>,
-) => ValidForm = Option.match({
-  onNone: () => new EmptyForm(),
-  onSome: ({ answer, detail }) =>
-    new CompletedForm({
-      generativeAiIdeas: answer,
-      generativeAiIdeasDetails: answer === 'yes' ? detail : Option.none(),
-    }),
+  answer:
+    | { _tag: 'AiWasUsed'; generativeAiIdeasDetails: Option.Option<NonEmptyString.NonEmptyString> }
+    | { _tag: 'AiWasNotUsed' }
+    | { _tag: 'NotAnswered' },
+) => ValidForm = Match.valueTags({
+  AiWasUsed: ({ generativeAiIdeasDetails }) =>
+    new CompletedForm({ generativeAiIdeas: 'yes', generativeAiIdeasDetails }),
+  AiWasNotUsed: () => new CompletedForm({ generativeAiIdeas: 'no', generativeAiIdeasDetails: Option.none() }),
+  NotAnswered: () => new EmptyForm(),
 })
 
 const GenerativeAiIdeasFieldSchema = UrlParams.schemaRecord(

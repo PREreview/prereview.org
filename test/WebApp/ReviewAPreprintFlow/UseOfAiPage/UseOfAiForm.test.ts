@@ -61,26 +61,21 @@ describe('fromBody', () => {
 })
 
 describe('fromAnswer', () => {
-  it.each<[string, Option.Option<{ answer: 'yes' | 'no'; detail: Option.Option<NonEmptyString> }>, _.UseOfAiForm]>([
-    ['empty', Option.none(), new _.EmptyForm()],
+  it.each<[string, Parameters<typeof _.fromAnswer>[0], _.UseOfAiForm]>([
+    ['not answered', { _tag: 'NotAnswered' }, new _.EmptyForm()],
     [
-      'yes',
-      Option.some({ answer: 'yes', detail: Option.none() }),
+      'AI was used',
+      { _tag: 'AiWasUsed', generativeAiIdeasDetails: Option.none() },
       new _.CompletedForm({ generativeAiIdeas: 'yes', generativeAiIdeasDetails: Option.none() }),
     ],
     [
-      'yes with details',
-      Option.some({ answer: 'yes', detail: Option.some(details) }),
+      'AI was used with details',
+      { _tag: 'AiWasUsed', generativeAiIdeasDetails: Option.some(details) },
       new _.CompletedForm({ generativeAiIdeas: 'yes', generativeAiIdeasDetails: Option.some(details) }),
     ],
     [
-      'no',
-      Option.some({ answer: 'no', detail: Option.none() }),
-      new _.CompletedForm({ generativeAiIdeas: 'no', generativeAiIdeasDetails: Option.none() }),
-    ],
-    [
-      'no with details',
-      Option.some({ answer: 'no', detail: Option.some(details) }),
+      'AI was not used',
+      { _tag: 'AiWasNotUsed' },
       new _.CompletedForm({ generativeAiIdeas: 'no', generativeAiIdeasDetails: Option.none() }),
     ],
   ])('%s', (_name, answer, expected) => {

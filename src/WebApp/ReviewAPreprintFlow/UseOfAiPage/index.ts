@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match, Option } from 'effect'
+import { Effect, Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../Context.ts'
 import { PreprintReviews } from '../../../PreprintReviews/index.ts'
@@ -29,14 +29,7 @@ export const UseOfAiPage: ({
     const preprint = yield* preprints.getPreprintTitle(preprintId)
     const details = yield* preprintReviews.getUseOfAiDetails({ preprintId: preprint.id, orcidId: user.orcid })
 
-    const form = UseOfAiForm.fromAnswer(
-      Match.valueTags(details, {
-        AiWasUsed: ({ generativeAiIdeasDetails }) =>
-          Option.some({ answer: 'yes' as const, detail: generativeAiIdeasDetails }),
-        AiWasNotUsed: () => Option.some({ answer: 'no' as const, detail: Option.none() }),
-        NotAnswered: () => Option.none(),
-      }),
-    )
+    const form = UseOfAiForm.fromAnswer(details)
 
     return renderUseOfAiPage({
       alreadyWritten: details.alreadyWritten,

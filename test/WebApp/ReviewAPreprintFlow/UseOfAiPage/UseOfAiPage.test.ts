@@ -1,6 +1,6 @@
 import { UrlParams } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Either, Layer, Match, Option } from 'effect'
+import { Effect, Either, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
@@ -39,14 +39,7 @@ describe('UseOfAiPage', () => {
         expect(actual).toStrictEqual(
           renderUseOfAiPage({
             alreadyWritten: details.alreadyWritten,
-            form: UseOfAiForm.fromAnswer(
-              Match.valueTags(details, {
-                AiWasUsed: ({ generativeAiIdeasDetails }) =>
-                  Option.some({ answer: 'yes' as const, detail: generativeAiIdeasDetails }),
-                AiWasNotUsed: () => Option.some({ answer: 'no' as const, detail: Option.none() }),
-                NotAnswered: () => Option.none(),
-              }),
-            ),
+            form: UseOfAiForm.fromAnswer(details),
             locale,
             moreAuthors: details.moreAuthors,
             preprint,
