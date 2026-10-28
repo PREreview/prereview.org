@@ -230,6 +230,10 @@ describe('CheckYourReviewPage', () => {
             ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
             Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
           ),
+          Tuple.make(
+            ['AnsweredIfOthersNeedToBeListedOnTheReview', 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
+            Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+          ),
         ),
       ],
       ([datasetReviewId, locale, user, [missing, expected]]) =>
@@ -439,6 +443,10 @@ describe('CheckYourReviewSubmission', () => {
           Tuple.make(
             ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
             Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
+          ),
+          Tuple.make(
+            ['AnsweredIfOthersNeedToBeListedOnTheReview', 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
+            Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
           ),
         ),
       ],

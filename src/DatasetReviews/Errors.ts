@@ -31,6 +31,7 @@ export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('Datase
     | 'AnsweredIfTheDatasetIsReadyToBeShared'
     | 'AnsweredIfTheDatasetIsMissingAnything'
     | 'PersonaForDatasetReviewWasChosen'
+    | 'AnsweredIfOthersNeedToBeListedOnTheReview'
     | 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'
     | 'CompetingInterestsForADatasetReviewWereDeclared'
     | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'

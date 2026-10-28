@@ -114,6 +114,7 @@ const routeForMissing = {
   AnsweredIfTheDatasetIsReadyToBeShared: Routes.ReviewADatasetIsReadyToBeShared,
   AnsweredIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   PersonaForDatasetReviewWasChosen: Routes.ReviewADatasetChooseYourPersona,
+  AnsweredIfOthersNeedToBeListedOnTheReview: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
   DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview: Routes.ReviewADatasetUseOfAi,
   CompetingInterestsForADatasetReviewWereDeclared: Routes.ReviewADatasetDeclareCompetingInterests,
   DeclaredThatTheCodeOfConductWasFollowedForADatasetReview: Routes.ReviewADatasetDeclareFollowingCodeOfConduct,

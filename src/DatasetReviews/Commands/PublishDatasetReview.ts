@@ -33,6 +33,7 @@ export class NotReady extends Data.TaggedClass('NotReady')<{
     | 'AnsweredIfTheDatasetIsReadyToBeShared'
     | 'AnsweredIfTheDatasetIsMissingAnything'
     | 'PersonaForDatasetReviewWasChosen'
+    | 'AnsweredIfOthersNeedToBeListedOnTheReview'
     | 'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'
     | 'CompetingInterestsForADatasetReviewWereDeclared'
     | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'
@@ -59,6 +60,7 @@ const requirementToBeReady = [
   'AnsweredIfTheDatasetIsReadyToBeShared',
   'AnsweredIfTheDatasetIsMissingAnything',
   'PersonaForDatasetReviewWasChosen',
+  'AnsweredIfOthersNeedToBeListedOnTheReview',
   'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
   'CompetingInterestsForADatasetReviewWereDeclared',
   'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
