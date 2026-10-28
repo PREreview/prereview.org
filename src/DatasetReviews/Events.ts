@@ -161,6 +161,20 @@ export class InvitationToAppearOnADatasetReviewRemovedFromTheList extends Schema
   },
 ) {}
 
+export class DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview extends Schema.TaggedClass<DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview>()(
+  'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    generativeAiIdeas: Schema.Union(
+      Schema.Struct({
+        answer: Schema.Literal('yes'),
+        detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+      }),
+      Schema.Struct({ answer: Schema.Literal('no') }),
+    ),
+  },
+) {}
+
 export class CompetingInterestsForADatasetReviewWereDeclared extends Schema.TaggedClass<CompetingInterestsForADatasetReviewWereDeclared>()(
   'CompetingInterestsForADatasetReviewWereDeclared',
   {
@@ -234,6 +248,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfOthersNeedToBeListedOnTheReview,
   InvitationToAppearOnADatasetReviewAddedToTheList,
   InvitationToAppearOnADatasetReviewRemovedFromTheList,
+  DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview,
   CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasAddedToAClub,

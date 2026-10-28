@@ -2286,6 +2286,23 @@ export const invitationToAppearOnADatasetReviewRemovedFromTheList = ({
     })
     .map(data => new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList(data))
 
+export const declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview> =>
+  datasetReviewId === undefined
+    ? Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview)
+    : fc
+        .tuple(Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview), datasetReviewId)
+        .map(
+          ([event, datasetReviewId]) =>
+            new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+              ...Struct.omit(event, '_tag'),
+              datasetReviewId,
+            }),
+        )
+
 export const competingInterestsForADatasetReviewWereDeclared = ({
   datasetReviewId,
 }: {
@@ -2383,6 +2400,7 @@ export const datasetReviewEvent = (
     answeredIfOthersNeedToBeListedOnTheReview(args),
     invitationToAppearOnADatasetReviewAddedToTheList(args),
     invitationToAppearOnADatasetReviewRemovedFromTheList(args),
+    declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview(args),
     competingInterestsForADatasetReviewWereDeclared(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
