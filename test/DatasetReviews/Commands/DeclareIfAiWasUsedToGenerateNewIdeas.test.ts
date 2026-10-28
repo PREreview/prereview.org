@@ -1,4 +1,4 @@
-import { expect, test } from '@effect/vitest'
+import { expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
@@ -10,6 +10,7 @@ import { Doi } from '../../../src/types/Doi.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import * as fc from '../../fc.ts'
 
 const input = {
   answer: 'yes',
@@ -57,6 +58,11 @@ const declared = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetRevi
 
 const declaredWithDetail = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
   generativeAiIdeas: { answer: 'yes', detail: Option.some(NonEmptyString('Some details')) },
+  datasetReviewId: input.datasetReviewId,
+})
+
+const declaredNo = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+  generativeAiIdeas: { answer: 'no' },
   datasetReviewId: input.datasetReviewId,
 })
 
@@ -114,6 +120,20 @@ test.each<
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'no' },
+          datasetReviewId: input.datasetReviewId,
+        }),
+      ),
+    ),
+  ],
+  ['same answer of no', [started, declaredNo], inputDifferentAnswer, Either.right(Option.none())],
+  [
+    'no changed to yes',
+    [started, declaredNo],
+    inputWithDetail,
+    Either.right(
+      Option.some(
+        new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+          generativeAiIdeas: { answer: 'yes', detail: Option.some(NonEmptyString('Some details')) },
           datasetReviewId: input.datasetReviewId,
         }),
       ),
@@ -180,3 +200,23 @@ test.each<
 
   expect(actual).toStrictEqual(expected)
 })
+
+it.prop(
+  'declaring the same answer again records nothing',
+  [
+    fc.oneof(
+      fc.record({ answer: fc.constant('yes' as const), detail: fc.maybe(fc.nonEmptyString()) }),
+      fc.record({ answer: fc.constant('no' as const) }),
+    ),
+  ],
+  ([answer]) => {
+    const { foldState, decide } = _.DeclareIfAiWasUsedToGenerateNewIdeas
+    const input = { ...answer, datasetReviewId: started.datasetReviewId, userId: started.authorId } satisfies _.Input
+
+    const event = Option.getOrThrow(Either.getOrThrow(decide(foldState([started], input), input)))
+
+    const actual = decide(foldState([started, event], input), input)
+
+    expect(actual).toStrictEqual(Either.right(Option.none()))
+  },
+)
