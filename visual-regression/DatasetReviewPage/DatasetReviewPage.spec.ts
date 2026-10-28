@@ -34,6 +34,17 @@ test('content looks right with multiple authors', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with a CC0 license', async ({ showPage }) => {
+  const response = _.createDatasetReviewPage({
+    datasetReview: { ...datasetReview, license: 'CC0-1.0' },
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right when in a club', async ({ showPage }) => {
   const response = _.createDatasetReviewPage({
     datasetReview: {
@@ -121,5 +132,6 @@ const datasetReview: _.DatasetReview = {
   competingInterests: NonEmptyString.fromString(
     'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),
+  license: 'CC-BY-4.0',
   published: Temporal.PlainDate.from('2025-08-06'),
 }

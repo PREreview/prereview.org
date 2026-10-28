@@ -13,10 +13,7 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<
-  DatasetReviews.PublishedReview,
-  'author' | 'otherAuthors' | 'dataset' | 'clubId' | 'license'
-> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset' | 'clubId'> & {
   readonly author: Prereviewers.Persona
   readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number
@@ -96,11 +93,31 @@ export const createDatasetReviewPage = ({
           <div>
             <dt>${t('license')()}</dt>
             <dd>
-              <a href="https://creativecommons.org/licenses/by/4.0/">
-                <dfn>
-                  <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
-                </dfn>
-              </a>
+              ${Match.value(datasetReview.license).pipe(
+                Match.when(
+                  'CC0-1.0',
+                  () => html`
+                    <a href="https://creativecommons.org/publicdomain/zero/1.0/">
+                      <dfn>
+                        <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
+                          ><bdi translate="no">CC0 1.0</bdi></abbr
+                        >
+                      </dfn>
+                    </a>
+                  `,
+                ),
+                Match.when(
+                  'CC-BY-4.0',
+                  () => html`
+                    <a href="https://creativecommons.org/licenses/by/4.0/">
+                      <dfn>
+                        <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
+                      </dfn>
+                    </a>
+                  `,
+                ),
+                Match.exhaustive,
+              )}
             </dd>
           </div>
         </dl>
