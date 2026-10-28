@@ -233,6 +233,7 @@ describe('GetDataForZenodoRecord', () => {
               author: { orcidId: events[0].authorId, persona: events[13].persona },
               dataset: events[0].datasetId,
               license: 'CC-BY-4.0',
+              generativeAiIdeas: Option.none(),
               competingInterests: events[14].competingInterests,
               qualityRating: Option.some({ rating: events[1].rating, detail: events[1].detail }),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: events[2].answer, detail: events[2].detail },
@@ -297,6 +298,7 @@ describe('GetDataForZenodoRecord', () => {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -357,6 +359,7 @@ describe('GetDataForZenodoRecord', () => {
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                   qualityRating: Option.some({
                     rating: ratedTheQualityOfTheDataset2.rating,
@@ -417,6 +420,7 @@ describe('GetDataForZenodoRecord', () => {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -448,6 +452,7 @@ describe('GetDataForZenodoRecord', () => {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -481,6 +486,7 @@ describe('GetDataForZenodoRecord', () => {
                   anonymousAuthors: 0,
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -515,6 +521,7 @@ describe('GetDataForZenodoRecord', () => {
                   anonymousAuthors: 1,
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -550,6 +557,7 @@ describe('GetDataForZenodoRecord', () => {
                   anonymousAuthors: 0,
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.none(),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -581,6 +589,7 @@ describe('GetDataForZenodoRecord', () => {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC0-1.0',
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasYes.generativeAiIdeas),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -612,6 +621,7 @@ describe('GetDataForZenodoRecord', () => {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
@@ -644,6 +654,7 @@ describe('GetDataForZenodoRecord', () => {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   dataset: datasetReviewWasStarted.datasetId,
                   license: 'CC-BY-4.0',
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   competingInterests: Option.none(),
                   qualityRating: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {

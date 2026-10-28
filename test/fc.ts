@@ -1917,6 +1917,9 @@ export const datasetReviewDataForZenodoRecord = ({
     ),
     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
+    generativeAiIdeas: maybe(
+      declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
+    ),
   })
 
 export const publishedPrereviewerReviewRequest = ({

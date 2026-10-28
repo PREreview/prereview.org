@@ -49,6 +49,9 @@ export interface DataForZenodoRecord {
   >
   readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
   readonly license: 'CC-BY-4.0' | 'CC0-1.0'
+  readonly generativeAiIdeas: Option.Option<
+    Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
+  >
 }
 
 export type Error =
@@ -233,6 +236,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
           onNone: () => 'CC-BY-4.0',
           onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
         }),
+        generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
       }),
   })
 }

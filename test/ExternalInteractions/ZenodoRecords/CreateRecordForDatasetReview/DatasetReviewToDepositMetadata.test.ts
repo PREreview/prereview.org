@@ -42,6 +42,7 @@ const cases = [
       answerToIfTheDatasetMattersToItsAudience: Option.some({ answer: 'very-consequential', detail: Option.none() }),
       answerToIfTheDatasetIsReadyToBeShared: Option.some({ answer: 'yes', detail: Option.none() }),
       license: 'CC0-1.0',
+      generativeAiIdeas: Option.none(),
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -227,6 +228,7 @@ const cases = [
         detail: NonEmptyString.fromString('Some detail about the yes.'),
       }),
       license: 'CC-BY-4.0',
+      generativeAiIdeas: Option.none(),
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -373,6 +375,7 @@ const cases = [
       answerToIfTheDatasetMattersToItsAudience: Option.none(),
       answerToIfTheDatasetIsReadyToBeShared: Option.none(),
       license: 'CC-BY-4.0',
+      generativeAiIdeas: Option.none(),
       answerToIfTheDatasetIsMissingAnything: Option.none(),
       url: new URL('http://example.com/dataset-review'),
     },
