@@ -1208,6 +1208,11 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Use of Artificial Intelligence (AI)')
+  await expect(page.getByLabel('No')).toBeChecked()
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
   await expect(page.getByLabel('No')).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()

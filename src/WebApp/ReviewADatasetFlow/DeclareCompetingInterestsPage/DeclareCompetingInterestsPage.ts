@@ -32,14 +32,7 @@ export const DeclareCompetingInterestsPage = ({
       plainText,
     ),
     nav: html`
-      <a
-        href="${(otherAuthors
-          ? Routes.ReviewADatasetCheckInvitationsToAppear
-          : Routes.ReviewADatasetOthersNeedToBeListedOnTheReview
-        ).href({ datasetReviewId })}"
-        class="back"
-        >${t('forms', 'backLink')()}</a
-      >
+      <a href="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}" class="back">${t('forms', 'backLink')()}</a>
     `,
     main: html`
       <form
