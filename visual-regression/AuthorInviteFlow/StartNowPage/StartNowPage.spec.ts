@@ -28,10 +28,23 @@ test('content looks right when logged in', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with a CC0 license', async ({ showPage }) => {
+  const response = _.renderStartNowPage({
+    viewModel: { ...viewModel, license: 'CC0-1.0' },
+    locale: DefaultLocale,
+    isLoggedIn: false,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 const viewModel = {
   doi: Doi('10.5281/zenodo.10779310'),
   id: Uuid('4df1523a-3b38-4663-aaec-10d694af692d'),
   published: PlainDate.from({ year: 2026, month: 6, day: 2 }),
+  license: 'CC-BY-4.0',
   invitationId: Uuid('d9de5f06-69ab-4ccf-a0ce-95b8f6af31c6'),
   author: new PublicPersona({
     orcidId: OrcidId('0000-0002-1825-0097'),

@@ -1,4 +1,4 @@
-import { Array, flow } from 'effect'
+import { Array, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
@@ -16,7 +16,7 @@ import { PageResponse } from '../../Response/index.ts'
 
 export type ViewModel = Omit<
   DatasetReviews.PublishedReview,
-  'author' | 'otherAuthors' | 'clubId' | 'dataset' | 'questions' | 'competingInterests' | 'license'
+  'author' | 'otherAuthors' | 'clubId' | 'dataset' | 'questions' | 'competingInterests'
 > & {
   readonly invitationId: Uuid
   readonly author: Prereviewers.Persona
@@ -77,11 +77,32 @@ export const renderStartNowPage = ({
             <div>
               <dt>${t('license')()}</dt>
               <dd>
-                <a href="https://creativecommons.org/licenses/by/4.0/">
-                  <dfn>
-                    <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
-                  </dfn>
-                </a>
+                ${pipe(
+                  Match.value(viewModel.license),
+                  Match.when(
+                    'CC0-1.0',
+                    () => html`
+                      <a href="https://creativecommons.org/publicdomain/zero/1.0/">
+                        <dfn>
+                          <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
+                            ><bdi translate="no">CC0 1.0</bdi></abbr
+                          >
+                        </dfn>
+                      </a>
+                    `,
+                  ),
+                  Match.when(
+                    'CC-BY-4.0',
+                    () => html`
+                      <a href="https://creativecommons.org/licenses/by/4.0/">
+                        <dfn>
+                          <abbr title="${t('licenseCcBy40')()}"><bdi translate="no">CC BY 4.0</bdi></abbr>
+                        </dfn>
+                      </a>
+                    `,
+                  ),
+                  Match.exhaustive,
+                )}
               </dd>
             </div>
           </dl>
