@@ -15,6 +15,7 @@ export const DepositMetadata = Schema.Struct({
   communities: Schema.optionalWith(Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })), {
     default: Array.empty,
   }),
+  license: Schema.Literal('cc-by-4.0', 'cc-zero'),
   relatedIdentifiers: Schema.propertySignature(
     Schema.Tuple(
       Schema.Struct({

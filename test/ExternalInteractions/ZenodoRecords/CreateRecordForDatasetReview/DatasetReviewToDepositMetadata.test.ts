@@ -146,6 +146,7 @@ const cases = [
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
       communities: [{ identifier: 'prereview-reviews' }],
+      license: 'cc-zero',
       relatedIdentifiers: [
         {
           identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),
@@ -329,6 +330,7 @@ const cases = [
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
       communities: [{ identifier: 'prereview-reviews' }],
+      license: 'cc-by-4.0',
       relatedIdentifiers: [
         {
           identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),
@@ -406,6 +408,7 @@ const cases = [
         'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       ),
       communities: [{ identifier: 'prereview-reviews' }],
+      license: 'cc-by-4.0',
       relatedIdentifiers: [
         {
           identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),

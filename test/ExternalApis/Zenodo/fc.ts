@@ -15,6 +15,7 @@ export const depositMetadata = (): fc.Arbitrary<Zenodo.DepositMetadata> =>
     description: fc.html(),
     title: fc.plainText(),
     communities: fc.constant([{ identifier: 'prereview-reviews' }]),
+    license: fc.constantFrom('cc-by-4.0', 'cc-zero'),
     relatedIdentifiers: fc.tuple(
       fc.record({
         identifier: fc.doi(),

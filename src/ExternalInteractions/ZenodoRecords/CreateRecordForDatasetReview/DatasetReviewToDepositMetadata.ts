@@ -270,6 +270,11 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
     `,
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${review.dataset.title}”` })),
     communities: [{ identifier: 'prereview-reviews' }],
+    license: Match.value(review.license).pipe(
+      Match.when('CC-BY-4.0', () => 'cc-by-4.0' as const),
+      Match.when('CC0-1.0', () => 'cc-zero' as const),
+      Match.exhaustive,
+    ),
     relatedIdentifiers: [
       {
         identifier: review.dataset.id.value,
