@@ -33,6 +33,7 @@ import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 import { GetDatasetReviewForInvite } from './GetDatasetReviewForInvite.ts'
 import { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
+import { GetPreviousCommandForAUserOnADatasetReview } from './GetPreviousCommandForAUserOnADatasetReview.ts'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.ts'
 import { GetPublishedReview } from './GetPublishedReview.ts'
 import { GetPublishedReviewDetails } from './GetPublishedReviewDetails.ts'
@@ -129,6 +130,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetNextExpectedCommandForAUserOnADatasetReview>,
       Errors.UnknownDatasetReview
     >
+    getPreviousCommandForAUserOnADatasetReview: Queries.FromOnDemandQuery<
+      typeof GetPreviousCommandForAUserOnADatasetReview
+    >
     getListOfInvitationsToAppearOnADatasetReview: Queries.FromOnDemandQuery<
       typeof GetListOfInvitationsToAppearOnADatasetReview
     >
@@ -178,6 +182,7 @@ export const {
   findPublishedReviewsForADataset,
   getAuthor,
   getNextExpectedCommandForAUserOnADatasetReview,
+  getPreviousCommandForAUserOnADatasetReview,
   getListOfInvitationsToAppearOnADatasetReview,
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
@@ -357,6 +362,9 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
+    ),
+    getPreviousCommandForAUserOnADatasetReview: yield* Queries.makeOnDemandQuery(
+      GetPreviousCommandForAUserOnADatasetReview,
     ),
     getListOfInvitationsToAppearOnADatasetReview: yield* Queries.makeOnDemandQuery(
       GetListOfInvitationsToAppearOnADatasetReview,
