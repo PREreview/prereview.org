@@ -91,7 +91,7 @@ export const createPage = ({
         ${review.live ? html`<span class="tag">${translate(locale, 'review-page', 'liveReview')()}</span>` : ''}
         ${
           review.license === 'CC0-1.0'
-            ? html`<span class="tag tag-ai"><span ${languageAttributesFor('en')}>AI Review</span></span>`
+            ? html`<span class="tag tag-ai"><span ${languageAttributesFor('en')}>AI-Supported Review</span></span>`
             : ''
         }
 

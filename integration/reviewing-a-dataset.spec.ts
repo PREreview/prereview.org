@@ -137,7 +137,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('main')).toContainText(
     'Use of Artificial Intelligence (AI) The author declares that they did not use generative AI to come up with new ideas for their review.',
   )
-  await expect(page.getByRole('main')).not.toContainText('AI Review')
+  await expect(page.getByRole('main')).not.toContainText('AI-Supported Review')
   await expect(page.getByRole('main')).toContainText('License CC BY 4.0')
 
   await page.getByRole('link', { name: 'Back to all reviews' }).click()
@@ -282,7 +282,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await expect(page.getByRole('main')).toContainText(
       'Use of Artificial Intelligence (AI) The author declares that they used generative AI to come up with new ideas for their review. Vivamus egestas risus vel ex tincidunt.',
     )
-    await expect(page.getByRole('main')).toContainText('AI Review')
+    await expect(page.getByRole('main')).toContainText('AI-Supported Review')
     await expect(page.getByRole('main')).toContainText('License CC0 1.0')
 
     await page.getByRole('link', { name: 'Back to all reviews' }).click()

@@ -51,7 +51,7 @@ export const createDatasetReviewPage = ({
       <header>
         ${
           Option.exists(datasetReview.generativeAiIdeas, ({ answer }) => answer === 'yes')
-            ? html`<span class="tag tag-ai"><span ${languageAttributesFor('en')}>AI Review</span></span>`
+            ? html`<span class="tag tag-ai"><span ${languageAttributesFor('en')}>AI-Supported Review</span></span>`
             : ''
         }
 
