@@ -167,56 +167,71 @@ export const GetPreviewForAReviewReadyToBePublished = (
         }),
       ),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
-      Either.right({
-        author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
-        authorsToInvite,
-        dataset: started.datasetId,
-        competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
-        qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
-          answerToIfTheDatasetFollowsFairAndCarePrinciples,
-          'answer',
-          'detail',
-        ),
-        answerToIfTheDatasetHasEnoughMetadata: Option.map(
-          answerToIfTheDatasetHasEnoughMetadata,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: Option.map(
-          answerToIfTheDatasetHasTrackedChanges,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
-          answerToIfTheDatasetHasDataCensoredOrDeleted,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
-          answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
-          answerToIfTheDatasetSupportsRelatedConclusions,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetIsDetailedEnough: Option.map(
-          answerToIfTheDatasetIsDetailedEnough,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.pick('answer', 'detail')),
-        answerToIfTheDatasetMattersToItsAudience: Option.map(
-          answerToIfTheDatasetMattersToItsAudience,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: Option.map(
-          answerToIfTheDatasetIsReadyToBeShared,
-          Struct.pick('answer', 'detail'),
-        ),
-        answerToIfTheDatasetIsMissingAnything: Option.map(answerToIfTheDatasetIsMissingAnything, Struct.get('answer')),
-        generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
-        license: Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
-          onNone: () => 'CC-BY-4.0',
-          onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
-        }),
+      Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
+        onNone: () =>
+          Either.left(
+            new Errors.DatasetReviewNotReadyToBePublished({
+              missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
+            }),
+          ),
+        onSome: () =>
+          Either.right({
+            author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
+            authorsToInvite,
+            dataset: started.datasetId,
+            competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
+            qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
+            answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
+              answerToIfTheDatasetFollowsFairAndCarePrinciples,
+              'answer',
+              'detail',
+            ),
+            answerToIfTheDatasetHasEnoughMetadata: Option.map(
+              answerToIfTheDatasetHasEnoughMetadata,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetHasTrackedChanges: Option.map(
+              answerToIfTheDatasetHasTrackedChanges,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
+              answerToIfTheDatasetHasDataCensoredOrDeleted,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
+              answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
+              answerToIfTheDatasetSupportsRelatedConclusions,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetIsDetailedEnough: Option.map(
+              answerToIfTheDatasetIsDetailedEnough,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetIsErrorFree: Option.map(
+              answerToIfTheDatasetIsErrorFree,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetMattersToItsAudience: Option.map(
+              answerToIfTheDatasetMattersToItsAudience,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetIsReadyToBeShared: Option.map(
+              answerToIfTheDatasetIsReadyToBeShared,
+              Struct.pick('answer', 'detail'),
+            ),
+            answerToIfTheDatasetIsMissingAnything: Option.map(
+              answerToIfTheDatasetIsMissingAnything,
+              Struct.get('answer'),
+            ),
+            generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
+            license: Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
+              onNone: () => 'CC-BY-4.0',
+              onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
+            }),
+          }),
       }),
   })
 }

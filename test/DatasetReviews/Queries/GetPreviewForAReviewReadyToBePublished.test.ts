@@ -241,6 +241,11 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.competingInterestsForADatasetReviewWereDeclared({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc
+                .declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+                  datasetReviewId: fc.constant(datasetReviewId),
+                })
+                .filter(event => event.generativeAiIdeas.answer === 'no'),
             ),
           )
           .map(events =>
@@ -287,7 +292,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 detail: events[11].detail,
               }),
               answerToIfTheDatasetIsMissingAnything: Option.some(events[12].answer),
-              generativeAiIdeas: Option.none(),
+              generativeAiIdeas: Option.some(events[15].generativeAiIdeas),
               license: 'CC-BY-4.0',
             }),
           ),
@@ -302,7 +307,11 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           examples: [
             [
               [
-                [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples],
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
+                ],
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
                   dataset: datasetReviewWasStarted.datasetId,
@@ -322,7 +331,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
-                  generativeAiIdeas: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   license: 'CC-BY-4.0',
                 },
               ],
@@ -359,6 +368,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   personaForDatasetReviewWasChosen2,
                   competingInterestsForADatasetReviewWereDeclared1,
                   competingInterestsForADatasetReviewWereDeclared2,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
                   author: {
@@ -412,7 +422,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     detail: answeredIfTheDatasetIsReadyToBeShared2.detail,
                   }),
                   answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything2.answer),
-                  generativeAiIdeas: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   license: 'CC-BY-4.0',
                 },
               ],
@@ -426,6 +436,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   invited1,
                   invited2,
                   invited3,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
@@ -452,7 +463,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
-                  generativeAiIdeas: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   license: 'CC-BY-4.0',
                 },
               ],
@@ -467,6 +478,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   invited2,
                   invited3,
                   removed,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
@@ -488,14 +500,19 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
-                  generativeAiIdeas: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   license: 'CC-BY-4.0',
                 },
               ],
             ], // with removed authors to invite
             [
               [
-                [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples, othersNeedToBeListedNo],
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  othersNeedToBeListedNo,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
+                ],
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
                   authorsToInvite: Option.none(),
@@ -516,7 +533,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
-                  generativeAiIdeas: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
                   license: 'CC-BY-4.0',
                 },
               ],
@@ -640,6 +657,35 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
         fastCheck: {
           examples: [
             [[datasetReviewWasStarted]], // was started
+          ],
+        },
+      },
+    )
+  })
+
+  describe("when the use of AI hasn't been declared", () => {
+    it.prop(
+      'returns an error',
+      [
+        fc
+          .tuple(fc.datasetReviewWasStarted(), fc.answeredIfTheDatasetFollowsFairAndCarePrinciples())
+          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+      ],
+      ([events]) => {
+        const actual = _.GetPreviewForAReviewReadyToBePublished(events)
+
+        expect(actual).toStrictEqual(
+          Either.left(
+            new DatasetReviews.DatasetReviewNotReadyToBePublished({
+              missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
+            }),
+          ),
+        )
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // FAIR and CARE answered
           ],
         },
       },
