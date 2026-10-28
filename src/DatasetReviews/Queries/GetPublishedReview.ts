@@ -61,6 +61,7 @@ export interface PublishedReview {
     answerToIfTheDatasetIsMissingAnything: Option.Option<NonEmptyString.NonEmptyString>
   }
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
+  license: 'CC-BY-4.0' | 'CC0-1.0'
   published: Temporal.PlainDate
 }
 
@@ -169,6 +170,14 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
     Struct.get('competingInterests'),
   )
 
+  const license = Option.match(
+    Array.findLast(filteredEvents, hasTag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview')),
+    {
+      onNone: () => 'CC-BY-4.0',
+      onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
+    },
+  ) satisfies PublishedReview['license']
+
   const clubId = Option.andThen(
     Array.findLast(filteredEvents, hasTag('DatasetReviewWasAddedToAClub')),
     Struct.get('clubId'),
@@ -270,6 +279,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
           answerToIfTheDatasetIsMissingAnything,
         },
         competingInterests,
+        license,
         published:
           data.datasetReviewWasPublished.publicationDate instanceof Temporal.Instant
             ? data.datasetReviewWasPublished.publicationDate.toZonedDateTimeISO('UTC').toPlainDate()

@@ -13,7 +13,10 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset' | 'clubId'> & {
+export type DatasetReview = Omit<
+  DatasetReviews.PublishedReview,
+  'author' | 'otherAuthors' | 'dataset' | 'clubId' | 'license'
+> & {
   readonly author: Prereviewers.Persona
   readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number

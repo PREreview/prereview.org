@@ -155,6 +155,16 @@ const competingInterestsForADatasetReviewWereDeclared2 =
     competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
+const declaredIfAiWasUsedToGenerateNewIdeasYes =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'yes', detail: NonEmptyString.fromString('Some detail about yes') },
+    datasetReviewId,
+  })
+const declaredIfAiWasUsedToGenerateNewIdeasNo =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'no' },
+    datasetReviewId,
+  })
 const answeredNo = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
   datasetReviewId,
   answer: 'no',
@@ -310,6 +320,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
                 competingInterests: Option.none(),
+                license: 'CC-BY-4.0',
                 published:
                   events[4].publicationDate instanceof Temporal.Instant
                     ? events[4].publicationDate.toZonedDateTimeISO('UTC').toPlainDate()
@@ -406,6 +417,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything1.answer,
                     },
                     competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                    license: 'CC-BY-4.0',
                     published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
@@ -504,6 +516,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
                     },
                     competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
+                    license: 'CC-BY-4.0',
                     published: datasetReviewWasPublished2.publicationDate as Temporal.PlainDate,
                   },
                 ],
@@ -540,10 +553,126 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
+                    license: 'CC-BY-4.0',
                     published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
               ], // different order
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                    declaredIfAiWasUsedToGenerateNewIdeasYes,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished1,
+                  ],
+                  {
+                    author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
+                    dataset: datasetReviewWasStarted.datasetId,
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewId,
+                    questions: {
+                      qualityRating: Option.none(),
+                      answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                        answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                        detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                      },
+                      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                      answerToIfTheDatasetIsErrorFree: Option.none(),
+                      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                      answerToIfTheDatasetIsMissingAnything: Option.none(),
+                    },
+                    competingInterests: Option.none(),
+                    license: 'CC0-1.0',
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
+                  },
+                ],
+              ], // AI was used
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                    declaredIfAiWasUsedToGenerateNewIdeasNo,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished1,
+                  ],
+                  {
+                    author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
+                    dataset: datasetReviewWasStarted.datasetId,
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewId,
+                    questions: {
+                      qualityRating: Option.none(),
+                      answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                        answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                        detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                      },
+                      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                      answerToIfTheDatasetIsErrorFree: Option.none(),
+                      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                      answerToIfTheDatasetIsMissingAnything: Option.none(),
+                    },
+                    competingInterests: Option.none(),
+                    license: 'CC-BY-4.0',
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
+                  },
+                ],
+              ], // AI was not used
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                    declaredIfAiWasUsedToGenerateNewIdeasYes,
+                    declaredIfAiWasUsedToGenerateNewIdeasNo,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished1,
+                  ],
+                  {
+                    author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    clubId: Option.none(),
+                    dataset: datasetReviewWasStarted.datasetId,
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewId,
+                    questions: {
+                      qualityRating: Option.none(),
+                      answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                        answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                        detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                      },
+                      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                      answerToIfTheDatasetIsErrorFree: Option.none(),
+                      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                      answerToIfTheDatasetIsMissingAnything: Option.none(),
+                    },
+                    competingInterests: Option.none(),
+                    license: 'CC-BY-4.0',
+                    published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
+                  },
+                ],
+              ], // AI answer changed
               [
                 [
                   [
@@ -580,6 +709,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
+                    license: 'CC-BY-4.0',
                     published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
@@ -634,6 +764,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
+                    license: 'CC-BY-4.0',
                     published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],
@@ -673,6 +804,7 @@ describe('GetPublishedReview', () => {
                       answerToIfTheDatasetIsMissingAnything: Option.none(),
                     },
                     competingInterests: Option.none(),
+                    license: 'CC-BY-4.0',
                     published: datasetReviewWasPublished1.publicationDate as Temporal.PlainDate,
                   },
                 ],

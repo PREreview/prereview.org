@@ -1813,6 +1813,7 @@ export const publishedDatasetReview = ({
       answerToIfTheDatasetIsMissingAnything: maybe(nonEmptyString()),
     }),
     competingInterests: maybe(nonEmptyString()),
+    license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
     published: plainDate(),
   })
 
