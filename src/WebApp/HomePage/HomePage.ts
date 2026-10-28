@@ -95,7 +95,7 @@ export const createPage = ({
         <div>
           <p>${translate(locale, 'home-page', 'peerReviewWeek2026Text')()}</p>
 
-          <a href="https://sites.google.com/prereview.org/review-a-thon" class="forward"
+          <a href="https://sites.google.com/prereview.org/review-a-thon/participating-clubs" class="forward"
             >${translate(locale, 'home-page', 'peerReviewWeek2026Link')()}</a
           >
         </div>
