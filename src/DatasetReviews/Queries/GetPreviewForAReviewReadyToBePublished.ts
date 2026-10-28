@@ -9,7 +9,7 @@ import type * as Events from '../Events.ts'
 export interface DatasetReviewPreview {
   readonly author: {
     readonly orcidId: OrcidId.OrcidId
-    readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']>
+    readonly persona: Events.PersonaForDatasetReviewWasChosen['persona']
   }
   readonly authorsToInvite?: Option.Option<Array.NonEmptyReadonlyArray<NonEmptyString>>
   readonly dataset: Datasets.DatasetId
@@ -169,6 +169,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   return Option.match(
     Option.all({
+      author,
+      competingInterests,
       qualityRating,
       answerToIfTheDatasetFollowsFairAndCarePrinciples,
       answerToIfTheDatasetHasEnoughMetadata,
@@ -186,6 +188,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
     {
       onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
       onSome: ({
+        author,
+        competingInterests,
         qualityRating,
         answerToIfTheDatasetFollowsFairAndCarePrinciples,
         answerToIfTheDatasetHasEnoughMetadata,
@@ -201,10 +205,10 @@ export const GetPreviewForAReviewReadyToBePublished = (
         declaredIfAiWasUsedToGenerateNewIdeas: { generativeAiIdeas },
       }) =>
         Either.right({
-          author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
+          author: { orcidId: started.authorId, persona: author.persona },
           authorsToInvite,
           dataset: started.datasetId,
-          competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
+          competingInterests: competingInterests.competingInterests,
           qualityRating: Struct.pick(qualityRating, 'rating', 'detail'),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
             answerToIfTheDatasetFollowsFairAndCarePrinciples,

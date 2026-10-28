@@ -258,7 +258,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
-              author: { orcidId: events[0].authorId, persona: Option.some(events[13].persona) },
+              author: { orcidId: events[0].authorId, persona: events[13].persona },
               dataset: events[0].datasetId,
               competingInterests: events[14].competingInterests,
               qualityRating: { rating: events[1].rating, detail: events[1].detail },
@@ -337,7 +337,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
@@ -429,7 +429,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen2.persona),
+                    persona: personaForDatasetReviewWasChosen2.persona,
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
@@ -511,7 +511,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   authorsToInvite: Option.some(
                     Array.make(
@@ -600,7 +600,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   authorsToInvite: Option.some(Array.make(Option.getOrThrow(invited2.contactDetails).name)),
                   dataset: datasetReviewWasStarted.datasetId,
@@ -680,7 +680,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
@@ -759,7 +759,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
@@ -837,7 +837,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
@@ -916,7 +916,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,

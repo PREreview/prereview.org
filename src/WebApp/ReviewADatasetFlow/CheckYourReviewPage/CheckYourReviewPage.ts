@@ -12,7 +12,7 @@ import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
-  readonly author: Option.Option<Prereviewers.Persona>
+  readonly author: Prereviewers.Persona
   readonly dataset: Datasets.DatasetTitle
 }
 
@@ -61,85 +61,81 @@ export const CheckYourReviewPage = ({
             </dl>
           </div>
 
-          ${Option.match(review.author, {
-            onNone: () => '',
-            onSome: author =>
-              html` <div class="summary-card">
+          <div class="summary-card">
+            <div>
+              <h2 id="details-label">${t('yourDetails')()}</h2>
+            </div>
+
+            <div aria-labelledby="details-label" role="region">
+              <dl class="summary-list">
                 <div>
-                  <h2 id="details-label">${t('yourDetails')()}</h2>
+                  <dt>${t('publishedName')()}</dt>
+                  <dd>${displayAuthor(review.author)}</dd>
+                  <dd>
+                    <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}">
+                      ${t('changePublishedName')({ visuallyHidden })}
+                    </a>
+                  </dd>
                 </div>
 
-                <div aria-labelledby="details-label" role="region">
-                  <dl class="summary-list">
-                    <div>
-                      <dt>${t('publishedName')()}</dt>
-                      <dd>${displayAuthor(author)}</dd>
-                      <dd>
-                        <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}">
-                          ${t('changePublishedName')({ visuallyHidden })}
-                        </a>
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt><span ${languageAttributesFor('en')}>Use of AI</span></dt>
-                      <dd>
-                        ${Match.value(review.generativeAiIdeas).pipe(
-                          Match.when(
-                            { answer: 'yes' },
-                            ({ detail }) => html`
-                              <p>
-                                <span ${languageAttributesFor('en')}>
-                                  ${
-                                    hasOtherAuthors
-                                      ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
-                                      : 'The author declares that they used generative AI to come up with new ideas for their review.'
-                                  }
-                                </span>
-                              </p>
-                              ${Option.match(detail, {
-                                onNone: () => '',
-                                onSome: detail => html`<p>${detail}</p>`,
-                              })}
-                            `,
-                          ),
-                          Match.when(
-                            { answer: 'no' },
-                            () => html`
-                              <p>
-                                <span ${languageAttributesFor('en')}>
-                                  ${
-                                    hasOtherAuthors
-                                      ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
-                                      : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
-                                  }
-                                </span>
-                              </p>
-                            `,
-                          ),
-                          Match.exhaustive,
-                        )}
-                      </dd>
-                      <dd>
-                        <a href="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}">
-                          <span ${languageAttributesFor('en')}>Change ${visuallyHidden(html`use of AI`)}</span>
-                        </a>
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>${t('competingInterests')()}</dt>
-                      <dd>${Option.getOrElse(review.competingInterests, () => html`<i>${t('noneDeclared')()}</i>`)}</dd>
-                      <dd>
-                        <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}">
-                          ${t('changeCompetingInterests')({ visuallyHidden })}
-                        </a>
-                      </dd>
-                    </div>
-                  </dl>
+                <div>
+                  <dt><span ${languageAttributesFor('en')}>Use of AI</span></dt>
+                  <dd>
+                    ${Match.value(review.generativeAiIdeas).pipe(
+                      Match.when(
+                        { answer: 'yes' },
+                        ({ detail }) => html`
+                          <p>
+                            <span ${languageAttributesFor('en')}>
+                              ${
+                                hasOtherAuthors
+                                  ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
+                                  : 'The author declares that they used generative AI to come up with new ideas for their review.'
+                              }
+                            </span>
+                          </p>
+                          ${Option.match(detail, {
+                            onNone: () => '',
+                            onSome: detail => html`<p>${detail}</p>`,
+                          })}
+                        `,
+                      ),
+                      Match.when(
+                        { answer: 'no' },
+                        () => html`
+                          <p>
+                            <span ${languageAttributesFor('en')}>
+                              ${
+                                hasOtherAuthors
+                                  ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
+                                  : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
+                              }
+                            </span>
+                          </p>
+                        `,
+                      ),
+                      Match.exhaustive,
+                    )}
+                  </dd>
+                  <dd>
+                    <a href="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}">
+                      <span ${languageAttributesFor('en')}>Change ${visuallyHidden(html`use of AI`)}</span>
+                    </a>
+                  </dd>
                 </div>
-              </div>`,
-          })}
+
+                <div>
+                  <dt>${t('competingInterests')()}</dt>
+                  <dd>${Option.getOrElse(review.competingInterests, () => html`<i>${t('noneDeclared')()}</i>`)}</dd>
+                  <dd>
+                    <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}">
+                      ${t('changeCompetingInterests')({ visuallyHidden })}
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
           ${
             review.authorsToInvite
               ? html`

@@ -1,4 +1,4 @@
-import { Array, Effect, Equal, Option, pipe } from 'effect'
+import { Array, Effect, Equal, pipe } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
@@ -31,10 +31,7 @@ export const CheckYourReviewPage = ({
 
     const review = yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
     const { authorPersona, dataset } = yield* Effect.all({
-      authorPersona: Option.match(review.author.persona, {
-        onSome: persona => Effect.map(Prereviewers.getPersona({ ...review.author, persona }), Option.some),
-        onNone: () => Effect.succeedNone,
-      }),
+      authorPersona: Prereviewers.getPersona(review.author),
       dataset: Datasets.getDatasetTitle(review.dataset),
     })
 

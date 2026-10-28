@@ -22,12 +22,10 @@ test('content looks right', async ({ showPage }) => {
 const datasetReviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
 const review = {
-  author: Option.some(
-    new Prereviewers.PublicPersona({
-      name: Option.some(Name.Name('Josiah Carberry')),
-      orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-    }),
-  ),
+  author: new Prereviewers.PublicPersona({
+    name: Option.some(Name.Name('Josiah Carberry')),
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  }),
   competingInterests: NonEmptyString.fromString(
     'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),

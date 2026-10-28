@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@effect/vitest'
-import { Effect, Equal, Layer, Option, Tuple } from 'effect'
+import { Effect, Equal, Layer, Tuple } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -22,7 +22,7 @@ describe('CheckYourReviewPage', () => {
           fc.supportedLocale(),
           fc.user(),
           fc.datasetReviewPreview({
-            author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('public')) }),
+            author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }),
           }),
           fc.datasetTitle(),
           fc.publicPersona(),
@@ -69,7 +69,7 @@ describe('CheckYourReviewPage', () => {
           fc.supportedLocale(),
           fc.user(),
           fc.datasetReviewPreview({
-            author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('pseudonym')) }),
+            author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }),
           }),
           fc.datasetTitle(),
           fc.pseudonymPersona(),
@@ -104,48 +104,6 @@ describe('CheckYourReviewPage', () => {
                 getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
               }),
             ),
-            Effect.provideService(Locale, locale),
-            Effect.provideService(LoggedInUser, user),
-          ),
-      )
-
-      it.effect.prop(
-        'without a persona',
-        [
-          fc.uuid(),
-          fc.supportedLocale(),
-          fc.user(),
-          fc.datasetReviewPreview({
-            author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.none()) }),
-          }),
-          fc.datasetTitle(),
-        ],
-        ([datasetReviewId, locale, user, preview, dataset]) =>
-          Effect.gen(function* () {
-            const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
-
-            expect(actual).toStrictEqual({
-              _tag: 'StreamlinePageResponse',
-              status: StatusCodes.OK,
-              title: expect.anything(),
-              nav: expect.anything(),
-              main: expect.anything(),
-              skipToLabel: 'form',
-              js: ['single-use-form.js'],
-            })
-          }).pipe(
-            Effect.provide(
-              Layer.mock(DatasetReviews.DatasetReviewQueries, {
-                getAuthor: () => Effect.succeed(user.orcid),
-                getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
-              }),
-            ),
-            Effect.provide(
-              Layer.mock(Datasets.Datasets, {
-                getDatasetTitle: () => Effect.succeed(dataset),
-              }),
-            ),
-            Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
             Effect.provideService(Locale, locale),
             Effect.provideService(LoggedInUser, user),
           ),
@@ -212,7 +170,7 @@ describe('CheckYourReviewPage', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.datasetReviewPreview({
-          author: fc.record({ orcidId: fc.orcidId(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
+          author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('public', 'pseudonym') }),
         }),
         fc.datasetTitle(),
         fc.anything(),
