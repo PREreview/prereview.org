@@ -49,43 +49,43 @@ const review = {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
   },
-  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+  answerToIfTheDatasetHasEnoughMetadata: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetHasTrackedChanges: Option.some({
+  },
+  answerToIfTheDatasetHasTrackedChanges: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+  },
+  answerToIfTheDatasetHasDataCensoredOrDeleted: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+  },
+  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+  },
+  answerToIfTheDatasetSupportsRelatedConclusions: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetIsDetailedEnough: Option.some({
+  },
+  answerToIfTheDatasetIsDetailedEnough: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetIsErrorFree: Option.some({
+  },
+  answerToIfTheDatasetIsErrorFree: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetMattersToItsAudience: Option.some({
+  },
+  answerToIfTheDatasetMattersToItsAudience: {
     answer: 'very-consequential',
     detail: NonEmptyString.fromString('Detail about the very-consequential.'),
-  }),
-  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+  },
+  answerToIfTheDatasetIsReadyToBeShared: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
-  }),
-  answerToIfTheDatasetIsMissingAnything: Option.some(
-    NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+  },
+  answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   ),
 } satisfies _.DatasetReviewPreview

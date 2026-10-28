@@ -1840,32 +1840,23 @@ export const datasetReviewPreview = ({
     answerToIfTheDatasetFollowsFairAndCarePrinciples: answeredIfTheDatasetFollowsFairAndCarePrinciples().map(
       Struct.pick('answer', 'detail'),
     ),
-    answerToIfTheDatasetHasEnoughMetadata: maybe(
-      answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetHasEnoughMetadata: answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetHasTrackedChanges: answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetHasDataCensoredOrDeleted: answeredIfTheDatasetHasDataCensoredOrDeleted().map(
+      Struct.pick('answer', 'detail'),
     ),
-    answerToIfTheDatasetHasTrackedChanges: maybe(
-      answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
-    ),
-    answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(
-      answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.pick('answer', 'detail')),
-    ),
-    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(
+    answerToIfTheDatasetIsAppropriateForThisKindOfResearch:
       answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetSupportsRelatedConclusions: answeredIfTheDatasetSupportsRelatedConclusions().map(
+      Struct.pick('answer', 'detail'),
     ),
-    answerToIfTheDatasetSupportsRelatedConclusions: maybe(
-      answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetIsDetailedEnough: answeredIfTheDatasetIsDetailedEnough().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetIsErrorFree: answeredIfTheDatasetIsErrorFree().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetMattersToItsAudience: answeredIfTheDatasetMattersToItsAudience().map(
+      Struct.pick('answer', 'detail'),
     ),
-    answerToIfTheDatasetIsDetailedEnough: maybe(
-      answeredIfTheDatasetIsDetailedEnough().map(Struct.pick('answer', 'detail')),
-    ),
-    answerToIfTheDatasetIsErrorFree: maybe(answeredIfTheDatasetIsErrorFree().map(Struct.pick('answer', 'detail'))),
-    answerToIfTheDatasetMattersToItsAudience: maybe(
-      answeredIfTheDatasetMattersToItsAudience().map(Struct.pick('answer', 'detail')),
-    ),
-    answerToIfTheDatasetIsReadyToBeShared: maybe(
-      answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
-    ),
-    answerToIfTheDatasetIsMissingAnything: maybe(answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer'))),
+    answerToIfTheDatasetIsReadyToBeShared: answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
     license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
   })

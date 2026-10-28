@@ -19,34 +19,37 @@ export interface DatasetReviewPreview {
     Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
     'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetHasEnoughMetadata, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetHasEnoughMetadata: Pick<
+    Events.AnsweredIfTheDatasetHasEnoughMetadata,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetHasTrackedChanges, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetHasTrackedChanges: Pick<
+    Events.AnsweredIfTheDatasetHasTrackedChanges,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Pick<
+    Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Pick<
+    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetSupportsRelatedConclusions: Pick<
+    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetIsDetailedEnough, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetIsDetailedEnough: Pick<Events.AnsweredIfTheDatasetIsDetailedEnough, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetIsErrorFree: Pick<Events.AnsweredIfTheDatasetIsErrorFree, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetMattersToItsAudience: Pick<
+    Events.AnsweredIfTheDatasetMattersToItsAudience,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetIsErrorFree: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetIsErrorFree, 'answer' | 'detail'>
+  readonly answerToIfTheDatasetIsReadyToBeShared: Pick<
+    Events.AnsweredIfTheDatasetIsReadyToBeShared,
+    'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetMattersToItsAudience: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetMattersToItsAudience, 'answer' | 'detail'>
-  >
-  readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<
-    Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>
-  >
-  readonly answerToIfTheDatasetIsMissingAnything: Option.Option<Events.AnsweredIfTheDatasetIsMissingAnything['answer']>
+  readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
   readonly generativeAiIdeas: Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
   readonly license: 'CC-BY-4.0' | 'CC0-1.0'
 }
@@ -168,6 +171,16 @@ export const GetPreviewForAReviewReadyToBePublished = (
     Option.all({
       qualityRating,
       answerToIfTheDatasetFollowsFairAndCarePrinciples,
+      answerToIfTheDatasetHasEnoughMetadata,
+      answerToIfTheDatasetHasTrackedChanges,
+      answerToIfTheDatasetHasDataCensoredOrDeleted,
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+      answerToIfTheDatasetSupportsRelatedConclusions,
+      answerToIfTheDatasetIsDetailedEnough,
+      answerToIfTheDatasetIsErrorFree,
+      answerToIfTheDatasetMattersToItsAudience,
+      answerToIfTheDatasetIsReadyToBeShared,
+      answerToIfTheDatasetIsMissingAnything,
       declaredIfAiWasUsedToGenerateNewIdeas,
     }),
     {
@@ -175,6 +188,16 @@ export const GetPreviewForAReviewReadyToBePublished = (
       onSome: ({
         qualityRating,
         answerToIfTheDatasetFollowsFairAndCarePrinciples,
+        answerToIfTheDatasetHasEnoughMetadata,
+        answerToIfTheDatasetHasTrackedChanges,
+        answerToIfTheDatasetHasDataCensoredOrDeleted,
+        answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+        answerToIfTheDatasetSupportsRelatedConclusions,
+        answerToIfTheDatasetIsDetailedEnough,
+        answerToIfTheDatasetIsErrorFree,
+        answerToIfTheDatasetMattersToItsAudience,
+        answerToIfTheDatasetIsReadyToBeShared,
+        answerToIfTheDatasetIsMissingAnything,
         declaredIfAiWasUsedToGenerateNewIdeas: { generativeAiIdeas },
       }) =>
         Either.right({
@@ -188,43 +211,32 @@ export const GetPreviewForAReviewReadyToBePublished = (
             'answer',
             'detail',
           ),
-          answerToIfTheDatasetHasEnoughMetadata: Option.map(
-            answerToIfTheDatasetHasEnoughMetadata,
-            Struct.pick('answer', 'detail'),
-          ),
-          answerToIfTheDatasetHasTrackedChanges: Option.map(
-            answerToIfTheDatasetHasTrackedChanges,
-            Struct.pick('answer', 'detail'),
-          ),
-          answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
+          answerToIfTheDatasetHasEnoughMetadata: Struct.pick(answerToIfTheDatasetHasEnoughMetadata, 'answer', 'detail'),
+          answerToIfTheDatasetHasTrackedChanges: Struct.pick(answerToIfTheDatasetHasTrackedChanges, 'answer', 'detail'),
+          answerToIfTheDatasetHasDataCensoredOrDeleted: Struct.pick(
             answerToIfTheDatasetHasDataCensoredOrDeleted,
-            Struct.pick('answer', 'detail'),
+            'answer',
+            'detail',
           ),
-          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Struct.pick(
             answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
-            Struct.pick('answer', 'detail'),
+            'answer',
+            'detail',
           ),
-          answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
+          answerToIfTheDatasetSupportsRelatedConclusions: Struct.pick(
             answerToIfTheDatasetSupportsRelatedConclusions,
-            Struct.pick('answer', 'detail'),
+            'answer',
+            'detail',
           ),
-          answerToIfTheDatasetIsDetailedEnough: Option.map(
-            answerToIfTheDatasetIsDetailedEnough,
-            Struct.pick('answer', 'detail'),
-          ),
-          answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.pick('answer', 'detail')),
-          answerToIfTheDatasetMattersToItsAudience: Option.map(
+          answerToIfTheDatasetIsDetailedEnough: Struct.pick(answerToIfTheDatasetIsDetailedEnough, 'answer', 'detail'),
+          answerToIfTheDatasetIsErrorFree: Struct.pick(answerToIfTheDatasetIsErrorFree, 'answer', 'detail'),
+          answerToIfTheDatasetMattersToItsAudience: Struct.pick(
             answerToIfTheDatasetMattersToItsAudience,
-            Struct.pick('answer', 'detail'),
+            'answer',
+            'detail',
           ),
-          answerToIfTheDatasetIsReadyToBeShared: Option.map(
-            answerToIfTheDatasetIsReadyToBeShared,
-            Struct.pick('answer', 'detail'),
-          ),
-          answerToIfTheDatasetIsMissingAnything: Option.map(
-            answerToIfTheDatasetIsMissingAnything,
-            Struct.get('answer'),
-          ),
+          answerToIfTheDatasetIsReadyToBeShared: Struct.pick(answerToIfTheDatasetIsReadyToBeShared, 'answer', 'detail'),
+          answerToIfTheDatasetIsMissingAnything: answerToIfTheDatasetIsMissingAnything.answer,
           generativeAiIdeas,
           license: generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
         }),
