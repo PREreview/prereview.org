@@ -41,10 +41,10 @@ const review = {
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
     language: 'en',
   }),
-  qualityRating: Option.some({
+  qualityRating: {
     rating: 'excellent',
     detail: NonEmptyString.fromString('Detail about the excellent rating.'),
-  }),
+  },
   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),

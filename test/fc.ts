@@ -1836,7 +1836,7 @@ export const datasetReviewPreview = ({
     author: author ?? fc.record({ orcidId: orcidId(), persona: maybe(constantFrom('public', 'pseudonym')) }),
     dataset: datasetId(),
     competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
-    qualityRating: maybe(ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
+    qualityRating: ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail')),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: answeredIfTheDatasetFollowsFairAndCarePrinciples().map(
       Struct.pick('answer', 'detail'),
     ),

@@ -14,7 +14,7 @@ export interface DatasetReviewPreview {
   readonly authorsToInvite?: Option.Option<Array.NonEmptyReadonlyArray<NonEmptyString>>
   readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
-  readonly qualityRating: Option.Option<Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>>
+  readonly qualityRating: Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Pick<
     Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
     'answer' | 'detail'
@@ -165,10 +165,15 @@ export const GetPreviewForAReviewReadyToBePublished = (
   )
 
   return Option.match(
-    Option.all({ answerToIfTheDatasetFollowsFairAndCarePrinciples, declaredIfAiWasUsedToGenerateNewIdeas }),
+    Option.all({
+      qualityRating,
+      answerToIfTheDatasetFollowsFairAndCarePrinciples,
+      declaredIfAiWasUsedToGenerateNewIdeas,
+    }),
     {
       onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
       onSome: ({
+        qualityRating,
         answerToIfTheDatasetFollowsFairAndCarePrinciples,
         declaredIfAiWasUsedToGenerateNewIdeas: { generativeAiIdeas },
       }) =>
@@ -177,7 +182,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
           authorsToInvite,
           dataset: started.datasetId,
           competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
-          qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
+          qualityRating: Struct.pick(qualityRating, 'rating', 'detail'),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
             answerToIfTheDatasetFollowsFairAndCarePrinciples,
             'answer',

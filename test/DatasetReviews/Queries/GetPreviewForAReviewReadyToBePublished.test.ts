@@ -261,7 +261,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               author: { orcidId: events[0].authorId, persona: Option.some(events[13].persona) },
               dataset: events[0].datasetId,
               competingInterests: events[14].competingInterests,
-              qualityRating: Option.some({ rating: events[1].rating, detail: events[1].detail }),
+              qualityRating: { rating: events[1].rating, detail: events[1].detail },
               answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: events[2].answer, detail: events[2].detail },
               answerToIfTheDatasetHasEnoughMetadata: Option.some({
                 answer: events[3].answer,
@@ -341,10 +341,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
@@ -433,10 +433,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset2.rating,
                     detail: ratedTheQualityOfTheDataset2.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
@@ -521,10 +521,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   ),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
@@ -605,10 +605,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   authorsToInvite: Option.some(Array.make(Option.getOrThrow(invited2.contactDetails).name)),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
@@ -685,10 +685,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
@@ -763,10 +763,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
@@ -841,10 +841,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
@@ -920,10 +920,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   },
                   dataset: datasetReviewWasStarted.datasetId,
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
-                  qualityRating: Option.some({
+                  qualityRating: {
                     rating: ratedTheQualityOfTheDataset1.rating,
                     detail: ratedTheQualityOfTheDataset1.detail,
-                  }),
+                  },
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,

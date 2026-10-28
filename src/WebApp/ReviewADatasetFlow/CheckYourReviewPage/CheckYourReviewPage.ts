@@ -174,33 +174,28 @@ export const CheckYourReviewPage = ({
 
             <div aria-labelledby="review-label" role="region">
               <dl class="summary-list">
-                ${Option.match(review.qualityRating, {
-                  onNone: () => '',
-                  onSome: ({ rating, detail }) => html`
-                    <div>
-                      <dt>${t('rateQuality')()}</dt>
-                      <dd>
-                        ${pipe(
-                          Match.value(rating),
-                          Match.when('excellent', t('excellent')),
-                          Match.when('fair', t('fair')),
-                          Match.when('poor', t('poor')),
-                          Match.when('unsure', t('doNotKnow')),
-                          Match.exhaustive,
-                        )}
-                      </dd>
-                      ${Option.match(detail, {
-                        onNone: () => '',
-                        onSome: detail => html`<dd>${detail}</dd>`,
-                      })}
-                      <dd>
-                        <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}">
-                          ${t('changeQualityRating')({ visuallyHidden })}
-                        </a>
-                      </dd>
-                    </div>
-                  `,
-                })}
+                <div>
+                  <dt>${t('rateQuality')()}</dt>
+                  <dd>
+                    ${pipe(
+                      Match.value(review.qualityRating.rating),
+                      Match.when('excellent', t('excellent')),
+                      Match.when('fair', t('fair')),
+                      Match.when('poor', t('poor')),
+                      Match.when('unsure', t('doNotKnow')),
+                      Match.exhaustive,
+                    )}
+                  </dd>
+                  ${Option.match(review.qualityRating.detail, {
+                    onNone: () => '',
+                    onSome: detail => html`<dd>${detail}</dd>`,
+                  })}
+                  <dd>
+                    <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}">
+                      ${t('changeQualityRating')({ visuallyHidden })}
+                    </a>
+                  </dd>
+                </div>
                 <div>
                   <dt>${t('followFairAndCare')()}</dt>
                   <dd>
