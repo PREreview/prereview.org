@@ -1,4 +1,5 @@
-import { Effect } from 'effect'
+import type { UrlParams } from '@effect/platform'
+import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -7,6 +8,7 @@ import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as UseOfAiForm from './UseOfAiForm.ts'
 import { UseOfAiPage as MakeResponse } from './UseOfAiPage.ts'
 
@@ -50,4 +52,54 @@ export const UseOfAiPage = ({
     }),
   )
 
-export const UseOfAiSubmission = (): Effect.Effect<Response.Response, never, Locale> => HavingProblemsPage
+export const UseOfAiSubmission = ({
+  body,
+  datasetReviewId,
+}: {
+  body: UrlParams.UrlParams
+  datasetReviewId: Uuid.Uuid
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+> =>
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+    const locale = yield* Locale
+
+    const form = UseOfAiForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: Effect.fn(
+        function* (form: UseOfAiForm.CompletedForm) {
+          yield* DatasetReviews.declareIfAiWasUsedToGenerateNewIdeas(
+            form.generativeAiIdeas === 'yes'
+              ? { answer: 'yes', detail: form.generativeAiIdeasDetails, datasetReviewId, userId: user.orcid }
+              : { answer: 'no', datasetReviewId, userId: user.orcid },
+          )
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
+      InvalidForm: Effect.fnUntraced(
+        function* (form: UseOfAiForm.InvalidForm) {
+          const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
+
+          return MakeResponse({
+            datasetReviewId,
+            form,
+            locale,
+            otherAuthors,
+          })
+        },
+        Effect.catchTag('UnableToQuery', () => HavingProblemsPage),
+      ),
+    })
+  })

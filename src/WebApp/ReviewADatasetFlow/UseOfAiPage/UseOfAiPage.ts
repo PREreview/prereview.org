@@ -1,9 +1,10 @@
-import { Match, Option, pipe, String } from 'effect'
-import { html, plainText } from '../../../html.ts'
+import { Either, Match, Option, pipe, String } from 'effect'
+import { html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
-import { saveAndContinueButton } from '../../../shared-translation-elements.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
+import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type * as UseOfAiForm from './UseOfAiForm.ts'
@@ -19,10 +20,12 @@ export const UseOfAiPage = ({
   locale: SupportedLocale
   otherAuthors: boolean
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale, 'review-a-dataset-flow')
 
   return StreamlinePageResponse({
-    title: plainText('Use of Artificial Intelligence (AI)'),
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe('Use of Artificial Intelligence (AI)', errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a
         href="${(otherAuthors
@@ -35,6 +38,8 @@ export const UseOfAiPage = ({
     `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}" novalidate>
+        ${hasAnError ? pipe(form, toErrorItems(otherAuthors), errorSummary(locale)) : ''}
+
         <h1><span ${languageAttributesFor('en')}>Use of Artificial Intelligence (AI)</span></h1>
 
         <p>
@@ -58,9 +63,16 @@ export const UseOfAiPage = ({
           >
         </p>
 
-        <div>
+        <div ${rawHtml(form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas) ? 'class="error"' : '')}>
           <conditional-inputs>
-            <fieldset role="group">
+            <fieldset
+              role="group"
+              ${rawHtml(
+                form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
+                  ? 'aria-invalid="true" aria-errormessage="generative-ai-ideas-error"'
+                  : '',
+              )}
+            >
               <legend>
                 <h2>
                   <span ${languageAttributesFor('en')}
@@ -72,6 +84,19 @@ export const UseOfAiPage = ({
                   >
                 </h2>
               </legend>
+
+              ${
+                form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
+                  ? html`
+                      <div class="error-message" id="generative-ai-ideas-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.generativeAiIdeas.left, {
+                          Missing: () => missingMessage(otherAuthors),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
 
               <ol>
                 <li>
@@ -122,6 +147,7 @@ export const UseOfAiPage = ({
                       >
 ${Match.valueTags(form, {
   EmptyForm: () => '',
+  InvalidForm: form => Option.getOrElse(form.generativeAiIdeasDetails, () => String.empty),
   CompletedForm: form => Option.getOrElse(form.generativeAiIdeasDetails, () => String.empty),
 })}</textarea>
                     </div>
@@ -136,7 +162,32 @@ ${Match.valueTags(form, {
       </form>
     `,
     canonical: Routes.ReviewADatasetUseOfAi.href({ datasetReviewId }),
-    js: ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+const toErrorItems = (otherAuthors: boolean) => (form: UseOfAiForm.InvalidForm) => html`
+  ${
+    Either.isLeft(form.generativeAiIdeas)
+      ? html`
+          <li>
+            <a href="#generative-ai-ideas-no">
+              ${Match.valueTags(form.generativeAiIdeas.left, {
+                Missing: () => missingMessage(otherAuthors),
+              })}
+            </a>
+          </li>
+        `
+      : ''
+  }
+`
+
+const missingMessage = (otherAuthors: boolean) =>
+  html`<span ${languageAttributesFor('en')}
+    >${
+      otherAuthors
+        ? 'Select yes if you, or any of the other authors, used AI to generate ideas for this review'
+        : 'Select yes if you used AI to generate ideas for this review'
+    }</span
+  >`
