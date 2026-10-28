@@ -467,6 +467,12 @@
   "didAuthorsUseAi": {
     "message": "crwdns5028:0crwdne5028:0"
   },
+  "howDidYouUseAi": {
+    "message": "crwdns8369:0crwdne8369:0"
+  },
+  "howDidAuthorsUseAi": {
+    "message": "crwdns8371:0crwdne8371:0"
+  },
   "selectYesIfUsedAi": {
     "message": "crwdns5030:0crwdne5030:0"
   },
