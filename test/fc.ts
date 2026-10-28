@@ -1866,9 +1866,7 @@ export const datasetReviewPreview = ({
       answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
     ),
     answerToIfTheDatasetIsMissingAnything: maybe(answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer'))),
-    generativeAiIdeas: maybe(
-      declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
-    ),
+    generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
     license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
   })
 

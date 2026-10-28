@@ -28,6 +28,8 @@ export const CheckYourReviewPage = ({
   locale: SupportedLocale
 }) => {
   const t = translate(locale, 'review-a-dataset-flow')
+  const hasOtherAuthors = review.authorsToInvite !== undefined && Option.isSome(review.authorsToInvite)
+
   return StreamlinePageResponse({
     title: pipe(t('checkYourPrereview')(), plainText),
     nav: html`
@@ -79,61 +81,51 @@ export const CheckYourReviewPage = ({
                       </dd>
                     </div>
 
-                    ${Option.match(review.generativeAiIdeas, {
-                      onNone: () => '',
-                      onSome: generativeAiIdeas => {
-                        const hasOtherAuthors =
-                          review.authorsToInvite !== undefined && Option.isSome(review.authorsToInvite)
-
-                        return html`
-                          <div>
-                            <dt><span ${languageAttributesFor('en')}>Use of AI</span></dt>
-                            <dd>
-                              ${Match.value(generativeAiIdeas).pipe(
-                                Match.when(
-                                  { answer: 'yes' },
-                                  ({ detail }) => html`
-                                    <p>
-                                      <span ${languageAttributesFor('en')}>
-                                        ${
-                                          hasOtherAuthors
-                                            ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
-                                            : 'The author declares that they used generative AI to come up with new ideas for their review.'
-                                        }
-                                      </span>
-                                    </p>
-                                    ${Option.match(detail, {
-                                      onNone: () => '',
-                                      onSome: detail => html`<p>${detail}</p>`,
-                                    })}
-                                  `,
-                                ),
-                                Match.when(
-                                  { answer: 'no' },
-                                  () => html`
-                                    <p>
-                                      <span ${languageAttributesFor('en')}>
-                                        ${
-                                          hasOtherAuthors
-                                            ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
-                                            : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
-                                        }
-                                      </span>
-                                    </p>
-                                  `,
-                                ),
-                                Match.exhaustive,
-                              )}
-                            </dd>
-                            <dd>
-                              <a href="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}">
-                                <span ${languageAttributesFor('en')}>Change ${visuallyHidden(html`use of AI`)}</span>
-                              </a>
-                            </dd>
-                          </div>
-                        `
-                      },
-                    })}
+                    <div>
+                      <dt><span ${languageAttributesFor('en')}>Use of AI</span></dt>
+                      <dd>
+                        ${Match.value(review.generativeAiIdeas).pipe(
+                          Match.when(
+                            { answer: 'yes' },
+                            ({ detail }) => html`
+                              <p>
+                                <span ${languageAttributesFor('en')}>
+                                  ${
+                                    hasOtherAuthors
+                                      ? 'The authors declare that they used generative AI to come up with new ideas for their review.'
+                                      : 'The author declares that they used generative AI to come up with new ideas for their review.'
+                                  }
+                                </span>
+                              </p>
+                              ${Option.match(detail, {
+                                onNone: () => '',
+                                onSome: detail => html`<p>${detail}</p>`,
+                              })}
+                            `,
+                          ),
+                          Match.when(
+                            { answer: 'no' },
+                            () => html`
+                              <p>
+                                <span ${languageAttributesFor('en')}>
+                                  ${
+                                    hasOtherAuthors
+                                      ? 'The authors declare that they did not use generative AI to come up with new ideas for their review.'
+                                      : 'The author declares that they did not use generative AI to come up with new ideas for their review.'
+                                  }
+                                </span>
+                              </p>
+                            `,
+                          ),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetUseOfAi.href({ datasetReviewId })}">
+                          <span ${languageAttributesFor('en')}>Change ${visuallyHidden(html`use of AI`)}</span>
+                        </a>
+                      </dd>
+                    </div>
 
                     <div>
                       <dt>${t('competingInterests')()}</dt>

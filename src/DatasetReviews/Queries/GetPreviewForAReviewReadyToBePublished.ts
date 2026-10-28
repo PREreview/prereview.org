@@ -47,9 +47,7 @@ export interface DatasetReviewPreview {
     Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>
   >
   readonly answerToIfTheDatasetIsMissingAnything: Option.Option<Events.AnsweredIfTheDatasetIsMissingAnything['answer']>
-  readonly generativeAiIdeas: Option.Option<
-    Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
-  >
+  readonly generativeAiIdeas: Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
   readonly license: 'CC-BY-4.0' | 'CC0-1.0'
 }
 
@@ -174,7 +172,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
               missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
             }),
           ),
-        onSome: () =>
+        onSome: ({ generativeAiIdeas }) =>
           Either.right({
             author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
             authorsToInvite,
@@ -226,11 +224,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
               answerToIfTheDatasetIsMissingAnything,
               Struct.get('answer'),
             ),
-            generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
-            license: Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
-              onNone: () => 'CC-BY-4.0',
-              onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
-            }),
+            generativeAiIdeas,
+            license: generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
           }),
       }),
   })
