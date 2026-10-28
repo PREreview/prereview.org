@@ -17,6 +17,7 @@ export type NextExpectedCommand =
   | 'ChoosePersona'
   | 'AnswerIfOthersNeedToBeListedOnTheReview'
   | 'AddInvitationToAppearOnADatasetReviewToTheList'
+  | 'DeclareIfAiWasUsedToGenerateNewIdeas'
   | 'DeclareCompetingInterests'
   | 'DeclareFollowingCodeOfConduct'
   | 'PublishDatasetReview'

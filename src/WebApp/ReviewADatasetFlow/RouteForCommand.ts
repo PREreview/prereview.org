@@ -22,6 +22,7 @@ const commandRoutes = {
   ChoosePersona: Routes.ReviewADatasetChooseYourPersona,
   AnswerIfOthersNeedToBeListedOnTheReview: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
   AddInvitationToAppearOnADatasetReviewToTheList: Routes.ReviewADatasetAddInvitationToAppear,
+  DeclareIfAiWasUsedToGenerateNewIdeas: Routes.ReviewADatasetUseOfAi,
   DeclareCompetingInterests: Routes.ReviewADatasetDeclareCompetingInterests,
   DeclareFollowingCodeOfConduct: Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
