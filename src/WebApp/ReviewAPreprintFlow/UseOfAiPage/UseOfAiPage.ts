@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Match, Option, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
@@ -56,65 +56,88 @@ export const renderUseOfAiPage = ({
         <p>${t('understandHowCreated')()}</p>
 
         <div ${rawHtml(form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas) ? 'class="error"' : '')}>
-          <fieldset
-            role="group"
-            ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
-                ? 'aria-invalid="true" aria-errormessage="generative-ai-ideas-error"'
-                : '',
-            )}
-          >
-            <legend>
-              <h2>${t(otherAuthors ? 'didAuthorsUseAi' : 'didYouUseAi')()}</h2>
-            </legend>
+          <conditional-inputs>
+            <fieldset
+              role="group"
+              ${rawHtml(
+                form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
+                  ? 'aria-invalid="true" aria-errormessage="generative-ai-ideas-error"'
+                  : '',
+              )}
+            >
+              <legend>
+                <h2>${t(otherAuthors ? 'didAuthorsUseAi' : 'didYouUseAi')()}</h2>
+              </legend>
 
-            ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
-                ? html`
-                    <div class="error-message" id="generative-ai-ideas-error">
-                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.generativeAiIdeas.left, {
-                        Missing: () => t(otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
-                      })}
+              ${
+                form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
+                  ? html`
+                      <div class="error-message" id="generative-ai-ideas-error">
+                        <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
+                        ${Match.valueTags(form.generativeAiIdeas.left, {
+                          Missing: () => t(otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
+                        })}
+                      </div>
+                    `
+                  : ''
+              }
+
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="generativeAiIdeas"
+                      id="generative-ai-ideas-no"
+                      type="radio"
+                      value="no"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', generativeAiIdeas: 'no' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    ${t('no')()}
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="generativeAiIdeas"
+                      type="radio"
+                      value="yes"
+                      aria-controls="generative-ai-ideas-details-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', generativeAiIdeas: 'yes' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    ${t('yes')()}
+                  </label>
+                  <div class="conditional" id="generative-ai-ideas-details-control">
+                    <div>
+                      <label for="generative-ai-ideas-details" class="textarea"
+                        >${otherAuthors ? 'How did you or the other authors use it?' : 'How did you use it?'}
+                        ${t('forms', 'optionalSuffix')()}</label
+                      >
+                      <textarea
+                        name="generativeAiIdeasDetails"
+                        id="generative-ai-ideas-details"
+                        placeholder=" "
+                        dir="auto"
+                        rows="5"
+                      >
+${Match.valueTags(form, {
+  EmptyForm: () => '',
+  InvalidForm: form => Option.getOrElse(form.generativeAiIdeasDetails, () => String.empty),
+  CompletedForm: form => Option.getOrElse(form.generativeAiIdeasDetails, () => String.empty),
+})}</textarea>
                     </div>
-                  `
-                : ''
-            }
-
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="generativeAiIdeas"
-                    id="generative-ai-ideas-no"
-                    type="radio"
-                    value="no"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', generativeAiIdeas: 'no' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  ${t('no')()}
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="generativeAiIdeas"
-                    type="radio"
-                    value="yes"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', generativeAiIdeas: 'yes' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  ${t('yes')()}
-                </label>
-              </li>
-            </ol>
-          </fieldset>
+                  </div>
+                </li>
+              </ol>
+            </fieldset>
+          </conditional-inputs>
         </div>
 
         ${saveAndContinueButton(locale)}
@@ -122,7 +145,7 @@ export const renderUseOfAiPage = ({
     `,
     canonical: Routes.ReviewAPreprintUseOfAi.href({ preprintId: preprint.id }),
     skipToLabel: 'form',
-    js: hasAnError ? ['error-summary.js'] : [],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
   })
 }
 

@@ -97,17 +97,32 @@ describe('UseOfAiSubmission', () => {
       fc.preprintTitle(),
       fc.user(),
       fc.supportedLocale(),
-      fc.constantFrom('yes', 'no'),
+      fc.oneof(
+        fc.record({
+          generativeAiIdeas: fc.constant('yes' as const),
+          generativeAiIdeasDetails: fc.maybe(fc.nonEmptyString()),
+        }),
+        fc.record({
+          generativeAiIdeas: fc.constant('no' as const),
+          generativeAiIdeasDetails: fc.constant(Option.none()),
+        }),
+      ),
       fc.constantFrom('DeclareCompetingInterests', 'DeclareFollowingCodeOfConduct', 'PublishPreprintReview'),
     ],
-    ([preprintId, preprint, user, locale, generativeAiIdeas, nextExpectedCommand]) => {
+    ([preprintId, preprint, user, locale, { generativeAiIdeas, generativeAiIdeasDetails }, nextExpectedCommand]) => {
       const declarations: Array<Parameters<PreprintReviews.PreprintReviews['Type']['declareUseOfAi']>[0]> = []
 
       return Effect.gen(function* () {
-        const actual = yield* _.UseOfAiSubmission({ body: UrlParams.fromInput({ generativeAiIdeas }), preprintId })
+        const actual = yield* _.UseOfAiSubmission({
+          body: UrlParams.fromInput({
+            generativeAiIdeas,
+            generativeAiIdeasDetails: Option.getOrUndefined(generativeAiIdeasDetails),
+          }),
+          preprintId,
+        })
 
         expect(declarations).toStrictEqual([
-          { preprintId: preprint.id, orcidId: user.orcid, generativeAiIdeas, generativeAiIdeasDetails: Option.none() },
+          { preprintId: preprint.id, orcidId: user.orcid, generativeAiIdeas, generativeAiIdeasDetails },
         ])
         expect(actual).toStrictEqual(
           RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) }),

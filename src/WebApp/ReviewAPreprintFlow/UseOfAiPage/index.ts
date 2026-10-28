@@ -76,7 +76,7 @@ export const UseOfAiSubmission: ({
           preprintId: preprint.id,
           orcidId: user.orcid,
           generativeAiIdeas: form.generativeAiIdeas,
-          generativeAiIdeasDetails: Option.none(),
+          generativeAiIdeasDetails: form.generativeAiIdeasDetails,
         })
 
         const nextExpectedCommand = yield* preprintReviews.getNextExpectedCommand({
