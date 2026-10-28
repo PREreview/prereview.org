@@ -197,6 +197,11 @@ const declaredIfAiWasUsedToGenerateNewIdeasNo =
     generativeAiIdeas: { answer: 'no' },
     datasetReviewId,
   })
+const declaredThatTheCodeOfConductWasFollowedForADatasetReview =
+  new DatasetReviews.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
+    timestamp: Temporal.Now.instant(),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -246,6 +251,9 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   datasetReviewId: fc.constant(datasetReviewId),
                 })
                 .filter(event => event.generativeAiIdeas.answer === 'no'),
+              fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
             ),
           )
           .map(events =>
@@ -309,28 +317,75 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas,
                   license: 'CC-BY-4.0',
                 },
@@ -340,6 +395,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   ratedTheQualityOfTheDataset1,
                   ratedTheQualityOfTheDataset2,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -431,6 +487,20 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   othersNeedToBeListedYes,
                   invited1,
@@ -439,7 +509,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   authorsToInvite: Option.some(
                     Array.make(
                       Option.getOrThrow(invited1.contactDetails).name,
@@ -447,22 +520,52 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     ),
                   ),
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas,
                   license: 'CC-BY-4.0',
                 },
@@ -472,6 +575,20 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   othersNeedToBeListedYes,
                   invited1,
@@ -481,25 +598,58 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   authorsToInvite: Option.some(Array.make(Option.getOrThrow(invited2.contactDetails).name)),
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas,
                   license: 'CC-BY-4.0',
                 },
@@ -509,30 +659,77 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   othersNeedToBeListedNo,
                   declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   authorsToInvite: Option.none(),
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas,
                   license: 'CC-BY-4.0',
                 },
@@ -542,28 +739,75 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   declaredIfAiWasUsedToGenerateNewIdeasYes,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasYes.generativeAiIdeas,
                   license: 'CC0-1.0',
                 },
@@ -573,28 +817,75 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas,
                   license: 'CC-BY-4.0',
                 },
@@ -604,29 +895,76 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [
                 [
                   datasetReviewWasStarted,
+                  ratedTheQualityOfTheDataset1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetSupportsRelatedConclusions1,
+                  answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  declaredThatTheCodeOfConductWasFollowedForADatasetReview,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   declaredIfAiWasUsedToGenerateNewIdeasYes,
                   declaredIfAiWasUsedToGenerateNewIdeasNo,
                 ],
                 {
-                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: Option.some(personaForDatasetReviewWasChosen1.persona),
+                  },
                   dataset: datasetReviewWasStarted.datasetId,
-                  competingInterests: Option.none(),
-                  qualityRating: Option.none(),
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
+                  qualityRating: Option.some({
+                    rating: ratedTheQualityOfTheDataset1.rating,
+                    detail: ratedTheQualityOfTheDataset1.detail,
+                  }),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: {
                     answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                     detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                   },
-                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
-                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
-                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
-                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
-                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
-                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
-                  answerToIfTheDatasetIsErrorFree: Option.none(),
-                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
-                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
-                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                    answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                    detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                  }),
+                  answerToIfTheDatasetHasTrackedChanges: Option.some({
+                    answer: answeredIfTheDatasetHasTrackedChanges1.answer,
+                    detail: answeredIfTheDatasetHasTrackedChanges1.detail,
+                  }),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                    answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                  }),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                    answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                    detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                  }),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                    answer: answeredIfTheDatasetSupportsRelatedConclusions1.answer,
+                    detail: answeredIfTheDatasetSupportsRelatedConclusions1.detail,
+                  }),
+                  answerToIfTheDatasetIsDetailedEnough: Option.some({
+                    answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                    detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                  }),
+                  answerToIfTheDatasetIsErrorFree: Option.some({
+                    answer: answeredIfTheDatasetIsErrorFree1.answer,
+                    detail: answeredIfTheDatasetIsErrorFree1.detail,
+                  }),
+                  answerToIfTheDatasetMattersToItsAudience: Option.some({
+                    answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                    detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                  }),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                    answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                    detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                  }),
+                  answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything1.answer),
                   generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas,
                   license: 'CC-BY-4.0',
                 },
@@ -648,7 +986,24 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
         expect(actual).toStrictEqual(
           Either.left(
             new DatasetReviews.DatasetReviewNotReadyToBePublished({
-              missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+              missing: [
+                'RatedTheQualityOfTheDataset',
+                'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+                'AnsweredIfTheDatasetHasEnoughMetadata',
+                'AnsweredIfTheDatasetHasTrackedChanges',
+                'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+                'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+                'AnsweredIfTheDatasetSupportsRelatedConclusions',
+                'AnsweredIfTheDatasetIsDetailedEnough',
+                'AnsweredIfTheDatasetMattersToItsAudience',
+                'AnsweredIfTheDatasetIsErrorFree',
+                'AnsweredIfTheDatasetIsReadyToBeShared',
+                'AnsweredIfTheDatasetIsMissingAnything',
+                'PersonaForDatasetReviewWasChosen',
+                'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
+                'CompetingInterestsForADatasetReviewWereDeclared',
+                'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+              ],
             }),
           ),
         )
@@ -664,32 +1019,34 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
   })
 
   describe("when the use of AI hasn't been declared", () => {
-    it.prop(
-      'returns an error',
-      [
-        fc
-          .tuple(fc.datasetReviewWasStarted(), fc.answeredIfTheDatasetFollowsFairAndCarePrinciples())
-          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
-      ],
-      ([events]) => {
-        const actual = _.GetPreviewForAReviewReadyToBePublished(events)
+    it('returns an error', () => {
+      const actual = _.GetPreviewForAReviewReadyToBePublished([
+        datasetReviewWasStarted,
+        ratedTheQualityOfTheDataset1,
+        answeredIfTheDatasetFollowsFairAndCarePrinciples,
+        answeredIfTheDatasetHasEnoughMetadata1,
+        answeredIfTheDatasetHasTrackedChanges1,
+        answeredIfTheDatasetHasDataCensoredOrDeleted1,
+        answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+        answeredIfTheDatasetSupportsRelatedConclusions1,
+        answeredIfTheDatasetIsDetailedEnough1,
+        answeredIfTheDatasetIsErrorFree1,
+        answeredIfTheDatasetMattersToItsAudience1,
+        answeredIfTheDatasetIsReadyToBeShared1,
+        answeredIfTheDatasetIsMissingAnything1,
+        personaForDatasetReviewWasChosen1,
+        competingInterestsForADatasetReviewWereDeclared1,
+        declaredThatTheCodeOfConductWasFollowedForADatasetReview,
+      ])
 
-        expect(actual).toStrictEqual(
-          Either.left(
-            new DatasetReviews.DatasetReviewNotReadyToBePublished({
-              missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
-            }),
-          ),
-        )
-      },
-      {
-        fastCheck: {
-          examples: [
-            [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // FAIR and CARE answered
-          ],
-        },
-      },
-    )
+      expect(actual).toStrictEqual(
+        Either.left(
+          new DatasetReviews.DatasetReviewNotReadyToBePublished({
+            missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
+          }),
+        ),
+      )
+    })
   })
 
   describe('when it is being published', () => {

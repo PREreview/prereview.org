@@ -1,4 +1,4 @@
-import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
+import { Array, Either, HashSet, Option, pipe, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId } from '../../types/index.ts'
@@ -66,16 +66,23 @@ export const GetPreviewForAReviewReadyToBePublished = (
     return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
-  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
-    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
-  }
-
   if (hasEvent(events, 'DatasetReviewWasPublished')) {
     return Either.left(new Errors.DatasetReviewHasBeenPublished())
   }
 
   if (hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
     return Either.left(new Errors.DatasetReviewIsBeingPublished())
+  }
+
+  const missing = pipe(
+    Array.map(requirementsToBeReady, requirement =>
+      Either.fromOption(Array.findLast(events, hasTag(requirement)), () => requirement),
+    ),
+    Array.getLefts,
+  )
+
+  if (Array.isNonEmptyReadonlyArray(missing)) {
+    return Either.left(new Errors.DatasetReviewNotReadyToBePublished({ missing }))
   }
 
   const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
@@ -157,79 +164,87 @@ export const GetPreviewForAReviewReadyToBePublished = (
     hasTag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'),
   )
 
-  return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
-    onNone: () =>
-      Either.left(
-        new Errors.DatasetReviewNotReadyToBePublished({
-          missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
-        }),
-      ),
-    onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
-      Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
-        onNone: () =>
-          Either.left(
-            new Errors.DatasetReviewNotReadyToBePublished({
-              missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
-            }),
+  return Option.match(
+    Option.all({ answerToIfTheDatasetFollowsFairAndCarePrinciples, declaredIfAiWasUsedToGenerateNewIdeas }),
+    {
+      onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
+      onSome: ({
+        answerToIfTheDatasetFollowsFairAndCarePrinciples,
+        declaredIfAiWasUsedToGenerateNewIdeas: { generativeAiIdeas },
+      }) =>
+        Either.right({
+          author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
+          authorsToInvite,
+          dataset: started.datasetId,
+          competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
+          qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
+          answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
+            answerToIfTheDatasetFollowsFairAndCarePrinciples,
+            'answer',
+            'detail',
           ),
-        onSome: ({ generativeAiIdeas }) =>
-          Either.right({
-            author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
-            authorsToInvite,
-            dataset: started.datasetId,
-            competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
-            qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
-            answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
-              answerToIfTheDatasetFollowsFairAndCarePrinciples,
-              'answer',
-              'detail',
-            ),
-            answerToIfTheDatasetHasEnoughMetadata: Option.map(
-              answerToIfTheDatasetHasEnoughMetadata,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetHasTrackedChanges: Option.map(
-              answerToIfTheDatasetHasTrackedChanges,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
-              answerToIfTheDatasetHasDataCensoredOrDeleted,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
-              answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
-              answerToIfTheDatasetSupportsRelatedConclusions,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetIsDetailedEnough: Option.map(
-              answerToIfTheDatasetIsDetailedEnough,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetIsErrorFree: Option.map(
-              answerToIfTheDatasetIsErrorFree,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetMattersToItsAudience: Option.map(
-              answerToIfTheDatasetMattersToItsAudience,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetIsReadyToBeShared: Option.map(
-              answerToIfTheDatasetIsReadyToBeShared,
-              Struct.pick('answer', 'detail'),
-            ),
-            answerToIfTheDatasetIsMissingAnything: Option.map(
-              answerToIfTheDatasetIsMissingAnything,
-              Struct.get('answer'),
-            ),
-            generativeAiIdeas,
-            license: generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
-          }),
-      }),
-  })
+          answerToIfTheDatasetHasEnoughMetadata: Option.map(
+            answerToIfTheDatasetHasEnoughMetadata,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetHasTrackedChanges: Option.map(
+            answerToIfTheDatasetHasTrackedChanges,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
+            answerToIfTheDatasetHasDataCensoredOrDeleted,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
+            answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
+            answerToIfTheDatasetSupportsRelatedConclusions,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetIsDetailedEnough: Option.map(
+            answerToIfTheDatasetIsDetailedEnough,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.pick('answer', 'detail')),
+          answerToIfTheDatasetMattersToItsAudience: Option.map(
+            answerToIfTheDatasetMattersToItsAudience,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetIsReadyToBeShared: Option.map(
+            answerToIfTheDatasetIsReadyToBeShared,
+            Struct.pick('answer', 'detail'),
+          ),
+          answerToIfTheDatasetIsMissingAnything: Option.map(
+            answerToIfTheDatasetIsMissingAnything,
+            Struct.get('answer'),
+          ),
+          generativeAiIdeas,
+          license: generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
+        }),
+    },
+  )
 }
+
+const requirementsToBeReady = [
+  'RatedTheQualityOfTheDataset',
+  'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+  'AnsweredIfTheDatasetHasEnoughMetadata',
+  'AnsweredIfTheDatasetHasTrackedChanges',
+  'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+  'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+  'AnsweredIfTheDatasetSupportsRelatedConclusions',
+  'AnsweredIfTheDatasetIsDetailedEnough',
+  'AnsweredIfTheDatasetMattersToItsAudience',
+  'AnsweredIfTheDatasetIsErrorFree',
+  'AnsweredIfTheDatasetIsReadyToBeShared',
+  'AnsweredIfTheDatasetIsMissingAnything',
+  'PersonaForDatasetReviewWasChosen',
+  'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
+  'CompetingInterestsForADatasetReviewWereDeclared',
+  'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+] satisfies ReadonlyArray<Errors.DatasetReviewNotReadyToBePublished['missing'][number]>
 
 function hasEvent(
   events: ReadonlyArray<Events.DatasetReviewEvent>,
