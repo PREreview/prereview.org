@@ -83,6 +83,16 @@ const publication = new Events.DatasetReviewWasPublished({
   publicationDate: Temporal.Now.plainDateISO(),
 })
 
+const declaredAiWasUsed = new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+  datasetReviewId,
+  generativeAiIdeas: { answer: 'yes', detail: Option.none() },
+})
+
+const declaredAiWasNotUsed = new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+  datasetReviewId,
+  generativeAiIdeas: { answer: 'no' },
+})
+
 const club = new Events.DatasetReviewWasAddedToAClub({
   datasetReviewId,
   clubId: Uuid('13e21570-0d1a-47f0-b378-b8c20776496a'),
@@ -124,6 +134,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
       id: datasetReviewId,
       published: publication.publicationDate as Temporal.PlainDate,
       dataset: started.datasetId,
+      license: 'CC-BY-4.0',
     }),
   ],
   [
@@ -142,6 +153,64 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
       id: datasetReviewId,
       published: publication.publicationDate as Temporal.PlainDate,
       dataset: started.datasetId,
+      license: 'CC-BY-4.0',
+    }),
+  ],
+  [
+    'review published, AI was used',
+    [started, persona, authorAdded, declaredAiWasUsed, doi, publication],
+    input,
+    Either.right({
+      author: {
+        orcidId: started.authorId,
+        persona: persona.persona,
+      },
+      otherAuthors: [],
+      anonymousAuthors: 1,
+      clubId: Option.none(),
+      doi: doi.doi,
+      id: datasetReviewId,
+      published: publication.publicationDate as Temporal.PlainDate,
+      dataset: started.datasetId,
+      license: 'CC0-1.0',
+    }),
+  ],
+  [
+    'review published, AI was not used',
+    [started, persona, authorAdded, declaredAiWasNotUsed, doi, publication],
+    input,
+    Either.right({
+      author: {
+        orcidId: started.authorId,
+        persona: persona.persona,
+      },
+      otherAuthors: [],
+      anonymousAuthors: 1,
+      clubId: Option.none(),
+      doi: doi.doi,
+      id: datasetReviewId,
+      published: publication.publicationDate as Temporal.PlainDate,
+      dataset: started.datasetId,
+      license: 'CC-BY-4.0',
+    }),
+  ],
+  [
+    'review published, AI answer changed',
+    [started, persona, authorAdded, declaredAiWasUsed, declaredAiWasNotUsed, doi, publication],
+    input,
+    Either.right({
+      author: {
+        orcidId: started.authorId,
+        persona: persona.persona,
+      },
+      otherAuthors: [],
+      anonymousAuthors: 1,
+      clubId: Option.none(),
+      doi: doi.doi,
+      id: datasetReviewId,
+      published: publication.publicationDate as Temporal.PlainDate,
+      dataset: started.datasetId,
+      license: 'CC-BY-4.0',
     }),
   ],
   [
@@ -178,6 +247,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
       id: datasetReviewId,
       published: publication.publicationDate as Temporal.PlainDate,
       dataset: started.datasetId,
+      license: 'CC-BY-4.0',
     }),
   ],
 ])('%s', (_name, events, input, expected) => {

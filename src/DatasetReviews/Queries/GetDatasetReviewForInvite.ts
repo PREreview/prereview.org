@@ -22,6 +22,7 @@ export interface DatasetReviewForInvite {
   id: Uuid.Uuid
   published: Temporal.PlainDate
   dataset: DatasetId
+  license: 'CC-BY-4.0' | 'CC0-1.0'
 }
 
 export type Result = Either.Either<
@@ -41,6 +42,7 @@ interface State {
       doi?: Doi.Doi
       published?: Temporal.PlainDate
       datasetId: DatasetId
+      license: 'CC-BY-4.0' | 'CC0-1.0'
     }
   >
 }
@@ -63,6 +65,7 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
           authorOrcidId: event.authorId,
           invitedAuthors: MutableHashSet.empty(),
           datasetId: event.datasetId,
+          license: 'CC-BY-4.0',
         })
       }),
       Match.tag('PersonaForDatasetReviewWasChosen', event => {
@@ -83,6 +86,12 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
         HashMap.modify(datasetReviews, event.datasetReviewId, datasetReview => ({
           ...datasetReview,
           invitedAuthors: MutableHashSet.remove(datasetReview.invitedAuthors, event.invitationId),
+        }))
+      }),
+      Match.tag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview', event => {
+        HashMap.modify(datasetReviews, event.datasetReviewId, datasetReview => ({
+          ...datasetReview,
+          license: event.generativeAiIdeas.answer === 'yes' ? ('CC0-1.0' as const) : ('CC-BY-4.0' as const),
         }))
       }),
       Match.tag('DatasetReviewWasAssignedADoi', event => {
@@ -159,6 +168,7 @@ const query = (state: State, invitationId: Input): Result => {
     id: datasetReviewId.value,
     published: datasetReview.value.published,
     dataset: datasetReview.value.datasetId,
+    license: datasetReview.value.license,
   })
 }
 
