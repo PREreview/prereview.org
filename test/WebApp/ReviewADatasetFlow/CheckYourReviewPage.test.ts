@@ -463,6 +463,49 @@ describe('CheckYourReviewSubmission', () => {
     )
 
     it.effect.prop(
+      "when the review isn't ready to be published",
+      [
+        fc.uuid(),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.constantFrom<
+          Array<
+            [DatasetReviews.DatasetReviewNotReadyToBePublished['missing'], Routes.Route<{ datasetReviewId: Uuid.Uuid }>]
+          >
+        >(
+          Tuple.make(
+            ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+            Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+          ),
+          Tuple.make(['AnsweredIfTheDatasetHasEnoughMetadata'], Routes.ReviewADatasetHasEnoughMetadata),
+          Tuple.make(
+            ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
+            Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
+          ),
+        ),
+      ],
+      ([datasetReviewId, locale, user, [missing, expected]]) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourReviewSubmission({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: expected.href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {
+              publishDatasetReview: () => new DatasetReviews.DatasetReviewNotReadyToBePublished({ missing }),
+            }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+          ]),
+        ),
+    )
+
+    it.effect.prop(
       "when the review can't be published",
       [
         fc.uuid(),
@@ -472,9 +515,6 @@ describe('CheckYourReviewSubmission', () => {
           new DatasetReviews.NotAuthorizedToRunCommand({}),
           new DatasetReviews.UnableToHandleCommand({}),
           new DatasetReviews.DatasetReviewHasNotBeenStarted(),
-          new DatasetReviews.DatasetReviewNotReadyToBePublished({
-            missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
-          }),
           new DatasetReviews.DatasetReviewIsBeingPublished(),
           new DatasetReviews.DatasetReviewHasBeenPublished(),
         ),

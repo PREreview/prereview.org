@@ -87,6 +87,13 @@ export const CheckYourReviewSubmission = ({
       Effect.as(
         Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
       ),
+      Effect.catchTag('DatasetReviewNotReadyToBePublished', error =>
+        Effect.succeed(
+          Response.RedirectResponse({
+            location: routeForMissing[Array.headNonEmpty(error.missing)].href({ datasetReviewId }),
+          }),
+        ),
+      ),
       Effect.catchAll(() => HavingProblemsPage),
     )
   }).pipe(
