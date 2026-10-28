@@ -60,6 +60,8 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Use of Artificial Intelligence (AI)')
+
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1864,6 +1866,64 @@ test.extend(canLogIn).extend(areLoggedIn)(
     ).toHaveAttribute('aria-invalid', 'true')
 
     await page.getByRole('link', { name: 'Select yes if you want to remove Jean-Baptiste Botul' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)('have to declare the use of AI', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.goto(`${page.url()}/../use-of-ai`, { waitUntil: 'commit' })
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  )
+
+  await page.getByRole('link', { name: 'Select yes if you used AI to generate ideas for this review' }).click()
+
+  await expect(page.getByLabel('No')).toBeFocused()
+})
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to declare the use of AI by any author',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
+    await page.getByLabel('Yes').click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto(`${page.url()}/../use-of-ai`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Did you, or any of the other authors, use AI to generate ideas for this review?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page
+      .getByRole('link', {
+        name: 'Select yes if you, or any of the other authors, used AI to generate ideas for this review',
+      })
+      .click()
 
     await expect(page.getByLabel('No')).toBeFocused()
   },
