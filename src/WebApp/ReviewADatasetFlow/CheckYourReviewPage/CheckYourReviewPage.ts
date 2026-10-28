@@ -11,7 +11,10 @@ import { ProfileId } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
+export type DatasetReviewPreview = Omit<
+  DatasetReviews.DatasetReviewPreview,
+  'author' | 'dataset' | 'generativeAiIdeas'
+> & {
   readonly author: Option.Option<Prereviewers.Persona>
   readonly dataset: Datasets.DatasetTitle
 }

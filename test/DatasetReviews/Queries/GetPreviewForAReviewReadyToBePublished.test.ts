@@ -187,6 +187,16 @@ const competingInterestsForADatasetReviewWereDeclared2 =
     competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
+const declaredIfAiWasUsedToGenerateNewIdeasYes =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'yes', detail: NonEmptyString.fromString('Some detail about yes') },
+    datasetReviewId,
+  })
+const declaredIfAiWasUsedToGenerateNewIdeasNo =
+  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+    generativeAiIdeas: { answer: 'no' },
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -277,6 +287,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 detail: events[11].detail,
               }),
               answerToIfTheDatasetIsMissingAnything: Option.some(events[12].answer),
+              generativeAiIdeas: Option.none(),
             }),
           ),
       ],
@@ -310,6 +321,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.none(),
                 },
               ],
             ], // with answer
@@ -398,6 +410,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                     detail: answeredIfTheDatasetIsReadyToBeShared2.detail,
                   }),
                   answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything2.answer),
+                  generativeAiIdeas: Option.none(),
                 },
               ],
             ], // with multiple answers
@@ -436,6 +449,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.none(),
                 },
               ],
             ], // with authors to invite
@@ -470,6 +484,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.none(),
                 },
               ],
             ], // with removed authors to invite
@@ -496,9 +511,101 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.none(),
                 },
               ],
             ], // without authors to invite
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasYes,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasYes.generativeAiIdeas),
+                },
+              ],
+            ], // AI was used
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
+                },
+              ],
+            ], // AI was not used
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  declaredIfAiWasUsedToGenerateNewIdeasYes,
+                  declaredIfAiWasUsedToGenerateNewIdeasNo,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                  generativeAiIdeas: Option.some(declaredIfAiWasUsedToGenerateNewIdeasNo.generativeAiIdeas),
+                },
+              ],
+            ], // AI answer changed
           ],
         },
       },

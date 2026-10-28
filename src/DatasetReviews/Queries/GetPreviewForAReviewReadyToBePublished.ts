@@ -47,6 +47,9 @@ export interface DatasetReviewPreview {
     Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>
   >
   readonly answerToIfTheDatasetIsMissingAnything: Option.Option<Events.AnsweredIfTheDatasetIsMissingAnything['answer']>
+  readonly generativeAiIdeas: Option.Option<
+    Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
+  >
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -150,6 +153,11 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const competingInterests = Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
 
+  const declaredIfAiWasUsedToGenerateNewIdeas = Array.findLast(
+    events,
+    hasTag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'),
+  )
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -203,6 +211,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
           Struct.pick('answer', 'detail'),
         ),
         answerToIfTheDatasetIsMissingAnything: Option.map(answerToIfTheDatasetIsMissingAnything, Struct.get('answer')),
+        generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
       }),
   })
 }
