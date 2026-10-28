@@ -13,10 +13,7 @@ import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<
-  DatasetReviews.PublishedReview,
-  'author' | 'otherAuthors' | 'dataset' | 'clubId' | 'generativeAiIdeas'
-> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset' | 'clubId'> & {
   readonly author: Prereviewers.Persona
   readonly otherAuthors: ReadonlyArray<Prereviewers.Persona>
   readonly anonymousAuthors: number
@@ -52,6 +49,12 @@ export const createDatasetReviewPage = ({
     `,
     main: html`
       <header>
+        ${
+          Option.exists(datasetReview.generativeAiIdeas, ({ answer }) => answer === 'yes')
+            ? html`<span class="tag tag-ai"><span ${languageAttributesFor('en')}>AI Review</span></span>`
+            : ''
+        }
+
         <h1>
           ${t('structuredReviewTitle')({
             dataset: html`<cite ${languageAttributesFor(datasetReview.dataset.language)}

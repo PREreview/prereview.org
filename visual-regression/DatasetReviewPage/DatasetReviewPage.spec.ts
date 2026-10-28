@@ -45,6 +45,21 @@ test('content looks right with a CC0 license', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when AI was used', async ({ showPage }) => {
+  const response = _.createDatasetReviewPage({
+    datasetReview: {
+      ...datasetReview,
+      license: 'CC0-1.0',
+      generativeAiIdeas: Option.some({ answer: 'yes', detail: Option.none() }),
+    },
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right when in a club', async ({ showPage }) => {
   const response = _.createDatasetReviewPage({
     datasetReview: {
@@ -133,5 +148,6 @@ const datasetReview: _.DatasetReview = {
     'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),
   license: 'CC-BY-4.0',
+  generativeAiIdeas: Option.none(),
   published: Temporal.PlainDate.from('2025-08-06'),
 }
