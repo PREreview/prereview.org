@@ -36,7 +36,9 @@ services:
       - 4317:4317
       - 4318:4318
   postgres:
-    image: postgres:17
+    build:
+      context: .dev
+      dockerfile: postgres-vector.Dockerfile
     ports:
       - 5432:5432
     environment:

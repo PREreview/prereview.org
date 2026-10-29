@@ -50,7 +50,7 @@ prod: .env
 
 .PHONY: start-services
 start-services: .dev/server.crt .dev/server.key
-	docker compose up --detach mailpit nginx opentelemetry postgres redis
+	docker compose up --detach --build mailpit nginx opentelemetry postgres redis
 
 .PHONY: format
 format: node_modules
