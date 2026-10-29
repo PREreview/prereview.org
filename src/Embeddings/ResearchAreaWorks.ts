@@ -20,7 +20,7 @@ const getStoredEmbedding = (
       SELECT
         embedding
       FROM
-        research_area_works
+        matchmaking_input_works
       WHERE
         doi = ${doi}
     `.pipe(Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })))
@@ -41,7 +41,7 @@ const storeEmbedding = (
     const encoded = Schema.encodeSync(PgVector)(embedding)
     yield* sql`
       INSERT INTO
-        research_area_works (doi, embedding)
+        matchmaking_input_works (doi, embedding)
       VALUES
         (
           ${doi},
@@ -50,8 +50,10 @@ const storeEmbedding = (
     `
   }).pipe(Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })))
 
-export const ensureResearchAreaWorksTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> => sql`
-  CREATE TABLE IF NOT EXISTS research_area_works (doi VARCHAR PRIMARY KEY, embedding HALFVEC (1024))
+export const ensureMatchmakingInputWorksTable = (
+  sql: SqlClient.SqlClient,
+): Effect.Effect<void, SqlError.SqlError> => sql`
+  CREATE TABLE IF NOT EXISTS matchmaking_input_works (doi VARCHAR PRIMARY KEY, embedding HALFVEC (1024))
 `
 
 export const getEmbeddingsGeneratingAsNeeded =

@@ -31,7 +31,7 @@ export const findExistingDois = (
           SELECT
             doi
           FROM
-            preprints
+            request_embeddings
           WHERE
             ${sql.in('doi', chunk)}
         `,
@@ -70,22 +70,22 @@ export const storeEmbeddings = (
 
     yield* sql`
       INSERT INTO
-        preprints (doi, language, authors, embedding)
+        request_embeddings (doi, language, authors, embedding)
       VALUES
         ${sql.join(',', false)(values)}
       ON CONFLICT (doi) DO NOTHING
     `
   }).pipe(Effect.mapError(cause => new UnableToAddPreprints({ cause })))
 
-export const ensurePreprintsTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> => sql`
-  CREATE TABLE IF NOT EXISTS preprints (
+export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> => sql`
+  CREATE TABLE IF NOT EXISTS request_embeddings (
     doi VARCHAR PRIMARY KEY,
     language CHAR(2) NOT NULL,
     authors CHAR(19) [] NOT NULL,
     embedding HALFVEC (1024)
   );
 
-  CREATE INDEX IF NOT EXISTS preprints_embedding_idx ON preprints USING hnsw (embedding halfvec_cosine_ops)
+  CREATE INDEX IF NOT EXISTS request_embeddings_idx ON request_embeddings USING hnsw (embedding halfvec_cosine_ops)
 `
 
 export const getRelatedDois =
@@ -107,7 +107,7 @@ export const getRelatedDois =
               doi,
               embedding <=> ${encoded}::halfvec AS distance
             FROM
-              preprints
+              request_embeddings
             WHERE
               ${sql.in('language', languages)}
               AND NOT (
