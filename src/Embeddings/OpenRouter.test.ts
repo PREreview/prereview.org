@@ -1,6 +1,6 @@
 import { Tokenizer } from '@huggingface/tokenizers'
 import { describe, expect, it } from 'vitest'
-import { truncateToModelLimit } from './OpenRouter.js'
+import { truncateToModelLimit } from './OpenRouter.ts'
 import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
 import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
 
