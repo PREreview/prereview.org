@@ -38,6 +38,8 @@ import { WeeknotesPage } from '../WeeknotesPage/index.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
+import { MatchmakingPage } from '../MatchmakingPage/index.ts'
+import { LoggedInUser } from '../../user.ts'
 
 const MakeRoute = <A, E extends HttpServerError.RequestError, R>(
   method: HttpMethod.HttpMethod,
@@ -625,6 +627,25 @@ const BlogRouter = HttpRouter.fromIterable([
   ),
 )
 
+const MatchmakingRouter = pipe(
+  HttpRouter.fromIterable([MakeStaticRoute('GET', Routes.Matchmaking, MatchmakingPage)]),
+  HttpRouter.use(
+    HttpMiddleware.make(app =>
+      Effect.gen(function* () {
+        const featureFlags = yield* FeatureFlags.FeatureFlags
+        const user = yield* LoggedInUser
+
+        if (featureFlags.canUseMatchmaking(user)) {
+          return yield* app
+        }
+
+        return yield* Effect.andThen(PageNotFound, Response.toHttpServerResponse)
+      }),
+    ),
+  ),
+  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+)
+
 export const Router = pipe(
   HttpRouter.concatAll(
     HttpRouter.fromIterable([
@@ -654,6 +675,7 @@ export const Router = pipe(
       ]),
       HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
     ),
+    MatchmakingRouter,
     AuthRouter,
     DatasetReviewPages,
     MyDetailsRouter,
