@@ -1,3 +1,4 @@
-import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { Effect } from 'effect'
+import { createMatchmakingPage } from './MatchmakingPage.ts'
 
-export const MatchmakingPage = HavingProblemsPage
+export const MatchmakingPage = Effect.succeed(createMatchmakingPage())
