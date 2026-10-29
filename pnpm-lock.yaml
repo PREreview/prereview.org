@@ -224,8 +224,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       '@types/mjml':
-        specifier: ^5.0.0
-        version: 5.0.0
+        specifier: ^5.4.1
+        version: 5.4.1
       '@types/node':
         specifier: ^24.19.2
         version: 24.19.2
@@ -2051,11 +2051,11 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/mjml-core@5.0.0':
-    resolution: {integrity: sha512-E1Rho2ZfVEqZekQoESDuPAw7C3MrzdUvS6YAiEPGdhQQqAchMXfdChXlSi6ly9YhZgUP026ujrRlEGJn9o/zAg==}
+  '@types/mjml-core@5.1.0':
+    resolution: {integrity: sha512-dYYmvGIHFi4wzsV+zX7UhP4C5QFSKeTjk53uQcadyIpTrrpJSs8JCZEKfSCrbKS7Hev3aR62b2dg58IeuwiR/w==}
 
-  '@types/mjml@5.0.0':
-    resolution: {integrity: sha512-z6P0yjEOVOz6cZVyD3vkPSifzVH0fa9M8BFM8Jl9HtpeFkBJyCZHRLPx1uFnkZijgAYmtO/JfSbp4EF1fNwsXQ==}
+  '@types/mjml@5.4.1':
+    resolution: {integrity: sha512-8pB3/pu7nyM9F/auXfs2UwPu5Nnj7EwhkoeZtvbdTVkcHXnVEUziR+N1rK0k/YNNjlJKLE3FxCyW8iczZc1zcQ==}
 
   '@types/node@24.19.2':
     resolution: {integrity: sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==}
@@ -6197,11 +6197,11 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/mjml-core@5.0.0': {}
+  '@types/mjml-core@5.1.0': {}
 
-  '@types/mjml@5.0.0':
+  '@types/mjml@5.4.1':
     dependencies:
-      '@types/mjml-core': 5.0.0
+      '@types/mjml-core': 5.1.0
 
   '@types/node@24.19.2':
     dependencies:
