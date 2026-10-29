@@ -7,5 +7,6 @@ export const MatchmakingPage = Effect.succeed(createMatchmakingPage(Option.none(
 
 export const MatchmakingSubmission = Effect.fn(function* (input: UrlParams.UrlParams) {
   const doi = pipe(input, UrlParams.getLast('doi'), Option.andThen(Doi.parse))
+
   return yield* Effect.succeed(createMatchmakingPage(doi, true))
 })

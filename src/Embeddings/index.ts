@@ -33,7 +33,7 @@ interface SurveyPick {
 export class Embeddings extends Context.Tag('Embeddings')<
   Embeddings,
   {
-    getSurveyPapers: (
+    getMatches: (
       input: Array.NonEmptyReadonlyArray<Paper>,
       inputOrcidId: OrcidId,
       languages: Array.NonEmptyReadonlyArray<LanguageCode>,
@@ -121,7 +121,7 @@ export const embeddingsLayer = Layer.effect(
     })
 
     return {
-      getSurveyPapers: Effect.fnUntraced(function* (inputPapers, inputOrcidId, languages) {
+      getMatches: Effect.fnUntraced(function* (inputPapers, inputOrcidId, languages) {
         const { picks, candidateCount } = yield* pipe(
           inputPapers,
           getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
