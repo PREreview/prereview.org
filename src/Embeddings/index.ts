@@ -1,6 +1,6 @@
-import { HttpClient } from '@effect/platform'
-import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
-import { UnableToGetSurveyPapers, type UnableToAddPreprints, type Paper, OurTokenizer } from './Shared.ts'
+import { HttpClient, FileSystem } from '@effect/platform'
+import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Schema, Struct } from 'effect'
+import { UnableToGetSurveyPapers, type UnableToAddPreprints, type Paper } from './Shared.ts'
 import { ensureResearchAreaWorksTable, getEmbeddingsGeneratingAsNeeded } from './ResearchAreaWorks.ts'
 import { createMissingEmbeddings, ensurePreprintsTable, findExistingDois, getRelatedDois } from './Preprints.ts'
 import { PgClient } from '@effect/sql-pg'
@@ -9,6 +9,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
+import { Tokenizer } from '@huggingface/tokenizers'
 
 export class EmbeddingsClient extends Context.Tag('EmbeddingsClient')<EmbeddingsClient, PgClient.PgClient>() {
   static readonly layer = Layer.effect(
@@ -113,8 +114,20 @@ export const embeddingsLayer = Layer.effect(
     const sql = yield* EmbeddingsClient
     const httpClient = yield* HttpClient.HttpClient
     const apiKey = yield* Config.redacted('OPENROUTER_API_KEY')
-    const tokenizer = yield* OurTokenizer
     const languageDetection = yield* LanguageDetection
+    const fileSystem = yield* FileSystem.FileSystem
+
+    const tokenizerJson = yield* pipe(
+      fileSystem.readFileString('model/tokenizer.json'),
+      Effect.andThen(Schema.decode(Schema.parseJson(Schema.Object))),
+    )
+
+    const tokenizerConfig = yield* pipe(
+      fileSystem.readFileString('model/tokenizer_config.json'),
+      Effect.andThen(Schema.decode(Schema.parseJson(Schema.Object))),
+    )
+
+    const tokenizer = new Tokenizer(tokenizerJson, tokenizerConfig)
 
     yield* Effect.all([ensurePreprintsTable(sql), ensureResearchAreaWorksTable(sql)], {
       concurrency: 'inherit',

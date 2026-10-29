@@ -1,13 +1,6 @@
 // oxlint-disable no-comments/disallowComments
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
-import {
-  PgVector,
-  type OurTokenizer,
-  UnableToAddPreprints,
-  UnableToQuery,
-  type Embedding,
-  type Paper,
-} from './Shared.ts'
+import { PgVector, UnableToAddPreprints, UnableToQuery, type Embedding, type Paper } from './Shared.ts'
 import type { SqlClient, SqlError } from '@effect/sql'
 import type { HttpClient } from '@effect/platform'
 import { generateEmbeddings } from './OpenRouter.ts'
@@ -15,6 +8,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { Doi } from '../types/Doi.js'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
+import type { Tokenizer } from '@huggingface/tokenizers'
 
 // `sql.in` binds one query parameter per DOI, and the SQL compiler spreads them onto an array
 // via `Function.apply`, which throws a RangeError once there are tens of thousands of them.
@@ -137,7 +131,7 @@ export const createMissingEmbeddings =
     apiKey: Redacted.Redacted,
     httpClient: HttpClient.HttpClient,
     sql: SqlClient.SqlClient,
-    tokenizer: typeof OurTokenizer.Service,
+    tokenizer: Tokenizer,
     languageDetection: typeof LanguageDetection.Service,
   ) =>
   (inputPapers: ReadonlyArray<Paper>) =>

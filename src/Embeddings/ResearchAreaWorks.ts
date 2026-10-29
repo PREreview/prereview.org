@@ -2,8 +2,9 @@ import type { HttpClient } from '@effect/platform'
 import type { SqlClient, SqlError } from '@effect/sql'
 import { Effect, Option, pipe, type Redacted, Schema } from 'effect'
 import { generateEmbeddings } from './OpenRouter.ts'
-import { PgVector, type OurTokenizer, UnableToGetSurveyPapers, type Embedding, type Paper } from './Shared.ts'
+import { PgVector, UnableToGetSurveyPapers, type Embedding, type Paper } from './Shared.ts'
 import type { Doi } from '../types/Doi.ts'
+import type { Tokenizer } from '@huggingface/tokenizers'
 
 const EmbeddingRow = Schema.Struct({
   doi: Schema.String,
@@ -54,12 +55,7 @@ export const ensureResearchAreaWorksTable = (sql: SqlClient.SqlClient): Effect.E
 `
 
 export const getEmbeddingsGeneratingAsNeeded =
-  (
-    apiKey: Redacted.Redacted,
-    httpClient: HttpClient.HttpClient,
-    sql: SqlClient.SqlClient,
-    tokenizer: typeof OurTokenizer.Service,
-  ) =>
+  (apiKey: Redacted.Redacted, httpClient: HttpClient.HttpClient, sql: SqlClient.SqlClient, tokenizer: Tokenizer) =>
   (inputPapers: ReadonlyArray<Paper>) =>
     Effect.gen(function* () {
       const papersWithExistingEmbeddings = yield* pipe(
