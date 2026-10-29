@@ -1,7 +1,6 @@
 import { Effect } from 'effect'
 import { createMatchmakingPage } from './MatchmakingPage.ts'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 
-export const MatchmakingPage = Effect.succeed(createMatchmakingPage())
+export const MatchmakingPage = Effect.succeed(createMatchmakingPage(false))
 
-export const MatchmakingSubmission = HavingProblemsPage
+export const MatchmakingSubmission = Effect.succeed(createMatchmakingPage(true))
