@@ -1,4 +1,5 @@
 import { OpenAiClient, OpenAiLanguageModel } from '@effect/ai-openai'
+import { embeddingsLayer } from './Embeddings/index.ts'
 import { ClusterWorkflowEngine, RunnerAddress } from '@effect/cluster'
 import { NodeSdk } from '@effect/opentelemetry'
 import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
@@ -27,7 +28,7 @@ import * as Clubs from './Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
 import { ContentfulConfig, ContentfulId } from './ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
-import { CommunitySlack } from './ExternalInteractions/index.ts'
+import { CommunitySlack, LanguageDetection } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
@@ -119,6 +120,8 @@ const ClubsData = Layer.unwrapEffect(
 
 pipe(
   Program,
+  Layer.provide(embeddingsLayer),
+  Layer.provide(LanguageDetection.layerCld),
   Layer.provide(ClubsData),
   Layer.provide(OpenAiLanguageModel.modelWithTokenizer('gpt-5.6-sol')),
   Layer.provide(

@@ -630,7 +630,15 @@ const BlogRouter = HttpRouter.fromIterable([
 const MatchmakingRouter = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.Matchmaking, MatchmakingPage),
-    MakeStaticRoute('POST', Routes.Matchmaking, MatchmakingSubmission),
+    MakeStaticRoute(
+      'POST',
+      Routes.Matchmaking,
+      pipe(
+        HttpServerRequest.HttpServerRequest,
+        Effect.andThen(Struct.get('urlParamsBody')),
+        Effect.andThen(MatchmakingSubmission),
+      ),
+    ),
   ]),
   HttpRouter.use(
     HttpMiddleware.make(app =>

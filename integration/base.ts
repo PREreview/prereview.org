@@ -74,6 +74,7 @@ import { Pseudonym } from '../src/types/Pseudonym.ts'
 import { Slug } from '../src/types/Slug.ts'
 import * as WebApp from '../src/WebApp/index.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
+import { Embeddings } from '../src/Embeddings/index.ts'
 
 export { expect } from '@playwright/test'
 
@@ -2529,6 +2530,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           WebApp.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           WorkflowEngine.layerMemory,
           Layer.mock(LanguageModel.LanguageModel, {}),
+          Layer.mock(Embeddings, {}),
         ]),
         Layer.provide(sqlClientLayer),
         Layer.launch,

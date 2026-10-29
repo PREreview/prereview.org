@@ -2,8 +2,10 @@ import { html, plainText } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { PageResponse } from '../Response/index.ts'
 import * as Routes from '../../routes.ts'
+import { Option } from 'effect'
+import type { Doi } from '../../types/Doi.ts'
 
-export const createMatchmakingPage = (results: boolean) => {
+export const createMatchmakingPage = (input: Option.Option<Doi>, results: boolean) => {
   return PageResponse({
     title: plainText('Matchmaking'),
     main: html`
@@ -15,7 +17,15 @@ export const createMatchmakingPage = (results: boolean) => {
             <label id="doi-label" for="doi"><span ${languageAttributesFor('en')}>Enter your DOI</span></label>
           </h2>
 
-          <input id="doi" name="doi" type="text" size="60" dir="ltr" spellcheck="false" />
+          <input
+            id="doi"
+            name="doi"
+            type="text"
+            size="60"
+            dir="ltr"
+            spellcheck="false"
+            value=${Option.getOrElse(input, () => '')}
+          />
         </div>
 
         <button><span ${languageAttributesFor('en')}>${results ? 'Update matches' : 'Find matches'}</span></button>
