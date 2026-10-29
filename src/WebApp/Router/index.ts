@@ -38,7 +38,7 @@ import { WeeknotesPage } from '../WeeknotesPage/index.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
-import { MatchmakingPage } from '../MatchmakingPage/index.ts'
+import { MatchmakingPage, MatchmakingSubmission } from '../MatchmakingPage/index.ts'
 import { LoggedInUser } from '../../user.ts'
 
 const MakeRoute = <A, E extends HttpServerError.RequestError, R>(
@@ -628,7 +628,10 @@ const BlogRouter = HttpRouter.fromIterable([
 )
 
 const MatchmakingRouter = pipe(
-  HttpRouter.fromIterable([MakeStaticRoute('GET', Routes.Matchmaking, MatchmakingPage)]),
+  HttpRouter.fromIterable([
+    MakeStaticRoute('GET', Routes.Matchmaking, MatchmakingPage),
+    MakeStaticRoute('POST', Routes.Matchmaking, MatchmakingSubmission),
+  ]),
   HttpRouter.use(
     HttpMiddleware.make(app =>
       Effect.gen(function* () {
