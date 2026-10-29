@@ -9,4 +9,5 @@ allowBuilds:
   unrs-resolver: false
 
 patchedDependencies:
+  '@huggingface/tokenizers@0.1.3': patches/@huggingface__tokenizers@0.1.3.patch
   fp-ts-routing@0.7.0: patches/fp-ts-routing@0.7.0.patch
