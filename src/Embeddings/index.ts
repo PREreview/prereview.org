@@ -11,19 +11,6 @@ import type { OrcidId } from '../types/OrcidId.ts'
 import { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import { Tokenizer } from '@huggingface/tokenizers'
 
-export class EmbeddingsClient extends Context.Tag('EmbeddingsClient')<EmbeddingsClient, PgClient.PgClient>() {
-  static readonly layer = Layer.effect(
-    this,
-    Effect.gen(function* () {
-      const sql = yield* PgClient.PgClient
-
-      yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
-
-      return sql
-    }),
-  )
-}
-
 interface SurveyPick {
   doi: Doi
   distance: number
@@ -111,11 +98,13 @@ export const pickSurveyPapers = Effect.fnUntraced(function* (
 export const embeddingsLayer = Layer.effect(
   Embeddings,
   Effect.gen(function* () {
-    const sql = yield* EmbeddingsClient
+    const sql = yield* PgClient.PgClient
     const httpClient = yield* HttpClient.HttpClient
     const apiKey = yield* Config.redacted('OPENROUTER_API_KEY')
     const languageDetection = yield* LanguageDetection
     const fileSystem = yield* FileSystem.FileSystem
+
+    yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
 
     const tokenizerJson = yield* pipe(
       fileSystem.readFileString('model/tokenizer.json'),
