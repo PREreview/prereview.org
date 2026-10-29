@@ -1,8 +1,8 @@
 import { HttpClient } from '@effect/platform'
 import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
 import { UnableToGetSurveyPapers, type UnableToAddPreprints, type Paper } from './Shared.ts'
-import { ensureResearchAreaWorksTable, getEmbeddingsGeneratingAsNeeded } from './ResearchAreaWorks.ts'
-import { createMissingEmbeddings, ensurePreprintsTable, findExistingDois, getRelatedDois } from './Preprints.ts'
+import { ensureMatchmakingInputWorksTable, getEmbeddingsGeneratingAsNeeded } from './ResearchAreaWorks.ts'
+import { createMissingEmbeddings, ensureRequestEmbeddingsTable, findExistingDois, getRelatedDois } from './Preprints.ts'
 import { PgClient } from '@effect/sql-pg'
 import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
@@ -109,7 +109,7 @@ export const embeddingsLayer = Layer.effect(
 
     const tokenizer = new Tokenizer(tokenizerJson, tokenizerConfig)
 
-    yield* Effect.all([ensurePreprintsTable(sql), ensureResearchAreaWorksTable(sql)], {
+    yield* Effect.all([ensureRequestEmbeddingsTable(sql), ensureMatchmakingInputWorksTable(sql)], {
       concurrency: 'inherit',
     })
 
