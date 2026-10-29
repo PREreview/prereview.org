@@ -9,6 +9,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canClubLeadsAddReviewsToClubs: boolean
     canLogInAsDemoUser: boolean
     canPreviewContentFromContentful: boolean
+    canUseMatchmaking: (user?: User) => boolean
     loadPagesFromContentful: boolean
     loadBlogFromContentful: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
@@ -22,6 +23,7 @@ const defaults = {
   canClubLeadsAddReviewsToClubs: false,
   canLogInAsDemoUser: false,
   canPreviewContentFromContentful: false,
+  canUseMatchmaking: () => false,
   loadBlogFromContentful: false,
   loadPagesFromContentful: false,
   sendCoarNotifyMessages: false,
