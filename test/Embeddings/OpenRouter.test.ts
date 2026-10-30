@@ -1,8 +1,8 @@
 import { Tokenizer } from '@huggingface/tokenizers'
 import { describe, expect, it } from 'vitest'
-import { truncateToModelLimit } from './OpenRouter.ts'
-import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
-import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
+import { truncateToModelLimit } from '../../src/Embeddings/OpenRouter.ts'
+import tokenizerJson from '../../src/Embeddings/model/tokenizer.json' with { type: 'json' }
+import tokenizerConfig from '../../src/Embeddings/model/tokenizer_config.json' with { type: 'json' }
 
 const oneTokenPerLetterVocab: Record<string, number> = {
   '[PAD]': 0,

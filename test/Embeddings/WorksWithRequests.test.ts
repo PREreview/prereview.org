@@ -1,11 +1,11 @@
 import { Effect } from 'effect'
 import type { SqlClient } from '@effect/sql'
 import { describe, expect, it } from 'vitest'
-import { findExistingDois, storeEmbeddings } from './WorksWithRequests.ts'
-import type { Embedding } from './Shared.ts'
+import { findExistingDois, storeEmbeddings } from '../../src/Embeddings/WorksWithRequests.ts'
+import type { Embedding } from '../../src/Embeddings/Shared.ts'
 import type { LanguageCode } from 'iso-639-1'
-import { Doi } from '../types/Doi.ts'
-import { OrcidId } from '../types/OrcidId.ts'
+import { Doi } from '../../src/types/Doi.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
 
 const makeFakeSql = (rows: ReadonlyArray<Record<string, unknown>> = []) => {
   const queries: Array<{ sql: string; params: ReadonlyArray<unknown> }> = []
@@ -19,7 +19,12 @@ const makeFakeSql = (rows: ReadonlyArray<Record<string, unknown>> = []) => {
   }
 
   const statement = (strings: TemplateStringsArray, ...args: Array<unknown>) => {
-    const text = strings.reduce((acc, part, i) => acc + part + (i < args.length ? render(args[i]) : ''), '')
+    const text = strings
+      .reduce((acc, part, i) => acc + part + (i < args.length ? render(args[i]) : ''), '')
+      .replaceAll(/\s+/g, ' ')
+      .replaceAll('( ', '(')
+      .replaceAll(' )', ')')
+      .trim()
     queries.push({ sql: text, params: args })
     return Object.assign(Effect.succeed(rows), { __text: text })
   }
@@ -41,16 +46,16 @@ const makeFakeSql = (rows: ReadonlyArray<Record<string, unknown>> = []) => {
 
 describe('findExistingDois', () => {
   it('returns the lowercased DOIs already present in one batched query', async () => {
-    const { sql, queries } = makeFakeSql([{ doi: '10.1/ALREADY' }, { doi: '10.1/stored' }])
+    const { sql, queries } = makeFakeSql([{ doi: '10.10/ALREADY' }, { doi: '10.10/stored' }])
 
     const result = await Effect.runPromise(
-      findExistingDois([Doi('10.1/already'), Doi('10.1/missing'), Doi('10.1/Stored')], sql),
+      findExistingDois([Doi('10.10/already'), Doi('10.10/missing'), Doi('10.10/Stored')], sql),
     )
 
-    expect(result).toEqual(new Set(['10.1/already', '10.1/stored']))
+    expect(result).toEqual(new Set(['10.10/already', '10.10/stored']))
     expect(queries).toHaveLength(1)
-    expect(queries[0]!.sql).toContain('SELECT doi FROM preprints')
-    expect(queries[0]!.sql).toContain('WHERE doi IN (10.1/already, 10.1/missing, 10.1/stored)')
+    expect(queries[0]!.sql).toContain('SELECT doi FROM request_embeddings')
+    expect(queries[0]!.sql).toContain('WHERE doi IN (10.10/already, 10.10/missing, 10.10/stored)')
   })
 
   it('returns an empty set without querying when given no DOIs', async () => {
@@ -74,7 +79,7 @@ describe('storeEmbeddings', () => {
   const row = (
     doi: Doi,
     language: LanguageCode = 'en',
-    authors: ReadonlyArray<OrcidId> = [OrcidId('0000-0001-1111-1111')],
+    authors: ReadonlyArray<OrcidId> = [OrcidId('0000-0002-1825-0097')],
   ): EmbeddingRow => ({
     doi,
     language,
@@ -85,12 +90,12 @@ describe('storeEmbeddings', () => {
   it('inserts all rows in one multi-row statement with lowercased DOIs', async () => {
     const { sql, queries } = makeFakeSql()
 
-    await Effect.runPromise(storeEmbeddings([row(Doi('10.1/A')), row(Doi('10.1/B'))], sql))
+    await Effect.runPromise(storeEmbeddings([row(Doi('10.10/A')), row(Doi('10.10/B'))], sql))
 
     const insert = queries.at(-1)!
-    expect(insert.sql).toContain('INSERT INTO preprints (doi, language, authors, embedding)')
-    expect(insert.sql).toContain('(10.1/a, en, [0000-0001-1111-1111], [1,2,3]::halfvec)')
-    expect(insert.sql).toContain('(10.1/b, en, [0000-0001-1111-1111], [1,2,3]::halfvec)')
+    expect(insert.sql).toContain('INSERT INTO request_embeddings (doi, language, authors, embedding)')
+    expect(insert.sql).toContain('(10.10/a, en, [0000-0002-1825-0097], [1,2,3]::halfvec)')
+    expect(insert.sql).toContain('(10.10/b, en, [0000-0002-1825-0097], [1,2,3]::halfvec)')
     expect(insert.sql).toContain('ON CONFLICT (doi) DO NOTHING')
   })
 
