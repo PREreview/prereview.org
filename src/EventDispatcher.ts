@@ -80,7 +80,7 @@ export const worker = Layer.scopedDiscard(
         safelyDispatchNewEvents,
         Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
         Effect.repeat(Schedule.fixed('2 seconds')),
-        Effect.fork,
+        Effect.forkScoped,
       )
 
       yield* pipe(
@@ -89,7 +89,7 @@ export const worker = Layer.scopedDiscard(
         Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
         Effect.scoped,
         Effect.forever,
-        Effect.fork,
+        Effect.forkScoped,
       )
 
       yield* Effect.logDebug('EventDispatcher worker started')
