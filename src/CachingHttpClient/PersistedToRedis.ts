@@ -12,10 +12,9 @@ export const layerPersistedToRedis = Layer.effect(
 
     return {
       get: request =>
-        Effect.if(redis.primary.status === 'ready', {
-          onTrue: () => getFromRedis(redis.primary)(request),
-          onFalse: () => getFromRedis(redis.readonlyFallback)(request),
-        }),
+        redis.primary.status === 'ready'
+          ? getFromRedis(redis.primary)(request)
+          : getFromRedis(redis.readonlyFallback)(request),
       set: writeToRedis(redis.primary),
       delete: deleteFromRedis(redis.primary),
     }

@@ -85,26 +85,26 @@ export const authenticate = Effect.fn(
 
     const authenticatedOrcidId = yield* GetOrcidIdUsingAuthorizationCode(code)
 
-    yield* Effect.if(isUserBlocked(authenticatedOrcidId), {
-      onFalse: () => Effect.void,
-      onTrue: () =>
-        pipe(
-          Effect.fail('blocked' as const),
-          Effect.tapError(() => Effect.logInfo('Blocked user from logging in')),
-          Effect.annotateLogs('user', authenticatedOrcidId),
-        ),
-    })
+    yield* Effect.suspend(() =>
+      isUserBlocked(authenticatedOrcidId)
+        ? pipe(
+            Effect.fail('blocked' as const),
+            Effect.tapError(() => Effect.logInfo('Blocked user from logging in')),
+            Effect.annotateLogs('user', authenticatedOrcidId),
+          )
+        : Effect.void,
+    )
 
-    yield* Effect.if(prereviewers.isRegistered(authenticatedOrcidId), {
-      onTrue: () => Effect.void,
-      onFalse: () =>
-        pipe(
-          prereviewers.register(authenticatedOrcidId),
-          Effect.tapError(error =>
-            Effect.logError('Unable to register new PREreviewer').pipe(Effect.annotateLogs({ error })),
+    yield* Effect.flatMap(prereviewers.isRegistered(authenticatedOrcidId), condition =>
+      condition
+        ? Effect.void
+        : pipe(
+            prereviewers.register(authenticatedOrcidId),
+            Effect.tapError(error =>
+              Effect.logError('Unable to register new PREreviewer').pipe(Effect.annotateLogs({ error })),
+            ),
           ),
-        ),
-    })
+    )
 
     const sessionId = yield* Uuid.v4()
 

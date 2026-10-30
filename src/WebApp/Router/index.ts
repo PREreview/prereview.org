@@ -95,15 +95,15 @@ const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefin
     'GET',
     path,
     pipe(
-      Effect.if(FeatureFlags.canPreviewContentFromContentful, {
-        onTrue: () =>
-          pipe(
-            HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
-            Effect.map(Struct.get('preview')),
-            Effect.orElseSucceed(() => false),
-          ),
-        onFalse: () => Effect.succeed(false),
-      }),
+      Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
+        condition
+          ? pipe(
+              HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
+              Effect.map(Struct.get('preview')),
+              Effect.orElseSucceed(() => false),
+            )
+          : Effect.succeed(false),
+      ),
       Effect.andThen(preview => CmsPage({ canonical: path, current, preview })),
     ),
   )
@@ -591,15 +591,15 @@ const BlogRouter = HttpRouter.fromIterable([
     flow(
       Effect.succeed,
       Effect.bind('preview', () =>
-        Effect.if(FeatureFlags.canPreviewContentFromContentful, {
-          onTrue: () =>
-            pipe(
-              HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
-              Effect.map(Struct.get('preview')),
-              Effect.orElseSucceed(() => false),
-            ),
-          onFalse: () => Effect.succeed(false),
-        }),
+        Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
+          condition
+            ? pipe(
+                HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
+                Effect.map(Struct.get('preview')),
+                Effect.orElseSucceed(() => false),
+              )
+            : Effect.succeed(false),
+        ),
       ),
       Effect.andThen(CmsBlogPostPage),
     ),
@@ -618,10 +618,14 @@ const BlogRouter = HttpRouter.fromIterable([
 ]).pipe(
   HttpRouter.use(
     HttpMiddleware.make(app =>
-      Effect.if(FeatureFlags.loadBlogFromContentful, {
-        onTrue: () => app,
-        onFalse: () =>
-          pipe(Response.RedirectResponse({ location: 'https://content.prereview.org' }), Response.toHttpServerResponse),
+      Effect.gen(function* () {
+        if (yield* FeatureFlags.loadBlogFromContentful) {
+          return yield* app
+        }
+
+        return yield* Response.toHttpServerResponse(
+          Response.RedirectResponse({ location: 'https://content.prereview.org' }),
+        )
       }),
     ),
   ),

@@ -63,10 +63,11 @@ export const toHttpServerResponse = (
     const publicUrl = yield* PublicUrl.PublicUrl
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
-    const userOnboarding = yield* Effect.if(response._tag === 'PageResponse' && response.current === 'my-details', {
-      onFalse: () => Effect.serviceOption(UserOnboardingService),
-      onTrue: () => Effect.succeedNone,
-    })
+    const userOnboarding = yield* Effect.suspend(() =>
+      response._tag === 'PageResponse' && response.current === 'my-details'
+        ? Effect.succeedNone
+        : Effect.serviceOption(UserOnboardingService),
+    )
     const message = yield* Effect.serviceOption(FlashMessage)
     const allowRobots = response._tag !== 'TwoUpPageResponse' ? response.allowRobots !== false : true
 
@@ -88,9 +89,10 @@ export const toHttpServerResponse = (
 
     const showSpotlight = yield* FeatureFlags.showSpotlight
 
-    const spotlightBanner = yield* Effect.if(
-      showSpotlight && response._tag === 'PageResponse' && response.current === 'home',
-      { onTrue: () => getSpotlightBanner, onFalse: () => Effect.succeedNone },
+    const spotlightBanner = yield* Effect.suspend(() =>
+      showSpotlight && response._tag === 'PageResponse' && response.current === 'home'
+        ? getSpotlightBanner
+        : Effect.succeedNone,
     )
 
     return yield* pipe(
@@ -180,16 +182,16 @@ const getSpotlightBanner: Effect.Effect<
   const spotlightBanners = yield* SpotlightBanners
   const request = yield* HttpServerRequest.HttpServerRequest
 
-  const previewBannerId = yield* Effect.if(FeatureFlags.canPreviewContentFromContentful, {
-    onTrue: () =>
-      pipe(
-        Url.fromString(request.url, 'http://example.com'),
-        Effect.map(Url.urlParams),
-        Effect.andThen(UrlParams.getFirst('preview-spotlight-banner')),
-        Effect.orElseSucceed(() => undefined),
-      ),
-    onFalse: () => Effect.succeed(undefined),
-  })
+  const previewBannerId = yield* Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
+    condition
+      ? pipe(
+          Url.fromString(request.url, 'http://example.com'),
+          Effect.map(Url.urlParams),
+          Effect.andThen(UrlParams.getFirst('preview-spotlight-banner')),
+          Effect.orElseSucceed(() => undefined),
+        )
+      : Effect.succeed(undefined),
+  )
 
   if (typeof previewBannerId === 'string') {
     return yield* spotlightBanners.previewBanner(previewBannerId)

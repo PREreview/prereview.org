@@ -46,10 +46,9 @@ export const {
 
 export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
 
-export const EnsureCanLogInAsDemoUser = Effect.if(canLogInAsDemoUser, {
-  onTrue: () => Effect.void,
-  onFalse: () => new CannotLogInAsDemoUser(),
-})
+export const EnsureCanLogInAsDemoUser = Effect.flatMap(canLogInAsDemoUser, condition =>
+  condition ? Effect.void : new CannotLogInAsDemoUser(),
+)
 
 export const layer = (options: Partial<typeof FeatureFlags.Service> = {}): Layer.Layer<FeatureFlags> =>
   Layer.succeed(FeatureFlags, { ...defaults, ...options })

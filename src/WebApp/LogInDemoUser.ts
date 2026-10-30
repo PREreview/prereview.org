@@ -17,14 +17,16 @@ export const LogInDemoUser: Effect.Effect<
   yield* FeatureFlags.EnsureCanLogInAsDemoUser
   const prereviewers = yield* Prereviewers
 
-  yield* Effect.if(prereviewers.isRegistered(demoUserOrcid), {
-    onTrue: () => Effect.void,
-    onFalse: () =>
-      pipe(
-        prereviewers.register(demoUserOrcid),
-        Effect.tapError(error => Effect.logError('Unable to register demo user').pipe(Effect.annotateLogs({ error }))),
-      ),
-  })
+  yield* Effect.flatMap(prereviewers.isRegistered(demoUserOrcid), condition =>
+    condition
+      ? Effect.void
+      : pipe(
+          prereviewers.register(demoUserOrcid),
+          Effect.tapError(error =>
+            Effect.logError('Unable to register demo user').pipe(Effect.annotateLogs({ error })),
+          ),
+        ),
+  )
 
   return Response.ForceLogInResponse({ user: { orcid: demoUserOrcid } })
 }).pipe(

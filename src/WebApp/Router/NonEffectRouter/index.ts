@@ -143,18 +143,18 @@ export const nonEffectRouter: Effect.Effect<
     authorInviteStore: keyvStores.authorInviteStore,
   }
 
-  const body = yield* Effect.if(HttpMethod.hasBody(request.method), {
-    onTrue: () =>
-      pipe(
-        Match.value(Option.getOrElse(Headers.get(request.headers, 'Content-Type'), () => 'application/octet-stream')),
-        Match.when(String.includes('application/x-www-form-urlencoded'), () =>
-          Effect.map(request.urlParamsBody, Record.fromEntries),
-        ),
-        Match.when(String.includes('multipart/form-data'), () => Effect.either(request.multipart)),
-        Match.orElse(() => Effect.void),
-      ),
-    onFalse: () => Effect.void,
-  })
+  const body = yield* Effect.suspend(() =>
+    HttpMethod.hasBody(request.method)
+      ? pipe(
+          Match.value(Option.getOrElse(Headers.get(request.headers, 'Content-Type'), () => 'application/octet-stream')),
+          Match.when(String.includes('application/x-www-form-urlencoded'), () =>
+            Effect.map(request.urlParamsBody, Record.fromEntries),
+          ),
+          Match.when(String.includes('multipart/form-data'), () => Effect.either(request.multipart)),
+          Match.orElse(() => Effect.void),
+        )
+      : Effect.void,
+  )
 
   const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
