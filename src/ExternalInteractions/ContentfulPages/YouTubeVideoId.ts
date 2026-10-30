@@ -1,14 +1,8 @@
 import { flow, Option, pipe, Schema, String, Tuple } from 'effect'
 
-const YouTubeVideoIdBrand: unique symbol = Symbol.for('YouTubeVideoId')
-
 export type YouTubeVideoId = typeof YouTubeVideoId.Type
 
-export const YouTubeVideoId = pipe(
-  Schema.String,
-  Schema.pattern(/^[A-Za-z0-9_-]{11}$/),
-  Schema.brand(YouTubeVideoIdBrand),
-)
+export const YouTubeVideoId = pipe(Schema.String, Schema.pattern(/^[A-Za-z0-9_-]{11}$/), Schema.brand('YouTubeVideoId'))
 
 export const fromUrl: (url: URL) => Option.Option<YouTubeVideoId> = flow(
   url => url.href,

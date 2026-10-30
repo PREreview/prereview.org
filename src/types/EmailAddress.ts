@@ -4,8 +4,6 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
 
-const EmailAddressBrand: unique symbol = Symbol.for('EmailAddress')
-
 export type EmailAddress = typeof EmailAddressSchema.Type
 
 export const EmailAddressC = C.fromDecoder(
@@ -25,7 +23,7 @@ export const EmailAddressC = C.fromDecoder(
 export const EmailAddressSchema = pipe(
   Schema.String,
   Schema.filter(s => isEmailValid(s) && !/[\u200b-\u200d\u2060]/.test(s), { message: () => 'not an email address' }),
-  Schema.brand(EmailAddressBrand),
+  Schema.brand('EmailAddress'),
 )
 
 export const EmailAddressFromUrlSchema = Schema.transform(

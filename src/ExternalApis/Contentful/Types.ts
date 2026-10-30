@@ -8,11 +8,9 @@ const ProtocolRelativeUrl = Schema.transform(Schema.String.pipe(Schema.pattern(/
   encode: url => url.replace(/^[A-z][A-z0-9+.-]*:\/\//, '//'),
 })
 
-const ContentfulIdBrand: unique symbol = Symbol.for('ContentfulId')
-
 export type ContentfulId = typeof ContentfulId.Type
 
-export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand(ContentfulIdBrand))
+export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand('ContentfulId'))
 
 export type Block =
   | Document

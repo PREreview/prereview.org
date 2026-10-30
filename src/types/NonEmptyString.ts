@@ -3,9 +3,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
 
-const NonEmptyStringBrand: unique symbol = Symbol.for('NonEmptyString')
-
-export type NonEmptyString = string & Brand.Brand<typeof NonEmptyStringBrand>
+export type NonEmptyString = string & Brand.Brand<'NonEmptyString'>
 
 export const NonEmptyStringC = C.fromDecoder(
   pipe(
@@ -17,7 +15,7 @@ export const NonEmptyStringC = C.fromDecoder(
 export const NonEmptyStringSchema = pipe(
   Schema.String,
   Schema.filter(isNonEmptyString, { message: () => 'string is empty' }),
-  Schema.brand(NonEmptyStringBrand),
+  Schema.brand('NonEmptyString'),
 ).annotations({ arbitrary: () => fc => fc.string({ minLength: 1 }).filter(isNonEmptyString) })
 
 export function isNonEmptyString(value: string): value is NonEmptyString {

@@ -6,9 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import * as uuid from 'uuid'
 import type { NonEmptyString } from './NonEmptyString.ts'
 
-const UuidBrand: unique symbol = Symbol.for('Uuid')
-
-export type Uuid = NonEmptyString & Brand.Brand<typeof UuidBrand>
+export type Uuid = NonEmptyString & Brand.Brand<'Uuid'>
 
 export class GenerateUuid extends Context.Tag('GenerateUuid')<
   GenerateUuid,
@@ -23,7 +21,7 @@ export const layer: Layer.Layer<GenerateUuid> = Layer.succeed(GenerateUuid, {
   v5: (value, namespace) => Effect.sync(() => Uuid(uuid.v5(value, namespace))),
 })
 
-export const UuidSchema: Schema.Schema<Uuid, string> = pipe(Schema.UUID, Schema.brand(UuidBrand)) as never
+export const UuidSchema: Schema.Schema<Uuid, string> = pipe(Schema.UUID, Schema.brand('Uuid')) as never
 
 export const Uuid: (value: string) => Uuid = Schema.decodeSync(UuidSchema)
 

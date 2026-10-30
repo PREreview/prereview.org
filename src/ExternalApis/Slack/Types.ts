@@ -1,22 +1,16 @@
 import { Data, Schema } from 'effect'
 
-const TimestampBrand: unique symbol = Symbol.for('Timestamp')
-
 export type Timestamp = typeof Timestamp.Type
 
-export const Timestamp = Schema.String.pipe(Schema.brand(TimestampBrand))
-
-const ChannelIdBrand: unique symbol = Symbol.for('ChannelId')
+export const Timestamp = Schema.String.pipe(Schema.brand('Timestamp'))
 
 export type ChannelId = typeof ChannelId.Type
 
-export const ChannelId = Schema.String.pipe(Schema.brand(ChannelIdBrand))
-
-const UserIdBrand: unique symbol = Symbol.for('UserId')
+export const ChannelId = Schema.String.pipe(Schema.brand('ChannelId'))
 
 export type UserId = typeof UserId.Type
 
-export const UserId = Schema.String.pipe(Schema.brand(UserIdBrand))
+export const UserId = Schema.String.pipe(Schema.brand('UserId'))
 
 export const Response = <Fields extends Schema.Struct.Fields>(schema: Schema.Struct<Fields>) =>
   Schema.Union(

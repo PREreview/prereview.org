@@ -5,9 +5,7 @@ import { EffectToFpts } from '../RefactoringUtilities/index.ts'
 import type { Name } from './Name.ts'
 import { NonEmptyStringSchema } from './NonEmptyString.ts'
 
-const PseudonymBrand: unique symbol = Symbol.for('Pseudonym')
-
-export type Pseudonym = Name & Brand.Brand<typeof PseudonymBrand>
+export type Pseudonym = Name & Brand.Brand<'Pseudonym'>
 
 export const PseudonymC = C.fromDecoder(
   pipe(
@@ -210,7 +208,7 @@ export const possiblePseudonyms = Effect.gen(function* () {
 export const PseudonymSchema = pipe(
   NonEmptyStringSchema,
   Schema.filter(isPseudonym, { message: () => 'not a pseudonym' }),
-  Schema.brand(PseudonymBrand),
+  Schema.brand('Pseudonym'),
 ).annotations({
   arbitrary: () => fc =>
     fc

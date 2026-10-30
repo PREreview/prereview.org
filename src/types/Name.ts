@@ -4,9 +4,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
 import { NonEmptyStringSchema, type NonEmptyString } from './NonEmptyString.ts'
 
-const NameBrand: unique symbol = Symbol.for('Name')
-
-export type Name = NonEmptyString & Brand.Brand<typeof NameBrand>
+export type Name = NonEmptyString & Brand.Brand<'Name'>
 
 const NormalizedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, {
   strict: true,
@@ -16,7 +14,7 @@ const NormalizedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, 
 
 export const NameSchema = pipe(
   Schema.compose(NormalizedWhitespaceSchema, NonEmptyStringSchema),
-  Schema.brand(NameBrand),
+  Schema.brand('Name'),
 ).annotations({
   arbitrary: () => fc =>
     fc

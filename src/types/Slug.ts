@@ -1,14 +1,12 @@
 import { Array, pipe, Schema, type Brand } from 'effect'
 import { NonEmptyStringSchema, type NonEmptyString } from './NonEmptyString.ts'
 
-const SlugBrand: unique symbol = Symbol.for('Slug')
-
-export type Slug = NonEmptyString & Brand.Brand<typeof SlugBrand>
+export type Slug = NonEmptyString & Brand.Brand<'Slug'>
 
 export const SlugSchema = pipe(
   NonEmptyStringSchema,
   Schema.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
-  Schema.brand(SlugBrand),
+  Schema.brand('Slug'),
 ).annotations({
   arbitrary: () => fc =>
     fc
