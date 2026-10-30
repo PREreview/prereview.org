@@ -78,7 +78,7 @@
     "@tiptap/starter-kit": "^3.32.0",
     "@tsconfig/node24": "^24.0.5",
     "@types/cookie-signature": "^1.1.2",
-    "@types/mjml": "^5.0.0",
+    "@types/mjml": "^5.4.2",
     "@types/node": "^24.19.2",
     "@types/sanitize-html": "^2.16.2",
     "@types/turndown": "^5.0.6",
