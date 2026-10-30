@@ -1,6 +1,6 @@
 // oxlint-disable no-comments/disallowComments
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
-import { PgVector, UnableToAddPreprints, UnableToQuery, type Embedding } from './Shared.ts'
+import { PgVector, UnableToAddWorksWithRequests, UnableToQuery, type Embedding } from './Shared.ts'
 import type { SqlClient, SqlError } from '@effect/sql'
 import type { HttpClient } from '@effect/platform'
 import { generateEmbeddings } from './OpenRouter.ts'
@@ -10,7 +10,7 @@ import type { OrcidId } from '../types/OrcidId.ts'
 import type { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
 
-export interface Preprint {
+export interface WorkWithRequest {
   doi: Doi
   title: string
   abstract: string
@@ -25,7 +25,7 @@ const FIND_EXISTING_DOIS_CHUNK_SIZE = 5000
 export const findExistingDois = (
   dois: ReadonlyArray<Doi>,
   sql: SqlClient.SqlClient,
-): Effect.Effect<Set<Doi>, UnableToAddPreprints> =>
+): Effect.Effect<Set<Doi>, UnableToAddWorksWithRequests> =>
   Effect.gen(function* () {
     if (dois.length === 0) return new Set<Doi>()
 
@@ -45,7 +45,7 @@ export const findExistingDois = (
         { concurrency: 4 },
       ),
       Effect.map(Array.flatten),
-      Effect.mapError(cause => new UnableToAddPreprints({ cause })),
+      Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })),
     )
 
     return new Set(rows.map(row => Doi(row.doi.toLowerCase())))
@@ -59,7 +59,7 @@ export const storeEmbeddings = (
     embedding: Embedding
   }>,
   sql: SqlClient.SqlClient,
-): Effect.Effect<void, UnableToAddPreprints> =>
+): Effect.Effect<void, UnableToAddWorksWithRequests> =>
   Effect.gen(function* () {
     if (rows.length === 0) return
 
@@ -82,7 +82,7 @@ export const storeEmbeddings = (
         ${sql.join(',', false)(values)}
       ON CONFLICT (doi) DO NOTHING
     `
-  }).pipe(Effect.mapError(cause => new UnableToAddPreprints({ cause })))
+  }).pipe(Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })))
 
 export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> => sql`
   CREATE TABLE IF NOT EXISTS request_embeddings (
@@ -95,7 +95,7 @@ export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.E
   CREATE INDEX IF NOT EXISTS request_embeddings_idx ON request_embeddings USING hnsw (embedding halfvec_cosine_ops)
 `
 
-export const getRelatedDois =
+export const getMatches =
   (
     limit: number,
     sql: SqlClient.SqlClient,
@@ -141,7 +141,7 @@ export const createMissingEmbeddings =
     tokenizer: Tokenizer,
     languageDetection: typeof LanguageDetection.Service,
   ) =>
-  (inputPapers: ReadonlyArray<Preprint>) =>
+  (inputPapers: ReadonlyArray<WorkWithRequest>) =>
     Effect.gen(function* () {
       const existing = yield* findExistingDois(
         inputPapers.map(paper => paper.doi),
@@ -150,10 +150,10 @@ export const createMissingEmbeddings =
 
       const papersWithoutEmbeddings = inputPapers.filter(paper => !existing.has(paper.doi.toLowerCase() as never))
 
-      const generated: ReadonlyArray<Preprint & { embedding: Embedding }> =
+      const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding }> =
         papersWithoutEmbeddings.length > 0
           ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer).pipe(
-              Effect.catchTag('UnableToGetSurveyPapers', ({ cause }) => new UnableToAddPreprints({ cause })),
+              Effect.catchTag('UnableToGetSurveyPapers', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
             )
           : []
 
@@ -163,7 +163,7 @@ export const createMissingEmbeddings =
           w => languageDetection.detectLanguage(w.title).pipe(Effect.map(language => ({ ...w, language }))),
           { concurrency: 4 },
         ),
-        Effect.catchTag('UnableToDetectLanguage', ({ cause }) => new UnableToAddPreprints({ cause })),
+        Effect.catchTag('UnableToDetectLanguage', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
       )
 
       yield* storeEmbeddings(generatedWithLanguage, sql)

@@ -7,7 +7,7 @@ import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
 
-export interface ResearchAreaWork {
+export interface MatchmakingInputWork {
   doi: Doi
   title: string
   abstract: string
@@ -66,7 +66,7 @@ export const ensureMatchmakingInputWorksTable = (
 
 export const getEmbeddingsGeneratingAsNeeded =
   (apiKey: Redacted.Redacted, httpClient: HttpClient.HttpClient, sql: SqlClient.SqlClient, tokenizer: Tokenizer) =>
-  (inputPapers: ReadonlyArray<ResearchAreaWork>) =>
+  (inputPapers: ReadonlyArray<MatchmakingInputWork>) =>
     Effect.gen(function* () {
       const papersWithExistingEmbeddings = yield* pipe(
         inputPapers,
@@ -79,7 +79,7 @@ export const getEmbeddingsGeneratingAsNeeded =
         Option.isNone(embedding) ? [paper] : [],
       )
 
-      const generated: ReadonlyArray<ResearchAreaWork & { embedding: Embedding }> =
+      const generated: ReadonlyArray<MatchmakingInputWork & { embedding: Embedding }> =
         papersWithoutEmbeddings.length > 0
           ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer)
           : []

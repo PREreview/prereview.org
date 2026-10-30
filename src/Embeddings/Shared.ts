@@ -5,7 +5,7 @@ export class UnableToGetSurveyPapers extends Data.TaggedError('UnableToGetSurvey
   cause?: unknown
 }> {}
 
-export class UnableToAddPreprints extends Data.TaggedError('UnableToAddPreprints')<{
+export class UnableToAddWorksWithRequests extends Data.TaggedError('UnableToAddWorksWithRequests')<{
   cause?: unknown
 }> {}
 

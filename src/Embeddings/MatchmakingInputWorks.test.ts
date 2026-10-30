@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import type { SqlClient } from '@effect/sql'
 import { describe, expect, it } from 'vitest'
-import { findExistingDois, storeEmbeddings } from './Preprints.ts'
+import { findExistingDois, storeEmbeddings } from './WorksWithRequests.ts'
 import type { Embedding } from './Shared.ts'
 import type { LanguageCode } from 'iso-639-1'
 import { Doi } from '../types/Doi.ts'

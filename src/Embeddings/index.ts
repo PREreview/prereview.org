@@ -1,18 +1,18 @@
 import { HttpClient } from '@effect/platform'
 import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
-import { UnableToGetSurveyPapers, type UnableToAddPreprints } from './Shared.ts'
+import { UnableToGetSurveyPapers, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
   ensureMatchmakingInputWorksTable,
   getEmbeddingsGeneratingAsNeeded,
-  type ResearchAreaWork,
-} from './ResearchAreaWorks.ts'
+  type MatchmakingInputWork,
+} from './MatchmakingInputWorks.ts'
 import {
   createMissingEmbeddings,
   ensureRequestEmbeddingsTable,
   findExistingDois,
-  getRelatedDois,
-  type Preprint,
-} from './Preprints.ts'
+  getMatches,
+  type WorkWithRequest,
+} from './WorksWithRequests.ts'
 import { PgClient } from '@effect/sql-pg'
 import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
@@ -34,15 +34,15 @@ export class Embeddings extends Context.Tag('Embeddings')<
   Embeddings,
   {
     getMatches: (
-      input: Array.NonEmptyReadonlyArray<ResearchAreaWork>,
+      input: Array.NonEmptyReadonlyArray<MatchmakingInputWork>,
       inputOrcidId: OrcidId,
       languages: Array.NonEmptyReadonlyArray<LanguageCode>,
     ) => Effect.Effect<
       { picks: Array.NonEmptyReadonlyArray<SurveyPick>; candidateCount: number },
       UnableToGetSurveyPapers
     >
-    addPreprints: (input: ReadonlyArray<Preprint>) => Effect.Effect<void, UnableToAddPreprints>
-    existingDois: (input: ReadonlyArray<Doi>) => Effect.Effect<Set<Doi>, UnableToAddPreprints>
+    addPreprints: (input: ReadonlyArray<WorkWithRequest>) => Effect.Effect<void, UnableToAddWorksWithRequests>
+    existingDois: (input: ReadonlyArray<Doi>) => Effect.Effect<Set<Doi>, UnableToAddWorksWithRequests>
   }
 >() {}
 
@@ -129,7 +129,7 @@ export const embeddingsLayer = Layer.effect(
           inputPapers,
           getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
           Effect.andThen(calcFloat32ArrayMean),
-          Effect.andThen(getRelatedDois(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
+          Effect.andThen(getMatches(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
           Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetSurveyPapers({ cause })),
           Effect.andThen(pickSurveyPapers),
         )

@@ -3,14 +3,10 @@ import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
 import { UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
 import { Float32ArraySchema } from './Float32Array.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
-import type { Doi } from '../types/Doi.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
 
-interface Paper {
-  doi: Doi
+interface TitleAndAbstract {
   title: string
   abstract: string
-  authors: ReadonlyArray<OrcidId>
 }
 
 const EmbeddingResponse = Schema.Struct({
@@ -29,12 +25,12 @@ const EmbeddingResponse = Schema.Struct({
   }),
 })
 
-export const generateEmbeddings = (
-  papers: ReadonlyArray<Paper>,
+export const generateEmbeddings = <T extends TitleAndAbstract>(
+  papers: ReadonlyArray<T>,
   apiKey: Redacted.Redacted,
   httpClient: HttpClient.HttpClient,
   tokenizer: Tokenizer,
-): Effect.Effect<ReadonlyArray<Paper & { embedding: Embedding }>, UnableToGetSurveyPapers> =>
+): Effect.Effect<ReadonlyArray<T & { embedding: Embedding }>, UnableToGetSurveyPapers> =>
   Effect.gen(function* () {
     const inputGroups = pipe(papers, Array.chunksOf(200))
 
