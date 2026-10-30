@@ -61,7 +61,7 @@ export class WasPrereviewRemoved extends Context.Tag('WasPrereviewRemoved')<
   (id: number) => boolean
 >() {}
 
-export const { getFiveMostRecent } = Effect.serviceConstants(Prereviews)
+export const getFiveMostRecent = Effect.flatMap(Prereviews, service => service.getFiveMostRecent)
 
 export const getForClub = (...args: Parameters<(typeof Prereviews.Service)['getForClub']>) =>
   Effect.flatMap(Prereviews, service => service.getForClub(...args))

@@ -44,7 +44,7 @@ export interface EventStore {
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
 
-export const { all } = Effect.serviceConstants(EventStore)
+export const all = Effect.flatMap(EventStore, service => service.all)
 
 export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
   Effect.flatMap(EventStore, service => service.since(...args))

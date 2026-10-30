@@ -1,4 +1,4 @@
-import { Config, Context, Data, Effect, Layer, Struct } from 'effect'
+import { Config, Context, Data, Effect, Layer } from 'effect'
 import type { Clubs } from './Clubs/index.ts'
 import type { User } from './user.ts'
 
@@ -31,18 +31,27 @@ const defaults = {
   showSpotlight: false,
 } satisfies typeof FeatureFlags.Service
 
-export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
+export const canAddMultipleAuthors = (user?: User) =>
+  Effect.flatMap(FeatureFlags, service => service.canAddMultipleAuthors(user))
 
-export const {
-  canLogInAsDemoUser,
-  canClubLeadsAddReviewsToClubs,
-  canPreviewContentFromContentful,
-  loadBlogFromContentful,
-  loadPagesFromContentful,
-  sendCoarNotifyMessages,
-  useCrowdinInContext,
-  showSpotlight,
-} = Effect.serviceConstants(FeatureFlags)
+export const canLogInAsDemoUser = Effect.map(FeatureFlags, service => service.canLogInAsDemoUser)
+
+export const canClubLeadsAddReviewsToClubs = Effect.map(FeatureFlags, service => service.canClubLeadsAddReviewsToClubs)
+
+export const canPreviewContentFromContentful = Effect.map(
+  FeatureFlags,
+  service => service.canPreviewContentFromContentful,
+)
+
+export const loadBlogFromContentful = Effect.map(FeatureFlags, service => service.loadBlogFromContentful)
+
+export const loadPagesFromContentful = Effect.map(FeatureFlags, service => service.loadPagesFromContentful)
+
+export const sendCoarNotifyMessages = Effect.map(FeatureFlags, service => service.sendCoarNotifyMessages)
+
+export const useCrowdinInContext = Effect.map(FeatureFlags, service => service.useCrowdinInContext)
+
+export const showSpotlight = Effect.map(FeatureFlags, service => service.showSpotlight)
 
 export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
 

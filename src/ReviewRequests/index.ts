@@ -71,7 +71,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
   }
 >() {}
 
-export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
+export const getFiveMostRecent = Effect.flatMap(ReviewRequests, service => service.getFiveMostRecent)
 
 export const search = (...args: Parameters<(typeof ReviewRequests.Service)['search']>) =>
   Effect.flatMap(ReviewRequests, service => service.search(...args))
