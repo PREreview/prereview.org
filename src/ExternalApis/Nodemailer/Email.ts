@@ -4,7 +4,7 @@ import { EmailAddress } from '../../types/index.ts'
 
 export class UnableToSendEmail extends Data.TaggedError('UnableToSendEmail')<{ cause?: unknown }> {}
 
-export class Email extends Schema.Class<Email>('Email')({
+export const Email = Schema.Struct({
   from: Schema.Struct({
     name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     address: EmailAddress.EmailAddressSchema,
@@ -19,4 +19,6 @@ export class Email extends Schema.Class<Email>('Email')({
   subject: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   text: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   html: HtmlSchema,
-}) {}
+})
+
+export type Email = typeof Email.Type
