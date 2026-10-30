@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
+import { Array, Context, Effect, Exit, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
@@ -131,7 +131,11 @@ export const layer = Layer.effect(
                   Match.exhaustive,
                 ),
               ),
-              effects => Effect.allSuccesses(effects, { concurrency: 'unbounded' }),
+              effects =>
+                Effect.map(
+                  Effect.all(Array.map(effects, Effect.exit), { concurrency: 'unbounded' }),
+                  Array.flatMap(exit => (Exit.isSuccess(exit) ? [exit.value] : [])),
+                ),
             ),
           ),
           Effect.orElseSucceed(Array.empty),

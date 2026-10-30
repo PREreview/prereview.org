@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Data, Effect, flow, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, Exit, flow, Layer, pipe, Scope } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -104,7 +104,11 @@ export const layer = pipe(
                   }
                 }),
               ),
-              effects => Effect.allSuccesses(effects, { concurrency: 'unbounded' }),
+              effects =>
+                Effect.map(
+                  Effect.all(Array.map(effects, Effect.exit), { concurrency: 'unbounded' }),
+                  Array.flatMap(exit => (Exit.isSuccess(exit) ? [exit.value] : [])),
+                ),
             ),
           ),
           Effect.orElseSucceed(Array.empty),
@@ -150,7 +154,11 @@ export const layer = pipe(
                   }
                 }),
               ),
-              effects => Effect.allSuccesses(effects, { concurrency: 'unbounded' }),
+              effects =>
+                Effect.map(
+                  Effect.all(Array.map(effects, Effect.exit), { concurrency: 'unbounded' }),
+                  Array.flatMap(exit => (Exit.isSuccess(exit) ? [exit.value] : [])),
+                ),
               Effect.andThen(
                 Array.match({
                   onNonEmpty: reviewRequests => Effect.succeed({ ...pageOfReviewRequests, reviewRequests }),
