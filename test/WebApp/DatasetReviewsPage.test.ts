@@ -249,28 +249,31 @@ describe('DatasetReviewsPage', () => {
       ),
   )
 
-  it.effect.prop("when review IDs can't be loaded", [fc.supportedLocale(), fc.datasetId()], ([locale, datasetId]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.DatasetReviewsPage({ datasetId })
+  it.effect.prop(
+    "when review IDs can't be loaded",
+    [fc.supportedLocale(), fc.datasetId(), fc.dataset()],
+    ([locale, datasetId, dataset]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.DatasetReviewsPage({ datasetId })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide([
-        Layer.mock(Clubs, {}),
-        Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          findPublishedReviewsForADataset: () => new Queries.UnableToQuery({}),
-        }),
-      ]),
-      Effect.provide(Layer.mock(Datasets.Datasets, {})),
-      Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
-      Effect.provideService(Locale, locale),
-    ),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide([
+          Layer.mock(Clubs, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findPublishedReviewsForADataset: () => new Queries.UnableToQuery({}),
+          }),
+        ]),
+        Effect.provide(Layer.mock(Datasets.Datasets, { getDataset: () => Effect.succeed(dataset) })),
+        Effect.provide(Layer.mock(Prereviewers.Prereviewers, {})),
+        Effect.provideService(Locale, locale),
+      ),
   )
 })
