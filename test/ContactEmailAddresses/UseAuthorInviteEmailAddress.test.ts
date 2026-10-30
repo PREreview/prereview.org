@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '../vitest.ts'
-import { Array, Effect, Either, Layer, Option, pipe, Struct } from 'effect'
+import { Array, Effect, Either, Layer, Option, pipe, Struct, PubSub } from 'effect'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
 import { type Event, Events } from '../../src/Events.ts'
 import { EventStore } from '../../src/EventStore.ts'
@@ -112,10 +112,6 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ReadonlyArray<Eve
     expect(actualEvents).toStrictEqual(expectedEvents)
   }).pipe(
     Effect.provide(sqlSensitiveDataStoreLayer),
-    Effect.provide([
-      uuidLayer,
-      Layer.mock(Events, { publish: () => Effect.succeed(true) } as never),
-      LibsqlClient.layer({ url: ':memory:' }),
-    ]),
+    Effect.provide([uuidLayer, Layer.effect(Events, PubSub.unbounded()), LibsqlClient.layer({ url: ':memory:' })]),
   ),
 )

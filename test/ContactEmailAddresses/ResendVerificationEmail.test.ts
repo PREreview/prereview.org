@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it, vi } from '../vitest.ts'
-import { Array, Effect, Either, Layer, Option, Struct, pipe } from 'effect'
+import { Array, Effect, Either, Layer, Option, Struct, pipe, PubSub } from 'effect'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
@@ -107,7 +107,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | un
     Effect.provide(sqlSensitiveDataStoreLayer),
     Effect.provide([
       Layer.succeed(Locale, DefaultLocale),
-      Layer.mock(Events, { publish: () => Effect.succeed(true) } as never),
+      Layer.effect(Events, PubSub.unbounded()),
       LibsqlClient.layer({ url: ':memory:' }),
       Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
       Uuid.layer,

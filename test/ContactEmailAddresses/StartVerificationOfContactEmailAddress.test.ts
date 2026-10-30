@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it, vi } from '../vitest.ts'
-import { Array, Effect, Either, Layer, Option, Struct, pipe } from 'effect'
+import { Array, Effect, Either, Layer, Option, Struct, pipe, PubSub } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
 import { Locale } from '../../src/Context.ts'
@@ -118,7 +118,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, Readonly
     Effect.provide([
       Layer.succeed(Locale, DefaultLocale),
       Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
-      Layer.mock(Events, { publish: () => Effect.succeed(true) } as never),
+      Layer.effect(Events, PubSub.unbounded()),
       LibsqlClient.layer({ url: ':memory:' }),
       Uuid.layer,
     ]),
