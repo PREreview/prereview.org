@@ -8,8 +8,8 @@ const program = pipe(
   Effect.void,
   Effect.andThen(Console.log('Number of pseudonyms available')),
   Effect.andThen(Prereviewers.countAvailablePseudonyms),
-  Effect.tapBoth({
-    onSuccess: flow(
+  Effect.tap(
+    flow(
       ({ used, legacyUsed, available }) => ({
         Used: `${used.toLocaleString('en-US')} (${Intl.NumberFormat('en-US', {
           style: 'percent',
@@ -21,12 +21,12 @@ const program = pipe(
       }),
       Console.table,
     ),
-    onFailure: Console.log,
-  }),
+  ),
+  Effect.tapError(Console.log),
   Effect.andThen(Console.log('Review requests needing categorization')),
   Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
-  Effect.tapBoth({
-    onSuccess: flow(
+  Effect.tap(
+    flow(
       Array.map(result => ({
         ID: result.id,
         Published: result.publishedAt
@@ -39,8 +39,8 @@ const program = pipe(
       })),
       Console.table,
     ),
-    onFailure: Console.log,
-  }),
+  ),
+  Effect.tapError(Console.log),
 )
 
 export const PrintStatus = Command.make('status', {}, () => program)

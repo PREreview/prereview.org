@@ -54,11 +54,10 @@ const teardownRedis = (redis: IoRedis) =>
       try: () => redis.quit(),
       catch: error => (error instanceof Error ? error : new Error(Inspectable.toStringUnknown(error))),
     }),
-    Effect.tapBoth({
-      onSuccess: () => Effect.logDebug('Redis disconnected'),
-      onFailure: error =>
-        pipe(Effect.logWarning('Redis unable to disconnect'), Effect.annotateLogs('error', error.message)),
-    }),
+    Effect.tap(() => Effect.logDebug('Redis disconnected')),
+    Effect.tapError(error =>
+      pipe(Effect.logWarning('Redis unable to disconnect'), Effect.annotateLogs('error', error.message)),
+    ),
     Effect.ignore,
   )
 
