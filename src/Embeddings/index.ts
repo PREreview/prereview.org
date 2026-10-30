@@ -130,7 +130,7 @@ export const embeddingsLayer = Layer.effect(
         const { picks, candidateCount } = yield* pipe(
           inputPapers,
           getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
-          Effect.andThen(calcFloat32ArrayMean),
+          Effect.map(calcFloat32ArrayMean),
           Effect.andThen(getMatches(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
           Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetSurveyPapers({ cause })),
           Effect.andThen(pickSurveyPapers),

@@ -185,7 +185,7 @@ export const nonEffectRouter: Effect.Effect<
     sessionStore: sessionStore.store,
   } satisfies Env
 
-  return yield* Effect.andThen(
+  return yield* Effect.map(
     handler(env),
     HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' }),
   )

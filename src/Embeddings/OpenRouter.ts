@@ -57,7 +57,7 @@ export const generateEmbeddings = <T extends TitleAndAbstract>(
           embedding: item.embedding,
         }))
       }),
-    ).pipe(Effect.andThen(Array.flatten))
+    ).pipe(Effect.map(Array.flatten))
   }).pipe(
     Effect.tapError(
       Effect.fnUntraced(function* (error) {

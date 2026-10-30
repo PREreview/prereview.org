@@ -699,7 +699,7 @@ export const Router = pipe(
   ),
   HttpRouter.use(
     HttpMiddleware.make(
-      Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
+      Effect.map(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
     ),
   ),
   HttpRouter.concat(DataRouter),
