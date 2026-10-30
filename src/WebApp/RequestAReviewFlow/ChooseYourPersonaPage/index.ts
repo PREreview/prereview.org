@@ -41,7 +41,7 @@ export const ChooseYourPersonaPage: ({
         publicPersona: Prereviewers.getPublicPersona(user.orcid),
         pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     const form = ChooseYourPersonaForm.fromPersonaChoice(reviewRequest.personaChoice)
@@ -107,7 +107,7 @@ export const ChooseYourPersonaSubmission: ({
               publicPersona: Prereviewers.getPublicPersona(user.orcid),
               pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
             },
-            { concurrency: 'inherit' },
+            { concurrency: 'unbounded' },
           )
 
           return MakeResponse({ form, preprint: preprint.id, publicPersona, pseudonymPersona, locale })

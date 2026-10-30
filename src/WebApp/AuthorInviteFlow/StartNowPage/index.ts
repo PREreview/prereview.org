@@ -27,11 +27,11 @@ export const StartNowPage = ({
       {
         author: Prereviewers.getPersona(datasetReviewForInvite.author),
         otherAuthors: Effect.forEach(datasetReviewForInvite.otherAuthors, Prereviewers.getPersona, {
-          concurrency: 'inherit',
+          concurrency: 'unbounded',
         }),
         dataset: datasets.getDataset(datasetReviewForInvite.dataset),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     const viewModel = {

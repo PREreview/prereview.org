@@ -17,12 +17,12 @@ export const CreateRecordOnZenodo = Effect.fn(
       {
         author: Prereviewers.getPersona(datasetReview.author),
         otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
-          concurrency: 'inherit',
+          concurrency: 'unbounded',
         }),
         dataset: Datasets.getDatasetTitle(datasetReview.dataset),
         url: PublicUrl.forRoute(Routes.DatasetReview, { datasetReviewId }),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     const recordId = yield* ZenodoRecords.createRecordForDatasetReview({

@@ -23,7 +23,7 @@ const program = Effect.fnUntraced(function* ({
       preprint: Preprints.getPreprintTitle(reviewRequest.preprintId),
       categories: OpenAlexWorks.getCategoriesForAReviewRequest(reviewRequest.preprintId),
     },
-    { concurrency: 'inherit' },
+    { concurrency: 'unbounded' },
   )
 
   if (dryRun) {

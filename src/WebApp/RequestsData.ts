@@ -132,7 +132,7 @@ const DataToRequestSchema = Schema.transformOrFail(
 export const RequestsData = pipe(
   ReviewRequests.listAllPublishedReviewRequestsForStats(),
   Effect.andThen(
-    HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema).annotations({ concurrency: 'inherit' })),
+    HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema).annotations({ concurrency: 'unbounded' })),
   ),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create requests data list'), { error })),
   Effect.catchTags({

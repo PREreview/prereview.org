@@ -105,7 +105,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
           </figure>
         `
       }),
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     return html`<div class="media-gallery">${itemsHtml}</div>`
@@ -331,7 +331,7 @@ export const BlockContentToHtml = (
 
       return BlockElementToHtml(element)
     },
-    { concurrency: 'inherit' },
+    { concurrency: 'unbounded' },
   ).pipe(
     Effect.map(Array.getSomes),
     Effect.map(content => Option.some(html`${content}`)),

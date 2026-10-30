@@ -22,7 +22,7 @@ const makeReviewRequestReactions: Effect.Effect<
               Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
               Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
             ],
-            { concurrency: 'inherit' },
+            { concurrency: 'unbounded' },
           ),
         ),
         Match.tag('ReviewRequestForAPreprintWasAccepted', event =>
@@ -32,7 +32,7 @@ const makeReviewRequestReactions: Effect.Effect<
               Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
               Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
             ],
-            { concurrency: 'inherit' },
+            { concurrency: 'unbounded' },
           ),
         ),
         Match.tag('ReviewRequestByAPrereviewerWasImported', 'ReviewRequestFromAPreprintServerWasImported', event =>

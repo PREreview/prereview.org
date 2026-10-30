@@ -122,7 +122,7 @@ export const embeddingsLayer = Layer.effect(
     const tokenizer = new Tokenizer(tokenizerJson, tokenizerConfig)
 
     yield* Effect.all([ensureRequestEmbeddingsTable(sql), ensureMatchmakingInputWorksTable(sql)], {
-      concurrency: 'inherit',
+      concurrency: 'unbounded',
     })
 
     return {

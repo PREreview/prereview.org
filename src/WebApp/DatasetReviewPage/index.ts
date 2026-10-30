@@ -19,12 +19,12 @@ export const DatasetReviewPage = Effect.fn(
       {
         author: Prereviewers.getPersona(datasetReview.author),
         otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
-          concurrency: 'inherit',
+          concurrency: 'unbounded',
         }),
         dataset: Datasets.getDataset(datasetReview.dataset),
         club: Effect.transposeOption(Option.map(datasetReview.clubId, clubs.getClubName)),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     return createDatasetReviewPage({

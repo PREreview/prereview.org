@@ -40,7 +40,7 @@ export const GetPageOfBlogPostsForTag: (
     return {
       currentPage: page,
       totalPages: Math.ceil(total / 5),
-      blogPosts: yield* Effect.forEach(items, EntryToContentfulBlogPostTitle, { concurrency: 'inherit' }),
+      blogPosts: yield* Effect.forEach(items, EntryToContentfulBlogPostTitle, { concurrency: 'unbounded' }),
     }
   },
   Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>

@@ -94,7 +94,7 @@ export const layer = Layer.effect(
               ),
             ),
           ),
-          Effect.andThen(Effect.allWith({ concurrency: 'inherit' })),
+          Effect.andThen(Effect.allWith({ concurrency: 'unbounded' })),
           Effect.catchTag('UnableToGetPersona', error => new Queries.UnableToQuery({ cause: error })),
           Effect.withSpan('PreprintReviews.getRapidPrereviewsForAPreprint', { attributes: { id } }),
         ),

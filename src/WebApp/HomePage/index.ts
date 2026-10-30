@@ -20,7 +20,7 @@ export const HomePage: Effect.Effect<
       recentReviewRequests: ReviewRequests.getFiveMostRecent,
       publicUrl: PublicUrl,
     }),
-    { concurrency: 'inherit' },
+    { concurrency: 'unbounded' },
   ),
   Effect.let('statistics', () => ({ prereviews: 2400, servers: ServerNames.length, users: 5001 })),
   Effect.map(createPage),

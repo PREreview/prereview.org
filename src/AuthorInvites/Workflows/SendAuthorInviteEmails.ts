@@ -27,7 +27,7 @@ export const SendAuthorInviteEmails = Effect.fn(
         dataset: datasets.getDataset(review.dataset),
         invitations: datasetReviewQueries.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId: review.id }),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     yield* Effect.forEach(
@@ -49,7 +49,7 @@ export const SendAuthorInviteEmails = Effect.fn(
           sentAt: yield* Temporal.currentInstant,
         })
       }, Effect.uninterruptible),
-      { concurrency: 'inherit', discard: true },
+      { concurrency: 'unbounded', discard: true },
     )
   },
   Effect.tapError(error =>

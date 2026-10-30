@@ -16,7 +16,7 @@ export const NotifyCommunitySlack = Effect.fn(
         author: Prereviewers.getPersona(datasetReview.author),
         url: PublicUrl.forRoute(Routes.DatasetReview, { datasetReviewId: datasetReview.id }),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     yield* CommunitySlack.shareDatasetReview({

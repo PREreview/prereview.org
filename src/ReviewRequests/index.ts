@@ -100,7 +100,7 @@ export const layer = pipe(
                   }
                 }),
               ),
-              effects => Effect.allSuccesses(effects, { concurrency: 'inherit' }),
+              effects => Effect.allSuccesses(effects, { concurrency: 'unbounded' }),
             ),
           ),
           Effect.orElseSucceed(Array.empty),
@@ -119,7 +119,7 @@ export const layer = pipe(
                   subfields: reviewRequest.subfields,
                 }
               }),
-              { concurrency: 'inherit' },
+              { concurrency: 'unbounded' },
             ),
           ),
           Effect.catchTags({
@@ -146,7 +146,7 @@ export const layer = pipe(
                   }
                 }),
               ),
-              effects => Effect.allSuccesses(effects, { concurrency: 'inherit' }),
+              effects => Effect.allSuccesses(effects, { concurrency: 'unbounded' }),
               Effect.andThen(
                 Array.match({
                   onNonEmpty: reviewRequests => Effect.succeed({ ...pageOfReviewRequests, reviewRequests }),

@@ -15,7 +15,7 @@ export const CategorizeReviewRequest = Effect.fn(
         preprint: Preprints.getPreprintTitle(reviewRequest.preprintId),
         categories: OpenAlexWorks.getCategoriesForAReviewRequest(reviewRequest.preprintId),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     yield* Commands.categorizeReviewRequest({

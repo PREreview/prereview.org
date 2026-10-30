@@ -135,7 +135,7 @@ export const publishPrereview = (newPrereview: NewPrereview) =>
             NotifyPreprintServerOfReview.execute({ reviewId }, { discard: true }),
             NotifyReviewRequestersOfReview.execute({ reviewId }, { discard: true }),
           ],
-          { concurrency: 'inherit' },
+          { concurrency: 'unbounded' },
         ),
       ),
     ),

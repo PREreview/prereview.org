@@ -60,7 +60,10 @@ const dispatchNewEvents = Effect.gen(function* () {
 
   yield* Ref.set(lastKnownPosition, Option.some(newLastKnownPosition))
 
-  yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), { discard: true, concurrency: 'inherit' })
+  yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), {
+    discard: true,
+    concurrency: 'unbounded',
+  })
 })
 
 export const worker = Layer.scopedDiscard(

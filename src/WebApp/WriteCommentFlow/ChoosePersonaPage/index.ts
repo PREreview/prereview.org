@@ -43,7 +43,7 @@ export const ChoosePersonaPage = ({
               publicPersona: Prereviewers.getPublicPersona(user.orcid),
               pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
             },
-            { concurrency: 'inherit' },
+            { concurrency: 'unbounded' },
           ),
           ({ publicPersona, pseudonymPersona }) =>
             MakeResponse({
@@ -62,7 +62,7 @@ export const ChoosePersonaPage = ({
               publicPersona: Prereviewers.getPublicPersona(user.orcid),
               pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
             },
-            { concurrency: 'inherit' },
+            { concurrency: 'unbounded' },
           ),
           ({ publicPersona, pseudonymPersona }) =>
             MakeResponse({
@@ -152,7 +152,7 @@ export const ChoosePersonaSubmission = ({
                     publicPersona: Prereviewers.getPublicPersona(user.orcid),
                     pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
                   },
-                  { concurrency: 'inherit' },
+                  { concurrency: 'unbounded' },
                 ),
                 ({ publicPersona, pseudonymPersona }) =>
                   MakeResponse({

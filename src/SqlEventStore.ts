@@ -111,7 +111,7 @@ export const make: Effect.Effect<
           position ASC
       `,
       Effect.andThen(
-        Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'inherit' })),
+        Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'unbounded' })),
       ),
       Effect.filterOrElse(
         Array.every(
@@ -142,7 +142,7 @@ export const make: Effect.Effect<
         position ASC
     `,
     Effect.andThen(
-      Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'inherit' })),
+      Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'unbounded' })),
     ),
     Effect.andThen(
       Array.match({
@@ -181,7 +181,9 @@ export const make: Effect.Effect<
             position ASC
         `,
         Effect.andThen(
-          Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'inherit' })),
+          Schema.decodeUnknown(
+            Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'unbounded' }),
+          ),
         ),
       )
 

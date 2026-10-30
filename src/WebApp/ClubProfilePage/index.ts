@@ -20,12 +20,12 @@ export const ClubProfilePage = Effect.fn(
       {
         club: pipe(
           Array.map(clubDetails.leads, prereviewers.getPublicPersona),
-          Effect.allWith({ concurrency: 'inherit' }),
+          Effect.allWith({ concurrency: 'unbounded' }),
           Effect.map(leads => ({ ...clubDetails, leads })),
         ),
         prereviews: Prereviews.getForClub(clubDetails.id),
       },
-      { concurrency: 'inherit' },
+      { concurrency: 'unbounded' },
     )
 
     return createPage({ club, prereviews, locale })

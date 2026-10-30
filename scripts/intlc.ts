@@ -255,14 +255,14 @@ const BuildAssetsLocales = Effect.gen(function* () {
 
   yield* Effect.all(
     [
-      Effect.all(Array.map(foo, BuildAssetsTarget), { concurrency: 'inherit', mode: 'validate' }),
+      Effect.all(Array.map(foo, BuildAssetsTarget), { concurrency: 'unbounded', mode: 'validate' }),
       Effect.all(
         Array.map(assetsModules, module => BuildAssetsModule({ module, target: `${tempDir}/${module}/index.ts` })),
-        { concurrency: 'inherit', mode: 'validate' },
+        { concurrency: 'unbounded', mode: 'validate' },
       ),
       BuildAssets(`${tempDir}/index.ts`),
     ],
-    { concurrency: 'inherit', mode: 'validate' },
+    { concurrency: 'unbounded', mode: 'validate' },
   )
 
   yield* fileSystem.makeDirectory(targetDir, { recursive: true })
@@ -299,14 +299,14 @@ const BuildSrcLocales = Effect.gen(function* () {
 
   yield* Effect.all(
     [
-      Effect.all(Array.map(foo, BuildSrcTarget), { concurrency: 'inherit', mode: 'validate' }),
+      Effect.all(Array.map(foo, BuildSrcTarget), { concurrency: 'unbounded', mode: 'validate' }),
       Effect.all(
         Array.map(modules, module => BuildSrcModule({ module, target: `${tempDir}/${module}/index.ts` })),
-        { concurrency: 'inherit', mode: 'validate' },
+        { concurrency: 'unbounded', mode: 'validate' },
       ),
       BuildSrc(`${tempDir}/index.ts`),
     ],
-    { concurrency: 'inherit', mode: 'validate' },
+    { concurrency: 'unbounded', mode: 'validate' },
   )
 
   yield* fileSystem.makeDirectory(targetDir, { recursive: true })
@@ -326,7 +326,7 @@ const BuildSrcLocales = Effect.gen(function* () {
   yield* fileSystem.copy(tempDir, targetDir)
 }).pipe(Effect.scoped)
 
-const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency: 'inherit', mode: 'validate' }).pipe(
+const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency: 'unbounded', mode: 'validate' }).pipe(
   Effect.andThen(Console.log('Done')),
   Effect.tapError(() => Console.error('Failed')),
 )

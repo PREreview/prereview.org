@@ -17,7 +17,7 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
         Effect.filter(
           requester =>
             PreprintReviews.hasAPrereviewerBeenNotifiedOfAReview({ prereviewId: prereview.id, orcidId: requester }),
-          { concurrency: 'inherit', negate: true },
+          { concurrency: 'unbounded', negate: true },
         ),
       ),
     )
@@ -45,7 +45,7 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
           sentAt: yield* Temporal.currentInstant,
         })
       }, Effect.uninterruptible),
-      { concurrency: 'inherit', discard: true },
+      { concurrency: 'unbounded', discard: true },
     )
   },
   Effect.catchAll(error => new Errors.FailedToNotifyReviewRequesters({ cause: error })),
