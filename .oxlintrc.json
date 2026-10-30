@@ -54,7 +54,7 @@
     "wc/no-typos": "error",
     "wc/require-listener-teardown": "error",
     "import/no-cycle": "error",
-    "import/extensions": ["error", "ignorePackages"],
+    "import/extensions": ["error", "ignorePackages", { "js": "never" }],
     "module-boundaries/use-index": ["error", { "allow": ["src/types"] }],
     "no-restricted-imports": [
       "error",
