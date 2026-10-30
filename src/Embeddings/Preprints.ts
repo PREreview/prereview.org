@@ -1,6 +1,6 @@
 // oxlint-disable no-comments/disallowComments
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
-import { PgVector, UnableToAddPreprints, UnableToQuery, type Embedding, type Paper } from './Shared.ts'
+import { PgVector, UnableToAddPreprints, UnableToQuery, type Embedding } from './Shared.ts'
 import type { SqlClient, SqlError } from '@effect/sql'
 import type { HttpClient } from '@effect/platform'
 import { generateEmbeddings } from './OpenRouter.ts'
@@ -9,6 +9,13 @@ import { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
+
+export interface Preprint {
+  doi: Doi
+  title: string
+  abstract: string
+  authors: ReadonlyArray<OrcidId>
+}
 
 // `sql.in` binds one query parameter per DOI, and the SQL compiler spreads them onto an array
 // via `Function.apply`, which throws a RangeError once there are tens of thousands of them.
@@ -134,7 +141,7 @@ export const createMissingEmbeddings =
     tokenizer: Tokenizer,
     languageDetection: typeof LanguageDetection.Service,
   ) =>
-  (inputPapers: ReadonlyArray<Paper>) =>
+  (inputPapers: ReadonlyArray<Preprint>) =>
     Effect.gen(function* () {
       const existing = yield* findExistingDois(
         inputPapers.map(paper => paper.doi),
@@ -143,7 +150,7 @@ export const createMissingEmbeddings =
 
       const papersWithoutEmbeddings = inputPapers.filter(paper => !existing.has(paper.doi.toLowerCase() as never))
 
-      const generated: ReadonlyArray<Paper & { embedding: Embedding }> =
+      const generated: ReadonlyArray<Preprint & { embedding: Embedding }> =
         papersWithoutEmbeddings.length > 0
           ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer).pipe(
               Effect.catchTag('UnableToGetSurveyPapers', ({ cause }) => new UnableToAddPreprints({ cause })),

@@ -1,7 +1,5 @@
 import { Data, Schema, Tuple } from 'effect'
 import { Float32ArraySchema } from './Float32Array.ts'
-import type { Doi } from '../types/Doi.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
 
 export class UnableToGetSurveyPapers extends Data.TaggedError('UnableToGetSurveyPapers')<{
   cause?: unknown
@@ -18,13 +16,6 @@ export class UnableToDetectLanguage extends Data.TaggedError('UnableToDetectLang
 export class UnableToQuery extends Schema.TaggedError<UnableToQuery>()('UnableToQuery', {
   cause: Schema.optional(Schema.Defect),
 }) {}
-
-export interface Paper {
-  doi: Doi
-  title: string
-  abstract: string
-  authors: ReadonlyArray<OrcidId>
-}
 
 export const PgVector = Schema.transform(
   Schema.TemplateLiteralParser('[', Schema.compose(Schema.split(','), Schema.Array(Schema.NumberFromString)), ']'),

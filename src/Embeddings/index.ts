@@ -1,8 +1,18 @@
 import { HttpClient } from '@effect/platform'
 import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
-import { UnableToGetSurveyPapers, type UnableToAddPreprints, type Paper } from './Shared.ts'
-import { ensureMatchmakingInputWorksTable, getEmbeddingsGeneratingAsNeeded } from './ResearchAreaWorks.ts'
-import { createMissingEmbeddings, ensureRequestEmbeddingsTable, findExistingDois, getRelatedDois } from './Preprints.ts'
+import { UnableToGetSurveyPapers, type UnableToAddPreprints } from './Shared.ts'
+import {
+  ensureMatchmakingInputWorksTable,
+  getEmbeddingsGeneratingAsNeeded,
+  type ResearchAreaWork,
+} from './ResearchAreaWorks.ts'
+import {
+  createMissingEmbeddings,
+  ensureRequestEmbeddingsTable,
+  findExistingDois,
+  getRelatedDois,
+  type Preprint,
+} from './Preprints.ts'
 import { PgClient } from '@effect/sql-pg'
 import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
@@ -24,14 +34,14 @@ export class Embeddings extends Context.Tag('Embeddings')<
   Embeddings,
   {
     getMatches: (
-      input: Array.NonEmptyReadonlyArray<Paper>,
+      input: Array.NonEmptyReadonlyArray<ResearchAreaWork>,
       inputOrcidId: OrcidId,
       languages: Array.NonEmptyReadonlyArray<LanguageCode>,
     ) => Effect.Effect<
       { picks: Array.NonEmptyReadonlyArray<SurveyPick>; candidateCount: number },
       UnableToGetSurveyPapers
     >
-    addPreprints: (input: ReadonlyArray<Paper>) => Effect.Effect<void, UnableToAddPreprints>
+    addPreprints: (input: ReadonlyArray<Preprint>) => Effect.Effect<void, UnableToAddPreprints>
     existingDois: (input: ReadonlyArray<Doi>) => Effect.Effect<Set<Doi>, UnableToAddPreprints>
   }
 >() {}

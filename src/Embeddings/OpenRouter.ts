@@ -1,8 +1,17 @@
 import { HttpClientRequest, HttpClientResponse, type HttpClient } from '@effect/platform'
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
-import { UnableToGetSurveyPapers, type Embedding, type Paper } from './Shared.ts'
+import { UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
 import { Float32ArraySchema } from './Float32Array.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
+import type { Doi } from '../types/Doi.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+
+interface Paper {
+  doi: Doi
+  title: string
+  abstract: string
+  authors: ReadonlyArray<OrcidId>
+}
 
 const EmbeddingResponse = Schema.Struct({
   data: Schema.Array(

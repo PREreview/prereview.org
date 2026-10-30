@@ -2,9 +2,17 @@ import type { HttpClient } from '@effect/platform'
 import type { SqlClient, SqlError } from '@effect/sql'
 import { Effect, Option, pipe, type Redacted, Schema } from 'effect'
 import { generateEmbeddings } from './OpenRouter.ts'
-import { PgVector, UnableToGetSurveyPapers, type Embedding, type Paper } from './Shared.ts'
+import { PgVector, UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
 import type { Doi } from '../types/Doi.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
+
+export interface ResearchAreaWork {
+  doi: Doi
+  title: string
+  abstract: string
+  authors: ReadonlyArray<OrcidId>
+}
 
 const EmbeddingRow = Schema.Struct({
   doi: Schema.String,
@@ -58,7 +66,7 @@ export const ensureMatchmakingInputWorksTable = (
 
 export const getEmbeddingsGeneratingAsNeeded =
   (apiKey: Redacted.Redacted, httpClient: HttpClient.HttpClient, sql: SqlClient.SqlClient, tokenizer: Tokenizer) =>
-  (inputPapers: ReadonlyArray<Paper>) =>
+  (inputPapers: ReadonlyArray<ResearchAreaWork>) =>
     Effect.gen(function* () {
       const papersWithExistingEmbeddings = yield* pipe(
         inputPapers,
@@ -71,7 +79,7 @@ export const getEmbeddingsGeneratingAsNeeded =
         Option.isNone(embedding) ? [paper] : [],
       )
 
-      const generated: ReadonlyArray<Paper & { embedding: Embedding }> =
+      const generated: ReadonlyArray<ResearchAreaWork & { embedding: Embedding }> =
         papersWithoutEmbeddings.length > 0
           ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer)
           : []
