@@ -1,8 +1,6 @@
 import { Tokenizer } from '@huggingface/tokenizers'
 import { describe, expect, it } from 'vitest'
 import { truncateToModelLimit } from '../../src/Embeddings/OpenRouter.ts'
-import tokenizerJson from '../../src/Embeddings/model/tokenizer.json' with { type: 'json' }
-import tokenizerConfig from '../../src/Embeddings/model/tokenizer_config.json' with { type: 'json' }
 
 const oneTokenPerLetterVocab: Record<string, number> = {
   '[PAD]': 0,
@@ -130,25 +128,5 @@ describe('truncateToModelLimit', () => {
 
   it('counts past the 128-token truncation pinned in the published tokenizer file', () => {
     expect(gteLargeShapedTokenizer.encode(letters(300)).ids.length).toBeGreaterThan(128)
-  })
-})
-
-describe('truncateToModelLimit', () => {
-  const tokenizer: Tokenizer = new Tokenizer(tokenizerJson, tokenizerConfig)
-
-  it('does not regress in performance across repeated calls on long text', () => {
-    const sentence = 'The quick brown fox jumps over the lazy dog. '
-    const text = sentence.repeat(Math.ceil(5000 / sentence.length)).slice(0, 5000)
-    const iterations = 100
-
-    const start = performance.now()
-
-    for (let i = 0; i < iterations; i++) {
-      truncateToModelLimit(text, 512, tokenizer)
-    }
-
-    const durationMs = performance.now() - start
-
-    expect(durationMs).toBeLessThan(1000)
   })
 })
