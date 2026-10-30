@@ -1,7 +1,7 @@
 import { HttpClientRequest } from '@effect/platform'
 import { Effect, pipe } from 'effect'
 import { SlackApi } from '../SlackApi.ts'
-import type { UserId } from '../Types.js'
+import type { UserId } from '../Types.ts'
 
 export const CreateRequest = Effect.fn(function* (userId: UserId) {
   const api = yield* SlackApi
