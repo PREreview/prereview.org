@@ -23,13 +23,16 @@ pipe(
   Cli(process.argv),
   Effect.provide(
     pipe(
-      Layer.mergeAll(
-        DatasetReviews.commandsLayer,
-        OpenAlexWorks.layer,
-        PreprintData.layer,
-        Prereviewers.layer,
-        ReviewRequest.queriesLayer,
-        ReviewRequest.commandsLayer,
+      Layer.effectDiscard(EventDispatcher.replayExistingEvents),
+      Layer.provideMerge(
+        Layer.mergeAll(
+          DatasetReviews.commandsLayer,
+          OpenAlexWorks.layer,
+          PreprintData.layer,
+          Prereviewers.layer,
+          ReviewRequest.queriesLayer,
+          ReviewRequest.commandsLayer,
+        ),
       ),
       Layer.provide(ContactEmailAddresses.layer),
       Layer.provideMerge(Clubs.layer),
