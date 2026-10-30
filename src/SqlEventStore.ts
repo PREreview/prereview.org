@@ -84,7 +84,9 @@ export const make: Effect.Effect<
         return sql.and([
           sql.in('type', filter.types),
           ...sql.onDialectOrElse({
-            pg: () => [sql`payload @> ${encodedPredicates}`],
+            pg: () => [
+              sql`payload @> ${isPgClient(sql) ? sql.json(encodedPredicates) : JSON.stringify(encodedPredicates)}`,
+            ],
             orElse: () =>
               Record.reduce(encodedPredicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
                 typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
