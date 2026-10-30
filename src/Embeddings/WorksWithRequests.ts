@@ -92,16 +92,20 @@ export const storeEmbeddings = (
     `
   }).pipe(Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })))
 
-export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> => sql`
-  CREATE TABLE IF NOT EXISTS request_embeddings (
-    preprint_id VARCHAR PRIMARY KEY,
-    language CHAR(2) NOT NULL,
-    authors CHAR(19) [] NOT NULL,
-    embedding HALFVEC (1024)
-  );
-
-  CREATE INDEX IF NOT EXISTS request_embeddings_idx ON request_embeddings USING hnsw (embedding halfvec_cosine_ops)
-`
+export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> =>
+  Effect.all([
+    sql`
+      CREATE TABLE IF NOT EXISTS request_embeddings (
+        preprint_id VARCHAR PRIMARY KEY,
+        language CHAR(2) NOT NULL,
+        authors CHAR(19) [] NOT NULL,
+        embedding HALFVEC (1024)
+      )
+    `,
+    sql`
+      CREATE INDEX IF NOT EXISTS request_embeddings_idx ON request_embeddings USING hnsw (embedding halfvec_cosine_ops)
+    `,
+  ])
 
 export const getMatches =
   (

@@ -57,13 +57,12 @@ export const make: Effect.Effect<
   })
 
   yield* sql.onDialectOrElse({
-    pg: () => sql`
-      CREATE INDEX IF NOT EXISTS idx_events_type ON events (type);
-
-      CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp);
-
-      CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
-    `,
+    pg: () =>
+      Effect.all([
+        sql`CREATE INDEX IF NOT EXISTS idx_events_type ON events (type)`,
+        sql`CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp)`,
+        sql`CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload)`,
+      ]),
     orElse: () => Effect.void,
   })
 
