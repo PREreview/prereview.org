@@ -54,25 +54,78 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   }
 >() {}
 
-export const {
-  doesAPreprintHaveAReviewRequest,
-  findReviewRequestByAPrereviewer,
-  getNextExpectedCommandForAUserOnAReviewRequest,
-  getPersonaChoice,
-  getReviewRequestReadyToBePublished,
-  getPublishedReviewRequestByAPrereviewer,
-  getFiveMostRecentReviewRequests,
-  getReceivedReviewRequest,
-  getPublishedReviewRequest,
-  searchForPublishedReviewRequests,
-  findReviewRequestsNeedingCategorization,
-  getReviewRequestToAcknowledge,
-  listAllPublishedReviewRequestsByAPrereviewer,
-  listAllPublishedReviewRequestsForStats,
-  listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
-  doesAReviewRequestNeedAContactAddressToBeVerified,
-  doesAReviewRequestNeedADecisionOnReviewNotifications,
-} = Effect.serviceFunctions(ReviewRequestQueries)
+export const doesAPreprintHaveAReviewRequest = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['doesAPreprintHaveAReviewRequest']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.doesAPreprintHaveAReviewRequest(...args))
+
+export const findReviewRequestByAPrereviewer = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['findReviewRequestByAPrereviewer']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.findReviewRequestByAPrereviewer(...args))
+
+export const getNextExpectedCommandForAUserOnAReviewRequest = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getNextExpectedCommandForAUserOnAReviewRequest(...args))
+
+export const getPersonaChoice = (...args: Parameters<(typeof ReviewRequestQueries.Service)['getPersonaChoice']>) =>
+  Effect.flatMap(ReviewRequestQueries, service => service.getPersonaChoice(...args))
+
+export const getReviewRequestReadyToBePublished = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getReviewRequestReadyToBePublished(...args))
+
+export const getPublishedReviewRequestByAPrereviewer = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getPublishedReviewRequestByAPrereviewer']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getPublishedReviewRequestByAPrereviewer(...args))
+
+export const getFiveMostRecentReviewRequests = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getFiveMostRecentReviewRequests']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getFiveMostRecentReviewRequests(...args))
+
+export const getReceivedReviewRequest = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getReceivedReviewRequest']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getReceivedReviewRequest(...args))
+
+export const getPublishedReviewRequest = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getPublishedReviewRequest']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getPublishedReviewRequest(...args))
+
+export const searchForPublishedReviewRequests = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['searchForPublishedReviewRequests']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.searchForPublishedReviewRequests(...args))
+
+export const findReviewRequestsNeedingCategorization = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['findReviewRequestsNeedingCategorization']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.findReviewRequestsNeedingCategorization(...args))
+
+export const getReviewRequestToAcknowledge = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['getReviewRequestToAcknowledge']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.getReviewRequestToAcknowledge(...args))
+
+export const listAllPublishedReviewRequestsByAPrereviewer = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['listAllPublishedReviewRequestsByAPrereviewer']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.listAllPublishedReviewRequestsByAPrereviewer(...args))
+
+export const listAllPublishedReviewRequestsForStats = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['listAllPublishedReviewRequestsForStats']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.listAllPublishedReviewRequestsForStats(...args))
+
+export const listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications = (
+  ...args: Parameters<
+    (typeof ReviewRequestQueries.Service)['listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications']
+  >
+) =>
+  Effect.flatMap(ReviewRequestQueries, service =>
+    service.listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications(...args),
+  )
+
+export const doesAReviewRequestNeedAContactAddressToBeVerified = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['doesAReviewRequestNeedAContactAddressToBeVerified']>
+) => Effect.flatMap(ReviewRequestQueries, service => service.doesAReviewRequestNeedAContactAddressToBeVerified(...args))
+
+export const doesAReviewRequestNeedADecisionOnReviewNotifications = (
+  ...args: Parameters<(typeof ReviewRequestQueries.Service)['doesAReviewRequestNeedADecisionOnReviewNotifications']>
+) =>
+  Effect.flatMap(ReviewRequestQueries, service => service.doesAReviewRequestNeedADecisionOnReviewNotifications(...args))
 
 export type { ContactAddress } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'

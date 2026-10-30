@@ -46,7 +46,14 @@ export interface EventStore {
 
 export const { all } = Effect.serviceConstants(EventStore)
 
-export const { since, append, appendIf } = Effect.serviceFunctions(EventStore)
+export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
+  Effect.flatMap(EventStore, service => service.since(...args))
+
+export const append = (...args: Parameters<(typeof EventStore.Service)['append']>) =>
+  Effect.flatMap(EventStore, service => service.append(...args))
+
+export const appendIf = (...args: Parameters<(typeof EventStore.Service)['appendIf']>) =>
+  Effect.flatMap(EventStore, service => service.appendIf(...args))
 
 export const query = Effect.fn(function* <Filter extends EventFilter>(filter: Filter) {
   const eventStore = yield* EventStore

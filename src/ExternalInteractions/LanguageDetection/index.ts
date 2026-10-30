@@ -23,7 +23,11 @@ export class LanguageDetection extends Context.Tag('LanguageDetection')<
   }
 >() {}
 
-export const { detectLanguage, detectLanguageFrom } = Effect.serviceFunctions(LanguageDetection)
+export const detectLanguage = (...args: Parameters<(typeof LanguageDetection.Service)['detectLanguage']>) =>
+  Effect.flatMap(LanguageDetection, service => service.detectLanguage(...args))
+
+export const detectLanguageFrom = (...args: Parameters<(typeof LanguageDetection.Service)['detectLanguageFrom']>) =>
+  Effect.flatMap(LanguageDetection, service => service.detectLanguageFrom(...args))
 
 export const layerDetectLanguage = Layer.effect(
   LanguageDetection,

@@ -57,14 +57,28 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
   }
 >() {}
 
-export const {
-  getRapidPrereviewsForAPreprint,
-  recordEmailSentToNotifyPrereviewerOfAPrereview,
-  hasAPrereviewerBeenNotifiedOfAReview,
-  checkIfUserCanAddToAClub,
-  getNextExpectedCommand,
-  getUseOfAiDetails,
-} = Effect.serviceFunctions(PreprintReviews)
+export const getRapidPrereviewsForAPreprint = (
+  ...args: Parameters<(typeof PreprintReviews.Service)['getRapidPrereviewsForAPreprint']>
+) => Effect.flatMap(PreprintReviews, service => service.getRapidPrereviewsForAPreprint(...args))
+
+export const recordEmailSentToNotifyPrereviewerOfAPrereview = (
+  ...args: Parameters<(typeof PreprintReviews.Service)['recordEmailSentToNotifyPrereviewerOfAPrereview']>
+) => Effect.flatMap(PreprintReviews, service => service.recordEmailSentToNotifyPrereviewerOfAPrereview(...args))
+
+export const hasAPrereviewerBeenNotifiedOfAReview = (
+  ...args: Parameters<(typeof PreprintReviews.Service)['hasAPrereviewerBeenNotifiedOfAReview']>
+) => Effect.flatMap(PreprintReviews, service => service.hasAPrereviewerBeenNotifiedOfAReview(...args))
+
+export const checkIfUserCanAddToAClub = (
+  ...args: Parameters<(typeof PreprintReviews.Service)['checkIfUserCanAddToAClub']>
+) => Effect.flatMap(PreprintReviews, service => service.checkIfUserCanAddToAClub(...args))
+
+export const getNextExpectedCommand = (
+  ...args: Parameters<(typeof PreprintReviews.Service)['getNextExpectedCommand']>
+) => Effect.flatMap(PreprintReviews, service => service.getNextExpectedCommand(...args))
+
+export const getUseOfAiDetails = (...args: Parameters<(typeof PreprintReviews.Service)['getUseOfAiDetails']>) =>
+  Effect.flatMap(PreprintReviews, service => service.getUseOfAiDetails(...args))
 
 export const layer = Layer.effect(
   PreprintReviews,

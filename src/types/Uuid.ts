@@ -31,7 +31,11 @@ export interface GenerateUuidEnv {
   generateUuid: IO<Uuid>
 }
 
-export const { v4, v5 } = Effect.serviceFunctions(GenerateUuid)
+export const v4 = (...args: Parameters<(typeof GenerateUuid.Service)['v4']>) =>
+  Effect.flatMap(GenerateUuid, service => service.v4(...args))
+
+export const v5 = (...args: Parameters<(typeof GenerateUuid.Service)['v5']>) =>
+  Effect.flatMap(GenerateUuid, service => service.v5(...args))
 
 export const generateUuidIO = pipe(
   RIO.ask<GenerateUuidEnv>(),

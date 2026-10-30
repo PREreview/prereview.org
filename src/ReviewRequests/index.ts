@@ -73,7 +73,11 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 
-export const { search, listForPrereviewer } = Effect.serviceFunctions(ReviewRequests)
+export const search = (...args: Parameters<(typeof ReviewRequests.Service)['search']>) =>
+  Effect.flatMap(ReviewRequests, service => service.search(...args))
+
+export const listForPrereviewer = (...args: Parameters<(typeof ReviewRequests.Service)['listForPrereviewer']>) =>
+  Effect.flatMap(ReviewRequests, service => service.listForPrereviewer(...args))
 
 export const layer = pipe(
   Layer.effect(

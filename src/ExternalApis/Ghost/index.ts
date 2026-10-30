@@ -19,7 +19,8 @@ export class Ghost extends Context.Tag('Ghost')<
   }
 >() {}
 
-export const { getPage } = Effect.serviceFunctions(Ghost)
+export const getPage = (...args: Parameters<(typeof Ghost.Service)['getPage']>) =>
+  Effect.flatMap(Ghost, service => service.getPage(...args))
 
 const make: Effect.Effect<typeof Ghost.Service, never, GhostApi | HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<GhostApi | HttpClient.HttpClient>(), Context.omit(Scope.Scope))

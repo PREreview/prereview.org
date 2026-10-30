@@ -24,4 +24,14 @@ export class Preprints extends Context.Tag('Preprints')<
   }
 >() {}
 
-export const { getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId } = Effect.serviceFunctions(Preprints)
+export const getPreprint = (...args: Parameters<(typeof Preprints.Service)['getPreprint']>) =>
+  Effect.flatMap(Preprints, service => service.getPreprint(...args))
+
+export const getPreprintId = (...args: Parameters<(typeof Preprints.Service)['getPreprintId']>) =>
+  Effect.flatMap(Preprints, service => service.getPreprintId(...args))
+
+export const getPreprintTitle = (...args: Parameters<(typeof Preprints.Service)['getPreprintTitle']>) =>
+  Effect.flatMap(Preprints, service => service.getPreprintTitle(...args))
+
+export const resolvePreprintId = (...args: Parameters<(typeof Preprints.Service)['resolvePreprintId']>) =>
+  Effect.flatMap(Preprints, service => service.resolvePreprintId(...args))

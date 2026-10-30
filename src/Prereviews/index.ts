@@ -63,8 +63,23 @@ export class WasPrereviewRemoved extends Context.Tag('WasPrereviewRemoved')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(Prereviews)
 
-export const { getForClub, getForPreprint, getForProfile, getForUser, getPrereview, search } =
-  Effect.serviceFunctions(Prereviews)
+export const getForClub = (...args: Parameters<(typeof Prereviews.Service)['getForClub']>) =>
+  Effect.flatMap(Prereviews, service => service.getForClub(...args))
+
+export const getForPreprint = (...args: Parameters<(typeof Prereviews.Service)['getForPreprint']>) =>
+  Effect.flatMap(Prereviews, service => service.getForPreprint(...args))
+
+export const getForProfile = (...args: Parameters<(typeof Prereviews.Service)['getForProfile']>) =>
+  Effect.flatMap(Prereviews, service => service.getForProfile(...args))
+
+export const getForUser = (...args: Parameters<(typeof Prereviews.Service)['getForUser']>) =>
+  Effect.flatMap(Prereviews, service => service.getForUser(...args))
+
+export const getPrereview = (...args: Parameters<(typeof Prereviews.Service)['getPrereview']>) =>
+  Effect.flatMap(Prereviews, service => service.getPrereview(...args))
+
+export const search = (...args: Parameters<(typeof Prereviews.Service)['search']>) =>
+  Effect.flatMap(Prereviews, service => service.search(...args))
 
 export const layer = Layer.effect(
   Prereviews,

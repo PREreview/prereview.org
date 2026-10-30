@@ -16,7 +16,8 @@ export class JapanLinkCenter extends Context.Tag('JapanLinkCenter')<
   }
 >() {}
 
-export const { getRecord } = Effect.serviceFunctions(JapanLinkCenter)
+export const getRecord = (...args: Parameters<(typeof JapanLinkCenter.Service)['getRecord']>) =>
+  Effect.flatMap(JapanLinkCenter, service => service.getRecord(...args))
 
 const make: Effect.Effect<typeof JapanLinkCenter.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))

@@ -18,7 +18,8 @@ export class OpenAlex extends Context.Tag('OpenAlex')<
   }
 >() {}
 
-export const { getWork } = Effect.serviceFunctions(OpenAlex)
+export const getWork = (...args: Parameters<(typeof OpenAlex.Service)['getWork']>) =>
+  Effect.flatMap(OpenAlex, service => service.getWork(...args))
 
 const make: Effect.Effect<typeof OpenAlex.Service, never, HttpClient.HttpClient | OpenAlexApi> = Effect.gen(
   function* () {

@@ -16,7 +16,8 @@ export class Crossref extends Context.Tag('Crossref')<
   }
 >() {}
 
-export const { getWork } = Effect.serviceFunctions(Crossref)
+export const getWork = (...args: Parameters<(typeof Crossref.Service)['getWork']>) =>
+  Effect.flatMap(Crossref, service => service.getWork(...args))
 
 const make: Effect.Effect<typeof Crossref.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))

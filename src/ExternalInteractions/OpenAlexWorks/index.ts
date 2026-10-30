@@ -23,7 +23,12 @@ export class OpenAlexWorks extends Context.Tag('OpenAlexWorks')<
   }
 >() {}
 
-export const { getCategories, getCategoriesForAReviewRequest } = Effect.serviceFunctions(OpenAlexWorks)
+export const getCategories = (...args: Parameters<(typeof OpenAlexWorks.Service)['getCategories']>) =>
+  Effect.flatMap(OpenAlexWorks, service => service.getCategories(...args))
+
+export const getCategoriesForAReviewRequest = (
+  ...args: Parameters<(typeof OpenAlexWorks.Service)['getCategoriesForAReviewRequest']>
+) => Effect.flatMap(OpenAlexWorks, service => service.getCategoriesForAReviewRequest(...args))
 
 const make: Effect.Effect<typeof OpenAlexWorks.Service, never, OpenAlex.OpenAlex> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<OpenAlex.OpenAlex>(), Context.omit(Scope.Scope))

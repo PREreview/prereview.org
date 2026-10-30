@@ -15,7 +15,8 @@ export class DetectLanguage extends Context.Tag('DetectLanguage')<
   }
 >() {}
 
-export const { detect } = Effect.serviceFunctions(DetectLanguage)
+export const detect = (...args: Parameters<(typeof DetectLanguage.Service)['detect']>) =>
+  Effect.flatMap(DetectLanguage, service => service.detect(...args))
 
 const make: Effect.Effect<typeof DetectLanguage.Service, never, HttpClient.HttpClient | DetectLanguageApi> = Effect.gen(
   function* () {

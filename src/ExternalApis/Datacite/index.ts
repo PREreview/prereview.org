@@ -16,7 +16,8 @@ export class Datacite extends Context.Tag('Datacite')<
   }
 >() {}
 
-export const { getRecord } = Effect.serviceFunctions(Datacite)
+export const getRecord = (...args: Parameters<(typeof Datacite.Service)['getRecord']>) =>
+  Effect.flatMap(Datacite, service => service.getRecord(...args))
 
 const make: Effect.Effect<typeof Datacite.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))

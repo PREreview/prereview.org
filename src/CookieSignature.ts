@@ -12,7 +12,8 @@ export class CookieSignature extends Context.Tag('CookieSignature')<
 
 export const sign = (value: string) => Effect.map(CookieSignature, ({ sign }) => sign(value))
 
-export const { unsign } = Effect.serviceFunctions(CookieSignature)
+export const unsign = (...args: Parameters<(typeof CookieSignature.Service)['unsign']>) =>
+  Effect.flatMap(CookieSignature, service => service.unsign(...args))
 
 export class SignatureIsInvalid extends Data.TaggedError('SignatureIsInvalid')<{ cause?: unknown }> {}
 

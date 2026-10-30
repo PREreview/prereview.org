@@ -24,4 +24,11 @@ export class Datasets extends Context.Tag('Datasets')<
   }
 >() {}
 
-export const { getDataset, getDatasetTitle, resolveDatasetId } = Effect.serviceFunctions(Datasets)
+export const getDataset = (...args: Parameters<(typeof Datasets.Service)['getDataset']>) =>
+  Effect.flatMap(Datasets, service => service.getDataset(...args))
+
+export const getDatasetTitle = (...args: Parameters<(typeof Datasets.Service)['getDatasetTitle']>) =>
+  Effect.flatMap(Datasets, service => service.getDatasetTitle(...args))
+
+export const resolveDatasetId = (...args: Parameters<(typeof Datasets.Service)['resolveDatasetId']>) =>
+  Effect.flatMap(Datasets, service => service.resolveDatasetId(...args))

@@ -16,7 +16,8 @@ export class Philsci extends Context.Tag('Philsci')<
   }
 >() {}
 
-export const { getEprint } = Effect.serviceFunctions(Philsci)
+export const getEprint = (...args: Parameters<(typeof Philsci.Service)['getEprint']>) =>
+  Effect.flatMap(Philsci, service => service.getEprint(...args))
 
 const make: Effect.Effect<typeof Philsci.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))

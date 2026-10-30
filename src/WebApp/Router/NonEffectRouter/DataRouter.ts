@@ -114,4 +114,5 @@ export const DataRouter = pipe(
   (env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, Runtime.Runtime.Context<Env['runtime']>>
 >
 
-const { getClubByName } = Effect.serviceFunctions(Clubs)
+const getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>
+  Effect.flatMap(Clubs, service => service.getClubByName(...args))

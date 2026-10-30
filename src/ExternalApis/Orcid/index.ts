@@ -17,7 +17,8 @@ export class Orcid extends Context.Tag('Orcid')<
   }
 >() {}
 
-export const { getPersonalDetails } = Effect.serviceFunctions(Orcid)
+export const getPersonalDetails = (...args: Parameters<(typeof Orcid.Service)['getPersonalDetails']>) =>
+  Effect.flatMap(Orcid, service => service.getPersonalDetails(...args))
 
 const make: Effect.Effect<typeof Orcid.Service, never, HttpClient.HttpClient | OrcidApi> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | OrcidApi>(), Context.omit(Scope.Scope))
