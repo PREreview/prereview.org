@@ -1,4 +1,4 @@
-import { Array, Data, Effect, Option, pipe, Ref, Struct, type Either } from 'effect'
+import { Array, Data, Effect, Option, pipe, Ref, Struct, type Either, identity } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
@@ -47,11 +47,11 @@ export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Err
 
 export const OnDemandQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never>(
   query: OnDemandQuery<Input, Result, Error>,
-) => OnDemandQuery<Input, Result, Error> = Data.struct
+) => OnDemandQuery<Input, Result, Error> = identity
 
 export const StatefulQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>(
   query: StatefulQuery<Input, Result, Error, State>,
-) => StatefulQuery<Input, Result, Error, State> = Data.struct
+) => StatefulQuery<Input, Result, Error, State> = identity
 
 export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never>({
   name,

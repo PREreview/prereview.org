@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Option, pipe, Scope, type Either } from 'effect'
+import { Context, Data, Effect, Option, pipe, Scope, type Either, identity } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -41,11 +41,11 @@ export interface StatelessCommand<Input extends ReadonlyArray<unknown>> {
 
 export const Command: <Input extends ReadonlyArray<unknown>, State, Error, Authorize extends boolean = false>(
   command: Command<Input, State, Error, Authorize>,
-) => Command<Input, State, Error, Authorize> = Data.struct as never
+) => Command<Input, State, Error, Authorize> = identity
 
 export const StatelessCommand: <Input extends ReadonlyArray<unknown>>(
   command: StatelessCommand<Input>,
-) => StatelessCommand<Input> = Data.struct
+) => StatelessCommand<Input> = identity
 
 export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, Authorize extends boolean = false>(
   command: Command<Input, State, Error, Authorize>,

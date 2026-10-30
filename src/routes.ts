@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { Array, Data, Match, Option, Record, Schema, String, Tuple, flow, identity, pipe } from 'effect'
+import { Array, Match, Option, Record, Schema, String, Tuple, flow, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -33,7 +33,7 @@ export interface QueryRoute<
   schema: Schema.Schema<A, I>
 }
 
-const Route: <A extends { readonly [K in keyof A]: unknown }>(route: Route<A>) => Route<A> = Data.struct
+const Route: <A extends { readonly [K in keyof A]: unknown }>(route: Route<A>) => Route<A> = identity
 
 const QueryRoute = <
   A extends { readonly [K in keyof A]: unknown },
@@ -44,19 +44,18 @@ const QueryRoute = <
 }: {
   path: `/${string}`
   schema: Schema.Schema<A, I>
-}): QueryRoute<A, I> =>
-  Data.struct({
-    path,
-    href: flow(
-      Record.filter(value => value !== undefined) as never,
-      Schema.encodeSync(UrlParams.schemaRecord(schema)),
-      Array.match({
-        onEmpty: () => path,
-        onNonEmpty: urlParams => `${path}?${UrlParams.toString(urlParams)}` satisfies `/${string}`,
-      }),
-    ),
-    schema,
-  })
+}): QueryRoute<A, I> => ({
+  path,
+  href: flow(
+    Record.filter(value => value !== undefined) as never,
+    Schema.encodeSync(UrlParams.schemaRecord(schema)),
+    Array.match({
+      onEmpty: () => path,
+      onNonEmpty: urlParams => `${path}?${UrlParams.toString(urlParams)}` satisfies `/${string}`,
+    }),
+  ),
+  schema,
+})
 
 export const HomePage = '/'
 export const Inbox = '/inbox'
