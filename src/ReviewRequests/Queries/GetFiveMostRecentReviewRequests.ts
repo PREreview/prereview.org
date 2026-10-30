@@ -28,7 +28,7 @@ const query = (reviewRequests: shared.State): Result => {
   const sortedReviewRequests = Array.reverse(
     Array.sortWith(
       Array.map(Array.fromIterable(filteredReviewRequests), ([id, properties]) => ({ ...properties, id })),
-      Struct.get('published'),
+      (reviewRequest: RecentReviewRequest) => reviewRequest.published,
       Temporal.OrderInstant,
     ),
   )

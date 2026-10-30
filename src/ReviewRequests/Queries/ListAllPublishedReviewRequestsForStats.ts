@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, Schema, Struct } from 'effect'
+import { Array, Either, flow, HashMap, Schema } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { DomainIdSchema } from '../../types/domain.ts'
@@ -26,7 +26,7 @@ const query = (state: shared.State): Result => {
 
   const sortedReviewRequests = Array.sortWith(
     Array.map(Array.fromIterable(filteredReviewRequests), ([requestId, properties]) => ({ ...properties, requestId })),
-    Struct.get('published'),
+    (reviewRequest: Omit<ReviewRequestForStats, 'requestId'>) => reviewRequest.published,
     Temporal.OrderInstant,
   )
 
