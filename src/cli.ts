@@ -18,6 +18,7 @@ import * as ReviewRequest from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
+import { embeddingsLayer } from './Embeddings/index.ts'
 
 pipe(
   Cli(process.argv),
@@ -32,6 +33,7 @@ pipe(
           Prereviewers.layer,
           ReviewRequest.queriesLayer,
           ReviewRequest.commandsLayer,
+          embeddingsLayer,
         ),
       ),
       Layer.provide(ContactEmailAddresses.layer),
