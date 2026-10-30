@@ -112,7 +112,7 @@ const DataToRequestSchema = Schema.transformOrFail(
           Effect.catchTag('NotAPreprint', 'PreprintIsNotFound', () =>
             Effect.succeed('unable to determine server' as const),
           ),
-          Effect.orElseFail(() => new ParseResult.Type(ast, data.preprintId, 'Failed to get preprint ID')),
+          Effect.mapError(() => new ParseResult.Type(ast, data.preprintId, 'Failed to get preprint ID')),
         )
 
         return {
