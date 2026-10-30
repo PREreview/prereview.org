@@ -9,22 +9,22 @@ import {
 import {
   createMissingEmbeddings,
   ensureRequestEmbeddingsTable,
-  findExistingDois,
+  findExistingWorks,
   getMatches,
   type WorkWithRequest,
 } from './WorksWithRequests.ts'
 import { PgClient } from '@effect/sql-pg'
 import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
-import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import { Tokenizer } from '@huggingface/tokenizers'
 import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
 import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
 
 interface SurveyPick {
-  doi: Doi
+  preprintId: IndeterminatePreprintId
   distance: number
   rank: number
   window: string
@@ -42,7 +42,9 @@ export class Embeddings extends Context.Tag('Embeddings')<
       UnableToGetSurveyPapers
     >
     addPreprints: (input: ReadonlyArray<WorkWithRequest>) => Effect.Effect<void, UnableToAddWorksWithRequests>
-    existingDois: (input: ReadonlyArray<Doi>) => Effect.Effect<Set<Doi>, UnableToAddWorksWithRequests>
+    existingWorks: (
+      input: ReadonlyArray<IndeterminatePreprintId>,
+    ) => Effect.Effect<Set<IndeterminatePreprintId>, UnableToAddWorksWithRequests>
   }
 >() {}
 
@@ -62,7 +64,7 @@ const DEPTH_WINDOWS: ReadonlyArray<readonly [number, number]> = [
 const windowLabel = ([start, end]: readonly [number, number]): string => `${start}-${end}`
 
 const pickFromWindow = (
-  candidates: ReadonlyArray<{ doi: Doi; distance: number }>,
+  candidates: ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number }>,
   [start, end]: readonly [number, number],
 ): Effect.Effect<Option.Option<SurveyPick>> => {
   const slice = candidates.slice(start, end)
@@ -82,7 +84,7 @@ const pickFromWindow = (
 }
 
 export const pickSurveyPapers = Effect.fnUntraced(function* (
-  candidates: ReadonlyArray<{ doi: Doi; distance: number }>,
+  candidates: ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number }>,
 ) {
   const top = candidates.slice(...TOP_WINDOW).map((pick, rank) => ({
     ...pick,
@@ -143,7 +145,7 @@ export const embeddingsLayer = Layer.effect(
         return { picks, candidateCount }
       }),
       addPreprints: createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection),
-      existingDois: dois => findExistingDois(dois, sql),
+      existingWorks: preprintIds => findExistingWorks(preprintIds, sql),
     }
   }),
 )
