@@ -25,7 +25,7 @@ describe('requestCollapsingHttpClient', () => {
 
       yield* TestClock.adjust('30 seconds')
 
-      const actual = yield* Fiber.join(Fiber.zip(response1, response2))
+      const actual = yield* Effect.all([Fiber.join(response1), Fiber.join(response2)])
 
       expect(responseCount).toBe(1)
       expect(actual).toStrictEqual(['response 1', 'response 1'])
@@ -49,13 +49,10 @@ describe('requestCollapsingHttpClient', () => {
       yield* Fiber.interruptFork(response1)
       yield* TestClock.adjust('30 seconds')
 
-      const actual = yield* Effect.exit(Fiber.join(Fiber.zip(response1, response2)))
+      const [actual1, actual2] = yield* Effect.all([Fiber.await(response1), Fiber.await(response2)])
 
-      expect(Exit.isInterrupted(actual)).toBeTruthy()
-
-      const cause = yield* Exit.causeOption(actual)
-
-      expect(cause._tag).toStrictEqual('Sequential')
+      expect(Exit.isInterrupted(actual1)).toBeTruthy()
+      expect(Exit.isSuccess(actual2)).toBeTruthy()
     }),
   )
 
@@ -79,7 +76,7 @@ describe('requestCollapsingHttpClient', () => {
       const response2 = yield* Effect.fork(Effect.andThen(client.get('http://example.com'), response => response.text))
 
       yield* TestClock.adjust('30 seconds')
-      const actual = yield* Fiber.join(Fiber.zip(response1, response2))
+      const actual = yield* Effect.all([Fiber.join(response1), Fiber.join(response2)])
 
       expect(responseCount).toBe(2)
       expect(actual).toStrictEqual(['response 1', 'response 2'])
@@ -108,7 +105,7 @@ describe('requestCollapsingHttpClient', () => {
       )
 
       yield* TestClock.adjust('30 seconds')
-      const actual = yield* Fiber.join(Fiber.zip(response1, response2))
+      const actual = yield* Effect.all([Fiber.join(response1), Fiber.join(response2)])
 
       expect(responseCount).toBe(2)
       expect(actual).toStrictEqual(['response 1', 'response 2'])
