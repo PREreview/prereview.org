@@ -1,11 +1,48 @@
-import { html, plainText } from '../../html.ts'
+import { type Html, html, plainText, rawHtml } from '../../html.ts'
+import { match, P } from 'ts-pattern'
 import { languageAttributesFor } from '../../Locales.ts'
 import { PageResponse } from '../Response/index.ts'
 import * as Routes from '../../routes.ts'
-import { Option } from 'effect'
-import type { Doi } from '../../types/Doi.ts'
+import { Array, Option, pipe, flow } from 'effect'
+import { isDoi, toUrl, type Doi } from '../../types/Doi.ts'
+import { getServerName, type Preprint } from '../../Preprints/index.ts'
+import type { PlainDate } from '../../types/Temporal.ts'
+import type { Name } from '../../types/Name.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import { format } from 'fp-ts-routing'
+import { ProfileId } from '../../types/index.ts'
+import { renderDate } from '../../time.ts'
 
-export const createMatchmakingPage = (input: Option.Option<Doi>, results: boolean) => {
+export type MatchedWork = Preprint & {
+  requested: PlainDate
+}
+
+function displayAuthor({ name, orcid }: { name: Name; orcid?: OrcidId }) {
+  if (orcid) {
+    return html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}"
+      class="orcid"
+      dir="auto"
+      >${name}</a
+    >`
+  }
+
+  return html`<bdi>${name}</bdi>`
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    Array.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
+}
+
+export const createMatchmakingPage = (input: Option.Option<Doi>, matchedWorks: ReadonlyArray<MatchedWork>) => {
   return PageResponse({
     title: plainText('Matchmaking'),
     main: html`
@@ -28,94 +65,79 @@ export const createMatchmakingPage = (input: Option.Option<Doi>, results: boolea
           />
         </div>
 
-        <button><span ${languageAttributesFor('en')}>${results ? 'Update matches' : 'Find matches'}</span></button>
+        <button>
+          <span ${languageAttributesFor('en')}
+            >${Array.match(matchedWorks, { onNonEmpty: () => 'Update matches', onEmpty: () => 'Find matches' })}</span
+          >
+        </button>
       </form>
 
-      ${
-        results
-          ? html`
-              <h2><span ${languageAttributesFor('en')}>Results</span></h2>
+      ${Array.match(matchedWorks, {
+        onNonEmpty: matchedWorks => html`
+          <h2><span ${languageAttributesFor('en')}>Results</span></h2>
 
-              <ol>
+          <ol>
+            ${Array.map(
+              matchedWorks,
+              work => html`
                 <li>
                   <article>
                     <header>
-                      <h3 ${languageAttributesFor('en')}>
-                        State of Knowledge on the Paleoenvironmental Evolution of the Tatuí Continental System during
-                        the Early Permian of the Paraná Basin
-                      </h3>
-
+                      <h3 ${languageAttributesFor(work.title.language)}>${work.title.text}</h3>
                       <div class="byline">
                         <span ${languageAttributesFor('en')}
                           ><span class="visually-hidden">Authored</span> by
-                          <a href="/profiles/0000-0001-7690-3132" class="orcid" dir="auto">Artur Chahud</a></span
-                        >
+                          ${pipe(work.authors, Array.map(displayAuthor), formatList('en'))}
+                        </span>
                       </div>
-
                       <dl>
                         <div>
                           <dt><span ${languageAttributesFor('en')}>Requested</span></dt>
-                          <dd><time datetime="2026-10-26" ${languageAttributesFor('en')}>October 26, 2026</time></dd>
+                          <dd>${renderDate('en')(work.requested)}</dd>
                         </div>
                         <div>
                           <dt><span ${languageAttributesFor('en')}>Posted</span></dt>
-                          <dd><time datetime="2026-10-26" ${languageAttributesFor('en')}>October 26, 2026</time></dd>
+                          <dd>${renderDate('en')(work.posted)}</dd>
                         </div>
                         <div>
                           <dt><span ${languageAttributesFor('en')}>Server</span></dt>
-                          <dd>SciELO Preprints</dd>
+                          <dd>${getServerName(work.id)}</dd>
                         </div>
-                        <div>
-                          <dt translate="no">DOI</dt>
-                          <dd>
-                            <a
-                              href="https://doi.org/10.1590/scielopreprints.17296"
-                              class="doi"
-                              dir="auto"
-                              translate="no"
-                              >10.1590/scielopreprints.17296</a
-                            >
-                          </dd>
-                        </div>
+                        ${match(work.id)
+                          .with(
+                            { _tag: 'PhilsciPreprintId' },
+                            id => html`
+                              <div>
+                                <dt><span ${languageAttributesFor('en')}>Item ID</span></dt>
+                                <dd>${id.value}</dd>
+                              </div>
+                            `,
+                          )
+                          .with(
+                            { value: P.when(isDoi) },
+                            id => html`
+                              <div>
+                                <dt translate="no">DOI</dt>
+                                <dd>
+                                  <a href="${toUrl(id.value).href}" class="doi" dir="auto" translate="no"
+                                    >${id.value}</a
+                                  >
+                                </dd>
+                              </div>
+                            `,
+                          )
+                          .exhaustive()}
                       </dl>
                     </header>
-
-                    <div ${languageAttributesFor('en')}>
-                      <p>
-                        The Tatuí Formation records one of the most complex episodes of paleoenvironmental evolution in
-                        the Paraná Basin during the Early Permian, representing the transition between the glacial and
-                        periglacial conditions inherited from the Itararé Group and the establishment of a broad coastal
-                        system with a continental predominance. This evolution resulted from the interaction among
-                        fluvial, deltaic, lacustrine, lagoonal, and marine processes, developed over a paleotopographic
-                        surface inherited from the Late Paleozoic glaciation, whose compartmentalization into
-                        topographic lows and high areas controlled the significant faciological heterogeneity of the
-                        unit. In the depressions, fine-grained deposits associated with low-energy lacustrine and
-                        lagoonal environments predominated, whereas the elevated compartments acted as sediment source
-                        areas, giving rise to higher-competence fluvial systems such as the Ibicatu Paleoriver, a
-                        high-energy braided system responsible for the deposition of the Ibicatu Facies and the sediment
-                        supply to a broad progradational deltaic system. Low-energy environments, including ephemeral
-                        lakes, floodplains, abandoned paleochannels, and brackish lagoons influenced by incursions of
-                        the Rio Bonito–Palermo Sea, record periods of greater hydrodynamic stability, as evidenced by
-                        tidal structures and wave- and storm-generated reworking. Recurrent relative sea-level
-                        fluctuations promoted the alternation between continental and shallow-marine conditions, which
-                        is also reflected in the paleontological record. Siltstone deposits preserve conchostracans,
-                        crustaceans, and actinopterygian fish characteristic of temporary continental environments,
-                        while ichnofossils, acritarchs, and agglutinated foraminifera document episodes of marine
-                        connectivity. The Ibicatu Flora, represented by silicified trunks of Tietea and gymnosperms,
-                        demonstrates the presence of forested areas adjacent to the river channels. Taken together,
-                        these records indicate that the Tatuí Formation constitutes a transitional depositional system
-                        between continental and shallow-marine environments, whose evolution was controlled by the
-                        paleotopography inherited from the Late Paleozoic glaciation, climatic seasonality, and
-                        fluctuations of the Rio Bonito–Palermo Sea, configuring an important archive for the
-                        paleoenvironmental and paleoclimatic reconstruction of the eastern margin of the Paraná Basin.
-                      </p>
-                    </div>
+                    ${work.abstract ? html`<div ${languageAttributesFor(work.abstract.language)}>${work.abstract.text}</div>` : ''}
                   </article>
                 </li>
-              </ol>
-            `
-          : ''
-      }
+              `,
+            )}
+          </ol>
+        `,
+        onEmpty: () => '',
+      })}
     `,
     canonical: Routes.Matchmaking,
   })
