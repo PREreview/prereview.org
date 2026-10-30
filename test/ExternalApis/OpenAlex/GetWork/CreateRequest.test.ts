@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Tuple } from 'effect'
 import * as _ from '../../../../src/ExternalApis/OpenAlex/GetWork/CreateRequest.ts'
 import { Doi } from '../../../../src/types/index.ts'

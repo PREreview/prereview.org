@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Either, Layer, pipe } from 'effect'
 import { OpenAlexWorks } from '../../../src/ExternalInteractions/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'

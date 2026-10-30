@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from './vitest.ts'
 import { type Duration, Effect, Exit, Fiber, pipe, TestClock } from 'effect'
 import * as _ from '../src/RequestCollapsingHttpClient.ts'
 

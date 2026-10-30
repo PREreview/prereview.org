@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../vitest.ts'
 import { Option, Struct } from 'effect'
 import * as _ from '../../src/Prereviewers/index.ts'
 import * as fc from '../fc.ts'

@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Schema } from 'effect'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'

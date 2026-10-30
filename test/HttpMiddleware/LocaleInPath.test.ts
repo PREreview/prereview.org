@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../vitest.ts'
 import { Effect, Option } from 'effect'
 import { EnabledLocales } from '../../src/Context.ts'
 import * as _ from '../../src/HttpMiddleware/LocaleInPath.ts'

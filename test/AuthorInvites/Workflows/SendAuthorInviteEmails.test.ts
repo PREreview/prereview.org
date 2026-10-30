@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Array, Effect, Either, Layer, pipe } from 'effect'
 import * as AuthorInvites from '../../../src/AuthorInvites/index.ts'
 import * as _ from '../../../src/AuthorInvites/Workflows/SendAuthorInviteEmails.ts'

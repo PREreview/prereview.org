@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../vitest.ts'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'

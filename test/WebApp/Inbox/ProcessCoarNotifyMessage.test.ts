@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Inbox from '../../../src/WebApp/Inbox/index.ts'

@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from '@effect/vitest'
+import { describe, expect, it, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either } from 'effect'
 import { JapanLinkCenter } from '../../../../src/ExternalApis/index.ts'

@@ -1,4 +1,4 @@
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../vitest.ts'
 import { type Array, Either } from 'effect'
 import * as _ from '../../src/Clubs/GetClubBySlug.ts'
 import { type ClubDetails, ClubNotFound } from '../../src/Clubs/index.ts'

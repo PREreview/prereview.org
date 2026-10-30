@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, Option } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'

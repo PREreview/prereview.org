@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { Option } from 'effect'
 import * as _ from '../../../src/ExternalInteractions/ContentfulPages/YouTubeVideoId.ts'
 

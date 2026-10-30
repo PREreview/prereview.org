@@ -1,5 +1,5 @@
 import { LibsqlClient } from '@effect/sql-libsql'
-import { expect, it, vi } from '@effect/vitest'
+import { expect, it, vi } from '../vitest.ts'
 import { Array, Effect, Either, Layer, Option, Struct, pipe } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { SystemClock } from 'clock-ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'

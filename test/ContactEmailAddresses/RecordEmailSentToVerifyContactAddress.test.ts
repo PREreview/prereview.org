@@ -1,4 +1,4 @@
-import { expect, test } from '@effect/vitest'
+import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import * as _ from '../../src/ContactEmailAddresses/RecordEmailSentToVerifyContactAddress.ts'
 import * as Events from '../../src/Events.ts'

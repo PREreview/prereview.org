@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from '@effect/vitest'
+import { describe, expect, it, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, Equal, Option, Tuple } from 'effect'
 import * as _ from '../../../src/ReviewRequests/Commands/CategorizeReviewRequest.ts'

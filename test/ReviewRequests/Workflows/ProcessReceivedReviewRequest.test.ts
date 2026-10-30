@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Either, Layer, pipe, TestClock } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'

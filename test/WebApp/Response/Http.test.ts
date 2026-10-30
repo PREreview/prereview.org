@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from '@effect/vitest'
+import { describe, expect, it, test } from '../../vitest.ts'
 import { Array, Either, Schema } from 'effect'
 import * as _ from '../../../src/WebApp/Response/Http.ts'
 import * as fc from '../../fc.ts'

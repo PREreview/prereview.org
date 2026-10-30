@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../vitest.ts'
 import { Option, Tuple } from 'effect'
 import * as _ from '../../src/Datasets/DatasetId.ts'
 import * as Datasets from '../../src/Datasets/index.ts'

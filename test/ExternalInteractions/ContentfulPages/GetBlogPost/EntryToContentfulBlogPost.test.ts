@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
 import resolveResponse from 'contentful-resolve-response'
 import { Array, Effect, HashSet, Layer, pipe, Schema, Struct } from 'effect'

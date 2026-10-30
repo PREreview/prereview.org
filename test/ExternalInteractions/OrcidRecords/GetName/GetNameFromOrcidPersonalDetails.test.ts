@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from '@effect/vitest'
+import { describe, expect, it, test } from '../../../vitest.ts'
 import { Option, Tuple } from 'effect'
 import { Orcid } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/OrcidRecords/GetName/GetNameFromOrcidPersonalDetails.ts'

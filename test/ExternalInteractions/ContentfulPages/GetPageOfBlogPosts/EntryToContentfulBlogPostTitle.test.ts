@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../../vitest.ts'
 import resolveResponse from 'contentful-resolve-response'
 import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { Locale } from '../../../../src/Context.ts'

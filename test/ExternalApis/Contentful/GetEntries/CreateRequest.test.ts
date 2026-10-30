@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Layer, Redacted } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Contentful/GetEntries/CreateRequest.ts'
 import { ContentfulConfig, UsePreviewApi } from '../../../../src/ExternalApis/Contentful/index.ts'

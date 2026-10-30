@@ -1,4 +1,4 @@
-import { expect, test } from '@effect/vitest'
+import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option } from 'effect'
 import * as Events from '../../../src/Events.ts'

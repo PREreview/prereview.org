@@ -1,5 +1,5 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Tuple } from 'effect'
 import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.ts'

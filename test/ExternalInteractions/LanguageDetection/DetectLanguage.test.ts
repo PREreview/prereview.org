@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../vitest.ts'
 import { Effect, Layer, Option, pipe, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DetectLanguage } from '../../../src/ExternalApis/index.ts'

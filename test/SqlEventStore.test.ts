@@ -1,7 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from './vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Duration, Effect, Layer, Option, type PubSub } from 'effect'
 import * as Events from '../src/Events.ts'

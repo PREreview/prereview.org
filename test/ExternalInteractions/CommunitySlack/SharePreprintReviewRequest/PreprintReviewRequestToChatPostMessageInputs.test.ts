@@ -1,4 +1,4 @@
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../../vitest.ts'
 import { Array, Effect, Option } from 'effect'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInputs.ts'

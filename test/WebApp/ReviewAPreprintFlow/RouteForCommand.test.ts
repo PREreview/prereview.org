@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { Array } from 'effect'
 import { NextExpectedCommand, type Form } from '../../../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'

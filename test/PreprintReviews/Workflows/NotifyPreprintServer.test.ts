@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Either, Layer, Option, pipe } from 'effect'
 import { CoarNotify } from '../../../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'

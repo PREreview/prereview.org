@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'

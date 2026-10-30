@@ -1,7 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { expect, it } from '@effect/vitest'
+import { expect, it } from './vitest.ts'
 import { Effect, Layer, Option } from 'effect'
 import * as _ from '../src/SqlSensitiveDataStore.ts'
 import { Uuid } from '../src/types/index.ts'

@@ -1,4 +1,4 @@
-import { describe, test } from '@effect/vitest'
+import { describe, test } from '../vitest.ts'
 import { Option } from 'effect'
 import * as _ from '../../src/Comments/index.ts'
 import { html } from '../../src/html.ts'

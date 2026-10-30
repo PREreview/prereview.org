@@ -1,4 +1,4 @@
-import { expect, test } from '@effect/vitest'
+import { expect, test } from '../vitest.ts'
 import { Either, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/GetReviewIdForInvitation.ts'
 import * as Events from '../../src/Events.ts'

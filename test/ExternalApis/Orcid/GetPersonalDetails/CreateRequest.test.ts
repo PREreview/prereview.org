@@ -1,5 +1,5 @@
 import { Headers } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Option, Redacted, Tuple } from 'effect'
 import { Orcid } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/CreateRequest.ts'

@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Tuple } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/CreateRequest.ts'
 import * as fc from '../../../fc.ts'

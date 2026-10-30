@@ -1,5 +1,5 @@
 import type { HttpClientError } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Either } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Zenodo/GetDeposition/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'

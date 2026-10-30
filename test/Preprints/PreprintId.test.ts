@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../vitest.ts'
 import * as _ from '../../src/Preprints/PreprintId.ts'
 import { Doi, toUrl } from '../../src/types/Doi.ts'
 import * as fc from '../fc.ts'

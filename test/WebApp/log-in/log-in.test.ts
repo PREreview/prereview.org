@@ -1,5 +1,5 @@
 import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
-import { describe, expect, it, test, vi } from '@effect/vitest'
+import { describe, expect, it, test, vi } from '../../vitest.ts'
 import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
 import fetchMock from 'fetch-mock'
 import { Keyv } from 'keyv'

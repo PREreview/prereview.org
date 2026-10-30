@@ -1,5 +1,5 @@
 import { HttpBody } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted } from 'effect'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
 import { ChatDeleteInput } from '../../../../src/ExternalApis/Slack/ChatDelete/ChatDeleteInput.ts'

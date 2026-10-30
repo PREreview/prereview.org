@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../../vitest.ts'
 import { Array, Effect, Either, Layer, Option, Tuple } from 'effect'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import {

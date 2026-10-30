@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as ReviewRequests from '../../src/ReviewRequests/index.ts'

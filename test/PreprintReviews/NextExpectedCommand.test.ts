@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../vitest.ts'
 import { Struct } from 'effect'
 import { html } from '../../src/html.ts'
 import type { Form } from '../../src/PreprintReviews/index.ts'

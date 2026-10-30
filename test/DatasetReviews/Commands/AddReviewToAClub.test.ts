@@ -1,4 +1,4 @@
-import { expect, test } from '@effect/vitest'
+import { expect, test } from '../../vitest.ts'
 import { Either, Option } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AddReviewToAClub.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'

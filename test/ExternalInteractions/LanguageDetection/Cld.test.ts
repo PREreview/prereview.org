@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { type Array, Effect, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as _ from '../../../src/ExternalInteractions/LanguageDetection/Cld.ts'

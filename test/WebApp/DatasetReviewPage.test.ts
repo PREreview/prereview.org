@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../vitest.ts'
 import { Effect, Layer, Option } from 'effect'
 import { Clubs } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'

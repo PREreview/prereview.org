@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from './vitest.ts'
 import { SystemClock } from 'clock-ts'
 import { Effect, Record, Struct } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'

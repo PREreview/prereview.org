@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import { connectOrcidMatch } from '../../../src/routes.ts'

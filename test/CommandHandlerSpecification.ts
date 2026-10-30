@@ -1,4 +1,4 @@
-import { expect } from '@effect/vitest'
+import { expect } from './vitest.ts'
 import { Array, Either, Option } from 'effect'
 
 export type CommandHandlerSpecfication<Command, Event, Error> = (...givenEvents: ReadonlyArray<Event>) => {

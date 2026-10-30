@@ -1,4 +1,4 @@
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../vitest.ts'
 import { format } from 'fp-ts-routing'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-prereviews-page/list-of-prereviews.ts'

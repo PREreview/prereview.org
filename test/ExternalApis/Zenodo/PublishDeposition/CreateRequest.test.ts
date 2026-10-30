@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted } from 'effect'
 import { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Zenodo/PublishDeposition/CreateRequest.ts'

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Either, HashSet, Layer, pipe } from 'effect'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'

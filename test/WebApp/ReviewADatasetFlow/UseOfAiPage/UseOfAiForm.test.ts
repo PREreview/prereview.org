@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Either, Option } from 'effect'
 import { NonEmptyString } from '../../../../src/types/index.ts'
 import * as _ from '../../../../src/WebApp/ReviewADatasetFlow/UseOfAiPage/UseOfAiForm.ts'

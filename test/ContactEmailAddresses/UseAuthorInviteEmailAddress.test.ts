@@ -1,5 +1,5 @@
 import { LibsqlClient } from '@effect/sql-libsql'
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../vitest.ts'
 import { Array, Effect, Either, Layer, Option, pipe, Struct } from 'effect'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
 import { type Event, Events } from '../../src/Events.ts'

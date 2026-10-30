@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
 import {
   CrowdinInContextLocale,

@@ -1,5 +1,5 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../vitest.ts'
 import { Effect, HashSet, Layer, Redacted } from 'effect'
 import { EnabledLocales, Locale } from '../../../src/Context.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'

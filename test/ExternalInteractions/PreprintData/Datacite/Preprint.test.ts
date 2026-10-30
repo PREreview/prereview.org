@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'

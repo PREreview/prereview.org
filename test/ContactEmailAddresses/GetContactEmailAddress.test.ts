@@ -1,4 +1,4 @@
-import { test } from '@effect/vitest'
+import { test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
 import { expect } from 'vitest'

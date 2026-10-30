@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@effect/vitest'
+import { describe, expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/FindInProgressReviewForADataset.ts'

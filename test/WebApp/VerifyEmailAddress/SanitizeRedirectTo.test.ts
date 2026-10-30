@@ -1,4 +1,4 @@
-import { expect, it } from '@effect/vitest'
+import { expect, it } from '../../vitest.ts'
 import * as _ from '../../../src/WebApp/VerifyEmailAddress/SanitizeRedirectTo.ts'
 
 it.each<[_.Input, _.Result]>([

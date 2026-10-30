@@ -1,5 +1,5 @@
 import { HttpBody } from '@effect/platform'
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as _ from '../../../../src/ExternalApis/DetectLanguage/Detect/CreateRequest.ts'
 import * as fc from '../../../fc.ts'
 

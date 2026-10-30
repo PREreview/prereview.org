@@ -1,4 +1,4 @@
-import { expect, test } from '@effect/vitest'
+import { expect, test } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
 import { Option, Struct } from 'effect'
 import * as Datasets from '../../../../src/Datasets/index.ts'

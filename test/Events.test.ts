@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from './vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Tuple } from 'effect'
 import * as Datasets from '../src/Datasets/index.ts'

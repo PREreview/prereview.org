@@ -1,5 +1,5 @@
 import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { describe, expect, it, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '../vitest.ts'
 import { DateTime, Effect, Either, Option, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'

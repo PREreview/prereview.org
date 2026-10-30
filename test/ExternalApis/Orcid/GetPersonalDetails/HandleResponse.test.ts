@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@effect/vitest'
+import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Either, Predicate } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
