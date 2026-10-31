@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import { OpenAlexWorks } from '../../../src/ExternalInteractions/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -23,9 +23,9 @@ describe('CategorizeReviewRequest', () => {
       ],
       ([reviewRequestId, reviewRequest, preprint, categories]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(OpenAlexWorks.OpenAlexWorks, {
@@ -63,10 +63,10 @@ describe('CategorizeReviewRequest', () => {
       ],
       ([reviewRequestId, reviewRequest, preprint, categories, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.result)
 
           expect(actual).toStrictEqual(
-            Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })),
+            Result.fail(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })),
           )
         }).pipe(
           Effect.provide([
@@ -103,9 +103,9 @@ describe('CategorizeReviewRequest', () => {
     ],
     ([reviewRequestId, reviewRequest, categories, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => Effect.succeed(categories) }),
@@ -128,9 +128,9 @@ describe('CategorizeReviewRequest', () => {
     ],
     ([reviewRequestId, reviewRequest, preprint, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => error }),
@@ -155,9 +155,9 @@ describe('CategorizeReviewRequest', () => {
     ],
     ([reviewRequestId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({})))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToCategorizeReviewRequest({})))
       }).pipe(
         Effect.provide([
           Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),

@@ -1,9 +1,8 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, Array, Duration, Layer, Option, PubSub } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { describe, expect, it, vi } from './vitest.ts'
+import { describe, expect, it } from './vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Duration, Effect, Layer, Option, type PubSub } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as Preprints from '../src/Preprints/index.ts'
@@ -83,9 +82,10 @@ describe('when the last known position is none', () => {
     ],
     ([event, filter, otherEvents]) =>
       Effect.gen(function* () {
-        const publish = vi.fn<PubSub.PubSub<Events.Event>['publish']>(() => Effect.succeed(true))
+        const events = yield* PubSub.unbounded<Events.Event>()
+        const published = yield* PubSub.subscribe(events)
 
-        const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
+        const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
 
         yield* Effect.forEach(otherEvents, eventStore.append)
 
@@ -98,7 +98,7 @@ describe('when the last known position is none', () => {
         expect(all).toStrictEqual(
           Option.some({ events: [...otherEvents, event], lastKnownPosition: expect.anything() }),
         )
-        expect(publish).toHaveBeenCalledWith(event)
+        expect(yield* PubSub.takeAll(published)).toContainEqual(event)
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -114,13 +114,17 @@ describe('when the last known position has not changed', () => {
     [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
     ([existingEvents, event]) =>
       Effect.gen(function* () {
-        const publish = vi.fn<PubSub.PubSub<unknown>['publish']>(() => Effect.succeed(true))
+        const events = yield* PubSub.unbounded<Events.Event>()
+        const published = yield* PubSub.subscribe(events)
 
-        const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
+        const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
 
         yield* Effect.forEach(existingEvents, eventStore.append)
 
-        const { lastKnownPosition } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
+        const { lastKnownPosition } = yield* Effect.flatMap(
+          eventStore.query({ types: Events.CommentEventTypes }),
+          Effect.fromOption,
+        )
 
         yield* eventStore.appendIf(event, {
           filter: { types: Events.CommentEventTypes },
@@ -132,7 +136,7 @@ describe('when the last known position has not changed', () => {
         expect(all).toStrictEqual(
           Option.some({ events: [...existingEvents, event], lastKnownPosition: expect.anything() }),
         )
-        expect(publish).toHaveBeenCalledWith(event)
+        expect(yield* PubSub.takeAll(published)).toContainEqual(event)
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -437,7 +441,7 @@ it.effect.prop(
 
       yield* Effect.forEach(existingEvents, eventStore.append)
 
-      const { lastKnownPosition } = yield* Effect.flatten(eventStore.all)
+      const { lastKnownPosition } = yield* Effect.flatMap(eventStore.all, Effect.fromOption)
 
       yield* Effect.forEach(newEvents, eventStore.append)
 
@@ -453,7 +457,7 @@ it.effect.prop(
   { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
 
-const TestLibsqlClient = Layer.unwrapScoped(
+const TestLibsqlClient = Layer.unwrap(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
     const file = yield* fs.makeTempFileScoped()

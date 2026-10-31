@@ -1,21 +1,21 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetPersonalDetails } from './GetPersonalDetails/index.ts'
 import type { OrcidApi } from './OrcidApi.ts'
 
 export * from './OrcidApi.ts'
 
-export class Orcid extends Context.Tag('Orcid')<
+export class Orcid extends Context.Service<
   Orcid,
   {
     getPersonalDetails: (
       ...args: Parameters<typeof GetPersonalDetails>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetPersonalDetails>>,
-      Effect.Effect.Error<ReturnType<typeof GetPersonalDetails>>
+      Effect.Success<ReturnType<typeof GetPersonalDetails>>,
+      Effect.Error<ReturnType<typeof GetPersonalDetails>>
     >
   }
->() {}
+>()('Orcid') {}
 
 export const getPersonalDetails = (...args: Parameters<(typeof Orcid.Service)['getPersonalDetails']>) =>
   Effect.flatMap(Orcid, service => service.getPersonalDetails(...args))

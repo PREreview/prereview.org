@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type HasTrackedChangesForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  hasTrackedChanges: Either.Either<never, Missing>
-  hasTrackedChangesYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  hasTrackedChangesPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  hasTrackedChangesNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  hasTrackedChanges: Result.Result<never, Missing>
+  hasTrackedChangesYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  hasTrackedChangesPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  hasTrackedChangesNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const hasTrackedChangesYesDetail = yield* pipe(
-    Schema.decode(HasTrackedChangesYesDetailSchema)(body),
-    Effect.andThen(Struct.get('hasTrackedChangesYesDetail')),
+    Schema.decodeEffect(HasTrackedChangesYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasTrackedChangesYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const hasTrackedChangesPartlyDetail = yield* pipe(
-    Schema.decode(HasTrackedChangesPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('hasTrackedChangesPartlyDetail')),
+    Schema.decodeEffect(HasTrackedChangesPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasTrackedChangesPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const hasTrackedChangesNoDetail = yield* pipe(
-    Schema.decode(HasTrackedChangesNoDetailSchema)(body),
-    Effect.andThen(Struct.get('hasTrackedChangesNoDetail')),
+    Schema.decodeEffect(HasTrackedChangesNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasTrackedChangesNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(HasTrackedChangesFieldSchema)(body),
+    Schema.decodeEffect(HasTrackedChangesFieldSchema)(body),
     Effect.map(
       ({ hasTrackedChanges }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           hasTrackedChangesNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          hasTrackedChanges: Either.left(new Missing()),
-          hasTrackedChangesYesDetail: Either.right(hasTrackedChangesYesDetail),
-          hasTrackedChangesPartlyDetail: Either.right(hasTrackedChangesPartlyDetail),
-          hasTrackedChangesNoDetail: Either.right(hasTrackedChangesNoDetail),
+          hasTrackedChanges: Result.fail(new Missing()),
+          hasTrackedChangesYesDetail: Result.succeed(hasTrackedChangesYesDetail),
+          hasTrackedChangesPartlyDetail: Result.succeed(hasTrackedChangesPartlyDetail),
+          hasTrackedChangesNoDetail: Result.succeed(hasTrackedChangesNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const HasTrackedChangesFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasTrackedChanges: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const HasTrackedChangesFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasTrackedChanges: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const HasTrackedChangesYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasTrackedChangesYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasTrackedChangesYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasTrackedChangesYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const HasTrackedChangesPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasTrackedChangesPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasTrackedChangesPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasTrackedChangesPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const HasTrackedChangesNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasTrackedChangesNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasTrackedChangesNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasTrackedChangesNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

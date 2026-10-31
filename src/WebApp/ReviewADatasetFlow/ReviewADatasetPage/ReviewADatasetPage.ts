@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -48,11 +48,11 @@ export const ReviewADatasetPage = ({
           </details>
 
           ${
-            hasAnError && Either.isLeft(form.whichDataset)
+            hasAnError && Result.isFailure(form.whichDataset)
               ? html`
                   <div class="error-message" id="which-dataset-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.whichDataset.left, {
+                    ${Match.valueTags(form.whichDataset.failure, {
                       Invalid: () => t('errorEnterADataset')(),
                       Missing: () => t('errorEnterTheDataset')(),
                     })}
@@ -70,9 +70,9 @@ export const ReviewADatasetPage = ({
             spellcheck="false"
             aria-describedby="which-dataset-tip"
             ${
-              hasAnError && Either.isLeft(form.whichDataset)
+              hasAnError && Result.isFailure(form.whichDataset)
                 ? html`aria-invalid="true" aria-errormessage="dataset-error"
-                  ${Match.valueTags(form.whichDataset.left, {
+                  ${Match.valueTags(form.whichDataset.failure, {
                     Invalid: ({ value }) => html`value="${value}"`,
                     Missing: () => '',
                   })}`
@@ -92,11 +92,11 @@ export const ReviewADatasetPage = ({
 
 const toErrorItems = (locale: SupportedLocale) => (form: ReviewADatasetForm.InvalidForm) => html`
   ${
-    Either.isLeft(form.whichDataset)
+    Result.isFailure(form.whichDataset)
       ? html`
           <li>
             <a href="#which-dataset">
-              ${Match.valueTags(form.whichDataset.left, {
+              ${Match.valueTags(form.whichDataset.failure, {
                 Invalid: () => translate(locale, 'review-a-dataset-flow', 'errorEnterADataset')(),
                 Missing: () => translate(locale, 'review-a-dataset-flow', 'errorEnterTheDataset')(),
               })}

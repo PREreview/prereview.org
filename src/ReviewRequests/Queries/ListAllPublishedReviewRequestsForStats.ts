@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, Schema } from 'effect'
+import { Array, Result, flow, HashMap, Schema } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { DomainIdSchema } from '../../types/domain.ts'
@@ -22,7 +22,9 @@ export const ReviewRequestForStats = Schema.Struct({
 export type Result = ReadonlyArray<ReviewRequestForStats>
 
 const query = (state: shared.State): Result => {
-  const filteredReviewRequests = HashMap.filter(state, reviewRequest => reviewRequest._tag === 'PublishedReviewRequest')
+  const filteredReviewRequests = HashMap.filterMap(state, reviewRequest =>
+    reviewRequest._tag === 'PublishedReviewRequest' ? Result.succeed(reviewRequest) : Result.fail(reviewRequest),
+  )
 
   const sortedReviewRequests = Array.sortWith(
     Array.map(Array.fromIterable(filteredReviewRequests), ([requestId, properties]) => ({ ...properties, requestId })),
@@ -37,5 +39,5 @@ export const ListAllPublishedReviewRequestsForStats = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.listAllPublishedReviewRequests',
   initialState: shared.initialState,
   updateStateWithEvents: shared.updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

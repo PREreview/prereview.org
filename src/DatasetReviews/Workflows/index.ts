@@ -1,4 +1,4 @@
-import { Activity, Workflow } from '@effect/workflow'
+import { Activity, Workflow } from 'effect/workflow'
 import { Layer, Schema, Struct } from 'effect'
 import { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -8,8 +8,7 @@ import { NotifyCommunitySlack as executeNotifyCommunitySlackOfDatasetReview } fr
 import { PublishRecordOnZenodo as executePublishDatasetReviewRecordOnZenodo } from './PublishRecordOnZenodo.ts'
 import { UseZenodoRecordDoi as executeUseZenodoRecordDoiForDatasetReview } from './UseZenodoRecordDoi.ts'
 
-export const CreateRecordForDatasetReviewOnZenodo = Workflow.make({
-  name: 'CreateRecordForDatasetReviewOnZenodo',
+export const CreateRecordForDatasetReviewOnZenodo = Workflow.make('CreateRecordForDatasetReviewOnZenodo', {
   error: Errors.FailedToCreateRecordOnZenodo,
   payload: {
     datasetReviewId: Uuid.UuidSchema,
@@ -17,8 +16,7 @@ export const CreateRecordForDatasetReviewOnZenodo = Workflow.make({
   idempotencyKey: Struct.get('datasetReviewId'),
 })
 
-export const MarkDatasetReviewAsPublished = Workflow.make({
-  name: 'MarkDatasetReviewAsPublished',
+export const MarkDatasetReviewAsPublished = Workflow.make('MarkDatasetReviewAsPublished', {
   error: Errors.FailedToMarkDatasetReviewAsPublished,
   payload: {
     datasetReviewId: Uuid.UuidSchema,
@@ -26,8 +24,7 @@ export const MarkDatasetReviewAsPublished = Workflow.make({
   idempotencyKey: Struct.get('datasetReviewId'),
 })
 
-export const NotifyCommunitySlackOfDatasetReview = Workflow.make({
-  name: 'NotifyCommunitySlackOfDatasetReview',
+export const NotifyCommunitySlackOfDatasetReview = Workflow.make('NotifyCommunitySlackOfDatasetReview', {
   error: Errors.FailedToNotifyCommunitySlack,
   payload: {
     datasetReviewId: Uuid.UuidSchema,
@@ -35,8 +32,7 @@ export const NotifyCommunitySlackOfDatasetReview = Workflow.make({
   idempotencyKey: Struct.get('datasetReviewId'),
 })
 
-export const PublishDatasetReviewRecordOnZenodo = Workflow.make({
-  name: 'PublishDatasetReviewRecordOnZenodo',
+export const PublishDatasetReviewRecordOnZenodo = Workflow.make('PublishDatasetReviewRecordOnZenodo', {
   error: Errors.FailedToPublishRecordOnZenodo,
   payload: {
     datasetReviewId: Uuid.UuidSchema,
@@ -44,8 +40,7 @@ export const PublishDatasetReviewRecordOnZenodo = Workflow.make({
   idempotencyKey: Struct.get('datasetReviewId'),
 })
 
-export const UseZenodoRecordDoiForDatasetReview = Workflow.make({
-  name: 'UseZenodoRecordDoiForDatasetReview',
+export const UseZenodoRecordDoiForDatasetReview = Workflow.make('UseZenodoRecordDoiForDatasetReview', {
   error: Errors.FailedToUseZenodoDoi,
   payload: {
     datasetReviewId: Uuid.UuidSchema,
@@ -57,35 +52,35 @@ export const UseZenodoRecordDoiForDatasetReview = Workflow.make({
 export const workflowsLayer = Layer.mergeAll(
   CreateRecordForDatasetReviewOnZenodo.toLayer(({ datasetReviewId }) =>
     Activity.make({
-      name: CreateRecordForDatasetReviewOnZenodo.name,
+      name: CreateRecordForDatasetReviewOnZenodo._tag,
       error: CreateRecordForDatasetReviewOnZenodo.errorSchema,
       execute: executeCreateRecordForDatasetReviewOnZenodo(datasetReviewId),
     }),
   ),
   MarkDatasetReviewAsPublished.toLayer(({ datasetReviewId }) =>
     Activity.make({
-      name: MarkDatasetReviewAsPublished.name,
+      name: MarkDatasetReviewAsPublished._tag,
       error: MarkDatasetReviewAsPublished.errorSchema,
       execute: executeMarkDatasetReviewAsPublished(datasetReviewId),
     }),
   ),
   NotifyCommunitySlackOfDatasetReview.toLayer(({ datasetReviewId }) =>
     Activity.make({
-      name: NotifyCommunitySlackOfDatasetReview.name,
+      name: NotifyCommunitySlackOfDatasetReview._tag,
       error: NotifyCommunitySlackOfDatasetReview.errorSchema,
       execute: executeNotifyCommunitySlackOfDatasetReview(datasetReviewId),
     }),
   ),
   PublishDatasetReviewRecordOnZenodo.toLayer(({ datasetReviewId }) =>
     Activity.make({
-      name: PublishDatasetReviewRecordOnZenodo.name,
+      name: PublishDatasetReviewRecordOnZenodo._tag,
       error: PublishDatasetReviewRecordOnZenodo.errorSchema,
       execute: executePublishDatasetReviewRecordOnZenodo(datasetReviewId),
     }),
   ),
   UseZenodoRecordDoiForDatasetReview.toLayer(({ datasetReviewId, recordId }) =>
     Activity.make({
-      name: UseZenodoRecordDoiForDatasetReview.name,
+      name: UseZenodoRecordDoiForDatasetReview._tag,
       error: UseZenodoRecordDoiForDatasetReview.errorSchema,
       execute: executeUseZenodoRecordDoiForDatasetReview(datasetReviewId, recordId),
     }),

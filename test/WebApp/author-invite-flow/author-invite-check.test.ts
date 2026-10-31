@@ -59,7 +59,7 @@ describe('authorInvite', () => {
             const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
             const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
@@ -127,7 +127,7 @@ describe('authorInvite', () => {
           Effect.gen(function* () {
             const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
@@ -190,7 +190,7 @@ describe('authorInvite', () => {
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
           const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -249,12 +249,12 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, prereview, contactEmailAddress, locale]) =>
         Effect.gen(function* () {
-          const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
-            () => contactEmailAddress,
+          const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(() =>
+            Effect.fromResult(contactEmailAddress),
           )
 
           const runtime = yield* Effect.provide(
-            Effect.runtime<ContactEmailAddresses | Prereviewers>(),
+            Effect.context<ContactEmailAddresses | Prereviewers>(),
             Layer.mock(ContactEmailAddresses, { getContactEmailAddress }),
           )
 
@@ -301,7 +301,7 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, prereview, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -333,7 +333,7 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -361,7 +361,7 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.supportedLocale()],
       ([inviteId, user, method, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -396,7 +396,7 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -428,7 +428,7 @@ describe('authorInvite', () => {
       ],
       ([inviteId, [user, invite], method, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -456,7 +456,7 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.openAuthorInvite(), fc.supportedLocale()],
       ([inviteId, user, method, invite, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -481,7 +481,7 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.declinedAuthorInvite(), fc.supportedLocale()],
       ([inviteId, user, method, invite, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -506,7 +506,7 @@ describe('authorInvite', () => {
       [fc.uuid(), fc.user(), fc.string(), fc.supportedLocale()],
       ([inviteId, user, method, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInviteCheck({ id: inviteId, method, user, locale })({
@@ -535,7 +535,7 @@ describe('authorInvite', () => {
     [fc.uuid(), fc.string(), fc.authorInvite(), fc.supportedLocale()],
     ([inviteId, method, invite, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+        const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.authorInviteCheck({ id: inviteId, method, locale })({

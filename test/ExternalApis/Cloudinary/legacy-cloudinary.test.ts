@@ -12,6 +12,7 @@ import * as _ from '../../../src/ExternalApis/Cloudinary/legacy-cloudinary.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('getAvatarFromCloudinary', () => {
   it.effect.prop(
@@ -346,7 +347,7 @@ describe('saveAvatarOnCloudinary', () => {
             clock: FixedClock(date),
             cloudinaryApi,
             fetch: (...args) => fetch.fetchHandler(...args),
-            getCloudinaryAvatar: () => TE.fromEither(existing),
+            getCloudinaryAvatar: () => TE.fromEither(EffectToFpts.either(existing)),
             logger: () => IO.of(undefined),
             publicUrl,
             readFile: () => Readable.from(avatar.buffer),
@@ -392,7 +393,7 @@ describe('saveAvatarOnCloudinary', () => {
             clock: FixedClock(date),
             cloudinaryApi,
             fetch: (...args) => fetch.fetchHandler(...args),
-            getCloudinaryAvatar: () => TE.fromEither(existing),
+            getCloudinaryAvatar: () => TE.fromEither(EffectToFpts.either(existing)),
             logger: () => IO.of(undefined),
             publicUrl,
             readFile: () => Readable.from(avatar.buffer),
@@ -437,7 +438,7 @@ describe('saveAvatarOnCloudinary', () => {
             clock: FixedClock(date),
             cloudinaryApi,
             fetch: shouldNotBeCalled,
-            getCloudinaryAvatar: () => TE.fromEither(existing),
+            getCloudinaryAvatar: () => TE.fromEither(EffectToFpts.either(existing)),
             logger: () => IO.of(undefined),
             publicUrl,
             readFile: () => stream,

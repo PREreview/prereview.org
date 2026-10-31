@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../vitest.ts'
-import { Either, Schema, Tuple } from 'effect'
+import { Result, Schema, Tuple } from 'effect'
 import * as _ from '../../src/types/SciProfilesId.ts'
 import * as fc from '../fc.ts'
 
@@ -24,9 +24,9 @@ describe('SciProfilesIdSchema', () => {
       'with a non-ID string',
       [fc.string().filter(string => !/^[1-9]/.test(string))],
       ([string]) => {
-        const actual = Schema.decodeEither(_.SciProfilesIdSchema)(string)
+        const actual = Schema.decodeResult(_.SciProfilesIdSchema)(string)
 
-        expect(actual).toStrictEqual(Either.left(expect.anything()))
+        expect(actual).toStrictEqual(Result.fail(expect.anything()))
       },
       {
         fastCheck: {
@@ -36,9 +36,9 @@ describe('SciProfilesIdSchema', () => {
     )
 
     it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
-      const actual = Schema.decodeUnknownEither(_.SciProfilesIdSchema)(value)
+      const actual = Schema.decodeUnknownResult(_.SciProfilesIdSchema)(value)
 
-      expect(actual).toStrictEqual(Either.left(expect.anything()))
+      expect(actual).toStrictEqual(Result.fail(expect.anything()))
     })
   })
 
@@ -74,9 +74,9 @@ describe('SciProfilesIdFromUrlSchema', () => {
       'with a non-ID string',
       [fc.string()],
       ([string]) => {
-        const actual = Schema.decodeUnknownEither(_.SciProfilesIdFromUrlSchema)(string)
+        const actual = Schema.decodeUnknownResult(_.SciProfilesIdFromUrlSchema)(string)
 
-        expect(actual).toStrictEqual(Either.left(expect.anything()))
+        expect(actual).toStrictEqual(Result.fail(expect.anything()))
       },
       {
         fastCheck: {
@@ -91,9 +91,9 @@ describe('SciProfilesIdFromUrlSchema', () => {
     )
 
     it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
-      const actual = Schema.decodeUnknownEither(_.SciProfilesIdFromUrlSchema)(value)
+      const actual = Schema.decodeUnknownResult(_.SciProfilesIdFromUrlSchema)(value)
 
-      expect(actual).toStrictEqual(Either.left(expect.anything()))
+      expect(actual).toStrictEqual(Result.fail(expect.anything()))
     })
   })
 

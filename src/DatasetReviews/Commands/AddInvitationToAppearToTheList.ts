@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, HashSet, Match, Option, Struct, type Types } from 'effect'
+import { Array, Boolean, Data, Result, Equal, HashSet, Match, Option, Struct, type Types, Filter } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import { EmailAddress, type Name, type OrcidId, type Uuid } from '../../types/index.ts'
@@ -90,10 +90,13 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
       const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
 
       const removedInvitations = HashSet.fromIterable(
-        Array.filterMap(events, event =>
-          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-            ? Option.some(event.invitationId)
-            : Option.none(),
+        Array.filterMap(
+          events,
+          Filter.fromPredicateOption(event =>
+            event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+              ? Option.some(event.invitationId)
+              : Option.none(),
+          ),
         ),
       )
 
@@ -121,15 +124,15 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 const authorize = (state: State, input: Input): boolean =>
   state._tag === 'NotStarted' || Equal.equals(state.authorId, input.userId)
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
-    DoesNotNeedInvitationsToAppear: () => Either.left(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear()),
-    HasBeenAdded: () => Either.right(Option.none()),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    IsBeingPublished: () => Result.fail(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Result.fail(new Errors.DatasetReviewHasBeenPublished()),
+    DoesNotNeedInvitationsToAppear: () => Result.fail(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear()),
+    HasBeenAdded: () => Result.succeed(Option.none()),
     HasNotBeenAdded: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
             datasetReviewId: input.datasetReviewId,

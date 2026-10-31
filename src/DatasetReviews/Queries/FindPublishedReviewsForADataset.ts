@@ -19,8 +19,8 @@ export const FindPublishedReviewsForADataset =
       ),
       Array.map(published => Tuple.make(published.datasetReviewId, published.publicationDate)),
       Array.sortWith(
-        Tuple.getSecond,
-        Order.reverse(
+        Tuple.get(1),
+        Order.flip(
           Order.mapInput(Temporal.OrderInstant, publicationDate =>
             publicationDate instanceof Temporal.PlainDate
               ? publicationDate.toZonedDateTime('UTC').toInstant()
@@ -28,7 +28,7 @@ export const FindPublishedReviewsForADataset =
           ),
         ),
       ),
-      Array.map(Tuple.getFirst),
+      Array.map(Tuple.get(0)),
     )
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

@@ -10,5 +10,5 @@ export const GetSlackUser = (userId: Slack.UserId) =>
   pipe(
     Slack.usersProfileGet(userId),
     Effect.map(response => UsersProfileGetResponseToSlackUser(response, userId)),
-    Effect.catchAll(error => new FailedToGetSlackUser({ cause: error })),
+    Effect.catch(error => new FailedToGetSlackUser({ cause: error })),
   )

@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import { JapanLinkCenter } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/Preprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
@@ -11,7 +11,7 @@ import * as fc from '../../../fc.ts'
 
 describe('recordToPreprint', () => {
   test('can be transformed', () => {
-    const actual = Either.getOrThrow(_.recordToPreprint(stubRecord))
+    const actual = Result.getOrThrow(_.recordToPreprint(stubRecord))
 
     expect(actual).toStrictEqual(
       Preprint({
@@ -39,7 +39,7 @@ describe('recordToPreprint', () => {
       content_type: contentType,
     })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+    const actual = Result.getOrThrow(Result.flip(_.recordToPreprint(record)))
 
     expect(actual._tag).toStrictEqual('NotAPreprint')
     expect(actual.cause).toStrictEqual(contentType)
@@ -51,7 +51,7 @@ describe('recordToPreprint', () => {
       doi,
     })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+    const actual = Result.getOrThrow(Result.flip(_.recordToPreprint(record)))
 
     expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
     expect(actual.cause).toStrictEqual(doi)

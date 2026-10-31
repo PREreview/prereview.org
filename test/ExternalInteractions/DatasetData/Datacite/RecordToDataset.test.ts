@@ -1,8 +1,7 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, Layer, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Effect, Layer, pipe, Schema } from 'effect'
 import { URL } from 'node:url'
 import * as Datasets from '../../../../src/Datasets/index.ts'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
@@ -419,7 +418,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Datacite.RecordResponseSchema))),
       Effect.andThen(_.RecordToDataset),
     )
 
@@ -440,7 +439,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Datacite.RecordResponseSchema))),
       Effect.andThen(_.RecordToDataset),
       Effect.flip,
     )
@@ -468,7 +467,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Datacite.RecordResponseSchema))),
       Effect.andThen(_.RecordToDataset),
       Effect.flip,
     )

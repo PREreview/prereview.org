@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
@@ -55,12 +55,12 @@ export const renderUseOfAiPage = ({
 
         <p>${t('understandHowCreated')()}</p>
 
-        <div ${rawHtml(form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas) ? 'class="error"' : '')}>
+        <div ${rawHtml(form._tag === 'InvalidForm' && Result.isFailure(form.generativeAiIdeas) ? 'class="error"' : '')}>
           <conditional-inputs>
             <fieldset
               role="group"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
+                form._tag === 'InvalidForm' && Result.isFailure(form.generativeAiIdeas)
                   ? 'aria-invalid="true" aria-errormessage="generative-ai-ideas-error"'
                   : '',
               )}
@@ -70,11 +70,11 @@ export const renderUseOfAiPage = ({
               </legend>
 
               ${
-                form._tag === 'InvalidForm' && Either.isLeft(form.generativeAiIdeas)
+                form._tag === 'InvalidForm' && Result.isFailure(form.generativeAiIdeas)
                   ? html`
                       <div class="error-message" id="generative-ai-ideas-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.generativeAiIdeas.left, {
+                        ${Match.valueTags(form.generativeAiIdeas.failure, {
                           Missing: () => t(otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
                         })}
                       </div>
@@ -151,11 +151,11 @@ ${Match.valueTags(form, {
 
 const toErrorItems = (otherAuthors: boolean, locale: SupportedLocale) => (form: UseOfAiForm.InvalidForm) => html`
   ${
-    Either.isLeft(form.generativeAiIdeas)
+    Result.isFailure(form.generativeAiIdeas)
       ? html`
           <li>
             <a href="#generative-ai-ideas-no">
-              ${Match.valueTags(form.generativeAiIdeas.left, {
+              ${Match.valueTags(form.generativeAiIdeas.failure, {
                 Missing: () =>
                   translate(locale, 'write-review', otherAuthors ? 'selectYesIfAuthorsUsedAi' : 'selectYesIfUsedAi')(),
               })}

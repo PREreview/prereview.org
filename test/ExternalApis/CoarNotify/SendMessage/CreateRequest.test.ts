@@ -1,4 +1,4 @@
-import { HttpBody, UrlParams } from '@effect/platform'
+import { HttpBody, UrlParams } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
 import { Effect } from 'effect'
 import * as _ from '../../../../src/ExternalApis/CoarNotify/SendMessage/CreateRequest.ts'

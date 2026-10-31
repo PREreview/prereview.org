@@ -1,6 +1,6 @@
-import { NodeContext, NodeHttpClient, NodeRuntime } from '@effect/platform-node'
+import { NodeServices, NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { Config, Effect, Layer, pipe } from 'effect'
+import { Config, Effect, Layer, pipe, Redacted } from 'effect'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
@@ -21,7 +21,7 @@ import { Uuid } from './types/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
 
 pipe(
-  Cli(process.argv),
+  Cli(process.argv.slice(2)),
   Effect.provide(
     pipe(
       Layer.effectDiscard(EventDispatcher.replayExistingEvents),
@@ -54,26 +54,27 @@ pipe(
         Philsci.layer,
       ]),
       Layer.provideMerge(
-        Layer.mergeAll(SqlEventStore.layer, Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI')))),
+        Layer.mergeAll(
+          SqlEventStore.layer,
+          Redis.layerDataStoreConfig(Config.URL('REDIS_URI').pipe(Config.map(Redacted.make))),
+        ),
       ),
       Layer.provide([Events.layer, SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
       Layer.provideMerge(EventDispatcher.EventDispatcherLayer),
       Layer.provide([
         FeatureFlags.layerDefaults,
-        NodeHttpClient.layer,
-        OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
+        NodeHttpClient.layerNodeHttp,
+        OpenAlex.layerApiConfig({ key: Config.Redacted('OPENALEX_API_KEY') }),
         Layer.effect(
           Orcid.OrcidApi,
           Config.all({
-            origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
-            token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
+            origin: Config.withDefault(Config.URL('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
+            token: Config.option(Config.Redacted('ORCID_API_READ_PUBLIC_TOKEN')),
           }),
         ),
-        PgClient.layerConfig({
-          url: Config.redacted(Config.string('POSTGRES_URL')),
-        }),
+        PgClient.layerConfig({ url: Config.Redacted('POSTGRES_URL') }),
       ]),
-      Layer.provideMerge(Layer.mergeAll(NodeContext.layer, Uuid.layer)),
+      Layer.provideMerge(Layer.mergeAll(NodeServices.layer, Uuid.layer)),
     ),
   ),
   NodeRuntime.runMain,

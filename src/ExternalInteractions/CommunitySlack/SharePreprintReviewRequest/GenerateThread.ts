@@ -1,4 +1,4 @@
-import { LanguageModel } from '@effect/ai'
+import { LanguageModel } from 'effect/ai'
 import { Array, Boolean, Data, Effect, Match, Option, pipe, Schema, Struct } from 'effect'
 import * as Preprints from '../../../Preprints/index.ts'
 import { renderDateString } from '../../../time.ts'
@@ -27,7 +27,7 @@ export class FailedToGenerateThreadForAPreprintReviewRequest extends Data.Tagged
 
 export const GenerateThread = Effect.fn(
   function* ({ author, preprint }: PreprintReviewRequest) {
-    const hasAbstract = Option.isSome(Option.fromNullable(preprint.abstract))
+    const hasAbstract = Option.isSome(Option.fromNullishOr(preprint.abstract))
 
     const response = yield* LanguageModel.generateObject({
       prompt: [
@@ -54,7 +54,7 @@ Someone has requested a review of a scientific preprint. The requester is not re
 
 Write a series of posts to form a thread on Slack.
 
-${Option.match(Option.fromNullable(preprint.abstract), {
+${Option.match(Option.fromNullishOr(preprint.abstract), {
   onSome: () => `
 For the opening post, write a sentence of about 16 words using the most important keywords, disciplines and topics mentioned in the abstract, saying that the requester is looking for people to review the preprint. Highlight the terms in bold. Include a prompt to see more details by opening the thread and looking at the replies.
 `,
@@ -65,7 +65,7 @@ For the opening post, write a sentence of about 16 words using 1 or 2 important 
 
 In the first reply, thank the reader and provide them with details about the preprint.
 
-${Option.match(Option.fromNullable(preprint.abstract), {
+${Option.match(Option.fromNullishOr(preprint.abstract), {
   onSome: () => `
 In the second reply, prompt the user to read the abstract. We will append the abstract itself.
 `,
@@ -111,7 +111,7 @@ DOI: """${Doi.toUrl(id.value).href}"""
 
 Posted: """${renderDateString('en')(preprint.posted)}"""
 
-${Option.match(Option.fromNullable(preprint.abstract), {
+${Option.match(Option.fromNullishOr(preprint.abstract), {
   onSome: abstract => `
 Abstract: """
 ${abstract.text.toString()}
@@ -148,7 +148,7 @@ ${JSON.stringify(exampleThread)}
 
     return response.value
   },
-  Effect.catchAll(error => new FailedToGenerateThreadForAPreprintReviewRequest({ cause: error })),
+  Effect.catch(error => new FailedToGenerateThreadForAPreprintReviewRequest({ cause: error })),
 )
 
 function formatList(list: ReadonlyArray<string>) {
@@ -157,7 +157,7 @@ function formatList(list: ReadonlyArray<string>) {
   return formatter.format(list)
 }
 
-const examples: Array.NonEmptyReadonlyArray<Schema.Schema.Encoded<typeof ThreadSchema>> = [
+const examples: Array.NonEmptyReadonlyArray<Schema.Codec.Encoded<typeof ThreadSchema>> = [
   {
     main: '🏛️ Chris Wilkinson needs your help with reviews of a preprint all about **museum documentation**, **cultural heritage**, and museology practices. I’ll reply to this post with more details. 💬',
     detail:

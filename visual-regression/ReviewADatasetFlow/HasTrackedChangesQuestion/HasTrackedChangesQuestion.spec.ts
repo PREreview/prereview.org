@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as HasTrackedChangesForm from '../../../src/WebApp/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesQuestion.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -38,10 +38,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.HasTrackedChangesQuestion({
     datasetReviewId,
     form: new HasTrackedChangesForm.InvalidForm({
-      hasTrackedChanges: Either.left(new HasTrackedChangesForm.Missing()),
-      hasTrackedChangesYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      hasTrackedChangesPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      hasTrackedChangesNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      hasTrackedChanges: Result.fail(new HasTrackedChangesForm.Missing()),
+      hasTrackedChangesYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      hasTrackedChangesPartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      hasTrackedChangesNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

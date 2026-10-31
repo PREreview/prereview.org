@@ -1,4 +1,4 @@
-import { Array, Effect, flow, HashSet, Match, pipe } from 'effect'
+import { Array, Effect, flow, Match, pipe } from 'effect'
 import { type BlogPost, CmsContent } from '../CmsContent/index.ts'
 import { Locale } from '../Context.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../html.ts'
@@ -103,10 +103,10 @@ export const CmsBlogPostPage = Effect.fnUntraced(
         </aside>
       `,
       canonical: Routes.BlogPost.href({ slug }),
-      js: HashSet.toValues(content.js),
+      js: Array.fromIterable(content.js),
     })
   },
-  Effect.catchAll(() => HavingProblemsPage),
+  Effect.catch(() => HavingProblemsPage),
 )
 
 const back = pipe(

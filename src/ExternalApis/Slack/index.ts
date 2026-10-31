@@ -1,4 +1,4 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { ChatDelete } from './ChatDelete/index.ts'
 import { ChatPostMessage } from './ChatPostMessage/index.ts'
@@ -11,29 +11,26 @@ export { SlackApi } from './SlackApi.ts'
 export { ChannelId, Timestamp, UserId } from './Types.ts'
 export type { UsersProfileGetResponse } from './UsersProfileGet/index.ts'
 
-export class Slack extends Context.Tag('Slack')<
+export class Slack extends Context.Service<
   Slack,
   {
     chatDelete: (
       ...args: Parameters<typeof ChatDelete>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof ChatDelete>>,
-      Effect.Effect.Error<ReturnType<typeof ChatDelete>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof ChatDelete>>, Effect.Error<ReturnType<typeof ChatDelete>>>
     chatPostMessage: (
       ...args: Parameters<typeof ChatPostMessage>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof ChatPostMessage>>,
-      Effect.Effect.Error<ReturnType<typeof ChatPostMessage>>
+      Effect.Success<ReturnType<typeof ChatPostMessage>>,
+      Effect.Error<ReturnType<typeof ChatPostMessage>>
     >
     usersProfileGet: (
       ...args: Parameters<typeof UsersProfileGet>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof UsersProfileGet>>,
-      Effect.Effect.Error<ReturnType<typeof UsersProfileGet>>
+      Effect.Success<ReturnType<typeof UsersProfileGet>>,
+      Effect.Error<ReturnType<typeof UsersProfileGet>>
     >
   }
->() {}
+>()('Slack') {}
 
 export const chatDelete = (...args: Parameters<(typeof Slack.Service)['chatDelete']>) =>
   Effect.flatMap(Slack, service => service.chatDelete(...args))

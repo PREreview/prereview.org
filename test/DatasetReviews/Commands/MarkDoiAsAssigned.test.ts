@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkDoiAsAssigned.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -97,14 +97,14 @@ describe('decide', () => {
   it.prop('has not been started', [fc.doi()], ([doi]) => {
     const result = _.decide(new _.NotStarted(), { doi, datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   it.prop('does not have a DOI', [fc.doi()], ([doi]) => {
     const result = _.decide(new _.DoesNotHaveADoi(), { doi, datasetReviewId })
 
     expect(result).toStrictEqual(
-      Either.right(Option.some(new DatasetReviews.DatasetReviewWasAssignedADoi({ doi, datasetReviewId }))),
+      Result.succeed(Option.some(new DatasetReviews.DatasetReviewWasAssignedADoi({ doi, datasetReviewId }))),
     )
   })
 
@@ -112,7 +112,7 @@ describe('decide', () => {
     it.prop('with the same DOI', [fc.doi()], ([doi]) => {
       const result = _.decide(new _.AlreadyHasADoi({ doi }), { doi, datasetReviewId })
 
-      expect(result).toStrictEqual(Either.right(Option.none()))
+      expect(result).toStrictEqual(Result.succeed(Option.none()))
     })
 
     it.prop(
@@ -121,7 +121,7 @@ describe('decide', () => {
       ([[doi1, doi2]]) => {
         const result = _.decide(new _.AlreadyHasADoi({ doi: doi1 }), { doi: doi2, datasetReviewId })
 
-        expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewAlreadyHasADoi({})))
+        expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewAlreadyHasADoi({})))
       },
     )
   })

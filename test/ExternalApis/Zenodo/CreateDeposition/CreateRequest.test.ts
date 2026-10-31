@@ -1,4 +1,4 @@
-import { HttpBody } from '@effect/platform'
+import { HttpBody } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted, Schema } from 'effect'
 import { Zenodo } from '../../../../src/ExternalApis/index.ts'

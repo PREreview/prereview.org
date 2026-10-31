@@ -1,4 +1,4 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import KeyvRedis from '@keyv/redis'
 import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
 import * as AuthorInvites from './AuthorInvites/index.ts'

@@ -1,20 +1,17 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetRecord } from './Record.ts'
 
 export { Record } from './Record.ts'
 
-export class JapanLinkCenter extends Context.Tag('JapanLinkCenter')<
+export class JapanLinkCenter extends Context.Service<
   JapanLinkCenter,
   {
     getRecord: (
       ...args: Parameters<typeof GetRecord>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetRecord>>,
-      Effect.Effect.Error<ReturnType<typeof GetRecord>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetRecord>>, Effect.Error<ReturnType<typeof GetRecord>>>
   }
->() {}
+>()('JapanLinkCenter') {}
 
 export const getRecord = (...args: Parameters<(typeof JapanLinkCenter.Service)['getRecord']>) =>
   Effect.flatMap(JapanLinkCenter, service => service.getRecord(...args))

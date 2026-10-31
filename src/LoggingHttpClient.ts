@@ -1,5 +1,5 @@
-import { Headers, HttpClient, HttpClientRequest, UrlParams } from '@effect/platform'
-import { Effect, FiberId, HashSet, Layer, pipe } from 'effect'
+import { Headers, HttpClient, HttpClientRequest, UrlParams } from 'effect/http'
+import { Effect, Layer, pipe } from 'effect'
 
 export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpClient.HttpClient> = Effect.gen(
   function* () {
@@ -36,8 +36,8 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
       HttpClient.tapError(error =>
         Effect.logError('Error sending HTTP request').pipe(
           Effect.annotateLogs({
-            reason: error.reason,
-            error: error.cause,
+            reason: error.reason._tag,
+            error: error.reason.cause,
             url: error.request.url,
             urlParams: UrlParams.toString(error.request.urlParams),
             method: error.request.method,
@@ -56,7 +56,7 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
             pipe(
               Effect.logDebug('HTTP request interrupted'),
               Effect.annotateLogs({
-                interrupters: HashSet.toValues(HashSet.map(interrupters, FiberId.threadName)),
+                interrupters: globalThis.Array.from(interrupters, String),
                 url: request.url,
                 urlParams: UrlParams.toString(request.urlParams),
                 method: request.method,

@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Result, Equal, Match, Option, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -44,17 +44,24 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     return new HasBeenPublished()
   }
 
-  return Option.match(Array.findLast(filteredEvents, hasTag('PersonaForAReviewRequestForAPreprintWasChosen')), {
-    onNone: () => new NotChosen(),
-    onSome: ({ persona }) => new HasBeenChosen({ persona }),
-  })
+  return Option.match(
+    Array.findLast(
+      filteredEvents,
+      (event: Events.Event): event is Events.PersonaForAReviewRequestForAPreprintWasChosen =>
+        event._tag === 'PersonaForAReviewRequestForAPreprintWasChosen',
+    ),
+    {
+      onNone: () => new NotChosen(),
+      onSome: ({ persona }) => new HasBeenChosen({ persona }),
+    },
+  )
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.UnknownReviewRequest({})),
+    NotStarted: () => Result.fail(new Errors.UnknownReviewRequest({})),
     NotChosen: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.PersonaForAReviewRequestForAPreprintWasChosen({
             persona: input.persona,
@@ -64,9 +71,9 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
       ),
     HasBeenChosen: ({ persona }) =>
       Boolean.match(Equal.equals(input.persona, persona), {
-        onTrue: () => Either.right(Option.none()),
+        onTrue: () => Result.succeed(Option.none()),
         onFalse: () =>
-          Either.right(
+          Result.succeed(
             Option.some(
               new Events.PersonaForAReviewRequestForAPreprintWasChosen({
                 persona: input.persona,
@@ -75,7 +82,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
             ),
           ),
       }),
-    HasBeenPublished: () => Either.left(new Errors.ReviewRequestHasBeenPublished({})),
+    HasBeenPublished: () => Result.fail(new Errors.ReviewRequestHasBeenPublished({})),
   })
 
 export const ChoosePersona = Commands.Command({

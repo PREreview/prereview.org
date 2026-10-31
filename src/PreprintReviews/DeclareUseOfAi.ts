@@ -45,6 +45,6 @@ export const DeclareUseOfAi = (formStore: Keyv<unknown>): ((input: Input) => Eff
 
     yield* pipe(
       FptsToEffect.readerTaskEither(saveForm(input.orcidId, input.preprintId)(updatedForm), { formStore }),
-      Effect.catchAll(() => new UnableToHandleCommand({})),
+      Effect.catch(() => new UnableToHandleCommand({})),
     )
   })

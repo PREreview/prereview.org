@@ -1,4 +1,4 @@
-import { Array, Data, Either, Option, Struct, type Types } from 'effect'
+import { Array, Data, Result, Option, Struct, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -9,7 +9,7 @@ export interface Input {
   readonly orcidId: OrcidId
 }
 
-export type Result = Either.Either<Option.Option<'public' | 'pseudonym'>, Error>
+export type Result = Result.Result<Option.Option<'public' | 'pseudonym'>, Error>
 
 export type Error = PrereviewerIsNotListedOnTheReview | PersonaCannotBeChanged
 
@@ -30,21 +30,21 @@ const createFilter = (input: Input) =>
   ])
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    if (Array.isEmptyArray(filteredEvents)) {
-      return yield* Either.left(new PrereviewerIsNotListedOnTheReview())
+    if (Array.isArrayEmpty(filteredEvents)) {
+      return yield* Result.fail(new PrereviewerIsNotListedOnTheReview())
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {
-      return yield* Either.left(new PersonaCannotBeChanged())
+      return yield* Result.fail(new PersonaCannotBeChanged())
     }
 
     if (Array.some(filteredEvents, hasTag('AuthorChoicesForAReviewConfirmed'))) {
-      return yield* Either.left(new PersonaCannotBeChanged())
+      return yield* Result.fail(new PersonaCannotBeChanged())
     }
 
     return Option.andThen(Array.findLast(filteredEvents, hasTag('PersonaForAReviewChosen')), Struct.get('persona'))

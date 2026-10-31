@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type HasEnoughMetadataForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  hasEnoughMetadata: Either.Either<never, Missing>
-  hasEnoughMetadataYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  hasEnoughMetadataPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  hasEnoughMetadataNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  hasEnoughMetadata: Result.Result<never, Missing>
+  hasEnoughMetadataYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  hasEnoughMetadataPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  hasEnoughMetadataNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const hasEnoughMetadataYesDetail = yield* pipe(
-    Schema.decode(HasEnoughMetadataYesDetailSchema)(body),
-    Effect.andThen(Struct.get('hasEnoughMetadataYesDetail')),
+    Schema.decodeEffect(HasEnoughMetadataYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasEnoughMetadataYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const hasEnoughMetadataPartlyDetail = yield* pipe(
-    Schema.decode(HasEnoughMetadataPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('hasEnoughMetadataPartlyDetail')),
+    Schema.decodeEffect(HasEnoughMetadataPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasEnoughMetadataPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const hasEnoughMetadataNoDetail = yield* pipe(
-    Schema.decode(HasEnoughMetadataNoDetailSchema)(body),
-    Effect.andThen(Struct.get('hasEnoughMetadataNoDetail')),
+    Schema.decodeEffect(HasEnoughMetadataNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasEnoughMetadataNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(HasEnoughMetadataFieldSchema)(body),
+    Schema.decodeEffect(HasEnoughMetadataFieldSchema)(body),
     Effect.map(
       ({ hasEnoughMetadata }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           hasEnoughMetadataNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          hasEnoughMetadata: Either.left(new Missing()),
-          hasEnoughMetadataYesDetail: Either.right(hasEnoughMetadataYesDetail),
-          hasEnoughMetadataPartlyDetail: Either.right(hasEnoughMetadataPartlyDetail),
-          hasEnoughMetadataNoDetail: Either.right(hasEnoughMetadataNoDetail),
+          hasEnoughMetadata: Result.fail(new Missing()),
+          hasEnoughMetadataYesDetail: Result.succeed(hasEnoughMetadataYesDetail),
+          hasEnoughMetadataPartlyDetail: Result.succeed(hasEnoughMetadataPartlyDetail),
+          hasEnoughMetadataNoDetail: Result.succeed(hasEnoughMetadataNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const HasEnoughMetadataFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasEnoughMetadata: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const HasEnoughMetadataFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasEnoughMetadata: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const HasEnoughMetadataYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasEnoughMetadataYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasEnoughMetadataYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasEnoughMetadataYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const HasEnoughMetadataPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasEnoughMetadataPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasEnoughMetadataPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasEnoughMetadataPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const HasEnoughMetadataNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasEnoughMetadataNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasEnoughMetadataNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasEnoughMetadataNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

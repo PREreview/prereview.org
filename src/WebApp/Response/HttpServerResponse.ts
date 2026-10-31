@@ -1,5 +1,18 @@
-import { Cookies, HttpServerRequest, HttpServerResponse, Url, UrlParams } from '@effect/platform'
-import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
+import { Cookies, HttpServerRequest, HttpServerResponse, Url, UrlParams } from 'effect/http'
+import {
+  Array,
+  Boolean,
+  Effect,
+  HashMap,
+  identity,
+  Match,
+  Option,
+  pipe,
+  Schema,
+  String,
+  flow,
+  SchemaTransformation,
+} from 'effect'
 import { EnabledLocales, FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
@@ -17,6 +30,16 @@ import * as Http from './Http.ts'
 import { toPage } from './Page.ts'
 import type { ForceLogInResponse, Response } from './Response.ts'
 
+const BooleanFromStringSchema = Schema.Literals(['true', 'false']).pipe(
+  Schema.decodeTo(
+    Schema.Boolean,
+    SchemaTransformation.transform({
+      decode: literal => literal === 'true',
+      encode: boolean => (boolean ? 'true' : 'false'),
+    }),
+  ),
+)
+
 export const toHttpServerResponse = (
   response: Response,
 ): Effect.Effect<
@@ -33,14 +56,14 @@ export const toHttpServerResponse = (
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
-      return yield* HttpServerResponse.redirect(response.location, { status: response.status })
+      return HttpServerResponse.redirect(response.location, { status: response.status })
     }
 
     if (response._tag === 'FlashMessageResponse') {
-      return yield* HttpServerResponse.redirect(response.location, {
+      return HttpServerResponse.redirect(response.location, {
         status: StatusCodes.SeeOther,
         cookies: Cookies.fromIterable([
-          Cookies.unsafeMakeCookie('flash-message', response.message, { httpOnly: true, path: '/' }),
+          Cookies.makeCookieUnsafe('flash-message', response.message, { httpOnly: true, path: '/' }),
         ]),
       })
     }
@@ -56,7 +79,7 @@ export const toHttpServerResponse = (
 
       const location = yield* generateAuthorizationRequestUrl({ scope: '/authenticate', state })
 
-      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
+      return HttpServerResponse.redirect(location, { status: StatusCodes.Found })
     }
 
     const locale = yield* Locale
@@ -95,7 +118,7 @@ export const toHttpServerResponse = (
         : Effect.succeedNone,
     )
 
-    return yield* pipe(
+    return pipe(
       templatePage(
         toPage({
           locale,
@@ -111,7 +134,7 @@ export const toHttpServerResponse = (
       HttpServerResponse.setStatus(response._tag === 'TwoUpPageResponse' ? StatusCodes.OK : response.status),
       Option.match(message, {
         onNone: () => identity<HttpServerResponse.HttpServerResponse>,
-        onSome: () => HttpServerResponse.expireCookie('flash-message', { httpOnly: true, path: '/' }),
+        onSome: () => HttpServerResponse.expireCookieUnsafe('flash-message', { httpOnly: true, path: '/' }),
       }),
       Array.match(links, {
         onEmpty: () => identity<HttpServerResponse.HttpServerResponse>,
@@ -131,16 +154,16 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
   const sessionId = yield* Uuid.v4()
   const session = { user: response.user }
 
-  const encodedSessionId = yield* Schema.encode(Uuid.UuidSchema)(sessionId)
-  const encodedSession = yield* Schema.encode(Schema.Struct({ user: UserSchema }))(session)
+  const encodedSessionId = yield* Schema.encodeEffect(Uuid.UuidSchema)(sessionId)
+  const encodedSession = yield* Schema.encodeEffect(Schema.Struct({ user: UserSchema }))(session)
 
   yield* Effect.tryPromise(() => store.set(encodedSessionId, encodedSession))
 
-  return yield* HttpServerResponse.redirect(Routes.HomePage, {
+  return HttpServerResponse.redirect(Routes.HomePage, {
     status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
-      Cookies.unsafeMakeCookie('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),
-      Cookies.unsafeMakeCookie(cookie, yield* CookieSignature.sign(encodedSessionId), {
+      Cookies.makeCookieUnsafe('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),
+      Cookies.makeCookieUnsafe(cookie, yield* CookieSignature.sign(encodedSessionId), {
         httpOnly: true,
         path: '/',
       }),
@@ -185,9 +208,9 @@ const getSpotlightBanner: Effect.Effect<
   const previewBannerId = yield* Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
     condition
       ? pipe(
-          Url.fromString(request.url, 'http://example.com'),
+          Effect.fromResult(Url.fromString(request.url, 'http://example.com')),
           Effect.map(Url.urlParams),
-          Effect.andThen(UrlParams.getFirst('preview-spotlight-banner')),
+          Effect.andThen(flow(UrlParams.getFirst('preview-spotlight-banner'), Effect.fromOption)),
           Effect.orElseSucceed(() => undefined),
         )
       : Effect.succeed(undefined),
@@ -197,14 +220,12 @@ const getSpotlightBanner: Effect.Effect<
     return yield* spotlightBanners.previewBanner(previewBannerId)
   }
 
-  const spotlightBanner = yield* Effect.flatten(spotlightBanners.getCurrentBanner)
+  const spotlightBanner = yield* Effect.flatMap(spotlightBanners.getCurrentBanner, Effect.fromOption)
 
   const cookies = yield* HttpServerRequest.schemaCookies(
-    Schema.Struct({
-      'dismiss-spotlight-banner': Schema.propertySignature(Schema.BooleanFromString).pipe(
-        Schema.fromKey(`dismiss-spotlight-banner-${spotlightBanner.id}`),
-      ),
-    }),
+    Schema.Struct({ 'dismiss-spotlight-banner': BooleanFromStringSchema }).pipe(
+      Schema.encodeKeys({ 'dismiss-spotlight-banner': `dismiss-spotlight-banner-${spotlightBanner.id}` }),
+    ),
   ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-spotlight-banner': false })))
 
   if (cookies['dismiss-spotlight-banner']) {

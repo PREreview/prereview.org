@@ -8,7 +8,7 @@ import type { UnableToDetectLanguage } from './Errors.ts'
 
 export * from './Errors.ts'
 
-export class LanguageDetection extends Context.Tag('LanguageDetection')<
+export class LanguageDetection extends Context.Service<
   LanguageDetection,
   {
     detectLanguage: (
@@ -21,7 +21,7 @@ export class LanguageDetection extends Context.Tag('LanguageDetection')<
       hint?: LanguageCode,
     ) => Effect.Effect<LanguageCode, UnableToDetectLanguage>
   }
->() {}
+>()('LanguageDetection') {}
 
 export const detectLanguage = (...args: Parameters<(typeof LanguageDetection.Service)['detectLanguage']>) =>
   Effect.flatMap(LanguageDetection, service => service.detectLanguage(...args))

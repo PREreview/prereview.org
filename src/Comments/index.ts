@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Scope, Struct } from 'effect'
+import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct, flow } from 'effect'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../Events.ts'
 import * as EventStore from '../EventStore.ts'
@@ -51,7 +51,7 @@ export const makeHandleCommentCommand: Effect.Effect<
       )
 
       yield* pipe(
-        DecideComment(state)(command),
+        Effect.fromResult(DecideComment(state)(command)),
         Effect.tap(
           Option.match({
             onNone: () => Effect.void,
@@ -61,16 +61,14 @@ export const makeHandleCommentCommand: Effect.Effect<
                   types: CommentEventTypes,
                   predicates: { commentId: command.commentId },
                 },
-                lastKnownPosition: Option.fromNullable(lastKnownPosition),
+                lastKnownPosition: Option.fromNullishOr(lastKnownPosition),
               }),
           }),
         ),
       )
     }).pipe(
       Effect.catchTag(
-        'FailedToCommitEvent',
-        'FailedToGetEvents',
-        'NewEventsFound',
+        ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
         cause => new UnableToHandleCommand({ cause }),
       ),
       Effect.provide(context),
@@ -151,7 +149,7 @@ export const ReactToCommentEvents: Layer.Layer<
   | CreateRecordOnZenodoForComment
   | PublishCommentOnZenodo
   | ReviewPage.CommentsForReview
-> = Layer.scopedDiscard(
+> = Layer.effectDiscard(
   Effect.gen(function* () {
     const events = yield* Events.Events
     const dequeue = yield* PubSub.subscribe(events)
@@ -159,24 +157,24 @@ export const ReactToCommentEvents: Layer.Layer<
     yield* pipe(
       EventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
       Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-      Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
+      Effect.andThen(events => Effect.fromResult(Queries.GetACommentInNeedOfADoi(events))),
       Effect.bindTo('commentId'),
       Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
         pipe(
           EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
           Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-          Effect.andThen(Queries.buildInputForCommentZenodoRecord),
+          Effect.andThen(flow(Queries.buildInputForCommentZenodoRecord, Effect.fromResult)),
         ),
       ),
       Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
       Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
-      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error })),
+      Effect.catch(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error })),
       Effect.repeat(Schedule.fixed('1 minute')),
-      Effect.fork,
+      Effect.forkChild,
     )
 
     return yield* pipe(
-      Queue.take(dequeue),
+      PubSub.take(dequeue),
       Effect.filterOrElse(Events.isCommentEvent, () => Effect.fail('not a comment event')),
       Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
       Effect.andThen(
@@ -187,7 +185,7 @@ export const ReactToCommentEvents: Layer.Layer<
             pipe(
               EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
               Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-              Effect.andThen(Queries.buildInputForCommentZenodoRecord),
+              Effect.andThen(flow(Queries.buildInputForCommentZenodoRecord, Effect.fromResult)),
               Effect.andThen(inputForCommentZenodoRecord =>
                 React.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
               ),
@@ -197,8 +195,8 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.tag('CommentWasPublished', ({ commentId }) =>
             pipe(
               EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-              Effect.flatten,
-              Effect.andThen(eventsForComment => Queries.GetPrereviewId(eventsForComment.events)),
+              Effect.flatMap(Effect.fromOption),
+              Effect.andThen(eventsForComment => Effect.fromOption(Queries.GetPrereviewId(eventsForComment.events))),
               Effect.andThen(prereviewId =>
                 Effect.gen(function* () {
                   const commentsForReview = yield* ReviewPage.CommentsForReview
@@ -215,7 +213,7 @@ export const ReactToCommentEvents: Layer.Layer<
         error => error === 'not a comment event',
         () => Effect.void,
       ),
-      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
+      Effect.catch(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
       Effect.scoped,
       Effect.forever,
     )

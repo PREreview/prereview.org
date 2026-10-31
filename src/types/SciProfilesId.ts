@@ -1,17 +1,24 @@
-import { flow, pipe, Schema, Tuple } from 'effect'
+import { flow, pipe, Schema, Tuple, SchemaTransformation } from 'effect'
 
 export type SciProfilesId = typeof SciProfilesIdSchema.Type
 
-export const SciProfilesIdSchema = pipe(Schema.String, Schema.pattern(/^[1-9][0-9]*$/), Schema.brand('SciProfilesId'))
+export const SciProfilesIdSchema = pipe(
+  Schema.String,
+  Schema.check(Schema.isPattern(/^[1-9][0-9]*$/)),
+  Schema.brand('SciProfilesId'),
+)
 
-export const SciProfilesIdFromUrlSchema = Schema.transform(
-  Schema.TemplateLiteralParser('https://sciprofiles.com/profile/', SciProfilesIdSchema),
-  Schema.typeSchema(SciProfilesIdSchema),
-  {
-    strict: true,
-    decode: Tuple.at(1),
-    encode: id => Tuple.make('https://sciprofiles.com/profile/' as const, id),
-  },
+export const SciProfilesIdFromUrlSchema = Schema.TemplateLiteralParser([
+  'https://sciprofiles.com/profile/',
+  SciProfilesIdSchema,
+]).pipe(
+  Schema.decodeTo(
+    Schema.toType(SciProfilesIdSchema),
+    SchemaTransformation.transform({
+      decode: Tuple.get(1),
+      encode: id => ['https://sciprofiles.com/profile/', id] as const,
+    }),
+  ),
 )
 
 export const SciProfilesId = (sciProfilesId: string) => SciProfilesIdSchema.make(sciProfilesId)

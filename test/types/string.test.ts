@@ -1,9 +1,10 @@
 import { describe, expect, it } from '../vitest.ts'
-import { Either, Schema } from 'effect'
-import { ArrayFormatter } from 'effect/ParseResult'
+import { Result, Schema, SchemaIssue } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/NonEmptyString.ts'
 import * as fc from '../fc.ts'
+
+const formatError = (error: Schema.SchemaError) => SchemaIssue.makeFormatterStandardSchemaV1()(error.issue).issues
 
 describe('NonEmptyStringC', () => {
   describe('decode', () => {
@@ -42,15 +43,15 @@ describe('NonEmptyStringSchema', () => {
     })
 
     it.prop('with an empty string', [fc.string({ unit: fc.invisibleCharacter() })], ([string]) => {
-      const actual = Either.mapLeft(Schema.decodeEither(_.NonEmptyStringSchema)(string), ArrayFormatter.formatErrorSync)
+      const actual = Result.mapError(Schema.decodeResult(_.NonEmptyStringSchema)(string), formatError)
 
-      expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'string is empty' })]))
+      expect(actual).toStrictEqual(Result.fail([expect.objectContaining({ message: 'string is empty' })]))
     })
 
     it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
-      const actual = Schema.decodeUnknownEither(_.NonEmptyStringSchema)(value)
+      const actual = Schema.decodeUnknownResult(_.NonEmptyStringSchema)(value)
 
-      expect(actual).toStrictEqual(Either.left(expect.anything()))
+      expect(actual).toStrictEqual(Result.fail(expect.anything()))
     })
   })
 

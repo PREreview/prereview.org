@@ -1,120 +1,170 @@
-import { Array, Data, Function, pipe, Schema, String } from 'effect'
+import {
+  Array,
+  Data,
+  Function,
+  Schema,
+  String,
+  SchemaTransformation,
+  Effect,
+  Option,
+  Predicate,
+  SchemaGetter,
+  Struct,
+  Number,
+  SchemaIssue,
+} from 'effect'
 import { Doi, Temporal } from '../../types/index.ts'
 
-const EmptyStringAsUndefinedSchema = Schema.transform(
-  Schema.compose(Schema.Trim, Schema.Literal('')),
-  Schema.Undefined,
-  {
-    strict: true,
-    decode: Function.constUndefined,
-    encode: Function.constant(String.empty),
-  },
+const NumberFromStringSchema = Schema.String.pipe(
+  Schema.decodeTo(Schema.Number, {
+    decode: SchemaGetter.transformEffect(string =>
+      Option.match(Number.parse(string), {
+        onNone: () => Effect.fail(new SchemaIssue.InvalidValue(undefined, string)),
+        onSome: Effect.succeed,
+      }),
+    ),
+    encode: SchemaGetter.String(),
+  }),
 )
 
-const DataIdSchema = Schema.pluck(
+const pluck = <Fields extends Schema.Struct.Fields, K extends keyof Fields & string>(
+  schema: Schema.Struct<Fields>,
+  key: K,
+): Schema.Codec<
+  Fields[K]['Type'],
+  Readonly<globalThis.Record<K, Fields[K]['Encoded']>>,
+  Fields[K]['DecodingServices'],
+  Fields[K]['EncodingServices']
+> =>
+  schema.mapFields(Struct.pick([key])).pipe(
+    Schema.decodeTo(
+      Schema.toType(schema.fields[key] as Schema.Top),
+      SchemaTransformation.transform<unknown, globalThis.Record<K, unknown>>({
+        decode: whole => whole[key],
+        encode: value => ({ [key]: value }) as globalThis.Record<K, unknown>,
+      }) as never,
+    ),
+  ) as never
+
+const EmptyStringAsUndefinedSchema = Schema.Trim.pipe(Schema.decodeTo(Schema.Literal(''))).pipe(
+  Schema.decodeTo(
+    Schema.Undefined,
+    SchemaTransformation.transform({ decode: Function.constUndefined, encode: Function.constant(String.empty) }),
+  ),
+)
+
+const DataIdSchema = pluck(
   Schema.Struct({
-    data: Schema.pluck(Schema.Struct({ id: Schema.compose(Schema.Trim, Schema.NonEmptyString) }), 'id'),
+    data: pluck(
+      Schema.Struct({ id: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())) }),
+      'id',
+    ),
   }),
   'data',
 )
 
-const DateSchema = Schema.Union(
+const DateSchema = Schema.Union([
   Temporal.InstantSchema,
   Temporal.PlainDateSchema,
   Temporal.PlainYearMonthSchema,
-  Schema.NumberFromString,
-)
+  NumberFromStringSchema,
+])
 
-const DateRangeSchema = Schema.Union(
-  Schema.TemplateLiteralParser(DateSchema, '/', DateSchema),
-  Schema.TemplateLiteralParser(DateSchema, '/'),
-  Schema.TemplateLiteralParser('/', DateSchema),
-)
+const DateRangeSchema = Schema.Union([
+  Schema.TemplateLiteralParser([DateSchema, '/', DateSchema]),
+  Schema.TemplateLiteralParser([DateSchema, '/']),
+  Schema.TemplateLiteralParser(['/', DateSchema]),
+])
 
 export class Record extends Schema.Class<Record>('Record')({
   doi: Doi.DoiSchema,
-  creators: Schema.optionalWith(
-    Schema.Array(
-      Schema.Union(
-        Schema.Struct({
-          givenName: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-          familyName: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-          nameIdentifiers: Schema.optionalWith(
-            Schema.Array(
-              Schema.Struct({
-                nameIdentifier: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-                nameIdentifierScheme: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-              }),
+  creators: Schema.Array(
+    Schema.Union([
+      Schema.Struct({
+        givenName: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+        familyName: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+        nameIdentifiers: Schema.Array(
+          Schema.Struct({
+            nameIdentifier: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+            nameIdentifierScheme: Schema.String.pipe(
+              Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim()),
             ),
-            { default: Array.empty },
-          ),
-        }),
-        Schema.Struct({
-          name: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-          nameIdentifiers: Schema.optionalWith(
-            Schema.Array(
-              Schema.Struct({
-                nameIdentifier: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-                nameIdentifierScheme: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-              }),
+          }),
+        ).pipe(Schema.withDecodingDefaultType(Effect.sync(Array.empty))),
+      }),
+      Schema.Struct({
+        name: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+        nameIdentifiers: Schema.Array(
+          Schema.Struct({
+            nameIdentifier: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+            nameIdentifierScheme: Schema.String.pipe(
+              Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim()),
             ),
-            { default: Array.empty },
-          ),
-        }),
-      ),
-    ),
-    { default: Array.empty },
-  ),
+          }),
+        ).pipe(Schema.withDecodingDefaultType(Effect.sync(Array.empty))),
+      }),
+    ]),
+  ).pipe(Schema.withDecodingDefaultType(Effect.sync(Array.empty))),
   titles: Schema.NonEmptyArray(
     Schema.Struct({
-      title: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      title: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
     }),
   ),
-  publisher: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+  publisher: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
   dates: Schema.NonEmptyArray(
     Schema.Struct({
-      date: Schema.Union(DateSchema, DateRangeSchema),
-      dateType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      date: Schema.Union([DateSchema, DateRangeSchema]),
+      dateType: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
     }),
   ),
-  language: Schema.optionalWith(Schema.String, { nullable: true }),
+  language: Schema.optional(Schema.NullOr(Schema.String)).pipe(
+    Schema.decodeTo(Schema.optional(Schema.String), {
+      decode: SchemaGetter.transformOptional(Option.filter(Predicate.isNotNull)),
+      encode: SchemaGetter.passthroughSubtype(),
+    }),
+  ),
   types: Schema.Struct({
     resourceType: Schema.optional(
-      Schema.Union(Schema.compose(Schema.Trim, Schema.NonEmptyString), EmptyStringAsUndefinedSchema),
+      Schema.Union([
+        Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+        EmptyStringAsUndefinedSchema,
+      ]),
     ),
-    resourceTypeGeneral: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
+    resourceTypeGeneral: Schema.optional(
+      Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+    ),
   }),
   relatedIdentifiers: Schema.Array(
     Schema.Struct({
-      relationType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-      relatedIdentifier: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      relationType: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+      relatedIdentifier: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
     }),
   ),
   descriptions: Schema.Array(
     Schema.Struct({
-      description: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-      descriptionType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+      description: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+      descriptionType: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
     }),
   ),
-  url: Schema.URL,
+  url: Schema.URLFromString,
   relationships: Schema.Struct({
     provider: DataIdSchema,
   }),
 }) {}
 
-export const RecordResponseSchema = Schema.pluck(
+export const RecordResponseSchema = pluck(
   Schema.Struct({
-    data: Schema.transform(
-      Schema.Struct({
-        attributes: pipe(Schema.encodedSchema(Record), Schema.omit('relationships')),
-        relationships: Schema.encodedSchema(Record.fields.relationships),
-      }),
-      Record,
-      {
-        strict: true,
-        decode: ({ attributes, relationships }) => ({ ...attributes, relationships }),
-        encode: ({ relationships, ...attributes }) => ({ attributes, relationships }),
-      },
+    data: Schema.Struct({
+      attributes: Schema.toEncoded(Schema.Struct(Struct.omit(Record.fields, ['relationships']))),
+      relationships: Schema.toEncoded(Record.fields.relationships),
+    }).pipe(
+      Schema.decodeTo(
+        Record,
+        SchemaTransformation.transform({
+          decode: ({ attributes, relationships }) => ({ ...attributes, relationships }),
+          encode: ({ relationships, ...attributes }) => ({ attributes, relationships }),
+        }),
+      ),
     ),
   }),
   'data',

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Tuple } from 'effect'
+import { Array, Result, Equal, Option, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -114,7 +114,7 @@ describe('decide', () => {
     const result = _.decide(new _.NotShared(), command)
 
     expect(result).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
             channelId: command.channelId,
@@ -133,7 +133,7 @@ describe('decide', () => {
         command,
       )
 
-      expect(result).toStrictEqual(Either.right(Option.none()))
+      expect(result).toStrictEqual(Result.succeed(Option.none()))
     })
 
     it.prop(
@@ -147,7 +147,7 @@ describe('decide', () => {
         const result = _.decide(new _.HasBeenShared({ channelId: command.channelId, messageTimestamp }), command)
 
         expect(result).toStrictEqual(
-          Either.left(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})),
+          Result.fail(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})),
         )
       },
     )
@@ -163,7 +163,7 @@ describe('decide', () => {
         const result = _.decide(new _.HasBeenShared({ channelId, messageTimestamp: command.messageTimestamp }), command)
 
         expect(result).toStrictEqual(
-          Either.left(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})),
+          Result.fail(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})),
         )
       },
     )

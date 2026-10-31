@@ -8,43 +8,43 @@ import { InviteAuthorToReview } from './InviteAuthorToReview/index.ts'
 import { NotifyRequesterOfReview } from './NotifyRequesterOfReview/index.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
 
-export class Email extends Context.Tag('Email')<
+export class Email extends Context.Service<
   Email,
   {
     acknowledgeReviewRequest: (
       ...args: Parameters<typeof AcknowledgeReviewRequest>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof AcknowledgeReviewRequest>>,
-      Effect.Effect.Error<ReturnType<typeof AcknowledgeReviewRequest>>
+      Effect.Success<ReturnType<typeof AcknowledgeReviewRequest>>,
+      Effect.Error<ReturnType<typeof AcknowledgeReviewRequest>>
     >
     inviteAuthor: (
       ...args: Parameters<typeof InviteAuthor>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof InviteAuthor>>,
-      Effect.Effect.Error<ReturnType<typeof InviteAuthor>>,
+      Effect.Success<ReturnType<typeof InviteAuthor>>,
+      Effect.Error<ReturnType<typeof InviteAuthor>>,
       Locale
     >
     inviteAuthorToReview: (
       ...args: Parameters<typeof InviteAuthorToReview>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof InviteAuthorToReview>>,
-      Effect.Effect.Error<ReturnType<typeof InviteAuthorToReview>>
+      Effect.Success<ReturnType<typeof InviteAuthorToReview>>,
+      Effect.Error<ReturnType<typeof InviteAuthorToReview>>
     >
     notifyRequesterOfReview: (
       ...args: Parameters<typeof NotifyRequesterOfReview>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof NotifyRequesterOfReview>>,
-      Effect.Effect.Error<ReturnType<typeof NotifyRequesterOfReview>>
+      Effect.Success<ReturnType<typeof NotifyRequesterOfReview>>,
+      Effect.Error<ReturnType<typeof NotifyRequesterOfReview>>
     >
     verifyContactEmailAddress: (
       ...args: Parameters<typeof VerifyContactEmailAddress>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof VerifyContactEmailAddress>>,
-      Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddress>>,
+      Effect.Success<ReturnType<typeof VerifyContactEmailAddress>>,
+      Effect.Error<ReturnType<typeof VerifyContactEmailAddress>>,
       Locale
     >
   }
->() {}
+>()('Email') {}
 
 export const acknowledgeReviewRequest = (...args: Parameters<(typeof Email.Service)['acknowledgeReviewRequest']>) =>
   Effect.flatMap(Email, service => service.acknowledgeReviewRequest(...args))

@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -38,12 +38,12 @@ export const CodeOfConductPage = ({
                   <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${
-                      Either.isLeft(form.agree)
+                      Result.isFailure(form.agree)
                         ? html`
                             <li>
                               <a href="#agree-yes">
                                 ${pipe(
-                                  Match.value(form.agree.left),
+                                  Match.value(form.agree.failure),
                                   Match.tag('Missing', () =>
                                     translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
                                   ),
@@ -65,7 +65,7 @@ export const CodeOfConductPage = ({
             role="group"
             aria-describedby="agree-tip"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.agree)
+              form._tag === 'InvalidForm' && Result.isFailure(form.agree)
                 ? 'aria-invalid="true" aria-errormessage="agree-error"'
                 : '',
             )}
@@ -119,12 +119,12 @@ export const CodeOfConductPage = ({
             </details>
 
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.agree)
+              form._tag === 'InvalidForm' && Result.isFailure(form.agree)
                 ? html`
                     <div class="error-message" id="agree-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${pipe(
-                        Match.value(form.agree.left),
+                        Match.value(form.agree.failure),
                         Match.tag('Missing', () =>
                           translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
                         ),

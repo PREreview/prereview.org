@@ -1,4 +1,4 @@
-import { Activity, DurableClock, Workflow } from '@effect/workflow'
+import { Activity, DurableClock, Workflow } from 'effect/workflow'
 import { Duration, Effect, Inspectable, Layer, pipe, Schema, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, Uuid } from '../../types/index.ts'
@@ -9,8 +9,7 @@ import { CategorizeReviewRequest as executeCategorizeReviewRequest } from './Cat
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
 import { ProcessReceivedReviewRequest as executeProcessReceivedReviewRequest } from './ProcessReceivedReviewRequest.ts'
 
-export const AcknowledgeReviewRequest = Workflow.make({
-  name: 'AcknowledgeReviewRequest',
+export const AcknowledgeReviewRequest = Workflow.make('AcknowledgeReviewRequest', {
   error: Errors.FailedToAcknowledgeReviewRequest,
   payload: {
     reviewRequestId: Uuid.UuidSchema,
@@ -18,8 +17,7 @@ export const AcknowledgeReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-export const CategorizeReviewRequest = Workflow.make({
-  name: 'CategorizeReviewRequest',
+export const CategorizeReviewRequest = Workflow.make('CategorizeReviewRequest', {
   error: Errors.FailedToCategorizeReviewRequest,
   payload: {
     reviewRequestId: Uuid.UuidSchema,
@@ -27,8 +25,7 @@ export const CategorizeReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-export const NotifyCommunitySlackOfReviewRequest = Workflow.make({
-  name: 'NotifyCommunitySlackOfReviewRequest',
+export const NotifyCommunitySlackOfReviewRequest = Workflow.make('NotifyCommunitySlackOfReviewRequest', {
   error: Errors.FailedToNotifyCommunitySlack,
   payload: {
     reviewRequestId: Uuid.UuidSchema,
@@ -36,8 +33,7 @@ export const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-export const ProcessReceivedReviewRequest = Workflow.make({
-  name: 'ProcessReceivedReviewRequest',
+export const ProcessReceivedReviewRequest = Workflow.make('ProcessReceivedReviewRequest', {
   error: Errors.FailedToProcessReceivedReviewRequest,
   payload: {
     reviewRequestId: Uuid.UuidSchema,
@@ -48,7 +44,7 @@ export const ProcessReceivedReviewRequest = Workflow.make({
 export const workflowsLayer = Layer.mergeAll(
   AcknowledgeReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
-      name: AcknowledgeReviewRequest.name,
+      name: AcknowledgeReviewRequest._tag,
       error: AcknowledgeReviewRequest.errorSchema,
       execute: executeAcknowledgeReviewRequest(reviewRequestId),
     }),
@@ -69,7 +65,7 @@ export const workflowsLayer = Layer.mergeAll(
       }),
       Effect.andThen(
         Activity.make({
-          name: CategorizeReviewRequest.name,
+          name: CategorizeReviewRequest._tag,
           error: CategorizeReviewRequest.errorSchema,
           execute: executeCategorizeReviewRequest(reviewRequestId),
         }),
@@ -82,7 +78,7 @@ export const workflowsLayer = Layer.mergeAll(
 
           yield* pipe(
             Commands.recordFailureToCategorizeReviewRequest({ failedAt, failureMessage, reviewRequestId }),
-            Effect.ignoreLogged,
+            Effect.ignore({ log: true }),
           )
         }),
       ),
@@ -90,7 +86,7 @@ export const workflowsLayer = Layer.mergeAll(
   ),
   NotifyCommunitySlackOfReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
-      name: NotifyCommunitySlackOfReviewRequest.name,
+      name: NotifyCommunitySlackOfReviewRequest._tag,
       error: NotifyCommunitySlackOfReviewRequest.errorSchema,
       execute: executeNotifyCommunitySlackOfReviewRequest(reviewRequestId),
     }),
@@ -106,13 +102,16 @@ export const workflowsLayer = Layer.mergeAll(
 
         yield* DurableClock.sleep({
           name: `sleep-${executionId}-${currentAttempt}`,
-          duration: Duration.min(Duration.times('10 minutes', Math.pow(2, currentAttempt - 2)), '12 hours'),
+          duration: Duration.min(
+            Duration.times(Duration.minutes(10), Math.pow(2, currentAttempt - 2)),
+            Duration.hours(12),
+          ),
         })
       }),
       Effect.andThen(
         Activity.make({
-          name: ProcessReceivedReviewRequest.name,
-          error: Schema.Union(ProcessReceivedReviewRequest.errorSchema, Preprints.PreprintIsNotFound),
+          name: ProcessReceivedReviewRequest._tag,
+          error: Schema.Union([ProcessReceivedReviewRequest.errorSchema, Preprints.PreprintIsNotFound]),
           execute: executeProcessReceivedReviewRequest(reviewRequestId),
         }),
       ),
@@ -127,7 +126,7 @@ export const workflowsLayer = Layer.mergeAll(
               reviewRequestId,
               reason: 'unknown-preprint',
             }),
-            Effect.ignoreLogged,
+            Effect.ignore({ log: true }),
           )
         }),
       ),

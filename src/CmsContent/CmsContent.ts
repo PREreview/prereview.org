@@ -11,7 +11,7 @@ import type { Slug } from '../types/Slug.ts'
 import type { PageNotFound } from './Errors.ts'
 import type { BlogPost, Page, PageOfBlogPosts } from './Types.ts'
 
-export class CmsContent extends Context.Tag('CmsContent')<
+export class CmsContent extends Context.Service<
   CmsContent,
   {
     getPage: (slug: Slug, preview?: boolean) => Effect.Effect<Page, UnableToQuery, Locale>
@@ -25,7 +25,7 @@ export class CmsContent extends Context.Tag('CmsContent')<
       page: number,
     ) => Effect.Effect<PageOfBlogPosts, UnableToQuery | PageNotFound, Locale>
   }
->() {
+>()('CmsContent') {
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {

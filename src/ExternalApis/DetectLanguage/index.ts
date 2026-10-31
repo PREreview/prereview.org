@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientRequest } from '@effect/platform'
+import { HttpClient, HttpClientRequest } from 'effect/http'
 import { Context, Effect, flow, Layer } from 'effect'
 import { Detect } from './Detect/index.ts'
 import { DetectLanguageApi } from './DetectLanguageApi.ts'
@@ -6,14 +6,14 @@ import { DetectLanguageApi } from './DetectLanguageApi.ts'
 export { LanguageCandidates } from './Detect/index.ts'
 export * from './DetectLanguageApi.ts'
 
-export class DetectLanguage extends Context.Tag('DetectLanguage')<
+export class DetectLanguage extends Context.Service<
   DetectLanguage,
   {
     detect: (
       ...args: Parameters<typeof Detect>
-    ) => Effect.Effect<Effect.Effect.Success<ReturnType<typeof Detect>>, Effect.Effect.Error<ReturnType<typeof Detect>>>
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof Detect>>, Effect.Error<ReturnType<typeof Detect>>>
   }
->() {}
+>()('DetectLanguage') {}
 
 export const detect = (...args: Parameters<(typeof DetectLanguage.Service)['detect']>) =>
   Effect.flatMap(DetectLanguage, service => service.detect(...args))

@@ -1,6 +1,6 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import { NonEmptyString } from '../../../../src/types/index.ts'
 import * as _ from '../../../../src/WebApp/ReviewADatasetFlow/UseOfAiPage/UseOfAiForm.ts'
 
@@ -11,7 +11,7 @@ describe('fromBody', () => {
     [
       'empty',
       {},
-      new _.InvalidForm({ generativeAiIdeas: Either.left(new _.Missing()), generativeAiIdeasDetails: Option.none() }),
+      new _.InvalidForm({ generativeAiIdeas: Result.fail(new _.Missing()), generativeAiIdeasDetails: Option.none() }),
     ],
     [
       'yes',
@@ -41,13 +41,13 @@ describe('fromBody', () => {
     [
       'invalid answer',
       { generativeAiIdeas: 'maybe' },
-      new _.InvalidForm({ generativeAiIdeas: Either.left(new _.Missing()), generativeAiIdeasDetails: Option.none() }),
+      new _.InvalidForm({ generativeAiIdeas: Result.fail(new _.Missing()), generativeAiIdeasDetails: Option.none() }),
     ],
     [
       'missing answer with details',
       { generativeAiIdeasDetails: details },
       new _.InvalidForm({
-        generativeAiIdeas: Either.left(new _.Missing()),
+        generativeAiIdeas: Result.fail(new _.Missing()),
         generativeAiIdeasDetails: Option.some(details),
       }),
     ],

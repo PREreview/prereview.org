@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as IsReadyToBeSharedForm from '../../../src/WebApp/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -38,9 +38,9 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.IsReadyToBeSharedQuestion({
     datasetReviewId,
     form: new IsReadyToBeSharedForm.InvalidForm({
-      isReadyToBeShared: Either.left(new IsReadyToBeSharedForm.Missing()),
-      isReadyToBeSharedYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      isReadyToBeSharedNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      isReadyToBeShared: Result.fail(new IsReadyToBeSharedForm.Missing()),
+      isReadyToBeSharedYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      isReadyToBeSharedNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

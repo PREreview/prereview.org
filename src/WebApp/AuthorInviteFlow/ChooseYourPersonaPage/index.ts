@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'

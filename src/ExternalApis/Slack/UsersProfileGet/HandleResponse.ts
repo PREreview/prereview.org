@@ -1,4 +1,4 @@
-import { HttpClientResponse } from '@effect/platform'
+import { HttpClientResponse } from 'effect/http'
 import { Effect, flow, Schema, Struct } from 'effect'
 import { Response, SlackError } from '../Types.ts'
 import { UsersProfileGetResponse } from './UsersProfileGetResponse.ts'

@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, pipe, Struct } from 'effect'
+import { Array, Result, flow, HashMap, pipe, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -51,5 +51,5 @@ const query = (events: ReadonlyArray<Events.Event>): Result => {
 export const FindReviewRequestsNeedingCategorization = Queries.OnDemandQuery({
   name: 'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
   createFilter: () => filter,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

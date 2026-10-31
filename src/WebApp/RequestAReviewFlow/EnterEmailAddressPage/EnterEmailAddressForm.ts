@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Either, identity, Match, pipe, Schema, String, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Result, identity, Match, pipe, Schema, String, Struct, SchemaTransformation, flow } from 'effect'
 import type { ContactAddress } from '../../../ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
 import { NonEmptyStringSchema } from '../../../types/NonEmptyString.ts'
@@ -17,7 +17,7 @@ export class Invalid extends Data.TaggedError('Invalid')<{ value: string }> {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  emailAddress: Either.Either<never, Missing | Invalid>
+  emailAddress: Result.Result<never, Missing | Invalid>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -32,31 +32,34 @@ export const fromContactAddress = Match.typeTags<ContactAddress, ValidForm>()({
 
 export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
   const emailAddress = pipe(
-    Schema.decodeEither(EmailAddressFieldSchema)(body),
-    Either.mapBoth({
-      onRight: Struct.get('emailAddress'),
-      onLeft: () => new Missing(),
+    Schema.decodeResult(EmailAddressFieldSchema)(body),
+    Result.mapBoth({
+      onSuccess: Struct.get('emailAddress'),
+      onFailure: () => new Missing(),
     }),
-    Either.filterOrLeft(
+    Result.filterOrFail(
       value => EmailAddress.isEmailAddress(value),
       value => new Invalid({ value }),
     ),
   )
 
-  return Either.match(emailAddress, {
-    onRight: emailAddress => new CompletedForm({ emailAddress }),
-    onLeft: emailAddress => new InvalidForm({ emailAddress: Either.left(emailAddress) }),
+  return Result.match(emailAddress, {
+    onSuccess: emailAddress => new CompletedForm({ emailAddress }),
+    onFailure: emailAddress => new InvalidForm({ emailAddress: Result.fail(emailAddress) }),
   })
 }
 
-const CollapsedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, {
-  strict: true,
-  decode: String.replaceAll(/\s+/g, ' '),
-  encode: identity,
-})
+const CollapsedWhitespaceSchema = Schema.String.pipe(
+  Schema.decodeTo(
+    Schema.String,
+    SchemaTransformation.transform({ decode: flow(String.replaceAll(/\s+/g, ' '), String.trim), encode: identity }),
+  ),
+)
 
-const EmailAddressFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    emailAddress: Schema.compose(CollapsedWhitespaceSchema, NonEmptyStringSchema),
-  }),
+const EmailAddressFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      emailAddress: CollapsedWhitespaceSchema.pipe(Schema.decodeTo(NonEmptyStringSchema)),
+    }),
+  ),
 )

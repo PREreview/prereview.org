@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
@@ -21,7 +21,7 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right when fields are missing', async ({ showPage }) => {
   const response = _.renderReceiveNotificationsPage({
     form: new ReceiveNotificationsForm.InvalidForm({
-      receiveNotifications: Either.left(new ReceiveNotificationsForm.Missing()),
+      receiveNotifications: Result.fail(new ReceiveNotificationsForm.Missing()),
     }),
     locale,
     preprintId,

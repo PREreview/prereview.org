@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -43,12 +43,12 @@ export const ChoosePersonaPage = ({
                   <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${
-                      Either.isLeft(form.persona)
+                      Result.isFailure(form.persona)
                         ? html`
                             <li>
                               <a href="#persona-public">
                                 ${pipe(
-                                  Match.value(form.persona.left),
+                                  Match.value(form.persona.failure),
                                   Match.tag('Missing', () =>
                                     translate(locale, 'write-comment-flow', 'errorSelectName')(),
                                   ),
@@ -70,7 +70,7 @@ export const ChoosePersonaPage = ({
             role="group"
             aria-describedby="persona-tip"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.persona)
+              form._tag === 'InvalidForm' && Result.isFailure(form.persona)
                 ? 'aria-invalid="true" aria-errormessage="persona-error"'
                 : '',
             )}
@@ -101,12 +101,12 @@ export const ChoosePersonaPage = ({
             </details>
 
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.persona)
+              form._tag === 'InvalidForm' && Result.isFailure(form.persona)
                 ? html`
                     <div class="error-message" id="persona-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${pipe(
-                        Match.value(form.persona.left),
+                        Match.value(form.persona.failure),
                         Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
                         Match.exhaustive,
                       )}

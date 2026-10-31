@@ -11,5 +11,5 @@ export const GetDoiForDatasetReviewRecord = Effect.fn(
 
     return deposition.metadata.prereserveDoi.doi
   },
-  Effect.catchAll(error => new FailedToGetRecordForDatasetReview({ cause: error })),
+  Effect.catch(error => new FailedToGetRecordForDatasetReview({ cause: error })),
 )

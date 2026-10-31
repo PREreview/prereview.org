@@ -1,30 +1,29 @@
 import {
   FetchHttpClient,
-  FileSystem,
   Headers,
   type HttpClient,
   HttpMethod,
   HttpServerError,
   HttpServerRequest,
   HttpServerResponse,
-  type Path,
-} from '@effect/platform'
-import type { WorkflowEngine } from '@effect/workflow'
+} from 'effect/http'
 import {
+  FileSystem,
+  type Path,
   Effect,
-  Either,
   flow,
   Match,
   Option,
   pipe,
   Record,
   Redacted,
-  type Runtime,
+  type Context,
   type Scope,
   String,
   Struct,
   Tuple,
 } from 'effect'
+import type { WorkflowEngine } from 'effect/workflow'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -73,11 +72,10 @@ import { WriteReviewRouter } from './WriteReviewRouter.ts'
 
 export const nonEffectRouter: Effect.Effect<
   HttpServerResponse.HttpServerResponse,
-  HttpServerError.RouteNotFound | HttpServerError.RequestError,
+  HttpServerError.RouteNotFound | HttpServerError.HttpServerError,
   | Locale
   | FeatureFlags.FeatureFlags
   | CommentsForReview
-  | FetchHttpClient.Fetch
   | SlackOauth
   | Keyv.KeyvStores
   | Slack.SlackApi
@@ -85,7 +83,7 @@ export const nonEffectRouter: Effect.Effect<
   | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
-  | Runtime.Runtime.Context<Env['runtime']>
+  | EffectToFpts.ContextServices<Env['runtime']>
   | FileSystem.FileSystem
   | Path.Path
   | Scope.Scope
@@ -96,21 +94,21 @@ export const nonEffectRouter: Effect.Effect<
     return yield* new HttpServerError.RouteNotFound({ request })
   }
 
-  const route = yield* Either.try({
+  const route = yield* Effect.try({
     try: () => P.Route.parse(request.url),
     catch: () => new HttpServerError.RouteNotFound({ request }),
   })
 
   const handler = yield* pipe(
-    FptsToEffect.option(routerWithoutHyperTs.run(route)),
+    Effect.fromOption(FptsToEffect.option(routerWithoutHyperTs.run(route))),
     Effect.mapBoth({
-      onSuccess: Tuple.getFirst,
+      onSuccess: Tuple.get(0),
       onFailure: () => new HttpServerError.RouteNotFound({ request }),
     }),
   )
 
   const keyvStores = yield* Keyv.KeyvStores
-  const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
+  const runtime = yield* Effect.context<EffectToFpts.ContextServices<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
   const fileSystem = yield* FileSystem.FileSystem
@@ -150,7 +148,7 @@ export const nonEffectRouter: Effect.Effect<
           Match.when(String.includes('application/x-www-form-urlencoded'), () =>
             Effect.map(request.urlParamsBody, Record.fromEntries),
           ),
-          Match.when(String.includes('multipart/form-data'), () => Effect.either(request.multipart)),
+          Match.when(String.includes('multipart/form-data'), () => Effect.result(request.multipart)),
           Match.orElse(() => Effect.void),
         )
       : Effect.void,
@@ -166,7 +164,7 @@ export const nonEffectRouter: Effect.Effect<
     loggedInUser: Option.getOrUndefined(loggedInUser),
     sessionId: Option.getOrUndefined(sessionId),
     featureFlags,
-    method: request.method,
+    method: request.method as HttpMethod.HttpMethod,
     fileSystem,
     runtime,
     logger: loggerEnv,
@@ -202,7 +200,7 @@ export interface Env {
   publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
   fileSystem: FileSystem.FileSystem
-  runtime: Runtime.Runtime<
+  runtime: Context.Context<
     | Clubs
     | CachingHttpClient.HttpCache
     | CommunitySlack.CommunitySlack

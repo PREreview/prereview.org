@@ -42,8 +42,8 @@ describe('authorInviteEnterEmailAddress', () => {
         ([inviteId, [user, invite], locale, prereview, contactEmailAddress]) =>
           Effect.gen(function* () {
             const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
-            const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
-              () => contactEmailAddress,
+            const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(() =>
+              Effect.fromResult(contactEmailAddress),
             )
             const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
             const useAuthorInviteEmailAddress = vi.fn<
@@ -51,7 +51,7 @@ describe('authorInviteEnterEmailAddress', () => {
             >(() => Effect.void)
 
             const runtime = yield* Effect.provide(
-              Effect.runtime<ContactEmailAddresses | Locale>(),
+              Effect.context<ContactEmailAddresses | Locale>(),
               Layer.mock(ContactEmailAddresses, { getContactEmailAddress, useAuthorInviteEmailAddress }),
             )
 
@@ -101,8 +101,8 @@ describe('authorInviteEnterEmailAddress', () => {
         ([inviteId, [user, invite], locale, otherEmailAddress, prereview, contactEmailAddress]) =>
           Effect.gen(function* () {
             const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
-            const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(
-              () => contactEmailAddress,
+            const getContactEmailAddress = vi.fn<(typeof ContactEmailAddresses.Service)['getContactEmailAddress']>(() =>
+              Effect.fromResult(contactEmailAddress),
             )
             const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
             const startVerificationOfContactEmailAddress = vi.fn<
@@ -110,7 +110,7 @@ describe('authorInviteEnterEmailAddress', () => {
             >(() => Effect.void)
 
             const runtime = yield* Effect.provide(
-              Effect.runtime<ContactEmailAddresses | Locale>(),
+              Effect.context<ContactEmailAddresses | Locale>(),
               Layer.mock(ContactEmailAddresses, { getContactEmailAddress, startVerificationOfContactEmailAddress }),
             )
 
@@ -163,7 +163,7 @@ describe('authorInviteEnterEmailAddress', () => {
         ],
         ([inviteId, [user, invite], locale, otherEmailAddress, prereview, contactEmailAddress]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
             const actual = yield* Effect.promise(
               _.authorInviteEnterEmailAddress({
@@ -190,7 +190,7 @@ describe('authorInviteEnterEmailAddress', () => {
           }).pipe(
             Effect.provide([
               Layer.mock(ContactEmailAddresses, {
-                getContactEmailAddress: () => contactEmailAddress,
+                getContactEmailAddress: () => Effect.fromResult(contactEmailAddress),
                 startVerificationOfContactEmailAddress: () => new Commands.UnableToHandleCommand({}),
               }),
               Layer.succeed(Locale, locale),
@@ -224,7 +224,7 @@ describe('authorInviteEnterEmailAddress', () => {
         ],
         ([inviteId, [user, invite], locale, body, prereview, contactEmailAddress]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
             const actual = yield* Effect.promise(
               _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method: 'POST', user })({
@@ -245,7 +245,9 @@ describe('authorInviteEnterEmailAddress', () => {
             })
           }).pipe(
             Effect.provide([
-              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => Effect.fromResult(contactEmailAddress),
+              }),
               Layer.succeed(Locale, locale),
             ]),
           ),
@@ -275,7 +277,7 @@ describe('authorInviteEnterEmailAddress', () => {
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
           const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -298,7 +300,7 @@ describe('authorInviteEnterEmailAddress', () => {
           expect(getPrereview).toHaveBeenCalledWith(invite.review)
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.succeed(Locale, locale),
           ]),
         ),
@@ -324,7 +326,7 @@ describe('authorInviteEnterEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, method, body, prereview, contactEmailAddress]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -360,7 +362,7 @@ describe('authorInviteEnterEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -386,7 +388,7 @@ describe('authorInviteEnterEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything()],
       ([inviteId, user, locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -420,7 +422,7 @@ describe('authorInviteEnterEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -451,7 +453,7 @@ describe('authorInviteEnterEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -477,7 +479,7 @@ describe('authorInviteEnterEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything(), fc.openAuthorInvite()],
       ([inviteId, user, locale, method, body, invite]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -500,7 +502,7 @@ describe('authorInviteEnterEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything(), fc.declinedAuthorInvite()],
       ([inviteId, user, locale, method, body, invite]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -523,7 +525,7 @@ describe('authorInviteEnterEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything()],
       ([inviteId, user, locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
@@ -550,7 +552,7 @@ describe('authorInviteEnterEmailAddress', () => {
     [fc.uuid(), fc.supportedLocale(), fc.string(), fc.anything(), fc.authorInvite()],
     ([inviteId, locale, method, body, invite]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+        const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
         const actual = yield* Effect.promise(
           _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method })({

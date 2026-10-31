@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/GetAuthorChoicesToConfirm.ts'
 import { DryadDatasetId } from '../../src/Datasets/index.ts'
 import * as Events from '../../src/Events.ts'
@@ -63,30 +63,30 @@ const confirmed = new Events.AuthorChoicesForAReviewConfirmed({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
-  ['not accepted an invite', input, [added], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
-  ['accepted an invite', input, [added, accepted], Either.left(new _.PersonaHasNotBeenChosen())],
+  ['no events', input, [], Result.fail(new _.PrereviewerIsNotListedOnTheReview())],
+  ['not accepted an invite', input, [added], Result.fail(new _.PrereviewerIsNotListedOnTheReview())],
+  ['accepted an invite', input, [added, accepted], Result.fail(new _.PersonaHasNotBeenChosen())],
   [
     'accepted an invite, different review ID',
     inputDifferentReviewId,
     [added, accepted],
-    Either.left(new _.PrereviewerIsNotListedOnTheReview()),
+    Result.fail(new _.PrereviewerIsNotListedOnTheReview()),
   ],
   [
     'accepted an invite, different ORCID iD',
     inputDifferentOrcidId,
     [added, accepted],
-    Either.left(new _.PrereviewerIsNotListedOnTheReview()),
+    Result.fail(new _.PrereviewerIsNotListedOnTheReview()),
   ],
-  ['started the review', input, [started, added, accepted], Either.left(new _.ChoicesHaveBeenConfirmed())],
+  ['started the review', input, [started, added, accepted], Result.fail(new _.ChoicesHaveBeenConfirmed())],
   [
     'different ORCID iD started the review',
     input,
     [startedDifferentOrcidId, added, accepted],
-    Either.left(new _.PersonaHasNotBeenChosen()),
+    Result.fail(new _.PersonaHasNotBeenChosen()),
   ],
-  ['persona chosen', input, [added, accepted, persona], Either.right({ persona: persona.persona })],
-  ['details confirmed', input, [added, accepted, persona, confirmed], Either.left(new _.ChoicesHaveBeenConfirmed())],
+  ['persona chosen', input, [added, accepted, persona], Result.succeed({ persona: persona.persona })],
+  ['details confirmed', input, [added, accepted, persona, confirmed], Result.fail(new _.ChoicesHaveBeenConfirmed())],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetAuthorChoicesToConfirm
 

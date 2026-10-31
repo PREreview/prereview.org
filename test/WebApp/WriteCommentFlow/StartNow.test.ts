@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Layer } from 'effect'
+import { Effect, Result, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
@@ -31,7 +31,7 @@ describe('StartNow', () => {
             const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
             const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-            >(() => Effect.succeed(Either.right(nextCommand)))
+            >(() => Effect.succeed(Result.succeed(nextCommand)))
 
             const actual = yield* _.StartNow({ id }).pipe(
               Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),

@@ -1,4 +1,4 @@
-import { Array, Effect, Option, pipe } from 'effect'
+import { Array, Boolean, Effect, Option, pipe } from 'effect'
 import { Email } from '../../ExternalInteractions/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
@@ -16,8 +16,11 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
       Effect.andThen(
         Effect.filter(
           requester =>
-            PreprintReviews.hasAPrereviewerBeenNotifiedOfAReview({ prereviewId: prereview.id, orcidId: requester }),
-          { concurrency: 'unbounded', negate: true },
+            Effect.map(
+              PreprintReviews.hasAPrereviewerBeenNotifiedOfAReview({ prereviewId: prereview.id, orcidId: requester }),
+              Boolean.not,
+            ),
+          { concurrency: 'unbounded' },
         ),
       ),
     )
@@ -48,5 +51,5 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
       { concurrency: 'unbounded', discard: true },
     )
   },
-  Effect.catchAll(error => new Errors.FailedToNotifyReviewRequesters({ cause: error })),
+  Effect.catch(error => new Errors.FailedToNotifyReviewRequesters({ cause: error })),
 )

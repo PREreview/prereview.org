@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/ChoosePersona.ts'
@@ -105,7 +105,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
 
     const actual = decide(state, input)
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+    expect(actual).toStrictEqual(Result.fail(new ReviewRequests.UnknownReviewRequest({})))
   })
 })
 
@@ -121,7 +121,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
     const actual = decide(state, input)
 
     expect(actual).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen({
             persona: input.persona,
@@ -146,7 +146,7 @@ describe('persona has been chosen', () => {
       const actual = decide(state, input)
 
       expect(actual).toStrictEqual(
-        Either.right(
+        Result.succeed(
           Option.some(
             new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen({
               persona: input.persona,
@@ -169,7 +169,7 @@ describe('persona has been chosen', () => {
 
       const actual = decide(state, input)
 
-      expect(actual).toStrictEqual(Either.right(Option.none()))
+      expect(actual).toStrictEqual(Result.succeed(Option.none()))
     })
   })
 })
@@ -185,6 +185,6 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
 
     const actual = decide(state, input)
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})))
+    expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})))
   })
 })

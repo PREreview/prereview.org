@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { type Array, Either } from 'effect'
+import { type Array, Result } from 'effect'
 import * as _ from '../../src/Clubs/GetClubBySlug.ts'
 import { type ClubDetails, ClubNotFound } from '../../src/Clubs/index.ts'
 import { html } from '../../src/html.ts'
@@ -49,9 +49,9 @@ const clubs = [
 ] satisfies Array.NonEmptyReadonlyArray<ClubDetails>
 
 it.each<[string, Slug, _.Result]>([
-  ['by slug', slug, Either.right(clubs[0])],
-  ['by former slug', formerSlug, Either.right(clubs[1])],
-  ['by other slug', otherSlug, Either.left(new ClubNotFound())],
+  ['by slug', slug, Result.succeed(clubs[0])],
+  ['by former slug', formerSlug, Result.succeed(clubs[1])],
+  ['by other slug', otherSlug, Result.fail(new ClubNotFound())],
 ])('with a club name (%s)', (_name, input, expected) => {
   const actual = _.GetClubBySlug(clubs)(input)
 

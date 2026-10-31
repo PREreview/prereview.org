@@ -1,4 +1,4 @@
-import { Effect, HashSet } from 'effect'
+import { Effect } from 'effect'
 import { CmsContent } from '../CmsContent/index.ts'
 import { Locale } from '../Context.ts'
 import { fixHeadingLevels, html, plainText } from '../html.ts'
@@ -36,8 +36,8 @@ export const CmsPage = Effect.fnUntraced(
       `,
       canonical,
       current,
-      js: HashSet.toValues(content.js),
+      js: globalThis.Array.from(content.js),
     })
   },
-  Effect.catchAll(() => HavingProblemsPage),
+  Effect.catch(() => HavingProblemsPage),
 )

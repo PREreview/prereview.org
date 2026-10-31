@@ -1,5 +1,5 @@
-import { Url, UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, Schema } from 'effect'
+import { Url, type UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, Schema } from 'effect'
 import { Doi, NonEmptyString } from '../../../types/index.ts'
 
 export type ReviewADatasetForm = IncompleteForm | CompletedForm
@@ -15,7 +15,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  whichDataset: Either.Either<never, Invalid | Missing>
+  whichDataset: Result.Result<never, Invalid | Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,21 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(
   function* (body: UrlParams.UrlParams) {
-    const { whichDataset } = yield* Schema.decode(WhichDatasetSchema)(body)
+    const { whichDataset } = yield* Schema.decodeEffect(WhichDatasetSchema)(body)
 
     return Option.match(
-      Option.orElse(Doi.parse(whichDataset), () => Either.getRight(Url.fromString(whichDataset))),
+      Option.orElse(Doi.parse(whichDataset), () => Result.getSuccess(Url.fromString(whichDataset))),
       {
-        onNone: () => new InvalidForm({ whichDataset: Either.left(new Invalid({ value: whichDataset })) }),
+        onNone: () => new InvalidForm({ whichDataset: Result.fail(new Invalid({ value: whichDataset })) }),
         onSome: whichDataset => new CompletedForm({ whichDataset }),
       },
     )
   },
-  Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ whichDataset: Either.left(new Missing()) }))),
+  Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ whichDataset: Result.fail(new Missing()) }))),
 )
 
-const WhichDatasetSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    whichDataset: NonEmptyString.NonEmptyStringSchema,
-  }),
+const WhichDatasetSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      whichDataset: NonEmptyString.NonEmptyStringSchema,
+    }),
+  ),
 )

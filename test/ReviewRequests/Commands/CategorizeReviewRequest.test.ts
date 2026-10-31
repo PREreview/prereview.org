@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Equal, Option, Tuple } from 'effect'
+import { Array, Result, Equal, Option, Tuple } from 'effect'
 import * as _ from '../../../src/ReviewRequests/Commands/CategorizeReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -172,7 +172,7 @@ describe('decide', () => {
     const result = _.decide(new _.NotCategorized(), command)
 
     expect(result).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
             language: command.language,
@@ -192,7 +192,7 @@ describe('decide', () => {
         command,
       )
 
-      expect(result).toStrictEqual(Either.right(Option.none()))
+      expect(result).toStrictEqual(Result.succeed(Option.none()))
     })
 
     it.prop(
@@ -209,7 +209,7 @@ describe('decide', () => {
         )
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
@@ -231,7 +231,7 @@ describe('decide', () => {
       [
         fc
           .tuple(command(), fc.array(fc.keywordId()))
-          .filter(([command, keywords]) => !Equal.equals(Data.array(command.keywords), Data.array(keywords))),
+          .filter(([command, keywords]) => !Equal.equals(command.keywords, keywords)),
       ],
       ([[command, keywords]]) => {
         const result = _.decide(
@@ -240,7 +240,7 @@ describe('decide', () => {
         )
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
@@ -269,7 +269,7 @@ describe('decide', () => {
       [
         fc
           .tuple(command(), fc.array(fc.topicId()))
-          .filter(([command, topics]) => !Equal.equals(Data.array(command.topics), Data.array(topics))),
+          .filter(([command, topics]) => !Equal.equals(command.topics, topics)),
       ],
       ([[command, topics]]) => {
         const result = _.decide(
@@ -278,7 +278,7 @@ describe('decide', () => {
         )
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
@@ -303,15 +303,15 @@ describe('decide', () => {
           .filter(
             ([command, language, keywords, topics]) =>
               !Equal.equals(command.language, language) &&
-              !Equal.equals(Data.array(command.keywords), Data.array(keywords)) &&
-              !Equal.equals(Data.array(command.topics), Data.array(topics)),
+              !Equal.equals(command.keywords, keywords) &&
+              !Equal.equals(command.topics, topics),
           ),
       ],
       ([[command, language, keywords, topics]]) => {
         const result = _.decide(new _.HasBeenCategorized({ language, keywords, topics }), command)
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,

@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Option, pipe, type Types } from 'effect'
+import { Array, Data, Result, Option, pipe, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -26,7 +26,7 @@ export interface Input {
   reviewRequestId: Uuid.Uuid
 }
 
-export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewRequest>
+export type Result = Result.Result<PublishedReviewRequest, Errors.UnknownReviewRequest>
 
 const createFilter = ({ reviewRequestId }: Input) =>
   Events.EventFilter({
@@ -43,7 +43,7 @@ const createFilter = ({ reviewRequestId }: Input) =>
   })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
@@ -56,9 +56,9 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
       const published = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasPublished'))
 
       return yield* Option.match(Option.all([started, published]), {
-        onNone: () => Either.left(new Errors.UnknownReviewRequest({})),
+        onNone: () => Result.fail(new Errors.UnknownReviewRequest({})),
         onSome: ([started, published]) =>
-          Either.right(
+          Result.succeed(
             new PublishedPrereviewerReviewRequest({
               author: { orcidId: started.requesterId, persona: persona.value.persona },
               preprintId: started.preprintId,
@@ -75,7 +75,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
 
     return yield* Option.match(Option.all([received, accepted]), {
       onNone: () =>
-        Either.fromOption(
+        Result.fromOption(
           pipe(
             Array.findLast(filteredEvents, hasTag('ReviewRequestFromAPreprintServerWasImported')),
             Option.andThen(
@@ -105,7 +105,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
           () => new Errors.UnknownReviewRequest({}),
         ),
       onSome: ([received, accepted]) =>
-        Either.right(
+        Result.succeed(
           new PublishedReceivedReviewRequest({
             author: received.requester,
             preprintId: received.preprintId,

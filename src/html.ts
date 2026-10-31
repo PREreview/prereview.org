@@ -14,6 +14,7 @@ import {
   Schema,
   Struct,
   Tuple,
+  SchemaTransformation,
 } from 'effect'
 import { decode, encode } from 'html-entities'
 import { Parser } from 'htmlparser2'
@@ -48,27 +49,24 @@ export class PlainText extends Data.TaggedClass('PlainText')<{
   }
 }
 
-export const HtmlFromSelfSchema: Schema.Schema<Html> = Schema.instanceOf(Html)
+export const HtmlFromSelfSchema: Schema.Codec<Html> = Schema.instanceOf(Html)
 
-export const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, HtmlFromSelfSchema, {
-  strict: true,
-  decode: rawHtml,
-  encode: String,
-})
+export const HtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
+  Schema.decodeTo(HtmlFromSelfSchema, SchemaTransformation.transform({ decode: rawHtml, encode: String })),
+)
 
-export const SanitizeHtmlSchema = (options: Parameters<typeof sanitizeHtml>[1] = {}): Schema.Schema<Html, string> =>
-  Schema.transform(Schema.String, HtmlFromSelfSchema, {
-    strict: true,
-    decode: string => sanitizeHtml(string, options),
-    encode: String,
-  })
+export const SanitizeHtmlSchema = (options: Parameters<typeof sanitizeHtml>[1] = {}): Schema.Codec<Html, string> =>
+  Schema.String.pipe(
+    Schema.decodeTo(
+      HtmlFromSelfSchema,
+      SchemaTransformation.transform({ decode: string => sanitizeHtml(string, options), encode: String }),
+    ),
+  )
 
-export const PlainTextFromSelfSchema: Schema.Schema<PlainText> = Schema.instanceOf(PlainText)
+export const PlainTextFromSelfSchema: Schema.Codec<PlainText> = Schema.instanceOf(PlainText)
 
-export const PlainTextSchema: Schema.Schema<PlainText, string> = Schema.transform(
-  Schema.String,
-  PlainTextFromSelfSchema,
-  { strict: true, decode: plainText, encode: String },
+export const PlainTextSchema: Schema.Codec<PlainText, string> = Schema.String.pipe(
+  Schema.decodeTo(PlainTextFromSelfSchema, SchemaTransformation.transform({ decode: plainText, encode: String })),
 )
 
 type Placeholder = ReadonlyArray<Html | PlainText> | Html | PlainText | string | number
@@ -84,7 +82,7 @@ const handlePlaceholder = pipe(
 
 export function html(literals: TemplateStringsArray, ...placeholders: ReadonlyArray<Placeholder>): Html {
   const value = literals.raw.reduce((string, literal, i) => {
-    const placeholder = Array.unsafeGet(placeholders, i - 1)
+    const placeholder = Array.getUnsafe(placeholders, i - 1)
 
     if (isTextAreaString(string)) {
       const value =
@@ -325,7 +323,7 @@ interface CanonicalNode {
   children: ReadonlyArray<CanonicalNode | string>
 }
 
-const attrOrder: Order.Order<readonly [string, string]> = Order.mapInput(Order.string, Tuple.getFirst)
+const attrOrder: Order.Order<readonly [string, string]> = Order.mapInput(Order.String, Tuple.get(0))
 
 function parseToCanonical(input: string): ReadonlyArray<CanonicalNode | string> {
   const root = Array.empty<CanonicalNode | string>()
@@ -340,7 +338,7 @@ function parseToCanonical(input: string): ReadonlyArray<CanonicalNode | string> 
           tag: name.toLowerCase(),
           attrs: pipe(
             Record.toEntries(attribs),
-            Array.map(Tuple.mapSecond(value => value.trim())),
+            Array.map(([name, value]) => Tuple.make(name, value.trim())),
             Array.sort(attrOrder),
           ),
           children: [],
@@ -450,7 +448,7 @@ function normalize(nodes: ReadonlyArray<CanonicalChild>, preserveWhitespace = fa
 
   return pipe(
     normalizedNodes,
-    Array.filterMap((node, index) => {
+    Array.map((node, index) => {
       if (isElementNode(node)) {
         return Option.some(node)
       }
@@ -463,6 +461,7 @@ function normalize(nodes: ReadonlyArray<CanonicalChild>, preserveWhitespace = fa
 
       return text === '' ? Option.none() : Option.some(text)
     }),
+    Array.getSomes,
   )
 }
 

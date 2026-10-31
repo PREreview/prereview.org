@@ -1,4 +1,4 @@
-import { Array, Data, Either, Match, Option } from 'effect'
+import { Array, Data, Result, Match, Option } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { Pseudonym, Temporal } from '../types/index.ts'
@@ -69,10 +69,10 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
 const decide = (state: State, input: Input) =>
   Match.valueTags(state, {
-    PseudonymAlreadyInUse: state => Either.left(state),
+    PseudonymAlreadyInUse: state => Result.fail(state),
     PrereviewerAlreadyRegistered: existing => {
       if (existing.registeredAt !== input.registeredAt || existing.pseudonym !== input.pseudonym) {
-        return Either.left(
+        return Result.fail(
           new MismatchWithExistingDataForOrcid({
             existingPseudonym: existing.pseudonym,
             existingRegisteredAt: existing.registeredAt,
@@ -80,9 +80,9 @@ const decide = (state: State, input: Input) =>
         )
       }
 
-      return Either.right(Option.none())
+      return Result.succeed(Option.none())
     },
-    PrereviewerNotRegistered: () => Either.right(Option.some(new Events.PrereviewerRegistered(input))),
+    PrereviewerNotRegistered: () => Result.succeed(Option.some(new Events.PrereviewerRegistered(input))),
   })
 
 export const RegisterPrereviewer = Commands.Command({

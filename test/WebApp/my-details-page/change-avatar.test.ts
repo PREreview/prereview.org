@@ -1,6 +1,6 @@
-import { Multipart } from '@effect/platform'
+import { Multipart } from 'effect/http'
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Inspectable } from 'effect'
+import { Effect, Result, Inspectable } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { changeAvatarMatch, myDetailsMatch } from '../../../src/routes.ts'
@@ -33,7 +33,7 @@ describe('changeAvatar', () => {
     ([file, user, locale]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
-          _.changeAvatar({ body: Either.right({ avatar: [file] }), locale, method: 'POST', user })({
+          _.changeAvatar({ body: Result.succeed({ avatar: [file] }), locale, method: 'POST', user })({
             saveAvatar: () => TE.right(undefined),
           }),
         )
@@ -71,7 +71,7 @@ describe('changeAvatar', () => {
         const saveAvatar = vi.fn<_.Env['saveAvatar']>(() => TE.left('unavailable'))
 
         const actual = yield* Effect.promise(
-          _.changeAvatar({ body: Either.right({ avatar: [file] }), locale, method: 'POST', user })({
+          _.changeAvatar({ body: Result.succeed({ avatar: [file] }), locale, method: 'POST', user })({
             saveAvatar,
           }),
         )
@@ -113,7 +113,7 @@ describe('changeAvatar', () => {
     ([file, user, locale]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
-          _.changeAvatar({ body: Either.right({ avatar: [file] }), locale, method: 'POST', user })({
+          _.changeAvatar({ body: Result.succeed({ avatar: [file] }), locale, method: 'POST', user })({
             saveAvatar: shouldNotBeCalled,
           }),
         )
@@ -139,7 +139,7 @@ describe('changeAvatar', () => {
           reason: fc.constantFrom('FileTooLarge', 'FieldTooLarge', 'BodyTooLarge', 'InternalError'),
           cause: fc.anything(),
         })
-        .map(args => new Multipart.MultipartError(args)),
+        .map(args => Multipart.MultipartError.fromReason(args.reason, args.cause)),
       fc.user(),
       fc.supportedLocale(),
     ],
@@ -147,7 +147,7 @@ describe('changeAvatar', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
           _.changeAvatar({
-            body: Either.left(body),
+            body: Result.fail(body),
             locale,
             method: 'POST',
             user,
@@ -178,8 +178,8 @@ describe('changeAvatar', () => {
             reason: fc.constantFrom('TooManyParts', 'Parse'),
             cause: fc.anything(),
           })
-          .map(args => Either.left(new Multipart.MultipartError(args))),
-        fc.anything().map(Either.right),
+          .map(args => Result.fail(Multipart.MultipartError.fromReason(args.reason, args.cause))),
+        fc.anything().map(Result.succeed),
         fc.anything(),
       ),
       fc.user(),

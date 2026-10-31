@@ -1,4 +1,4 @@
-import { Effect, pipe, type Either } from 'effect'
+import { Effect, pipe, type Result } from 'effect'
 import type { Keyv } from '../keyv.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import { UnableToQuery } from '../Queries.ts'
@@ -13,11 +13,11 @@ export interface Input {
   orcidId: OrcidId
 }
 
-export type Result = Either.Either<NextExpectedCommand, Errors.PreprintReviewNotFound | UnableToQuery>
+export type Result = Result.Result<NextExpectedCommand, Errors.PreprintReviewNotFound | UnableToQuery>
 
 export const GetNextExpectedCommand = (
   formStore: Keyv<unknown>,
-): ((input: Input) => Effect.Effect<Either.Either.Right<Result>, Either.Either.Left<Result>>) =>
+): ((input: Input) => Effect.Effect<Result.Result.Success<Result>, Result.Result.Failure<Result>>) =>
   Effect.fn('PreprintReviews.getNextExpectedCommand')(function* (input) {
     const form = yield* pipe(
       FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),

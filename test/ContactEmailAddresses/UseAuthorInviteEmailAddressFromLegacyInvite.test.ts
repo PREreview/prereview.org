@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/Errors.ts'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddressFromLegacyInvite.ts'
 import * as Events from '../../src/Events.ts'
@@ -80,12 +80,12 @@ const inviteAccepted = new Events.AuthorInviteAccepted({
   acceptedAt: Temporal.Now.instant(),
 })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
   [
     'no contact address',
     [],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId,
@@ -100,13 +100,13 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'verified imported',
     [verifiedImported],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'unverified imported',
     [unverifiedImported],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId,
@@ -121,19 +121,19 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'verified after imported unverified',
     [unverifiedImported, verifiedPreviouslyUnverified],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'verified recorded',
     [addressRecorded, addressVerified],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'unverified recorded',
     [addressRecorded],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId,
@@ -148,13 +148,13 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'used another invite email address',
     [authorInviteAddressChosen],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'newer address recorded',
     [inviteAdded, inviteAccepted, authorInviteAddressChosen, newerAddressRecorded],
     { orcidId, inviteId, emailAddress, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId,

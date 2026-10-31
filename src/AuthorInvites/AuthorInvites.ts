@@ -12,7 +12,7 @@ import { HasAnEmailToInviteAuthorBeenSent } from './HasAnEmailToInviteAuthorBeen
 import { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
 import { RecordEmailSentToInviteAuthor } from './RecordEmailSentToInviteAuthor.ts'
 
-export class AuthorInvites extends Context.Tag('AuthorInvites')<
+export class AuthorInvites extends Context.Service<
   AuthorInvites,
   {
     acceptInvite: (
@@ -32,7 +32,7 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
     hasAnEmailToInviteAuthorBeenSent: Queries.FromOnDemandQuery<typeof HasAnEmailToInviteAuthorBeenSent>
     recordEmailSentToInviteAuthor: Commands.FromStatelessCommand<typeof RecordEmailSentToInviteAuthor>
   }
->() {}
+>()('AuthorInvites') {}
 
 export type { NextExpectedCommand } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 

@@ -73,7 +73,10 @@ export const writeReviewReviewType = ({
           ),
           RTE.apS(
             'user',
-            pipe(RTE.fromNullable('no-session' as const)(user), RTE.chainEitherKW(ensureUserIsNotAnAuthor(preprint))),
+            pipe(
+              RTE.fromNullable('no-session' as const)(user),
+              RTE.chainEitherKW(flow(ensureUserIsNotAnAuthor(preprint), EffectToFpts.either)),
+            ),
           ),
           RTE.bindW(
             'form',

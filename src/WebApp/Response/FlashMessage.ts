@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
 
-export const FlashMessageSchema = Schema.Literal(
+export const FlashMessageSchema = Schema.Literals([
   'logged-out',
   'logged-in',
   'logged-in-demo',
@@ -14,4 +14,4 @@ export const FlashMessageSchema = Schema.Literal(
   'slack-disconnected',
   'avatar-changed',
   'avatar-removed',
-)
+])

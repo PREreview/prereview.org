@@ -1,4 +1,4 @@
-import { Array, Data, Either, flow, HashMap, Option, pipe } from 'effect'
+import { Array, Data, Result, flow, HashMap, Option, pipe } from 'effect'
 import type * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -72,5 +72,5 @@ export const IsPseudonymInUse = Queries.StatefulQuery({
   name: 'Prereviewers.isPseudonymInUse',
   initialState,
   updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

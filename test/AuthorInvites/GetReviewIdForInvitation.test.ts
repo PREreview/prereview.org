@@ -1,5 +1,5 @@
 import { expect, test } from '../vitest.ts'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/GetReviewIdForInvitation.ts'
 import * as Events from '../../src/Events.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
@@ -17,9 +17,9 @@ const added = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new _.InvitationNotFound())],
-  ['added', input, [added], Either.right(reviewId)],
-  ['added, different invitation ID', inputDifferentInvitationId, [added], Either.left(new _.InvitationNotFound())],
+  ['no events', input, [], Result.fail(new _.InvitationNotFound())],
+  ['added', input, [added], Result.succeed(reviewId)],
+  ['added, different invitation ID', inputDifferentInvitationId, [added], Result.fail(new _.InvitationNotFound())],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetReviewIdForInvitation
 

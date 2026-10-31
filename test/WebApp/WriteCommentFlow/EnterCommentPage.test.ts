@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Equal } from 'effect'
+import { Effect, Result, Equal } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -198,7 +198,7 @@ describe('EnterCommentSubmission', () => {
               const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
               const getNextExpectedCommandForUserOnAComment = vi.fn<
                 typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-              >(() => Effect.succeed(Either.right(nextCommand)))
+              >(() => Effect.succeed(Result.succeed(nextCommand)))
 
               const actual = yield* _.EnterCommentSubmission({
                 body: { comment: body.comment.toString() },

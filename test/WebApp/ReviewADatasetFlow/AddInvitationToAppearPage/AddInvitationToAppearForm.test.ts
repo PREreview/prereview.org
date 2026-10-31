@@ -1,6 +1,6 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as _ from '../../../../src/WebApp/ReviewADatasetFlow/AddInvitationToAppearPage/AddInvitationToAppearForm.ts'
 import { EmailAddress } from '../../../../src/types/EmailAddress.ts'
 import { Name } from '../../../../src/types/Name.ts'
@@ -11,35 +11,35 @@ describe('fromBody', () => {
     [
       'empty',
       {},
-      new _.InvalidForm({ name: Either.left(new _.Missing()), emailAddress: Either.left(new _.Missing()) }),
+      new _.InvalidForm({ name: Result.fail(new _.Missing()), emailAddress: Result.fail(new _.Missing()) }),
     ],
     [
       'only whitespace',
       { name: ' \n \t ', emailAddress: ' \n \t ' },
-      new _.InvalidForm({ name: Either.left(new _.Missing()), emailAddress: Either.left(new _.Missing()) }),
+      new _.InvalidForm({ name: Result.fail(new _.Missing()), emailAddress: Result.fail(new _.Missing()) }),
     ],
     [
       'valid name',
       { name: 'Josiah Carberry' },
       new _.InvalidForm({
-        name: Either.right(Name('Josiah Carberry')),
-        emailAddress: Either.left(new _.Missing()),
+        name: Result.succeed(Name('Josiah Carberry')),
+        emailAddress: Result.fail(new _.Missing()),
       }),
     ],
     [
       'valid email address',
       { emailAddress: 'jcarberry@example.com' },
       new _.InvalidForm({
-        name: Either.left(new _.Missing()),
-        emailAddress: Either.right(EmailAddress('jcarberry@example.com')),
+        name: Result.fail(new _.Missing()),
+        emailAddress: Result.succeed(EmailAddress('jcarberry@example.com')),
       }),
     ],
     [
       'invalid email address',
       { emailAddress: 'not an email address' },
       new _.InvalidForm({
-        name: Either.left(new _.Missing()),
-        emailAddress: Either.left(new _.Invalid({ actual: NonEmptyString('not an email address') })),
+        name: Result.fail(new _.Missing()),
+        emailAddress: Result.fail(new _.Invalid({ actual: NonEmptyString('not an email address') })),
       }),
     ],
     [

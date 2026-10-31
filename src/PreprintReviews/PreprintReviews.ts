@@ -1,4 +1,4 @@
-import { Array, Context, Effect, type Either, Layer, pipe, Struct } from 'effect'
+import { Array, Context, Effect, type Result, Layer, pipe, Struct } from 'effect'
 import { Clubs } from '../Clubs/index.ts'
 import * as Commands from '../Commands.ts'
 import { KeyvStores } from '../keyv.ts'
@@ -23,7 +23,7 @@ export interface RapidPrereview {
   >
 }
 
-export class PreprintReviews extends Context.Tag('PreprintReviews')<
+export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
     getRapidPrereviewsForAPreprint: (
@@ -36,26 +36,26 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
     checkIfUserCanAddToAClub: (
       input: CheckIfUserCanAddToAClub.Input,
     ) => Effect.Effect<
-      Either.Either.Right<CheckIfUserCanAddToAClub.Result>,
-      Either.Either.Left<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
+      Result.Result.Success<CheckIfUserCanAddToAClub.Result>,
+      Result.Result.Failure<CheckIfUserCanAddToAClub.Result> | Queries.UnableToQuery
     >
     getNextExpectedCommand: (
       input: GetNextExpectedCommand.Input,
     ) => Effect.Effect<
-      Either.Either.Right<GetNextExpectedCommand.Result>,
-      Either.Either.Left<GetNextExpectedCommand.Result> | Queries.UnableToQuery
+      Result.Result.Success<GetNextExpectedCommand.Result>,
+      Result.Result.Failure<GetNextExpectedCommand.Result> | Queries.UnableToQuery
     >
     getUseOfAiDetails: (
       input: GetUseOfAiDetails.Input,
     ) => Effect.Effect<
-      Either.Either.Right<GetUseOfAiDetails.Result>,
-      Either.Either.Left<GetUseOfAiDetails.Result> | Queries.UnableToQuery
+      Result.Result.Success<GetUseOfAiDetails.Result>,
+      Result.Result.Failure<GetUseOfAiDetails.Result> | Queries.UnableToQuery
     >
     addReviewToAClub: ReturnType<typeof AddReviewToAClub>
     markReviewAsNotInAClub: ReturnType<typeof MarkReviewAsNotInAClub>
     declareUseOfAi: ReturnType<typeof DeclareUseOfAi>
   }
->() {}
+>()('PreprintReviews') {}
 
 export const getRapidPrereviewsForAPreprint = (
   ...args: Parameters<(typeof PreprintReviews.Service)['getRapidPrereviewsForAPreprint']>

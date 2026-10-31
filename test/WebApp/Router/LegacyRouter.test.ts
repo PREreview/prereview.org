@@ -1,4 +1,4 @@
-import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { describe, expect, it } from '../../vitest.ts'
 import { Effect, HashSet, Layer, Redacted } from 'effect'
 import { EnabledLocales, Locale } from '../../../src/Context.ts'
@@ -12,6 +12,11 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/Router/LegacyRouter.ts'
 import { TemplatePage } from '../../../src/WebApp/TemplatePage.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+
+const handleRequest = (request: HttpServerRequest.HttpServerRequest) =>
+  Effect.flatMap(HttpRouter.toHttpEffect(HttpRouter.addAll(_.LegacyRouter)), handler =>
+    Effect.provideService(handler, HttpServerRequest.HttpServerRequest, request),
+  )
 
 describe('LegacyRouter', () => {
   it.effect.each<[string, string]>([
@@ -79,7 +84,7 @@ describe('LegacyRouter', () => {
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost/${path}`))
 
-      const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
+      const response = yield* handleRequest(request)
 
       expect(response).toStrictEqual(HttpServerResponse.redirect(expected, { status: StatusCodes.MovedPermanently }))
     }).pipe(
@@ -121,7 +126,7 @@ describe('LegacyRouter', () => {
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))
 
-      const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
+      const response = yield* handleRequest(request)
 
       expect(response.status).toStrictEqual(StatusCodes.NotFound)
     }).pipe(
@@ -156,7 +161,7 @@ describe('LegacyRouter', () => {
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))
 
-      const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
+      const response = yield* handleRequest(request)
 
       expect(response.status).toStrictEqual(StatusCodes.Gone)
     }).pipe(

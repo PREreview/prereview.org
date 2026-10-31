@@ -1,5 +1,5 @@
 import { expect, test } from '../../vitest.ts'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/AreThereMultipleAuthorsOnAReview.ts'
 import * as Events from '../../../src/Events.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
@@ -27,5 +27,5 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
 
   const actual = query(events, input)
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(Result.succeed(expected))
 })

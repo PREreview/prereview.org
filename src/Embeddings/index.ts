@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
 import { UnableToGetSurveyPapers, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
@@ -30,7 +30,7 @@ interface SurveyPick {
   window: string
 }
 
-export class Embeddings extends Context.Tag('Embeddings')<
+export class Embeddings extends Context.Service<
   Embeddings,
   {
     getMatches: (
@@ -46,7 +46,7 @@ export class Embeddings extends Context.Tag('Embeddings')<
       input: ReadonlyArray<IndeterminatePreprintId>,
     ) => Effect.Effect<Set<IndeterminatePreprintId>, UnableToAddWorksWithRequests>
   }
->() {}
+>()('Embeddings') {}
 
 const TOP_WINDOW: readonly [number, number] = [0, 7]
 
@@ -68,7 +68,7 @@ const pickFromWindow = (
   [start, end]: readonly [number, number],
 ): Effect.Effect<Option.Option<SurveyPick>> => {
   const slice = candidates.slice(start, end)
-  if (!Array.isNonEmptyReadonlyArray(slice)) return Effect.succeed(Option.none())
+  if (!Array.isReadonlyArrayNonEmpty(slice)) return Effect.succeed(Option.none())
 
   return pipe(
     Random.nextIntBetween(0, slice.length),
@@ -114,7 +114,7 @@ export const embeddingsLayer = Layer.effect(
   Effect.gen(function* () {
     const sql = yield* PgClient.PgClient
     const httpClient = yield* HttpClient.HttpClient
-    const apiKey = yield* Config.redacted('OPENROUTER_API_KEY')
+    const apiKey = yield* Config.Redacted('OPENROUTER_API_KEY')
     const languageDetection = yield* LanguageDetection
 
     yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
@@ -136,7 +136,7 @@ export const embeddingsLayer = Layer.effect(
           Effect.andThen(pickSurveyPapers),
         )
 
-        if (!Array.isNonEmptyReadonlyArray(picks)) {
+        if (!Array.isReadonlyArrayNonEmpty(picks)) {
           return yield* new UnableToGetSurveyPapers({
             cause: 'no candidates found',
           })

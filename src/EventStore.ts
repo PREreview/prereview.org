@@ -1,7 +1,7 @@
 import { type Array, Context, Data, Effect, type Option, Schema, pipe } from 'effect'
 import type { Event, EventFilter, EventsForFilter } from './Events.ts'
 
-export const EventStore = Context.GenericTag<EventStore>('EventStore')
+export const EventStore = Context.Service<EventStore>('EventStore')
 
 export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ cause?: Error }> {}
 

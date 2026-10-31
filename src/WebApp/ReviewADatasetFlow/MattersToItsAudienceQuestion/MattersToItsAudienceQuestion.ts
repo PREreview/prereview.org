@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -37,7 +37,7 @@ export const MattersToItsAudienceQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.mattersToItsAudience)
+                hasAnError && Result.isFailure(form.mattersToItsAudience)
                   ? 'aria-invalid="true" aria-errormessage="matters-to-its-audience-error"'
                   : '',
               )}
@@ -47,11 +47,11 @@ export const MattersToItsAudienceQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.mattersToItsAudience)
+                hasAnError && Result.isFailure(form.mattersToItsAudience)
                   ? html`
                       <div class="error-message" id="matters-to-its-audience-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.mattersToItsAudience.left, {
+                        ${Match.valueTags(form.mattersToItsAudience.failure, {
                           Missing: () => t('selectHowConsequential')(),
                         })}
                       </div>
@@ -97,7 +97,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.mattersToItsAudienceVeryConsequentialDetail)),
+      Option.flatten(Result.getSuccess(form.mattersToItsAudienceVeryConsequentialDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.mattersToItsAudienceVeryConsequentialDetail, () => String.empty),
@@ -143,7 +143,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.mattersToItsAudienceSomewhatConsequentialDetail)),
+      Option.flatten(Result.getSuccess(form.mattersToItsAudienceSomewhatConsequentialDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.mattersToItsAudienceSomewhatConsequentialDetail, () => String.empty),
@@ -187,7 +187,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.mattersToItsAudienceNotConsequentialDetail)),
+      Option.flatten(Result.getSuccess(form.mattersToItsAudienceNotConsequentialDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.mattersToItsAudienceNotConsequentialDetail, () => String.empty),
@@ -227,12 +227,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.mattersToItsAudience)
+  Result.isFailure(form.mattersToItsAudience)
     ? html`
         <li>
           <a href="#matters-to-its-audience-very-consequential">
             ${pipe(
-              Match.value(form.mattersToItsAudience.left),
+              Match.value(form.mattersToItsAudience.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectHowConsequential')()),
               Match.exhaustive,
             )}

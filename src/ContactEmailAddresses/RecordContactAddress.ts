@@ -1,4 +1,4 @@
-import { Array, Either, Match, Option } from 'effect'
+import { Array, Result, Match, Option } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import { EmailAddressEquivalence, type EmailAddress } from '../types/EmailAddress.ts'
@@ -93,26 +93,26 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return { contactIdInUse, contactAddress: Option.getOrUndefined(contactAddress) }
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> => {
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> => {
   if (state.contactIdInUse) {
-    return Either.left(new ContactAddressIdHasAlreadyBeenUsed())
+    return Result.fail(new ContactAddressIdHasAlreadyBeenUsed())
   }
 
   if (!state.contactAddress || Option.isNone(state.contactAddress.emailAddress)) {
-    return Either.right(
+    return Result.succeed(
       Option.some(new Events.ContactAddressRecorded({ ...input, emailAddress: Option.some(input.emailAddress) })),
     )
   }
 
   if (EmailAddressEquivalence(state.contactAddress.emailAddress.value, input.emailAddress)) {
     if (state.contactAddress.verificationStatus === 'verified') {
-      return Either.left(new ContactEmailAddressHasAlreadyBeenVerified())
+      return Result.fail(new ContactEmailAddressHasAlreadyBeenVerified())
     }
 
-    return Either.right(Option.none())
+    return Result.succeed(Option.none())
   }
 
-  return Either.right(
+  return Result.succeed(
     Option.some(new Events.ContactAddressRecorded({ ...input, emailAddress: Option.some(input.emailAddress) })),
   )
 }

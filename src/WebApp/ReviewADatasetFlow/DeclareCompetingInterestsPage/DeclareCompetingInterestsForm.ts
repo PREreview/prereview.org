@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type DeclareCompetingInterestsForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,8 +9,8 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  declareCompetingInterests: Either.Either<'yes', Missing>
-  competingInterestsDetails: Either.Either<void, Missing>
+  declareCompetingInterests: Result.Result<'yes', Missing>
+  competingInterestsDetails: Result.Result<void, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -20,7 +20,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(
   function* (body: UrlParams.UrlParams) {
-    const { declareCompetingInterests } = yield* Schema.decode(DeclareCompetingInterestsFieldSchema)(body)
+    const { declareCompetingInterests } = yield* Schema.decodeEffect(DeclareCompetingInterestsFieldSchema)(body)
 
     if (declareCompetingInterests === 'no') {
       return new CompletedForm({ declareCompetingInterests, competingInterestsDetails: Option.none() })
@@ -28,28 +28,28 @@ export const fromBody = Effect.fn(
 
     return yield* pipe(
       Effect.gen(function* () {
-        const { competingInterestsDetails } = yield* Schema.decode(CompetingInterestsDetailsFieldSchema)(body)
+        const { competingInterestsDetails } = yield* Schema.decodeEffect(CompetingInterestsDetailsFieldSchema)(body)
 
         return new CompletedForm({
           declareCompetingInterests: 'yes',
           competingInterestsDetails: Option.some(competingInterestsDetails),
         })
       }),
-      Effect.catchTag('ParseError', () =>
+      Effect.catchTag('SchemaError', () =>
         Effect.succeed(
           new InvalidForm({
-            declareCompetingInterests: Either.right('yes'),
-            competingInterestsDetails: Either.left(new Missing()),
+            declareCompetingInterests: Result.succeed('yes'),
+            competingInterestsDetails: Result.fail(new Missing()),
           }),
         ),
       ),
     )
   },
-  Effect.catchTag('ParseError', () =>
+  Effect.catchTag('SchemaError', () =>
     Effect.succeed(
       new InvalidForm({
-        declareCompetingInterests: Either.left(new Missing()),
-        competingInterestsDetails: Either.void,
+        declareCompetingInterests: Result.fail(new Missing()),
+        competingInterestsDetails: Result.void,
       }),
     ),
   ),
@@ -69,14 +69,18 @@ export const fromCompetingInterests: (
   }),
 })
 
-const DeclareCompetingInterestsFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    declareCompetingInterests: Schema.Literal('yes', 'no'),
-  }),
+const DeclareCompetingInterestsFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      declareCompetingInterests: Schema.Literals(['yes', 'no']),
+    }),
+  ),
 )
 
-const CompetingInterestsDetailsFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    competingInterestsDetails: NonEmptyString.NonEmptyStringSchema,
-  }),
+const CompetingInterestsDetailsFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      competingInterestsDetails: NonEmptyString.NonEmptyStringSchema,
+    }),
+  ),
 )

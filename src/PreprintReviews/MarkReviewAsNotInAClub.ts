@@ -36,6 +36,6 @@ export const MarkReviewAsNotInAClub = (formStore: Keyv<unknown>): ((input: Input
       FptsToEffect.readerTaskEither(saveForm(input.orcidId, input.preprintId)(updateForm(form)({ club: null })), {
         formStore,
       }),
-      Effect.catchAll(() => new UnableToHandleCommand({})),
+      Effect.catch(() => new UnableToHandleCommand({})),
     )
   })

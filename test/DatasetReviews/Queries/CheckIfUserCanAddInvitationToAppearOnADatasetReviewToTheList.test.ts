@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -46,38 +46,38 @@ const published = new Events.DatasetReviewWasPublished({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not answered', input, [started], Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
+  ['no events', input, [], Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
+  ['not answered', input, [started], Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different author ID',
     inputDifferentAuthorId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
+    Result.fail(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
   ],
   [
     'answered no',
     input,
     [started, answeredNo],
-    Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
+    Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
   ],
-  ['answered yes', input, [started, answeredYes], Either.void],
+  ['answered yes', input, [started, answeredYes], Result.void],
   [
     'publication requested',
     input,
     [started, answeredYes, publicationRequested],
-    Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     input,
     [started, answeredYes, publicationRequested, published],
-    Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList

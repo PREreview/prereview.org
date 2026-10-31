@@ -54,7 +54,7 @@ export const StartNow: ({
           })
 
           return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
-        }).pipe(Effect.catchTag('UnknownReviewRequest', 'ReviewRequestHasBeenPublished', () => HavingProblemsPage)),
+        }).pipe(Effect.catchTag(['UnknownReviewRequest', 'ReviewRequestHasBeenPublished'], () => HavingProblemsPage)),
       onSome: Match.valueTags({
         PublishedReviewRequest: () =>
           Effect.succeed(
@@ -67,7 +67,7 @@ export const StartNow: ({
             })
 
             return CarryOnPage(locale, preprint.id, RouteForCommand(nextExpectedCommand))
-          }).pipe(Effect.catchTag('UnknownReviewRequest', 'ReviewRequestHasBeenPublished', () => HavingProblemsPage)),
+          }).pipe(Effect.catchTag(['UnknownReviewRequest', 'ReviewRequestHasBeenPublished'], () => HavingProblemsPage)),
       }),
     })
   },

@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as RateTheQualityForm from '../../../src/WebApp/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -39,10 +39,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.RateTheQualityQuestion({
     datasetReviewId,
     form: new RateTheQualityForm.InvalidForm({
-      qualityRating: Either.left(new RateTheQualityForm.Missing()),
-      qualityRatingExcellentDetail: Either.right(NonEmptyString.fromString('Detail about the excellent rating.')),
-      qualityRatingFairDetail: Either.right(NonEmptyString.fromString('Detail about the fair rating.')),
-      qualityRatingPoorDetail: Either.right(NonEmptyString.fromString('Detail about the poor rating.')),
+      qualityRating: Result.fail(new RateTheQualityForm.Missing()),
+      qualityRatingExcellentDetail: Result.succeed(NonEmptyString.fromString('Detail about the excellent rating.')),
+      qualityRatingFairDetail: Result.succeed(NonEmptyString.fromString('Detail about the fair rating.')),
+      qualityRatingPoorDetail: Result.succeed(NonEmptyString.fromString('Detail about the poor rating.')),
     }),
     locale: DefaultLocale,
   })

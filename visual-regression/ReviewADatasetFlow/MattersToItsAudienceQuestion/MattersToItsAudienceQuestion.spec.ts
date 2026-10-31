@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as MattersToItsAudienceForm from '../../../src/WebApp/ReviewADatasetFlow/MattersToItsAudienceQuestion/MattersToItsAudienceForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/MattersToItsAudienceQuestion/MattersToItsAudienceQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -41,14 +41,14 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.MattersToItsAudienceQuestion({
     datasetReviewId,
     form: new MattersToItsAudienceForm.InvalidForm({
-      mattersToItsAudience: Either.left(new MattersToItsAudienceForm.Missing()),
-      mattersToItsAudienceVeryConsequentialDetail: Either.right(
+      mattersToItsAudience: Result.fail(new MattersToItsAudienceForm.Missing()),
+      mattersToItsAudienceVeryConsequentialDetail: Result.succeed(
         NonEmptyString.fromString('Detail about the very-consequential.'),
       ),
-      mattersToItsAudienceSomewhatConsequentialDetail: Either.right(
+      mattersToItsAudienceSomewhatConsequentialDetail: Result.succeed(
         NonEmptyString.fromString('Detail about the somewhat-consequential.'),
       ),
-      mattersToItsAudienceNotConsequentialDetail: Either.right(
+      mattersToItsAudienceNotConsequentialDetail: Result.succeed(
         NonEmptyString.fromString('Detail about the not-consequential.'),
       ),
     }),

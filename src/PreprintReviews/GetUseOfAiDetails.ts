@@ -1,4 +1,4 @@
-import { Effect, Option, pipe, type Either } from 'effect'
+import { Effect, Option, pipe, type Result } from 'effect'
 import type { Keyv } from '../keyv.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import { UnableToQuery } from '../Queries.ts'
@@ -22,11 +22,11 @@ export type UseOfAiDetails = {
   | { _tag: 'NotAnswered' }
 )
 
-export type Result = Either.Either<UseOfAiDetails, Errors.PreprintReviewNotFound | UnableToQuery>
+export type Result = Result.Result<UseOfAiDetails, Errors.PreprintReviewNotFound | UnableToQuery>
 
 export const GetUseOfAiDetails = (
   formStore: Keyv<unknown>,
-): ((input: Input) => Effect.Effect<Either.Either.Right<Result>, Either.Either.Left<Result>>) =>
+): ((input: Input) => Effect.Effect<Result.Result.Success<Result>, Result.Result.Failure<Result>>) =>
   Effect.fn('PreprintReviews.getUseOfAiDetails')(function* (input) {
     const form = yield* pipe(
       FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),
@@ -45,7 +45,7 @@ export const GetUseOfAiDetails = (
     if (form.generativeAiIdeas === 'yes') {
       return {
         _tag: 'AiWasUsed',
-        generativeAiIdeasDetails: Option.fromNullable(form.generativeAiIdeasDetails),
+        generativeAiIdeasDetails: Option.fromNullishOr(form.generativeAiIdeasDetails),
         ...authors,
       }
     }

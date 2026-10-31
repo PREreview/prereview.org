@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Either } from 'effect'
+import { Effect, Result } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Zenodo/UploadFile/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as fc from '../fc.ts'
@@ -22,9 +22,9 @@ describe('HandleResponse', () => {
       ],
       ([response]) =>
         Effect.gen(function* () {
-          const actual = yield* Effect.either(_.HandleResponse(response))
+          const actual = yield* Effect.result(_.HandleResponse(response))
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }),
     )
   })
@@ -37,8 +37,8 @@ describe('HandleResponse', () => {
         Effect.gen(function* () {
           const actual = yield* Effect.flip(_.HandleResponse(response))
 
-          expect(actual._tag).toStrictEqual('ResponseError')
-          expect(actual.reason).toStrictEqual('StatusCode')
+          expect(actual._tag).toStrictEqual('HttpClientError')
+          expect(actual.reason._tag).toStrictEqual('StatusCodeError')
         }),
     )
   })

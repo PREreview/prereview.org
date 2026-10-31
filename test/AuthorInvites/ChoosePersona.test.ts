@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/ChoosePersona.ts'
 import { DryadDatasetId } from '../../src/Datasets/index.ts'
 import * as Events from '../../src/Events.ts'
@@ -68,57 +68,57 @@ const startedDifferentOrcidId = new Events.DatasetReviewWasStarted({
   datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
 })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
+  ['no events', [], input, Result.fail(new _.PersonaDoesNotNeedToBeChosen())],
   [
     'no matching review id',
     [authorAdded, inviteAccepted],
     inputWithDifferentReviewId,
-    Either.left(new _.PersonaDoesNotNeedToBeChosen()),
+    Result.fail(new _.PersonaDoesNotNeedToBeChosen()),
   ],
   [
     'no matching ORCID iD',
     [authorAdded, inviteAccepted],
     inputWithDifferentOrcidId,
-    Either.left(new _.PersonaDoesNotNeedToBeChosen()),
+    Result.fail(new _.PersonaDoesNotNeedToBeChosen()),
   ],
   [
     'invitation accepted',
     [authorAdded, inviteAccepted],
     input,
-    Either.right(Option.some(new Events.PersonaForAReviewChosen(input))),
+    Result.succeed(Option.some(new Events.PersonaForAReviewChosen(input))),
   ],
-  ['invitation not accepted', [authorAdded], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
+  ['invitation not accepted', [authorAdded], input, Result.fail(new _.PersonaDoesNotNeedToBeChosen())],
   [
     'persona already chosen with same value',
     [authorAdded, inviteAccepted, personaChosen],
     input,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'persona already chosen with different value',
     [authorAdded, inviteAccepted, personaChosen],
     inputWithDifferentPersona,
-    Either.right(Option.some(new Events.PersonaForAReviewChosen(inputWithDifferentPersona))),
+    Result.succeed(Option.some(new Events.PersonaForAReviewChosen(inputWithDifferentPersona))),
   ],
   [
     'choices confirmed',
     [authorAdded, inviteAccepted, personaChosen, confirmed],
     input,
-    Either.left(new _.PersonaCannotBeChanged()),
+    Result.fail(new _.PersonaCannotBeChanged()),
   ],
   [
     'choices confirmed with a persona',
     [authorAdded, inviteAccepted, confirmed],
     input,
-    Either.left(new _.PersonaCannotBeChanged()),
+    Result.fail(new _.PersonaCannotBeChanged()),
   ],
-  ['started the review', [started, authorAdded, inviteAccepted], input, Either.left(new _.PersonaCannotBeChanged())],
+  ['started the review', [started, authorAdded, inviteAccepted], input, Result.fail(new _.PersonaCannotBeChanged())],
   [
     'someone else started the review',
     [startedDifferentOrcidId, authorAdded, inviteAccepted],
     input,
-    Either.right(Option.some(new Events.PersonaForAReviewChosen(input))),
+    Result.succeed(Option.some(new Events.PersonaForAReviewChosen(input))),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ChoosePersona

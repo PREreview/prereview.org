@@ -20,29 +20,29 @@ const Text = Schema.Struct({
 
 const Link = Schema.Struct({
   type: Schema.tag('link'),
-  url: Schema.URL,
+  url: Schema.URLFromString,
 })
 
 const RichTextQuote = Schema.Struct({
   type: Schema.tag('rich_text_quote'),
-  elements: Schema.NonEmptyArray(Schema.Union(Text, Link)),
+  elements: Schema.NonEmptyArray(Schema.Union([Text, Link])),
 })
 
 const RichTextSection = Schema.Struct({
   type: Schema.tag('rich_text_section'),
-  elements: Schema.NonEmptyArray(Schema.Union(Text, Link)),
+  elements: Schema.NonEmptyArray(Schema.Union([Text, Link])),
 })
 
 const RichTextBlock = Schema.Struct({
   type: Schema.tag('rich_text'),
-  elements: Schema.NonEmptyArray(Schema.Union(RichTextQuote, RichTextSection)),
+  elements: Schema.NonEmptyArray(Schema.Union([RichTextQuote, RichTextSection])),
 })
 
 const ButtonElement = Schema.Struct({
   type: Schema.tag('button'),
   text: PlainText,
-  style: Schema.optional(Schema.Literal('primary', 'danger')),
-  url: Schema.URL,
+  style: Schema.optional(Schema.Literals(['primary', 'danger'])),
+  url: Schema.URLFromString,
 })
 
 const ActionsBlock = Schema.Struct({
@@ -56,9 +56,9 @@ const MarkdownBlock = Schema.Struct({
 })
 
 export const ChatPostMessageInput = Schema.Struct({
-  channel: Schema.Union(ChannelId, UserId),
-  threadTs: Schema.optional(Timestamp).pipe(Schema.fromKey('thread_ts')),
-  blocks: Schema.NonEmptyArray(Schema.Union(ActionsBlock, MarkdownBlock, RichTextBlock)),
-  unfurlLinks: Schema.optional(Schema.Boolean).pipe(Schema.fromKey('unfurl_links')),
-  unfurlMedia: Schema.optional(Schema.Boolean).pipe(Schema.fromKey('unfurl_media')),
-})
+  channel: Schema.Union([ChannelId, UserId]),
+  threadTs: Schema.optional(Timestamp),
+  blocks: Schema.NonEmptyArray(Schema.Union([ActionsBlock, MarkdownBlock, RichTextBlock])),
+  unfurlLinks: Schema.optional(Schema.Boolean),
+  unfurlMedia: Schema.optional(Schema.Boolean),
+}).pipe(Schema.encodeKeys({ threadTs: 'thread_ts', unfurlLinks: 'unfurl_links', unfurlMedia: 'unfurl_media' }))

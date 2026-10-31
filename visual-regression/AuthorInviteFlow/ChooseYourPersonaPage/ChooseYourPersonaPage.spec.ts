@@ -1,4 +1,4 @@
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
@@ -38,7 +38,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
   const response = _.renderChooseYourPersonaPage({
     reviewId,
     form: new ChooseYourPersonaForm.InvalidForm({
-      chooseYourPersona: Either.left(new ChooseYourPersonaForm.Missing()),
+      chooseYourPersona: Result.fail(new ChooseYourPersonaForm.Missing()),
     }),
     publicPersona,
     pseudonymPersona,

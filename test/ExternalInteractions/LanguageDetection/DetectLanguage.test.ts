@@ -1,7 +1,6 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, Layer, Option, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../vitest.ts'
-import { Effect, Layer, Option, pipe, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DetectLanguage } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/LanguageDetection/DetectLanguage.ts'
@@ -28,7 +27,7 @@ it.effect.each<{ response: string; expected: Option.Option<LanguageCode> }>([
     const detected = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/DetectLanguage/DetectSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(DetectLanguage.LanguageCandidates))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(DetectLanguage.LanguageCandidates))),
     )
 
     const actual = yield* Effect.option(
@@ -68,7 +67,7 @@ it.effect.each<{ response: string; languages: ReadonlyArray<LanguageCode>; expec
     const detected = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/DetectLanguage/DetectSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(DetectLanguage.LanguageCandidates))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(DetectLanguage.LanguageCandidates))),
     )
 
     const actual = yield* Effect.option(

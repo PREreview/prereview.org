@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Effect, pipe } from 'effect'
 import type { Doi } from '../../../types/index.ts'
 import * as Record from '../Record.ts'
@@ -10,7 +10,7 @@ export const GetRecord = (doi: Doi.Doi) =>
     CreateRequest(doi),
     HttpClient.execute,
     Effect.andThen(HandleResponse),
-    Effect.catchTag('RequestError', 'ResponseError', error => new Record.RecordIsUnavailable({ cause: error })),
+    Effect.catchTag('HttpClientError', error => new Record.RecordIsUnavailable({ cause: error })),
     Effect.tapErrorTag('RecordIsUnavailable', error =>
       Effect.logError('Failed to get record from DataCite').pipe(Effect.annotateLogs({ error })),
     ),

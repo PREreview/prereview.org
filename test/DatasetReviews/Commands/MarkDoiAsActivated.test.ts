@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkDoiAsActivated.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -157,32 +157,32 @@ describe('decide', () => {
   test('has not been started', () => {
     const result = _.decide(new _.NotStarted(), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   test('has not been published', () => {
     const result = _.decide(new _.NotPublished(), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
   })
 
   test('has not been assigned a DOI', () => {
     const result = _.decide(new _.HasNotBeenAssignedADoi(), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenAssignedADoi({})))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenAssignedADoi({})))
   })
 
   it.prop('has a inactive DOI', [fc.doi()], ([doi]) => {
     const result = _.decide(new _.HasAnInactiveDoi({ doi }), { datasetReviewId })
 
     expect(result).toStrictEqual(
-      Either.right(Option.some(new DatasetReviews.DatasetReviewDoiWasActivated({ datasetReviewId }))),
+      Result.succeed(Option.some(new DatasetReviews.DatasetReviewDoiWasActivated({ datasetReviewId }))),
     )
   })
 
   it.prop('with a different DOI', [fc.doi()], ([doi]) => {
     const result = _.decide(new _.HasAnActiveDoi({ doi }), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.right(Option.none()))
+    expect(result).toStrictEqual(Result.succeed(Option.none()))
   })
 })

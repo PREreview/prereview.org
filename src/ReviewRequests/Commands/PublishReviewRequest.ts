@@ -1,4 +1,4 @@
-import { Array, Data, Either, flow, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, flow, Match, Option, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Temporal, Uuid } from '../../types/index.ts'
@@ -52,25 +52,25 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return new IsReady()
 }
 
-const decide = (state: State, input: Input): Either.Either<Events.ReviewRequestEvent, Error> =>
+const decide = (state: State, input: Input): Result.Result<Events.ReviewRequestEvent, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.UnknownReviewRequest({})),
-    NotReady: ({ missing }) => Either.left(new Errors.ReviewRequestNotReadyToBePublished({ missing })),
+    NotStarted: () => Result.fail(new Errors.UnknownReviewRequest({})),
+    NotReady: ({ missing }) => Result.fail(new Errors.ReviewRequestNotReadyToBePublished({ missing })),
     IsReady: () =>
-      Either.right(
+      Result.succeed(
         new Events.ReviewRequestForAPreprintWasPublished({
           publishedAt: input.publishedAt,
           reviewRequestId: input.reviewRequestId,
         }),
       ),
-    HasBeenPublished: () => Either.left(new Errors.ReviewRequestHasBeenPublished({})),
+    HasBeenPublished: () => Result.fail(new Errors.ReviewRequestHasBeenPublished({})),
   })
 
 export const PublishReviewRequest = Commands.Command({
   name: 'ReviewRequestCommands.publishReviewRequest',
   createFilter,
   foldState,
-  decide: flow(decide, Either.map(Option.some)),
+  decide: flow(decide, Result.map(Option.some)),
 })
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

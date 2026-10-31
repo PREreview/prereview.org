@@ -1,7 +1,7 @@
-import { Array, Context, Data, Effect, type Option, pipe, Record, Request, RequestResolver, Struct } from 'effect'
+import { Array, Context, Data, Effect, type Option, pipe, Record, Request, RequestResolver } from 'effect'
 import type { Uuid } from './types/index.ts'
 
-export const SensitiveDataStore = Context.GenericTag<SensitiveDataStore>('SensitiveDataStore')
+export const SensitiveDataStore = Context.Service<SensitiveDataStore>('SensitiveDataStore')
 
 export class FailedToGetSensitiveData extends Data.TaggedError('FailedToGetSensitiveData')<{ cause?: unknown }> {}
 
@@ -26,23 +26,22 @@ export const getMany = (...args: Parameters<(typeof SensitiveDataStore.Service)[
 export const get = (id: Uuid.Uuid) => Effect.request(new GetSensitiveData({ id }), GetSensitiveDataResolver)
 
 class GetSensitiveData extends Request.TaggedClass('GetSensitiveData')<
+  { readonly id: Uuid.Uuid },
   Option.Option<string>,
   FailedToGetSensitiveData,
-  { readonly id: Uuid.Uuid }
+  SensitiveDataStore
 > {}
 
-const GetSensitiveDataResolver = RequestResolver.makeBatched(
-  (requests: Array.NonEmptyReadonlyArray<GetSensitiveData>) =>
-    pipe(
-      Array.map(requests, Struct.get('id')),
-      getMany,
-      Effect.andThen(results =>
-        Effect.forEach(requests, request =>
-          Request.completeEffect(request, Effect.succeed(Record.get(results, request.id))),
-        ),
-      ),
-      Effect.catchAll(error =>
-        Effect.forEach(requests, request => Request.completeEffect(request, Effect.fail(error))),
-      ),
+const GetSensitiveDataResolver = RequestResolver.make<GetSensitiveData>(entries =>
+  pipe(
+    Array.map(entries, entry => entry.request.id),
+    getMany,
+    Effect.andThen(results =>
+      Effect.forEach(entries, entry => Request.succeed(entry, Record.get(results, entry.request.id)), {
+        discard: true,
+      }),
     ),
-).pipe(RequestResolver.contextFromServices(SensitiveDataStore))
+    Effect.catch(error => Effect.forEach(entries, entry => Request.fail(entry, error), { discard: true })),
+    Effect.provideContext(Array.headNonEmpty(entries).context),
+  ),
+).pipe(RequestResolver.grouped(entry => Context.get(entry.context, SensitiveDataStore)))

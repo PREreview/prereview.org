@@ -7,6 +7,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-languages.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('changeLanguages', () => {
   it.effect.prop(
@@ -23,7 +24,7 @@ describe('changeLanguages', () => {
         const actual = yield* Effect.promise(
           _.changeLanguages({ body, locale, method, user })({
             deleteLanguages: shouldNotBeCalled,
-            getLanguages: () => TE.fromEither(languages),
+            getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
             saveLanguages: shouldNotBeCalled,
           }),
         )
@@ -107,7 +108,7 @@ describe('changeLanguages', () => {
         const actual = yield* Effect.promise(
           _.changeLanguages({ body, locale, method: 'POST', user })({
             deleteLanguages: () => TE.left('unavailable'),
-            getLanguages: () => TE.fromEither(existingLanguages),
+            getLanguages: () => TE.fromEither(EffectToFpts.either(existingLanguages)),
             saveLanguages: () => TE.left('unavailable'),
           }),
         )

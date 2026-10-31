@@ -1,4 +1,4 @@
-import type { LanguageModel } from '@effect/ai'
+import type { LanguageModel } from 'effect/ai'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type * as PublicUrl from '../../public-url.ts'
@@ -15,36 +15,33 @@ export { FailedToSharePreprintReview, type PreprintReview } from './SharePreprin
 export { FailedToSharePreprintReviewRequest, type PreprintReviewRequest } from './SharePreprintReviewRequest/index.ts'
 export * from './ShouldUpdateCommunitySlack.ts'
 
-export class CommunitySlack extends Context.Tag('CommunitySlack')<
+export class CommunitySlack extends Context.Service<
   CommunitySlack,
   {
     getSlackUser: (
       ...args: Parameters<typeof GetSlackUser>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetSlackUser>>,
-      Effect.Effect.Error<ReturnType<typeof GetSlackUser>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetSlackUser>>, Effect.Error<ReturnType<typeof GetSlackUser>>>
     shareDatasetReview: (
       ...args: Parameters<typeof ShareDatasetReview>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof ShareDatasetReview>>,
-      Effect.Effect.Error<ReturnType<typeof ShareDatasetReview>>
+      Effect.Success<ReturnType<typeof ShareDatasetReview>>,
+      Effect.Error<ReturnType<typeof ShareDatasetReview>>
     >
     sharePreprintReview: (
       ...args: Parameters<typeof SharePreprintReview>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof SharePreprintReview>>,
-      Effect.Effect.Error<ReturnType<typeof SharePreprintReview>>
+      Effect.Success<ReturnType<typeof SharePreprintReview>>,
+      Effect.Error<ReturnType<typeof SharePreprintReview>>
     >
     sharePreprintReviewRequest: (
       ...args: Parameters<typeof SharePreprintReviewRequest>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof SharePreprintReviewRequest>>,
-      Effect.Effect.Error<ReturnType<typeof SharePreprintReviewRequest>>,
+      Effect.Success<ReturnType<typeof SharePreprintReviewRequest>>,
+      Effect.Error<ReturnType<typeof SharePreprintReviewRequest>>,
       Scope.Scope
     >
   }
->() {}
+>()('CommunitySlack') {}
 
 export const getSlackUser = (...args: Parameters<(typeof CommunitySlack.Service)['getSlackUser']>) =>
   Effect.flatMap(CommunitySlack, service => service.getSlackUser(...args))

@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as FollowsFairAndCarePrinciplesForm from '../../../src/WebApp/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -39,10 +39,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.FollowsFairAndCarePrinciplesQuestion({
     datasetReviewId,
     form: new FollowsFairAndCarePrinciplesForm.InvalidForm({
-      followsFairAndCarePrinciples: Either.left(new FollowsFairAndCarePrinciplesForm.Missing()),
-      followsFairAndCarePrinciplesYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      followsFairAndCarePrinciplesPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      followsFairAndCarePrinciplesNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      followsFairAndCarePrinciples: Result.fail(new FollowsFairAndCarePrinciplesForm.Missing()),
+      followsFairAndCarePrinciplesYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      followsFairAndCarePrinciplesPartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      followsFairAndCarePrinciplesNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

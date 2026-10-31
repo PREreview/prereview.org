@@ -1,4 +1,4 @@
-import { Either, Equal, flow, HashMap, Option } from 'effect'
+import { Result, Equal, flow, HashMap, Option } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
@@ -38,5 +38,5 @@ export const FindReviewRequestByAPrereviewer = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.findReviewRequestByAPrereviewer',
   initialState: shared.initialState,
   updateStateWithEvents: shared.updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

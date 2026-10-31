@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, pipe, flow } from 'effect'
 import { JapanLinkCenter } from '../../../ExternalApis/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { recordToPreprint } from './Preprint.ts'
@@ -15,7 +15,7 @@ export const getPreprintFromJapanLinkCenter: (
 > = id =>
   pipe(
     JapanLinkCenter.getRecord(id.value),
-    Effect.andThen(recordToPreprint),
+    Effect.andThen(flow(recordToPreprint, Effect.fromResult)),
     Effect.catchTags({
       RecordIsNotFound: error => new Preprints.PreprintIsNotFound({ cause: error }),
       RecordIsUnavailable: error => new Preprints.PreprintIsUnavailable({ cause: error }),

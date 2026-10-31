@@ -1,4 +1,4 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { HashSet, identity, pipe, String } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'

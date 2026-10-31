@@ -1,4 +1,4 @@
-import { Array, Either, Match, Option, Struct } from 'effect'
+import { Array, Result, Match, Option, Struct } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
@@ -13,7 +13,7 @@ import { ContactEmailAddressIsNotFound } from './Errors.ts'
 
 export type Input = OrcidId
 
-export type Result = Either.Either<ContactEmailAddress, Error>
+export type Result = Result.Result<ContactEmailAddress, Error>
 
 export type Error = ContactEmailAddressIsNotFound
 
@@ -29,13 +29,13 @@ const createFilter = (orcidId: Input) =>
   })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    if (!Array.isNonEmptyReadonlyArray(filteredEvents)) {
-      return yield* Either.left(new ContactEmailAddressIsNotFound())
+    if (!Array.isReadonlyArrayNonEmpty(filteredEvents)) {
+      return yield* Result.fail(new ContactEmailAddressIsNotFound())
     }
 
     const state:
@@ -79,9 +79,9 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     })
 
     return yield* Option.match(state.emailAddress, {
-      onNone: () => Either.left(new ContactEmailAddressIsNotFound()),
+      onNone: () => Result.fail(new ContactEmailAddressIsNotFound()),
       onSome: emailAddress =>
-        Either.right(
+        Result.succeed(
           state.status === 'verified'
             ? new VerifiedContactEmailAddress({ value: emailAddress, contactAddressId: state.contactAddressId })
             : new UnverifiedContactEmailAddress({ value: emailAddress, contactAddressId: state.contactAddressId }),

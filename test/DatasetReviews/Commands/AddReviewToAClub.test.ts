@@ -1,5 +1,5 @@
 import { expect, test } from '../../vitest.ts'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AddReviewToAClub.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import { DryadDatasetId } from '../../../src/Datasets/DatasetId.ts'
@@ -36,16 +36,16 @@ const addedDifferentClub = new Events.DatasetReviewWasAddedToAClub({
 
 const clubs = [input.clubId, addedDifferentClub.clubId]
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Either.left(new DatasetReviews.UnknownDatasetReview({}))],
-  ['not in a club', [started], input, Either.right(Option.some(added))],
-  ['unknown club', [started], inputUnknownClub, Either.left(new DatasetReviews.UnknownClub())],
-  ['already in the club', [started, added], input, Either.right(Option.none())],
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
+  ['no events', [], input, Result.fail(new DatasetReviews.UnknownDatasetReview({}))],
+  ['not in a club', [started], input, Result.succeed(Option.some(added))],
+  ['unknown club', [started], inputUnknownClub, Result.fail(new DatasetReviews.UnknownClub())],
+  ['already in the club', [started, added], input, Result.succeed(Option.none())],
   [
     'already a different club',
     [started, addedDifferentClub],
     input,
-    Either.left(new DatasetReviews.DatasetReviewHasAlreadyBeenAddedToAClub()),
+    Result.fail(new DatasetReviews.DatasetReviewHasAlreadyBeenAddedToAClub()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.AddReviewToAClub(clubs)

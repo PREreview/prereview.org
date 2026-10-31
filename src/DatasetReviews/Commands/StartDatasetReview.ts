@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, flow, Function, Match, Option, Predicate } from 'effect'
+import { Array, Boolean, Data, Result, flow, Function, Match, Option, Predicate } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -25,21 +25,21 @@ export const decide: {
   (
     state: StartDatasetReviewState,
     command: StartDatasetReview,
-  ): Either.Either<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
+  ): Result.Result<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
   (
     command: StartDatasetReview,
   ): (
     state: StartDatasetReviewState,
-  ) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
+  ) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
 } = Function.dual(
   2,
   (
     state: StartDatasetReviewState,
     command: StartDatasetReview,
-  ): Either.Either<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted> =>
+  ): Result.Result<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted> =>
     Match.valueTags(state, {
       NotStarted: () =>
-        Either.right(
+        Result.succeed(
           Option.some(
             new Events.DatasetReviewWasStarted({
               authorId: command.authorId,
@@ -48,6 +48,6 @@ export const decide: {
             }),
           ),
         ),
-      HasBeenStarted: () => Either.left(new Errors.DatasetReviewWasAlreadyStarted()),
+      HasBeenStarted: () => Result.fail(new Errors.DatasetReviewWasAlreadyStarted()),
     }),
 )

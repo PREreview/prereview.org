@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Workflows/MarkDatasetReviewAsPublished.ts'
 import * as fc from '../../fc.ts'
@@ -7,9 +7,9 @@ import * as fc from '../../fc.ts'
 describe('MarkDatasetReviewAsPublished', () => {
   it.effect.prop('when the command can be completed', [fc.uuid()], ([datasetReviewId]) =>
     Effect.gen(function* () {
-      const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.either)
+      const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.result)
 
-      expect(actual).toStrictEqual(Either.void)
+      expect(actual).toStrictEqual(Result.void)
     }).pipe(
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewCommands, { markDatasetReviewAsPublished: () => Effect.void }),
@@ -31,9 +31,9 @@ describe('MarkDatasetReviewAsPublished', () => {
     ],
     ([datasetReviewId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToMarkDatasetReviewAsPublished({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToMarkDatasetReviewAsPublished({})))
       }).pipe(
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { markDatasetReviewAsPublished: () => error })),
       ),

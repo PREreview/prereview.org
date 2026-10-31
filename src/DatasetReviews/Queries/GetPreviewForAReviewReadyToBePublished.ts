@@ -1,4 +1,4 @@
-import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
+import { Array, Result, HashSet, Option, Struct, type Types, Filter } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId } from '../../types/index.ts'
@@ -57,7 +57,7 @@ export interface DatasetReviewPreview {
 
 export const GetPreviewForAReviewReadyToBePublished = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-): Either.Either<
+): Result.Result<
   DatasetReviewPreview,
   | Errors.DatasetReviewNotReadyToBePublished
   | Errors.DatasetReviewIsBeingPublished
@@ -67,21 +67,21 @@ export const GetPreviewForAReviewReadyToBePublished = (
   const started = Option.getOrUndefined(Array.findLast(events, hasTag('DatasetReviewWasStarted')))
 
   if (!started) {
-    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   if (hasEvent(events, 'DatasetReviewWasPublished')) {
-    return Either.left(new Errors.DatasetReviewHasBeenPublished())
+    return Result.fail(new Errors.DatasetReviewHasBeenPublished())
   }
 
   if (hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
-    return Either.left(new Errors.DatasetReviewIsBeingPublished())
+    return Result.fail(new Errors.DatasetReviewIsBeingPublished())
   }
 
   const requirements = FindRequirementsToBePublished(events)
 
-  if (Either.isLeft(requirements)) {
-    return Either.left(new Errors.DatasetReviewNotReadyToBePublished({ missing: requirements.left }))
+  if (Result.isFailure(requirements)) {
+    return Result.fail(new Errors.DatasetReviewNotReadyToBePublished({ missing: requirements.failure }))
   }
 
   const {
@@ -101,40 +101,39 @@ export const GetPreviewForAReviewReadyToBePublished = (
     AnsweredIfTheDatasetIsReadyToBeShared: answerToIfTheDatasetIsReadyToBeShared,
     AnsweredIfTheDatasetIsMissingAnything: answerToIfTheDatasetIsMissingAnything,
     DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview: { generativeAiIdeas },
-  } = requirements.right
+  } = requirements.success
 
-  return Either.right({
+  return Result.succeed({
     author: { orcidId: started.authorId, persona: author.persona },
     authorsToInvite: authorsToInviteFor(othersNeedToBeListed.answer, events),
     dataset: started.datasetId,
     competingInterests: competingInterests.competingInterests,
-    qualityRating: Struct.pick(qualityRating, 'rating', 'detail'),
-    answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
-      answerToIfTheDatasetFollowsFairAndCarePrinciples,
+    qualityRating: Struct.pick(qualityRating, ['rating', 'detail']),
+    answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(answerToIfTheDatasetFollowsFairAndCarePrinciples, [
       'answer',
       'detail',
-    ),
-    answerToIfTheDatasetHasEnoughMetadata: Struct.pick(answerToIfTheDatasetHasEnoughMetadata, 'answer', 'detail'),
-    answerToIfTheDatasetHasTrackedChanges: Struct.pick(answerToIfTheDatasetHasTrackedChanges, 'answer', 'detail'),
-    answerToIfTheDatasetHasDataCensoredOrDeleted: Struct.pick(
-      answerToIfTheDatasetHasDataCensoredOrDeleted,
+    ]),
+    answerToIfTheDatasetHasEnoughMetadata: Struct.pick(answerToIfTheDatasetHasEnoughMetadata, ['answer', 'detail']),
+    answerToIfTheDatasetHasTrackedChanges: Struct.pick(answerToIfTheDatasetHasTrackedChanges, ['answer', 'detail']),
+    answerToIfTheDatasetHasDataCensoredOrDeleted: Struct.pick(answerToIfTheDatasetHasDataCensoredOrDeleted, [
       'answer',
       'detail',
-    ),
+    ]),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Struct.pick(
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+      ['answer', 'detail'],
+    ),
+    answerToIfTheDatasetSupportsRelatedConclusions: Struct.pick(answerToIfTheDatasetSupportsRelatedConclusions, [
       'answer',
       'detail',
-    ),
-    answerToIfTheDatasetSupportsRelatedConclusions: Struct.pick(
-      answerToIfTheDatasetSupportsRelatedConclusions,
+    ]),
+    answerToIfTheDatasetIsDetailedEnough: Struct.pick(answerToIfTheDatasetIsDetailedEnough, ['answer', 'detail']),
+    answerToIfTheDatasetIsErrorFree: Struct.pick(answerToIfTheDatasetIsErrorFree, ['answer', 'detail']),
+    answerToIfTheDatasetMattersToItsAudience: Struct.pick(answerToIfTheDatasetMattersToItsAudience, [
       'answer',
       'detail',
-    ),
-    answerToIfTheDatasetIsDetailedEnough: Struct.pick(answerToIfTheDatasetIsDetailedEnough, 'answer', 'detail'),
-    answerToIfTheDatasetIsErrorFree: Struct.pick(answerToIfTheDatasetIsErrorFree, 'answer', 'detail'),
-    answerToIfTheDatasetMattersToItsAudience: Struct.pick(answerToIfTheDatasetMattersToItsAudience, 'answer', 'detail'),
-    answerToIfTheDatasetIsReadyToBeShared: Struct.pick(answerToIfTheDatasetIsReadyToBeShared, 'answer', 'detail'),
+    ]),
+    answerToIfTheDatasetIsReadyToBeShared: Struct.pick(answerToIfTheDatasetIsReadyToBeShared, ['answer', 'detail']),
     answerToIfTheDatasetIsMissingAnything: answerToIfTheDatasetIsMissingAnything.answer,
     generativeAiIdeas,
     license: generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
@@ -152,10 +151,13 @@ const authorsToInviteFor = (
   const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
 
   const removedInvitations = HashSet.fromIterable(
-    Array.filterMap(events, event =>
-      event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-        ? Option.some(event.invitationId)
-        : Option.none(),
+    Array.filterMap(
+      events,
+      Filter.fromPredicateOption(event =>
+        event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+          ? Option.some(event.invitationId)
+          : Option.none(),
+      ),
     ),
   )
 
@@ -165,10 +167,13 @@ const authorsToInviteFor = (
   )
 
   return Option.liftPredicate(
-    Array.filterMap(currentInvitations, invitation =>
-      Option.isSome(invitation.contactDetails) ? Option.some(invitation.contactDetails.value.name) : Option.none(),
+    Array.filterMap(
+      currentInvitations,
+      Filter.fromPredicateOption(invitation =>
+        Option.isSome(invitation.contactDetails) ? Option.some(invitation.contactDetails.value.name) : Option.none(),
+      ),
     ),
-    Array.isNonEmptyArray,
+    Array.isArrayNonEmpty,
   )
 }
 

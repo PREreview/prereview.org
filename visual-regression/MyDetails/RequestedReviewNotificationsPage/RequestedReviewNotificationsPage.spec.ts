@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as RequestedReviewNotificationsForm from '../../../src/WebApp/MyDetails/RequestedReviewNotificationsPage/RequestedReviewNotificationsForm.ts'
 import * as _ from '../../../src/WebApp/MyDetails/RequestedReviewNotificationsPage/RequestedReviewNotificationsPage.ts'
@@ -18,7 +18,7 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right when fields are missing', async ({ showPage }) => {
   const response = _.RequestedReviewNotificationsPage({
     form: new RequestedReviewNotificationsForm.InvalidForm({
-      requestedReviewNotifications: Either.left(new RequestedReviewNotificationsForm.Missing()),
+      requestedReviewNotifications: Result.fail(new RequestedReviewNotificationsForm.Missing()),
     }),
     locale,
   })

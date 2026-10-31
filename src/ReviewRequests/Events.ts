@@ -1,4 +1,4 @@
-import { Array, Schema, Struct } from 'effect'
+import { Array, Schema } from 'effect'
 import { Slack } from '../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { SensitiveData } from '../SensitiveData.ts'
@@ -22,7 +22,7 @@ export class PersonaForAReviewRequestForAPreprintWasChosen extends Schema.Tagged
   'PersonaForAReviewRequestForAPreprintWasChosen',
   {
     reviewRequestId: Uuid.UuidSchema,
-    persona: Schema.Literal('public', 'pseudonym'),
+    persona: Schema.Literals(['public', 'pseudonym']),
   },
 ) {}
 
@@ -38,7 +38,7 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
   'ReviewRequestForAPreprintWasReceived',
   {
     receivedAt: Temporal.InstantSchema,
-    receivedFrom: Schema.URL,
+    receivedFrom: Schema.URLFromString,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
     requester: SensitiveData(
@@ -65,7 +65,7 @@ export class ReviewRequestForAPreprintWasRejected extends Schema.TaggedClass<Rev
   {
     rejectedAt: Temporal.InstantSchema,
     reviewRequestId: Uuid.UuidSchema,
-    reason: Schema.Literal('not-a-preprint', 'unknown-preprint'),
+    reason: Schema.Literals(['not-a-preprint', 'unknown-preprint']),
   },
 ) {}
 
@@ -74,11 +74,11 @@ export class ReviewRequestForAPreprintWasWithdrawn extends Schema.TaggedClass<Re
   {
     withdrawnAt: Temporal.InstantSchema,
     reviewRequestId: Uuid.UuidSchema,
-    reason: Schema.Literal(
+    reason: Schema.Literals([
       'preprint-withdrawn-from-preprint-server',
       'mistakenly-requested',
       'requester-changed-their-mind',
-    ),
+    ]),
   },
 ) {}
 
@@ -86,7 +86,7 @@ export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedCl
   'ReviewRequestFromAPreprintServerWasImported',
   {
     publishedAt: Temporal.InstantSchema,
-    receivedFrom: Schema.URL,
+    receivedFrom: Schema.URLFromString,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
     requester: SensitiveData(
@@ -108,7 +108,7 @@ export class ReviewRequestByAPrereviewerWasImported extends Schema.TaggedClass<R
     reviewRequestId: Uuid.UuidSchema,
     requester: Schema.Struct({
       orcidId: OrcidId.OrcidIdSchema,
-      persona: Schema.Literal('public', 'pseudonym'),
+      persona: Schema.Literals(['public', 'pseudonym']),
     }),
   },
 ) {}
@@ -159,7 +159,7 @@ export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schem
   },
 ) {}
 
-export const ReviewRequestEvent = Schema.Union(
+export const ReviewRequestEvent = Schema.Union([
   ReviewRequestForAPreprintWasStarted,
   PersonaForAReviewRequestForAPreprintWasChosen,
   ReviewRequestForAPreprintWasPublished,
@@ -174,6 +174,9 @@ export const ReviewRequestEvent = Schema.Union(
   FailedToCategorizeAReviewRequestForAPreprint,
   EmailToAcknowledgeAReviewRequestForAPreprintWasSent,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-)
+])
 
-export const ReviewRequestEventTypes = Array.map(ReviewRequestEvent.members, Struct.get('_tag'))
+export const ReviewRequestEventTypes = Array.map(
+  ReviewRequestEvent.members,
+  member => member.identifier as ReviewRequestEvent['_tag'],
+)

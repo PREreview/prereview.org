@@ -1,4 +1,4 @@
-import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Function, Match, Option, type Types } from 'effect'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
@@ -31,14 +31,14 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    AlreadyHasARecord: () => Either.left(new Errors.DatasetReviewAlreadyHasAZenodoRecord({})),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    AlreadyHasARecord: () => Result.fail(new Errors.DatasetReviewAlreadyHasAZenodoRecord({})),
     DoesNotHaveARecord: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.ZenodoRecordForDatasetReviewWasCreated({
             recordId: command.recordId,

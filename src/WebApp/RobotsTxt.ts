@@ -1,4 +1,4 @@
-import { HttpServerResponse } from '@effect/platform'
+import { HttpServerResponse } from 'effect/http'
 import { Effect } from 'effect'
 import { AllowSiteCrawlers } from '../Context.ts'
 

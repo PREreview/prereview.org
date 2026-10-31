@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Predicate, Tuple } from 'effect'
+import { Array, Result, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanDeclareFollowingCodeOfConduct.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -42,7 +42,7 @@ describe('query', () => {
     ([events, datasetReviewId, userId]) => {
       const actual = _.query(events, { datasetReviewId, userId })
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
     },
     {
       fastCheck: {
@@ -76,7 +76,7 @@ describe('query', () => {
     ([[events, datasetReviewId, userId]]) => {
       const actual = _.query(events, { datasetReviewId, userId })
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
     },
     {
       fastCheck: {
@@ -100,7 +100,7 @@ describe('query', () => {
     ([[events, datasetReviewId, userId]]) => {
       const actual = _.query(events, { datasetReviewId, userId })
 
-      expect(actual).toStrictEqual(Either.right(false))
+      expect(actual).toStrictEqual(Result.succeed(false))
     },
     {
       fastCheck: {
@@ -131,7 +131,7 @@ describe('query', () => {
     ([[events, datasetReviewId, userId]]) => {
       const actual = _.query(events, { datasetReviewId, userId })
 
-      expect(actual).toStrictEqual(Either.right(true))
+      expect(actual).toStrictEqual(Result.succeed(true))
     },
     {
       fastCheck: {
@@ -175,7 +175,7 @@ describe('query', () => {
     ([[events, datasetReviewId, userId]]) => {
       const actual = _.query(events, { datasetReviewId, userId })
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()))
     },
     {
       fastCheck: {
@@ -230,7 +230,7 @@ describe('query', () => {
     ([[events, datasetReviewId, userId]]) => {
       const actual = _.query(events, { datasetReviewId, userId })
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()))
     },
     {
       fastCheck: {

@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
@@ -67,11 +67,11 @@ export function ChooseYourPersonaPage({
             </details>
 
             ${
-              hasAnError && Either.isLeft(form.chooseYourPersona)
+              hasAnError && Result.isFailure(form.chooseYourPersona)
                 ? html`
                     <div class="error-message" id="choose-your-persona-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.chooseYourPersona.left, {
+                      ${Match.valueTags(form.chooseYourPersona.failure, {
                         Missing: t('selectNameYouWouldLikeToUse'),
                       })}
                     </div>
@@ -138,11 +138,11 @@ export function ChooseYourPersonaPage({
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
   ${
-    Either.isLeft(form.chooseYourPersona)
+    Result.isFailure(form.chooseYourPersona)
       ? html`
           <li>
             <a href="#choose-your-persona-public">
-              ${Match.valueTags(form.chooseYourPersona.left, {
+              ${Match.valueTags(form.chooseYourPersona.failure, {
                 Missing: translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'),
               })}
             </a>

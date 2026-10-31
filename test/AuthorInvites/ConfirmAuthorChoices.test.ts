@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/ConfirmAuthorChoices.ts'
 import { DryadDatasetId } from '../../src/Datasets/index.ts'
 import * as Events from '../../src/Events.ts'
@@ -57,39 +57,39 @@ const startedDifferentOrcidId = new Events.DatasetReviewWasStarted({
   datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
 })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Either.left(new _.ChoicesDoNotNeedToBeConfirmed())],
-  ['invitation accepted', [inviteAccepted], input, Either.left(new _.ChoicesDoNotNeedToBeConfirmed())],
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
+  ['no events', [], input, Result.fail(new _.ChoicesDoNotNeedToBeConfirmed())],
+  ['invitation accepted', [inviteAccepted], input, Result.fail(new _.ChoicesDoNotNeedToBeConfirmed())],
   [
     'persona chosen',
     [inviteAccepted, personaChosen],
     input,
-    Either.right(Option.some(new Events.AuthorChoicesForAReviewConfirmed(input))),
+    Result.succeed(Option.some(new Events.AuthorChoicesForAReviewConfirmed(input))),
   ],
   [
     'no matching review id',
     [inviteAccepted, personaChosen],
     inputWithDifferentReviewId,
-    Either.left(new _.ChoicesDoNotNeedToBeConfirmed()),
+    Result.fail(new _.ChoicesDoNotNeedToBeConfirmed()),
   ],
   [
     'no matching ORCID iD',
     [inviteAccepted, personaChosen],
     inputWithDifferentOrcidId,
-    Either.left(new _.ChoicesDoNotNeedToBeConfirmed()),
+    Result.fail(new _.ChoicesDoNotNeedToBeConfirmed()),
   ],
   [
     'choices already confirmed',
     [inviteAccepted, personaChosen, confirmed],
     input,
-    Either.left(new _.ChoicesCannotBeChanged()),
+    Result.fail(new _.ChoicesCannotBeChanged()),
   ],
-  ['started the review', [started, inviteAccepted], input, Either.left(new _.ChoicesCannotBeChanged())],
+  ['started the review', [started, inviteAccepted], input, Result.fail(new _.ChoicesCannotBeChanged())],
   [
     'someone else started the review',
     [startedDifferentOrcidId, inviteAccepted],
     input,
-    Either.left(new _.ChoicesDoNotNeedToBeConfirmed()),
+    Result.fail(new _.ChoicesDoNotNeedToBeConfirmed()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ConfirmAuthorChoices

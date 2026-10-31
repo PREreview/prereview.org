@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type IsErrorFreeForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  isErrorFree: Either.Either<never, Missing>
-  isErrorFreeYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  isErrorFreePartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  isErrorFreeNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  isErrorFree: Result.Result<never, Missing>
+  isErrorFreeYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  isErrorFreePartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  isErrorFreeNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const isErrorFreeYesDetail = yield* pipe(
-    Schema.decode(IsErrorFreeYesDetailSchema)(body),
-    Effect.andThen(Struct.get('isErrorFreeYesDetail')),
+    Schema.decodeEffect(IsErrorFreeYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isErrorFreeYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const isErrorFreePartlyDetail = yield* pipe(
-    Schema.decode(IsErrorFreePartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('isErrorFreePartlyDetail')),
+    Schema.decodeEffect(IsErrorFreePartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isErrorFreePartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const isErrorFreeNoDetail = yield* pipe(
-    Schema.decode(IsErrorFreeNoDetailSchema)(body),
-    Effect.andThen(Struct.get('isErrorFreeNoDetail')),
+    Schema.decodeEffect(IsErrorFreeNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isErrorFreeNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(IsErrorFreeSchema)(body),
+    Schema.decodeEffect(IsErrorFreeSchema)(body),
     Effect.map(
       ({ isErrorFree }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           isErrorFreeNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          isErrorFree: Either.left(new Missing()),
-          isErrorFreeYesDetail: Either.right(isErrorFreeYesDetail),
-          isErrorFreePartlyDetail: Either.right(isErrorFreePartlyDetail),
-          isErrorFreeNoDetail: Either.right(isErrorFreeNoDetail),
+          isErrorFree: Result.fail(new Missing()),
+          isErrorFreeYesDetail: Result.succeed(isErrorFreeYesDetail),
+          isErrorFreePartlyDetail: Result.succeed(isErrorFreePartlyDetail),
+          isErrorFreeNoDetail: Result.succeed(isErrorFreeNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const IsErrorFreeSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isErrorFree: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const IsErrorFreeSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isErrorFree: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const IsErrorFreeYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isErrorFreeYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsErrorFreeYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isErrorFreeYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const IsErrorFreePartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isErrorFreePartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsErrorFreePartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isErrorFreePartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const IsErrorFreeNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isErrorFreeNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsErrorFreeNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isErrorFreeNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

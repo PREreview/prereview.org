@@ -9,34 +9,34 @@ import type { CommentError } from './Errors.ts'
 import type * as Queries from './Queries.ts'
 import type { CommentState } from './State.ts'
 
-export class GetNextExpectedCommandForUserOnAComment extends Context.Tag('GetNextExpectedCommandForUserOnAComment')<
+export class GetNextExpectedCommandForUserOnAComment extends Context.Service<
   GetNextExpectedCommandForUserOnAComment,
   (
     ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>
   ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>, UnableToQuery>
->() {}
+>()('GetNextExpectedCommandForUserOnAComment') {}
 
-export class GetNextExpectedCommandForUser extends Context.Tag('GetNextExpectedCommandForUser')<
+export class GetNextExpectedCommandForUser extends Context.Service<
   GetNextExpectedCommandForUser,
   (
     ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>
   ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>, UnableToQuery>
->() {}
+>()('GetNextExpectedCommandForUser') {}
 
-export class GetComment extends Context.Tag('GetComment')<
+export class GetComment extends Context.Service<
   GetComment,
   (commentId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
->() {}
+>()('GetComment') {}
 
-export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
+export class HandleCommentCommand extends Context.Service<
   HandleCommentCommand,
   (command: CommentCommand) => Effect.Effect<void, UnableToHandleCommand | CommentError>
->() {}
+>()('HandleCommentCommand') {}
 
-export class CreateRecordOnZenodoForComment extends Context.Tag('CreateRecordOnZenodoForComment')<
+export class CreateRecordOnZenodoForComment extends Context.Service<
   CreateRecordOnZenodoForComment,
   (comment: InputForCommentZenodoRecord) => Effect.Effect<[Doi, number], UnableToAssignADoi>
->() {}
+>()('CreateRecordOnZenodoForComment') {}
 
 export interface InputForCommentZenodoRecord {
   readonly authorId: OrcidId
@@ -46,10 +46,10 @@ export interface InputForCommentZenodoRecord {
   readonly prereviewId: number
 }
 
-export class PublishCommentOnZenodo extends Context.Tag('PublishCommentOnZenodo')<
+export class PublishCommentOnZenodo extends Context.Service<
   PublishCommentOnZenodo,
   (commentId: number) => Effect.Effect<void, UnableToPublishComment>
->() {}
+>()('PublishCommentOnZenodo') {}
 
 export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{ cause?: Error }> {}
 

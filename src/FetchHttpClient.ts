@@ -6,18 +6,17 @@ import {
   HttpClientRequest,
   type HttpClientResponse,
   HttpMethod,
-} from '@effect/platform'
-import { Effect, Either, identity, pipe, Runtime } from 'effect'
+} from 'effect/http'
+import { Effect, identity, pipe, Result } from 'effect'
 
 export const Fetch = FetchHttpClient.Fetch
 
 export const makeFetch: Effect.Effect<typeof globalThis.fetch, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const client = yield* HttpClient.HttpClient
-  const runtime = yield* Effect.runtime()
+  const context = yield* Effect.context()
 
   return (input, init) =>
-    Runtime.runPromise(
-      runtime,
+    Effect.runPromiseWith(context)(
       pipe(
         convertRequest(input, init),
         Effect.andThen(
@@ -25,10 +24,10 @@ export const makeFetch: Effect.Effect<typeof globalThis.fetch, never, HttpClient
             .execute,
         ),
         Effect.andThen(convertResponse),
-        Effect.either,
+        Effect.result,
       ),
       { signal: init?.signal ?? undefined },
-    ).then(Either.getOrThrowWith(identity))
+    ).then(Result.getOrThrowWith(identity))
 })
 
 const convertRequest = (
@@ -57,7 +56,7 @@ const convertRequest = (
 
 const convertResponse = (
   response: HttpClientResponse.HttpClientResponse,
-): Effect.Effect<Response, HttpClientError.ResponseError> =>
+): Effect.Effect<Response, HttpClientError.HttpClientError> =>
   pipe(
     response.text,
     Effect.map(body => new Response(body, { headers: response.headers, status: response.status })),

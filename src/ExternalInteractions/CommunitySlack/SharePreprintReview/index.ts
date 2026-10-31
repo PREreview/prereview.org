@@ -14,6 +14,6 @@ export const SharePreprintReview = flow(
   Effect.succeed,
   Effect.bind('channel', () => shareAReviewChannelId),
   Effect.andThen(Slack.chatPostMessage),
-  Effect.catchAll(error => new FailedToSharePreprintReview({ cause: error })),
+  Effect.catch(error => new FailedToSharePreprintReview({ cause: error })),
   Effect.asVoid,
 )

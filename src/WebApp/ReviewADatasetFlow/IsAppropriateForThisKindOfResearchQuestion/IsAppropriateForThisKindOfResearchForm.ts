@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type IsAppropriateForThisKindOfResearchForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  isAppropriateForThisKindOfResearch: Either.Either<never, Missing>
-  isAppropriateForThisKindOfResearchYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  isAppropriateForThisKindOfResearchPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  isAppropriateForThisKindOfResearchNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  isAppropriateForThisKindOfResearch: Result.Result<never, Missing>
+  isAppropriateForThisKindOfResearchYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  isAppropriateForThisKindOfResearchPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  isAppropriateForThisKindOfResearchNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const isAppropriateForThisKindOfResearchYesDetail = yield* pipe(
-    Schema.decode(IsAppropriateForThisKindOfResearchYesDetailSchema)(body),
-    Effect.andThen(Struct.get('isAppropriateForThisKindOfResearchYesDetail')),
+    Schema.decodeEffect(IsAppropriateForThisKindOfResearchYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isAppropriateForThisKindOfResearchYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const isAppropriateForThisKindOfResearchPartlyDetail = yield* pipe(
-    Schema.decode(IsAppropriateForThisKindOfResearchPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('isAppropriateForThisKindOfResearchPartlyDetail')),
+    Schema.decodeEffect(IsAppropriateForThisKindOfResearchPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isAppropriateForThisKindOfResearchPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const isAppropriateForThisKindOfResearchNoDetail = yield* pipe(
-    Schema.decode(IsAppropriateForThisKindOfResearchNoDetailSchema)(body),
-    Effect.andThen(Struct.get('isAppropriateForThisKindOfResearchNoDetail')),
+    Schema.decodeEffect(IsAppropriateForThisKindOfResearchNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isAppropriateForThisKindOfResearchNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(IsAppropriateForThisKindOfResearchSchema)(body),
+    Schema.decodeEffect(IsAppropriateForThisKindOfResearchSchema)(body),
     Effect.map(
       ({ isAppropriateForThisKindOfResearch }) =>
         new CompletedForm({
@@ -50,13 +50,15 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           isAppropriateForThisKindOfResearchNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          isAppropriateForThisKindOfResearch: Either.left(new Missing()),
-          isAppropriateForThisKindOfResearchYesDetail: Either.right(isAppropriateForThisKindOfResearchYesDetail),
-          isAppropriateForThisKindOfResearchPartlyDetail: Either.right(isAppropriateForThisKindOfResearchPartlyDetail),
-          isAppropriateForThisKindOfResearchNoDetail: Either.right(isAppropriateForThisKindOfResearchNoDetail),
+          isAppropriateForThisKindOfResearch: Result.fail(new Missing()),
+          isAppropriateForThisKindOfResearchYesDetail: Result.succeed(isAppropriateForThisKindOfResearchYesDetail),
+          isAppropriateForThisKindOfResearchPartlyDetail: Result.succeed(
+            isAppropriateForThisKindOfResearchPartlyDetail,
+          ),
+          isAppropriateForThisKindOfResearchNoDetail: Result.succeed(isAppropriateForThisKindOfResearchNoDetail),
         }),
       ),
     ),
@@ -79,26 +81,34 @@ export const fromAnswer: (
     }),
 })
 
-const IsAppropriateForThisKindOfResearchSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isAppropriateForThisKindOfResearch: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const IsAppropriateForThisKindOfResearchSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isAppropriateForThisKindOfResearch: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const IsAppropriateForThisKindOfResearchYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isAppropriateForThisKindOfResearchYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsAppropriateForThisKindOfResearchYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isAppropriateForThisKindOfResearchYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const IsAppropriateForThisKindOfResearchPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isAppropriateForThisKindOfResearchPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsAppropriateForThisKindOfResearchPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isAppropriateForThisKindOfResearchPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const IsAppropriateForThisKindOfResearchNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isAppropriateForThisKindOfResearchNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsAppropriateForThisKindOfResearchNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isAppropriateForThisKindOfResearchNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

@@ -1,14 +1,14 @@
-import { Url } from '@effect/platform'
-import { Array, Either } from 'effect'
+import { Url } from 'effect/http'
+import { Array, Result } from 'effect'
 import type { Philsci } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml } from '../../../html.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { Name } from '../../../types/Name.ts'
 
-export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprints.Preprint, Preprints.NotAPreprint> =>
-  Either.gen(function* () {
+export const EprintToPreprint = (eprint: Philsci.Eprint): Result.Result<Preprints.Preprint, Preprints.NotAPreprint> =>
+  Result.gen(function* () {
     if (eprint.type !== 'pittpreprint') {
-      yield* Either.left(new Preprints.NotAPreprint({ cause: { type: eprint.type } }))
+      yield* Result.fail(new Preprints.NotAPreprint({ cause: { type: eprint.type } }))
     }
 
     return Preprints.Preprint({

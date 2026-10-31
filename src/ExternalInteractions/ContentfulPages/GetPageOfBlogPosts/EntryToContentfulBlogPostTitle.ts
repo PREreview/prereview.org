@@ -1,4 +1,4 @@
-import { Effect, flow, Layer, Option, type ParseResult, pipe, Predicate, Record, Schema } from 'effect'
+import { Effect, flow, Layer, Option, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
@@ -15,15 +15,13 @@ export const BlogPostEntry = Schema.Struct({
     createdAt: InstantSchema,
   }),
   fields: Schema.Struct({
-    title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
-    slug: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: SlugSchema }),
+    title: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.Trimmed.check(Schema.isNonEmpty())),
+    slug: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), SlugSchema),
     heroImage: Schema.optional(
-      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
+      Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toEncoded(HeroImageEntry)),
     ),
-    excerpt: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyString })),
-    firstPublishedAtOverride: Schema.optional(
-      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: InstantSchema }),
-    ),
+    excerpt: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyString)),
+    firstPublishedAtOverride: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), InstantSchema)),
   }),
 })
 
@@ -62,8 +60,8 @@ const BlogPostEntryToContentfulBlogPostTitle = Effect.fnUntraced(function* (entr
 
 export const EntryToContentfulBlogPostTitle: (
   entry: Entry,
-) => Effect.Effect<ContentfulBlogPostTitle, ParseResult.ParseError> = flow(
-  Schema.decodeUnknown(Schema.typeSchema(BlogPostEntry)),
+) => Effect.Effect<ContentfulBlogPostTitle, Schema.SchemaError> = flow(
+  Schema.decodeUnknownEffect(Schema.toType(BlogPostEntry)),
   Effect.andThen(BlogPostEntryToContentfulBlogPostTitle),
   Effect.provide(Layer.succeed(Locale, DefaultLocale)),
 )

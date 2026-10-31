@@ -1,4 +1,4 @@
-import { Array, Schema } from 'effect'
+import { Array, Effect, Schema } from 'effect'
 import { HtmlSchema, PlainTextSchema } from '../../html.ts'
 import { Doi, OrcidId } from '../../types/index.ts'
 
@@ -8,48 +8,52 @@ export type UnsubmittedDeposition = typeof UnsubmittedDeposition.Type
 
 export type SubmittedDeposition = typeof SubmittedDeposition.Type
 
-export const DepositMetadata = Schema.Struct({
+const RelatedIdentifiers = Schema.Tuple([
+  Schema.Struct({
+    identifier: Doi.DoiSchema,
+    relation: Schema.Literal('reviews'),
+    resourceType: Schema.Literal('dataset'),
+    scheme: Schema.Literal('doi'),
+  }).pipe(Schema.encodeKeys({ resourceType: 'resource_type' })),
+  Schema.Struct({
+    identifier: Schema.URLFromString,
+    relation: Schema.Literal('isIdenticalTo'),
+    resourceType: Schema.Literal('publication-peerreview'),
+    scheme: Schema.Literal('url'),
+  }).pipe(Schema.encodeKeys({ resourceType: 'resource_type' })),
+])
+
+const DepositMetadataFields = {
   creators: Schema.NonEmptyArray(Schema.Struct({ name: Schema.String, orcid: Schema.optional(OrcidId.OrcidIdSchema) })),
   description: HtmlSchema,
   title: PlainTextSchema,
-  communities: Schema.optionalWith(Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })), {
-    default: Array.empty,
-  }),
-  license: Schema.Literal('cc-by-4.0', 'cc-zero'),
-  relatedIdentifiers: Schema.propertySignature(
-    Schema.Tuple(
-      Schema.Struct({
-        identifier: Doi.DoiSchema,
-        relation: Schema.Literal('reviews'),
-        resourceType: Schema.propertySignature(Schema.Literal('dataset')).pipe(Schema.fromKey('resource_type')),
-        scheme: Schema.Literal('doi'),
-      }),
-      Schema.Struct({
-        identifier: Schema.URL,
-        relation: Schema.Literal('isIdenticalTo'),
-        resourceType: Schema.propertySignature(Schema.Literal('publication-peerreview')).pipe(
-          Schema.fromKey('resource_type'),
-        ),
-        scheme: Schema.Literal('url'),
-      }),
-    ),
-  ).pipe(Schema.fromKey('related_identifiers')),
-  uploadType: Schema.propertySignature(Schema.Literal('publication')).pipe(Schema.fromKey('upload_type')),
-  publicationType: Schema.propertySignature(Schema.Literal('peerreview')).pipe(Schema.fromKey('publication_type')),
-})
+  communities: Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })).pipe(
+    Schema.withDecodingDefaultType(Effect.sync(Array.empty)),
+  ),
+  license: Schema.Literals(['cc-by-4.0', 'cc-zero']),
+  relatedIdentifiers: RelatedIdentifiers,
+  uploadType: Schema.Literal('publication'),
+  publicationType: Schema.Literal('peerreview'),
+}
+
+const DepositMetadataKeys = {
+  relatedIdentifiers: 'related_identifiers',
+  uploadType: 'upload_type',
+  publicationType: 'publication_type',
+} as const
+
+export const DepositMetadata = Schema.Struct(DepositMetadataFields).pipe(Schema.encodeKeys(DepositMetadataKeys))
 
 export const UnsubmittedDeposition = Schema.Struct({
   id: Schema.Int,
   links: Schema.Struct({
-    bucket: Schema.URL,
-    publish: Schema.URL,
+    bucket: Schema.URLFromString,
+    publish: Schema.URLFromString,
   }),
   metadata: Schema.Struct({
-    ...DepositMetadata.fields,
-    prereserveDoi: Schema.propertySignature(Schema.Struct({ doi: Doi.DoiSchema })).pipe(
-      Schema.fromKey('prereserve_doi'),
-    ),
-  }),
+    ...DepositMetadataFields,
+    prereserveDoi: Schema.Struct({ doi: Doi.DoiSchema }),
+  }).pipe(Schema.encodeKeys({ ...DepositMetadataKeys, prereserveDoi: 'prereserve_doi' })),
   state: Schema.Literal('unsubmitted'),
   submitted: Schema.Literal(false),
 })
@@ -57,9 +61,9 @@ export const UnsubmittedDeposition = Schema.Struct({
 export const SubmittedDeposition = Schema.Struct({
   id: Schema.Int,
   metadata: Schema.Struct({
-    ...DepositMetadata.fields,
+    ...DepositMetadataFields,
     doi: Doi.DoiSchema,
-  }),
+  }).pipe(Schema.encodeKeys(DepositMetadataKeys)),
   state: Schema.Literal('done'),
   submitted: Schema.Literal(true),
 })

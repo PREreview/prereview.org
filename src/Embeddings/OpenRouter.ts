@@ -1,4 +1,4 @@
-import { HttpClientRequest, HttpClientResponse, type HttpClient } from '@effect/platform'
+import { HttpClientRequest, HttpClientResponse, type HttpClient } from 'effect/http'
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
 import { UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
 import { Float32ArraySchema } from './Float32Array.ts'
@@ -63,9 +63,9 @@ export const generateEmbeddings = <T extends TitleAndAbstract>(
       Effect.fnUntraced(function* (error) {
         yield* Effect.annotateLogsScoped({ error })
 
-        if (error._tag === 'ResponseError' && error.reason === 'StatusCode') {
+        if (error._tag === 'HttpClientError' && error.reason._tag === 'StatusCodeError') {
           yield* Effect.ignore(
-            Effect.andThen(error.response.json, responseBody => Effect.annotateLogsScoped({ responseBody })),
+            Effect.andThen(error.reason.response.json, responseBody => Effect.annotateLogsScoped({ responseBody })),
           )
         }
 

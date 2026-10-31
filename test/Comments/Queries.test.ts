@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from '../vitest.ts'
-import { Array, Either, Option } from 'effect'
+import { Array, Result, Option } from 'effect'
 import * as _ from '../../src/Comments/Queries.ts'
 import * as Comments from '../../src/Comments/index.ts'
 import * as Queries from '../../src/Queries.ts'
@@ -226,14 +226,14 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
     ])('returns %s', (expected, events) => {
       const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-      expect(actual).toStrictEqual(Either.right(expect.objectContaining({ _tag: expected, commentId: resourceId })))
+      expect(actual).toStrictEqual(Result.succeed(expect.objectContaining({ _tag: expected, commentId: resourceId })))
     })
 
     test('when last answer was changed', () => {
       const events = [commentWasStarted, commentWasEntered, commentWasEntered]
       const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-      expect(actual).toStrictEqual(Either.right(new Comments.ExpectedToChooseAPersona({ commentId: resourceId })))
+      expect(actual).toStrictEqual(Result.succeed(new Comments.ExpectedToChooseAPersona({ commentId: resourceId })))
     })
 
     test('when a previous answer was changed', () => {
@@ -241,7 +241,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
       const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
       expect(actual).toStrictEqual(
-        Either.right(new Comments.ExpectedToDeclareCompetingInterests({ commentId: resourceId })),
+        Result.succeed(new Comments.ExpectedToDeclareCompetingInterests({ commentId: resourceId })),
       )
     })
 
@@ -257,14 +257,14 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
       ]
       const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-      expect(actual).toStrictEqual(Either.right(new Comments.ExpectedToPublishComment({ commentId: resourceId })))
+      expect(actual).toStrictEqual(Result.succeed(new Comments.ExpectedToPublishComment({ commentId: resourceId })))
     })
   })
 
   test("when the comment hasn't been started", () => {
     const actual = _.GetNextExpectedCommandForUserOnAComment([])(resourceId)
 
-    expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
+    expect(actual).toStrictEqual(Result.fail(new Comments.CommentHasNotBeenStarted()))
   })
 
   test('when the comment is being published', () => {
@@ -280,7 +280,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
 
     const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-    expect(actual).toStrictEqual(Either.left(new Comments.CommentIsBeingPublished()))
+    expect(actual).toStrictEqual(Result.fail(new Comments.CommentIsBeingPublished()))
   })
 
   test('when the comment has been published', () => {
@@ -298,7 +298,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
 
     const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-    expect(actual).toStrictEqual(Either.left(new Comments.CommentWasAlreadyPublished()))
+    expect(actual).toStrictEqual(Result.fail(new Comments.CommentWasAlreadyPublished()))
   })
 })
 
@@ -336,7 +336,7 @@ describe('buildInputForCommentZenodoRecord', () => {
 
     const actual = _.buildInputForCommentZenodoRecord(events)
 
-    expect(actual).toStrictEqual(Either.right(expectedInputForCommentZenodoRecord))
+    expect(actual).toStrictEqual(Result.succeed(expectedInputForCommentZenodoRecord))
   })
 
   test.each([
@@ -347,7 +347,7 @@ describe('buildInputForCommentZenodoRecord', () => {
   ])('returns an UnexpectedSequenceOfEvents when %s', (_name, events) => {
     const actual = _.buildInputForCommentZenodoRecord([...events, publicationOfCommentWasRequested])
 
-    expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+    expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
   })
 })
 
@@ -365,7 +365,7 @@ describe('GetACommentInNeedOfADoi', () => {
 
     const actual = _.GetACommentInNeedOfADoi(events)
 
-    expect(actual).toStrictEqual(Either.right(resourceId))
+    expect(actual).toStrictEqual(Result.succeed(resourceId))
   })
 
   it.prop(
@@ -380,7 +380,7 @@ describe('GetACommentInNeedOfADoi', () => {
     ([otherEvents]) => {
       const actual = _.GetACommentInNeedOfADoi(Array.flatten([otherEvents, Array.of(publicationOfCommentWasRequested)]))
 
-      expect(actual).toStrictEqual(Either.right(resourceId))
+      expect(actual).toStrictEqual(Result.succeed(resourceId))
     },
   )
 
@@ -389,6 +389,6 @@ describe('GetACommentInNeedOfADoi', () => {
 
     const actual = _.GetACommentInNeedOfADoi(events)
 
-    expect(actual).toStrictEqual(Either.left(new _.NoCommentsInNeedOfADoi()))
+    expect(actual).toStrictEqual(Result.fail(new _.NoCommentsInNeedOfADoi()))
   })
 })

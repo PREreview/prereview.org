@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as DeclareFollowingCodeOfConductForm from '../../../src/WebApp/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -35,7 +35,7 @@ test('content looks right when the declaration is missing', async ({ showPage })
   const response = _.DeclareFollowingCodeOfConductPage({
     datasetReviewId,
     form: new DeclareFollowingCodeOfConductForm.InvalidForm({
-      followingCodeOfConduct: Either.left(new DeclareFollowingCodeOfConductForm.Missing()),
+      followingCodeOfConduct: Result.fail(new DeclareFollowingCodeOfConductForm.Missing()),
     }),
     locale: DefaultLocale,
   })

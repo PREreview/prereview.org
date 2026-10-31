@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -39,7 +39,7 @@ export const renderChooseYourPersonaPage = ({
             role="group"
             aria-describedby="choose-your-persona-tip"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.chooseYourPersona)
+              form._tag === 'InvalidForm' && Result.isFailure(form.chooseYourPersona)
                 ? 'aria-invalid="true" aria-errormessage="choose-your-persona-error"'
                 : '',
             )}
@@ -66,12 +66,12 @@ export const renderChooseYourPersonaPage = ({
             </details>
 
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.chooseYourPersona)
+              form._tag === 'InvalidForm' && Result.isFailure(form.chooseYourPersona)
                 ? html`
                     <div class="error-message" id="choose-your-persona-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${pipe(
-                        Match.value(form.chooseYourPersona.left),
+                        Match.value(form.chooseYourPersona.failure),
                         Match.tag('Missing', t('selectTheNameYouWouldLikeToUse')),
                         Match.exhaustive,
                       )}
@@ -139,12 +139,12 @@ export const renderChooseYourPersonaPage = ({
 
 const toErrorItems = (locale: SupportedLocale) => (form: ChooseYourPersonaForm.InvalidForm) => html`
   ${
-    Either.isLeft(form.chooseYourPersona)
+    Result.isFailure(form.chooseYourPersona)
       ? html`
           <li>
             <a href="#choose-your-persona-public">
               ${pipe(
-                Match.value(form.chooseYourPersona.left),
+                Match.value(form.chooseYourPersona.failure),
                 Match.tag('Missing', translate(locale, 'author-invite-flow', 'selectTheNameYouWouldLikeToUse')),
                 Match.exhaustive,
               )}

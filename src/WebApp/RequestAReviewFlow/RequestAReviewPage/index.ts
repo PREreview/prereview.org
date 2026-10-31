@@ -1,4 +1,4 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { Effect } from 'effect'
 import type { Locale } from '../../../Context.ts'
 import type * as Preprints from '../../../Preprints/index.ts'

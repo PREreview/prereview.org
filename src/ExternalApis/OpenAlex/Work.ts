@@ -7,24 +7,24 @@ export const WorkSchema = Schema.Struct({
   title: Schema.String,
   keywords: Schema.Array(
     Schema.Struct({
-      id: Schema.URL,
+      id: Schema.URLFromString,
       display_name: Name.NameSchema,
     }),
   ),
   topics: Schema.Array(
     Schema.Struct({
-      id: Schema.URL,
+      id: Schema.URLFromString,
       display_name: Name.NameSchema,
       subfield: Schema.Struct({
-        id: Schema.URL,
+        id: Schema.URLFromString,
         display_name: Name.NameSchema,
       }),
       field: Schema.Struct({
-        id: Schema.URL,
+        id: Schema.URLFromString,
         display_name: Name.NameSchema,
       }),
       domain: Schema.Struct({
-        id: Schema.URL,
+        id: Schema.URLFromString,
         display_name: Name.NameSchema,
       }),
     }),

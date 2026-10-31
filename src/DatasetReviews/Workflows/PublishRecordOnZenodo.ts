@@ -14,5 +14,5 @@ export const PublishRecordOnZenodo = Effect.fn(
     yield* Commands.markRecordAsPublishedOnZenodo({ datasetReviewId })
     yield* Commands.markDoiAsActivated({ datasetReviewId })
   },
-  Effect.catchAll(error => new Errors.FailedToPublishRecordOnZenodo({ cause: error })),
+  Effect.catch(error => new Errors.FailedToPublishRecordOnZenodo({ cause: error })),
 )

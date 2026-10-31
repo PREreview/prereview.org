@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Match, Option, pipe, type Types } from 'effect'
+import { Array, Result, Match, Option, pipe, type Types } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
@@ -117,14 +117,14 @@ const authorize = (state: State, input: Input): boolean => {
   return true
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
-  Either.gen(function* () {
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
+  Result.gen(function* () {
     if (!state.invitation?.acceptedBy) {
-      return yield* Either.left(new AcceptedInvitationIsNotFound())
+      return yield* Result.fail(new AcceptedInvitationIsNotFound())
     }
 
     if (state.contactAddress?.verificationStatus === 'verified') {
-      return yield* Either.left(new ContactEmailAddressHasAlreadyBeenVerified())
+      return yield* Result.fail(new ContactEmailAddressHasAlreadyBeenVerified())
     }
 
     return Option.some(

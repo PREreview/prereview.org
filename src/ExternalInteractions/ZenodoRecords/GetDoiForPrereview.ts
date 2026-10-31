@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import { Effect, pipe, Schema } from 'effect'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import { Doi } from '../../types/index.ts'

@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it, vi } from '../vitest.ts'
-import { Array, Effect, Either, Layer, Option, Struct, pipe, PubSub } from 'effect'
+import { Array, Effect, Result, Layer, Option, Struct, pipe, PubSub } from 'effect'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
@@ -27,26 +27,26 @@ const existingVerifiedEmailAddress = EmailAddress('verified@example.com')
 
 const name = Option.some(Name('Josiah Carberry'))
 
-it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | undefined, ReadonlyArray<Event['_tag']>]>(
+it.effect.each<[string, _.Input, Result.Result<void, _.Error>, EmailAddress | undefined, ReadonlyArray<Event['_tag']>]>(
   [
     [
       'no email address',
       { orcidId: orcidIdWithNoEmailAddress, resumeAt: '/resume' },
-      Either.left(new ContactEmailAddressIsNotFound()),
+      Result.fail(new ContactEmailAddressIsNotFound()),
       undefined,
       [],
     ],
     [
       'unverified email address',
       { orcidId: orcidIdWithUnverified, resumeAt: '/resume' },
-      Either.void,
+      Result.void,
       existingUnverifiedEmailAddress,
       ['EmailToVerifyContactAddressSent'],
     ],
     [
       'verified email address',
       { orcidId: orcidIdWithVerified, resumeAt: '/resume' },
-      Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+      Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
       undefined,
       [],
     ],
@@ -78,7 +78,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, EmailAddress | un
       () => Effect.void,
     )
 
-    const actualReturn = yield* Effect.either(
+    const actualReturn = yield* Effect.result(
       Effect.provide(_.ResendVerificationEmail(input), [
         Layer.mock(Email.Email, { verifyContactEmailAddress }),
         Layer.succeed(EventStore, eventStore),

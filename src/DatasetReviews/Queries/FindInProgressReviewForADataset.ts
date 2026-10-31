@@ -24,10 +24,12 @@ export const FindInProgressReviewForADataset =
 
             return candidates
           },
-          PublicationOfDatasetReviewWasRequested: () => Record.replace(candidates, event.datasetReviewId, true),
-          DatasetReviewWasPublished: () => Record.replace(candidates, event.datasetReviewId, true),
+          PublicationOfDatasetReviewWasRequested: () =>
+            Option.getOrElse(Record.replace(candidates, event.datasetReviewId, true), () => candidates),
+          DatasetReviewWasPublished: () =>
+            Option.getOrElse(Record.replace(candidates, event.datasetReviewId, true), () => candidates),
         }),
       ),
       Record.findFirst(Boolean.not),
-      Option.map(Tuple.getFirst),
+      Option.map(Tuple.get(0)),
     )

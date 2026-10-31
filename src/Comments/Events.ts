@@ -1,4 +1,4 @@
-import { Array, Schema, Struct } from 'effect'
+import { Array, Schema } from 'effect'
 import { HtmlSchema } from '../html.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../types/index.ts'
 
@@ -16,7 +16,7 @@ export class CommentWasEntered extends Schema.TaggedClass<CommentWasEntered>()('
 export class PersonaForCommentWasChosen extends Schema.TaggedClass<PersonaForCommentWasChosen>()(
   'PersonaForCommentWasChosen',
   {
-    persona: Schema.Literal('public', 'pseudonym'),
+    persona: Schema.Literals(['public', 'pseudonym']),
     commentId: Uuid.UuidSchema,
   },
 ) {}
@@ -53,7 +53,7 @@ export class CommentWasPublished extends Schema.TaggedClass<CommentWasPublished>
 
 export type CommentEvent = typeof CommentEvent.Type
 
-export const CommentEvent = Schema.Union(
+export const CommentEvent = Schema.Union([
   CommentWasStarted,
   CommentWasEntered,
   PersonaForCommentWasChosen,
@@ -63,6 +63,6 @@ export const CommentEvent = Schema.Union(
   PublicationOfCommentWasRequested,
   CommentWasAssignedADoi,
   CommentWasPublished,
-)
+])
 
-export const CommentEventTypes = Array.map(CommentEvent.members, Struct.get('_tag'))
+export const CommentEventTypes = Array.map(CommentEvent.members, member => member.identifier as CommentEvent['_tag'])

@@ -1,6 +1,6 @@
 import { Config, Context, Effect, Layer, type Redacted } from 'effect'
 
-export class OrcidOauth extends Context.Tag('OrcidOauth')<
+export class OrcidOauth extends Context.Service<
   OrcidOauth,
   {
     readonly authorizeUrl: URL
@@ -9,7 +9,7 @@ export class OrcidOauth extends Context.Tag('OrcidOauth')<
     readonly revokeUrl: URL
     readonly tokenUrl: URL
   }
->() {}
+>()('OrcidOauth') {}
 
 export const layer = ({
   clientId,
@@ -28,5 +28,5 @@ export const layer = ({
     tokenUrl: new URL(`${url.origin}/oauth/token`),
   })
 
-export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
-  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layer))
+export const layerConfig = (options: Config.Wrap<Parameters<typeof layer>[0]>) =>
+  Layer.unwrap(Effect.map(Config.unwrap(options), layer))

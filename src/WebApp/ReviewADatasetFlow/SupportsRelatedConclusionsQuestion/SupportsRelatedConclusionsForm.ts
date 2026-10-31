@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type SupportsRelatedConclusionsForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  supportsRelatedConclusions: Either.Either<never, Missing>
-  supportsRelatedConclusionsYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  supportsRelatedConclusionsPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  supportsRelatedConclusionsNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  supportsRelatedConclusions: Result.Result<never, Missing>
+  supportsRelatedConclusionsYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  supportsRelatedConclusionsPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  supportsRelatedConclusionsNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const supportsRelatedConclusionsYesDetail = yield* pipe(
-    Schema.decode(SupportsRelatedConclusionsYesDetailSchema)(body),
-    Effect.andThen(Struct.get('supportsRelatedConclusionsYesDetail')),
+    Schema.decodeEffect(SupportsRelatedConclusionsYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('supportsRelatedConclusionsYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const supportsRelatedConclusionsPartlyDetail = yield* pipe(
-    Schema.decode(SupportsRelatedConclusionsPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('supportsRelatedConclusionsPartlyDetail')),
+    Schema.decodeEffect(SupportsRelatedConclusionsPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('supportsRelatedConclusionsPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const supportsRelatedConclusionsNoDetail = yield* pipe(
-    Schema.decode(SupportsRelatedConclusionsNoDetailSchema)(body),
-    Effect.andThen(Struct.get('supportsRelatedConclusionsNoDetail')),
+    Schema.decodeEffect(SupportsRelatedConclusionsNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('supportsRelatedConclusionsNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(SupportsRelatedConclusionsSchema)(body),
+    Schema.decodeEffect(SupportsRelatedConclusionsSchema)(body),
     Effect.map(
       ({ supportsRelatedConclusions }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           supportsRelatedConclusionsNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          supportsRelatedConclusions: Either.left(new Missing()),
-          supportsRelatedConclusionsYesDetail: Either.right(supportsRelatedConclusionsYesDetail),
-          supportsRelatedConclusionsPartlyDetail: Either.right(supportsRelatedConclusionsPartlyDetail),
-          supportsRelatedConclusionsNoDetail: Either.right(supportsRelatedConclusionsNoDetail),
+          supportsRelatedConclusions: Result.fail(new Missing()),
+          supportsRelatedConclusionsYesDetail: Result.succeed(supportsRelatedConclusionsYesDetail),
+          supportsRelatedConclusionsPartlyDetail: Result.succeed(supportsRelatedConclusionsPartlyDetail),
+          supportsRelatedConclusionsNoDetail: Result.succeed(supportsRelatedConclusionsNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const SupportsRelatedConclusionsSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    supportsRelatedConclusions: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const SupportsRelatedConclusionsSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      supportsRelatedConclusions: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const SupportsRelatedConclusionsYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    supportsRelatedConclusionsYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const SupportsRelatedConclusionsYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      supportsRelatedConclusionsYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const SupportsRelatedConclusionsPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    supportsRelatedConclusionsPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const SupportsRelatedConclusionsPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      supportsRelatedConclusionsPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const SupportsRelatedConclusionsNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    supportsRelatedConclusionsNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const SupportsRelatedConclusionsNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      supportsRelatedConclusionsNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

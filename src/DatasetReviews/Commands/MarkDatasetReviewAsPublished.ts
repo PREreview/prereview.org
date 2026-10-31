@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Function, Match, Option, type Types } from 'effect'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
@@ -49,15 +49,15 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    NotRequested: () => Either.left(new Errors.PublicationOfDatasetReviewWasNotRequested()),
-    NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotRequested: () => Result.fail(new Errors.PublicationOfDatasetReviewWasNotRequested()),
+    NotReady: ({ missing }) => Result.fail(new Errors.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
     IsReady: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.DatasetReviewWasPublished({
             datasetReviewId: command.datasetReviewId,
@@ -65,7 +65,7 @@ export const decide: {
           }),
         ),
       ),
-    AlreadyMarkedAsPublished: () => Either.right(Option.none()),
+    AlreadyMarkedAsPublished: () => Result.succeed(Option.none()),
   }),
 )
 

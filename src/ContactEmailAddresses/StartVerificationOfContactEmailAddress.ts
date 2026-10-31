@@ -48,8 +48,7 @@ export const StartVerificationOfContactEmailAddress: (
           () => new Commands.UnableToHandleCommand({ cause: 'contact address expected to be unverified' }),
         ),
         Effect.catchTag(
-          'ContactEmailAddressIsNotFound',
-          'UnableToQuery',
+          ['ContactEmailAddressIsNotFound', 'UnableToQuery'],
           error => new Commands.UnableToHandleCommand({ cause: error }),
         ),
       )

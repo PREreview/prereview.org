@@ -1,4 +1,4 @@
-import { Array, Data, Either, Option } from 'effect'
+import { Array, Data, Result, Option } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { Temporal } from '../types/index.ts'
@@ -78,20 +78,20 @@ const authorize = (state: State, input: Input): boolean => {
   return state.orcidId === input.orcid
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> => {
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> => {
   if (state._tag === 'ContactEmailAddressIsNotFound') {
-    return Either.left(state)
+    return Result.fail(state)
   }
 
   if (state._tag === 'ContactAddressVerified') {
-    return Either.left(new ContactEmailAddressHasAlreadyBeenVerified())
+    return Result.fail(new ContactEmailAddressHasAlreadyBeenVerified())
   }
 
   if (state._tag === 'ContactAddressChanged') {
-    return Either.left(new OnlyCurrentContactAddressCanBeVerified())
+    return Result.fail(new OnlyCurrentContactAddressCanBeVerified())
   }
 
-  return Either.right(
+  return Result.succeed(
     Option.some(
       new Events.ContactAddressVerified({
         contactAddressId: input.contactAddressId,

@@ -4,23 +4,23 @@ import type { Contentful } from '../ExternalApis/Contentful/index.ts'
 import { GetCurrentBanner } from './GetCurrentBanner/index.ts'
 import { PreviewBanner } from './PreviewBanner/index.ts'
 
-export class SpotlightBanners extends Context.Tag('SpotlightBanners')<
+export class SpotlightBanners extends Context.Service<
   SpotlightBanners,
   {
     getCurrentBanner: Effect.Effect<
-      Effect.Effect.Success<typeof GetCurrentBanner>,
-      Effect.Effect.Error<typeof GetCurrentBanner>,
+      Effect.Success<typeof GetCurrentBanner>,
+      Effect.Error<typeof GetCurrentBanner>,
       Locale
     >
     previewBanner: (
       ...args: Parameters<typeof PreviewBanner>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof PreviewBanner>>,
-      Effect.Effect.Error<ReturnType<typeof PreviewBanner>>,
+      Effect.Success<ReturnType<typeof PreviewBanner>>,
+      Effect.Error<ReturnType<typeof PreviewBanner>>,
       Locale
     >
   }
->() {
+>()('SpotlightBanners') {
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {

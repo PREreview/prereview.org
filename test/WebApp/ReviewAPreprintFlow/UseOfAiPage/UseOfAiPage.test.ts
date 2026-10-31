@@ -1,6 +1,6 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Either, Layer, Option } from 'effect'
+import { Effect, Result, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
@@ -108,7 +108,7 @@ describe('UseOfAiSubmission', () => {
       fc.constantFrom('DeclareCompetingInterests', 'DeclareFollowingCodeOfConduct', 'PublishPreprintReview'),
     ],
     ([preprintId, preprint, user, locale, { generativeAiIdeas, generativeAiIdeasDetails }, nextExpectedCommand]) => {
-      const declarations: Array<Parameters<PreprintReviews.PreprintReviews['Type']['declareUseOfAi']>[0]> = []
+      const declarations: Array<Parameters<PreprintReviews.PreprintReviews['Service']['declareUseOfAi']>[0]> = []
 
       return Effect.gen(function* () {
         const actual = yield* _.UseOfAiSubmission({
@@ -150,7 +150,7 @@ describe('UseOfAiSubmission', () => {
           renderUseOfAiPage({
             alreadyWritten: details.alreadyWritten,
             form: new UseOfAiForm.InvalidForm({
-              generativeAiIdeas: Either.left(new UseOfAiForm.Missing()),
+              generativeAiIdeas: Result.fail(new UseOfAiForm.Missing()),
               generativeAiIdeasDetails: Option.none(),
             }),
             locale,
@@ -251,14 +251,14 @@ const redirectToStart = Effect.succeed(
 )
 
 function services(
-  preprints: Partial<Preprints['Type']>,
-  preprintReviews: Partial<PreprintReviews.PreprintReviews['Type']>,
+  preprints: Partial<Preprints['Service']>,
+  preprintReviews: Partial<PreprintReviews.PreprintReviews['Service']>,
 ): Layer.Layer<Preprints | PreprintReviews.PreprintReviews> {
   return Layer.merge(Layer.mock(Preprints, preprints), Layer.mock(PreprintReviews.PreprintReviews, preprintReviews))
 }
 
 function useOfAiDetails(): fc.Arbitrary<
-  Effect.Effect.Success<ReturnType<PreprintReviews.PreprintReviews['Type']['getUseOfAiDetails']>>
+  Effect.Success<ReturnType<PreprintReviews.PreprintReviews['Service']['getUseOfAiDetails']>>
 > {
   return fc
     .tuple(

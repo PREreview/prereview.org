@@ -1,4 +1,4 @@
-import { Array, Either, Equivalence, flow, HashMap, Option, pipe, Struct } from 'effect'
+import { Array, Equivalence, Filter, flow, HashMap, Option, pipe, Result, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -15,14 +15,17 @@ export interface RecentReviewRequest {
 export type Result = ReadonlyArray<RecentReviewRequest>
 
 const query = (reviewRequests: shared.State): Result => {
-  const filteredReviewRequests = HashMap.filterMap(reviewRequests, reviewRequest =>
-    reviewRequest._tag === 'PublishedReviewRequest'
-      ? Option.some({
-          published: reviewRequest.published,
-          topics: reviewRequest.topics,
-          preprintId: reviewRequest.preprintId,
-        })
-      : Option.none(),
+  const filteredReviewRequests = HashMap.filterMap(
+    reviewRequests,
+    Filter.fromPredicateOption(reviewRequest =>
+      reviewRequest._tag === 'PublishedReviewRequest'
+        ? Option.some({
+            published: reviewRequest.published,
+            topics: reviewRequest.topics,
+            preprintId: reviewRequest.preprintId,
+          })
+        : Option.none(),
+    ),
   )
 
   const sortedReviewRequests = Array.reverse(
@@ -55,5 +58,5 @@ export const GetFiveMostRecentReviewRequests = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
   initialState: shared.initialState,
   updateStateWithEvents: shared.updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

@@ -1,4 +1,4 @@
-import { Array, Data, Either, Option, type Types } from 'effect'
+import { Array, Data, Result, Option, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -9,7 +9,7 @@ export interface Input {
   readonly orcidId: OrcidId
 }
 
-export type Result = Either.Either<{ persona: 'public' | 'pseudonym' }, Error>
+export type Result = Result.Result<{ persona: 'public' | 'pseudonym' }, Error>
 
 export type Error = PrereviewerIsNotListedOnTheReview | ChoicesHaveBeenConfirmed | PersonaHasNotBeenChosen
 
@@ -32,33 +32,33 @@ const createFilter = (input: Input) =>
   ])
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    if (Array.isEmptyArray(filteredEvents)) {
-      return yield* Either.left(new PrereviewerIsNotListedOnTheReview())
+    if (Array.isArrayEmpty(filteredEvents)) {
+      return yield* Result.fail(new PrereviewerIsNotListedOnTheReview())
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {
-      return yield* Either.left(new ChoicesHaveBeenConfirmed())
+      return yield* Result.fail(new ChoicesHaveBeenConfirmed())
     }
 
     if (Array.some(filteredEvents, hasTag('AuthorChoicesForAReviewConfirmed'))) {
-      return yield* Either.left(new ChoicesHaveBeenConfirmed())
+      return yield* Result.fail(new ChoicesHaveBeenConfirmed())
     }
 
     return yield* Option.match(Array.findLast(filteredEvents, hasTag('PersonaForAReviewChosen')), {
-      onNone: () => Either.left(new PersonaHasNotBeenChosen()),
-      onSome: ({ persona }) => Either.right({ persona }),
+      onNone: () => Result.fail(new PersonaHasNotBeenChosen()),
+      onSome: ({ persona }) => Result.succeed({ persona }),
     })
   })
 
 export const GetAuthorChoicesToConfirm: Queries.OnDemandQuery<
   [Input],
-  Either.Either.Right<Result>,
-  Either.Either.Left<Result>
+  Result.Result.Success<Result>,
+  Result.Result.Failure<Result>
 > = Queries.OnDemandQuery({
   name: 'AuthorInvites.getAuthorChoicesToConfirm',
   createFilter,

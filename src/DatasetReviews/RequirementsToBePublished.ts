@@ -1,4 +1,4 @@
-import { Array, Either, type Types } from 'effect'
+import { Array, Result, type Types } from 'effect'
 import type * as Events from './Events.ts'
 
 export type RequirementToBePublished = (typeof RequirementsToBePublished)[number]
@@ -29,23 +29,23 @@ export const RequirementsToBePublished = [
 
 export const FindRequirementsToBePublished = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-): Either.Either<EventsRequiredToBePublished, Array.NonEmptyReadonlyArray<RequirementToBePublished>> => {
+): Result.Result<EventsRequiredToBePublished, Array.NonEmptyReadonlyArray<RequirementToBePublished>> => {
   const requirements = Array.map(RequirementsToBePublished, requirement =>
-    Either.fromOption(
+    Result.fromOption(
       Array.findLast(events, event => event._tag === requirement),
       () => requirement,
     ),
   )
 
-  const missing = Array.getLefts(requirements)
+  const missing = Array.getFailures(requirements)
 
-  if (Array.isNonEmptyReadonlyArray(missing)) {
-    return Either.left(missing)
+  if (Array.isReadonlyArrayNonEmpty(missing)) {
+    return Result.fail(missing)
   }
 
-  return Either.right(
+  return Result.succeed(
     Object.fromEntries(
-      Array.map(Array.getRights(requirements), event => [event._tag, event]),
+      Array.map(Array.getSuccesses(requirements), event => [event._tag, event]),
     ) as EventsRequiredToBePublished,
   )
 }

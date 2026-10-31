@@ -1,4 +1,4 @@
-import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import { describe, expect, it, vi } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Tuple } from 'effect'
@@ -197,7 +197,7 @@ describe('GetRecord', () => {
 
             expect(actual._tag).toStrictEqual('RecordIsUnavailable')
             expect(actual.cause).toStrictEqual(
-              expect.objectContaining({ _tag: expect.stringMatching(/^ParseError|ResponseError$/) }),
+              expect.objectContaining({ _tag: expect.stringMatching(/^SchemaError|HttpClientError$/) }),
             )
           }),
         )
@@ -266,7 +266,7 @@ describe('GetRecord', () => {
 })
 
 const stubbedClient = (f: (request: HttpClientRequest.HttpClientRequest) => Response) =>
-  HttpClient.makeWith<never, never, never, never>(
+  HttpClient.makeWith<never, never, HttpClientError.HttpClientError, never>(
     Effect.map(request => HttpClientResponse.fromWeb(request, f(request))),
     Effect.succeed,
   )

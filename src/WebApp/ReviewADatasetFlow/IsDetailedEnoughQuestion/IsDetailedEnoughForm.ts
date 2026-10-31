@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type IsDetailedEnoughForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  isDetailedEnough: Either.Either<never, Missing>
-  isDetailedEnoughYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  isDetailedEnoughPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  isDetailedEnoughNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  isDetailedEnough: Result.Result<never, Missing>
+  isDetailedEnoughYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  isDetailedEnoughPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  isDetailedEnoughNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const isDetailedEnoughYesDetail = yield* pipe(
-    Schema.decode(IsDetailedEnoughYesDetailSchema)(body),
-    Effect.andThen(Struct.get('isDetailedEnoughYesDetail')),
+    Schema.decodeEffect(IsDetailedEnoughYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isDetailedEnoughYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const isDetailedEnoughPartlyDetail = yield* pipe(
-    Schema.decode(IsDetailedEnoughPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('isDetailedEnoughPartlyDetail')),
+    Schema.decodeEffect(IsDetailedEnoughPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isDetailedEnoughPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const isDetailedEnoughNoDetail = yield* pipe(
-    Schema.decode(IsDetailedEnoughNoDetailSchema)(body),
-    Effect.andThen(Struct.get('isDetailedEnoughNoDetail')),
+    Schema.decodeEffect(IsDetailedEnoughNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('isDetailedEnoughNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(IsDetailedEnoughSchema)(body),
+    Schema.decodeEffect(IsDetailedEnoughSchema)(body),
     Effect.map(
       ({ isDetailedEnough }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           isDetailedEnoughNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          isDetailedEnough: Either.left(new Missing()),
-          isDetailedEnoughYesDetail: Either.right(isDetailedEnoughYesDetail),
-          isDetailedEnoughPartlyDetail: Either.right(isDetailedEnoughPartlyDetail),
-          isDetailedEnoughNoDetail: Either.right(isDetailedEnoughNoDetail),
+          isDetailedEnough: Result.fail(new Missing()),
+          isDetailedEnoughYesDetail: Result.succeed(isDetailedEnoughYesDetail),
+          isDetailedEnoughPartlyDetail: Result.succeed(isDetailedEnoughPartlyDetail),
+          isDetailedEnoughNoDetail: Result.succeed(isDetailedEnoughNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const IsDetailedEnoughSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isDetailedEnough: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const IsDetailedEnoughSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isDetailedEnough: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const IsDetailedEnoughYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isDetailedEnoughYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsDetailedEnoughYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isDetailedEnoughYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const IsDetailedEnoughPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isDetailedEnoughPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsDetailedEnoughPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isDetailedEnoughPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const IsDetailedEnoughNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    isDetailedEnoughNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const IsDetailedEnoughNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      isDetailedEnoughNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

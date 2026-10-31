@@ -1,6 +1,6 @@
 import { test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import { expect } from 'vitest'
 import {
   UnverifiedContactEmailAddress,
@@ -61,12 +61,12 @@ const newerRecorded = new Events.ContactAddressRecorded({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new ContactEmailAddressIsNotFound())],
+  ['no events', input, [], Result.fail(new ContactEmailAddressIsNotFound())],
   [
     'imported verified',
     input,
     [verifiedImported],
-    Either.right(
+    Result.succeed(
       new VerifiedContactEmailAddress({
         value: Option.getOrThrow(verifiedImported.emailAddress),
         contactAddressId: verifiedImported.contactAddressId,
@@ -77,7 +77,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'imported unverified',
     input,
     [unverifiedImported],
-    Either.right(
+    Result.succeed(
       new UnverifiedContactEmailAddress({
         value: Option.getOrThrow(unverifiedImported.emailAddress),
         contactAddressId: unverifiedImported.contactAddressId,
@@ -88,7 +88,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'imported unverified then verified',
     input,
     [unverifiedImported, verifiedPreviouslyUnverified],
-    Either.right(
+    Result.succeed(
       new VerifiedContactEmailAddress({
         value: Option.getOrThrow(unverifiedImported.emailAddress),
         contactAddressId: unverifiedImported.contactAddressId,
@@ -99,13 +99,15 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'author invite address chosen',
     input,
     [authorInviteAddressChosen],
-    Either.right(new VerifiedContactEmailAddress({ value: Option.getOrThrow(authorInviteAddressChosen.emailAddress) })),
+    Result.succeed(
+      new VerifiedContactEmailAddress({ value: Option.getOrThrow(authorInviteAddressChosen.emailAddress) }),
+    ),
   ],
   [
     'recorded',
     input,
     [recorded],
-    Either.right(
+    Result.succeed(
       new UnverifiedContactEmailAddress({
         value: Option.getOrThrow(recorded.emailAddress),
         contactAddressId: recorded.contactAddressId,
@@ -116,7 +118,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'recorded and verified',
     input,
     [recorded, verified],
-    Either.right(
+    Result.succeed(
       new VerifiedContactEmailAddress({
         value: Option.getOrThrow(recorded.emailAddress),
         contactAddressId: recorded.contactAddressId,
@@ -127,7 +129,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'newer address recorded',
     input,
     [recorded, verified, newerRecorded],
-    Either.right(
+    Result.succeed(
       new UnverifiedContactEmailAddress({
         value: Option.getOrThrow(newerRecorded.emailAddress),
         contactAddressId: newerRecorded.contactAddressId,

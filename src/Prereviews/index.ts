@@ -1,4 +1,4 @@
-import { FetchHttpClient } from '@effect/platform'
+import { FetchHttpClient } from 'effect/http'
 import { Array, Context, Effect, Exit, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
@@ -30,7 +30,7 @@ import {
 
 export * from './Prereview.ts'
 
-export class Prereviews extends Context.Tag('Prereviews')<
+export class Prereviews extends Context.Service<
   Prereviews,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>>
@@ -54,12 +54,11 @@ export class Prereviews extends Context.Tag('Prereviews')<
       query?: NonEmptyString
     }) => Effect.Effect<RecentPrereviews, PrereviewsAreUnavailable | PrereviewsPageNotFound>
   }
->() {}
+>()('Prereviews') {}
 
-export class WasPrereviewRemoved extends Context.Tag('WasPrereviewRemoved')<
-  WasPrereviewRemoved,
-  (id: number) => boolean
->() {}
+export class WasPrereviewRemoved extends Context.Service<WasPrereviewRemoved, (id: number) => boolean>()(
+  'WasPrereviewRemoved',
+) {}
 
 export const getFiveMostRecent = Effect.flatMap(Prereviews, service => service.getFiveMostRecent)
 
@@ -108,7 +107,7 @@ export const layer = Layer.effect(
       getFiveMostRecent: Effect.gen(function* () {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         return yield* pipe(
           FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
@@ -150,7 +149,7 @@ export const layer = Layer.effect(
 
           const club = yield* clubs.getClubDetails(id)
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(club), {
             fetch,
@@ -197,7 +196,7 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForProfileFromZenodo(profile), {
             fetch,
@@ -231,7 +230,7 @@ export const layer = Layer.effect(
 
           const { pseudonym } = yield* Prereviewers.getPseudonymPersona(user)
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           return yield* FptsToEffect.readerTaskEither(
             ZenodoRecords.getPrereviewsForUserFromZenodo({ orcidId: user, pseudonym }),
@@ -265,7 +264,7 @@ export const layer = Layer.effect(
 
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
           fetch,
@@ -283,7 +282,7 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
             fetch,

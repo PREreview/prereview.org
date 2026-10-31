@@ -33,7 +33,7 @@ export const GetPageOfBlogPostsForTag: (
 
     const items = batchedItems.slice(pageIndexInBatch * 5, (pageIndexInBatch + 1) * 5)
 
-    if (!Array.isNonEmptyReadonlyArray(items)) {
+    if (!Array.isReadonlyArrayNonEmpty(items)) {
       return yield* new PageNotFound({})
     }
 
@@ -43,7 +43,7 @@ export const GetPageOfBlogPostsForTag: (
       blogPosts: yield* Effect.forEach(items, EntryToContentfulBlogPostTitle, { concurrency: 'unbounded' }),
     }
   },
-  Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
+  Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>
     pipe(
       Effect.logError('Unable to get page of blog posts'),
       Effect.annotateLogs({ error }),

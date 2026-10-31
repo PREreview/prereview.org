@@ -1,8 +1,7 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Effect, pipe, Schema } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { recordToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
@@ -459,7 +458,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Datacite.RecordResponseSchema))),
       Effect.andThen(recordToPreprint),
     )
 
@@ -479,7 +478,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Datacite.RecordResponseSchema))),
       Effect.andThen(recordToPreprint),
       Effect.flip,
     )
@@ -518,7 +517,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Datacite.RecordResponseSchema))),
       Effect.andThen(recordToPreprint),
       Effect.flip,
     )

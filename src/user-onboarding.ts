@@ -8,10 +8,9 @@ export interface UserOnboarding {
   readonly seenMyDetailsPage: boolean
 }
 
-export class UserOnboardingService extends Context.Tag('UserOnboardingService')<
-  UserOnboardingService,
-  UserOnboarding
->() {}
+export class UserOnboardingService extends Context.Service<UserOnboardingService, UserOnboarding>()(
+  'UserOnboardingService',
+) {}
 
 export interface GetUserOnboardingEnv {
   getUserOnboarding: (orcid: OrcidId) => TE.TaskEither<'unavailable', UserOnboarding>

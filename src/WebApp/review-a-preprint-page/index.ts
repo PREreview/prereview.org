@@ -78,7 +78,7 @@ const parseWhichPreprint = flow(
           parse(input),
           Option.map(unsupportedDoiE),
           Option.orElse(() =>
-            pipe(Option.getRight(FptsToEffect.either(UrlD.decode(input))), Option.map(unsupportedUrlE)),
+            pipe(Option.getSuccess(FptsToEffect.either(UrlD.decode(input))), Option.map(unsupportedUrlE)),
           ),
           Option.orElseSome(() => invalidE(input)),
         ),

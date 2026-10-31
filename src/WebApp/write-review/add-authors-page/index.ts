@@ -55,8 +55,8 @@ export const writeReviewAddAuthors = ({
           RTE.let(
             'authors',
             flow(
-              Option.liftNullable(({ form }) => form.otherAuthors),
-              Option.filter(Array.isNonEmptyReadonlyArray),
+              Option.liftNullishOr(({ form }) => form.otherAuthors),
+              Option.filter(Array.isReadonlyArrayNonEmpty),
             ),
           ),
           RTE.matchW(

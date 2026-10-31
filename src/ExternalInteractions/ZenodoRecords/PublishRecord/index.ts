@@ -11,5 +11,5 @@ export const PublishRecord = Effect.fn(
 
     yield* Zenodo.publishDeposition(deposition)
   },
-  Effect.catchAll(error => new FailedToPublishRecord({ cause: error })),
+  Effect.catch(error => new FailedToPublishRecord({ cause: error })),
 )

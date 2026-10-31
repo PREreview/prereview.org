@@ -1,4 +1,4 @@
-import { type Array, Data, Schema } from 'effect'
+import { type Array, Data, identity, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PartialDate } from '../time.ts'
@@ -38,4 +38,4 @@ export class PreprintIsNotFound extends Schema.TaggedError<PreprintIsNotFound>()
 
 export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable')<{ cause?: unknown }> {}
 
-export const Preprint = Data.struct<Preprint>
+export const Preprint = identity<Preprint>

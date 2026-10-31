@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option } from 'effect'
+import { Array, Result, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/SearchForPublishedReviewRequests.ts'
@@ -203,24 +203,24 @@ const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 })
 
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
-  ['no events', { page: 1 }, [], Either.left(new ReviewRequests.NoReviewRequestsFound({}))],
+  ['no events', { page: 1 }, [], Result.fail(new ReviewRequests.NoReviewRequestsFound({}))],
   [
     'no received events',
     { page: 1 },
     [request1Published1, request1Categorized1],
-    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+    Result.fail(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'no accepted events',
     { page: 1 },
     [request1Started1, request1Categorized1],
-    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+    Result.fail(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'only recieved and accepted events',
     { page: 1 },
     [request1Started1, request1Started2, request1Published1, request1Published2],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 1,
       language: undefined,
@@ -240,19 +240,19 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'request was withdrawn',
     { page: 1 },
     [request1Started1, request1Published1, request1Withdrawn],
-    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+    Result.fail(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'impossible page',
     { page: 0 },
     [request1Started1, request1Published1, request1Categorized1, request2Accepted],
-    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+    Result.fail(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'multiple requests for same preprint',
     { page: 1 },
     [request1Started1, request1Published1, request2Received, request2Accepted],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 1,
       language: undefined,
@@ -301,7 +301,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request9Imported,
       request9Categorized,
     ],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 2,
       language: undefined,
@@ -372,7 +372,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request9Imported,
       request9Categorized,
     ],
-    Either.right({
+    Result.succeed({
       currentPage: 2,
       totalPages: 2,
       language: undefined,
@@ -411,7 +411,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request2Received,
       request2Accepted,
     ],
-    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+    Result.fail(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'matches on language',
@@ -426,7 +426,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request2Received,
       request2Accepted,
     ],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 1,
       language: 'pt',
@@ -446,7 +446,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'matches on language that has changed',
     { page: 1, language: 'pt' as const },
     [request1Started1, request1Published1, request1Categorized1, request1Recategorized],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 1,
       language: 'pt',
@@ -475,7 +475,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request2Received,
       request2Accepted,
     ],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 1,
       language: undefined,
@@ -514,7 +514,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request6Accepted,
       request6Categorized,
     ],
-    Either.right({
+    Result.succeed({
       currentPage: 1,
       totalPages: 1,
       language: undefined,

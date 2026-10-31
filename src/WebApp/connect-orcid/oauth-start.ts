@@ -1,4 +1,4 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'

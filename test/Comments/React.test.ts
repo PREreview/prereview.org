@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../src/ContactEmailAddresses/index.ts'
@@ -49,10 +49,10 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         const actual = yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
           Effect.provideService(Comments.HandleCommentCommand, () => error),
-          Effect.either,
+          Effect.result,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provide(
@@ -76,7 +76,9 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         )
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provide(Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => emailAddress })),
+        Effect.provide(
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(emailAddress) }),
+        ),
       ),
   )
 
@@ -91,10 +93,10 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
             Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => new Queries.UnableToQuery({}) }),
           ),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-          Effect.either,
+          Effect.result,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
+        expect(actual).toStrictEqual(Result.fail(new Queries.UnableToQuery({})))
       }).pipe(Effect.provideService(Comments.GetComment, () => Effect.succeed(comment))),
   )
 
@@ -105,10 +107,10 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
         Effect.provide(Layer.mock(ContactEmailAddresses, {})),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-        Effect.either,
+        Effect.result,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
+      expect(actual).toStrictEqual(Result.fail(new Queries.UnableToQuery({})))
     }),
   )
 })
@@ -142,10 +144,10 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         const actual = yield* pipe(
           _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
           Effect.provideService(Comments.HandleCommentCommand, () => error),
-          Effect.either,
+          Effect.result,
         )
 
-        expect(actual).toStrictEqual(Either.left(error))
+        expect(actual).toStrictEqual(Result.fail(error))
       }).pipe(Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id]))),
   )
 
@@ -161,10 +163,10 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
           ),
           Effect.provideService(Comments.PublishCommentOnZenodo, shouldNotBeCalled),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-          Effect.either,
+          Effect.result,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToAssignADoi({})))
+        expect(actual).toStrictEqual(Result.fail(new Comments.UnableToAssignADoi({})))
       }),
   )
 })
@@ -201,10 +203,10 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
         const actual = yield* pipe(
           _.PublishCommentWhenCommentWasAssignedADoi(event),
           Effect.provideService(Comments.HandleCommentCommand, () => error),
-          Effect.either,
+          Effect.result,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new Comments.UnableToHandleCommand({ cause: error })))
       }).pipe(Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void)),
   )
 
@@ -216,10 +218,10 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
           Effect.fail(new Comments.UnableToPublishComment({})),
         ),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-        Effect.either,
+        Effect.result,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+      expect(actual).toStrictEqual(Result.fail(new Comments.UnableToPublishComment({})))
     }),
   )
 })

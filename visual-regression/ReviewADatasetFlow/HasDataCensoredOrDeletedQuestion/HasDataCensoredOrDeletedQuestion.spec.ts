@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as HasDataCensoredOrDeletedForm from '../../../src/WebApp/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -38,10 +38,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.HasDataCensoredOrDeletedQuestion({
     datasetReviewId,
     form: new HasDataCensoredOrDeletedForm.InvalidForm({
-      hasDataCensoredOrDeleted: Either.left(new HasDataCensoredOrDeletedForm.Missing()),
-      hasDataCensoredOrDeletedYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      hasDataCensoredOrDeletedPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      hasDataCensoredOrDeletedNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      hasDataCensoredOrDeleted: Result.fail(new HasDataCensoredOrDeletedForm.Missing()),
+      hasDataCensoredOrDeletedYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      hasDataCensoredOrDeletedPartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      hasDataCensoredOrDeletedNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Commands from '../../src/Commands.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
@@ -71,68 +71,68 @@ test.each<
     string,
     ReadonlyArray<Events.Event>,
     _.Input,
-    Either.Either<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
+    Result.Result<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
   ]
 >([
   [
     'currently unverified from import',
     [unverifiedImported],
     { orcid: orcidWithUnverified, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
-    Either.right(Option.some(verifiedPreviouslyUnverified)),
+    Result.succeed(Option.some(verifiedPreviouslyUnverified)),
   ],
   [
     'currently unverified',
     [addressRecorded],
     { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
-    Either.right(Option.some(addressVerified)),
+    Result.succeed(Option.some(addressVerified)),
   ],
   [
     'no events',
     [],
     { orcid: orcidWithNoEmailAddress, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
-    Either.left(new ContactEmailAddressIsNotFound()),
+    Result.fail(new ContactEmailAddressIsNotFound()),
   ],
   [
     'already verified imported',
     [verifiedImported],
     { orcid: orcidWithVerified, contactAddressId: verifiedImported.contactAddressId, verifiedAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'already verified',
     [addressRecorded, addressVerified],
     { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'already verified after imported unverified',
     [unverifiedImported, verifiedPreviouslyUnverified],
     { orcid: orcidWithUnverified, contactAddressId: verifiedPreviouslyUnverified.contactAddressId, verifiedAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'new address recorded in the meantime',
     [addressRecorded, newerAddressRecorded],
     { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
-    Either.left(new OnlyCurrentContactAddressCanBeVerified()),
+    Result.fail(new OnlyCurrentContactAddressCanBeVerified()),
   ],
   [
     'author invite address chosen in the meantime',
     [addressRecorded, authorInviteAddressChosen],
     { orcid: addressRecorded.orcidId, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
-    Either.left(new OnlyCurrentContactAddressCanBeVerified()),
+    Result.fail(new OnlyCurrentContactAddressCanBeVerified()),
   ],
   [
     'orcidId does not match from import (unexpected user issueing command)',
     [unverifiedImported],
     { orcid: differentOrcid, contactAddressId: unverifiedImported.contactAddressId, verifiedAt },
-    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+    Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
   [
     'orcidId does not match (unexpected user issueing command)',
     [addressRecorded],
     { orcid: differentOrcid, contactAddressId: addressRecorded.contactAddressId, verifiedAt },
-    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+    Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, authorize, decide } = _.VerifyContactEmailAddress
@@ -141,7 +141,7 @@ test.each<
 
   const actual = authorize(state, input)
     ? decide(state, input)
-    : Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
+    : Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
 
   expect(actual).toStrictEqual(expected)
 })

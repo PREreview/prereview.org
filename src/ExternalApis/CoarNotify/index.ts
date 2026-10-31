@@ -1,21 +1,18 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { SendMessage } from './SendMessage/index.ts'
 
 export { UnableToSendCoarNotifyMessage } from './SendMessage/index.ts'
 export * from './Types.ts'
 
-export class CoarNotify extends Context.Tag('CoarNotify')<
+export class CoarNotify extends Context.Service<
   CoarNotify,
   {
     sendMessage: (
       ...args: Parameters<typeof SendMessage>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof SendMessage>>,
-      Effect.Effect.Error<ReturnType<typeof SendMessage>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof SendMessage>>, Effect.Error<ReturnType<typeof SendMessage>>>
   }
->() {}
+>()('CoarNotify') {}
 
 export const sendMessage = (...args: Parameters<(typeof CoarNotify.Service)['sendMessage']>) =>
   Effect.flatMap(CoarNotify, service => service.sendMessage(...args))

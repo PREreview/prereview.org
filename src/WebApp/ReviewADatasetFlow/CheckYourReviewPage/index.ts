@@ -91,7 +91,7 @@ export const CheckYourReviewSubmission = ({
           }),
         ),
       ),
-      Effect.catchAll(() => HavingProblemsPage),
+      Effect.catch(() => HavingProblemsPage),
     )
   }).pipe(
     Effect.catchTags({

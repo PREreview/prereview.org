@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, Option, Predicate, Tuple } from 'effect'
 import type * as Events from '../../../src/Events.ts'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
@@ -104,7 +104,7 @@ describe('GetReviewRequestToAcknowledge', () => {
     ([events, reviewRequestId]) => {
       const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.UnknownReviewRequest({})))
     },
     {
       fastCheck: {
@@ -135,7 +135,7 @@ describe('GetReviewRequestToAcknowledge', () => {
     ([[events, reviewRequestId]]) => {
       const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasBeenRejected({})))
     },
     {
       fastCheck: {
@@ -179,7 +179,7 @@ describe('GetReviewRequestToAcknowledge', () => {
     ([[events, reviewRequestId]]) => {
       const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasNotBeenAccepted({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasNotBeenAccepted({})))
     },
     {
       fastCheck: {
@@ -224,7 +224,7 @@ describe('GetReviewRequestToAcknowledge', () => {
     ([[events, reviewRequestId]]) => {
       const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyAcknowledged({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestWasAlreadyAcknowledged({})))
     },
     {
       fastCheck: {
@@ -275,7 +275,7 @@ describe('GetReviewRequestToAcknowledge', () => {
       ([[events, reviewRequestId]]) => {
         const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestCannotBeAcknowledged({})))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestCannotBeAcknowledged({})))
       },
       {
         fastCheck: {
@@ -335,7 +335,7 @@ describe('GetReviewRequestToAcknowledge', () => {
       ([[events, reviewRequestId, expected]]) => {
         const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-        expect(actual).toStrictEqual(Either.right(expected))
+        expect(actual).toStrictEqual(Result.succeed(expected))
       },
       {
         fastCheck: {

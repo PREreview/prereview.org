@@ -19,7 +19,7 @@ export const addListOfClubs =
               ${pipe(
                 Array.filter(clubs, club => club.status === 'active'),
                 Array.sortWith(Struct.get('name'), (a, b) =>
-                  String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                  String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
                 ),
                 Array.map(club => {
                   return html`
@@ -40,7 +40,7 @@ export const addListOfClubs =
               ${pipe(
                 Array.filter(clubs, club => club.status === 'inactive'),
                 Array.sortWith(Struct.get('name'), (a, b) =>
-                  String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                  String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
                 ),
                 Array.map(club => {
                   return html`

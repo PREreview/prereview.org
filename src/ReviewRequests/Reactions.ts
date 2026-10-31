@@ -1,5 +1,5 @@
-import type { WorkflowEngine } from '@effect/workflow'
-import { Effect, Layer, Match, pipe, PubSub, Queue, type Scope } from 'effect'
+import type { WorkflowEngine } from 'effect/workflow'
+import { Effect, Layer, Match, pipe, PubSub, type Scope } from 'effect'
 import * as Events from '../Events.ts'
 import * as Workflows from './Workflows/index.ts'
 
@@ -12,7 +12,7 @@ const makeReviewRequestReactions: Effect.Effect<
   const dequeue = yield* PubSub.subscribe(events)
 
   return yield* pipe(
-    Queue.take(dequeue),
+    PubSub.take(dequeue),
     Effect.andThen(
       pipe(
         Match.type<Events.Event>(),
@@ -48,9 +48,10 @@ const makeReviewRequestReactions: Effect.Effect<
   )
 })
 
-export const reactionsWorker = Layer.scopedDiscard(
-  Effect.acquireReleaseInterruptible(
+export const reactionsWorker = Layer.effectDiscard(
+  Effect.acquireRelease(
     pipe(Effect.logDebug('ReviewRequests worker started'), Effect.andThen(makeReviewRequestReactions)),
     () => Effect.logDebug('ReviewRequests worker stopped'),
+    { interruptible: true },
   ),
 )

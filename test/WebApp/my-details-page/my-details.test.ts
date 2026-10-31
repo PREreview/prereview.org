@@ -18,6 +18,7 @@ import type { SaveUserOnboardingEnv } from '../../../src/user-onboarding.ts'
 import * as _ from '../../../src/WebApp/my-details-page/my-details.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('myDetails', () => {
   describe('when the user is logged in', () => {
@@ -57,19 +58,19 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
-                getAvatar: () => TE.fromEither(avatar),
-                getCareerStage: () => TE.fromEither(careerStage),
-                getLanguages: () => TE.fromEither(languages),
-                getLocation: () => TE.fromEither(location),
-                getOrcidToken: () => TE.fromEither(orcidToken),
-                getResearchInterests: () => TE.fromEither(researchInterests),
-                getSlackUser: () => TE.fromEither(slackUser),
+                getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+                getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+                getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+                getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+                getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+                getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+                getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
                 getUserOnboarding: () => TE.right(userOnboarding),
-                isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+                isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
                 saveUserOnboarding: shouldNotBeCalled,
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
@@ -89,7 +90,9 @@ describe('myDetails', () => {
             })
           }).pipe(
             Effect.provide([
-              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => Effect.fromResult(contactEmailAddress),
+              }),
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasOptedIn()),
@@ -137,19 +140,19 @@ describe('myDetails', () => {
           Effect.gen(function* () {
             const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(() => TE.right(undefined))
 
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
-                getAvatar: () => TE.fromEither(avatar),
-                getCareerStage: () => TE.fromEither(careerStage),
-                getLanguages: () => TE.fromEither(languages),
-                getLocation: () => TE.fromEither(location),
-                getOrcidToken: () => TE.fromEither(orcidToken),
-                getResearchInterests: () => TE.fromEither(researchInterests),
-                getSlackUser: () => TE.fromEither(slackUser),
+                getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+                getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+                getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+                getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+                getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+                getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+                getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
                 getUserOnboarding: () => TE.right(userOnboarding),
-                isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+                isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
                 saveUserOnboarding,
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
@@ -170,7 +173,9 @@ describe('myDetails', () => {
             expect(saveUserOnboarding).toHaveBeenCalledWith(publicPersona.orcidId, { seenMyDetailsPage: true })
           }).pipe(
             Effect.provide([
-              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => Effect.fromResult(contactEmailAddress),
+              }),
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasOptedOut()),
@@ -216,19 +221,19 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+            const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
-                getAvatar: () => TE.fromEither(avatar),
-                getCareerStage: () => TE.fromEither(careerStage),
-                getLanguages: () => TE.fromEither(languages),
-                getLocation: () => TE.fromEither(location),
-                getOrcidToken: () => TE.fromEither(orcidToken),
-                getResearchInterests: () => TE.fromEither(researchInterests),
-                getSlackUser: () => TE.fromEither(slackUser),
+                getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+                getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+                getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+                getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+                getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+                getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+                getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
                 getUserOnboarding: () => TE.right(userOnboarding),
-                isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+                isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
                 saveUserOnboarding: () => TE.left('unavailable'),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
@@ -246,7 +251,9 @@ describe('myDetails', () => {
             })
           }).pipe(
             Effect.provide([
-              Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+              Layer.mock(ContactEmailAddresses, {
+                getContactEmailAddress: () => Effect.fromResult(contactEmailAddress),
+              }),
               Layer.mock(Prereviewers, {
                 hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                   Effect.succeed(new HasNotOptedIn()),
@@ -291,19 +298,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.left('unavailable'),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -321,7 +328,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -365,19 +372,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
               getOrcidToken: () => TE.left('unavailable'),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -395,7 +402,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -439,19 +446,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
               getSlackUser: () => TE.left('unavailable'),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -469,7 +476,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -513,19 +520,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -587,16 +594,16 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
               getSlackUser: () => TE.right(slackUser),
               getUserOnboarding: () => TE.right(userOnboarding),
               isOpenForRequests: () => TE.left('unavailable'),
@@ -617,7 +624,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -661,19 +668,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
               getCareerStage: () => TE.left('unavailable'),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -691,7 +698,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -735,19 +742,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
               getResearchInterests: () => TE.left('unavailable'),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -765,7 +772,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -809,19 +816,19 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
-              getLanguages: () => TE.fromEither(languages),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
+              getLanguages: () => TE.fromEither(EffectToFpts.either(languages)),
               getLocation: () => TE.left('unavailable'),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -839,7 +846,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -883,19 +890,19 @@ describe('myDetails', () => {
         location,
       ]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
-              getAvatar: () => TE.fromEither(avatar),
-              getCareerStage: () => TE.fromEither(careerStage),
+              getAvatar: () => TE.fromEither(EffectToFpts.either(avatar)),
+              getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
               getLanguages: () => TE.left('unavailable'),
-              getLocation: () => TE.fromEither(location),
-              getOrcidToken: () => TE.fromEither(orcidToken),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
+              getLocation: () => TE.fromEither(EffectToFpts.either(location)),
+              getOrcidToken: () => TE.fromEither(EffectToFpts.either(orcidToken)),
+              getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
+              getSlackUser: () => TE.fromEither(EffectToFpts.either(slackUser)),
               getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              isOpenForRequests: () => TE.fromEither(EffectToFpts.either(isOpenForRequests)),
               saveUserOnboarding: shouldNotBeCalled,
               clock: SystemClock,
               logger: () => IO.of(undefined),
@@ -913,7 +920,7 @@ describe('myDetails', () => {
           })
         }).pipe(
           Effect.provide([
-            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+            Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
             Layer.mock(Prereviewers, {
               hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
                 Effect.succeed(new HasOptedIn()),
@@ -927,7 +934,7 @@ describe('myDetails', () => {
 
   it.effect.prop('when the user is not logged in', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime<ContactEmailAddresses | Prereviewers>()
+      const runtime = yield* Effect.context<ContactEmailAddresses | Prereviewers>()
 
       const actual = yield* Effect.promise(
         _.myDetails({ locale })({

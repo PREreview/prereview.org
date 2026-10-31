@@ -41,7 +41,7 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
                     elements: [
                       {
                         type: 'text',
-                        text: Option.match(Option.fromNullable(preprint.abstract), {
+                        text: Option.match(Option.fromNullishOr(preprint.abstract), {
                           onSome: abstract => plainText(abstract.text).value.replaceAll(/\s+/gm, ' ').trim(),
                           onNone: () => 'The abstract is unavailable.',
                         }),

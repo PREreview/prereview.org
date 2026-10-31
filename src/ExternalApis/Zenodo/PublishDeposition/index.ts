@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Effect, flow } from 'effect'
 import { CreateRequest } from './CreateRequest.ts'
 import { HandleResponse } from './HandleResponse.ts'

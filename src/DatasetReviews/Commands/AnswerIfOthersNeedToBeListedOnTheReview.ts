@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Result, Equal, Match, Option, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
@@ -66,13 +66,13 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 const authorize = (state: State, input: Input): boolean =>
   state._tag === 'NotStarted' || Equal.equals(state.authorId, input.userId)
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    IsBeingPublished: () => Result.fail(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Result.fail(new Errors.DatasetReviewHasBeenPublished()),
     NotAnswered: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
             answer: input.answer,
@@ -82,9 +82,9 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
       ),
     HasBeenAnswered: ({ answer }) =>
       Boolean.match(Equal.equals(input.answer, answer), {
-        onTrue: () => Either.right(Option.none()),
+        onTrue: () => Result.succeed(Option.none()),
         onFalse: () =>
-          Either.right(
+          Result.succeed(
             Option.some(
               new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
                 answer: input.answer,

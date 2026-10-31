@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Workflows/UseZenodoRecordDoi.ts'
 import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
@@ -11,9 +11,9 @@ describe('UseZenodoRecordDoi', () => {
     [fc.uuid(), fc.integer(), fc.doi()],
     ([datasetReviewId, recordId, doi]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
+        const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.void)
+        expect(actual).toStrictEqual(Result.void)
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => Effect.void }),
@@ -37,9 +37,9 @@ describe('UseZenodoRecordDoi', () => {
     ],
     ([datasetReviewId, recordId, doi, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
+        const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToUseZenodoDoi({})))
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => error }),
@@ -50,9 +50,9 @@ describe('UseZenodoRecordDoi', () => {
 
   it.effect.prop("when the DOI can't be fetched", [fc.uuid(), fc.integer()], ([datasetReviewId, recordId]) =>
     Effect.gen(function* () {
-      const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
+      const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.result)
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToUseZenodoDoi({})))
     }).pipe(
       Effect.provide([
         Layer.mock(DatasetReviews.DatasetReviewCommands, {}),

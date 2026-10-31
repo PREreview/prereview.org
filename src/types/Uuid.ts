@@ -8,20 +8,23 @@ import type { NonEmptyString } from './NonEmptyString.ts'
 
 export type Uuid = NonEmptyString & Brand.Brand<'Uuid'>
 
-export class GenerateUuid extends Context.Tag('GenerateUuid')<
+export class GenerateUuid extends Context.Service<
   GenerateUuid,
   {
     v4: () => Effect.Effect<Uuid>
     v5: (value: string, namespace: Uuid) => Effect.Effect<Uuid>
   }
->() {}
+>()('GenerateUuid') {}
 
 export const layer: Layer.Layer<GenerateUuid> = Layer.succeed(GenerateUuid, {
   v4: () => Effect.sync(() => Uuid(uuid.v4())),
   v5: (value, namespace) => Effect.sync(() => Uuid(uuid.v5(value, namespace))),
 })
 
-export const UuidSchema: Schema.Schema<Uuid, string> = pipe(Schema.UUID, Schema.brand('Uuid')) as never
+export const UuidSchema: Schema.Codec<Uuid, string> = pipe(
+  Schema.String.check(Schema.isUUID()),
+  Schema.brand('Uuid'),
+) as never
 
 export const Uuid: (value: string) => Uuid = Schema.decodeSync(UuidSchema)
 

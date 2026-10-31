@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../Context.ts'

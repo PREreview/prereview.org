@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Result, Equal, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -37,12 +37,12 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error> =>
   Match.valueTags(state, {
     NotShared: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
             channelId: command.channelId,
@@ -58,8 +58,8 @@ export const decide: {
           Equal.equals(command.messageTimestamp, messageTimestamp),
         ),
         {
-          onTrue: () => Either.right(Option.none()),
-          onFalse: () => Either.left(new Errors.ReviewRequestWasAlreadySharedOnTheCommunitySlack()),
+          onTrue: () => Result.succeed(Option.none()),
+          onFalse: () => Result.fail(new Errors.ReviewRequestWasAlreadySharedOnTheCommunitySlack()),
         },
       ),
   }),

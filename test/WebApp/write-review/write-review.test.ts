@@ -14,7 +14,7 @@ describe('writeReview', () => {
       [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale(), fc.user()],
       ([preprintId, preprint, locale, user]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
@@ -47,7 +47,7 @@ describe('writeReview', () => {
       ],
       ([preprintId, locale, [user, preprint]]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
@@ -70,7 +70,7 @@ describe('writeReview', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale()],
     ([preprintId, preprint, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user: undefined })({ runtime }))
 
@@ -92,7 +92,7 @@ describe('writeReview', () => {
     [fc.indeterminatePreprintId(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })],
     ([preprintId, locale, user]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 
@@ -112,7 +112,7 @@ describe('writeReview', () => {
     [fc.indeterminatePreprintId(), fc.supportedLocale(), fc.option(fc.user(), { nil: undefined })],
     ([preprintId, locale, user]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(_.writeReview({ id: preprintId, locale, user })({ runtime }))
 

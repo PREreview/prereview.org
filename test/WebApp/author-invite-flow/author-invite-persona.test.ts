@@ -43,7 +43,7 @@ describe('authorInvitePersona', () => {
             const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
             const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(() => TE.right(undefined))
 
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.context<Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.authorInvitePersona({ body: { persona }, id: inviteId, locale, method: 'POST', user })({
@@ -83,7 +83,7 @@ describe('authorInvitePersona', () => {
         ],
         ([inviteId, [user, invite], locale, prereview, persona]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Prereviewers>()
+            const runtime = yield* Effect.context<Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.authorInvitePersona({ body: { persona }, id: inviteId, locale, method: 'POST', user })({
@@ -126,7 +126,7 @@ describe('authorInvitePersona', () => {
       ],
       ([inviteId, [user, invite], publicPersona, pseudonymPersona, locale, body, prereview]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method: 'POST', user })({
@@ -180,7 +180,7 @@ describe('authorInvitePersona', () => {
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
           const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -225,7 +225,7 @@ describe('authorInvitePersona', () => {
       ],
       ([inviteId, [user, invite], locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -252,7 +252,7 @@ describe('authorInvitePersona', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything()],
       ([inviteId, user, locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -287,7 +287,7 @@ describe('authorInvitePersona', () => {
       ],
       ([inviteId, [user, invite], locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -319,7 +319,7 @@ describe('authorInvitePersona', () => {
       ],
       ([inviteId, [user, invite], locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -346,7 +346,7 @@ describe('authorInvitePersona', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything(), fc.openAuthorInvite()],
       ([inviteId, user, locale, method, body, invite]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -370,7 +370,7 @@ describe('authorInvitePersona', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything(), fc.declinedAuthorInvite()],
       ([inviteId, user, locale, method, body, invite]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -394,7 +394,7 @@ describe('authorInvitePersona', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.string(), fc.anything()],
       ([inviteId, user, locale, method, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
+          const runtime = yield* Effect.context<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
@@ -422,7 +422,7 @@ describe('authorInvitePersona', () => {
     [fc.uuid(), fc.supportedLocale(), fc.string(), fc.anything(), fc.authorInvite()],
     ([inviteId, locale, method, body, invite]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Prereviewers>()
+        const runtime = yield* Effect.context<Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.authorInvitePersona({ body, id: inviteId, locale, method })({

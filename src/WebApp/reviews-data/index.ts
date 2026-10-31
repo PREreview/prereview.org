@@ -1,4 +1,4 @@
-import { Array, Either, flow, Function, Match, pipe, Schema, Tuple } from 'effect'
+import { Array, Result, flow, Function, Match, pipe, Schema, Tuple, SchemaTransformation } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -13,6 +13,7 @@ import { isPseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdSchema, type SubfieldId } from '../../types/subfield.ts'
 import { UuidSchema, type Uuid } from '../../types/Uuid.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 
 export interface Prereview {
   preprint: PreprintId
@@ -36,35 +37,43 @@ export interface GetPrereviewsEnv {
 const getPrereviews = (): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews()))
 
-const PreprintIdWithDoiSchema = Schema.transform(
-  Schema.TemplateLiteralParser('doi:', Preprints.IndeterminatePreprintIdFromDoiSchema),
-  Schema.typeSchema(Preprints.IndeterminatePreprintIdWithDoi),
-  {
-    strict: true,
-    decode: Tuple.getSecond,
-    encode: id => Tuple.make('doi:' as const, id),
-  },
+const PreprintIdWithDoiSchema = Schema.TemplateLiteralParser([
+  'doi:',
+  Preprints.IndeterminatePreprintIdFromDoiSchema,
+]).pipe(
+  Schema.decodeTo(
+    Schema.toType(Preprints.IndeterminatePreprintIdWithDoi),
+    SchemaTransformation.transform({ decode: Tuple.get(1), encode: id => ['doi:', id] as const }),
+  ),
 )
 
-const PreprintIdFromPhilsciIdSchema = Schema.transform(
-  Schema.NonNegativeInt,
-  Schema.typeSchema(Preprints.PhilsciPreprintId),
-  { strict: true, decode: id => new Preprints.PhilsciPreprintId({ value: id }), encode: id => id.value },
+const PreprintIdFromPhilsciIdSchema = Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)).pipe(
+  Schema.decodeTo(
+    Schema.toType(Preprints.PhilsciPreprintId),
+    SchemaTransformation.transform({
+      decode: id => new Preprints.PhilsciPreprintId({ value: id }),
+      encode: id => id.value,
+    }),
+  ),
 )
 
-const PhilsciPreprintIdSchema = Schema.transform(
-  Schema.TemplateLiteralParser('https://philsci-archive.pitt.edu/', PreprintIdFromPhilsciIdSchema, '/'),
-  Schema.typeSchema(Preprints.PhilsciPreprintId),
-  {
-    strict: true,
-    decode: Tuple.at(1),
-    encode: id => Tuple.make('https://philsci-archive.pitt.edu/' as const, id, '/' as const),
-  },
+const PhilsciPreprintIdSchema = Schema.TemplateLiteralParser([
+  'https://philsci-archive.pitt.edu/',
+  PreprintIdFromPhilsciIdSchema,
+  '/',
+]).pipe(
+  Schema.decodeTo(
+    Schema.toType(Preprints.PhilsciPreprintId),
+    SchemaTransformation.transform({
+      decode: Tuple.get(1),
+      encode: id => ['https://philsci-archive.pitt.edu/', id, '/'] as const,
+    }),
+  ),
 )
 
-const PreprintIdSchema = Schema.Union(PreprintIdWithDoiSchema, PhilsciPreprintIdSchema)
+const PreprintIdSchema = Schema.Union([PreprintIdWithDoiSchema, PhilsciPreprintIdSchema])
 
-const ServerSchema = Schema.Literal(
+const ServerSchema = Schema.Literals([
   'advance',
   'africarxiv',
   'arcadia-science',
@@ -99,16 +108,16 @@ const ServerSchema = Schema.Literal(
   'umsida',
   'verixiv',
   'zenodo',
-)
+])
 
 const PrereviewSchema = Schema.Struct({
   preprint: PreprintIdSchema,
   server: ServerSchema,
   createdAt: Temporal.PlainDateSchema,
   doi: Doi.DoiSchema,
-  authors: Schema.Array(Schema.Struct({ author: Schema.String, authorType: Schema.Literal('public', 'pseudonym') })),
+  authors: Schema.Array(Schema.Struct({ author: Schema.String, authorType: Schema.Literals(['public', 'pseudonym']) })),
   language: Schema.optional(Iso639.Iso6391Schema),
-  type: Schema.Literal('full', 'structured'),
+  type: Schema.Literals(['full', 'structured']),
   club: Schema.optional(UuidSchema),
   live: Schema.Boolean,
   requested: Schema.Boolean,
@@ -179,7 +188,9 @@ const isAllowed = (authorizationHeader: string) =>
   pipe(
     RTE.ask<ScietyListEnv>(),
     RTE.chainEitherK(env =>
-      Schema.decodeUnknownEither(Schema.TemplateLiteralParser('Bearer ', env.scietyListToken))(authorizationHeader),
+      EffectToFpts.either(
+        Schema.decodeUnknownResult(Schema.TemplateLiteralParser(['Bearer ', env.scietyListToken]))(authorizationHeader),
+      ),
     ),
     RTE.bimap(() => 'forbidden' as const, Function.constVoid),
   )
@@ -217,8 +228,9 @@ export const reviewsData = (
     RTE.map(Array.map(transform)),
     RTE.chainEitherKW(
       flow(
-        Schema.encodeEither(Schema.parseJson(Schema.Array(PrereviewSchema))),
-        Either.mapLeft(() => 'unavailable' as const),
+        Schema.encodeResult(Schema.fromJsonString(Schema.Array(PrereviewSchema))),
+        Result.mapError(() => 'unavailable' as const),
+        EffectToFpts.either,
       ),
     ),
   )

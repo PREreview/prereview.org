@@ -1,4 +1,4 @@
-import { Url } from '@effect/platform'
+import { Url } from 'effect/http'
 import { Context, Effect } from 'effect'
 import { format, type Formatter } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
@@ -8,9 +8,10 @@ export interface PublicUrlEnv {
   publicUrl: URL
 }
 
-export class PublicUrl extends Context.Tag('PublicUrl')<PublicUrl, URL>() {}
+export class PublicUrl extends Context.Service<PublicUrl, URL>()('PublicUrl') {}
 
-const fromString = (url: string) => Effect.andThen(PublicUrl, publicUrl => Url.fromString(url, publicUrl))
+const fromString = (url: string) =>
+  Effect.andThen(PublicUrl, publicUrl => Effect.fromResult(Url.fromString(url, publicUrl)))
 
 export const forRoute: {
   <

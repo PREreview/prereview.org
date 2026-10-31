@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either } from 'effect'
+import { Array, Result } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/IsPseudonymInUse.ts'
 import { OrcidId, Pseudonym } from '../../src/types/index.ts'
@@ -87,7 +87,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
 
   const actual = query(state, input)
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(Result.succeed(expected))
 })
 
 test.each<[string, _.Result]>([
@@ -106,5 +106,5 @@ test.each<[string, _.Result]>([
 
   const actual = query(state, Pseudonym.Pseudonym(input))
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(Result.succeed(expected))
 })

@@ -1,4 +1,4 @@
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -38,7 +38,7 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right when fields are missing', async ({ showPage }) => {
   const response = _.ChooseYourPersonaPage({
     form: new ChooseYourPersonaForm.InvalidForm({
-      chooseYourPersona: Either.left(new ChooseYourPersonaForm.Missing()),
+      chooseYourPersona: Result.fail(new ChooseYourPersonaForm.Missing()),
     }),
     preprint,
     publicPersona,

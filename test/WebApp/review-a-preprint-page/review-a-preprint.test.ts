@@ -28,7 +28,7 @@ describe('reviewAPreprint', () => {
     [fc.supportedLocale(), fc.requestMethod().filter(method => method !== 'POST'), fc.anything()],
     ([locale, method, body]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(_.reviewAPreprint({ locale, method, body })({ runtime }))
 
@@ -70,7 +70,7 @@ describe('reviewAPreprint', () => {
           )
 
           const runtime = yield* Effect.provide(
-            Effect.runtime<Preprints>(),
+            Effect.context<Preprints>(),
             Layer.mock(Preprints, { resolvePreprintId }),
           )
 
@@ -141,7 +141,7 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
@@ -161,7 +161,7 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
@@ -181,7 +181,7 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.preprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
@@ -201,7 +201,7 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.nonPreprintDoi() })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
@@ -221,7 +221,7 @@ describe('reviewAPreprint', () => {
       [fc.supportedLocale(), fc.record({ preprint: fc.nonPreprintUrl().map(url => url.href) })],
       ([locale, body]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 
@@ -242,7 +242,7 @@ describe('reviewAPreprint', () => {
     [fc.supportedLocale(), fc.record({ preprint: fc.string() }, { requiredKeys: [] })],
     ([locale, body]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(_.reviewAPreprint({ body, locale, method: 'POST' })({ runtime }))
 

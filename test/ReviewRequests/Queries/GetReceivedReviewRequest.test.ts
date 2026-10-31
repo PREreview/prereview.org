@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, Option, Predicate, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -78,7 +78,7 @@ describe('GetReceivedReviewRequest', () => {
     ([events, reviewRequestId]) => {
       const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.UnknownReviewRequest({})))
     },
     {
       fastCheck: {
@@ -109,7 +109,7 @@ describe('GetReceivedReviewRequest', () => {
     ([[events, reviewRequestId]]) => {
       const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
     },
     {
       fastCheck: {
@@ -157,7 +157,7 @@ describe('GetReceivedReviewRequest', () => {
     ([[events, reviewRequestId]]) => {
       const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasBeenRejected({})))
     },
     {
       fastCheck: {
@@ -203,7 +203,7 @@ describe('GetReceivedReviewRequest', () => {
     ([[events, expected]]) => {
       const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId: expected.id })
 
-      expect(actual).toStrictEqual(Either.right(expected))
+      expect(actual).toStrictEqual(Result.succeed(expected))
     },
     {
       fastCheck: {

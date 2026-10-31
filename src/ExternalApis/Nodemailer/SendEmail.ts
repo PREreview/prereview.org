@@ -7,7 +7,7 @@ export const SendEmail = Effect.fn('Nodemailer.sendEmail')(
     const transporter = yield* NodemailerTransporter
 
     const encoded = yield* Effect.mapError(
-      Schema.encode(Email)(email),
+      Schema.encodeEffect(Email)(email),
       error => new UnableToSendEmail({ cause: error }),
     )
 

@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as ReviewADatasetForm from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetPage.ts'
@@ -18,7 +18,7 @@ test('content looks right', async ({ showPage }) => {
 test('content looks right when the answer is invalid', async ({ showPage }) => {
   const response = _.ReviewADatasetPage({
     form: new ReviewADatasetForm.InvalidForm({
-      whichDataset: Either.left(new ReviewADatasetForm.Invalid({ value: 'not-a-dataset' })),
+      whichDataset: Result.fail(new ReviewADatasetForm.Invalid({ value: 'not-a-dataset' })),
     }),
     locale: DefaultLocale,
   })
@@ -31,7 +31,7 @@ test('content looks right when the answer is invalid', async ({ showPage }) => {
 test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.ReviewADatasetPage({
     form: new ReviewADatasetForm.InvalidForm({
-      whichDataset: Either.left(new ReviewADatasetForm.Missing()),
+      whichDataset: Result.fail(new ReviewADatasetForm.Missing()),
     }),
     locale: DefaultLocale,
   })

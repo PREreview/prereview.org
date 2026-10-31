@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as HasEnoughMetadataForm from '../../../src/WebApp/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -39,10 +39,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.HasEnoughMetadataQuestion({
     datasetReviewId,
     form: new HasEnoughMetadataForm.InvalidForm({
-      hasEnoughMetadata: Either.left(new HasEnoughMetadataForm.Missing()),
-      hasEnoughMetadataYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      hasEnoughMetadataPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      hasEnoughMetadataNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      hasEnoughMetadata: Result.fail(new HasEnoughMetadataForm.Missing()),
+      hasEnoughMetadataYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      hasEnoughMetadataPartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      hasEnoughMetadataNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

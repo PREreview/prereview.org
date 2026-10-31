@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
@@ -38,11 +38,11 @@ export function renderReceiveNotificationsPage({
             </legend>
 
             ${
-              hasAnError && Either.isLeft(form.receiveNotifications)
+              hasAnError && Result.isFailure(form.receiveNotifications)
                 ? html`
                     <div class="error-message" id="receive-notifications-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.receiveNotifications.left, {
+                      ${Match.valueTags(form.receiveNotifications.failure, {
                         Missing: () => t('beNotifiedWhenReviewPublishedMissing')(),
                       })}
                     </div>
@@ -113,11 +113,11 @@ export function renderReceiveNotificationsPage({
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
   ${
-    Either.isLeft(form.receiveNotifications)
+    Result.isFailure(form.receiveNotifications)
       ? html`
           <li>
             <a href="#receive-notifications-yes">
-              ${Match.valueTags(form.receiveNotifications.left, {
+              ${Match.valueTags(form.receiveNotifications.failure, {
                 Missing: () => translate(locale, 'request-review-flow', 'beNotifiedWhenReviewPublishedMissing')(),
               })}
             </a>

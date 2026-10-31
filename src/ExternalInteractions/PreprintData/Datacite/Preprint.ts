@@ -1,6 +1,6 @@
-import { Url } from '@effect/platform'
+import { Url } from 'effect/http'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Effect, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { Array, Effect, Result, flow, Match, Option, pipe, Struct } from 'effect'
 import { encode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import type { Datacite } from '../../../ExternalApis/index.ts'
@@ -27,19 +27,19 @@ export const recordToPreprint = (
   LanguageDetection.LanguageDetection
 > =>
   Effect.gen(function* () {
-    const id = yield* determineDatacitePreprintId(record)
+    const id = yield* Effect.fromResult(determineDatacitePreprintId(record))
 
-    yield* ensureIsAPreprint(record.types, id)
+    yield* Effect.fromResult(ensureIsAPreprint(record.types, id))
 
     const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
 
-    const authors = yield* getAuthors(record.creators)
+    const authors = yield* Effect.fromResult(getAuthors(record.creators))
 
     const title = yield* getTitle(record.titles, id, recordLanguage)
 
     const abstract = yield* getAbstract(record.descriptions, id, recordLanguage)
 
-    const posted = yield* getPostedDate(record.dates)
+    const posted = yield* Effect.fromResult(getPostedDate(record.dates))
 
     return Preprints.Preprint({
       abstract,
@@ -53,12 +53,12 @@ export const recordToPreprint = (
 
 const determineDatacitePreprintId = (
   record: Datacite.Record,
-): Either.Either<DatacitePreprintId, Preprints.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Result.Result<DatacitePreprintId, Preprints.PreprintIsUnavailable> =>
+  Result.gen(function* () {
     const doi = record.doi
 
     if (!isDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
+      return yield* Result.fail(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     const indeterminateId = fromPreprintDoi(doi)
@@ -89,7 +89,7 @@ const determineDatacitePreprintId = (
     }
 
     if (indeterminateId._tag === 'AfricarxivFigsharePreprintId' && record.publisher !== 'AfricArXiv') {
-      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
+      return yield* Result.fail(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     return indeterminateId
@@ -98,7 +98,7 @@ const determineDatacitePreprintId = (
 const ensureIsAPreprint = (
   types: Datacite.Record['types'],
   id: DatacitePreprintId,
-): Either.Either<void, Preprints.NotAPreprint> =>
+): Result.Result<void, Preprints.NotAPreprint> =>
   types.resourceType?.toLowerCase() === 'preprint' ||
   types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
   (id._tag === 'LifecycleJournalPreprintId' &&
@@ -107,12 +107,12 @@ const ensureIsAPreprint = (
   (id._tag === 'ArxivPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
   (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other') ||
   (id._tag === 'RadialPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other')
-    ? Either.void
-    : Either.left(new Preprints.NotAPreprint({ cause: types }))
+    ? Result.void
+    : Result.fail(new Preprints.NotAPreprint({ cause: types }))
 
 const getPostedDate = (
   dates: Datacite.Record['dates'],
-): Either.Either<Preprints.Preprint['posted'], Preprints.PreprintIsUnavailable> =>
+): Result.Result<Preprints.Preprint['posted'], Preprints.PreprintIsUnavailable> =>
   pipe(
     Option.none(),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Submitted')),
@@ -123,7 +123,7 @@ const getPostedDate = (
     Option.filter(
       date => date instanceof Temporal.PlainDate || date instanceof Temporal.PlainYearMonth || typeof date === 'number',
     ),
-    Either.fromOption(() => new Preprints.PreprintIsUnavailable({ cause: { dates } })),
+    Result.fromOption(() => new Preprints.PreprintIsUnavailable({ cause: { dates } })),
   )
 
 const findOrcid = (creator: Datacite.Record['creators'][number]) =>
@@ -135,11 +135,11 @@ const findOrcid = (creator: Datacite.Record['creators'][number]) =>
 
 const getAuthors = (
   creators: Datacite.Record['creators'],
-): Either.Either<Preprints.Preprint['authors'], Preprints.PreprintIsUnavailable> =>
+): Result.Result<Preprints.Preprint['authors'], Preprints.PreprintIsUnavailable> =>
   Array.match(creators, {
-    onEmpty: () => Either.left(new Preprints.PreprintIsUnavailable({ cause: { creators } })),
+    onEmpty: () => Result.fail(new Preprints.PreprintIsUnavailable({ cause: { creators } })),
     onNonEmpty: creators =>
-      Either.right(
+      Result.succeed(
         Array.map(
           creators,
           flow(

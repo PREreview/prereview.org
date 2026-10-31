@@ -35,7 +35,7 @@ describe('writeReviewPublish', () => {
     ],
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -66,7 +66,7 @@ describe('writeReviewPublish', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, { isPrereviewerAClubLead: () => Effect.succeed(true) }),
-          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
           FeatureFlags.layer({ canClubLeadsAddReviewsToClubs: true }),
           LanguageDetection.layerCld,
           Layer.succeed(Locale, locale),
@@ -90,7 +90,7 @@ describe('writeReviewPublish', () => {
     ],
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress, club]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -145,7 +145,7 @@ describe('writeReviewPublish', () => {
     ],
     ([preprintId, preprintTitle, method, newReview, user, locale, club]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -216,7 +216,7 @@ describe('writeReviewPublish', () => {
       club,
     ]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -245,7 +245,7 @@ describe('writeReviewPublish', () => {
           conduct: 'yes',
           otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
           persona: newReview.persona === 'public' ? publicPersona : pseudonymPersona,
-          club: Option.fromNullable(newReview.club),
+          club: Option.fromNullishOr(newReview.club),
           preprint: preprintTitle,
           review: expect.anything(),
           language: localeToIso6391(locale),
@@ -312,7 +312,7 @@ describe('writeReviewPublish', () => {
       club,
     ]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -339,7 +339,7 @@ describe('writeReviewPublish', () => {
           conduct: 'yes',
           otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
           persona: newReview.persona === 'public' ? publicPersona : pseudonymPersona,
-          club: Option.fromNullable(newReview.club),
+          club: Option.fromNullishOr(newReview.club),
           preprint: preprintTitle,
           review: expect.htmlContaining(newReview.review) as never,
           language: expect.anything(),
@@ -390,7 +390,7 @@ describe('writeReviewPublish', () => {
     ],
     ([preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -419,7 +419,7 @@ describe('writeReviewPublish', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, {}),
-          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => contactEmailAddress }),
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(contactEmailAddress) }),
           FeatureFlags.layer({}),
           LanguageDetection.layerCld,
           Layer.succeed(Locale, locale),
@@ -434,7 +434,7 @@ describe('writeReviewPublish', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -476,7 +476,7 @@ describe('writeReviewPublish', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -521,7 +521,7 @@ describe('writeReviewPublish', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -566,7 +566,7 @@ describe('writeReviewPublish', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -630,7 +630,7 @@ describe('writeReviewPublish', () => {
       club,
     ]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags

@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Data, Effect, flow } from 'effect'
 import { CreateRequest } from './CreateRequest.ts'
 import { HandleResponse } from './HandleResponse.ts'
@@ -11,5 +11,5 @@ export const SendMessage = flow(
   CreateRequest,
   Effect.andThen(HttpClient.execute),
   Effect.andThen(HandleResponse),
-  Effect.catchAll(error => new UnableToSendCoarNotifyMessage({ cause: error })),
+  Effect.catch(error => new UnableToSendCoarNotifyMessage({ cause: error })),
 )

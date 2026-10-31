@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -50,53 +50,53 @@ const published = new Events.DatasetReviewWasPublished({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not declared', input, [started], Either.right({ _tag: 'NotAnswered' })],
+  ['no events', input, [], Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
+  ['not declared', input, [started], Result.succeed({ _tag: 'NotAnswered' })],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different author ID',
     inputDifferentAuthorId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
+    Result.fail(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
   ],
   [
     'declared yes',
     input,
     [started, declaredYes],
-    Either.right({ _tag: 'AiWasUsed', generativeAiIdeasDetails: Option.none() }),
+    Result.succeed({ _tag: 'AiWasUsed', generativeAiIdeasDetails: Option.none() }),
   ],
   [
     'declared yes with a detail',
     input,
     [started, declaredYesWithDetail],
-    Either.right({
+    Result.succeed({
       _tag: 'AiWasUsed',
       generativeAiIdeasDetails: Option.some(NonEmptyString.NonEmptyString('Some details')),
     }),
   ],
-  ['declared no', input, [started, declaredNo], Either.right({ _tag: 'AiWasNotUsed' })],
+  ['declared no', input, [started, declaredNo], Result.succeed({ _tag: 'AiWasNotUsed' })],
   [
     'declared more than once',
     input,
     [started, declaredYesWithDetail, declaredNo],
-    Either.right({ _tag: 'AiWasNotUsed' }),
+    Result.succeed({ _tag: 'AiWasNotUsed' }),
   ],
   [
     'publication requested',
     input,
     [started, declaredYes, publicationRequested],
-    Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     input,
     [started, declaredYes, publicationRequested, published],
-    Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas

@@ -7,6 +7,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-open-for-requests.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('changeOpenForRequests', () => {
   it.effect.prop(
@@ -22,7 +23,7 @@ describe('changeOpenForRequests', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
           _.changeOpenForRequests({ body, locale, method, user })({
-            isOpenForRequests: () => TE.fromEither(openForRequests),
+            isOpenForRequests: () => TE.fromEither(EffectToFpts.either(openForRequests)),
             saveOpenForRequests: shouldNotBeCalled,
           }),
         )
@@ -116,7 +117,7 @@ describe('changeOpenForRequests', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
           _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
-            isOpenForRequests: () => TE.fromEither(existingOpenForRequests),
+            isOpenForRequests: () => TE.fromEither(EffectToFpts.either(existingOpenForRequests)),
             saveOpenForRequests: () => TE.left('unavailable'),
           }),
         )

@@ -38,7 +38,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, prereview, contactEmailAddress]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
           const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(() => TE.right(invite))
           const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(() => TE.right(prereview))
 
@@ -86,7 +86,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, prereview, contactEmailAddress]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -125,7 +125,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale, prereview]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -158,7 +158,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -184,7 +184,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale()],
       ([inviteId, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -216,7 +216,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -245,7 +245,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       ],
       ([inviteId, [user, invite], locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -271,7 +271,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.openAuthorInvite()],
       ([inviteId, user, locale, invite]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -294,7 +294,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale(), fc.declinedAuthorInvite()],
       ([inviteId, user, locale, invite]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -317,7 +317,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
       [fc.uuid(), fc.user(), fc.supportedLocale()],
       ([inviteId, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+          const runtime = yield* Effect.context<ContactEmailAddresses>()
 
           const actual = yield* Effect.promise(
             _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
@@ -344,7 +344,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
     [fc.uuid(), fc.supportedLocale(), fc.authorInvite()],
     ([inviteId, locale, invite]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ContactEmailAddresses>()
+        const runtime = yield* Effect.context<ContactEmailAddresses>()
 
         const actual = yield* Effect.promise(
           _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale })({

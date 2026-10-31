@@ -1,4 +1,4 @@
-import { Headers } from '@effect/platform'
+import { Headers } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Option, Redacted, Tuple } from 'effect'
 import { Orcid } from '../../../../src/ExternalApis/index.ts'
@@ -37,7 +37,7 @@ describe('CreateRequest', () => {
       }).pipe(
         Effect.provideService(Orcid.OrcidApi, {
           origin: new URL(origin),
-          token: Option.map(Option.fromNullable(token), Redacted.make),
+          token: Option.map(Option.fromNullishOr(token), Redacted.make),
         }),
       ),
     {

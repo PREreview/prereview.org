@@ -1,4 +1,4 @@
-import { Array, Either, Option, Struct, type Types } from 'effect'
+import { Array, Result, Option, Struct, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/Uuid.ts'
@@ -39,22 +39,22 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
 const decide =
   (clubs: ReadonlyArray<Uuid>) =>
-  (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
-    Either.gen(function* () {
+  (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
+    Result.gen(function* () {
       if (!state.started) {
-        return yield* Either.left(new UnknownDatasetReview({}))
+        return yield* Result.fail(new UnknownDatasetReview({}))
       }
 
       if (Option.isSome(state.inClub)) {
         if (state.inClub.value !== input.clubId) {
-          return yield* Either.left(new DatasetReviewHasAlreadyBeenAddedToAClub())
+          return yield* Result.fail(new DatasetReviewHasAlreadyBeenAddedToAClub())
         }
 
         return Option.none()
       }
 
       if (!Array.contains(clubs, input.clubId)) {
-        return yield* Either.left(new UnknownClub())
+        return yield* Result.fail(new UnknownClub())
       }
 
       return Option.some(new Events.DatasetReviewWasAddedToAClub(input))

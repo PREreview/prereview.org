@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,7 +41,7 @@ export const OthersNeedToBeListedPage = ({
             role="group"
             aria-describedby="others-need-to-be-listed-tip"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.othersNeedToBeListed)
+              form._tag === 'InvalidForm' && Result.isFailure(form.othersNeedToBeListed)
                 ? 'aria-invalid="true" aria-errormessage="others-need-to-be-listed-error"'
                 : '',
             )}
@@ -53,12 +53,12 @@ export const OthersNeedToBeListedPage = ({
             <p id="others-need-to-be-listed-tip" role="note">${t('didYouReviewWithAnyoneElseTip')()}</p>
 
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.othersNeedToBeListed)
+              form._tag === 'InvalidForm' && Result.isFailure(form.othersNeedToBeListed)
                 ? html`
                     <div class="error-message" id="others-need-to-be-listed-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${pipe(
-                        Match.value(form.othersNeedToBeListed.left),
+                        Match.value(form.othersNeedToBeListed.failure),
                         Match.tag('Missing', () => t('selectDidYouReviewWithAnyoneElse')()),
                         Match.exhaustive,
                       )}
@@ -126,12 +126,12 @@ export const OthersNeedToBeListedPage = ({
 
 const toErrorItems = (locale: SupportedLocale) => (form: OthersNeedToBeListedForm.InvalidForm) => html`
   ${
-    Either.isLeft(form.othersNeedToBeListed)
+    Result.isFailure(form.othersNeedToBeListed)
       ? html`
           <li>
             <a href="#others-need-to-be-listed-no">
               ${pipe(
-                Match.value(form.othersNeedToBeListed.left),
+                Match.value(form.othersNeedToBeListed.failure),
                 Match.tag('Missing', () =>
                   translate(locale, 'review-a-dataset-flow', 'selectDidYouReviewWithAnyoneElse')(),
                 ),

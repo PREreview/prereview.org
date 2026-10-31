@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -68,43 +68,43 @@ const optedOutAgainDifferentPrereviewer =
   })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new _.UnknownPrereviewer({}))],
-  ['imported, not opted in', input, [imported], Either.right(new _.HasNotOptedIn())],
-  ['registered, not opted in', input, [registered], Either.right(new _.HasNotOptedIn())],
-  ['imported, opted in', input, [imported, optedIn], Either.right(new _.HasOptedIn())],
-  ['registered, opted in', input, [registered, optedIn], Either.right(new _.HasOptedIn())],
+  ['no events', input, [], Result.fail(new _.UnknownPrereviewer({}))],
+  ['imported, not opted in', input, [imported], Result.succeed(new _.HasNotOptedIn())],
+  ['registered, not opted in', input, [registered], Result.succeed(new _.HasNotOptedIn())],
+  ['imported, opted in', input, [imported, optedIn], Result.succeed(new _.HasOptedIn())],
+  ['registered, opted in', input, [registered, optedIn], Result.succeed(new _.HasOptedIn())],
   [
     'imported, opted in, different PREreviewer',
     input,
     [imported, importedDifferentPrereviewer, optedInDifferentPrereviewer],
-    Either.right(new _.HasNotOptedIn()),
+    Result.succeed(new _.HasNotOptedIn()),
   ],
   [
     'registered, opted in, different PREreviewer',
     input,
     [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer],
-    Either.right(new _.HasNotOptedIn()),
+    Result.succeed(new _.HasNotOptedIn()),
   ],
-  ['imported, opted out', input, [imported, optedIn, optedOut], Either.right(new _.HasOptedOut())],
-  ['registered, opted out', input, [registered, optedIn, optedOut], Either.right(new _.HasOptedOut())],
+  ['imported, opted out', input, [imported, optedIn, optedOut], Result.succeed(new _.HasOptedOut())],
+  ['registered, opted out', input, [registered, optedIn, optedOut], Result.succeed(new _.HasOptedOut())],
   [
     'imported, opted out, different PREreviewer',
     input,
     [imported, importedDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
-    Either.right(new _.HasNotOptedIn()),
+    Result.succeed(new _.HasNotOptedIn()),
   ],
   [
     'registered, opted out, different PREreviewer',
     input,
     [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
-    Either.right(new _.HasNotOptedIn()),
+    Result.succeed(new _.HasNotOptedIn()),
   ],
-  ['imported, opted in again', input, [imported, optedIn, optedOut, optedInAgain], Either.right(new _.HasOptedIn())],
+  ['imported, opted in again', input, [imported, optedIn, optedOut, optedInAgain], Result.succeed(new _.HasOptedIn())],
   [
     'registered, opted in again',
     input,
     [registered, optedIn, optedOut, optedInAgain],
-    Either.right(new _.HasOptedIn()),
+    Result.succeed(new _.HasOptedIn()),
   ],
   [
     'imported, opted in again, different PREreviewer',
@@ -116,7 +116,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
       optedOutDifferentPrereviewer,
       optedOutAgainDifferentPrereviewer,
     ],
-    Either.right(new _.HasNotOptedIn()),
+    Result.succeed(new _.HasNotOptedIn()),
   ],
   [
     'registered, opted in again, different PREreviewer',
@@ -128,7 +128,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
       optedOutDifferentPrereviewer,
       optedOutAgainDifferentPrereviewer,
     ],
-    Either.right(new _.HasNotOptedIn()),
+    Result.succeed(new _.HasNotOptedIn()),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests

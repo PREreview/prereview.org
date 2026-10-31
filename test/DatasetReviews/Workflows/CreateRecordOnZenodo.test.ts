@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Workflows/CreateRecordOnZenodo.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -26,9 +26,9 @@ describe('CreateRecordOnZenodo', () => {
       ],
       ([datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, recordId]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+          const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
@@ -60,9 +60,9 @@ describe('CreateRecordOnZenodo', () => {
       ],
       ([datasetReviewId, publicUrl, preview, datasetTitle, pseudonymPersona, recordId]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+          const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
@@ -99,9 +99,9 @@ describe('CreateRecordOnZenodo', () => {
     ],
     ([datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, pseudonymPersona, recordId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => error }),
@@ -131,9 +131,9 @@ describe('CreateRecordOnZenodo', () => {
     ],
     ([datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, pseudonymPersona]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
@@ -167,9 +167,9 @@ describe('CreateRecordOnZenodo', () => {
     ],
     ([datasetReviewId, publicUrl, preview, error, publicPersona, pseudonymPersona]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
@@ -192,9 +192,9 @@ describe('CreateRecordOnZenodo', () => {
     [fc.uuid(), fc.origin(), fc.datasetReviewDataForZenodoRecord(), fc.datasetTitle(), fc.anything()],
     ([datasetReviewId, publicUrl, preview, datasetTitle, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
@@ -228,9 +228,9 @@ describe('CreateRecordOnZenodo', () => {
     ],
     ([datasetReviewId, publicUrl, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
         Effect.provide([
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),

@@ -10,5 +10,5 @@ export const UseZenodoRecordDoi = Effect.fn(
 
     yield* Commands.markDoiAsAssigned({ doi, datasetReviewId })
   },
-  Effect.catchAll(error => new Errors.FailedToUseZenodoDoi({ cause: error })),
+  Effect.catch(error => new Errors.FailedToUseZenodoDoi({ cause: error })),
 )

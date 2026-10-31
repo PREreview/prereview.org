@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,7 +41,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
+                hasAnError && Result.isFailure(form.followsFairAndCarePrinciples)
                   ? 'aria-invalid="true" aria-errormessage="findings-next-steps-error"'
                   : '',
               )}
@@ -90,11 +90,11 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
               </details>
 
               ${
-                hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
+                hasAnError && Result.isFailure(form.followsFairAndCarePrinciples)
                   ? html`
                       <div class="error-message" id="findings-next-steps-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
+                        ${Match.valueTags(form.followsFairAndCarePrinciples.failure, {
                           Missing: () => t('selectFollowFairAndCare')(),
                         })}
                       </div>
@@ -136,7 +136,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.followsFairAndCarePrinciplesYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.followsFairAndCarePrinciplesYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -177,7 +177,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesPartlyDetail)),
+      Option.flatten(Result.getSuccess(form.followsFairAndCarePrinciplesPartlyDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.followsFairAndCarePrinciplesPartlyDetail, () => String.empty),
@@ -217,7 +217,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.followsFairAndCarePrinciplesNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.followsFairAndCarePrinciplesNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -255,12 +255,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.followsFairAndCarePrinciples)
+  Result.isFailure(form.followsFairAndCarePrinciples)
     ? html`
         <li>
           <a href="#follows-fair-and-care-principles-yes">
             ${pipe(
-              Match.value(form.followsFairAndCarePrinciples.left),
+              Match.value(form.followsFairAndCarePrinciples.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectFollowFairAndCare')()),
               Match.exhaustive,
             )}

@@ -20,7 +20,7 @@ import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
 
 export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{ cause?: unknown }> {}
 
-export class Prereviewers extends Context.Tag('Prereviewers')<
+export class Prereviewers extends Context.Service<
   Prereviewers,
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
@@ -44,7 +44,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
       orcid: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof OptOutOfNotificationsForReviewsPublishedInResponseToRequests>>
   }
->() {}
+>()('Prereviewers') {}
 
 export const countAvailablePseudonyms = (
   ...args: Parameters<(typeof Prereviewers.Service)['countAvailablePseudonyms']>
@@ -122,9 +122,7 @@ export const layer = Layer.effect(
           yield* registerPrereviewer(prereviewer)
         },
         Effect.catchTag(
-          'MismatchWithExistingDataForOrcid',
-          'NoPseudonymAvailable',
-          'PseudonymAlreadyInUse',
+          ['MismatchWithExistingDataForOrcid', 'NoPseudonymAvailable', 'PseudonymAlreadyInUse'],
           error => new UnableToHandleCommand({ cause: error }),
         ),
       ),
@@ -165,8 +163,7 @@ export const layer = Layer.effect(
           })
         },
         Effect.catchTag(
-          'ContactEmailAddressIsNotFound',
-          'NameIsNotAvailable',
+          ['ContactEmailAddressIsNotFound', 'NameIsNotAvailable'],
           error => new Queries.UnableToQuery({ cause: error }),
         ),
       ),

@@ -1,4 +1,4 @@
-import { Array, Either, Equal, Option, type Types } from 'effect'
+import { Array, Result, Equal, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
@@ -14,7 +14,7 @@ export type UseOfAi =
   | { _tag: 'AiWasNotUsed' }
   | { _tag: 'NotAnswered' }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   UseOfAi,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
@@ -34,26 +34,26 @@ const createFilter = ({ datasetReviewId }: Input) =>
   })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const started = yield* Either.fromOption(
+    const started = yield* Result.fromOption(
       Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')),
       () => new Errors.DatasetReviewHasNotBeenStarted(),
     )
 
     if (!Equal.equals(started.authorId, input.authorId)) {
-      return yield* Either.left(new Errors.DatasetReviewWasStartedByAnotherUser())
+      return yield* Result.fail(new Errors.DatasetReviewWasStartedByAnotherUser())
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
-      return yield* Either.left(new Errors.DatasetReviewHasBeenPublished())
+      return yield* Result.fail(new Errors.DatasetReviewHasBeenPublished())
     }
 
     if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
-      return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
+      return yield* Result.fail(new Errors.DatasetReviewIsBeingPublished())
     }
 
     return Option.match(

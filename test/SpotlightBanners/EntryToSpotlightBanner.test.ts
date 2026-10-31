@@ -1,8 +1,7 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, flow, Array, Layer, pipe, Schema, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../vitest.ts'
 import resolveResponse from 'contentful-resolve-response'
-import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { URL } from 'node:url'
 import { Locale } from '../../src/Context.ts'
 import { Entries } from '../../src/ExternalApis/Contentful/index.ts'
@@ -72,10 +71,10 @@ it.effect.each<{
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknown(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
       Effect.map(Struct.get('items')),
-      Effect.andThen(Array.get(index)),
-      Effect.andThen(Schema.decodeUnknown(_.EntryToSpotlightBanner)),
+      Effect.andThen(flow(Array.get(index), Effect.fromOption)),
+      Effect.andThen(Schema.decodeUnknownEffect(_.EntryToSpotlightBanner)),
     )
 
     expect(actual).toStrictEqual(expected)
@@ -88,14 +87,14 @@ it.effect.each([['pages-assets']])("can't parse a record (%s)", ([response]) =>
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknown(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
       Effect.map(Struct.get('items')),
-      Effect.map(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
-      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'either' })),
+      Effect.map(Array.map(item => Schema.decodeUnknownEffect(_.EntryToSpotlightBanner)(item))),
+      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'result' })),
     )
 
     actual.forEach(result => {
-      expect(result).toMatchObject({ _tag: 'Left' })
+      expect(result).toMatchObject({ _tag: 'Failure' })
     })
   }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
 )

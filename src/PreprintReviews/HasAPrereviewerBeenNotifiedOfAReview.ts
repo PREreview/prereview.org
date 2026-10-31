@@ -1,4 +1,4 @@
-import { Array, Either, flow } from 'effect'
+import { Array, Result, flow } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/index.ts'
@@ -25,5 +25,5 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
 export const HasAPrereviewerBeenNotifiedOfAReview = Queries.OnDemandQuery({
   name: 'PreprintReviews.hasAPrereviewerBeenNotifiedOfAReview',
   createFilter,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

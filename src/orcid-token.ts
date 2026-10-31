@@ -24,7 +24,13 @@ export interface DeleteOrcidTokenEnv {
 }
 
 const HashSetC = <O, A>(item: C.Codec<unknown, O, A>) =>
-  pipe(C.array(item), C.imap(HashSet.fromIterable, HashSet.toValues))
+  pipe(
+    C.array(item),
+    C.imap(
+      items => HashSet.fromIterable(items),
+      set => globalThis.Array.from(set),
+    ),
+  )
 
 export const OrcidTokenC = C.struct({
   accessToken: NonEmptyStringC,

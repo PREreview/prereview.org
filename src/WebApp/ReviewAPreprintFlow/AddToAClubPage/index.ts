@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Array, Effect, Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Clubs } from '../../../Clubs/index.ts'
@@ -35,7 +35,7 @@ export const AddToAClubPage: ({
 
       const ledClubs = yield* clubs.getClubsThatAPrereviewerLeads(user.orcid)
 
-      if (!Array.isNonEmptyReadonlyArray(ledClubs)) {
+      if (!Array.isReadonlyArrayNonEmpty(ledClubs)) {
         return yield* PageNotFound
       }
 
@@ -78,7 +78,7 @@ export const AddToAClubSubmission: ({
 
       const ledClubs = yield* clubs.getClubsThatAPrereviewerLeads(user.orcid)
 
-      if (!Array.isNonEmptyReadonlyArray(ledClubs)) {
+      if (!Array.isReadonlyArrayNonEmpty(ledClubs)) {
         return yield* PageNotFound
       }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Either } from 'effect'
+import { Effect, Result } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as fc from '../../../fc.ts'
@@ -17,9 +17,9 @@ describe('HandleResponse', () => {
         ],
         ([response]) =>
           Effect.gen(function* () {
-            const actual = yield* Effect.either(_.HandleResponse(response))
+            const actual = yield* Effect.result(_.HandleResponse(response))
 
-            expect(actual).toStrictEqual(Either.right(expect.anything()))
+            expect(actual).toStrictEqual(Result.succeed(expect.anything()))
           }),
       )
     })
@@ -38,7 +38,7 @@ describe('HandleResponse', () => {
             const actual = yield* Effect.flip(_.HandleResponse(response))
 
             expect(actual._tag).toStrictEqual('GhostPageUnavailable')
-            expect(actual.cause).toMatchObject({ _tag: 'ParseError' })
+            expect(actual.cause).toMatchObject({ _tag: 'SchemaError' })
           }),
       )
     })
@@ -57,7 +57,7 @@ describe('HandleResponse', () => {
             const actual = yield* Effect.flip(_.HandleResponse(response))
 
             expect(actual._tag).toStrictEqual('GhostPageUnavailable')
-            expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'Decode', response })
+            expect(actual.cause).toMatchObject({ _tag: 'HttpClientError', reason: { _tag: 'DecodeError', response } })
           }),
       )
     })
@@ -72,7 +72,7 @@ describe('HandleResponse', () => {
           const actual = yield* Effect.flip(_.HandleResponse(response))
 
           expect(actual._tag).toStrictEqual('GhostPageNotFound')
-          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+          expect(actual.cause).toMatchObject({ _tag: 'HttpClientError', reason: { _tag: 'StatusCodeError', response } })
         }),
     )
   })
@@ -90,7 +90,7 @@ describe('HandleResponse', () => {
           const actual = yield* Effect.flip(_.HandleResponse(response))
 
           expect(actual._tag).toStrictEqual('GhostPageUnavailable')
-          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+          expect(actual.cause).toMatchObject({ _tag: 'HttpClientError', reason: { _tag: 'StatusCodeError', response } })
         }),
     )
   })

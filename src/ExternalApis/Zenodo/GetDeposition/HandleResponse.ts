@@ -1,4 +1,4 @@
-import { HttpClientResponse } from '@effect/platform'
+import { HttpClientResponse } from 'effect/http'
 import { Effect, Equal, flow } from 'effect'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { UnsubmittedDeposition } from '../Deposition.ts'

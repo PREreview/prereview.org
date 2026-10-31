@@ -6,7 +6,7 @@ export * from './Dataset.ts'
 export * from './DatasetId.ts'
 export * from './DatasetRepositories.ts'
 
-export class Datasets extends Context.Tag('Datasets')<
+export class Datasets extends Context.Service<
   Datasets,
   {
     getDataset: (
@@ -22,7 +22,7 @@ export class Datasets extends Context.Tag('Datasets')<
       Dataset.DatasetIsNotFound | Dataset.DatasetIsUnavailable | Dataset.NotADataset
     >
   }
->() {}
+>()('Datasets') {}
 
 export const getDataset = (...args: Parameters<(typeof Datasets.Service)['getDataset']>) =>
   Effect.flatMap(Datasets, service => service.getDataset(...args))

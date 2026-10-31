@@ -7,6 +7,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-research-interests.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('changeResearchInterests', () => {
   it.effect.prop(
@@ -23,7 +24,7 @@ describe('changeResearchInterests', () => {
         const actual = yield* Effect.promise(
           _.changeResearchInterests({ body, locale, method, user })({
             deleteResearchInterests: shouldNotBeCalled,
-            getResearchInterests: () => TE.fromEither(researchInterests),
+            getResearchInterests: () => TE.fromEither(EffectToFpts.either(researchInterests)),
             saveResearchInterests: shouldNotBeCalled,
           }),
         )
@@ -110,7 +111,7 @@ describe('changeResearchInterests', () => {
         const actual = yield* Effect.promise(
           _.changeResearchInterests({ body, locale, method: 'POST', user })({
             deleteResearchInterests: () => TE.left('unavailable'),
-            getResearchInterests: () => TE.fromEither(existingResearchInterests),
+            getResearchInterests: () => TE.fromEither(EffectToFpts.either(existingResearchInterests)),
             saveResearchInterests: () => TE.left('unavailable'),
           }),
         )

@@ -1,4 +1,4 @@
-import { Match, pipe } from 'effect'
+import { flow, Match, pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
@@ -34,7 +34,10 @@ export const writeReview = ({
           RTE.Do,
           RTE.apS(
             'user',
-            pipe(RTE.fromNullable('no-session' as const)(user), RTE.chainEitherKW(ensureUserIsNotAnAuthor(preprint))),
+            pipe(
+              RTE.fromNullable('no-session' as const)(user),
+              RTE.chainEitherKW(flow(ensureUserIsNotAnAuthor(preprint), EffectToFpts.either)),
+            ),
           ),
           RTE.matchW(
             error =>

@@ -1,4 +1,4 @@
-import { Data, Effect, Exit, pipe } from 'effect'
+import { Data, Effect, pipe } from 'effect'
 import { Slack } from '../../../ExternalApis/index.ts'
 import { requestAReviewChannelId } from '../ChannelIds.ts'
 import { GenerateThread, type PreprintReviewRequest } from './GenerateThread.ts'
@@ -26,15 +26,15 @@ export const SharePreprintReviewRequest = Effect.fn(
 
     return message
   },
-  Effect.catchAll(error => new FailedToSharePreprintReviewRequest({ cause: error })),
+  Effect.catch(error => new FailedToSharePreprintReviewRequest({ cause: error })),
   Effect.map(message => ({ channelId: message.channel, messageTimestamp: message.ts })),
 )
 
 function postMessageOnSlack(message: Slack.ChatPostMessageInput) {
   return Effect.acquireRelease(Slack.chatPostMessage(message), (id, exit) =>
-    Exit.matchEffect(exit, {
+    Effect.matchCauseEffectEager(exit, {
       onFailure: () =>
-        Effect.catchAll(Slack.chatDelete(id), error =>
+        Effect.catch(Slack.chatDelete(id), error =>
           Effect.logError('Unable to delete Slack message').pipe(Effect.annotateLogs({ id, error })),
         ),
       onSuccess: () => Effect.void,

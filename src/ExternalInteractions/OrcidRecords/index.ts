@@ -4,17 +4,14 @@ import { GetName } from './GetName/index.ts'
 
 export { NameIsNotAvailable } from './GetName/index.ts'
 
-export class OrcidRecords extends Context.Tag('OrcidRecords')<
+export class OrcidRecords extends Context.Service<
   OrcidRecords,
   {
     getName: (
       ...args: Parameters<typeof GetName>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetName>>,
-      Effect.Effect.Error<ReturnType<typeof GetName>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetName>>, Effect.Error<ReturnType<typeof GetName>>>
   }
->() {}
+>()('OrcidRecords') {}
 
 export const getName = (...args: Parameters<(typeof OrcidRecords.Service)['getName']>) =>
   Effect.flatMap(OrcidRecords, service => service.getName(...args))

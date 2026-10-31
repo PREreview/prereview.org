@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Workflows/NotifyCommunitySlack.ts'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
@@ -20,9 +20,9 @@ describe('NotifyCommunitySlack', () => {
       ],
       ([datasetReviewId, publicUrl, publishedReview, publicPersona]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.either)
+          const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
@@ -45,9 +45,9 @@ describe('NotifyCommunitySlack', () => {
       ],
       ([datasetReviewId, publicUrl, publishedReview, pseudonymPersona]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.either)
+          const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
@@ -73,9 +73,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([datasetReviewId, publicUrl, publishedReview, error, publicPersona, pseudonymPersona]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToNotifyCommunitySlack({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => error }),
@@ -96,9 +96,9 @@ describe('NotifyCommunitySlack', () => {
     [fc.uuid(), fc.origin(), fc.publishedDatasetReview(), fc.anything()],
     ([datasetReviewId, publicUrl, publishedReview, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToNotifyCommunitySlack({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
@@ -131,9 +131,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([datasetReviewId, publicUrl, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToNotifyCommunitySlack({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),

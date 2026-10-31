@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Effect, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { Array, Data, Effect, Result, flow, Match, Option, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Datasets from '../../../Datasets/index.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
@@ -21,22 +21,22 @@ export const RecordToDataset = (
   LanguageDetection.LanguageDetection
 > =>
   Effect.gen(function* () {
-    const datasetId = yield* determineDataciteDatasetId(record)
+    const datasetId = yield* Effect.fromResult(determineDataciteDatasetId(record))
 
     if (
       record.types.resourceType?.toLowerCase() !== 'dataset' &&
       record.types.resourceTypeGeneral?.toLowerCase() !== 'dataset'
     ) {
-      return yield* Either.left(new Datasets.NotADataset({ cause: record.types, datasetId }))
+      return yield* new Datasets.NotADataset({ cause: record.types, datasetId })
     }
 
     const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
 
     const authors = yield* Array.match(record.creators, {
       onEmpty: () =>
-        Either.left(new Datasets.DatasetIsUnavailable({ cause: { creators: record.creators }, datasetId })),
+        Effect.fail(new Datasets.DatasetIsUnavailable({ cause: { creators: record.creators }, datasetId })),
       onNonEmpty: creators =>
-        Either.right(
+        Effect.succeed(
           Array.map(
             creators,
             flow(
@@ -56,7 +56,7 @@ export const RecordToDataset = (
 
     const abstract = yield* getAbstract(record.descriptions, datasetId, recordLanguage)
 
-    const posted = yield* Either.fromOption(
+    const posted = yield* Effect.fromOption(
       findPublishedDate(record.dates),
       () => new Datasets.DatasetIsUnavailable({ cause: { dates: record.dates }, datasetId }),
     )
@@ -73,18 +73,18 @@ export const RecordToDataset = (
 
 const determineDataciteDatasetId = (
   record: Datacite.Record,
-): Either.Either<DataciteDatasetId, Datasets.DatasetIsUnavailable | RecordIsNotSupported> =>
-  Either.gen(function* () {
+): Result.Result<DataciteDatasetId, Datasets.DatasetIsUnavailable | RecordIsNotSupported> =>
+  Result.gen(function* () {
     const doi = record.doi
 
     if (!IsDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new RecordIsNotSupported({ cause: doi }))
+      return yield* Result.fail(new RecordIsNotSupported({ cause: doi }))
     }
 
     const datasetId = Datasets.fromDatasetDoi(doi)
 
     if (datasetId._tag === 'DryadDatasetId' && record.relationships.provider.toLowerCase() !== 'dryad') {
-      return yield* Either.left(new RecordIsNotSupported({ cause: Struct.pick(record.relationships, 'provider') }))
+      return yield* Result.fail(new RecordIsNotSupported({ cause: Struct.pick(record.relationships, ['provider']) }))
     }
 
     return datasetId

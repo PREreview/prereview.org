@@ -1,8 +1,7 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Effect, pipe, Schema } from 'effect'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { workToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
@@ -1003,7 +1002,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.WorkResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Crossref.WorkResponseSchema))),
       Effect.andThen(workToPreprint),
     )
 
@@ -1024,7 +1023,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.WorkResponseSchema))),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Crossref.WorkResponseSchema))),
       Effect.andThen(workToPreprint),
       Effect.flip,
     )

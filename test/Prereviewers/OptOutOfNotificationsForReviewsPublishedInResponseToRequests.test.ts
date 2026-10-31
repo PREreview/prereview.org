@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -76,13 +76,13 @@ const optedOutAgainDifferentPrereviewer =
     optedOutAt: now.subtract({ hours: 10 }),
   })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Either.left(new _.UnknownPrereviewer())],
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
+  ['no events', [], input, Result.fail(new _.UnknownPrereviewer())],
   [
     'imported, not opted in',
     [imported],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -90,7 +90,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'registered, not opted in',
     [registered],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -98,7 +98,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'imported, opted in',
     [imported, optedIn],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -106,31 +106,31 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'registered, opted in',
     [registered, optedIn],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
-  ['imported, opted out, same details', [imported, optedOut], input, Either.right(Option.none())],
-  ['registered, opted out, same details', [registered, optedOut], input, Either.right(Option.none())],
-  ['imported, opted in and out, same details', [imported, optedIn, optedOut], input, Either.right(Option.none())],
-  ['registered, opted in and out, same details', [registered, optedIn, optedOut], input, Either.right(Option.none())],
+  ['imported, opted out, same details', [imported, optedOut], input, Result.succeed(Option.none())],
+  ['registered, opted out, same details', [registered, optedOut], input, Result.succeed(Option.none())],
+  ['imported, opted in and out, same details', [imported, optedIn, optedOut], input, Result.succeed(Option.none())],
+  ['registered, opted in and out, same details', [registered, optedIn, optedOut], input, Result.succeed(Option.none())],
   [
     'imported, opted in and out, different timestamp',
     [imported, optedIn, optedOutDifferentTimestamp],
     input,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'registered, opted in and out, different timestamp',
     [registered, optedIn, optedOutDifferentTimestamp],
     input,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'imported, opted in and out, different PREreviewer',
     [imported, importedDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -138,7 +138,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'registered, opted in and out, different PREreviewer',
     [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -146,7 +146,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'imported, opted in again',
     [imported, optedIn, optedOutDifferentTimestamp, optedInAgain],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -154,7 +154,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'registered, opted in again',
     [registered, optedIn, optedOutDifferentTimestamp, optedInAgain],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -168,7 +168,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
       optedOutAgainDifferentPrereviewer,
     ],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
@@ -182,7 +182,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
       optedOutAgainDifferentPrereviewer,
     ],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],

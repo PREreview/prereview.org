@@ -60,7 +60,7 @@ describe('preprintReviews', () => {
         const getPrereviews = vi.fn<_.GetPrereviewsEnv['getPrereviews']>(() => TE.right(prereviews))
         const getRapidPrereviews = vi.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(() => TE.right(rapidPrereviews))
 
-        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprint }))
+        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprint }))
 
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprint.id, locale })({
@@ -93,7 +93,7 @@ describe('preprintReviews', () => {
     [fc.supportedLocale(), fc.indeterminatePreprintId()],
     ([locale, preprintId]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprintId, locale })({
@@ -119,7 +119,7 @@ describe('preprintReviews', () => {
     [fc.supportedLocale(), fc.indeterminatePreprintId()],
     ([locale, preprintId]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprintId, locale })({
@@ -167,7 +167,7 @@ describe('preprintReviews', () => {
     ],
     ([locale, preprint, rapidPrereviews]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprint.id, locale })({
@@ -216,7 +216,7 @@ describe('preprintReviews', () => {
     ],
     ([locale, preprint, prereviews]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.preprintReviews({ id: preprint.id, locale })({

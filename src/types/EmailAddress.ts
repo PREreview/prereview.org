@@ -1,5 +1,5 @@
 import { isEmailValid } from '@hapi/address'
-import { Either, Equivalence, Schema, String, Tuple, flow, pipe } from 'effect'
+import { Result, Equivalence, Schema, String, Tuple, flow, pipe, SchemaTransformation } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
@@ -11,7 +11,7 @@ export const EmailAddressC = C.fromDecoder(
     D.string,
     D.parse(s =>
       EffectToFpts.either(
-        Either.try({
+        Result.try({
           try: () => EmailAddressSchema.make(s),
           catch: () => D.error(s, 'EmailAddress'),
         }),
@@ -22,18 +22,20 @@ export const EmailAddressC = C.fromDecoder(
 
 export const EmailAddressSchema = pipe(
   Schema.String,
-  Schema.filter(s => isEmailValid(s) && !/[\u200b-\u200d\u2060]/.test(s), { message: () => 'not an email address' }),
+  Schema.check(
+    Schema.makeFilter(s => isEmailValid(s) && !/[\u200b-\u200d\u2060]/.test(s), { message: 'not an email address' }),
+  ),
   Schema.brand('EmailAddress'),
 )
 
-export const EmailAddressFromUrlSchema = Schema.transform(
-  Schema.TemplateLiteralParser('mailto:', Schema.compose(Schema.StringFromUriComponent, EmailAddressSchema)),
-  Schema.typeSchema(EmailAddressSchema),
-  {
-    strict: true,
-    decode: Tuple.at(1),
-    encode: id => Tuple.make('mailto:' as const, id),
-  },
+export const EmailAddressFromUrlSchema = Schema.TemplateLiteralParser([
+  'mailto:',
+  Schema.StringFromUriComponent.pipe(Schema.decodeTo(EmailAddressSchema)),
+]).pipe(
+  Schema.decodeTo(
+    Schema.toType(EmailAddressSchema),
+    SchemaTransformation.transform({ decode: Tuple.get(1), encode: id => ['mailto:', id] as const }),
+  ),
 )
 
 export const EmailAddress = (email: string) => EmailAddressSchema.make(email)

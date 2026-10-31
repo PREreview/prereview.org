@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,7 +41,7 @@ export const SupportsRelatedConclusionsQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.supportsRelatedConclusions)
+                hasAnError && Result.isFailure(form.supportsRelatedConclusions)
                   ? 'aria-invalid="true" aria-errormessage="supports-related-conclusions-error"'
                   : '',
               )}
@@ -51,11 +51,11 @@ export const SupportsRelatedConclusionsQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.supportsRelatedConclusions)
+                hasAnError && Result.isFailure(form.supportsRelatedConclusions)
                   ? html`
                       <div class="error-message" id="supports-related-conclusions-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
-                        ${Match.valueTags(form.supportsRelatedConclusions.left, {
+                        ${Match.valueTags(form.supportsRelatedConclusions.failure, {
                           Missing: () => t('selectSupportsConclusion')(),
                         })}
                       </div>
@@ -97,7 +97,7 @@ export const SupportsRelatedConclusionsQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.supportsRelatedConclusionsYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.supportsRelatedConclusionsYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.supportsRelatedConclusionsYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -135,7 +135,10 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.supportsRelatedConclusionsPartlyDetail)), () => String.empty),
+    Option.getOrElse(
+      Option.flatten(Result.getSuccess(form.supportsRelatedConclusionsPartlyDetail)),
+      () => String.empty,
+    ),
   CompletedForm: form => Option.getOrElse(form.supportsRelatedConclusionsPartlyDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -173,7 +176,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.supportsRelatedConclusionsNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.supportsRelatedConclusionsNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.supportsRelatedConclusionsNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -211,12 +214,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.supportsRelatedConclusions)
+  Result.isFailure(form.supportsRelatedConclusions)
     ? html`
         <li>
           <a href="#supports-related-conclusions-yes">
             ${pipe(
-              Match.value(form.supportsRelatedConclusions.left),
+              Match.value(form.supportsRelatedConclusions.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSupportsConclusion')()),
               Match.exhaustive,
             )}

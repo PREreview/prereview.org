@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type FollowsFairAndCarePrinciplesForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  followsFairAndCarePrinciples: Either.Either<never, Missing>
-  followsFairAndCarePrinciplesYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  followsFairAndCarePrinciplesPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  followsFairAndCarePrinciplesNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  followsFairAndCarePrinciples: Result.Result<never, Missing>
+  followsFairAndCarePrinciplesYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  followsFairAndCarePrinciplesPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  followsFairAndCarePrinciplesNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const followsFairAndCarePrinciplesYesDetail = yield* pipe(
-    Schema.decode(FollowsFairAndCarePrinciplesYesDetailSchema)(body),
-    Effect.andThen(Struct.get('followsFairAndCarePrinciplesYesDetail')),
+    Schema.decodeEffect(FollowsFairAndCarePrinciplesYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('followsFairAndCarePrinciplesYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const followsFairAndCarePrinciplesPartlyDetail = yield* pipe(
-    Schema.decode(FollowsFairAndCarePrinciplesPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('followsFairAndCarePrinciplesPartlyDetail')),
+    Schema.decodeEffect(FollowsFairAndCarePrinciplesPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('followsFairAndCarePrinciplesPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const followsFairAndCarePrinciplesNoDetail = yield* pipe(
-    Schema.decode(FollowsFairAndCarePrinciplesNoDetailSchema)(body),
-    Effect.andThen(Struct.get('followsFairAndCarePrinciplesNoDetail')),
+    Schema.decodeEffect(FollowsFairAndCarePrinciplesNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('followsFairAndCarePrinciplesNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(FollowsFairAndCarePrinciplesFieldSchema)(body),
+    Schema.decodeEffect(FollowsFairAndCarePrinciplesFieldSchema)(body),
     Effect.map(
       ({ followsFairAndCarePrinciples }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           followsFairAndCarePrinciplesNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          followsFairAndCarePrinciples: Either.left(new Missing()),
-          followsFairAndCarePrinciplesYesDetail: Either.right(followsFairAndCarePrinciplesYesDetail),
-          followsFairAndCarePrinciplesPartlyDetail: Either.right(followsFairAndCarePrinciplesPartlyDetail),
-          followsFairAndCarePrinciplesNoDetail: Either.right(followsFairAndCarePrinciplesNoDetail),
+          followsFairAndCarePrinciples: Result.fail(new Missing()),
+          followsFairAndCarePrinciplesYesDetail: Result.succeed(followsFairAndCarePrinciplesYesDetail),
+          followsFairAndCarePrinciplesPartlyDetail: Result.succeed(followsFairAndCarePrinciplesPartlyDetail),
+          followsFairAndCarePrinciplesNoDetail: Result.succeed(followsFairAndCarePrinciplesNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const FollowsFairAndCarePrinciplesFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    followsFairAndCarePrinciples: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const FollowsFairAndCarePrinciplesFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      followsFairAndCarePrinciples: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const FollowsFairAndCarePrinciplesYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    followsFairAndCarePrinciplesYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const FollowsFairAndCarePrinciplesYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      followsFairAndCarePrinciplesYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const FollowsFairAndCarePrinciplesPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    followsFairAndCarePrinciplesPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const FollowsFairAndCarePrinciplesPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      followsFairAndCarePrinciplesPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const FollowsFairAndCarePrinciplesNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    followsFairAndCarePrinciplesNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const FollowsFairAndCarePrinciplesNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      followsFairAndCarePrinciplesNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

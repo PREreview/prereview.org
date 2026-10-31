@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,7 +41,7 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
+                hasAnError && Result.isFailure(form.isAppropriateForThisKindOfResearch)
                   ? 'aria-invalid="true" aria-errormessage="is-appropriate-for-this-kind-of-research-question-error"'
                   : '',
               )}
@@ -51,11 +51,11 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
+                hasAnError && Result.isFailure(form.isAppropriateForThisKindOfResearch)
                   ? html`
                       <div class="error-message" id="is-appropriate-for-this-kind-of-research-question-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.isAppropriateForThisKindOfResearch.left, {
+                        ${Match.valueTags(form.isAppropriateForThisKindOfResearch.failure, {
                           Missing: () => t('selectSuitedForPurpose')(),
                         })}
                       </div>
@@ -103,7 +103,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchYesDetail)),
+      Option.flatten(Result.getSuccess(form.isAppropriateForThisKindOfResearchYesDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.isAppropriateForThisKindOfResearchYesDetail, () => String.empty),
@@ -149,7 +149,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchPartlyDetail)),
+      Option.flatten(Result.getSuccess(form.isAppropriateForThisKindOfResearchPartlyDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.isAppropriateForThisKindOfResearchPartlyDetail, () => String.empty),
@@ -195,7 +195,7 @@ ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
     Option.getOrElse(
-      Option.flatten(Either.getRight(form.isAppropriateForThisKindOfResearchNoDetail)),
+      Option.flatten(Result.getSuccess(form.isAppropriateForThisKindOfResearchNoDetail)),
       () => String.empty,
     ),
   CompletedForm: form => Option.getOrElse(form.isAppropriateForThisKindOfResearchNoDetail, () => String.empty),
@@ -238,12 +238,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.isAppropriateForThisKindOfResearch)
+  Result.isFailure(form.isAppropriateForThisKindOfResearch)
     ? html`
         <li>
           <a href="#is-appropriate-for-this-kind-of-research-question-yes">
             ${pipe(
-              Match.value(form.isAppropriateForThisKindOfResearch.left),
+              Match.value(form.isAppropriateForThisKindOfResearch.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSuitedForPurpose')()),
               Match.exhaustive,
             )}

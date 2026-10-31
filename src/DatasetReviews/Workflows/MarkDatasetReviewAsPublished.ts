@@ -9,5 +9,5 @@ export const MarkDatasetReviewAsPublished = Effect.fn(
 
     yield* Commands.markDatasetReviewAsPublished({ datasetReviewId, publicationDate })
   },
-  Effect.catchAll(error => new Errors.FailedToMarkDatasetReviewAsPublished({ cause: error })),
+  Effect.catch(error => new Errors.FailedToMarkDatasetReviewAsPublished({ cause: error })),
 )

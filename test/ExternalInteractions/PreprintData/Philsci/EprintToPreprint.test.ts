@@ -1,8 +1,7 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, flow, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Effect, pipe, Schema } from 'effect'
 import { Philsci } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Philsci/EprintToPreprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
@@ -56,8 +55,8 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Philsci/Samples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Philsci.Eprint))),
-      Effect.andThen(_.EprintToPreprint),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Philsci.Eprint))),
+      Effect.andThen(flow(_.EprintToPreprint, Effect.fromResult)),
     )
 
     expect(actual).toStrictEqual(expected)
@@ -71,8 +70,8 @@ it.effect.each([['eprint-other'], ['eprint-published-article']])(
       const actual = yield* pipe(
         FileSystem.FileSystem,
         Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Philsci/Samples/${response}.json`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Philsci.Eprint))),
-        Effect.andThen(_.EprintToPreprint),
+        Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Philsci.Eprint))),
+        Effect.andThen(flow(_.EprintToPreprint, Effect.fromResult)),
         Effect.flip,
       )
 

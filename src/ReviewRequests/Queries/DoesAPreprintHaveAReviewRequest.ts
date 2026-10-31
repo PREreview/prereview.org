@@ -1,4 +1,4 @@
-import { Either, flow, HashMap } from 'effect'
+import { Result, flow, HashMap } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import * as shared from './sharedLogic.ts'
@@ -22,5 +22,5 @@ export const DoesAPreprintHaveAReviewRequest = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.doesAPreprintHaveAReviewRequest',
   initialState: shared.initialState,
   updateStateWithEvents: shared.updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

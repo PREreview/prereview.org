@@ -1,6 +1,6 @@
-import type { HttpClientError } from '@effect/platform'
+import type { HttpClientError } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Either } from 'effect'
+import { Effect, Result } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as fc from '../../../fc.ts'
@@ -18,9 +18,9 @@ describe('HandleResponse', () => {
         ],
         ([response]) =>
           Effect.gen(function* () {
-            const actual = yield* Effect.either(_.HandleResponse(response))
+            const actual = yield* Effect.result(_.HandleResponse(response))
 
-            expect(actual).toStrictEqual(Either.right(expect.anything()))
+            expect(actual).toStrictEqual(Result.succeed(expect.anything()))
           }),
       )
     })
@@ -38,7 +38,7 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.flip(_.HandleResponse(response))
 
-            expect(actual._tag).toStrictEqual('ParseError')
+            expect(actual._tag).toStrictEqual('SchemaError')
           }),
       )
     })
@@ -56,8 +56,8 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.flip(_.HandleResponse(response))
 
-            expect(actual._tag).toStrictEqual('ResponseError')
-            expect((actual as HttpClientError.ResponseError).reason).toStrictEqual('Decode')
+            expect(actual._tag).toStrictEqual('HttpClientError')
+            expect((actual as HttpClientError.HttpClientError).reason._tag).toStrictEqual('DecodeError')
           }),
       )
     })
@@ -71,8 +71,8 @@ describe('HandleResponse', () => {
         Effect.gen(function* () {
           const actual = yield* Effect.flip(_.HandleResponse(response))
 
-          expect(actual._tag).toStrictEqual('ResponseError')
-          expect((actual as HttpClientError.ResponseError).reason).toStrictEqual('StatusCode')
+          expect(actual._tag).toStrictEqual('HttpClientError')
+          expect((actual as HttpClientError.HttpClientError).reason._tag).toStrictEqual('StatusCodeError')
         }),
     )
   })

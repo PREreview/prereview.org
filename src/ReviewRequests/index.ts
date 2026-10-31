@@ -55,7 +55,7 @@ export class ReviewRequestsAreUnavailable extends Data.TaggedError('ReviewReques
   cause?: unknown
 }> {}
 
-export class ReviewRequests extends Context.Tag('ReviewRequests')<
+export class ReviewRequests extends Context.Service<
   ReviewRequests,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
@@ -69,7 +69,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
       doiRegistrants?: Array.NonEmptyReadonlyArray<Registrant<Preprints.IndeterminatePreprintIdWithDoi['value']>>
     }) => Effect.Effect<PageOfReviewRequests, ReviewRequestsNotFound | ReviewRequestsAreUnavailable>
   }
->() {}
+>()('ReviewRequests') {}
 
 export const getFiveMostRecent = Effect.flatMap(ReviewRequests, service => service.getFiveMostRecent)
 

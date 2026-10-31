@@ -18,7 +18,7 @@ export const NoPrereviews: NoPrereviews = {
 export const ensureThereArePrereviews: (
   prereviews: ReadonlyArray<Prereview>,
 ) => E.Either<NoPrereviews, Array.NonEmptyReadonlyArray<Prereview>> = E.fromPredicate(
-  Array.isNonEmptyReadonlyArray,
+  Array.isReadonlyArrayNonEmpty,
   () => NoPrereviews,
 )
 

@@ -26,13 +26,13 @@ export const GetPage: (
       })
       .pipe(Effect.provideService(UsePreviewApi, preview))
 
-    if (!Array.isNonEmptyReadonlyArray(items)) {
+    if (!Array.isReadonlyArrayNonEmpty(items)) {
       return yield* new ContentfulIsUnavailable({ cause: 'page is not found' })
     }
 
     return yield* EntryToContentfulPage(items[0])
   },
-  Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
+  Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>
     pipe(
       Effect.logError('Unable to get page'),
       Effect.annotateLogs({ error }),

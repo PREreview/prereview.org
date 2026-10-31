@@ -1,4 +1,4 @@
-import { Array, Either, type Types } from 'effect'
+import { Array, Result, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -14,7 +14,7 @@ export interface Input {
   reviewRequestId: Uuid.Uuid
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   ReceivedReviewRequest,
   Errors.ReviewRequestHasBeenAccepted | Errors.ReviewRequestHasBeenRejected | Errors.UnknownReviewRequest
 >
@@ -30,22 +30,22 @@ const createFilter = ({ reviewRequestId }: Input) =>
   })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const received = yield* Either.fromOption(
+    const received = yield* Result.fromOption(
       Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived')),
       () => new Errors.UnknownReviewRequest({}),
     )
 
     if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))) {
-      return yield* Either.left(new Errors.ReviewRequestHasBeenAccepted({}))
+      return yield* Result.fail(new Errors.ReviewRequestHasBeenAccepted({}))
     }
 
     if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasRejected'))) {
-      return yield* Either.left(new Errors.ReviewRequestHasBeenRejected({}))
+      return yield* Result.fail(new Errors.ReviewRequestHasBeenRejected({}))
     }
 
     return {

@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/PreprintReviews/GetRapidPrereviewsForAPreprint.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'
@@ -134,6 +134,6 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, ReadonlyArray<Uuid>]>([
   const actual = query(events, input)
 
   expect(actual).toStrictEqual(
-    Either.right(expected.map(rapidPrereviewId => expect.objectContaining({ rapidPrereviewId }))),
+    Result.succeed(expected.map(rapidPrereviewId => expect.objectContaining({ rapidPrereviewId }))),
   )
 })

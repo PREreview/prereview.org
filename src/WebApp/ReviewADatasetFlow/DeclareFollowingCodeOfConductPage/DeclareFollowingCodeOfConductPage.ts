@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,7 +41,7 @@ export const DeclareFollowingCodeOfConductPage = ({
             role="group"
             aria-describedby="following-code-of-conduct-tip"
             ${rawHtml(
-              hasAnError && Either.isLeft(form.followingCodeOfConduct)
+              hasAnError && Result.isFailure(form.followingCodeOfConduct)
                 ? 'aria-invalid="true" aria-errormessage="following-code-of-conduct-error"'
                 : '',
             )}
@@ -86,11 +86,11 @@ export const DeclareFollowingCodeOfConductPage = ({
             </details>
 
             ${
-              hasAnError && Either.isLeft(form.followingCodeOfConduct)
+              hasAnError && Result.isFailure(form.followingCodeOfConduct)
                 ? html`
                     <div class="error-message" id="following-code-of-conduct-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.followingCodeOfConduct.left, {
+                      ${Match.valueTags(form.followingCodeOfConduct.failure, {
                         Missing: () => t('confirmCodeOfConduct')(),
                       })}
                     </div>
@@ -125,11 +125,11 @@ export const DeclareFollowingCodeOfConductPage = ({
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: DeclareFollowingCodeOfConductForm.InvalidForm) =>
-  Either.isLeft(form.followingCodeOfConduct)
+  Result.isFailure(form.followingCodeOfConduct)
     ? html`
         <li>
           <a href="#following-code-of-conduct-yes">
-            ${Match.valueTags(form.followingCodeOfConduct.left, {
+            ${Match.valueTags(form.followingCodeOfConduct.failure, {
               Missing: () => translate(locale, 'review-a-dataset-flow', 'confirmCodeOfConduct')(),
             })}
           </a>

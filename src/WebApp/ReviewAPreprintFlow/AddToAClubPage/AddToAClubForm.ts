@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Result, Option, pipe, Schema, Struct } from 'effect'
 import { type Uuid, UuidSchema } from '../../../types/Uuid.ts'
 
 export type AddToAClubForm = EmptyForm | InvalidForm | CompletedForm
@@ -13,7 +13,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  addToClub: Either.Either<never, Missing>
+  addToClub: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -22,16 +22,16 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
   const addToClub = pipe(
-    Schema.decodeEither(AddToClubFieldSchema)(body),
-    Either.mapBoth({
-      onRight: Struct.get('addToClub'),
-      onLeft: () => new Missing(),
+    Schema.decodeResult(AddToClubFieldSchema)(body),
+    Result.mapBoth({
+      onSuccess: Struct.get('addToClub'),
+      onFailure: () => new Missing(),
     }),
   )
 
-  return Either.match(addToClub, {
-    onRight: addToClub => new CompletedForm({ addToClub }),
-    onLeft: addToClub => new InvalidForm({ addToClub: Either.left(addToClub) }),
+  return Result.match(addToClub, {
+    onSuccess: addToClub => new CompletedForm({ addToClub }),
+    onFailure: addToClub => new InvalidForm({ addToClub: Result.fail(addToClub) }),
   })
 }
 
@@ -40,8 +40,10 @@ export const fromChoice: (choice: Option.Option<Uuid | null>) => ValidForm = Opt
   onSome: choice => new CompletedForm({ addToClub: choice ?? 'not-a-club-review' }),
 })
 
-const AddToClubFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    addToClub: Schema.Union(UuidSchema, Schema.Literal('not-a-club-review')),
-  }),
+const AddToClubFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      addToClub: Schema.Union([UuidSchema, Schema.Literal('not-a-club-review')]),
+    }),
+  ),
 )

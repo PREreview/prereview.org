@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { type Array, Either, identity, Option, Predicate, Tuple } from 'effect'
+import { type Array, Result, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetZenodoRecordId.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -46,7 +46,7 @@ describe('GetZenodoRecordId', () => {
       ([[events, expected]]) => {
         const actual = _.GetZenodoRecordId(events)
 
-        expect(actual).toStrictEqual(Either.right(expected))
+        expect(actual).toStrictEqual(Result.succeed(expected))
       },
       {
         fastCheck: {
@@ -72,7 +72,7 @@ describe('GetZenodoRecordId', () => {
       ([events]) => {
         const actual = _.GetZenodoRecordId(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
       },
       {
         fastCheck: {
@@ -95,7 +95,7 @@ describe('when it has not been started', () => {
     ([events]) => {
       const actual = _.GetZenodoRecordId(events)
 
-      expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+      expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
     },
     {
       fastCheck: {

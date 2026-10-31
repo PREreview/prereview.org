@@ -1,4 +1,4 @@
-import { Url, UrlParams } from '@effect/platform'
+import { Url, UrlParams } from 'effect/http'
 import { Array, identity, pipe } from 'effect'
 
 interface ImageFile {

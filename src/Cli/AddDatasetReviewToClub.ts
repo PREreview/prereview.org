@@ -1,13 +1,13 @@
-import { Args, Command } from '@effect/cli'
+import { Argument, Command } from 'effect/cli'
 import { Effect, pipe } from 'effect'
 import { Clubs } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import { Uuid } from '../types/index.ts'
 import { type Slug, SlugSchema } from '../types/Slug.ts'
 
-const datasetReviewId = pipe(Args.text({ name: 'datasetReviewId' }), Args.withSchema(Uuid.UuidSchema))
+const datasetReviewId = pipe(Argument.String('datasetReviewId'), Argument.withSchema(Uuid.UuidSchema))
 
-const clubSlug = pipe(Args.text({ name: 'clubSlug' }), Args.withSchema(SlugSchema))
+const clubSlug = pipe(Argument.String('clubSlug'), Argument.withSchema(SlugSchema))
 
 const program = Effect.fnUntraced(function* ({
   datasetReviewId,

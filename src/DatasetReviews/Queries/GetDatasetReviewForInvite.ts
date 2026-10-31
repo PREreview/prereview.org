@@ -1,4 +1,4 @@
-import { Array, Either, HashMap, Match, MutableHashSet, Option, pipe } from 'effect'
+import { Array, Result, HashMap, Match, MutableHashSet, Option, pipe } from 'effect'
 import type { DatasetId } from '../../Datasets/index.ts'
 import type * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
@@ -25,7 +25,7 @@ export interface DatasetReviewForInvite {
   license: 'CC-BY-4.0' | 'CC0-1.0'
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   DatasetReviewForInvite,
   Errors.DatasetReviewInvitationNotInList | Errors.DatasetReviewHasNotBeenPublished
 >
@@ -129,41 +129,41 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
 
 const query = (state: State, invitationId: Input): Result => {
   if (!HashMap.has(state.datasetReviewIdForInvitationIds, invitationId)) {
-    return Either.left(new Errors.DatasetReviewInvitationNotInList())
+    return Result.fail(new Errors.DatasetReviewInvitationNotInList())
   }
 
   const datasetReviewId = HashMap.get(state.datasetReviewIdForInvitationIds, invitationId)
 
   if (Option.isNone(datasetReviewId)) {
-    return Either.left(new Errors.DatasetReviewInvitationNotInList())
+    return Result.fail(new Errors.DatasetReviewInvitationNotInList())
   }
 
   const datasetReview = HashMap.get(state.datasetReviews, datasetReviewId.value)
 
   if (Option.isNone(datasetReview)) {
-    return Either.left(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'Unexpected case' }))
+    return Result.fail(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'Unexpected case' }))
   }
 
   if (datasetReview.value.published === undefined) {
-    return Either.left(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'Dataset review has not been published' }))
+    return Result.fail(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'Dataset review has not been published' }))
   }
 
   if (typeof datasetReview.value.authorPersona !== 'string') {
-    return Either.left(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'Author persona is missing' }))
+    return Result.fail(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'Author persona is missing' }))
   }
 
   if (typeof datasetReview.value.doi !== 'string') {
-    return Either.left(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'DOI is missing' }))
+    return Result.fail(new Errors.DatasetReviewHasNotBeenPublished({ cause: 'DOI is missing' }))
   }
 
-  return Either.right({
+  return Result.succeed({
     author: {
       orcidId: datasetReview.value.authorOrcidId,
       persona: datasetReview.value.authorPersona,
     },
     otherAuthors: [],
     anonymousAuthors: MutableHashSet.size(datasetReview.value.invitedAuthors),
-    clubId: Option.fromNullable(datasetReview.value.clubId),
+    clubId: Option.fromNullishOr(datasetReview.value.clubId),
     doi: datasetReview.value.doi,
     id: datasetReviewId.value,
     published: datasetReview.value.published,
@@ -174,8 +174,8 @@ const query = (state: State, invitationId: Input): Result => {
 
 export const GetDatasetReviewForInvite: Queries.StatefulQuery<
   [Input],
-  Either.Either.Right<Result>,
-  Either.Either.Left<Result>,
+  Result.Result.Success<Result>,
+  Result.Result.Failure<Result>,
   State
 > = Queries.StatefulQuery({
   name: 'DatasetReviews.getDatasetReviewForInvite',

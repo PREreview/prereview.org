@@ -1,5 +1,5 @@
-import { Url, UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, Schema } from 'effect'
+import { Url, type UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, Schema } from 'effect'
 import { Doi, NonEmptyString } from '../../../types/index.ts'
 
 export type RequestAReviewForm = IncompleteForm | CompletedForm
@@ -15,7 +15,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  whichPreprint: Either.Either<never, Invalid | Missing>
+  whichPreprint: Result.Result<never, Invalid | Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,21 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(
   function* (body: UrlParams.UrlParams) {
-    const { whichPreprint } = yield* Schema.decode(WhichPreprintSchema)(body)
+    const { whichPreprint } = yield* Schema.decodeEffect(WhichPreprintSchema)(body)
 
     return Option.match(
-      Option.orElse(Doi.parse(whichPreprint), () => Either.getRight(Url.fromString(whichPreprint))),
+      Option.orElse(Doi.parse(whichPreprint), () => Result.getSuccess(Url.fromString(whichPreprint))),
       {
-        onNone: () => new InvalidForm({ whichPreprint: Either.left(new Invalid({ value: whichPreprint })) }),
+        onNone: () => new InvalidForm({ whichPreprint: Result.fail(new Invalid({ value: whichPreprint })) }),
         onSome: whichPreprint => new CompletedForm({ whichPreprint }),
       },
     )
   },
-  Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ whichPreprint: Either.left(new Missing()) }))),
+  Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ whichPreprint: Result.fail(new Missing()) }))),
 )
 
-const WhichPreprintSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    whichPreprint: NonEmptyString.NonEmptyStringSchema,
-  }),
+const WhichPreprintSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      whichPreprint: NonEmptyString.NonEmptyStringSchema,
+    }),
+  ),
 )

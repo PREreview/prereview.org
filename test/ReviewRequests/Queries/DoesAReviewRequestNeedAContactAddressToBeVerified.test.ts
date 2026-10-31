@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option } from 'effect'
+import { Array, Result, Option } from 'effect'
 import * as Events from '../../../src/Events.ts'
 import { BiorxivOrMedrxivPreprintId, BiorxivPreprintId } from '../../../src/Preprints/PreprintId.ts'
 import { ReviewRequestHasBeenPublished, UnknownReviewRequest } from '../../../src/ReviewRequests/Errors.ts'
@@ -95,18 +95,18 @@ const newerRecorded = new Events.ContactAddressRecorded({
 })
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', [], Either.left(new UnknownReviewRequest({}))],
-  ['request imported', [requestImported], Either.left(new ReviewRequestHasBeenPublished({}))],
-  ['request published', [requestStarted, requestPublished], Either.left(new ReviewRequestHasBeenPublished({}))],
+  ['no events', [], Result.fail(new UnknownReviewRequest({}))],
+  ['request imported', [requestImported], Result.fail(new ReviewRequestHasBeenPublished({}))],
+  ['request published', [requestStarted, requestPublished], Result.fail(new ReviewRequestHasBeenPublished({}))],
   [
     'request started, no contact address',
     [requestStarted],
-    Either.right({ contactAddress: new _.NoContactAddress(), reviewRequestId: requestStarted.reviewRequestId }),
+    Result.succeed({ contactAddress: new _.NoContactAddress(), reviewRequestId: requestStarted.reviewRequestId }),
   ],
   [
     'request started with indeterminate preprint ID, no contact address',
     [requestStartedWithIndeterminatePreprintId],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.NoContactAddress(),
       reviewRequestId: requestStartedWithIndeterminatePreprintId.reviewRequestId,
     }),
@@ -114,7 +114,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, imported verified contact address',
     [requestStarted, verifiedImported],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.VerifiedContactAddress({ value: Option.getOrThrow(verifiedImported.emailAddress) }),
       reviewRequestId: requestStarted.reviewRequestId,
     }),
@@ -122,7 +122,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, imported unverified contact address',
     [requestStarted, unverifiedImported],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.UnverifiedContactAddress({ value: Option.getOrThrow(unverifiedImported.emailAddress) }),
       reviewRequestId: requestStarted.reviewRequestId,
     }),
@@ -130,7 +130,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, imported unverified contact address then verified',
     [requestStarted, unverifiedImported, verifiedPreviouslyUnverified],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.VerifiedContactAddress({
         value: Option.getOrThrow(unverifiedImported.emailAddress),
       }),
@@ -140,7 +140,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, author invite address chosen',
     [requestStarted, authorInviteAddressChosen],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.VerifiedContactAddress({
         value: Option.getOrThrow(authorInviteAddressChosen.emailAddress),
       }),
@@ -150,7 +150,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, recorded contact address',
     [requestStarted, recorded],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.UnverifiedContactAddress({ value: Option.getOrThrow(recorded.emailAddress) }),
       reviewRequestId: requestStarted.reviewRequestId,
     }),
@@ -158,12 +158,12 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, recorded contact address but removed',
     [requestStarted, recordedRemoved],
-    Either.right({ contactAddress: new _.NoContactAddress(), reviewRequestId: requestStarted.reviewRequestId }),
+    Result.succeed({ contactAddress: new _.NoContactAddress(), reviewRequestId: requestStarted.reviewRequestId }),
   ],
   [
     'request started, recorded contact address then verified',
     [requestStarted, recorded, verified],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.VerifiedContactAddress({ value: Option.getOrThrow(recorded.emailAddress) }),
       reviewRequestId: requestStarted.reviewRequestId,
     }),
@@ -171,7 +171,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   [
     'request started, newer contact address recorded',
     [requestStarted, recorded, verified, newerRecorded],
-    Either.right({
+    Result.succeed({
       contactAddress: new _.UnverifiedContactAddress({ value: Option.getOrThrow(newerRecorded.emailAddress) }),
       reviewRequestId: requestStarted.reviewRequestId,
     }),

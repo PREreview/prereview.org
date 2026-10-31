@@ -4,28 +4,28 @@ import { NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
 
 export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImported>()('RapidPrereviewImported', {
   author: Schema.Struct({
-    persona: Schema.Literal('public', 'pseudonym'),
+    persona: Schema.Literals(['public', 'pseudonym']),
     orcidId: OrcidId.OrcidIdSchema,
   }),
   publishedAt: Temporal.InstantSchema,
   preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
   rapidPrereviewId: Uuid.UuidSchema,
   questions: Schema.Struct({
-    availableCode: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    availableData: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    coherent: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    dataLink: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-    ethics: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    future: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    limitations: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    methods: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    newData: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    novel: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    peerReview: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    recommend: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    reproducibility: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    technicalComments: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-    editorialComments: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    availableCode: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    availableData: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    coherent: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    dataLink: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    ethics: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    future: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    limitations: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    methods: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    newData: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    novel: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    peerReview: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    recommend: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    reproducibility: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+    technicalComments: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    editorialComments: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
   }),
 }) {}
 
@@ -34,6 +34,6 @@ export class EmailToNotifyPrereviewerOfAPrereviewWasSent extends Schema.TaggedCl
   {
     sentAt: Temporal.InstantSchema,
     orcidId: OrcidId.OrcidIdSchema,
-    prereviewId: Schema.NonNegativeInt,
+    prereviewId: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
   },
 ) {}

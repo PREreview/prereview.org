@@ -1,4 +1,4 @@
-import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { Effect } from 'effect'
 import { CoarNotify } from '../../ExternalApis/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
@@ -12,7 +12,7 @@ export const Inbox = Effect.gen(function* () {
 
   yield* ProcessCoarNotifyMessage({ message, receivedAt, messageId })
 
-  return yield* HttpServerResponse.empty({ status: StatusCodes.Accepted })
+  return HttpServerResponse.empty({ status: StatusCodes.Accepted })
 }).pipe(
   Effect.tapError(error =>
     Effect.gen(function* () {
@@ -24,10 +24,11 @@ export const Inbox = Effect.gen(function* () {
     }),
   ),
   Effect.catchTags({
-    ParseError: () => HttpServerResponse.empty({ status: StatusCodes.BadRequest }),
-    RequestError: () => HttpServerResponse.empty({ status: StatusCodes.BadRequest }),
-    RejectedRequestReview: () => HttpServerResponse.empty({ status: StatusCodes.BadRequest }),
-    FailedToProcessRequestReview: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+    SchemaError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
+    HttpServerError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
+    RejectedRequestReview: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
+    FailedToProcessRequestReview: () =>
+      Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
 )
 

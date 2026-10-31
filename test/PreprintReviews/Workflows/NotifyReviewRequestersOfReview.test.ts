@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, HashSet, Layer, pipe } from 'effect'
+import { Effect, Result, HashSet, Layer, pipe } from 'effect'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
 import * as _ from '../../../src/PreprintReviews/Workflows/NotifyReviewRequestersOfReview.ts'
@@ -44,10 +44,10 @@ describe('NotifyReviewRequestersOfReview', () => {
                 }),
                 Layer.mock(Prereviewers.Prereviewers, { getContactDetails }),
               ]),
-              Effect.either,
+              Effect.result,
             )
 
-            expect(actual).toStrictEqual(Either.void)
+            expect(actual).toStrictEqual(Result.void)
             expect(getContactDetails).toHaveBeenCalledTimes(HashSet.size(requesters))
             expect(notifyRequesterOfReview).toHaveBeenCalledTimes(HashSet.size(requesters))
             expect(recordEmailSentToNotifyPrereviewerOfAPrereview).toHaveBeenCalledTimes(HashSet.size(requesters))
@@ -68,9 +68,9 @@ describe('NotifyReviewRequestersOfReview', () => {
       [fc.integer(), fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() }), fc.hashSet(fc.orcidId())],
       ([reviewId, review, requesters]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.NotifyReviewRequestersOfReview(reviewId), Effect.either)
+          const actual = yield* pipe(_.NotifyReviewRequestersOfReview(reviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(Email.Email, {}),
@@ -100,9 +100,9 @@ describe('NotifyReviewRequestersOfReview', () => {
     ],
     ([reviewId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyReviewRequestersOfReview(reviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyReviewRequestersOfReview(reviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyReviewRequesters({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new PreprintReviews.FailedToNotifyReviewRequesters({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),

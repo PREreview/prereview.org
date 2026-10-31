@@ -4,7 +4,7 @@ import {
   type HttpClientRequest,
   type HttpClientResponse,
   UrlParams,
-} from '@effect/platform'
+} from 'effect/http'
 import { Deferred, Effect, Layer, pipe } from 'effect'
 import normalizeUrl from 'normalize-url'
 
@@ -36,7 +36,7 @@ export const requestCollapsingHttpClient = Effect.gen(function* () {
           }),
         )
 
-        return yield* openRequest
+        return yield* Deferred.await(openRequest)
       }
 
       const deferred = yield* Deferred.make<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError>()
@@ -46,7 +46,7 @@ export const requestCollapsingHttpClient = Effect.gen(function* () {
       return yield* pipe(
         Deferred.complete(deferred, httpClient.execute(request)),
         Effect.uninterruptible,
-        Effect.andThen(deferred),
+        Effect.andThen(Deferred.await(deferred)),
         Effect.ensuring(Effect.sync(() => openRequests.delete(key))),
       )
     }),

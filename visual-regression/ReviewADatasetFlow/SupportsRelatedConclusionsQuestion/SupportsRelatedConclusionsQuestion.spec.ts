@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as SupportsRelatedConclusionsForm from '../../../src/WebApp/ReviewADatasetFlow/SupportsRelatedConclusionsQuestion/SupportsRelatedConclusionsForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/SupportsRelatedConclusionsQuestion/SupportsRelatedConclusionsQuestion.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -38,10 +38,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.SupportsRelatedConclusionsQuestion({
     datasetReviewId,
     form: new SupportsRelatedConclusionsForm.InvalidForm({
-      supportsRelatedConclusions: Either.left(new SupportsRelatedConclusionsForm.Missing()),
-      supportsRelatedConclusionsYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      supportsRelatedConclusionsPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      supportsRelatedConclusionsNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      supportsRelatedConclusions: Result.fail(new SupportsRelatedConclusionsForm.Missing()),
+      supportsRelatedConclusionsYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      supportsRelatedConclusionsPartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      supportsRelatedConclusionsNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

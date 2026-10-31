@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Inbox from '../../../src/WebApp/Inbox/index.ts'
 import * as _ from '../../../src/WebApp/Inbox/ProcessCoarNotifyMessage.ts'
@@ -11,9 +11,9 @@ describe('ProcessCoarNotifyMessage', () => {
     [fc.coarNotifyRequestReview(), fc.uuid(), fc.instant()],
     ([message, messageId, receivedAt]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.ProcessCoarNotifyMessage({ message, messageId, receivedAt }), Effect.either)
+        const actual = yield* pipe(_.ProcessCoarNotifyMessage({ message, messageId, receivedAt }), Effect.result)
 
-        expect(actual).toStrictEqual(Either.void)
+        expect(actual).toStrictEqual(Result.void)
       }).pipe(
         Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, { receiveReviewRequest: () => Effect.void })),
       ),
@@ -29,9 +29,9 @@ describe('ProcessCoarNotifyMessage', () => {
     ],
     ([message, messageId, receivedAt, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.ProcessCoarNotifyMessage({ message, messageId, receivedAt }), Effect.either)
+        const actual = yield* pipe(_.ProcessCoarNotifyMessage({ message, messageId, receivedAt }), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new Inbox.FailedToProcessRequestReview({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new Inbox.FailedToProcessRequestReview({ cause: error })))
       }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, { receiveReviewRequest: () => error }))),
   )
 
@@ -40,9 +40,9 @@ describe('ProcessCoarNotifyMessage', () => {
     [fc.coarNotifyRequestReview({ objectCiteAs: fc.nonPreprintDoi() }), fc.uuid(), fc.instant()],
     ([message, messageId, receivedAt]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.ProcessCoarNotifyMessage({ message, messageId, receivedAt }), Effect.either)
+        const actual = yield* pipe(_.ProcessCoarNotifyMessage({ message, messageId, receivedAt }), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new Inbox.RejectedRequestReview()))
+        expect(actual).toStrictEqual(Result.fail(new Inbox.RejectedRequestReview()))
       }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {}))),
   )
 })

@@ -70,7 +70,7 @@ export const writeReviewRemoveAuthor = ({
             'author',
             RTE.fromOptionK(() => 'no-author' as const)(
               flow(
-                Option.liftNullable(({ form }) => form.otherAuthors),
+                Option.liftNullishOr(({ form }) => form.otherAuthors),
                 Option.flatMap(Array.get(number - 1)),
               ),
             ),
@@ -133,7 +133,9 @@ const handleRemoveAuthorForm = ({
             RTE.apS(
               'otherAuthors',
               RTE.fromOption(() => 'form-unavailable' as const)(
-                Array.removeOption(form.otherAuthors ?? [], number - 1),
+                Option.map(Array.get(form.otherAuthors ?? [], number - 1), () =>
+                  Array.remove(form.otherAuthors ?? [], number - 1),
+                ),
               ),
             ),
             RTE.map(updateForm(form)),

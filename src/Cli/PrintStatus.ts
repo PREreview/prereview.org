@@ -1,4 +1,4 @@
-import { Command } from '@effect/cli'
+import { Command } from 'effect/cli'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Console, Effect, flow, pipe } from 'effect'
 import * as Prereviewers from '../Prereviewers/index.ts'

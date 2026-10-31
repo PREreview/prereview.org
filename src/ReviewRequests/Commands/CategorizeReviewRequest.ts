@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import { Array, Boolean, Data, Result, Equal, Function, Match, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -65,12 +65,12 @@ const foldStateWithPertinentEvent = (
   })
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error> =>
   Match.valueTags(state, {
     NotCategorized: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.ReviewRequestForAPreprintWasCategorized({
             language: command.language,
@@ -84,12 +84,12 @@ export const decide: {
       Boolean.match(
         Boolean.every([
           Equal.equals(command.language, state.language),
-          Equal.equals(Data.array(command.keywords), Data.array(state.keywords)),
-          Equal.equals(Data.array(command.topics), Data.array(state.topics)),
+          Equal.equals(command.keywords, state.keywords),
+          Equal.equals(command.topics, state.topics),
         ]),
         {
-          onTrue: () => Either.right(Option.none()),
-          onFalse: () => Either.right(Option.some(constructRecategorizationEvent(state, command))),
+          onTrue: () => Result.succeed(Option.none()),
+          onFalse: () => Result.succeed(Option.some(constructRecategorizationEvent(state, command))),
         },
       ),
   }),
@@ -100,8 +100,8 @@ const constructRecategorizationEvent = (
   command: Command,
 ): Events.ReviewRequestForAPreprintWasRecategorized => {
   const language = Equal.equals(command.language, state.language) ? undefined : command.language
-  const keywords = Equal.equals(Data.array(command.keywords), Data.array(state.keywords)) ? undefined : command.keywords
-  const topics = Equal.equals(Data.array(command.topics), Data.array(state.topics)) ? undefined : command.topics
+  const keywords = Equal.equals(command.keywords, state.keywords) ? undefined : command.keywords
+  const topics = Equal.equals(command.topics, state.topics) ? undefined : command.topics
 
   return new Events.ReviewRequestForAPreprintWasRecategorized({
     reviewRequestId: command.reviewRequestId,

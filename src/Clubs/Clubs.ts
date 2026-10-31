@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Either, flow, Layer, Record, Tuple } from 'effect'
+import { Array, Context, Effect, flow, Layer, Record, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { EmailAddress } from '../types/EmailAddress.ts'
@@ -40,7 +40,7 @@ export interface ClubName {
   readonly slug: Slug
 }
 
-export class Clubs extends Context.Tag('Clubs')<
+export class Clubs extends Context.Service<
   Clubs,
   {
     listClubs: Effect.Effect<Array.NonEmptyReadonlyArray<ClubName & { readonly status: 'active' | 'inactive' }>>
@@ -51,9 +51,9 @@ export class Clubs extends Context.Tag('Clubs')<
     getClubsThatAPrereviewerLeads: (orcidId: OrcidId) => Effect.Effect<ReadonlyArray<ClubName>>
     isPrereviewerAClubLead: (orcidId: OrcidId) => Effect.Effect<boolean>
   }
->() {}
+>()('Clubs') {}
 
-export class ClubsData extends Context.Tag('ClubsData')<ClubsData, Array.NonEmptyReadonlyArray<ClubDetails>>() {}
+export class ClubsData extends Context.Service<ClubsData, Array.NonEmptyReadonlyArray<ClubDetails>>()('ClubsData') {}
 
 export const layer = Layer.effect(
   Clubs,
@@ -71,14 +71,14 @@ export const layer = Layer.effect(
           slug: club.slug,
         })),
       ),
-      getClubDetails: (clubId: Uuid) => Either.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
+      getClubDetails: (clubId: Uuid) => Effect.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
       getClubName: (clubId: Uuid) =>
-        Either.andThen(
-          Either.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
+        Effect.map(
+          Effect.fromOption(Record.get(clubsById, clubId), () => new ClubNotFound()),
           club => ({ id: club.id, language: club.name.language, name: club.name.text, slug: club.slug }),
         ),
-      getClubByName: GetClubByName(clubs),
-      getClubBySlug: GetClubBySlug(clubs),
+      getClubByName: flow(GetClubByName(clubs), Effect.fromResult),
+      getClubBySlug: flow(GetClubBySlug(clubs), Effect.fromResult),
       getClubsThatAPrereviewerLeads: flow(GetClubsThatAPrereviewerLeads(clubs), Effect.succeed),
       isPrereviewerAClubLead: flow(IsPrereviewerAClubLead(clubs), Effect.succeed),
     }

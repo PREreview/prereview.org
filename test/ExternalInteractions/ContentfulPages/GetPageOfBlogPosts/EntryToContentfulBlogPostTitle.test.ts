@@ -1,8 +1,7 @@
-import { FileSystem } from '@effect/platform'
+import { FileSystem, Effect, flow, Array, Layer, pipe, Schema, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import resolveResponse from 'contentful-resolve-response'
-import { Array, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetPageOfBlogPosts/EntryToContentfulBlogPostTitle.ts'
@@ -141,9 +140,9 @@ it.effect.each<{
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknown(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
       Effect.map(Struct.get('items')),
-      Effect.andThen(Array.get(index)),
+      Effect.andThen(flow(Array.get(index), Effect.fromOption)),
       Effect.andThen(_.EntryToContentfulBlogPostTitle),
     )
 
@@ -166,14 +165,14 @@ it.effect.each([
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknown(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
       Effect.map(Struct.get('items')),
       Effect.map(Array.map(item => _.EntryToContentfulBlogPostTitle(item))),
-      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'either' })),
+      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'result' })),
     )
 
     actual.forEach(result => {
-      expect(result).toMatchObject({ _tag: 'Left' })
+      expect(result).toMatchObject({ _tag: 'Failure' })
     })
   }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
 )

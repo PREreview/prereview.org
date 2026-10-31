@@ -1,4 +1,4 @@
-import { HttpClientRequest } from '@effect/platform'
+import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe } from 'effect'
 import { SlackApi } from '../SlackApi.ts'
 import type { UserId } from '../Types.ts'

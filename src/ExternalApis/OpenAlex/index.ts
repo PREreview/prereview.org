@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientRequest } from '@effect/platform'
+import { HttpClient, HttpClientRequest } from 'effect/http'
 import { Context, Effect, flow, Layer } from 'effect'
 import { GetWork } from './GetWork/index.ts'
 import { OpenAlexApi } from './OpenAlexApi.ts'
@@ -6,17 +6,14 @@ import { OpenAlexApi } from './OpenAlexApi.ts'
 export * from './OpenAlexApi.ts'
 export { WorkIsNotFound, WorkIsUnavailable, WorkSchema, type Work } from './Work.ts'
 
-export class OpenAlex extends Context.Tag('OpenAlex')<
+export class OpenAlex extends Context.Service<
   OpenAlex,
   {
     getWork: (
       ...args: Parameters<typeof GetWork>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetWork>>,
-      Effect.Effect.Error<ReturnType<typeof GetWork>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetWork>>, Effect.Error<ReturnType<typeof GetWork>>>
   }
->() {}
+>()('OpenAlex') {}
 
 export const getWork = (...args: Parameters<(typeof OpenAlex.Service)['getWork']>) =>
   Effect.flatMap(OpenAlex, service => service.getWork(...args))

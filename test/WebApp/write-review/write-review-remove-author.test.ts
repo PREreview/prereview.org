@@ -28,7 +28,7 @@ describe('writeReviewRemoveAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewRemoveAuthor({ body, id, locale, method: 'POST', number, user })({ formStore, runtime }),
@@ -65,7 +65,7 @@ describe('writeReviewRemoveAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewRemoveAuthor({ body, id, locale, method: 'POST', number, user })({ formStore, runtime }),
@@ -99,7 +99,7 @@ describe('writeReviewRemoveAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewRemoveAuthor({ body, id, locale, method: 'POST', number, user })({ formStore, runtime }),
@@ -137,7 +137,7 @@ describe('writeReviewRemoveAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({ formStore, runtime }),
@@ -181,7 +181,7 @@ describe('writeReviewRemoveAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({ formStore, runtime }),
@@ -208,7 +208,7 @@ describe('writeReviewRemoveAuthor', () => {
     ],
     ([id, preprintTitle, body, method, number, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({ formStore: new Keyv(), runtime }),
@@ -239,7 +239,7 @@ describe('writeReviewRemoveAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({ formStore, runtime }),
@@ -265,7 +265,7 @@ describe('writeReviewRemoveAuthor', () => {
           () => new PreprintIsUnavailable({}),
         )
 
-        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
+        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({ formStore: new Keyv(), runtime }),
@@ -288,7 +288,7 @@ describe('writeReviewRemoveAuthor', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user(), fc.supportedLocale()],
     ([id, body, method, number, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number, user })({ formStore: new Keyv(), runtime }),
@@ -310,7 +310,7 @@ describe('writeReviewRemoveAuthor', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.integer(), fc.supportedLocale()],
     ([id, preprintTitle, body, method, number, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewRemoveAuthor({ body, id, locale, method, number })({ formStore: new Keyv(), runtime }),

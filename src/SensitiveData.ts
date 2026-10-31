@@ -1,27 +1,30 @@
-import { Effect, Option, ParseResult, pipe, Schema } from 'effect'
+import { Effect, Option, pipe, Schema, SchemaIssue, SchemaGetter } from 'effect'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 
-export const SensitiveData = <A, I, R>(schema: Schema.Schema<A, I, R>) =>
-  Schema.transformOrFail(Uuid.UuidSchema, Schema.OptionFromSelf(Schema.parseJson(schema)), {
-    strict: true,
-    decode: (id, _, ast) =>
-      pipe(
-        SensitiveDataStore.get(id),
-        Effect.catchTag('FailedToGetSensitiveData', () =>
-          ParseResult.fail(new ParseResult.Type(ast, id, 'Failed to get sensitive data')),
+export const SensitiveData = <A, I, R>(schema: Schema.Codec<A, I, R, R>) =>
+  Uuid.UuidSchema.pipe(
+    Schema.decodeTo(Schema.Option(Schema.fromJsonString(schema)), {
+      decode: SchemaGetter.transformEffect(id =>
+        pipe(
+          SensitiveDataStore.get(id),
+          Effect.catchTag('FailedToGetSensitiveData', () =>
+            Effect.fail(new SchemaIssue.InvalidValue({ message: 'Failed to get sensitive data' }, id)),
+          ),
         ),
       ),
-    encode: (value, _, ast) =>
-      Option.match(value, {
-        onSome: value =>
-          pipe(
-            SensitiveDataStore.add(value),
-            Effect.catchTag('FailedToAddSensitiveData', () =>
-              ParseResult.fail(new ParseResult.Type(ast, value, 'Failed to add sensitive data')),
+      encode: SchemaGetter.transformEffect(value =>
+        Option.match(value, {
+          onSome: value =>
+            pipe(
+              SensitiveDataStore.add(value),
+              Effect.catchTag('FailedToAddSensitiveData', () =>
+                Effect.fail(new SchemaIssue.InvalidValue({ message: 'Failed to add sensitive data' }, value)),
+              ),
             ),
-          ),
-        onNone: () =>
-          ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Sensitive data must have an initial value')),
-      }),
-  })
+          onNone: () =>
+            Effect.fail(new SchemaIssue.Forbidden({ message: 'Sensitive data must have an initial value' }, value)),
+        }),
+      ),
+    }),
+  )

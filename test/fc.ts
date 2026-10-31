@@ -6,19 +6,21 @@ import {
   type HttpMethod,
   HttpServerRequest,
   UrlParams,
-} from '@effect/platform'
+} from 'effect/http'
 import { Temporal } from '@js-temporal/polyfill'
+import { mod11_2 } from 'cdigit'
 import {
-  Arbitrary,
+  type Arbitrary,
   Array,
   DateTime,
   Duration,
-  Either,
+  Result,
   HashSet,
   Number,
   Option,
   Predicate,
   Redacted,
+  Schema,
   Struct,
   Tuple,
 } from 'effect'
@@ -132,9 +134,10 @@ import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type Name, NameSchema } from '../src/types/Name.ts'
-import { type NonEmptyString, NonEmptyStringSchema, isNonEmptyString } from '../src/types/NonEmptyString.ts'
-import { type OrcidId, OrcidIdSchema } from '../src/types/OrcidId.ts'
-import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
+import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
+import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
+import * as Pseudonyms from '../src/types/Pseudonym.ts'
+import type { Pseudonym } from '../src/types/Pseudonym.ts'
 import { type Slug, SlugSchema } from '../src/types/Slug.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
@@ -193,11 +196,11 @@ export const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> =>
 export const maybe = <A>(someArb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> =>
   fc.oneof(some(someArb), fc.constant(Option.none()))
 
-export const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<Either.Either<never, E>> => arb.map(Either.left)
+export const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<Result.Result<never, E>> => arb.map(Result.fail)
 
-const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A>> => arb.map(Either.right)
+const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Result.Result<A>> => arb.map(Result.succeed)
 
-export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A, E>> =>
+export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<Result.Result<A, E>> =>
   fc.oneof(left(leftArb), right(rightArb))
 
 export const urlParams = (params?: fc.Arbitrary<UrlParams.Input>): fc.Arbitrary<UrlParams.UrlParams> =>
@@ -205,7 +208,7 @@ export const urlParams = (params?: fc.Arbitrary<UrlParams.Input>): fc.Arbitrary<
     UrlParams.fromInput(params),
   )
 
-export const durationInput = (): fc.Arbitrary<Duration.DurationInput> => fc.integer({ min: 0 }).map(Duration.seconds)
+export const durationInput = (): fc.Arbitrary<Duration.Input> => fc.integer({ min: 0 }).map(Duration.seconds)
 
 export const json = (): fc.Arbitrary<Json> => fc.jsonValue() as fc.Arbitrary<Json>
 
@@ -260,7 +263,10 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
     )
     .chain(omit =>
       fc.record(
-        Object.fromEntries(Struct.entries(recordModel).filter(([key]) => key !== omit)),
+        Object.fromEntries(Object.entries(recordModel).filter(([key]) => key !== omit)) as Record<
+          string,
+          fc.Arbitrary<unknown>
+        >,
         (constraints ?? { requiredKeys: [] }) as never,
       ),
     )
@@ -495,7 +501,7 @@ export const httpClientRequest = ({
       url: _url ?? url(),
     })
     .map(({ method, url, ...options }) =>
-      Object.defineProperties(HttpClientRequest.make(method)(url, options), {
+      Object.defineProperties(HttpClientRequest.make(method as HttpMethod.HttpMethod)(url, options), {
         [fc.toStringMethod]: { value: () => fc.stringify({ method, url, ...options }) },
       }),
     )
@@ -520,23 +526,43 @@ export const httpClientResponse = ({
 export const httpClientRequestError = ({
   reason,
 }: {
-  reason?: fc.Arbitrary<HttpClientError.RequestError['reason']>
-} = {}): fc.Arbitrary<HttpClientError.RequestError> =>
+  reason?: fc.Arbitrary<'Transport' | 'Encode' | 'InvalidUrl'>
+} = {}): fc.Arbitrary<HttpClientError.HttpClientError> =>
   fc
     .record({
       request: httpClientRequest(),
       reason: reason ?? constantFrom('Transport', 'Encode', 'InvalidUrl'),
     })
-    .map(args => new HttpClientError.RequestError(args))
+    .map(
+      ({ request, reason }) =>
+        new HttpClientError.HttpClientError({
+          reason:
+            reason === 'Transport'
+              ? new HttpClientError.TransportError({ request })
+              : reason === 'Encode'
+                ? new HttpClientError.EncodeError({ request })
+                : new HttpClientError.InvalidUrlError({ request }),
+        }),
+    )
 
-export const httpClientResponseError = (): fc.Arbitrary<HttpClientError.ResponseError> =>
+export const httpClientResponseError = (): fc.Arbitrary<HttpClientError.HttpClientError> =>
   fc
     .record({
       request: httpClientRequest(),
       response: httpClientResponse(),
       reason: constantFrom('StatusCode', 'Decode', 'EmptyBody'),
     })
-    .map(args => new HttpClientError.ResponseError(args))
+    .map(
+      ({ request, response, reason }) =>
+        new HttpClientError.HttpClientError({
+          reason:
+            reason === 'StatusCode'
+              ? new HttpClientError.StatusCodeError({ request, response })
+              : reason === 'Decode'
+                ? new HttpClientError.DecodeError({ request, response })
+                : new HttpClientError.EmptyBodyError({ request, response }),
+        }),
+    )
 
 export const httpClientError = (): fc.Arbitrary<HttpClientError.HttpClientError> =>
   fc.oneof(httpClientRequestError(), httpClientResponseError())
@@ -688,7 +714,7 @@ export const nonDatasetDoi = (): fc.Arbitrary<Doi> =>
 export const datasetDoi = (): fc.Arbitrary<Datasets.DatasetId['value']> => datasetId().map(id => id.value)
 
 export const nonPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.oneof(url(), supportedDatasetUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
+  fc.oneof(url(), supportedDatasetUrl().map(Tuple.get(0)), unsupportedPreprintUrl())
 
 export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonlyArray<IndeterminatePreprintId>]> =>
   fc.oneof(
@@ -1191,7 +1217,15 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
-export const orcidId = (): fc.Arbitrary<OrcidId> => Arbitrary.make(OrcidIdSchema)
+export const orcidId = (): fc.Arbitrary<OrcidId> =>
+  fc
+    .string({
+      unit: fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
+      minLength: 4 + 4 + 4 + 3,
+      maxLength: 4 + 4 + 4 + 3,
+    })
+    .map(value => mod11_2.generate(value).replaceAll(/.{4}(?=.)/g, '$&-'))
+    .filter(isOrcidId)
 
 export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
   fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
@@ -1241,7 +1275,7 @@ export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> =>
   fc.oneof(dryadDatasetId(), scieloDatasetId(), zenodoDatasetId())
 
 export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
-  fc.oneof(url(), supportedPreprintUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
+  fc.oneof(url(), supportedPreprintUrl().map(Tuple.get(0)), unsupportedPreprintUrl())
 
 export const supportedDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DatasetId]> =>
   fc.oneof(dryadDatasetUrl(), scieloDatasetUrl())
@@ -1388,7 +1422,19 @@ export const clubName = (): fc.Arbitrary<Clubs.ClubName> =>
     slug: slug(),
   })
 
-export const pseudonym = (): fc.Arbitrary<Pseudonym> => Arbitrary.make(PseudonymSchema)
+export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
+  fc
+    .record(
+      {
+        color: fc.constantFrom(...Pseudonyms.Color.literals),
+        animal: fc.constantFrom(...Pseudonyms.Animal.literals),
+        number: fc.nat(),
+      },
+      { requiredKeys: ['color', 'animal'] },
+    )
+    .map(({ color, animal, number }) =>
+      number === undefined ? (`${color} ${animal}` as Pseudonym) : (`${color} ${animal} ${number}` as Pseudonym),
+    )
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 
@@ -1397,7 +1443,7 @@ export const orcidProfileId = (): fc.Arbitrary<ProfileId.OrcidProfileId> => orci
 export const pseudonymProfileId = (): fc.Arbitrary<ProfileId.PseudonymProfileId> =>
   pseudonym().map(ProfileId.forPseudonym)
 
-export const dateTimeUtc = (): fc.Arbitrary<DateTime.Utc> => fc.date().map(DateTime.unsafeFromDate)
+export const dateTimeUtc = (): fc.Arbitrary<DateTime.Utc> => fc.date().map(DateTime.fromDateUnsafe)
 
 export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
 
@@ -1463,7 +1509,7 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
       include,
     )
     .map(([headers, include]) => {
-      Struct.entries(include).forEach(([key, value]) => {
+      Object.entries(include).forEach(([key, value]) => {
         headers.set(key, value)
       })
       return headers
@@ -1544,9 +1590,9 @@ export const fetchResponse = ({
 export const nonEmptyArray = <T>(
   arb: fc.Arbitrary<T>,
   constraints: fc.ArrayConstraints = {},
-): fc.Arbitrary<Array.NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(Array.isNonEmptyArray)
+): fc.Arbitrary<Array.NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(Array.isArrayNonEmpty)
 
-export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => Arbitrary.make(NonEmptyStringSchema)
+export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
 
 export const nonEmptyTrimmedString = (): fc.Arbitrary<NonEmptyString> =>
   fc
@@ -1554,9 +1600,23 @@ export const nonEmptyTrimmedString = (): fc.Arbitrary<NonEmptyString> =>
     .map(string => string.trim())
     .filter(isNonEmptyString)
 
-export const name = (): fc.Arbitrary<Name> => Arbitrary.make(NameSchema)
+export const name = (): fc.Arbitrary<Name> =>
+  fc
+    .string({ minLength: 1 })
+    .map(string => string.replaceAll(/\s+/g, ' ').trim())
+    .filter(Schema.is(NameSchema))
 
-export const slug = (): fc.Arbitrary<Slug> => Arbitrary.make(SlugSchema)
+export const slug = (): fc.Arbitrary<Slug> =>
+  fc
+    .array(
+      fc.mapToConstant(
+        { num: 26, build: v => String.fromCodePoint(v + 0x61) },
+        { num: 10, build: v => String.fromCodePoint(v + 0x30) },
+      ),
+      { minLength: 1 },
+    )
+    .map(Array.join('-'))
+    .map(slug => SlugSchema.make(slug))
 
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
   fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)
@@ -1565,7 +1625,8 @@ export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...IS
 
 export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
 
-export const contentfulId = (): fc.Arbitrary<ContentfulId> => Arbitrary.make(ContentfulId)
+export const contentfulId = (): fc.Arbitrary<ContentfulId> =>
+  fc.stringMatching(/^[A-z0-9]+$/).map(id => ContentfulId.make(id))
 
 export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service> =>
   fc.record({
@@ -1837,26 +1898,32 @@ export const datasetReviewPreview = ({
     authorsToInvite: maybe(nonEmptyArray(name())),
     dataset: datasetId(),
     competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
-    qualityRating: ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail')),
+    qualityRating: ratedTheQualityOfTheDataset().map(Struct.pick(['rating', 'detail'])),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: answeredIfTheDatasetFollowsFairAndCarePrinciples().map(
-      Struct.pick('answer', 'detail'),
+      Struct.pick(['answer', 'detail']),
     ),
-    answerToIfTheDatasetHasEnoughMetadata: answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
-    answerToIfTheDatasetHasTrackedChanges: answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetHasEnoughMetadata: answeredIfTheDatasetHasEnoughMetadata().map(
+      Struct.pick(['answer', 'detail']),
+    ),
+    answerToIfTheDatasetHasTrackedChanges: answeredIfTheDatasetHasTrackedChanges().map(
+      Struct.pick(['answer', 'detail']),
+    ),
     answerToIfTheDatasetHasDataCensoredOrDeleted: answeredIfTheDatasetHasDataCensoredOrDeleted().map(
-      Struct.pick('answer', 'detail'),
+      Struct.pick(['answer', 'detail']),
     ),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch:
-      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.pick(['answer', 'detail'])),
     answerToIfTheDatasetSupportsRelatedConclusions: answeredIfTheDatasetSupportsRelatedConclusions().map(
-      Struct.pick('answer', 'detail'),
+      Struct.pick(['answer', 'detail']),
     ),
-    answerToIfTheDatasetIsDetailedEnough: answeredIfTheDatasetIsDetailedEnough().map(Struct.pick('answer', 'detail')),
-    answerToIfTheDatasetIsErrorFree: answeredIfTheDatasetIsErrorFree().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetIsDetailedEnough: answeredIfTheDatasetIsDetailedEnough().map(Struct.pick(['answer', 'detail'])),
+    answerToIfTheDatasetIsErrorFree: answeredIfTheDatasetIsErrorFree().map(Struct.pick(['answer', 'detail'])),
     answerToIfTheDatasetMattersToItsAudience: answeredIfTheDatasetMattersToItsAudience().map(
-      Struct.pick('answer', 'detail'),
+      Struct.pick(['answer', 'detail']),
     ),
-    answerToIfTheDatasetIsReadyToBeShared: answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
+    answerToIfTheDatasetIsReadyToBeShared: answeredIfTheDatasetIsReadyToBeShared().map(
+      Struct.pick(['answer', 'detail']),
+    ),
     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     generativeAiIdeas: declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview().map(Struct.get('generativeAiIdeas')),
     license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
@@ -1880,34 +1947,34 @@ export const datasetReviewDataForZenodoRecord = ({
     dataset: datasetId(),
     datasetReviewId: uuid(),
     competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
-    qualityRating: maybe(ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
+    qualityRating: maybe(ratedTheQualityOfTheDataset().map(Struct.pick(['rating', 'detail']))),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: answeredIfTheDatasetFollowsFairAndCarePrinciples().map(
-      Struct.pick('answer', 'detail'),
+      Struct.pick(['answer', 'detail']),
     ),
     answerToIfTheDatasetHasEnoughMetadata: maybe(
-      answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetHasTrackedChanges: maybe(
-      answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetHasTrackedChanges().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(
-      answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(
-      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetSupportsRelatedConclusions: maybe(
-      answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetIsDetailedEnough: maybe(
-      answeredIfTheDatasetIsDetailedEnough().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetIsDetailedEnough().map(Struct.pick(['answer', 'detail'])),
     ),
-    answerToIfTheDatasetIsErrorFree: maybe(answeredIfTheDatasetIsErrorFree().map(Struct.pick('answer', 'detail'))),
+    answerToIfTheDatasetIsErrorFree: maybe(answeredIfTheDatasetIsErrorFree().map(Struct.pick(['answer', 'detail']))),
     answerToIfTheDatasetMattersToItsAudience: maybe(
-      answeredIfTheDatasetMattersToItsAudience().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetMattersToItsAudience().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetIsReadyToBeShared: maybe(
-      answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
+      answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick(['answer', 'detail'])),
     ),
     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     license: constantFrom('CC-BY-4.0', 'CC0-1.0'),
@@ -2293,15 +2360,15 @@ export const declaredIfAiWasUsedToGenerateNewIdeasForADatasetReview = ({
 }: {
   datasetReviewId?: fc.Arbitrary<Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['datasetReviewId']>
 } = {}): fc.Arbitrary<Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview> =>
-  datasetReviewId === undefined
-    ? Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview)
-    : fc.tuple(Arbitrary.make(Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview), datasetReviewId).map(
-        ([event, datasetReviewId]) =>
-          new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
-            ...Struct.omit(event, '_tag'),
-            datasetReviewId,
-          }),
-      )
+  fc
+    .record({
+      datasetReviewId: datasetReviewId ?? uuid(),
+      generativeAiIdeas: fc.oneof(
+        fc.record({ answer: constant('yes'), detail: maybe(nonEmptyString()) }),
+        fc.record({ answer: constant('no') }),
+      ),
+    })
+    .map(data => new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview(data))
 
 export const competingInterestsForADatasetReviewWereDeclared = ({
   datasetReviewId,

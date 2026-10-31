@@ -1,4 +1,4 @@
-import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
+import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import { Effect, Layer, Option, pipe, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import _normalizeUrl from 'normalize-url'
@@ -26,8 +26,8 @@ export const getFromRedis =
   request =>
     pipe(
       Effect.tryPromise({ try: () => redis.get(keyForRequest(request)), catch: String }),
-      Effect.andThen(Effect.fromNullable),
-      Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
+      Effect.andThen(Effect.fromNullishOr),
+      Effect.andThen(Schema.decodeEffect(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
         staleAt,
         response: HttpClientResponse.fromWeb(
@@ -38,17 +38,17 @@ export const getFromRedis =
           }),
         ),
       })),
-      Effect.catchTag('ParseError', () =>
+      Effect.catchTag('SchemaError', () =>
         pipe(
           Effect.tryPromise({ try: () => redis.del(keyForRequest(request)), catch: String }),
-          Effect.andThen(() => Option.none()),
+          Effect.andThen(() => Effect.fromOption(Option.none())),
         ),
       ),
       Effect.catchIf(
         error => typeof error === 'string',
         cause => new InternalHttpCacheFailure({ cause }),
       ),
-      Effect.optionFromOptional,
+      Effect.catchNoSuchElement,
       Effect.uninterruptible,
       Effect.withSpan('PersistedToRedis.getFromRedis'),
     )
@@ -67,7 +67,7 @@ export const writeToRedis =
           },
         }
       }),
-      Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
+      Effect.andThen(Schema.encodeEffect(CacheValueFromStringSchema)),
       Effect.andThen(value =>
         Effect.tryPromise({
           try: () => redis.set(keyForRequest(response.request), value),
@@ -75,7 +75,7 @@ export const writeToRedis =
         }),
       ),
       Effect.asVoid,
-      Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
+      Effect.catch(cause => new InternalHttpCacheFailure({ cause })),
       Effect.uninterruptible,
       Effect.withSpan('PersistedToRedis.writeToRedis'),
     )
@@ -86,7 +86,7 @@ export const deleteFromRedis =
     pipe(
       Effect.tryPromise({ try: () => redis.del(normalizeUrl(url)), catch: String }),
       Effect.asVoid,
-      Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
+      Effect.catch(cause => new InternalHttpCacheFailure({ cause })),
       Effect.uninterruptible,
       Effect.withSpan('PersistedToRedis.deleteFromRedis'),
     )

@@ -5,23 +5,20 @@ import { GetCategoriesForAReviewRequest } from './GetCategoriesForAReviewRequest
 
 export { CategoriesAreNotAvailable, type CategoriesForAReviewRequest } from './GetCategoriesForAReviewRequest/index.ts'
 
-export class OpenAlexWorks extends Context.Tag('OpenAlexWorks')<
+export class OpenAlexWorks extends Context.Service<
   OpenAlexWorks,
   {
     getCategories: (
       ...args: Parameters<typeof GetCategories>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetCategories>>,
-      Effect.Effect.Error<ReturnType<typeof GetCategories>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetCategories>>, Effect.Error<ReturnType<typeof GetCategories>>>
     getCategoriesForAReviewRequest: (
       ...args: Parameters<typeof GetCategoriesForAReviewRequest>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetCategoriesForAReviewRequest>>,
-      Effect.Effect.Error<ReturnType<typeof GetCategoriesForAReviewRequest>>
+      Effect.Success<ReturnType<typeof GetCategoriesForAReviewRequest>>,
+      Effect.Error<ReturnType<typeof GetCategoriesForAReviewRequest>>
     >
   }
->() {}
+>()('OpenAlexWorks') {}
 
 export const getCategories = (...args: Parameters<(typeof OpenAlexWorks.Service)['getCategories']>) =>
   Effect.flatMap(OpenAlexWorks, service => service.getCategories(...args))

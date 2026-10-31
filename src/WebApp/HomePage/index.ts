@@ -12,14 +12,13 @@ export const HomePage: Effect.Effect<
   never,
   Prereviews.Prereviews | ReviewRequests.ReviewRequests | Locale | PublicUrl
 > = pipe(
-  Effect.Do,
-  Effect.bindAll(
-    () => ({
+  Effect.all(
+    {
       locale: Locale,
       recentPrereviews: Prereviews.getFiveMostRecent,
       recentReviewRequests: ReviewRequests.getFiveMostRecent,
       publicUrl: PublicUrl,
-    }),
+    },
     { concurrency: 'unbounded' },
   ),
   Effect.let('statistics', () => ({ prereviews: 2400, servers: ServerNames.length, users: 5001 })),

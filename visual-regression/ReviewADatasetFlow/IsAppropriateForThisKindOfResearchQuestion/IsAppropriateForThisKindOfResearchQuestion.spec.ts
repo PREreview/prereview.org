@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as IsAppropriateForThisKindOfResearchForm from '../../../src/WebApp/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -39,12 +39,12 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.IsAppropriateForThisKindOfResearchQuestion({
     datasetReviewId,
     form: new IsAppropriateForThisKindOfResearchForm.InvalidForm({
-      isAppropriateForThisKindOfResearch: Either.left(new IsAppropriateForThisKindOfResearchForm.Missing()),
-      isAppropriateForThisKindOfResearchYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      isAppropriateForThisKindOfResearchPartlyDetail: Either.right(
+      isAppropriateForThisKindOfResearch: Result.fail(new IsAppropriateForThisKindOfResearchForm.Missing()),
+      isAppropriateForThisKindOfResearchYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      isAppropriateForThisKindOfResearchPartlyDetail: Result.succeed(
         NonEmptyString.fromString('Detail about the partly.'),
       ),
-      isAppropriateForThisKindOfResearchNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      isAppropriateForThisKindOfResearchNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

@@ -1,7 +1,6 @@
 import {
   Array,
   Context,
-  Data,
   Effect,
   Equal,
   Layer,
@@ -33,7 +32,7 @@ export * from './ReviewRequests/Events.ts'
 
 export type Event = typeof Event.Type
 
-export const Event = Schema.Union(
+export const Event = Schema.Union([
   ...AuthorInviteEvents.AuthorInviteEvent.members,
   ...CommentEvents.CommentEvent.members,
   ContactEmailAddressesEvents.ContactAddressImported,
@@ -46,7 +45,7 @@ export const Event = Schema.Union(
   PreprintReviews.RapidPrereviewImported,
   PreprintReviews.EmailToNotifyPrereviewerOfAPrereviewWasSent,
   ...PrereviewerEvents.PrereviewerEvent.members,
-)
+])
 
 type PredicatesFor<T extends Types.Tags<Event>> = Partial<Types.UnionToIntersection<Omit<EventSubset<T>, '_tag'>>>
 
@@ -114,26 +113,35 @@ export function matches<F extends EventFilter>(
       return true
     }
 
-    const predicateEncoder = Schema.pick(...(Record.keys(filter.predicates) as never))(
-      Option.getOrThrow(Array.findFirst(Event.members, hasTag(...filter.types))) as never,
+    const predicateEncoder = Schema.Struct<Schema.Struct.Fields>(
+      Struct.pick(
+        Option.getOrThrow(Array.findFirst(Event.members, member => Array.contains(filter.types, member.identifier)))
+          .fields as never,
+        Record.keys(filter.predicates) as never,
+      ),
     )
 
-    const encodedPredicates = Schema.encodeSync(predicateEncoder as never)(filter.predicates)
-    const encodedEvent = Schema.encodeSync(predicateEncoder as never)(event)
+    const encodedPredicates = Schema.encodeSync(predicateEncoder as unknown as Schema.Codec<unknown, unknown>)(
+      filter.predicates,
+    )
+    const encodedEvent = Schema.encodeSync(predicateEncoder as unknown as Schema.Codec<unknown, unknown>)(event)
 
-    return Equal.equals(Data.struct(encodedPredicates as never), Data.struct(encodedEvent as never))
+    return Equal.equals(encodedPredicates, encodedEvent)
   })
 }
 
-export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
+export const EventTypes = Array.map(Event.members, member => member.identifier as Event['_tag'])
 
-const CommentEventTypes = Array.map(CommentEvents.CommentEvent.members, Struct.get('_tag'))
+const CommentEventTypes = Array.map(
+  CommentEvents.CommentEvent.members,
+  member => member.identifier as CommentEvents.CommentEvent['_tag'],
+)
 
-export class Events extends Context.Tag('Events')<Events, PubSub.PubSub<Event>>() {}
+export class Events extends Context.Service<Events, PubSub.PubSub<Event>>()('Events') {}
 
 export const isCommentEvent: (event: Event) => event is CommentEvents.CommentEvent = isA(...CommentEventTypes)
 
-export const layer = Layer.scoped(
+export const layer = Layer.effect(
   Events,
   Effect.acquireRelease(
     pipe(PubSub.unbounded<Event>(), Effect.tap(Effect.logDebug('Events started'))),
@@ -150,8 +158,4 @@ export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Typ
 
 function isA<Tag extends Types.Tags<Event>>(...tags: ReadonlyArray<Tag>) {
   return (event: Event): event is EventSubset<Tag> => Array.contains(tags, event._tag)
-}
-
-function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
-  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
 }

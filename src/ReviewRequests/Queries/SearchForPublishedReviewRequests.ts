@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, Equal, HashMap, Match, Option, Order, Schema, Struct } from 'effect'
+import { Array, Boolean, Result, Equal, HashMap, Match, Option, Order, Schema, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -30,7 +30,7 @@ export interface Input {
   doiRegistrants?: Array.NonEmptyReadonlyArray<Registrant<Preprints.IndeterminatePreprintIdWithDoi['value']>>
 }
 
-export type Result = Either.Either<PageOfReviewRequests, Errors.NoReviewRequestsFound>
+export type Result = Result.Result<PageOfReviewRequests, Errors.NoReviewRequestsFound>
 
 const eventTypes = [
   'ReviewRequestForAPreprintWasStarted',
@@ -111,7 +111,7 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
               }),
             onSome: currentMostRecentReviewRequest => {
               if (
-                Order.greaterThan(Temporal.OrderInstant)(
+                Order.isGreaterThan(Temporal.OrderInstant)(
                   currentMostRecentReviewRequest.published,
                   reviewRequest.published,
                 )
@@ -199,7 +199,7 @@ const updateReviewRequestStateWithPertinentEvent = (
   })
 
 const query = (state: State, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filteredMostRecentReviewRequestsByPreprint = HashMap.filter(
       state.mostRecentReviewRequestsByPreprint,
       reviewRequest =>
@@ -222,7 +222,7 @@ const query = (state: State, input: Input): Result =>
 
     const pagesOfLatestReviewRequestForEachPreprint = Array.chunksOf(sortedLatestReviewRequestForEachPreprint, 5)
 
-    const pageOfLatestReviewRequestForEachPreprint = yield* Either.fromOption(
+    const pageOfLatestReviewRequestForEachPreprint = yield* Result.fromOption(
       Array.get(pagesOfLatestReviewRequestForEachPreprint, input.page - 1),
       () => new Errors.NoReviewRequestsFound({}),
     )

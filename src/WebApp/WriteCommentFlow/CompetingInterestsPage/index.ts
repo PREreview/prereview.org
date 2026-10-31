@@ -115,7 +115,10 @@ export const CompetingInterestsSubmission = ({
                 )
 
                 const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
-                const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+                const nextCommand = yield* Effect.flatMap(
+                  getNextExpectedCommandForUserOnAComment(commentId),
+                  Effect.fromResult,
+                )
 
                 return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
@@ -135,7 +138,10 @@ export const CompetingInterestsSubmission = ({
                 )
 
                 const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
-                const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
+                const nextCommand = yield* Effect.flatMap(
+                  getNextExpectedCommandForUserOnAComment(commentId),
+                  Effect.fromResult,
+                )
 
                 return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),

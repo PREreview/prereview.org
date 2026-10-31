@@ -1,4 +1,4 @@
-import { Array, Either, Option, pipe } from 'effect'
+import { Array, Result, Option, pipe } from 'effect'
 import type { JapanLinkCenter } from '../../../ExternalApis/index.ts'
 import { html } from '../../../html.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -7,12 +7,12 @@ import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './P
 
 const determineJapanLinkCenterPreprintId = (
   record: JapanLinkCenter.Record,
-): Either.Either<JapanLinkCenterPreprintId, Preprints.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Result.Result<JapanLinkCenterPreprintId, Preprints.PreprintIsUnavailable> =>
+  Result.gen(function* () {
     const doi = record.doi
 
     if (!isDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
+      return yield* Result.fail(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     return new Preprints.JxivPreprintId({ value: doi })
@@ -20,10 +20,10 @@ const determineJapanLinkCenterPreprintId = (
 
 export const recordToPreprint = (
   record: JapanLinkCenter.Record,
-): Either.Either<Preprints.Preprint, Preprints.NotAPreprint | Preprints.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Result.Result<Preprints.Preprint, Preprints.NotAPreprint | Preprints.PreprintIsUnavailable> =>
+  Result.gen(function* () {
     if (record.content_type !== 'GD') {
-      yield* Either.left(new Preprints.NotAPreprint({ cause: record.content_type }))
+      yield* Result.fail(new Preprints.NotAPreprint({ cause: record.content_type }))
     }
 
     const id = yield* determineJapanLinkCenterPreprintId(record)

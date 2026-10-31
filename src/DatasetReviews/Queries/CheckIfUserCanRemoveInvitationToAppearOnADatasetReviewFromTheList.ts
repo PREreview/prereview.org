@@ -1,4 +1,4 @@
-import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
+import { Array, Result, Equal, Option, Struct, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { Name, OrcidId, Uuid } from '../../types/index.ts'
@@ -10,7 +10,7 @@ export interface Input {
   authorId: OrcidId.OrcidId
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   Name.Name,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
@@ -34,26 +34,26 @@ const createFilter = ({ datasetReviewId }: Input) =>
   })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const started = yield* Either.fromOption(
+    const started = yield* Result.fromOption(
       Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')),
       () => new Errors.DatasetReviewHasNotBeenStarted(),
     )
 
     if (!Equal.equals(started.authorId, input.authorId)) {
-      return yield* Either.left(new Errors.DatasetReviewWasStartedByAnotherUser())
+      return yield* Result.fail(new Errors.DatasetReviewWasStartedByAnotherUser())
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
-      return yield* Either.left(new Errors.DatasetReviewHasBeenPublished())
+      return yield* Result.fail(new Errors.DatasetReviewHasBeenPublished())
     }
 
     if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
-      return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
+      return yield* Result.fail(new Errors.DatasetReviewIsBeingPublished())
     }
 
     const needInvitations = Option.map(
@@ -62,7 +62,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     )
 
     if (!Equal.equals(needInvitations, Option.some('yes'))) {
-      return yield* Either.left(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())
+      return yield* Result.fail(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())
     }
 
     if (
@@ -73,7 +73,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
           Equal.equals(event.invitationId, input.invitationId),
       )
     ) {
-      return yield* Either.left(new Errors.DatasetReviewInvitationNotInList())
+      return yield* Result.fail(new Errors.DatasetReviewInvitationNotInList())
     }
 
     const added = Array.findLast(
@@ -84,7 +84,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     )
 
     if (Option.isNone(added) || Option.isNone(added.value.contactDetails)) {
-      return yield* Either.left(new Errors.DatasetReviewInvitationNotInList())
+      return yield* Result.fail(new Errors.DatasetReviewInvitationNotInList())
     }
 
     return added.value.contactDetails.value.name

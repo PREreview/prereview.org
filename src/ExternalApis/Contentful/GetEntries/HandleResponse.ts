@@ -1,4 +1,4 @@
-import { HttpClientResponse } from '@effect/platform'
+import { HttpClientResponse } from 'effect/http'
 import resolveResponse from 'contentful-resolve-response'
 import { Effect, Equal, flow, Option, Schema } from 'effect'
 import { configure } from 'safe-stable-stringify'
@@ -22,6 +22,6 @@ export const HandleResponse = flow(
   HttpClientResponse.filterStatus(Equal.equals(StatusCodes.OK)),
   Effect.andThen(ResolveEntries),
   Effect.map(configure({ circularValue: '[Circular]' })),
-  Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Entries))),
-  Effect.catchTag('ResponseError', 'ParseError', error => new ContentfulIsUnavailable({ cause: error })),
+  Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
+  Effect.catchTag(['HttpClientError', 'SchemaError'], error => new ContentfulIsUnavailable({ cause: error })),
 )

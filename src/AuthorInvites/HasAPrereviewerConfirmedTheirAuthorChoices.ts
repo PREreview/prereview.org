@@ -1,4 +1,4 @@
-import { Array, Data, Either, type Types } from 'effect'
+import { Array, Data, Result, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -9,7 +9,7 @@ export interface Input {
   readonly orcidId: OrcidId
 }
 
-export type Result = Either.Either<boolean, Error>
+export type Result = Result.Result<boolean, Error>
 
 export type Error = PrereviewerIsNotListedOnTheReview
 
@@ -28,13 +28,13 @@ const createFilter = (input: Input) =>
   ])
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    if (Array.isEmptyArray(filteredEvents)) {
-      return yield* Either.left(new PrereviewerIsNotListedOnTheReview())
+    if (Array.isArrayEmpty(filteredEvents)) {
+      return yield* Result.fail(new PrereviewerIsNotListedOnTheReview())
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {

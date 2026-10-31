@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type HasDataCensoredOrDeletedForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  hasDataCensoredOrDeleted: Either.Either<never, Missing>
-  hasDataCensoredOrDeletedYesDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  hasDataCensoredOrDeletedPartlyDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  hasDataCensoredOrDeletedNoDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  hasDataCensoredOrDeleted: Result.Result<never, Missing>
+  hasDataCensoredOrDeletedYesDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  hasDataCensoredOrDeletedPartlyDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  hasDataCensoredOrDeletedNoDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const hasDataCensoredOrDeletedYesDetail = yield* pipe(
-    Schema.decode(HasDataCensoredOrDeletedYesDetailSchema)(body),
-    Effect.andThen(Struct.get('hasDataCensoredOrDeletedYesDetail')),
+    Schema.decodeEffect(HasDataCensoredOrDeletedYesDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasDataCensoredOrDeletedYesDetail'), Effect.fromOption)),
     Effect.option,
   )
   const hasDataCensoredOrDeletedPartlyDetail = yield* pipe(
-    Schema.decode(HasDataCensoredOrDeletedPartlyDetailSchema)(body),
-    Effect.andThen(Struct.get('hasDataCensoredOrDeletedPartlyDetail')),
+    Schema.decodeEffect(HasDataCensoredOrDeletedPartlyDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasDataCensoredOrDeletedPartlyDetail'), Effect.fromOption)),
     Effect.option,
   )
   const hasDataCensoredOrDeletedNoDetail = yield* pipe(
-    Schema.decode(HasDataCensoredOrDeletedNoDetailSchema)(body),
-    Effect.andThen(Struct.get('hasDataCensoredOrDeletedNoDetail')),
+    Schema.decodeEffect(HasDataCensoredOrDeletedNoDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('hasDataCensoredOrDeletedNoDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(HasDataCensoredOrDeletedSchema)(body),
+    Schema.decodeEffect(HasDataCensoredOrDeletedSchema)(body),
     Effect.map(
       ({ hasDataCensoredOrDeleted }) =>
         new CompletedForm({
@@ -50,13 +50,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           hasDataCensoredOrDeletedNoDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          hasDataCensoredOrDeleted: Either.left(new Missing()),
-          hasDataCensoredOrDeletedYesDetail: Either.right(hasDataCensoredOrDeletedYesDetail),
-          hasDataCensoredOrDeletedPartlyDetail: Either.right(hasDataCensoredOrDeletedPartlyDetail),
-          hasDataCensoredOrDeletedNoDetail: Either.right(hasDataCensoredOrDeletedNoDetail),
+          hasDataCensoredOrDeleted: Result.fail(new Missing()),
+          hasDataCensoredOrDeletedYesDetail: Result.succeed(hasDataCensoredOrDeletedYesDetail),
+          hasDataCensoredOrDeletedPartlyDetail: Result.succeed(hasDataCensoredOrDeletedPartlyDetail),
+          hasDataCensoredOrDeletedNoDetail: Result.succeed(hasDataCensoredOrDeletedNoDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const HasDataCensoredOrDeletedSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasDataCensoredOrDeleted: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-  }),
+const HasDataCensoredOrDeletedSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasDataCensoredOrDeleted: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    }),
+  ),
 )
 
-const HasDataCensoredOrDeletedYesDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasDataCensoredOrDeletedYesDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasDataCensoredOrDeletedYesDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasDataCensoredOrDeletedYesDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const HasDataCensoredOrDeletedPartlyDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasDataCensoredOrDeletedPartlyDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasDataCensoredOrDeletedPartlyDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasDataCensoredOrDeletedPartlyDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const HasDataCensoredOrDeletedNoDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    hasDataCensoredOrDeletedNoDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const HasDataCensoredOrDeletedNoDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      hasDataCensoredOrDeletedNoDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

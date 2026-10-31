@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, Schema } from 'effect'
 
 export type ChooseYourPersonaForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -8,7 +8,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  chooseYourPersona: Either.Either<never, Missing>
+  chooseYourPersona: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -17,12 +17,12 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(
   function* (body: UrlParams.UrlParams) {
-    const { chooseYourPersona } = yield* Schema.decode(ChooseYourPersonaFieldSchema)(body)
+    const { chooseYourPersona } = yield* Schema.decodeEffect(ChooseYourPersonaFieldSchema)(body)
 
     return new CompletedForm({ chooseYourPersona })
   },
-  Effect.catchTag('ParseError', () =>
-    Effect.succeed(new InvalidForm({ chooseYourPersona: Either.left(new Missing()) })),
+  Effect.catchTag('SchemaError', () =>
+    Effect.succeed(new InvalidForm({ chooseYourPersona: Result.fail(new Missing()) })),
   ),
 )
 
@@ -32,8 +32,10 @@ export const fromPersonaChoice: (personaChoice: Option.Option<'public' | 'pseudo
     onSome: personaChoice => new CompletedForm({ chooseYourPersona: personaChoice }),
   })
 
-const ChooseYourPersonaFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    chooseYourPersona: Schema.Literal('public', 'pseudonym'),
-  }),
+const ChooseYourPersonaFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      chooseYourPersona: Schema.Literals(['public', 'pseudonym']),
+    }),
+  ),
 )

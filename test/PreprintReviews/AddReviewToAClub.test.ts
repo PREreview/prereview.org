@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { Effect, Either } from 'effect'
+import { Effect, Result } from 'effect'
 import { Keyv } from '../../src/keyv.ts'
 import * as _ from '../../src/PreprintReviews/AddReviewToAClub.ts'
 import { FormC, formKey, PreprintReviewNotFound, UnknownClub } from '../../src/PreprintReviews/index.ts'
@@ -22,26 +22,26 @@ const unknownClubId = Uuid('17248b36-7ba3-4fc2-b9c4-1edc10b57463')
 
 const clubs = [clubId, differentClubId]
 
-it.effect.each<[string, _.Input, Either.Either<void, _.Error>, (Uuid | null)?]>([
-  ['no review', { orcidId, preprintId: preprintWithNoReview, clubId }, Either.left(new PreprintReviewNotFound({}))],
+it.effect.each<[string, _.Input, Result.Result<void, _.Error>, (Uuid | null)?]>([
+  ['no review', { orcidId, preprintId: preprintWithNoReview, clubId }, Result.fail(new PreprintReviewNotFound({}))],
   [
     'different ORCID iD',
     { orcidId: differentOrcidId, preprintId: preprintWithReview, clubId },
-    Either.left(new PreprintReviewNotFound({})),
+    Result.fail(new PreprintReviewNotFound({})),
   ],
-  ['not answered', { orcidId, preprintId: preprintWithReview, clubId }, Either.void, clubId],
-  ['answered with no club', { orcidId, preprintId: preprintWithReviewNoClub, clubId }, Either.void, clubId],
+  ['not answered', { orcidId, preprintId: preprintWithReview, clubId }, Result.void, clubId],
+  ['answered with no club', { orcidId, preprintId: preprintWithReviewNoClub, clubId }, Result.void, clubId],
   [
     'answered with unknown club',
     { orcidId, preprintId: preprintWithReviewNoClub, clubId: unknownClubId },
-    Either.left(new UnknownClub()),
+    Result.fail(new UnknownClub()),
     null,
   ],
-  ['answered with club', { orcidId, preprintId: preprintWithReviewClub, clubId }, Either.void, clubId],
+  ['answered with club', { orcidId, preprintId: preprintWithReviewClub, clubId }, Result.void, clubId],
   [
     'answered with different club',
     { orcidId, preprintId: preprintWithReviewClub, clubId: differentClubId },
-    Either.void,
+    Result.void,
     differentClubId,
   ],
 ])('%s', ([, input, expectedReturn, expectedClub]) =>
@@ -52,7 +52,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, (Uuid | null)?]>(
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
 
-    const actualReturn = yield* Effect.either(_.AddReviewToAClub(formStore, clubs)(input))
+    const actualReturn = yield* Effect.result(_.AddReviewToAClub(formStore, clubs)(input))
     const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
 
     expect(actualReturn).toStrictEqual(expectedReturn)

@@ -1,4 +1,4 @@
-import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
+import { Data, Effect, Result, Match, pipe, Schema } from 'effect'
 import type * as Comments from '../../../Comments/index.ts'
 import { NonEmptyString } from '../../../types/index.ts'
 
@@ -9,8 +9,8 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  competingInterests: Either.Either<'yes', Missing>
-  competingInterestsDetails: Either.Either<string, Missing>
+  competingInterests: Result.Result<'yes', Missing>
+  competingInterestsDetails: Result.Result<string, Missing>
 }> {}
 
 type CompletedForm = CompletedFormNo | CompletedFormYes
@@ -26,12 +26,9 @@ export class CompletedFormYes extends Data.TaggedClass('CompletedFormYes')<{
 
 export const fromBody = (body: unknown) =>
   Effect.gen(function* () {
-    const { competingInterests, competingInterestsDetails } = yield* Schema.decodeUnknown(
+    const { competingInterests, competingInterestsDetails } = yield* Schema.decodeUnknownEffect(
       CompetingInterestsFieldsSchema,
-      {
-        errors: 'all',
-        exact: false,
-      },
+      { errors: 'all' },
     )(body)
 
     if (competingInterests === 'no') {
@@ -40,18 +37,18 @@ export const fromBody = (body: unknown) =>
 
     if (!NonEmptyString.isNonEmptyString(competingInterestsDetails)) {
       return new InvalidForm({
-        competingInterests: Either.right(competingInterests),
-        competingInterestsDetails: Either.left(new Missing()),
+        competingInterests: Result.succeed(competingInterests),
+        competingInterestsDetails: Result.fail(new Missing()),
       })
     }
 
     return new CompletedFormYes({ competingInterests, competingInterestsDetails })
   }).pipe(
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          competingInterests: Either.left(new Missing()),
-          competingInterestsDetails: Either.right(''),
+          competingInterests: Result.fail(new Missing()),
+          competingInterestsDetails: Result.succeed(''),
         }),
       ),
     ),
@@ -88,6 +85,6 @@ export const fromComment = pipe(
 )
 
 const CompetingInterestsFieldsSchema = Schema.Struct({
-  competingInterests: Schema.Literal('yes', 'no'),
+  competingInterests: Schema.Literals(['yes', 'no']),
   competingInterestsDetails: Schema.String,
 })

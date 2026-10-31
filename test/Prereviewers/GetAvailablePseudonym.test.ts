@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either } from 'effect'
+import { Array, Result } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/GetAvailablePseudonym.ts'
 import { OrcidId, Pseudonym } from '../../src/types/index.ts'
@@ -36,14 +36,14 @@ const possiblePseudonyms = new Set([
 ])
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', [], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
-  ['first pseudonym used', [imported1], Either.right(Pseudonym.Pseudonym('Blue Sheep'))],
-  ['second pseudonym used', [registered2], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
-  ['legacy pseudonym in use', [imported1, imported2, registered2], Either.right(Pseudonym.Pseudonym('Green Horse'))],
+  ['no events', [], Result.succeed(Pseudonym.Pseudonym('Orange Panda'))],
+  ['first pseudonym used', [imported1], Result.succeed(Pseudonym.Pseudonym('Blue Sheep'))],
+  ['second pseudonym used', [registered2], Result.succeed(Pseudonym.Pseudonym('Orange Panda'))],
+  ['legacy pseudonym in use', [imported1, imported2, registered2], Result.succeed(Pseudonym.Pseudonym('Green Horse'))],
   [
     'all pseudonyms used',
     [imported1, registered2, imported2, imported2replaced],
-    Either.left(new _.NoPseudonymAvailable()),
+    Result.fail(new _.NoPseudonymAvailable()),
   ],
 ])('%s', (_name, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.GetAvailablePseudonym(possiblePseudonyms)

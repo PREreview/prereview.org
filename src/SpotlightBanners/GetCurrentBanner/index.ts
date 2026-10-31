@@ -18,13 +18,13 @@ export const GetCurrentBanner: Effect.Effect<
     order: 'sys.createdAt',
   })
 
-  if (!Array.isNonEmptyReadonlyArray(items)) {
+  if (!Array.isReadonlyArrayNonEmpty(items)) {
     return Option.none()
   }
 
-  return yield* Effect.asSome(Schema.decodeUnknown(EntryToSpotlightBanner)(items[0]))
+  return yield* Effect.asSome(Schema.decodeUnknownEffect(EntryToSpotlightBanner)(items[0]))
 }).pipe(
-  Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
+  Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>
     pipe(
       Effect.logError('Unable to get current banner'),
       Effect.annotateLogs({ error }),

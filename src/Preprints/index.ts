@@ -6,7 +6,7 @@ export * from './Preprint.ts'
 export * from './PreprintId.ts'
 export * from './PreprintServers.ts'
 
-export class Preprints extends Context.Tag('Preprints')<
+export class Preprints extends Context.Service<
   Preprints,
   {
     getPreprint: (
@@ -22,7 +22,7 @@ export class Preprints extends Context.Tag('Preprints')<
       ...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>
     ) => Effect.Effect<PreprintId, Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
   }
->() {}
+>()('Preprints') {}
 
 export const getPreprint = (...args: Parameters<(typeof Preprints.Service)['getPreprint']>) =>
   Effect.flatMap(Preprints, service => service.getPreprint(...args))

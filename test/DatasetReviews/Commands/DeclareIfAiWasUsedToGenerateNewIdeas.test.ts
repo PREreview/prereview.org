@@ -1,6 +1,6 @@
 import { expect, it, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import * as _ from '../../../src/DatasetReviews/Commands/DeclareIfAiWasUsedToGenerateNewIdeas.ts'
 import * as Errors from '../../../src/DatasetReviews/Errors.ts'
@@ -80,15 +80,15 @@ test.each<
     string,
     ReadonlyArray<Events.Event>,
     _.Input,
-    Either.Either<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
+    Result.Result<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
   ]
 >([
-  ['no events', [], input, Either.left(new Errors.DatasetReviewHasNotBeenStarted())],
+  ['no events', [], input, Result.fail(new Errors.DatasetReviewHasNotBeenStarted())],
   [
     'not declared',
     [started],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'yes', detail: Option.none() },
@@ -101,7 +101,7 @@ test.each<
     'not declared, with a detail',
     [started],
     inputWithDetail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'yes', detail: Option.some(NonEmptyString('Some details')) },
@@ -110,13 +110,13 @@ test.each<
       ),
     ),
   ],
-  ['same answer', [started, declared], input, Either.right(Option.none())],
-  ['same answer and detail', [started, declaredWithDetail], inputWithDetail, Either.right(Option.none())],
+  ['same answer', [started, declared], input, Result.succeed(Option.none())],
+  ['same answer and detail', [started, declaredWithDetail], inputWithDetail, Result.succeed(Option.none())],
   [
     'different answer',
     [started, declared],
     inputDifferentAnswer,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'no' },
@@ -125,12 +125,12 @@ test.each<
       ),
     ),
   ],
-  ['same answer of no', [started, declaredNo], inputDifferentAnswer, Either.right(Option.none())],
+  ['same answer of no', [started, declaredNo], inputDifferentAnswer, Result.succeed(Option.none())],
   [
     'no changed to yes',
     [started, declaredNo],
     inputWithDetail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'yes', detail: Option.some(NonEmptyString('Some details')) },
@@ -143,7 +143,7 @@ test.each<
     'different detail',
     [started, declaredWithDetail],
     inputWithDifferentDetail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'yes', detail: Option.some(NonEmptyString('Some other details')) },
@@ -156,7 +156,7 @@ test.each<
     'detail removed',
     [started, declaredWithDetail],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
           generativeAiIdeas: { answer: 'yes', detail: Option.none() },
@@ -169,25 +169,25 @@ test.each<
     'different dataset review ID',
     [started],
     inputDifferentDatasetReviewId,
-    Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different user ID',
     [started],
     inputDifferentUserId,
-    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+    Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
   [
     'publication requested',
     [started, declared, publicationRequested],
     input,
-    Either.left(new Errors.DatasetReviewIsBeingPublished()),
+    Result.fail(new Errors.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     [started, declared, publicationRequested, published],
     input,
-    Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    Result.fail(new Errors.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, authorize, decide } = _.DeclareIfAiWasUsedToGenerateNewIdeas
@@ -196,7 +196,7 @@ test.each<
 
   const actual = authorize(state, input)
     ? decide(state, input)
-    : Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
+    : Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
 
   expect(actual).toStrictEqual(expected)
 })
@@ -213,10 +213,10 @@ it.prop(
     const { foldState, decide } = _.DeclareIfAiWasUsedToGenerateNewIdeas
     const input = { ...answer, datasetReviewId: started.datasetReviewId, userId: started.authorId } satisfies _.Input
 
-    const event = Option.getOrThrow(Either.getOrThrow(decide(foldState([started], input), input)))
+    const event = Option.getOrThrow(Result.getOrThrow(decide(foldState([started], input), input)))
 
     const actual = decide(foldState([started, event], input), input)
 
-    expect(actual).toStrictEqual(Either.right(Option.none()))
+    expect(actual).toStrictEqual(Result.succeed(Option.none()))
   },
 )

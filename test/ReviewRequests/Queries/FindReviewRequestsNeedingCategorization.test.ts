@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/FindReviewRequestsNeedingCategorization.ts'
@@ -59,7 +59,7 @@ const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 test('FindReviewRequestsNeedingCategorization', () => {
   const actual = _.FindReviewRequestsNeedingCategorization.query([request1Imported, request1Categorized])
 
-  expect(actual).toStrictEqual(Either.right([]))
+  expect(actual).toStrictEqual(Result.succeed([]))
 })
 
 test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
@@ -83,5 +83,5 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
 ])('FindReviewRequestsNeedingCategorization (%s)', (_name, events, expected) => {
   const actual = _.FindReviewRequestsNeedingCategorization.query(events)
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(Result.succeed(expected))
 })

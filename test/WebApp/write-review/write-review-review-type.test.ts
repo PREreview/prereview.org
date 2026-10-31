@@ -29,7 +29,7 @@ describe('writeReviewReviewType', () => {
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({ formStore, runtime }),
@@ -68,7 +68,7 @@ describe('writeReviewReviewType', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({
@@ -106,7 +106,7 @@ describe('writeReviewReviewType', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({
@@ -134,7 +134,7 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.reviewType(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprint, reviewType, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({
@@ -178,7 +178,7 @@ describe('writeReviewReviewType', () => {
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({
@@ -205,7 +205,7 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({ formStore: new Keyv(), runtime }),
@@ -227,7 +227,7 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({ formStore: new Keyv(), runtime }),
@@ -259,7 +259,7 @@ describe('writeReviewReviewType', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method: 'POST' })({ formStore, runtime }),
@@ -285,7 +285,7 @@ describe('writeReviewReviewType', () => {
       Effect.gen(function* () {
         const formStore = new Keyv()
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user: undefined, body, method })({ formStore, runtime }),

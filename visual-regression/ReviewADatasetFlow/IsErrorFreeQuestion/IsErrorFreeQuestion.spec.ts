@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as IsErrorFreeForm from '../../../src/WebApp/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -38,10 +38,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.IsErrorFreeQuestion({
     datasetReviewId,
     form: new IsErrorFreeForm.InvalidForm({
-      isErrorFree: Either.left(new IsErrorFreeForm.Missing()),
-      isErrorFreeYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      isErrorFreePartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      isErrorFreeNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      isErrorFree: Result.fail(new IsErrorFreeForm.Missing()),
+      isErrorFreeYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      isErrorFreePartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      isErrorFreeNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

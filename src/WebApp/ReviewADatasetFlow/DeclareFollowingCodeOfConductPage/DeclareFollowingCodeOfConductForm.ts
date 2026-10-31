@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Boolean, Data, Effect, Either, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Boolean, Data, Effect, Result, Schema } from 'effect'
 
 export type DeclareFollowingCodeOfConductForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -8,7 +8,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  followingCodeOfConduct: Either.Either<never, Missing>
+  followingCodeOfConduct: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -17,12 +17,12 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(
   function* (body: UrlParams.UrlParams) {
-    const { followingCodeOfConduct } = yield* Schema.decode(FollowingCodeOfConductFieldSchema)(body)
+    const { followingCodeOfConduct } = yield* Schema.decodeEffect(FollowingCodeOfConductFieldSchema)(body)
 
     return new CompletedForm({ followingCodeOfConduct })
   },
-  Effect.catchTag('ParseError', () =>
-    Effect.succeed(new InvalidForm({ followingCodeOfConduct: Either.left(new Missing()) })),
+  Effect.catchTag('SchemaError', () =>
+    Effect.succeed(new InvalidForm({ followingCodeOfConduct: Result.fail(new Missing()) })),
   ),
 )
 
@@ -31,8 +31,10 @@ export const fromHasBeenDeclared: (hasBeenDeclared: boolean) => DeclareFollowing
   onTrue: () => new CompletedForm({ followingCodeOfConduct: 'yes' }),
 })
 
-const FollowingCodeOfConductFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    followingCodeOfConduct: Schema.Literal('yes'),
-  }),
+const FollowingCodeOfConductFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      followingCodeOfConduct: Schema.Literal('yes'),
+    }),
+  ),
 )

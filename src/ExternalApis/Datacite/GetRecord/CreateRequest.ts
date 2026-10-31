@@ -1,4 +1,4 @@
-import { HttpClientRequest } from '@effect/platform'
+import { HttpClientRequest } from 'effect/http'
 import type { Doi } from '../../../types/index.ts'
 
 export const CreateRequest = (doi: Doi.Doi) =>

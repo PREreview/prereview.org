@@ -1,20 +1,17 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetEprint } from './GetEprint/index.ts'
 
 export { Eprint } from './Eprint.ts'
 
-export class Philsci extends Context.Tag('Philsci')<
+export class Philsci extends Context.Service<
   Philsci,
   {
     getEprint: (
       ...args: Parameters<typeof GetEprint>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetEprint>>,
-      Effect.Effect.Error<ReturnType<typeof GetEprint>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetEprint>>, Effect.Error<ReturnType<typeof GetEprint>>>
   }
->() {}
+>()('Philsci') {}
 
 export const getEprint = (...args: Parameters<(typeof Philsci.Service)['getEprint']>) =>
   Effect.flatMap(Philsci, service => service.getEprint(...args))

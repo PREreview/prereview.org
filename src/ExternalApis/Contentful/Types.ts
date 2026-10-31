@@ -1,16 +1,24 @@
-import { type Array, Schema } from 'effect'
+import { type Array, Schema, SchemaTransformation } from 'effect'
 import { type NonEmptyString, NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
 import { type Instant, InstantSchema } from '../../types/Temporal.ts'
 
-const ProtocolRelativeUrl = Schema.transform(Schema.String.pipe(Schema.pattern(/^\/\//)), Schema.URL, {
-  strict: true,
-  decode: value => `https:${value}`,
-  encode: url => url.replace(/^[A-z][A-z0-9+.-]*:\/\//, '//'),
-})
+const ProtocolRelativeUrl = Schema.String.pipe(
+  Schema.check(Schema.isPattern(/^\/\//)),
+  Schema.decodeTo(
+    Schema.URLFromString,
+    SchemaTransformation.transform({
+      decode: value => `https:${value}`,
+      encode: url => url.replace(/^[A-z][A-z0-9+.-]*:\/\//, '//'),
+    }),
+  ),
+)
 
 export type ContentfulId = typeof ContentfulId.Type
 
-export const ContentfulId = Schema.String.pipe(Schema.pattern(/^[A-z0-9]+$/), Schema.brand('ContentfulId'))
+export const ContentfulId = Schema.String.pipe(
+  Schema.check(Schema.isPattern(/^[A-z0-9]+$/)),
+  Schema.brand('ContentfulId'),
+)
 
 export type Block =
   | Document
@@ -35,24 +43,32 @@ export type Inline = EntryHyperlink | Hyperlink
 export type Mark = Bold | Italic
 
 class Bold extends Schema.Class<Bold>('Bold')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('bold', 'Bold')).pipe(Schema.fromKey('type')),
+  _tag: Schema.Literal('bold').transform('Bold'),
 }) {}
+
+const BoldSchema = Bold.pipe(Schema.encodeKeys({ _tag: 'type' }))
 
 class Italic extends Schema.Class<Italic>('Italic')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('italic', 'Italic')).pipe(Schema.fromKey('type')),
+  _tag: Schema.Literal('italic').transform('Italic'),
 }) {}
+
+const ItalicSchema = Italic.pipe(Schema.encodeKeys({ _tag: 'type' }))
 
 export class Text extends Schema.Class<Text>('Text')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('text', 'Text')).pipe(Schema.fromKey('nodeType')),
+  _tag: Schema.Literal('text').transform('Text'),
   value: Schema.String,
-  marks: Schema.Array(Schema.Union(Bold, Italic)),
+  marks: Schema.Array(Schema.Union([BoldSchema, ItalicSchema])),
 }) {}
 
+const TextSchema = Text.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
+
 class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('hyperlink', 'Hyperlink')).pipe(Schema.fromKey('nodeType')),
+  _tag: Schema.Literal('hyperlink').transform('Hyperlink'),
   data: Schema.Struct({ uri: NonEmptyStringSchema }),
-  content: Schema.NonEmptyArray(Text),
+  content: Schema.NonEmptyArray(TextSchema),
 }) {}
+
+const HyperlinkSchema = Hyperlink.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class EntryLink extends Schema.Class<EntryLink>('EntryLink')({
   sys: Schema.Struct({
@@ -63,78 +79,94 @@ class EntryLink extends Schema.Class<EntryLink>('EntryLink')({
 }) {}
 
 class EntryHyperlink extends Schema.Class<EntryHyperlink>('EntryHyperlink')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('entry-hyperlink', 'EntryHyperlink')).pipe(
-    Schema.fromKey('nodeType'),
-  ),
+  _tag: Schema.Literal('entry-hyperlink').transform('EntryHyperlink'),
   data: Schema.Struct({
     target: Schema.suspend(
-      (): Schema.Schema<Entry | EntryLink | '[Circular]'> =>
-        Schema.Union(Entry, EntryLink, Schema.Literal('[Circular]')) as never,
+      (): Schema.Codec<Entry | EntryLink | '[Circular]'> =>
+        Schema.Union([Entry, EntryLink, Schema.Literal('[Circular]')]) as never,
     ),
   }),
-  content: Schema.NonEmptyArray(Text),
+  content: Schema.NonEmptyArray(TextSchema),
 }) {}
+
+const EntryHyperlinkSchema = EntryHyperlink.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 export class Heading1 extends Schema.Class<Heading1>('Heading1')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('heading-1', 'Heading1')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Text),
+  _tag: Schema.Literal('heading-1').transform('Heading1'),
+  content: Schema.NonEmptyArray(TextSchema),
 }) {}
+
+const Heading1Schema = Heading1.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 export class Heading2 extends Schema.Class<Heading2>('Heading2')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('heading-2', 'Heading2')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Text),
+  _tag: Schema.Literal('heading-2').transform('Heading2'),
+  content: Schema.NonEmptyArray(TextSchema),
 }) {}
+
+const Heading2Schema = Heading2.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 export class Heading3 extends Schema.Class<Heading3>('Heading3')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('heading-3', 'Heading3')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Text),
+  _tag: Schema.Literal('heading-3').transform('Heading3'),
+  content: Schema.NonEmptyArray(TextSchema),
 }) {}
+
+const Heading3Schema = Heading3.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class Paragraph extends Schema.Class<Paragraph>('Paragraph')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('paragraph', 'Paragraph')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(Text, Hyperlink, EntryHyperlink)),
+  _tag: Schema.Literal('paragraph').transform('Paragraph'),
+  content: Schema.NonEmptyArray(Schema.Union([TextSchema, HyperlinkSchema, EntryHyperlinkSchema])),
 }) {}
+
+const ParagraphSchema = Paragraph.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class ListItem extends Schema.Class<ListItem>('ListItem')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('list-item', 'ListItem')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Paragraph),
+  _tag: Schema.Literal('list-item').transform('ListItem'),
+  content: Schema.NonEmptyArray(ParagraphSchema),
 }) {}
+
+const ListItemSchema = ListItem.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class OrderedList extends Schema.Class<OrderedList>('OrderedList')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('ordered-list', 'OrderedList')).pipe(
-    Schema.fromKey('nodeType'),
-  ),
-  content: Schema.NonEmptyArray(ListItem),
+  _tag: Schema.Literal('ordered-list').transform('OrderedList'),
+  content: Schema.NonEmptyArray(ListItemSchema),
 }) {}
+
+const OrderedListSchema = OrderedList.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class UnorderedList extends Schema.Class<UnorderedList>('UnorderedList')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('unordered-list', 'UnorderedList')).pipe(
-    Schema.fromKey('nodeType'),
-  ),
-  content: Schema.NonEmptyArray(ListItem),
+  _tag: Schema.Literal('unordered-list').transform('UnorderedList'),
+  content: Schema.NonEmptyArray(ListItemSchema),
 }) {}
+
+const UnorderedListSchema = UnorderedList.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class TableHeaderCell extends Schema.Class<TableHeaderCell>('TableHeaderCell')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('table-header-cell', 'TableHeaderCell')).pipe(
-    Schema.fromKey('nodeType'),
-  ),
-  content: Schema.NonEmptyArray(Schema.Union(Paragraph, OrderedList, UnorderedList)),
+  _tag: Schema.Literal('table-header-cell').transform('TableHeaderCell'),
+  content: Schema.NonEmptyArray(Schema.Union([ParagraphSchema, OrderedListSchema, UnorderedListSchema])),
 }) {}
+
+const TableHeaderCellSchema = TableHeaderCell.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class TableCell extends Schema.Class<TableCell>('TableCell')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('table-cell', 'TableCell')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(Paragraph)),
+  _tag: Schema.Literal('table-cell').transform('TableCell'),
+  content: Schema.NonEmptyArray(Schema.Union([ParagraphSchema])),
 }) {}
+
+const TableCellSchema = TableCell.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class TableRow extends Schema.Class<TableRow>('TableRow')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('table-row', 'TableRow')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(TableHeaderCell, TableCell)),
+  _tag: Schema.Literal('table-row').transform('TableRow'),
+  content: Schema.NonEmptyArray(Schema.Union([TableHeaderCellSchema, TableCellSchema])),
 }) {}
 
+const TableRowSchema = TableRow.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
+
 class Table extends Schema.Class<Table>('Table')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('table', 'Table')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(TableRow),
+  _tag: Schema.Literal('table').transform('Table'),
+  content: Schema.NonEmptyArray(TableRowSchema),
 }) {}
+
+const TableSchema = Table.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 export class ImageAsset extends Schema.Class<ImageAsset>('ImageAsset')({
   sys: Schema.Struct({
@@ -142,15 +174,15 @@ export class ImageAsset extends Schema.Class<ImageAsset>('ImageAsset')({
     locale: Schema.optional(Schema.NonEmptyString),
   }),
   fields: Schema.Struct({
-    title: Schema.Record({ key: NonEmptyStringSchema, value: NonEmptyStringSchema }),
-    file: Schema.Record({
-      key: NonEmptyStringSchema,
-      value: Schema.Struct({
-        url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
+    title: Schema.Record(NonEmptyStringSchema, NonEmptyStringSchema),
+    file: Schema.Record(
+      NonEmptyStringSchema,
+      Schema.Struct({
+        url: Schema.Union([ProtocolRelativeUrl, Schema.URLFromString]),
         details: Schema.Struct({ image: Schema.Struct({ width: Schema.Int, height: Schema.Int }) }),
-        contentType: Schema.TemplateLiteral('image/', Schema.String),
+        contentType: Schema.TemplateLiteral(['image/', Schema.String]),
       }),
-    }),
+    ),
   }),
 }) {
   readonly _tag = 'ImageAsset'
@@ -162,14 +194,14 @@ export class VideoAsset extends Schema.Class<VideoAsset>('VideoAsset')({
     locale: Schema.optional(Schema.NonEmptyString),
   }),
   fields: Schema.Struct({
-    title: Schema.Record({ key: NonEmptyStringSchema, value: NonEmptyStringSchema }),
-    file: Schema.Record({
-      key: NonEmptyStringSchema,
-      value: Schema.Struct({
-        url: Schema.Union(ProtocolRelativeUrl, Schema.URL),
-        contentType: Schema.TemplateLiteral('video/', Schema.String),
+    title: Schema.Record(NonEmptyStringSchema, NonEmptyStringSchema),
+    file: Schema.Record(
+      NonEmptyStringSchema,
+      Schema.Struct({
+        url: Schema.Union([ProtocolRelativeUrl, Schema.URLFromString]),
+        contentType: Schema.TemplateLiteral(['video/', Schema.String]),
       }),
-    }),
+    ),
   }),
 }) {
   readonly _tag = 'VideoAsset'
@@ -177,54 +209,60 @@ export class VideoAsset extends Schema.Class<VideoAsset>('VideoAsset')({
 
 export type Asset = typeof Asset.Type
 
-export const Asset = Schema.Union(ImageAsset, VideoAsset)
+export const Asset = Schema.Union([ImageAsset, VideoAsset])
 
 class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAssetBlock')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('embedded-asset-block', 'EmbeddedAssetBlock')).pipe(
-    Schema.fromKey('nodeType'),
-  ),
+  _tag: Schema.Literal('embedded-asset-block').transform('EmbeddedAssetBlock'),
   data: Schema.Struct({ target: Asset }),
 }) {}
 
+const EmbeddedAssetBlockSchema = EmbeddedAssetBlock.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
+
 class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntryBlock')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('embedded-entry-block', 'EmbeddedEntryBlock')).pipe(
-    Schema.fromKey('nodeType'),
-  ),
+  _tag: Schema.Literal('embedded-entry-block').transform('EmbeddedEntryBlock'),
   data: Schema.Struct({
     target: Schema.suspend(
-      (): Schema.Schema<Entry | EntryLink | '[Circular]'> =>
-        Schema.Union(Entry, EntryLink, Schema.Literal('[Circular]')) as never,
+      (): Schema.Codec<Entry | EntryLink | '[Circular]'> =>
+        Schema.Union([Entry, EntryLink, Schema.Literal('[Circular]')]) as never,
     ),
   }),
 }) {}
 
+const EmbeddedEntryBlockSchema = EmbeddedEntryBlock.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
+
 class BlockQuote extends Schema.Class<BlockQuote>('BlockQuote')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('blockquote', 'BlockQuote')).pipe(Schema.fromKey('nodeType')),
-  content: Schema.NonEmptyArray(Schema.Union(Paragraph)),
+  _tag: Schema.Literal('blockquote').transform('BlockQuote'),
+  content: Schema.NonEmptyArray(Schema.Union([ParagraphSchema])),
 }) {}
+
+const BlockQuoteSchema = BlockQuote.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class HorizontalRule extends Schema.Class<HorizontalRule>('HorizontalRule')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('hr', 'HorizontalRule')).pipe(Schema.fromKey('nodeType')),
+  _tag: Schema.Literal('hr').transform('HorizontalRule'),
 }) {}
 
+const HorizontalRuleSchema = HorizontalRule.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
+
 export class Document extends Schema.Class<Document>('Document')({
-  _tag: Schema.propertySignature(Schema.transformLiteral('document', 'Document')).pipe(Schema.fromKey('nodeType')),
+  _tag: Schema.Literal('document').transform('Document'),
   content: Schema.NonEmptyArray(
-    Schema.Union(
-      Heading1,
-      Heading2,
-      Heading3,
-      Paragraph,
-      OrderedList,
-      UnorderedList,
-      Table,
-      EmbeddedAssetBlock,
-      EmbeddedEntryBlock,
-      BlockQuote,
-      HorizontalRule,
-    ),
+    Schema.Union([
+      Heading1Schema,
+      Heading2Schema,
+      Heading3Schema,
+      ParagraphSchema,
+      OrderedListSchema,
+      UnorderedListSchema,
+      TableSchema,
+      EmbeddedAssetBlockSchema,
+      EmbeddedEntryBlockSchema,
+      BlockQuoteSchema,
+      HorizontalRuleSchema,
+    ]),
   ),
 }) {}
+
+const DocumentSchema = Document.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 export class Entry extends Schema.Class<Entry>('Entry')({
   sys: Schema.Struct({
@@ -238,12 +276,12 @@ export class Entry extends Schema.Class<Entry>('Entry')({
     }),
     createdAt: InstantSchema,
   }),
-  fields: Schema.Record({
-    key: ContentfulId,
-    value: Schema.Record({
-      key: NonEmptyStringSchema,
-      value: Schema.suspend(
-        (): Schema.Schema<
+  fields: Schema.Record(
+    ContentfulId,
+    Schema.Record(
+      NonEmptyStringSchema,
+      Schema.suspend(
+        (): Schema.Codec<
           | Instant
           | NonEmptyString
           | Document
@@ -253,21 +291,21 @@ export class Entry extends Schema.Class<Entry>('Entry')({
           | Array.NonEmptyReadonlyArray<NonEmptyString>,
           unknown
         > =>
-          Schema.Union(
+          Schema.Union([
             InstantSchema,
             NonEmptyStringSchema,
-            Document,
+            DocumentSchema,
             Asset,
             Entry,
             Schema.NonEmptyArray(Entry),
             Schema.NonEmptyArray(NonEmptyStringSchema),
-          ) as never,
+          ]) as never,
       ),
-    }),
-  }),
+    ),
+  ),
 }) {}
 
 export class Entries extends Schema.Class<Entries>('Entries')({
-  total: Schema.NonNegativeInt,
+  total: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
   items: Schema.Array(Entry),
 }) {}

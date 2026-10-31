@@ -28,7 +28,7 @@ describe('writeReviewChangeAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewChangeAuthor({ body, id, locale, method: 'POST', number, user })({ formStore, runtime }),
@@ -74,7 +74,7 @@ describe('writeReviewChangeAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewChangeAuthor({ body, id, locale, method: 'POST', number, user })({
@@ -115,7 +115,7 @@ describe('writeReviewChangeAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number, user })({ formStore, runtime }),
@@ -159,7 +159,7 @@ describe('writeReviewChangeAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number, user })({ formStore, runtime }),
@@ -186,7 +186,7 @@ describe('writeReviewChangeAuthor', () => {
     ],
     ([id, preprintTitle, body, method, number, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number, user })({ formStore: new Keyv(), runtime }),
@@ -217,7 +217,7 @@ describe('writeReviewChangeAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number, user })({ formStore, runtime }),
@@ -243,7 +243,7 @@ describe('writeReviewChangeAuthor', () => {
           () => new PreprintIsUnavailable({}),
         )
 
-        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
+        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number, user })({ formStore: new Keyv(), runtime }),
@@ -266,7 +266,7 @@ describe('writeReviewChangeAuthor', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user(), fc.supportedLocale()],
     ([id, body, method, number, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number, user })({ formStore: new Keyv(), runtime }),
@@ -288,7 +288,7 @@ describe('writeReviewChangeAuthor', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.integer(), fc.supportedLocale()],
     ([id, preprintTitle, body, method, number, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewChangeAuthor({ body, id, locale, method, number })({ formStore: new Keyv(), runtime }),

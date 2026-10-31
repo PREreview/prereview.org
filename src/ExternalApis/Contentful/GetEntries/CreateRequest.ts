@@ -1,4 +1,4 @@
-import { HttpClientRequest, type UrlParams } from '@effect/platform'
+import { HttpClientRequest, type UrlParams } from 'effect/http'
 import { Effect, identity, pipe } from 'effect'
 import { ContentfulConfig, UsePreviewApi } from '../ContentfulConfig.ts'
 

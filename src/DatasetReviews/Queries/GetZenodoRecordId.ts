@@ -1,23 +1,23 @@
-import { Array, Either, Option, type Types } from 'effect'
+import { Array, Result, Option, type Types } from 'effect'
 import * as Queries from '../../Queries.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 
 export const GetZenodoRecordId = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-): Either.Either<number, Errors.DatasetReviewDoesNotHaveAZenodoRecord | Queries.UnexpectedSequenceOfEvents> => {
+): Result.Result<number, Errors.DatasetReviewDoesNotHaveAZenodoRecord | Queries.UnexpectedSequenceOfEvents> => {
   if (!hasEvent(events, 'DatasetReviewWasStarted')) {
-    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   return Option.match(Array.findLast(events, hasTag('ZenodoRecordForDatasetReviewWasCreated')), {
     onNone: () =>
-      Either.left(
+      Result.fail(
         new Errors.DatasetReviewDoesNotHaveAZenodoRecord({
           cause: 'No ZenodoRecordForDatasetReviewWasCreated event found',
         }),
       ),
-    onSome: zenodoRecordForDatasetReviewWasCreated => Either.right(zenodoRecordForDatasetReviewWasCreated.recordId),
+    onSome: zenodoRecordForDatasetReviewWasCreated => Result.succeed(zenodoRecordForDatasetReviewWasCreated.recordId),
   })
 }
 

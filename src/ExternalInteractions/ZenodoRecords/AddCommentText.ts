@@ -1,4 +1,4 @@
-import { HttpClient, type HttpClientError, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientResponse } from 'effect/http'
 import { Effect, pipe } from 'effect'
 import { sanitizeHtml } from '../../html.ts'
 import type * as ReviewPage from '../../WebApp/review-page/index.ts'

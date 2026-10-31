@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
@@ -71,8 +71,9 @@ export const OthersNeedToBeListedOnTheReviewSubmission = ({
             userId: user.orcid,
           })
 
-          const nextExpectedCommand = yield* Effect.flatten(
+          const nextExpectedCommand = yield* Effect.flatMap(
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+            Effect.fromOption,
           )
 
           if (
@@ -88,7 +89,7 @@ export const OthersNeedToBeListedOnTheReviewSubmission = ({
             location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
           })
         },
-        Effect.catchAll(() => HavingProblemsPage),
+        Effect.catch(() => HavingProblemsPage),
       ),
       InvalidForm: form => Effect.succeed(OthersNeedToBeListedPage({ datasetReviewId, form, locale })),
     })

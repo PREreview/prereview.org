@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { type Array, Either } from 'effect'
+import { type Array, Result } from 'effect'
 import * as _ from '../../src/Clubs/GetClubByName.ts'
 import { type ClubDetails, ClubNotFound } from '../../src/Clubs/index.ts'
 import { html } from '../../src/html.ts'
@@ -51,14 +51,24 @@ it.each<[string, Name, _.Result]>([
   [
     'by name',
     clubName,
-    Either.right({ id: clubs[0].id, language: clubs[0].name.language, name: clubs[0].name.text, slug: clubs[0].slug }),
+    Result.succeed({
+      id: clubs[0].id,
+      language: clubs[0].name.language,
+      name: clubs[0].name.text,
+      slug: clubs[0].slug,
+    }),
   ],
   [
     'by former name',
     formerName,
-    Either.right({ id: clubs[1].id, language: clubs[1].name.language, name: clubs[1].name.text, slug: clubs[1].slug }),
+    Result.succeed({
+      id: clubs[1].id,
+      language: clubs[1].name.language,
+      name: clubs[1].name.text,
+      slug: clubs[1].slug,
+    }),
   ],
-  ['by other name', otherName, Either.left(new ClubNotFound())],
+  ['by other name', otherName, Result.fail(new ClubNotFound())],
 ])('with a club name (%s)', (_name, input, expected) => {
   const actual = _.GetClubByName(clubs)(input)
 

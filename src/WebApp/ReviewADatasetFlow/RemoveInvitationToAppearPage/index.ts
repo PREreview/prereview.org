@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
@@ -97,7 +97,7 @@ export const RemoveInvitationToAppearSubmission = ({
             location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
           })
         },
-        Effect.catchAll(() => HavingProblemsPage),
+        Effect.catch(() => HavingProblemsPage),
       ),
       InvalidForm: Effect.fnUntraced(
         function* () {
@@ -109,7 +109,7 @@ export const RemoveInvitationToAppearSubmission = ({
 
           return createRemoveInvitationToAppearPage({ authorName, datasetReviewId, invitationId, form, locale })
         },
-        Effect.catchAll(() => HavingProblemsPage),
+        Effect.catch(() => HavingProblemsPage),
       ),
     })
   })

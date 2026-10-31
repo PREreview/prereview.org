@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Either, flow, Layer, Option, pipe, Scope } from 'effect'
+import { Context, Data, Effect, Result, flow, Layer, Option, pipe, Scope } from 'effect'
 import * as Commands from '../../Commands.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -15,7 +15,7 @@ import * as RejectReviewRequest from './RejectReviewRequest.ts'
 import { StartReviewRequest } from './StartReviewRequest.ts'
 import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
-export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
+export class ReviewRequestCommands extends Context.Service<
   ReviewRequestCommands,
   {
     startReviewRequest: Commands.FromCommand<typeof StartReviewRequest>
@@ -33,7 +33,7 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
     recordFailureToCategorizeReviewRequest: CommandHandler<RecordFailureToCategorizeReviewRequest.Command>
     recordEmailSentToAcknowledgeReviewRequest: CommandHandler<RecordEmailSentToAcknowledgeReviewRequest.Command>
   }
->() {}
+>()('ReviewRequestCommands') {}
 
 type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = never> = (
   command: Command,
@@ -99,7 +99,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         command: Command,
       ) => (
         state: State,
-      ) => Option.Option<Events.ReviewRequestEvent> | Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>,
+      ) => Option.Option<Events.ReviewRequestEvent> | Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>,
     ): CommandHandler<Command, Error> =>
       Effect.fn(
         function* (command) {
@@ -113,20 +113,20 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
           yield* pipe(
             Effect.succeed(foldState(events, command.reviewRequestId)),
             Effect.map(decide(command)),
-            Effect.andThen(decision => (Either.isEither(decision) ? decision : Either.right(decision))),
+            Effect.andThen(decision =>
+              Effect.fromResult(Result.isResult(decision) ? decision : Result.succeed(decision)),
+            ),
             Effect.tap(
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+                  EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
               }),
             ),
           )
         },
         Effect.catchTag(
-          'FailedToCommitEvent',
-          'FailedToGetEvents',
-          'NewEventsFound',
+          ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
           cause => new UnableToHandleCommand({ cause }),
         ),
         Effect.provide(context),

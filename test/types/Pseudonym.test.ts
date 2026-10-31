@@ -1,9 +1,10 @@
 import { describe, expect, it } from '../vitest.ts'
-import { Effect, Either, Schema } from 'effect'
-import { ArrayFormatter } from 'effect/ParseResult'
+import { Effect, Result, Schema, SchemaIssue } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/Pseudonym.ts'
 import * as fc from '../fc.ts'
+
+const formatError = (error: Schema.SchemaError) => SchemaIssue.makeFormatterStandardSchemaV1()(error.issue).issues
 
 describe('PseudonymC', () => {
   describe('decode', () => {
@@ -42,19 +43,19 @@ describe('PseudonymSchema', () => {
     })
 
     it.prop('with a non-pseudonym', [fc.string()], ([string]) => {
-      const actual = Either.mapLeft(Schema.decodeEither(_.PseudonymSchema)(string), ArrayFormatter.formatErrorSync)
+      const actual = Result.mapError(Schema.decodeResult(_.PseudonymSchema)(string), formatError)
 
       expect(actual).toStrictEqual(
-        Either.left([
+        Result.fail([
           expect.objectContaining({ message: expect.stringMatching(/^(?:not a pseudonym|string is empty)$/) }),
         ]),
       )
     })
 
     it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
-      const actual = Schema.decodeUnknownEither(_.PseudonymSchema)(value)
+      const actual = Schema.decodeUnknownResult(_.PseudonymSchema)(value)
 
-      expect(actual).toStrictEqual(Either.left(expect.anything()))
+      expect(actual).toStrictEqual(Result.fail(expect.anything()))
     })
   })
 

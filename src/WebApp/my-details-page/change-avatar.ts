@@ -1,4 +1,4 @@
-import { Multipart } from '@effect/platform'
+import { Multipart } from 'effect/http'
 import { Match, Schema, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -13,6 +13,7 @@ import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import { FlashMessageResponse, LogInResponse } from '../Response/index.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { createPage } from './change-avatar-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeAvatar>>
@@ -55,18 +56,20 @@ const handleChangeAvatarForm = ({ body, locale, user }: { body: unknown; locale:
     RTE.let('avatar', () =>
       pipe(
         body,
-        Schema.decodeUnknownEither(
-          Schema.EitherFromSelf({
-            left: Multipart.MultipartError,
-            right: Schema.Struct({ avatar: Multipart.SingleFileSchema }),
-          }),
+        Schema.decodeUnknownResult(
+          Schema.Result(
+            Schema.Struct({ avatar: Multipart.SingleFileSchema }),
+            Schema.instanceOf(Multipart.MultipartError),
+          ),
         ),
+        EffectToFpts.either,
         E.mapLeft(() => missingE()),
         E.chain(
           flow(
+            EffectToFpts.either,
             E.mapLeft(error =>
               pipe(
-                Match.value(error.reason),
+                Match.value(error.reason._tag),
                 Match.whenOr('FileTooLarge', 'FieldTooLarge', 'BodyTooLarge', 'InternalError', () => tooBigE()),
                 Match.whenOr('TooManyParts', 'Parse', () => missingE()),
                 Match.exhaustive,

@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Commands from '../../src/Commands.ts'
 import {
   AcceptedInvitationIsNotFound,
@@ -90,27 +90,27 @@ test.each<
     string,
     ReadonlyArray<Events.Event>,
     _.Input,
-    Either.Either<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
+    Result.Result<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
   ]
 >([
-  ['no events', [], { orcidId, inviteId, chosenAt }, Either.left(new AcceptedInvitationIsNotFound())],
+  ['no events', [], { orcidId, inviteId, chosenAt }, Result.fail(new AcceptedInvitationIsNotFound())],
   [
     'invitation not accepted',
     [inviteAdded],
     { orcidId, inviteId, chosenAt },
-    Either.left(new AcceptedInvitationIsNotFound()),
+    Result.fail(new AcceptedInvitationIsNotFound()),
   ],
   [
     'invitation accepted by someone else',
     [inviteAdded, inviteAccepted],
     { orcidId: differentOrcid, inviteId, chosenAt },
-    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+    Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
   [
     'accepted invitation, no email address',
     [inviteAdded, inviteAccepted],
     { orcidId, inviteId, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId: inviteAccepted.invitationId,
@@ -125,13 +125,13 @@ test.each<
     'accepted invitation, but already verified imported',
     [inviteAdded, inviteAccepted, verifiedImported],
     { orcidId, inviteId, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'accepted invitation, but already unverified imported',
     [inviteAdded, inviteAccepted, unverifiedImported],
     { orcidId, inviteId, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId: inviteAccepted.invitationId,
@@ -146,19 +146,19 @@ test.each<
     'accepted invitation, but already verified after imported unverified',
     [inviteAdded, inviteAccepted, unverifiedImported, verifiedPreviouslyUnverified],
     { orcidId, inviteId, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'accepted invitation, but already verified recorded',
     [inviteAdded, inviteAccepted, addressRecorded, addressVerified],
     { orcidId, inviteId, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'accepted invitation, but already unverified recorded',
     [inviteAdded, inviteAccepted, addressRecorded],
     { orcidId, inviteId, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId: inviteAccepted.invitationId,
@@ -173,13 +173,13 @@ test.each<
     'accepted invitation, but already used another invite email address',
     [inviteAdded, inviteAccepted, authorInviteAddressChosen],
     { orcidId, inviteId, chosenAt },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'accepted invitation, newer address recorded',
     [inviteAdded, inviteAccepted, authorInviteAddressChosen, newerAddressRecorded],
     { orcidId, inviteId, chosenAt },
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.AuthorInviteEmailAddressChosenAsContactAddress({
           inviteId: inviteAccepted.invitationId,
@@ -197,7 +197,7 @@ test.each<
 
   const actual = authorize(state, input)
     ? decide(state, input)
-    : Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
+    : Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
 
   expect(actual).toStrictEqual(expected)
 })

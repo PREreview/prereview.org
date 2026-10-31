@@ -1,5 +1,5 @@
-import { HttpServerResponse } from '@effect/platform'
-import { Array, Effect, flow, Option, pipe, Record, Redacted, type Runtime } from 'effect'
+import { HttpServerResponse } from 'effect/http'
+import { Array, Effect, flow, Option, pipe, Record, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -97,21 +97,23 @@ export const DataRouter = pipe(
           ),
         })
 
-        return yield* HttpServerResponse.raw(json, { status: StatusCodes.OK, contentType: 'application/json' })
+        return HttpServerResponse.raw(json, { status: StatusCodes.OK, contentType: 'application/json' })
       },
       Effect.catchIf(
         (error): error is 'unavailable' => error === 'unavailable',
-        () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+        () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
       ),
       Effect.catchIf(
         // oxlint-disable-next-line typescript/no-unnecessary-condition
         (error): error is 'forbidden' => error === 'forbidden',
-        () => HttpServerResponse.empty({ status: StatusCodes.Forbidden }),
+        () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.Forbidden })),
       ),
     ),
   ),
 ) as P.Parser<
-  (env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, Runtime.Runtime.Context<Env['runtime']>>
+  (
+    env: Env,
+  ) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, EffectToFpts.ContextServices<Env['runtime']>>
 >
 
 const getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>

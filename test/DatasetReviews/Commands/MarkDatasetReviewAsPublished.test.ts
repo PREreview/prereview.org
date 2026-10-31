@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate } from 'effect'
+import { Array, Result, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkDatasetReviewAsPublished.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -151,13 +151,13 @@ describe('decide', () => {
   it.prop('has not been started', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.NotStarted(), { datasetReviewId, publicationDate })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   it.prop('has not been requested', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.NotRequested(), { datasetReviewId, publicationDate })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.PublicationOfDatasetReviewWasNotRequested()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.PublicationOfDatasetReviewWasNotRequested()))
   })
 
   it.prop(
@@ -167,7 +167,7 @@ describe('decide', () => {
       const result = _.decide(new _.NotReady({ missing }), { datasetReviewId, publicationDate })
 
       expect(result).toStrictEqual(
-        Either.left(new DatasetReviews.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
+        Result.fail(new DatasetReviews.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
       )
     },
   )
@@ -176,13 +176,13 @@ describe('decide', () => {
     const result = _.decide(new _.IsReady(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(
-      Either.right(Option.some(new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId, publicationDate }))),
+      Result.succeed(Option.some(new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId, publicationDate }))),
     )
   })
 
   it.prop('already marked as published', [fc.instant()], ([publicationDate]) => {
     const result = _.decide(new _.AlreadyMarkedAsPublished(), { datasetReviewId, publicationDate })
 
-    expect(result).toStrictEqual(Either.right(Option.none()))
+    expect(result).toStrictEqual(Result.succeed(Option.none()))
   })
 })

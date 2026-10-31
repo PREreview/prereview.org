@@ -1,25 +1,23 @@
-import { Array, Context, Effect, Layer, Option, pipe, PubSub, Queue, Ref, Schedule } from 'effect'
+import { Array, Context, Effect, Layer, Option, pipe, PubSub, Ref, Schedule, Semaphore } from 'effect'
 import * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
 type Subscriber = (events: Array.NonEmptyReadonlyArray<Events.Event>) => Effect.Effect<void>
 
-class LastKnownPosition extends Context.Tag('EventDispatcher/LastKnownPosition')<
-  LastKnownPosition,
-  Ref.Ref<Option.Option<EventStore.Position>>
->() {}
+class LastKnownPosition extends Context.Service<LastKnownPosition, Ref.Ref<Option.Option<EventStore.Position>>>()(
+  'EventDispatcher/LastKnownPosition',
+) {}
 
-class Subscribers extends Context.Tag('EventDispatcher/Subscribers')<
-  Subscribers,
-  Ref.Ref<ReadonlyArray<Subscriber>>
->() {}
+class Subscribers extends Context.Service<Subscribers, Ref.Ref<ReadonlyArray<Subscriber>>>()(
+  'EventDispatcher/Subscribers',
+) {}
 
-export class EventDispatcher extends Context.Tag('EventDispatcher')<
+export class EventDispatcher extends Context.Service<
   EventDispatcher,
   {
     addSubscriber: (subscriber: Subscriber) => Effect.Effect<void>
   }
->() {}
+>()('EventDispatcher') {}
 
 export const EventDispatcherLayer = Layer.mergeAll(
   Layer.provideMerge(
@@ -66,27 +64,27 @@ const dispatchNewEvents = Effect.gen(function* () {
   })
 })
 
-export const worker = Layer.scopedDiscard(
-  Effect.acquireReleaseInterruptible(
+export const worker = Layer.effectDiscard(
+  Effect.acquireRelease(
     Effect.gen(function* () {
       const events = yield* Events.Events
       const dequeue = yield* PubSub.subscribe(events)
 
-      const mutex = yield* Effect.makeSemaphore(1)
+      const mutex = yield* Semaphore.make(1)
 
       const safelyDispatchNewEvents = mutex.withPermits(1)(dispatchNewEvents)
 
       yield* pipe(
         safelyDispatchNewEvents,
-        Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
+        Effect.catch(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
         Effect.repeat(Schedule.fixed('2 seconds')),
         Effect.forkScoped,
       )
 
       yield* pipe(
-        Queue.take(dequeue),
+        PubSub.take(dequeue),
         Effect.andThen(safelyDispatchNewEvents),
-        Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
+        Effect.catch(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
         Effect.scoped,
         Effect.forever,
         Effect.forkScoped,
@@ -95,6 +93,7 @@ export const worker = Layer.scopedDiscard(
       yield* Effect.logDebug('EventDispatcher worker started')
     }),
     () => Effect.logDebug('EventDispatcher worker stopped'),
+    { interruptible: true },
   ),
 )
 

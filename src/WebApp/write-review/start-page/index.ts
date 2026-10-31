@@ -1,4 +1,4 @@
-import { Match, pipe } from 'effect'
+import { flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -36,7 +36,10 @@ export const writeReviewStart = ({
           RTE.Do,
           RTE.apS(
             'user',
-            pipe(RTE.fromNullable('no-session' as const)(user), RTE.chainEitherKW(ensureUserIsNotAnAuthor(preprint))),
+            pipe(
+              RTE.fromNullable('no-session' as const)(user),
+              RTE.chainEitherKW(flow(ensureUserIsNotAnAuthor(preprint), EffectToFpts.either)),
+            ),
           ),
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.apS('locale', RTE.of(locale)),

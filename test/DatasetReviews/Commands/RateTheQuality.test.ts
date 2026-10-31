@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/RateTheQuality.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -261,14 +261,14 @@ describe('decide', () => {
   it.prop('has not been started', [command()], ([command]) => {
     const result = _.decide(new _.NotStarted(), command)
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   it.prop('has not been rated', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.NotRated({ authorId }), command)
 
     expect(result).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new DatasetReviews.RatedTheQualityOfTheDataset({
             rating: command.rating,
@@ -293,7 +293,7 @@ describe('decide', () => {
         const result = _.decide(new _.HasBeenRated({ rating, detail: command.detail, authorId }), command)
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new DatasetReviews.RatedTheQualityOfTheDataset({
                 rating: command.rating,
@@ -318,7 +318,7 @@ describe('decide', () => {
         const result = _.decide(new _.HasBeenRated({ rating: command.rating, detail, authorId }), command)
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new DatasetReviews.RatedTheQualityOfTheDataset({
                 rating: command.rating,
@@ -334,19 +334,19 @@ describe('decide', () => {
     it.prop('with the same rating', [fc.orcidId(), command()], ([authorId, command]) => {
       const result = _.decide(new _.HasBeenRated({ rating: command.rating, detail: command.detail, authorId }), command)
 
-      expect(result).toStrictEqual(Either.right(Option.none()))
+      expect(result).toStrictEqual(Result.succeed(Option.none()))
     })
   })
 
   it.prop('is being published', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.IsBeingPublished({ authorId }), command)
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
   it.prop('has been published', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.HasBeenPublished({ authorId }), command)
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()))
   })
 })

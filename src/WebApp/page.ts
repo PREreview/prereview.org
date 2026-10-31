@@ -419,13 +419,13 @@ export const page = ({
                                     ),
                                     Array.sortWith(
                                       ([, b]) => b,
-                                      (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                                      (a, b) => String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
                                     ),
                                     Array.map(
                                       ([code, name]) => html`
                                         <li>
                                           <a
-                                            href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                            href="${HashMap.getUnsafe(pageUrls.localeUrls, code).href}"
                                             ${languageAttributesFor(code)}
                                             hreflang="${code}"
                                             ${locale === code ? html`aria-current="true"` : ''}
@@ -483,13 +483,13 @@ export const page = ({
                                 ),
                                 Array.sortWith(
                                   ([, b]) => b,
-                                  (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                                  (a, b) => String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
                                 ),
                                 Array.map(
                                   ([code, name]) => html`
                                     <li>
                                       <a
-                                        href="${HashMap.unsafeGet(pageUrls.localeUrls, code).href}"
+                                        href="${HashMap.getUnsafe(pageUrls.localeUrls, code).href}"
                                         ${languageAttributesFor(code)}
                                         hreflang="${code}"
                                         ${locale === code ? html`aria-current="true"` : ''}

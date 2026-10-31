@@ -1,9 +1,10 @@
 import { describe, expect, it } from '../vitest.ts'
-import { Either, Schema } from 'effect'
-import { ArrayFormatter } from 'effect/ParseResult'
+import { Result, Schema, SchemaIssue } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/EmailAddress.ts'
 import * as fc from '../fc.ts'
+
+const formatError = (error: Schema.SchemaError) => SchemaIssue.makeFormatterStandardSchemaV1()(error.issue).issues
 
 describe('EmailAddressC', () => {
   describe('decode', () => {
@@ -76,9 +77,9 @@ describe('EmailAddressSchema', () => {
       'with a non-email address',
       [fc.string().filter(string => !string.includes('.') || !string.includes('@') || /\s/g.test(string))],
       ([string]) => {
-        const actual = Either.mapLeft(Schema.decodeEither(_.EmailAddressSchema)(string), ArrayFormatter.formatErrorSync)
+        const actual = Result.mapError(Schema.decodeResult(_.EmailAddressSchema)(string), formatError)
 
-        expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'not an email address' })]))
+        expect(actual).toStrictEqual(Result.fail([expect.objectContaining({ message: 'not an email address' })]))
       },
       {
         fastCheck: {
@@ -118,9 +119,9 @@ describe('EmailAddressSchema', () => {
     )
 
     it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
-      const actual = Schema.decodeUnknownEither(_.EmailAddressSchema)(value)
+      const actual = Schema.decodeUnknownResult(_.EmailAddressSchema)(value)
 
-      expect(actual).toStrictEqual(Either.left(expect.anything()))
+      expect(actual).toStrictEqual(Result.fail(expect.anything()))
     })
   })
 

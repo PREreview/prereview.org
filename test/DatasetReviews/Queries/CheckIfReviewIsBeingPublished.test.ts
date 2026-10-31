@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate } from 'effect'
+import { Array, Result, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfReviewIsBeingPublished.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -38,7 +38,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
       ([events]) => {
         const actual = _.CheckIfReviewIsBeingPublished(events)
 
-        expect(actual).toStrictEqual(Either.void)
+        expect(actual).toStrictEqual(Result.void)
       },
       {
         fastCheck: {
@@ -68,7 +68,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
     it('returns an error', () => {
       const actual = _.CheckIfReviewIsBeingPublished([])
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnknownDatasetReview({})))
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.UnknownDatasetReview({})))
     })
   })
 
@@ -79,7 +79,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
       ([events]) => {
         const actual = _.CheckIfReviewIsBeingPublished(events)
 
-        expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+        expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
       },
       {
         fastCheck: {
@@ -96,7 +96,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
       ([events]) => {
         const actual = _.CheckIfReviewIsBeingPublished(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsInProgress()))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsInProgress()))
       },
       {
         fastCheck: {
@@ -120,7 +120,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
       ([events]) => {
         const actual = _.CheckIfReviewIsBeingPublished(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()))
       },
       {
         fastCheck: {

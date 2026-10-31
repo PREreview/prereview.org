@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Equal, Layer } from 'effect'
+import { Effect, Result, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -216,7 +216,7 @@ describe('ChoosePersonaSubmission', () => {
               const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
               const getNextExpectedCommandForUserOnAComment = vi.fn<
                 typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-              >(() => Effect.succeed(Either.right(nextCommand)))
+              >(() => Effect.succeed(Result.succeed(nextCommand)))
 
               const actual = yield* _.ChoosePersonaSubmission({ body, commentId }).pipe(
                 Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),

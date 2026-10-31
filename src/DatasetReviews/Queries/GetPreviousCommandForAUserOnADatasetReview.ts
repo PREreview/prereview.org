@@ -1,4 +1,4 @@
-import { Array, Either, flow, Option } from 'effect'
+import { Array, Result, flow, Option } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -62,5 +62,5 @@ const Steps = [
 export const GetPreviousCommandForAUserOnADatasetReview = Queries.OnDemandQuery({
   name: 'DatasetReviews.getPreviousCommandForAUserOnADatasetReview',
   createFilter,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

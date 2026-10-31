@@ -1,6 +1,19 @@
-import { Command, FileSystem } from '@effect/platform'
-import { NodeContext, NodeRuntime } from '@effect/platform-node'
-import { Array, Boolean, Console, Effect, Exit, flow, Layer, Record, Stream, String, Tuple } from 'effect'
+import { ChildProcess } from 'effect/process'
+import {
+  Array,
+  Boolean,
+  Console,
+  Context,
+  Effect,
+  FileSystem,
+  flow,
+  Layer,
+  Record,
+  Stream,
+  String,
+  Tuple,
+} from 'effect'
+import { NodeServices, NodeRuntime } from '@effect/platform-node'
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'
@@ -51,22 +64,29 @@ const DiscoverSrcModules = Effect.gen(function* () {
   return modules
 })
 
-class Locales extends Effect.Service<Locales>()('Locales', {
-  effect: DiscoverLocales,
-}) {}
+class Locales extends Context.Service<Locales, ReadonlyArray<string>>()('Locales') {
+  static readonly layer = Layer.effect(this, DiscoverLocales)
+}
 
-class Languages extends Effect.Service<Languages>()('Languages', {
-  effect: DetermineLocaleForLanguages,
-}) {}
+class Languages extends Context.Service<Languages, Record.ReadonlyRecord<string, string>>()('Languages') {
+  static readonly layer = Layer.effect(this, DetermineLocaleForLanguages)
+}
 
-class SrcModules extends Effect.Service<SrcModules>()('SrcModules', {
-  effect: DiscoverSrcModules,
-}) {}
+class SrcModules extends Context.Service<SrcModules, ReadonlyArray<string>>()('SrcModules') {
+  static readonly layer = Layer.effect(this, DiscoverSrcModules)
+}
+
+const validateAll = <const Effects extends ReadonlyArray<Effect.Effect<unknown, unknown, unknown>>>(
+  effects: Effects,
+): Effect.Effect<void, ReadonlyArray<Effect.Error<Effects[number]>>, Effect.Services<Effects[number]>> =>
+  Effect.flatMap(Effect.forEach(effects, Effect.result, { concurrency: 'unbounded' }), results => {
+    const failures = Array.getFailures(results)
+
+    return Array.isReadonlyArrayNonEmpty(failures) ? Effect.fail(failures) : Effect.void
+  }) as never
 
 const RunIntlc = Effect.fnUntraced(function* ({ locale, module }: { locale: string; module: string }) {
-  const command = Command.make('intlc', 'compile', `locales/${locale}/${module}.json`, '-l', locale)
-
-  const process = yield* Command.start(command)
+  const process = yield* ChildProcess.make('intlc', ['compile', `locales/${locale}/${module}.json`, '-l', locale])
 
   const { output, stderr, exitCode } = yield* Effect.all(
     {
@@ -83,7 +103,7 @@ const RunIntlc = Effect.fnUntraced(function* ({ locale, module }: { locale: stri
   }
 
   return output
-})
+}, Effect.scoped)
 
 const BuildAssetsTarget = Effect.fnUntraced(function* ({
   locale,
@@ -253,28 +273,24 @@ const BuildAssetsLocales = Effect.gen(function* () {
     Array.map(assetsModules, module => ({ locale, module, target: `${tempDir}/${module}/${locale}.ts` })),
   )
 
-  yield* Effect.all(
-    [
-      Effect.all(Array.map(foo, BuildAssetsTarget), { concurrency: 'unbounded', mode: 'validate' }),
-      Effect.all(
-        Array.map(assetsModules, module => BuildAssetsModule({ module, target: `${tempDir}/${module}/index.ts` })),
-        { concurrency: 'unbounded', mode: 'validate' },
-      ),
-      BuildAssets(`${tempDir}/index.ts`),
-    ],
-    { concurrency: 'unbounded', mode: 'validate' },
-  )
+  yield* validateAll([
+    validateAll(Array.map(foo, BuildAssetsTarget)),
+    validateAll(
+      Array.map(assetsModules, module => BuildAssetsModule({ module, target: `${tempDir}/${module}/index.ts` })),
+    ),
+    BuildAssets(`${tempDir}/index.ts`),
+  ])
 
   yield* fileSystem.makeDirectory(targetDir, { recursive: true })
 
   yield* Effect.acquireRelease(
     fileSystem.copy(targetDir, tempDirBackup).pipe(Effect.andThen(fileSystem.remove(targetDir, { recursive: true }))),
     (_, exit) =>
-      Exit.matchEffect(exit, {
+      Effect.matchCauseEffectEager(exit, {
         onFailure: () =>
           fileSystem
             .remove(targetDir, { recursive: true })
-            .pipe(Effect.andThen(fileSystem.copy(tempDirBackup, targetDir)), Effect.ignoreLogged),
+            .pipe(Effect.andThen(fileSystem.copy(tempDirBackup, targetDir)), Effect.ignore({ log: true })),
         onSuccess: () => Effect.void,
       }),
   )
@@ -297,28 +313,22 @@ const BuildSrcLocales = Effect.gen(function* () {
     Array.map(modules, module => ({ locale, module, target: `${tempDir}/${module}/${locale}.ts` })),
   )
 
-  yield* Effect.all(
-    [
-      Effect.all(Array.map(foo, BuildSrcTarget), { concurrency: 'unbounded', mode: 'validate' }),
-      Effect.all(
-        Array.map(modules, module => BuildSrcModule({ module, target: `${tempDir}/${module}/index.ts` })),
-        { concurrency: 'unbounded', mode: 'validate' },
-      ),
-      BuildSrc(`${tempDir}/index.ts`),
-    ],
-    { concurrency: 'unbounded', mode: 'validate' },
-  )
+  yield* validateAll([
+    validateAll(Array.map(foo, BuildSrcTarget)),
+    validateAll(Array.map(modules, module => BuildSrcModule({ module, target: `${tempDir}/${module}/index.ts` }))),
+    BuildSrc(`${tempDir}/index.ts`),
+  ])
 
   yield* fileSystem.makeDirectory(targetDir, { recursive: true })
 
   yield* Effect.acquireRelease(
     fileSystem.copy(targetDir, tempDirBackup).pipe(Effect.andThen(fileSystem.remove(targetDir, { recursive: true }))),
     (_, exit) =>
-      Exit.matchEffect(exit, {
+      Effect.matchCauseEffectEager(exit, {
         onFailure: () =>
           fileSystem
             .remove(targetDir, { recursive: true })
-            .pipe(Effect.andThen(fileSystem.copy(tempDirBackup, targetDir)), Effect.ignoreLogged),
+            .pipe(Effect.andThen(fileSystem.copy(tempDirBackup, targetDir)), Effect.ignore({ log: true })),
         onSuccess: () => Effect.void,
       }),
   )
@@ -326,16 +336,16 @@ const BuildSrcLocales = Effect.gen(function* () {
   yield* fileSystem.copy(tempDir, targetDir)
 }).pipe(Effect.scoped)
 
-const program = Effect.all([BuildAssetsLocales, BuildSrcLocales], { concurrency: 'unbounded', mode: 'validate' }).pipe(
+const program = validateAll([BuildAssetsLocales, BuildSrcLocales]).pipe(
   Effect.andThen(Console.log('Done')),
   Effect.tapError(() => Console.error('Failed')),
 )
 
 program.pipe(
   Effect.provide(
-    Languages.Default.pipe(
-      Layer.provideMerge(Layer.mergeAll(Locales.Default, SrcModules.Default)),
-      Layer.provideMerge(NodeContext.layer),
+    Languages.layer.pipe(
+      Layer.provideMerge(Layer.mergeAll(Locales.layer, SrcModules.layer)),
+      Layer.provideMerge(NodeServices.layer),
     ),
   ),
   NodeRuntime.runMain({ disableErrorReporting: true }),

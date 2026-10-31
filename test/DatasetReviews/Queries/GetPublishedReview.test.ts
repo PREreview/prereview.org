@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, identity, Option, Predicate, Tuple } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -334,7 +334,7 @@ describe('GetPublishedReview', () => {
 
           const actual = query(events, datasetReviewId)
 
-          expect(actual).toStrictEqual(Either.right(expected))
+          expect(actual).toStrictEqual(Result.succeed(expected))
         },
         {
           fastCheck: {
@@ -842,7 +842,7 @@ describe('GetPublishedReview', () => {
 
           const actual = query(events, datasetReviewId)
 
-          expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+          expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
         },
         {
           fastCheck: {
@@ -879,7 +879,7 @@ describe('GetPublishedReview', () => {
 
         const actual = query(events, datasetReviewId)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
       },
       {
         fastCheck: {
@@ -902,7 +902,7 @@ describe('GetPublishedReview', () => {
 
         const actual = query(events, datasetReviewId)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnknownDatasetReview({})))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.UnknownDatasetReview({})))
       },
       {
         fastCheck: {

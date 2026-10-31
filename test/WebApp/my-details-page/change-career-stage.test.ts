@@ -7,6 +7,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-career-stage.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('changeCareerStage', () => {
   it.effect.prop(
@@ -23,7 +24,7 @@ describe('changeCareerStage', () => {
         const actual = yield* Effect.promise(
           _.changeCareerStage({ body, locale, method, user })({
             deleteCareerStage: shouldNotBeCalled,
-            getCareerStage: () => TE.fromEither(careerStage),
+            getCareerStage: () => TE.fromEither(EffectToFpts.either(careerStage)),
             saveCareerStage: shouldNotBeCalled,
           }),
         )
@@ -107,7 +108,7 @@ describe('changeCareerStage', () => {
         const actual = yield* Effect.promise(
           _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
             deleteCareerStage: () => TE.left('unavailable'),
-            getCareerStage: () => TE.fromEither(existingCareerStage),
+            getCareerStage: () => TE.fromEither(EffectToFpts.either(existingCareerStage)),
             saveCareerStage: () => TE.left('unavailable'),
           }),
         )

@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetNextExpectedCommandForAUserOnAReviewRequest.ts'
@@ -45,37 +45,37 @@ const imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
 })
 
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
-  ['no events', { reviewRequestId: reviewRequestId1 }, [], Either.left(new ReviewRequests.UnknownReviewRequest({}))],
+  ['no events', { reviewRequestId: reviewRequestId1 }, [], Result.fail(new ReviewRequests.UnknownReviewRequest({}))],
   [
     'different review request ID',
     { reviewRequestId: reviewRequestId2 },
     [started, imported],
-    Either.left(new ReviewRequests.UnknownReviewRequest({})),
+    Result.fail(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
     'has been imported',
     { reviewRequestId: reviewRequestId1 },
     [imported],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+    Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
-  ['incomplete without choice', { reviewRequestId: reviewRequestId1 }, [started], Either.right('ChoosePersona')],
+  ['incomplete without choice', { reviewRequestId: reviewRequestId1 }, [started], Result.succeed('ChoosePersona')],
   [
     'has been published',
     { reviewRequestId: reviewRequestId1 },
     [started, publicChosen, published],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+    Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'incomplete with choice',
     { reviewRequestId: reviewRequestId1 },
     [started, publicChosen],
-    Either.right('PublishReviewRequest'),
+    Result.succeed('PublishReviewRequest'),
   ],
   [
     'incomplete with multiples choice',
     { reviewRequestId: reviewRequestId1 },
     [started, publicChosen, pseudonymChosen],
-    Either.right('PublishReviewRequest'),
+    Result.succeed('PublishReviewRequest'),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetNextExpectedCommandForAUserOnAReviewRequest

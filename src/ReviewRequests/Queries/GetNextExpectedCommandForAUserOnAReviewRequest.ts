@@ -1,4 +1,4 @@
-import { Array, Either, type Types } from 'effect'
+import { Array, Result, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -21,31 +21,31 @@ export interface Input {
   reviewRequestId: Uuid.Uuid
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   NextExpectedCommand,
   Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenPublished
 >
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
     if (hasEvent(filteredEvents, 'ReviewRequestByAPrereviewerWasImported')) {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Errors.ReviewRequestHasBeenPublished({ cause: 'ReviewRequestByAPrereviewerWasImported event found' }),
       )
     }
 
     if (!hasEvent(filteredEvents, 'ReviewRequestForAPreprintWasStarted')) {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Errors.UnknownReviewRequest({ cause: 'no ReviewRequestForAPreprintWasStarted event found' }),
       )
     }
 
     if (hasEvent(filteredEvents, 'ReviewRequestForAPreprintWasPublished')) {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Errors.ReviewRequestHasBeenPublished({ cause: 'ReviewRequestForAPreprintWasPublished event found' }),
       )
     }

@@ -488,6 +488,6 @@ const cases = [
 test.each(cases)('DatasetReviewToDepositMetadata (%s)', (_name, datasetReview, expected) => {
   const actual = _.DatasetReviewToDepositMetadata(datasetReview)
 
-  expect(Struct.omit(actual, 'description')).toStrictEqual(Struct.omit(expected, 'description'))
+  expect(Struct.omit(actual, ['description'])).toStrictEqual(Struct.omit(expected, ['description']))
   assertEquals(actual.description, expected.description)
 })

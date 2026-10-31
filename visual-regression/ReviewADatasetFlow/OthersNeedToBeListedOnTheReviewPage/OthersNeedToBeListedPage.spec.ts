@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as OthersNeedToBeListedForm from '../../../src/WebApp/ReviewADatasetFlow/OthersNeedToBeListedOnTheReviewPage/OthersNeedToBeListedForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/OthersNeedToBeListedOnTheReviewPage/OthersNeedToBeListedPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -33,7 +33,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
   const response = _.OthersNeedToBeListedPage({
     datasetReviewId,
     form: new OthersNeedToBeListedForm.InvalidForm({
-      othersNeedToBeListed: Either.left(new OthersNeedToBeListedForm.Missing()),
+      othersNeedToBeListed: Result.fail(new OthersNeedToBeListedForm.Missing()),
     }),
     locale: DefaultLocale,
   })

@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match, Option, pipe } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
@@ -79,15 +79,16 @@ export const IsErrorFreeSubmission = ({
             userId: user.orcid,
           })
 
-          const nextExpectedCommand = yield* Effect.flatten(
+          const nextExpectedCommand = yield* Effect.flatMap(
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+            Effect.fromOption,
           )
 
           return Response.RedirectResponse({
             location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
           })
         },
-        Effect.catchAll(() => HavingProblemsPage),
+        Effect.catch(() => HavingProblemsPage),
       ),
       InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
     })

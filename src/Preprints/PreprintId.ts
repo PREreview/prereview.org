@@ -1,20 +1,37 @@
-import { Url, UrlParams } from '@effect/platform'
+import { Url, UrlParams } from 'effect/http'
 import {
   Array,
   Data,
   type Equivalence,
   Option,
-  ParseResult,
   Predicate,
   Schema,
   Struct,
   Tuple,
   flow,
   pipe,
+  SchemaIssue,
+  SchemaGetter,
+  SchemaTransformation,
+  Effect,
+  Filter,
+  Number,
 } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { Doi } from '../types/index.ts'
+
+const NumberFromStringSchema = Schema.String.pipe(
+  Schema.decodeTo(Schema.Number, {
+    decode: SchemaGetter.transformEffect(string =>
+      Option.match(Number.parse(string), {
+        onNone: () => Effect.fail(new SchemaIssue.InvalidValue(undefined, string)),
+        onSome: Effect.succeed,
+      }),
+    ),
+    encode: SchemaGetter.String(),
+  }),
+)
 
 export type PreprintId = typeof PreprintId.Type
 
@@ -55,12 +72,12 @@ export class AfricarxivZenodoPreprintId extends Schema.TaggedClass<AfricarxivZen
   },
 ) {}
 
-export const AfricarxivPreprintId = Schema.Union(
+export const AfricarxivPreprintId = Schema.Union([
   AfricarxivFigsharePreprintId,
   AfricarxivOsfPreprintId,
   AfricarxivUbuntunetPreprintId,
   AfricarxivZenodoPreprintId,
-)
+])
 
 export class ArcadiaSciencePreprintId extends Schema.TaggedClass<ArcadiaSciencePreprintId>()(
   'ArcadiaSciencePreprintId',
@@ -141,7 +158,7 @@ export class OsfPreprintsPreprintId extends Schema.TaggedClass<OsfPreprintsPrepr
 }) {}
 
 export class PhilsciPreprintId extends Schema.TaggedClass<PhilsciPreprintId>()('PhilsciPreprintId', {
-  value: Schema.NonNegativeInt,
+  value: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
 }) {}
 
 export class PreprintsorgPreprintId extends Schema.TaggedClass<PreprintsorgPreprintId>()('PreprintsorgPreprintId', {
@@ -212,7 +229,7 @@ export class ZenodoOrAfricarxivPreprintId extends Schema.TaggedClass<ZenodoOrAfr
   { value: Doi.RegistrantDoiSchema('5281') },
 ) {}
 
-export const PreprintIdWithDoi = Schema.Union(
+export const PreprintIdWithDoi = Schema.Union([
   AdvancePreprintId,
   AfricarxivPreprintId,
   ArcadiaSciencePreprintId,
@@ -246,18 +263,18 @@ export const PreprintIdWithDoi = Schema.Union(
   UmsidaPreprintId,
   VerixivPreprintId,
   ZenodoPreprintId,
-)
+])
 
-export const PreprintId = Schema.Union(PreprintIdWithDoi, PhilsciPreprintId)
+export const PreprintId = Schema.Union([PreprintIdWithDoi, PhilsciPreprintId])
 
-export const IndeterminatePreprintIdWithDoi = Schema.Union(
+export const IndeterminatePreprintIdWithDoi = Schema.Union([
   PreprintIdWithDoi,
   BiorxivOrMedrxivPreprintId,
   OsfOrLifecycleJournalPreprintId,
   ZenodoOrAfricarxivPreprintId,
-)
+])
 
-export const IndeterminatePreprintId = Schema.Union(IndeterminatePreprintIdWithDoi, PhilsciPreprintId)
+export const IndeterminatePreprintId = Schema.Union([IndeterminatePreprintIdWithDoi, PhilsciPreprintId])
 
 export class MultipleIndeterminatePreprintIds extends Data.TaggedClass('MultipleIndeterminatePreprintIds')<{
   ids: Array.NonEmptyArray<IndeterminatePreprintId>
@@ -309,51 +326,53 @@ export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintI
   '82153',
 )
 
-export const IndeterminatePreprintIdFromDoiSchema = Schema.transformOrFail(
-  Doi.DoiSchema,
-  Schema.typeSchema(IndeterminatePreprintIdWithDoi),
-  {
-    strict: true,
-    decode: (doi, _, ast) =>
-      ParseResult.fromOption(parsePreprintDoi(doi), () => new ParseResult.Type(ast, doi, 'Not a preprint DOI')),
-    encode: id => ParseResult.succeed(id.value),
-  },
+export const IndeterminatePreprintIdFromDoiSchema = Doi.DoiSchema.pipe(
+  Schema.decodeTo(Schema.toType(IndeterminatePreprintIdWithDoi), {
+    decode: SchemaGetter.transformEffect(doi =>
+      Effect.fromOption(
+        parsePreprintDoi(doi),
+        () => new SchemaIssue.InvalidValue({ message: 'Not a preprint DOI' }, doi),
+      ),
+    ),
+    encode: SchemaGetter.transformEffect(id => Effect.succeed(id.value)),
+  }),
 )
 
-const PhilsciPreprintIdFromNumberSchema = Schema.transform(
-  Schema.NonNegativeInt,
-  Schema.typeSchema(PhilsciPreprintId),
-  {
-    strict: true,
-    decode: value => new PhilsciPreprintId({ value }),
-    encode: Struct.get('value'),
-  },
+const PhilsciPreprintIdFromNumberSchema = Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)).pipe(
+  Schema.decodeTo(
+    Schema.toType(PhilsciPreprintId),
+    SchemaTransformation.transform({ decode: value => new PhilsciPreprintId({ value }), encode: Struct.get('value') }),
+  ),
 )
 
-export const IndeterminatePreprintIdWithDoiFromStringSchema = Schema.transform(
-  Schema.TemplateLiteralParser('doi:', IndeterminatePreprintIdFromDoiSchema),
-  Schema.typeSchema(IndeterminatePreprintIdWithDoi),
-  {
-    strict: true,
-    decode: Tuple.getSecond,
-    encode: id => Tuple.make('doi:' as const, id),
-  },
+export const IndeterminatePreprintIdWithDoiFromStringSchema = Schema.TemplateLiteralParser([
+  'doi:',
+  IndeterminatePreprintIdFromDoiSchema,
+]).pipe(
+  Schema.decodeTo(
+    Schema.toType(IndeterminatePreprintIdWithDoi),
+    SchemaTransformation.transform({ decode: Tuple.get(1), encode: id => ['doi:', id] as const }),
+  ),
 )
 
-export const PhilsciPreprintIdFromStringSchema = Schema.transform(
-  Schema.TemplateLiteralParser('https://philsci-archive.pitt.edu/', PhilsciPreprintIdFromNumberSchema, '/'),
-  Schema.typeSchema(PhilsciPreprintId),
-  {
-    strict: true,
-    decode: Tuple.at(1),
-    encode: id => Tuple.make('https://philsci-archive.pitt.edu/' as const, id, '/' as const),
-  },
+export const PhilsciPreprintIdFromStringSchema = Schema.TemplateLiteralParser([
+  'https://philsci-archive.pitt.edu/',
+  PhilsciPreprintIdFromNumberSchema,
+  '/',
+]).pipe(
+  Schema.decodeTo(
+    Schema.toType(PhilsciPreprintId),
+    SchemaTransformation.transform({
+      decode: Tuple.get(1),
+      encode: id => ['https://philsci-archive.pitt.edu/', id, '/'] as const,
+    }),
+  ),
 )
 
-export const IndeterminatePreprintIdFromStringSchema: Schema.Schema<
+export const IndeterminatePreprintIdFromStringSchema: Schema.Codec<
   IndeterminatePreprintId,
   `doi:${string}` | `https://philsci-archive.pitt.edu/${number}/`
-> = Schema.Union(IndeterminatePreprintIdWithDoiFromStringSchema, PhilsciPreprintIdFromStringSchema)
+> = Schema.Union([IndeterminatePreprintIdWithDoiFromStringSchema, PhilsciPreprintIdFromStringSchema])
 
 export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['value']> = pipe(
   Doi.DoiC,
@@ -444,13 +463,13 @@ const extractFromDoiPath: (path: string) => ReadonlyArray<IndeterminatePreprintI
 )
 
 const extractFromArxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
   Option.andThen(flow(suffix => `10.48550/arXiv.${suffix}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromAuthoreaPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
   Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('22541'))),
   Option.andThen(doi => new AuthoreaPreprintId({ value: doi })),
   Array.fromOption,
@@ -470,7 +489,7 @@ const extractFromBiorxivMedrxivPath =
 
 const extractDoiFromBiorxivMedrxivPathWithPrefix: (path: string) => Option.Option<BiorxivOrMedrxivPreprintId['value']> =
   flow(
-    Option.liftNullable(
+    Option.liftNullishOr(
       s => /(?:^|\/)(?:content|lookup)\/(?:.+?\/)?(10\.[0-9.]+\/[0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$$/i.exec(s)?.[1],
     ),
     Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('1101', '64898'))),
@@ -479,7 +498,7 @@ const extractDoiFromBiorxivMedrxivPathWithPrefix: (path: string) => Option.Optio
 const extractDoiFromBiorxivMedrxivPathWithoutPrefix: (
   path: string,
 ) => Option.Option<ReadonlyArray<BiorxivOrMedrxivPreprintId['value']>> = flow(
-  Option.liftNullable(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
   Option.andThen(suffix =>
     Array.filter(
       [`10.1101/${suffix}`, `10.64898/${suffix}`],
@@ -489,13 +508,13 @@ const extractDoiFromBiorxivMedrxivPathWithoutPrefix: (
 )
 
 const extractFromEdarxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.35542/osf.io/${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromEngrxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.31224/${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
@@ -503,7 +522,7 @@ const extractFromEngrxivPath: (path: string) => ReadonlyArray<IndeterminatePrepr
 // oxlint-disable-next-line typescript/no-unused-vars
 const extractFromFigsharePath = (type: 'africarxiv'): ((path: string) => ReadonlyArray<IndeterminatePreprintId>) =>
   flow(
-    Option.liftNullable(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
+    Option.liftNullishOr(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
     Option.andThen(id => `10.6084/m9.figshare.${id}.v1`),
     Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('6084'))),
     Option.andThen(doi => new AfricarxivFigsharePreprintId({ value: doi })),
@@ -511,25 +530,25 @@ const extractFromFigsharePath = (type: 'africarxiv'): ((path: string) => Readonl
   )
 
 const extractFromJmirPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^preprint\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^preprint\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.2196/preprints.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromJxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.51094/jxiv.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromNeurolibrePath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^(?:papers\/)?10.55458\/neurolibre\.([0-9]+)(?:\/|\.|$)/.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^(?:papers\/)?10.55458\/neurolibre\.([0-9]+)(?:\/|\.|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.55458/neurolibre.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromOsfPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s =>
+  Option.liftNullishOr(s =>
     /^(?:(preprints)\/)?(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?([a-z0-9]+)(?:_v([1-9][0-9]*))?(?:$|\/)/i.exec(
       s,
     ),
@@ -544,8 +563,8 @@ const extractFromOsfPath: (path: string) => ReadonlyArray<IndeterminatePreprintI
       .with(['preprints', P.optional(undefined)], () => makeOsfDois('31219', `${id}`, version))
       .otherwise(() => [...makeOsfDois('17605', `${id}`, version), ...makeOsfDois('31219', `${id}`, version)]),
   ),
-  Option.getOrElse(Array.empty),
-  Array.filterMap(parsePreprintDoi),
+  Option.getOrElse(Array.empty<string>),
+  Array.filterMap(Filter.fromPredicateOption(parsePreprintDoi)),
 )
 
 const makeOsfDois = (prefix: string, id: string, version: string | undefined) =>
@@ -554,32 +573,32 @@ const makeOsfDois = (prefix: string, id: string, version: string | undefined) =>
     : Array.of(`10.${prefix}/osf.io/${id}`)
 
 const extractFromPhilsciPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
-  Option.andThen(Schema.decodeOption(Schema.NumberFromString)),
+  Option.liftNullishOr(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.andThen(Schema.decodeOption(NumberFromStringSchema)),
   Option.andThen(id => new PhilsciPreprintId({ value: id })),
   Array.fromOption,
 )
 
 const extractFromPreprintsorgPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i.exec(s)),
+  Option.liftNullishOr(s => /^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i.exec(s)),
   Option.andThen(flow(([, id, version]) => `10.20944/preprints${id}.${version}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromPsyarxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.31234/osf.io/${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromResearchSquarePath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/.exec(s)?.[1]),
+  Option.liftNullishOr(s => /\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.21203/rs.3.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 const extractFromScieloPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.1590/SciELOPreprints.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
@@ -591,7 +610,7 @@ const extractFromScienceOpenQueryString = flow(
 )
 
 const extractFromSsrnPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^abstract=([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^abstract=([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.2139/ssrn.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
@@ -606,14 +625,14 @@ const extractFromSsrnQueryString = (urlParams: UrlParams.UrlParams) =>
   )
 
 const extractFromTechrxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
   Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('36227'))),
   Option.andThen(doi => new TechrxivPreprintId({ value: doi })),
   Array.fromOption,
 )
 
 const extractFromZenodoPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
-  Option.liftNullable(s => /^records?\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^records?\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )

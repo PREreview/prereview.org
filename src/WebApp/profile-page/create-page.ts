@@ -122,7 +122,7 @@ function renderContentForOrcidId(
               : ''
           }
           ${
-            Array.isNonEmptyReadonlyArray(clubs)
+            Array.isReadonlyArrayNonEmpty(clubs)
               ? html`
                   <div>
                     <dt>${translate(locale, 'profile-page', 'clubs')()}</dt>

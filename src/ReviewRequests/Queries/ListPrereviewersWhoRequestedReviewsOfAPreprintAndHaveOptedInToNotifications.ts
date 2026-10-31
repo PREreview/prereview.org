@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, HashSet, Match, Option, Schema } from 'effect'
+import { Array, Result, flow, HashMap, HashSet, Match, Option, Schema } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -64,14 +64,10 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
       ),
   )
 
-  const previewersOptedInToNotifications = HashSet.mutate(
+  const previewersOptedInToNotifications = Array.reduce(
+    pertinentEvents,
     state.previewersOptedInToNotifications,
-    mutablePreviewersOptedInToNotifications =>
-      Array.reduce(
-        pertinentEvents,
-        mutablePreviewersOptedInToNotifications,
-        updatePreviewersOptedInToNotificationsStateWithPertinentEvent,
-      ),
+    updatePreviewersOptedInToNotificationsStateWithPertinentEvent,
   )
 
   return { reviewRequests, reviewRequestsByPreprintId, previewersOptedInToNotifications }
@@ -163,8 +159,10 @@ const query = (state: State, preprintId: Input): Result => {
     Array.empty,
   )
 
-  return HashSet.mutate(HashSet.empty<OrcidId.OrcidId>(), prereviewerIds =>
-    Array.reduce(reviewRequestsForPreprintId, prereviewerIds, (prereviewerIds, reviewRequestId) => {
+  return Array.reduce(
+    reviewRequestsForPreprintId,
+    HashSet.empty<OrcidId.OrcidId>(),
+    (prereviewerIds, reviewRequestId) => {
       const reviewRequest = HashMap.get(state.reviewRequests, reviewRequestId)
 
       if (Option.isNone(reviewRequest) || reviewRequest.value._tag !== 'PublishedReviewRequest') {
@@ -176,7 +174,7 @@ const query = (state: State, preprintId: Input): Result => {
       }
 
       return HashSet.add(prereviewerIds, reviewRequest.value.requesterId)
-    }),
+    },
   )
 }
 
@@ -184,5 +182,5 @@ export const ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotif
   name: 'ReviewRequestQueries.listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications',
   initialState,
   updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

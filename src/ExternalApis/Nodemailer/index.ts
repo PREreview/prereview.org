@@ -5,17 +5,14 @@ import { SendEmail } from './SendEmail.ts'
 export { Email, UnableToSendEmail } from './Email.ts'
 export * from './Nodemailer.ts'
 
-export class Nodemailer extends Context.Tag('Nodemailer')<
+export class Nodemailer extends Context.Service<
   Nodemailer,
   {
     sendEmail: (
       ...args: Parameters<typeof SendEmail>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof SendEmail>>,
-      Effect.Effect.Error<ReturnType<typeof SendEmail>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof SendEmail>>, Effect.Error<ReturnType<typeof SendEmail>>>
   }
->() {}
+>()('Nodemailer') {}
 
 export const sendEmail = (...args: Parameters<(typeof Nodemailer.Service)['sendEmail']>) =>
   Effect.flatMap(Nodemailer, service => service.sendEmail(...args))

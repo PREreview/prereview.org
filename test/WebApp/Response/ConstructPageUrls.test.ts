@@ -149,7 +149,7 @@ describe('constructPageUrls', () => {
             UserSelectableLocales,
           )
 
-          expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, locale).href).toStrictEqual(expected)
+          expect(HashMap.getUnsafe(Option.getOrThrow(pageUrls).localeUrls, locale).href).toStrictEqual(expected)
         },
         {
           fastCheck: {
@@ -189,7 +189,7 @@ describe('constructPageUrls', () => {
             UserSelectableLocales,
           )
 
-          expect(HashMap.unsafeGet(Option.getOrThrow(pageUrls).localeUrls, language).href).toStrictEqual(expected)
+          expect(HashMap.getUnsafe(Option.getOrThrow(pageUrls).localeUrls, language).href).toStrictEqual(expected)
         },
         {
           fastCheck: {

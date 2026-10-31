@@ -1,4 +1,4 @@
-import { Array, Data, Effect, Match, pipe, Schema } from 'effect'
+import { Array, Data, Effect, Match, pipe, Schema, Filter } from 'effect'
 import { OpenAlex } from '../../../ExternalApis/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import { KeywordIdFromOpenAlexUrlSchema, type KeywordId } from '../../../types/Keyword.ts'
@@ -21,9 +21,15 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
     Effect.map(
       work =>
         ({
-          topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
-          keywords: Array.filterMap(work.keywords, ({ id }) => Schema.decodeOption(KeywordIdFromOpenAlexUrlSchema)(id)),
+          topics: Array.filterMap(
+            work.topics,
+            Filter.fromPredicateOption(({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
+          ),
+          keywords: Array.filterMap(
+            work.keywords,
+            Filter.fromPredicateOption(({ id }) => Schema.decodeOption(KeywordIdFromOpenAlexUrlSchema)(id)),
+          ),
         }) satisfies CategoriesForAReviewRequest,
     ),
-    Effect.catchAll(error => new CategoriesAreNotAvailable({ cause: error })),
+    Effect.catch(error => new CategoriesAreNotAvailable({ cause: error })),
   )

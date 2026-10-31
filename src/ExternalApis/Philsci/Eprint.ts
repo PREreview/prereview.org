@@ -1,21 +1,21 @@
-import { Schema } from 'effect'
+import { Schema, SchemaTransformation } from 'effect'
 import { OrcidId, Temporal } from '../../types/index.ts'
 
 export class Eprint extends Schema.Class<Eprint>('Eprint')({
-  type: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+  type: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
   eprintid: Schema.Int,
-  date: Schema.optional(Schema.Union(Schema.Int, Temporal.PlainDateSchema, Temporal.PlainYearMonthSchema)),
+  date: Schema.optional(Schema.Union([Schema.Int, Temporal.PlainDateSchema, Temporal.PlainYearMonthSchema])),
   datestamp: Temporal.PlainDateTimeSchema,
   creators: Schema.NonEmptyArray(
     Schema.Struct({
       name: Schema.Struct({
-        given: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-        family: Schema.compose(Schema.Trim, Schema.NonEmptyString),
+        given: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+        family: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
       }),
       orcid: Schema.optional(OrcidId.OrcidIdSchema),
     }),
   ),
-  title: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-  abstract: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
-  uri: Schema.URL,
+  title: Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+  abstract: Schema.optional(Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim()))),
+  uri: Schema.URLFromString,
 }) {}

@@ -1,4 +1,4 @@
-import { HttpClient, type UrlParams } from '@effect/platform'
+import { HttpClient, type UrlParams } from 'effect/http'
 import { Effect, flow } from 'effect'
 import type { ContentfulConfig } from '../ContentfulConfig.ts'
 import { ContentfulIsUnavailable } from '../Errors.ts'
@@ -11,7 +11,7 @@ export const GetEntries: (
 ) => Effect.Effect<Entries, ContentfulIsUnavailable, ContentfulConfig | HttpClient.HttpClient> = flow(
   CreateRequest,
   Effect.andThen(HttpClient.execute),
-  Effect.catchTag('RequestError', 'ResponseError', error => new ContentfulIsUnavailable({ cause: error })),
+  Effect.catchTag('HttpClientError', error => new ContentfulIsUnavailable({ cause: error })),
   Effect.andThen(HandleResponse),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to get entries from Contentful'), { error })),
   Effect.withSpan('Contentful.getEntries'),

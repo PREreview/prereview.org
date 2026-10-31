@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/GetPseudonym.ts'
 import { OrcidId, Pseudonym } from '../../src/types/index.ts'
@@ -44,16 +44,16 @@ const replaced = new Events.LegacyPseudonymReplaced({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new _.UnknownPrereviewer({}))],
-  ['imported', input, [imported], Either.right(imported.pseudonym)],
-  ['imported legacy replaced', input, [importedLegacy, replaced], Either.right(replaced.pseudonym)],
-  ['registered', input, [registered], Either.right(registered.pseudonym)],
-  ['different PREreviewer imported', input, [importedDifferentPrereviewer], Either.left(new _.UnknownPrereviewer({}))],
+  ['no events', input, [], Result.fail(new _.UnknownPrereviewer({}))],
+  ['imported', input, [imported], Result.succeed(imported.pseudonym)],
+  ['imported legacy replaced', input, [importedLegacy, replaced], Result.succeed(replaced.pseudonym)],
+  ['registered', input, [registered], Result.succeed(registered.pseudonym)],
+  ['different PREreviewer imported', input, [importedDifferentPrereviewer], Result.fail(new _.UnknownPrereviewer({}))],
   [
     'different PREreviewer registered',
     input,
     [registeredDifferentPrereviewer],
-    Either.left(new _.UnknownPrereviewer({})),
+    Result.fail(new _.UnknownPrereviewer({})),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetPseudonym

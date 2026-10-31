@@ -1,4 +1,4 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
 import * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
@@ -24,29 +24,26 @@ export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecor
 
 export { FailedToPublishRecord } from './PublishRecord/index.ts'
 
-export class ZenodoRecords extends Context.Tag('ZenodoRecords')<
+export class ZenodoRecords extends Context.Service<
   ZenodoRecords,
   {
     createRecordForDatasetReview: (
       ...args: Parameters<typeof CreateRecordForDatasetReview>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof CreateRecordForDatasetReview>>,
-      Effect.Effect.Error<ReturnType<typeof CreateRecordForDatasetReview>>
+      Effect.Success<ReturnType<typeof CreateRecordForDatasetReview>>,
+      Effect.Error<ReturnType<typeof CreateRecordForDatasetReview>>
     >
     getDoiForDatasetReviewRecord: (
       ...args: Parameters<typeof GetDoiForDatasetReviewRecord>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetDoiForDatasetReviewRecord>>,
-      Effect.Effect.Error<ReturnType<typeof GetDoiForDatasetReviewRecord>>
+      Effect.Success<ReturnType<typeof GetDoiForDatasetReviewRecord>>,
+      Effect.Error<ReturnType<typeof GetDoiForDatasetReviewRecord>>
     >
     publishRecord: (
       ...args: Parameters<typeof PublishRecord>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof PublishRecord>>,
-      Effect.Effect.Error<ReturnType<typeof PublishRecord>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof PublishRecord>>, Effect.Error<ReturnType<typeof PublishRecord>>>
   }
->() {}
+>()('ZenodoRecords') {}
 
 export const createRecordForDatasetReview = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['createRecordForDatasetReview']>
@@ -77,7 +74,9 @@ export const getCommentsForPrereviewFromZenodo = (
   pipe(
     constructCommentListUrl(id),
     Effect.andThen(getCommunityRecords),
-    Effect.andThen(record => Effect.forEach(record.hits.hits, transformRecordToCommentWithoutText)),
+    Effect.andThen(record =>
+      Effect.forEach(record.hits.hits, record => Effect.fromResult(transformRecordToCommentWithoutText(record))),
+    ),
     Effect.andThen(Effect.forEach(addCommentText, { concurrency: 'unbounded' })),
     Effect.catchTags({
       NoTextUrlAvailable: error =>
@@ -85,17 +84,12 @@ export const getCommentsForPrereviewFromZenodo = (
           Effect.annotateLogs({ error }),
           Effect.andThen(Effect.fail('unavailable' as const)),
         ),
-      ParseError: error =>
+      SchemaError: error =>
         Effect.logError('Failed to decode Zenodo response while retrieving a comment').pipe(
           Effect.annotateLogs({ error }),
           Effect.andThen(Effect.fail('unavailable' as const)),
         ),
-      RequestError: error =>
-        Effect.logError('Unable to retrieve comment text from Zenodo').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(Effect.fail('unavailable' as const)),
-        ),
-      ResponseError: error =>
+      HttpClientError: error =>
         Effect.logError('Unable to retrieve comment text from Zenodo').pipe(
           Effect.annotateLogs({ error }),
           Effect.andThen(Effect.fail('unavailable' as const)),
@@ -115,14 +109,14 @@ export const invalidatePrereviewInCache = ({
   pipe(
     constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
     Effect.map(Array.map(invalidateCacheEntry)),
-    Effect.andThen(effects => Effect.all(effects, { mode: 'either', concurrency: 'unbounded' })),
-    Effect.map(Array.getLefts),
+    Effect.andThen(effects => Effect.all(effects, { mode: 'result', concurrency: 'unbounded' })),
+    Effect.map(Array.getFailures),
     Effect.andThen(
       Effect.forEach(error =>
         Effect.logError('Unable to invalidate URL for PREreview').pipe(Effect.annotateLogs({ error, prereviewId })),
       ),
     ),
-    Effect.catchAll(error =>
+    Effect.catch(error =>
       Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
     ),
   )
@@ -144,18 +138,17 @@ export const invalidateCommentsForPrereview = (
           Effect.annotateLogs({ error }),
           Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
         ),
-      ParseError: error =>
+      SchemaError: error =>
         Effect.logError('Failed to decode Zenodo record of a PREreview').pipe(
           Effect.annotateLogs({ error }),
           Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
         ),
-      RequestError: error =>
-        Effect.logError('Unable to request a Zenodo record for a PREreview').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
-        ),
-      ResponseError: error =>
-        Effect.logError('Unable to get Zenodo record for a PREreview').pipe(
+      HttpClientError: error =>
+        Effect.logError(
+          error.response === undefined
+            ? 'Unable to request a Zenodo record for a PREreview'
+            : 'Unable to get Zenodo record for a PREreview',
+        ).pipe(
           Effect.annotateLogs({ error }),
           Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
         ),

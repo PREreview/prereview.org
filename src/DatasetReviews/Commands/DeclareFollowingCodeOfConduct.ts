@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Result, Equal, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -69,15 +69,15 @@ export const authorize: {
 )
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    IsBeingPublished: () => Result.fail(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Result.fail(new Errors.DatasetReviewHasBeenPublished()),
     NotDeclared: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
             timestamp: command.timestamp,
@@ -85,7 +85,7 @@ export const decide: {
           }),
         ),
       ),
-    HasBeenDeclared: () => Either.right(Option.none()),
+    HasBeenDeclared: () => Result.succeed(Option.none()),
   }),
 )
 

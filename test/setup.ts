@@ -1,4 +1,5 @@
-import { type MatcherResult, type MatcherState, addEqualityTesters, expect } from '@effect/vitest'
+import { type MatcherResult, type MatcherState, expect } from '@effect/vitest'
+import { Equal, Option, Result } from 'effect'
 import * as fc from 'fast-check'
 import { Html, PlainText } from '../src/html.ts'
 
@@ -6,7 +7,50 @@ if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
 }
 
-addEqualityTesters()
+const isEffectLike = (value: unknown): value is Record<PropertyKey, unknown> => {
+  if (typeof value !== 'object' || value === null || globalThis.Array.isArray(value)) {
+    return false
+  }
+
+  const prototype: unknown = Object.getPrototypeOf(value)
+
+  return (
+    prototype === Object.prototype || prototype === null || typeof (value as { pipe?: unknown }).pipe === 'function'
+  )
+}
+
+const isContainer = (value: unknown) => Option.isOption(value) || Result.isResult(value)
+
+const definedKeys = (value: Record<PropertyKey, unknown>) => Object.keys(value).filter(key => value[key] !== undefined)
+
+function effectEqualityTester(
+  this: { equals: (a: unknown, b: unknown, customTesters?: ReadonlyArray<unknown>) => boolean },
+  a: unknown,
+  b: unknown,
+  customTesters: ReadonlyArray<unknown>,
+): boolean | undefined {
+  if (Equal.isEqual(a) && Equal.isEqual(b) && !isContainer(a) && !isContainer(b)) {
+    return Equal.equals(a, b)
+  }
+
+  if (
+    !isEffectLike(a) ||
+    !isEffectLike(b) ||
+    Object.getPrototypeOf(a) !== Object.getPrototypeOf(b) ||
+    customTesters.some(tester => typeof tester === 'function' && tester.name === 'subsetEquality')
+  ) {
+    return undefined
+  }
+
+  const keys = definedKeys(a)
+
+  return (
+    keys.length === definedKeys(b).length &&
+    keys.every(key => Object.hasOwn(b, key) && this.equals(a[key], b[key], customTesters))
+  )
+}
+
+expect.addEqualityTesters([effectEqualityTester as never])
 
 function htmlContaining(this: MatcherState, actual: unknown, sample: Html | string): MatcherResult {
   if (!(actual instanceof Html)) {

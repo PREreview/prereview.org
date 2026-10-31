@@ -1,15 +1,19 @@
-import { flow, Option, pipe, Schema, String, Tuple } from 'effect'
+import { Array, flow, Option, pipe, Schema, String } from 'effect'
 
 export type YouTubeVideoId = typeof YouTubeVideoId.Type
 
-export const YouTubeVideoId = pipe(Schema.String, Schema.pattern(/^[A-Za-z0-9_-]{11}$/), Schema.brand('YouTubeVideoId'))
+export const YouTubeVideoId = pipe(
+  Schema.String,
+  Schema.check(Schema.isPattern(/^[A-Za-z0-9_-]{11}$/)),
+  Schema.brand('YouTubeVideoId'),
+)
 
 export const fromUrl: (url: URL) => Option.Option<YouTubeVideoId> = flow(
   url => url.href,
   String.match(
     /^https?:\/\/(?:youtu\.be\/|(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^&#]*&)*?v=|(?:embed|shorts|live)\/))([A-Za-z0-9_-]{11})(?:[/?&#].*)?$/,
   ),
-  Option.andThen(Tuple.at(1)),
+  Option.flatMap(Array.get(1)),
   Option.andThen(Schema.decodeOption(YouTubeVideoId)),
 )
 

@@ -1,4 +1,4 @@
-import { Array, Either, flow, Struct, type Option } from 'effect'
+import { Array, Result, flow, Struct, type Option } from 'effect'
 import * as Events from '../Events.ts'
 import type * as Preprints from '../Preprints/index.ts'
 import * as Queries from '../Queries.ts'
@@ -52,5 +52,5 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
 export const GetRapidPrereviewsForAPreprint = Queries.OnDemandQuery({
   name: 'PreprintReviews.getRapidPrereviewsForAPreprint',
   createFilter,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

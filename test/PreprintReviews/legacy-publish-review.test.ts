@@ -20,7 +20,7 @@ describe('completedFormToNewPrereview', () => {
     ],
     ([form, orcidId, preprint, locale, publicPersona, pseudonymPersona]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
+        const runtime = yield* Effect.context<
           LanguageDetection.LanguageDetection | Locale | Prereviewers.Prereviewers
         >()
 

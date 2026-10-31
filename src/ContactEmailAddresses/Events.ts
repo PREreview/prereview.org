@@ -9,7 +9,7 @@ export class ContactAddressImported extends Schema.TaggedClass<ContactAddressImp
   contactAddressId: UuidSchema,
   emailAddress: SensitiveData(EmailAddressSchema),
   orcidId: OrcidIdSchema,
-  verificationStatus: Schema.Literal('verified', 'unverified'),
+  verificationStatus: Schema.Literals(['verified', 'unverified']),
 }) {}
 
 export class ContactAddressVerified extends Schema.TaggedClass<ContactAddressVerified>()('ContactAddressVerified', {

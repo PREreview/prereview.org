@@ -53,9 +53,9 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
           ),
         ),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
-        RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullishOr))),
+        RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullishOr))),
+        RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(Option.fromNullishOr))),
         RTE.apSW(
           'contactEmailAddress',
           EffectToFpts.toReaderTaskEither(
@@ -65,11 +65,11 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
             }).pipe(Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeedNone)),
           ),
         ),
-        RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(Option.fromNullishOr))),
+        RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(Option.fromNullishOr))),
+        RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(Option.fromNullishOr))),
+        RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(Option.fromNullishOr))),
+        RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(Option.fromNullishOr))),
         RTE.apSW(
           'requestedReviewNotifications',
           EffectToFpts.toReaderTaskEither(

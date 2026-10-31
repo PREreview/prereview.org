@@ -2,7 +2,7 @@ import { Config, Context, Data, Effect, Layer } from 'effect'
 import type { Clubs } from './Clubs/index.ts'
 import type { User } from './user.ts'
 
-export class FeatureFlags extends Context.Tag('FeatureFlags')<
+export class FeatureFlags extends Context.Service<
   FeatureFlags,
   {
     canAddMultipleAuthors: (user?: User) => Effect.Effect<boolean, never, Clubs>
@@ -16,7 +16,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     useCrowdinInContext: boolean
     showSpotlight: boolean
   }
->() {}
+>()('FeatureFlags') {}
 
 const defaults = {
   canAddMultipleAuthors: () => Effect.succeed(false),
@@ -64,5 +64,5 @@ export const layer = (options: Partial<typeof FeatureFlags.Service> = {}): Layer
 
 export const layerDefaults: Layer.Layer<FeatureFlags> = layer()
 
-export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
-  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layer))
+export const layerConfig = (options: Config.Wrap<Parameters<typeof layer>[0]>) =>
+  Layer.unwrap(Effect.map(Config.unwrap(options), layer))

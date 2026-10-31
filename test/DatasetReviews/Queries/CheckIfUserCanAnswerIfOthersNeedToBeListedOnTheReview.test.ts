@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -42,32 +42,32 @@ const published = new Events.DatasetReviewWasPublished({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not answered', input, [started], Either.right(Option.none())],
+  ['no events', input, [], Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
+  ['not answered', input, [started], Result.succeed(Option.none())],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different author ID',
     inputDifferentAuthorId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
+    Result.fail(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
   ],
-  ['answered', input, [started, answered], Either.right(Option.some(answered.answer))],
+  ['answered', input, [started, answered], Result.succeed(Option.some(answered.answer))],
   [
     'publication requested',
     input,
     [started, answered, publicationRequested],
-    Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     input,
     [started, answered, publicationRequested, published],
-    Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview

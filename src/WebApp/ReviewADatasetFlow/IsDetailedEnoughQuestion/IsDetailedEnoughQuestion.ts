@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -37,7 +37,7 @@ export const IsDetailedEnoughQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.isDetailedEnough)
+                hasAnError && Result.isFailure(form.isDetailedEnough)
                   ? 'aria-invalid="true" aria-errormessage="is-detailed-enough-error"'
                   : '',
               )}
@@ -47,11 +47,11 @@ export const IsDetailedEnoughQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.isDetailedEnough)
+                hasAnError && Result.isFailure(form.isDetailedEnough)
                   ? html`
                       <div class="error-message" id="is-detailed-enough-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.isDetailedEnough.left, {
+                        ${Match.valueTags(form.isDetailedEnough.failure, {
                           Missing: () => t('selectGranularEnough')(),
                         })}
                       </div>
@@ -93,7 +93,7 @@ export const IsDetailedEnoughQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.isDetailedEnoughYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isDetailedEnoughYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isDetailedEnoughYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -131,7 +131,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.isDetailedEnoughPartlyDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isDetailedEnoughPartlyDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isDetailedEnoughPartlyDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -169,7 +169,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.isDetailedEnoughNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isDetailedEnoughNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isDetailedEnoughNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -207,12 +207,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.isDetailedEnough)
+  Result.isFailure(form.isDetailedEnough)
     ? html`
         <li>
           <a href="#is-detailed-enough-yes">
             ${pipe(
-              Match.value(form.isDetailedEnough.left),
+              Match.value(form.isDetailedEnough.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectGranularEnough')()),
               Match.exhaustive,
             )}

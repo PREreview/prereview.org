@@ -55,5 +55,5 @@ export const SendAuthorInviteEmails = Effect.fn(
   Effect.tapError(error =>
     Effect.logError('Failed to send author invite emails for review').pipe(Effect.annotateLogs({ error })),
   ),
-  Effect.catchAll(error => new FailedToSendAuthorInviteEmails({ cause: error })),
+  Effect.catch(error => new FailedToSendAuthorInviteEmails({ cause: error })),
 )

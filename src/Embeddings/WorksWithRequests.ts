@@ -1,8 +1,8 @@
 // oxlint-disable no-comments/disallowComments
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
 import { PgVector, UnableToAddWorksWithRequests, UnableToQuery, type Embedding } from './Shared.ts'
-import type { SqlClient, SqlError } from '@effect/sql'
-import type { HttpClient } from '@effect/platform'
+import type { SqlClient, SqlError } from 'effect/sql'
+import type { HttpClient } from 'effect/http'
 import { generateEmbeddings } from './OpenRouter.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { Doi } from '../types/Doi.ts'
@@ -22,7 +22,7 @@ export interface WorkWithRequest {
 const encodePreprintId = (preprintId: IndeterminatePreprintId): string =>
   Schema.encodeSync(IndeterminatePreprintIdFromStringSchema)(preprintId).toLowerCase()
 
-const decodePreprintId = Schema.decodeUnknown(IndeterminatePreprintIdFromStringSchema)
+const decodePreprintId = Schema.decodeUnknownEffect(IndeterminatePreprintIdFromStringSchema)
 
 // `sql.in` binds one query parameter per ID, and the SQL compiler spreads them onto an array
 // via `Function.apply`, which throws a RangeError once there are tens of thousands of them.

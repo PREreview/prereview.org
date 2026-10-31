@@ -1,4 +1,4 @@
-import { Array, Either, Match, pipe, String, Struct } from 'effect'
+import { Array, Result, Match, pipe, String, Struct } from 'effect'
 import type { ClubName } from '../../../Clubs/index.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
@@ -36,7 +36,7 @@ export const renderAddToAClubPage = ({
             role="group"
             aria-describedby="add-to-club-tip"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.addToClub)
+              form._tag === 'InvalidForm' && Result.isFailure(form.addToClub)
                 ? 'aria-invalid="true" aria-errormessage="add-to-club-error"'
                 : '',
             )}
@@ -48,11 +48,11 @@ export const renderAddToAClubPage = ({
             <p id="add-to-club-tip" role="note">${t('asLeadCanAddToClub')({ numberOfClubs: clubs.length })}</p>
 
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.addToClub)
+              form._tag === 'InvalidForm' && Result.isFailure(form.addToClub)
                 ? html`
                     <div class="error-message" id="add-to-club-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.addToClub.left, {
+                      ${Match.valueTags(form.addToClub.failure, {
                         Missing: () => t('isClubReviewError')(),
                       })}
                     </div>
@@ -63,7 +63,7 @@ export const renderAddToAClubPage = ({
             <ol>
               ${pipe(
                 Array.sortWith(clubs, Struct.get('name'), (a, b) =>
-                  String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                  String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
                 ),
                 Array.map(
                   club => html`
@@ -124,19 +124,19 @@ export const renderAddToAClubPage = ({
 const toErrorItems =
   (locale: SupportedLocale, clubs: Array.NonEmptyReadonlyArray<ClubName>) => (form: AddToAClubForm.InvalidForm) => html`
     ${
-      Either.isLeft(form.addToClub)
+      Result.isFailure(form.addToClub)
         ? html`
             <li>
               <a
                 href="#add-to-club-${pipe(
                   Array.sortWith(clubs, Struct.get('name'), (a, b) =>
-                    String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                    String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
                   ),
                   Array.headNonEmpty,
                   Struct.get('id'),
                 )}"
               >
-                ${Match.valueTags(form.addToClub.left, {
+                ${Match.valueTags(form.addToClub.failure, {
                   Missing: () => translate(locale, 'write-review', 'isClubReviewError')(),
                 })}
               </a>

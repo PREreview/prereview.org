@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Tuple } from 'effect'
+import { Array, Result, Equal, Option, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/RejectReviewRequest.ts'
@@ -304,14 +304,14 @@ describe('decide', () => {
   it.prop('has not been received', [command()], ([command]) => {
     const result = _.decide(new _.NotReceived(), command)
 
-    expect(result).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+    expect(result).toStrictEqual(Result.fail(new ReviewRequests.UnknownReviewRequest({})))
   })
 
   it.prop('has not been rejected', [command()], ([command]) => {
     const result = _.decide(new _.NotRejected(), command)
 
     expect(result).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasRejected({
             rejectedAt: command.rejectedAt,
@@ -326,18 +326,18 @@ describe('decide', () => {
   it.prop('has already been accepted', [command()], ([command]) => {
     const result = _.decide(new _.HasBeenAccepted(), command)
 
-    expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
+    expect(result).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
   })
 
   it.prop('has already been withdrawn', [command()], ([command]) => {
     const result = _.decide(new _.HasBeenWithdrawn(), command)
 
-    expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenWithdrawn({})))
+    expect(result).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestHasBeenWithdrawn({})))
   })
 
   it.prop('has already been rejected', [command()], ([command]) => {
     const result = _.decide(new _.HasBeenRejected(), command)
 
-    expect(result).toStrictEqual(Either.right(Option.none()))
+    expect(result).toStrictEqual(Result.succeed(Option.none()))
   })
 })

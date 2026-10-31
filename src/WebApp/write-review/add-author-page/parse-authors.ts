@@ -34,5 +34,5 @@ export const parseAuthors = (
       ),
     ),
     Option.all,
-    Option.filter(authors => Array.isNonEmptyReadonlyArray(authors)),
+    Option.filter(authors => Array.isReadonlyArrayNonEmpty(authors)),
   )

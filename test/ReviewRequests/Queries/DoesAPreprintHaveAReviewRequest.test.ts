@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option } from 'effect'
+import { Array, Result, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/DoesAPreprintHaveAReviewRequest.ts'
@@ -200,5 +200,5 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
 
   const actual = query(state, input)
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(Result.succeed(expected))
 })

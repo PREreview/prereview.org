@@ -28,7 +28,7 @@ export const Servers = Record.keys(servers) as never as Array.NonEmptyReadonlyAr
 
 export const getServerName = (locale: SupportedLocale, server: Server) =>
   new Intl.ListFormat(locale, { type: 'disjunction' }).format(
-    Array.map(servers[server], type => Preprints.getServerName(type._tag)),
+    Array.map(servers[server], type => Preprints.getServerName(type.identifier as Preprints.PreprintId['_tag'])),
   )
 
 export const isServer = (value: string): value is Server => value in servers

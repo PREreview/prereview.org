@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from '../../vitest.ts'
-import { Array, Either, Schema } from 'effect'
+import { Array, Result, Schema } from 'effect'
 import * as _ from '../../../src/WebApp/Response/Http.ts'
 import * as fc from '../../fc.ts'
 
@@ -8,9 +8,9 @@ describe('LinkHeaderSchema', () => {
     'decode',
     [fc.anything()],
     ([value]) => {
-      const actual = Schema.decodeUnknownEither(_.LinkHeaderSchema)(value)
+      const actual = Schema.decodeUnknownResult(_.LinkHeaderSchema)(value)
 
-      expect(actual).toStrictEqual(Either.left(expect.anything()))
+      expect(actual).toStrictEqual(Result.fail(expect.anything()))
     },
     {
       fastCheck: {

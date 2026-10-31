@@ -1,4 +1,4 @@
-import { Array, Either, HashMap, Match, Option, Schema } from 'effect'
+import { Array, Result, HashMap, Match, Option, Schema } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -21,7 +21,7 @@ export interface Input {
   preprintId: Preprints.IndeterminatePreprintId
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   { personaChoice: Option.Option<'public' | 'pseudonym'>; reviewRequestId: Uuid.Uuid },
   Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenPublished
 >
@@ -123,20 +123,20 @@ const query = (state: State, input: Input): Result => {
   const reviewRequestId = HashMap.get(state.reviewRequestIdsByInput, inputToHashKey(input))
 
   if (Option.isNone(reviewRequestId)) {
-    return Either.left(new Errors.UnknownReviewRequest({}))
+    return Result.fail(new Errors.UnknownReviewRequest({}))
   }
 
   const reviewRequest = HashMap.get(state.reviewRequestsById, reviewRequestId.value)
 
   if (Option.isNone(reviewRequest)) {
-    return Either.left(new Errors.UnknownReviewRequest({ cause: 'Unexpected query state' }))
+    return Result.fail(new Errors.UnknownReviewRequest({ cause: 'Unexpected query state' }))
   }
 
   if (reviewRequest.value.requestState === 'published') {
-    return Either.left(new Errors.ReviewRequestHasBeenPublished({}))
+    return Result.fail(new Errors.ReviewRequestHasBeenPublished({}))
   }
 
-  return Either.right({ reviewRequestId: reviewRequestId.value, personaChoice: reviewRequest.value.personaChoice })
+  return Result.succeed({ reviewRequestId: reviewRequestId.value, personaChoice: reviewRequest.value.personaChoice })
 }
 
 export const GetPersonaChoice = Queries.StatefulQuery({

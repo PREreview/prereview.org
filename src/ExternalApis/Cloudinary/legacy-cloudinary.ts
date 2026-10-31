@@ -1,4 +1,4 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { now } from 'clock-ts'
 import { v2 as cloudinary } from 'cloudinary'
 import { Function, String, flow, pipe } from 'effect'

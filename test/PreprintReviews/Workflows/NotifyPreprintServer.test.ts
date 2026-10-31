@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Layer, Option, pipe } from 'effect'
+import { Effect, Result, Layer, Option, pipe } from 'effect'
 import { CoarNotify } from '../../../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
@@ -23,10 +23,10 @@ describe('NotifyPreprintServer', () => {
             const actual = yield* pipe(
               _.NotifyPreprintServer(reviewId),
               Effect.provide(Layer.mock(CoarNotify.CoarNotify, { sendMessage })),
-              Effect.either,
+              Effect.result,
             )
 
-            expect(actual).toStrictEqual(Either.void)
+            expect(actual).toStrictEqual(Result.void)
             expect(sendMessage).toHaveBeenCalledWith({
               id: new URL(`urn:uuid:${uuid}`),
               '@context': ['https://www.w3.org/ns/activitystreams', 'https://coar-notify.net'],
@@ -64,10 +64,10 @@ describe('NotifyPreprintServer', () => {
             const actual = yield* pipe(
               _.NotifyPreprintServer(reviewId),
               Effect.provide(Layer.mock(CoarNotify.CoarNotify, { sendMessage })),
-              Effect.either,
+              Effect.result,
             )
 
-            expect(actual).toStrictEqual(Either.void)
+            expect(actual).toStrictEqual(Result.void)
             expect(sendMessage).toHaveBeenCalledWith({
               id: new URL(`urn:uuid:${uuid}`),
               '@context': ['https://www.w3.org/ns/activitystreams', 'https://coar-notify.net'],
@@ -105,9 +105,9 @@ describe('NotifyPreprintServer', () => {
       [fc.origin(), fc.integer(), fc.prereview({ preprintId: fc.notACoarNotifyTargetPreprintId() })],
       ([publicUrl, reviewId, review]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
+          const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(CoarNotify.CoarNotify, {}),
@@ -133,9 +133,9 @@ describe('NotifyPreprintServer', () => {
       ],
       ([publicUrl, [sendCoarNotifyMessages, review], reviewId, uuid, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
+          const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
+          expect(actual).toStrictEqual(Result.fail(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
         }).pipe(
           Effect.provide([
             Layer.mock(CoarNotify.CoarNotify, { sendMessage: () => error }),
@@ -162,9 +162,9 @@ describe('NotifyPreprintServer', () => {
     ],
     ([publicUrl, sendCoarNotifyMessages, reviewId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(CoarNotify.CoarNotify, {}),
@@ -178,9 +178,9 @@ describe('NotifyPreprintServer', () => {
 
   it.effect.prop('when the feature is not enabled', [fc.origin(), fc.integer()], ([publicUrl, reviewId]) =>
     Effect.gen(function* () {
-      const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
+      const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.result)
 
-      expect(actual).toStrictEqual(Either.void)
+      expect(actual).toStrictEqual(Result.void)
     }).pipe(
       Effect.provide([
         Layer.mock(CoarNotify.CoarNotify, {}),

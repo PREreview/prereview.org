@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/RegisterPrereviewer.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -75,29 +75,29 @@ test.each<
     string,
     ReadonlyArray<Events.Event>,
     _.Input,
-    Either.Either<Option.Option<Events.Event>, _.PseudonymAlreadyInUse | _.MismatchWithExistingDataForOrcid>,
+    Result.Result<Option.Option<Events.Event>, _.PseudonymAlreadyInUse | _.MismatchWithExistingDataForOrcid>,
   ]
 >([
-  ['no events', [], input, Either.right(Option.some(new Events.PrereviewerRegistered(input)))],
+  ['no events', [], input, Result.succeed(Option.some(new Events.PrereviewerRegistered(input)))],
   [
     'different PREreviewer imported',
     [importedDifferentPrereviewer],
     input,
-    Either.right(Option.some(new Events.PrereviewerRegistered(input))),
+    Result.succeed(Option.some(new Events.PrereviewerRegistered(input))),
   ],
   [
     'different PREreviewer registered',
     [registeredDifferentPrereviewer],
     input,
-    Either.right(Option.some(new Events.PrereviewerRegistered(input))),
+    Result.succeed(Option.some(new Events.PrereviewerRegistered(input))),
   ],
-  ['already imported, same details', [imported], input, Either.right(Option.none())],
-  ['already registered, same details', [registered], input, Either.right(Option.none())],
+  ['already imported, same details', [imported], input, Result.succeed(Option.none())],
+  ['already registered, same details', [registered], input, Result.succeed(Option.none())],
   [
     'already imported, different registeredAt',
     [importedDifferentTime],
     input,
-    Either.left(
+    Result.fail(
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: input.pseudonym,
         existingRegisteredAt: importedDifferentTime.registeredAt,
@@ -108,7 +108,7 @@ test.each<
     'already registered, different registeredAt',
     [registeredDifferentTime],
     input,
-    Either.left(
+    Result.fail(
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: input.pseudonym,
         existingRegisteredAt: registeredDifferentTime.registeredAt,
@@ -119,7 +119,7 @@ test.each<
     'already imported, registeredAt was not available',
     [importedWithoutRegisteredAt],
     input,
-    Either.left(
+    Result.fail(
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: input.pseudonym,
         existingRegisteredAt: 'not available from import source',
@@ -130,7 +130,7 @@ test.each<
     'already imported, different pseudonym',
     [importedDifferentPseudonym],
     input,
-    Either.left(
+    Result.fail(
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: importedDifferentPseudonym.pseudonym,
         existingRegisteredAt: input.registeredAt,
@@ -141,7 +141,7 @@ test.each<
     'already registered, different pseudonym',
     [registeredDifferentPseudonym],
     input,
-    Either.left(
+    Result.fail(
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: registeredDifferentPseudonym.pseudonym,
         existingRegisteredAt: input.registeredAt,
@@ -152,19 +152,19 @@ test.each<
     'different orcid import with same pseudonym',
     [importedDifferentOrcidId],
     input,
-    Either.left(new _.PseudonymAlreadyInUse()),
+    Result.fail(new _.PseudonymAlreadyInUse()),
   ],
   [
     'different orcid registered with same pseudonym',
     [registeredDifferentOrcidId],
     input,
-    Either.left(new _.PseudonymAlreadyInUse()),
+    Result.fail(new _.PseudonymAlreadyInUse()),
   ],
   [
     'different orcid, but same pseudonym is use due to legacy pseudonym replacement',
     [importedLegacy, legacyReplaced],
     input,
-    Either.left(new _.PseudonymAlreadyInUse()),
+    Result.fail(new _.PseudonymAlreadyInUse()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.RegisterPrereviewer

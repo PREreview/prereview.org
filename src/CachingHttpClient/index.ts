@@ -5,7 +5,7 @@ import {
   HttpClientResponse,
   UrlParams,
   type HttpClientRequest,
-} from '@effect/platform'
+} from 'effect/http'
 import { Context, DateTime, Effect, Equal, flow, Function, Layer, Option, pipe, Queue, type Duration } from 'effect'
 import * as StatusCodes from '../StatusCodes.ts'
 import * as HttpCache from './HttpCache.ts'
@@ -16,14 +16,14 @@ export { layerPersistedToRedis } from './PersistedToRedis.ts'
 
 export const CacheTimeout = '200 millis'
 
-export class RevalidationQueue extends Context.Tag('RevalidationQueue')<
+export class RevalidationQueue extends Context.Service<
   RevalidationQueue,
-  Queue.Queue<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.DurationInput }>
->() {}
+  Queue.Queue<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.Input }>
+>()('RevalidationQueue') {}
 
 export const CachingHttpClient = (
-  timeToStale: Duration.DurationInput,
-  requestTimeout: Duration.DurationInput = '2 seconds',
+  timeToStale: Duration.Input,
+  requestTimeout: Duration.Input = '2 seconds',
 ): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient | RevalidationQueue> =>
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
@@ -48,7 +48,7 @@ export const CachingHttpClient = (
           Effect.tapErrorTag('InternalHttpCacheFailure', error =>
             Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),
           ),
-          Effect.tapErrorTag('TimeoutException', error =>
+          Effect.tapErrorTag('TimeoutError', error =>
             Effect.logWarning('Reading from HttpCache timed out').pipe(Effect.annotateLogs({ error })),
           ),
           Effect.orElseSucceed(Function.constUndefined),
@@ -61,7 +61,7 @@ export const CachingHttpClient = (
         }
 
         if (response) {
-          if (DateTime.lessThan(timestamp, response.staleAt)) {
+          if (DateTime.isLessThan(timestamp, response.staleAt)) {
             yield* Effect.logDebug('Cache hit').pipe(Effect.annotateLogs(logAnnotations))
           } else {
             yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
@@ -77,8 +77,11 @@ export const CachingHttpClient = (
           httpClient.execute,
           Effect.timeout(requestTimeout),
           Effect.catchTag(
-            'TimeoutException',
-            error => new HttpClientError.RequestError({ request: req, reason: 'Transport', cause: error }),
+            'TimeoutError',
+            error =>
+              new HttpClientError.HttpClientError({
+                reason: new HttpClientError.TransportError({ request: req, cause: error }),
+              }),
           ),
           Effect.tap(
             HttpClientResponse.matchStatus({
@@ -90,7 +93,7 @@ export const CachingHttpClient = (
                   ),
                   Effect.ignore,
                 ),
-              orElse: Function.constVoid,
+              orElse: () => Effect.void,
             }),
           ),
         )
@@ -132,18 +135,19 @@ const revalidationWorker = Effect.gen(function* () {
   )
 })
 
-export const layerRevalidationWorker = Layer.scopedDiscard(
-  Effect.acquireReleaseInterruptible(
+export const layerRevalidationWorker = Layer.effectDiscard(
+  Effect.acquireRelease(
     pipe(Effect.logDebug('Revalidation worker started'), Effect.andThen(revalidationWorker)),
     () => Effect.logDebug('Revalidation worker stopped'),
+    { interruptible: true },
   ),
 )
 
-export const layerRevalidationQueue = Layer.scoped(
+export const layerRevalidationQueue = Layer.effect(
   RevalidationQueue,
   Effect.acquireRelease(
     pipe(
-      Queue.sliding<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.DurationInput }>(100),
+      Queue.sliding<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.Input }>(100),
       Effect.tap(Effect.logDebug('Revalidation queue started')),
     ),
     flow(Queue.shutdown, Effect.tap(Effect.logDebug('Revalidation queue stopped'))),

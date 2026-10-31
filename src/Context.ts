@@ -4,22 +4,25 @@ import type { SupportedLocale, UserSelectableLocale } from './locales/index.ts'
 import type { NonEmptyString } from './types/index.ts'
 import type { FlashMessageSchema } from './WebApp/Response/index.ts'
 
-export class AllowSiteCrawlers extends Context.Tag('AllowSiteCrawlers')<AllowSiteCrawlers, boolean>() {}
+export class AllowSiteCrawlers extends Context.Service<AllowSiteCrawlers, boolean>()('AllowSiteCrawlers') {}
 
-export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
+export class Locale extends Context.Service<Locale, SupportedLocale>()('Locale') {}
 
-export class EnabledLocales extends Context.Tag('EnabledLocales')<
-  EnabledLocales,
-  HashSet.HashSet<UserSelectableLocale>
->() {}
+export class EnabledLocales extends Context.Service<EnabledLocales, HashSet.HashSet<UserSelectableLocale>>()(
+  'EnabledLocales',
+) {}
 
-export class FlashMessage extends Context.Tag('CurrentFlashMessage')<FlashMessage, typeof FlashMessageSchema.Type>() {}
+export class FlashMessage extends Context.Service<FlashMessage, typeof FlashMessageSchema.Type>()(
+  'CurrentFlashMessage',
+) {}
 
-export class SessionSecret extends Context.Tag('SessionSecret')<SessionSecret, Redacted.Redacted>() {}
+export class SessionSecret extends Context.Service<SessionSecret, Redacted.Redacted>()('SessionSecret') {}
 
-export class SessionStore extends Context.Tag('SessionStore')<SessionStore, { cookie: string; store: Keyv.Keyv }>() {}
+export class SessionStore extends Context.Service<SessionStore, { cookie: string; store: Keyv.Keyv }>()(
+  'SessionStore',
+) {}
 
-export class ScietyListToken extends Context.Tag('ScietyListToken')<
+export class ScietyListToken extends Context.Service<
   ScietyListToken,
   Redacted.Redacted<NonEmptyString.NonEmptyString>
->() {}
+>()('ScietyListToken') {}

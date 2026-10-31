@@ -1,5 +1,19 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
-import { Array, Function, Match, Option, Predicate, Schema, String, Struct, Tuple, flow, identity, pipe } from 'effect'
+import {
+  Array,
+  Function,
+  Match,
+  Option,
+  Predicate,
+  Schema,
+  String,
+  Struct,
+  Tuple,
+  flow,
+  identity,
+  pipe,
+  Filter,
+} from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
@@ -112,7 +126,11 @@ const getPrereviewsPageForSciety = flow(
   RTE.map(records => Array.chunksOf(20)(records.hits.hits)),
   RTE.chainReaderTaskKW(
     RT.traverseSeqArray(
-      flow(RT.traverseArray(recordToScietyPrereview), RT.map(Array.map(FptsToEffect.either)), RT.map(Array.getRights)),
+      flow(
+        RT.traverseArray(recordToScietyPrereview),
+        RT.map(Array.map(FptsToEffect.either)),
+        RT.map(Array.getSuccesses),
+      ),
     ),
   ),
   RTE.orElseFirstW(
@@ -203,7 +221,7 @@ export const getRecentPrereviewsFromZenodo = ({
     RTE.bindW(
       'hits',
       RTE.fromOptionK(() => 'not-found' as const)(({ records }) =>
-        Option.liftPredicate(records.hits.hits, Array.isNonEmptyReadonlyArray),
+        Option.liftPredicate(records.hits.hits, Array.isReadonlyArrayNonEmpty),
       ),
     ),
     RTE.bindW(
@@ -219,9 +237,9 @@ export const getRecentPrereviewsFromZenodo = ({
         RT.map(
           flow(
             Array.map(FptsToEffect.either),
-            Array.getRights,
+            Array.getSuccesses,
             E.fromOptionK(() => 'unavailable' as const)(
-              Option.liftPredicate(prereviews => Array.isNonEmptyReadonlyArray(prereviews)),
+              Option.liftPredicate(prereviews => Array.isReadonlyArrayNonEmpty(prereviews)),
             ),
           ),
         ),
@@ -345,7 +363,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
         ),
       ),
       RT.map(Array.map(FptsToEffect.either)),
-      RT.map(Array.getRights),
+      RT.map(Array.getSuccesses),
     ),
   ),
   RTE.orElseFirstW(
@@ -390,7 +408,7 @@ export const getPrereviewsForUserFromZenodo = flow(
         ),
       ),
       RT.map(Array.map(FptsToEffect.either)),
-      RT.map(Array.getRights),
+      RT.map(Array.getSuccesses),
     ),
   ),
   RTE.orElseFirstW(
@@ -455,7 +473,7 @@ export const getPrereviewsForClubFromZenodo = (club: ClubDetails) =>
           ),
         ),
         RT.map(Array.map(FptsToEffect.either)),
-        RT.map(Array.getRights),
+        RT.map(Array.getSuccesses),
       ),
     ),
     RTE.bimap(
@@ -807,7 +825,7 @@ function recordToPrereview(
     RTE.chainW(({ license, preprintId, reviewTextUrl }) =>
       sequenceS(RTE.ApplyPar)({
         addendum: RTE.right(
-          pipe(Option.fromNullable(record.metadata.notes), Option.map(sanitizeHtml), Option.getOrUndefined),
+          pipe(Option.fromNullishOr(record.metadata.notes), Option.map(sanitizeHtml), Option.getOrUndefined),
         ),
         authors: RTE.right<
           EffectToFpts.EffectEnv<Preprints.Preprints> & F.FetchEnv & GetClubByNameEnv & L.LoggerEnv,
@@ -818,7 +836,7 @@ function recordToPrereview(
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(
-            Option.fromNullable(record.metadata.language),
+            Option.fromNullishOr(record.metadata.language),
             Option.filter(iso6393Validate),
             Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
@@ -862,7 +880,7 @@ function recordToPreprintPrereview(
         id: RTE.right(record.id),
         language: RTE.right(
           pipe(
-            Option.fromNullable(record.metadata.language),
+            Option.fromNullishOr(record.metadata.language),
             Option.filter(iso6393Validate),
             Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
@@ -900,7 +918,7 @@ function recordToScietyPrereview(
             orcid: creator.orcid ? OrcidId(creator.orcid) : undefined,
           })),
           language: pipe(
-            Option.fromNullable(review.metadata.language),
+            Option.fromNullishOr(review.metadata.language),
             Option.filter(iso6393Validate),
             Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
           ),
@@ -983,12 +1001,12 @@ function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview[
 
   const [named, last] = Array.unappend(authors)
 
-  if (!Array.isNonEmptyReadonlyArray(named)) {
+  if (!Array.isReadonlyArrayNonEmpty(named)) {
     return { named: authors, anonymous: 0 }
   }
 
   const anonymous = pipe(
-    Option.fromNullable(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
+    Option.fromNullishOr(/^([1-9][0-9]*) other authors?$/.exec(last.name)),
     Option.flatMap(Array.get(1)),
     Option.match({
       onNone: () => 0,
@@ -1003,7 +1021,7 @@ function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview[
 
 function isInCommunity(record: Record) {
   return pipe(
-    Option.fromNullable(record.metadata.communities),
+    Option.fromNullishOr(record.metadata.communities),
     Option.flatMap(Array.findFirst(community => community.id === 'prereview-reviews')),
     Option.isSome,
   )
@@ -1019,21 +1037,27 @@ function isOpen(record: Record) {
 
 const getReviewDomains = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
-  Array.filterMap(flow(Struct.get('identifier'), Schema.decodeOption(DomainIdFromOpenAlexUrlSchema))),
+  Array.filterMap(
+    Filter.fromPredicateOption(flow(Struct.get('identifier'), Schema.decodeOption(DomainIdFromOpenAlexUrlSchema))),
+  ),
 )
 
 const getReviewFields = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
-  Array.filterMap(flow(Struct.get('identifier'), Schema.decodeOption(FieldIdFromOpenAlexUrlSchema))),
+  Array.filterMap(
+    Filter.fromPredicateOption(flow(Struct.get('identifier'), Schema.decodeOption(FieldIdFromOpenAlexUrlSchema))),
+  ),
 )
 
 const getReviewSubfields = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
-  Array.filterMap(flow(Struct.get('identifier'), Schema.decodeOption(SubfieldIdFromOpenAlexUrlSchema))),
+  Array.filterMap(
+    Filter.fromPredicateOption(flow(Struct.get('identifier'), Schema.decodeOption(SubfieldIdFromOpenAlexUrlSchema))),
+  ),
 )
 
 const getReviewClub = flow(
-  Option.liftNullable((record: Record) => record.metadata.contributors),
+  Option.liftNullishOr((record: Record) => record.metadata.contributors),
   Option.map(Array.map(flow(Struct.get('name'), Name, getClubByName))),
   Option.match({
     onSome: RT.sequenceArray,
@@ -1086,7 +1110,7 @@ const getReviewedPreprintId = (record: Record) =>
               resource_type: 'publication-preprint',
               identifier: P.select(),
             },
-            flow(FptsToEffect.eitherK(PreprintDoiD.decode), Option.getRight, Option.map(fromPreprintDoi)),
+            flow(FptsToEffect.eitherK(PreprintDoiD.decode), Option.getSuccess, Option.map(fromPreprintDoi)),
           )
           .with(
             {
@@ -1097,7 +1121,7 @@ const getReviewedPreprintId = (record: Record) =>
             },
             flow(
               FptsToEffect.eitherK(UrlD.decode),
-              Option.getRight,
+              Option.getSuccess,
               Option.andThen(fromUrl),
               Option.andThen(
                 Array.match({
@@ -1137,9 +1161,9 @@ const getDatasetReviewId = (record: Record) =>
                 identifier =>
                   pipe(
                     Schema.decodeUnknownOption(
-                      Schema.TemplateLiteralParser(`${publicUrl.origin}/reviews/`, Uuid.UuidSchema),
+                      Schema.TemplateLiteralParser([`${publicUrl.origin}/reviews/`, Uuid.UuidSchema]),
                     )(identifier),
-                    Option.andThen(Tuple.getSecond),
+                    Option.andThen(Tuple.get(1)),
                   ),
               )
               .otherwise(Option.none),

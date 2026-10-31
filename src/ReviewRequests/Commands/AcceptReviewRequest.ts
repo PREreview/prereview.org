@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -58,16 +58,16 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error> =>
   Match.valueTags(state, {
-    NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
-    HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
-    HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
-    HasBeenAccepted: () => Either.right(Option.none()),
+    NotReceived: () => Result.fail(new Errors.UnknownReviewRequest({})),
+    HasBeenRejected: () => Result.fail(new Errors.ReviewRequestHasBeenRejected({})),
+    HasBeenWithdrawn: () => Result.fail(new Errors.ReviewRequestHasBeenWithdrawn({})),
+    HasBeenAccepted: () => Result.succeed(Option.none()),
     NotAccepted: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.ReviewRequestForAPreprintWasAccepted({
             acceptedAt: command.acceptedAt,

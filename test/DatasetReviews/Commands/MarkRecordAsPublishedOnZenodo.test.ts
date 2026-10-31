@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkRecordAsPublishedOnZenodo.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -156,32 +156,32 @@ describe('decide', () => {
   test('has not been started', () => {
     const result = _.decide(new _.NotStarted(), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   test('has not been published', () => {
     const result = _.decide(new _.NotPublished(), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
   })
 
   test('does not have a record', () => {
     const result = _.decide(new _.DoesNotHaveARecord(), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
   })
 
   it.prop('has an unpublished record', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.HasAnUnpublishedRecord({ recordId }), { datasetReviewId })
 
     expect(result).toStrictEqual(
-      Either.right(Option.some(new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId }))),
+      Result.succeed(Option.some(new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId }))),
     )
   })
 
   it.prop('has a published record', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.HasAPublishedRecord({ recordId }), { datasetReviewId })
 
-    expect(result).toStrictEqual(Either.right(Option.none()))
+    expect(result).toStrictEqual(Result.succeed(Option.none()))
   })
 })

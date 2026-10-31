@@ -66,5 +66,5 @@ export const NotifyPreprintServer = Effect.fn(
       },
     })
   },
-  Effect.catchAll(error => new Errors.FailedToNotifyPreprintServer({ cause: error })),
+  Effect.catch(error => new Errors.FailedToNotifyPreprintServer({ cause: error })),
 )

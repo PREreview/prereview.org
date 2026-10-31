@@ -1,6 +1,7 @@
-import { HttpClient, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientResponse } from 'effect/http'
 import { describe, expect, it } from './vitest.ts'
-import { type Duration, Effect, Exit, Fiber, pipe, TestClock } from 'effect'
+import { type Duration, Effect, Exit, Fiber, pipe } from 'effect'
+import { TestClock } from 'effect/testing'
 import * as _ from '../src/RequestCollapsingHttpClient.ts'
 
 describe('requestCollapsingHttpClient', () => {
@@ -19,9 +20,13 @@ describe('requestCollapsingHttpClient', () => {
         ),
       )
 
-      const response1 = yield* Effect.fork(Effect.andThen(client.get('http://example.com'), response => response.text))
+      const response1 = yield* Effect.forkChild(
+        Effect.andThen(client.get('http://example.com'), response => response.text),
+      )
       yield* TestClock.adjust('1 second')
-      const response2 = yield* Effect.fork(Effect.andThen(client.get('http://example.com'), response => response.text))
+      const response2 = yield* Effect.forkChild(
+        Effect.andThen(client.get('http://example.com'), response => response.text),
+      )
 
       yield* TestClock.adjust('30 seconds')
 
@@ -42,16 +47,16 @@ describe('requestCollapsingHttpClient', () => {
         ),
       )
 
-      const response1 = yield* Effect.fork(client.get('http://example.com'))
+      const response1 = yield* Effect.forkChild(client.get('http://example.com'))
       yield* TestClock.adjust('1 second')
-      const response2 = yield* Effect.fork(client.get('http://example.com'))
+      const response2 = yield* Effect.forkChild(client.get('http://example.com'))
 
-      yield* Fiber.interruptFork(response1)
+      yield* Effect.forkChild(Fiber.interrupt(response1))
       yield* TestClock.adjust('30 seconds')
 
       const [actual1, actual2] = yield* Effect.all([Fiber.await(response1), Fiber.await(response2)])
 
-      expect(Exit.isInterrupted(actual1)).toBeTruthy()
+      expect(Exit.hasInterrupts(actual1)).toBeTruthy()
       expect(Exit.isSuccess(actual2)).toBeTruthy()
     }),
   )
@@ -71,9 +76,13 @@ describe('requestCollapsingHttpClient', () => {
         ),
       )
 
-      const response1 = yield* Effect.fork(Effect.andThen(client.get('http://example.com'), response => response.text))
+      const response1 = yield* Effect.forkChild(
+        Effect.andThen(client.get('http://example.com'), response => response.text),
+      )
       yield* TestClock.adjust('30 seconds')
-      const response2 = yield* Effect.fork(Effect.andThen(client.get('http://example.com'), response => response.text))
+      const response2 = yield* Effect.forkChild(
+        Effect.andThen(client.get('http://example.com'), response => response.text),
+      )
 
       yield* TestClock.adjust('30 seconds')
       const actual = yield* Effect.all([Fiber.join(response1), Fiber.join(response2)])
@@ -98,9 +107,11 @@ describe('requestCollapsingHttpClient', () => {
         ),
       )
 
-      const response1 = yield* Effect.fork(Effect.andThen(client.get('http://example.com'), response => response.text))
+      const response1 = yield* Effect.forkChild(
+        Effect.andThen(client.get('http://example.com'), response => response.text),
+      )
       yield* TestClock.adjust('1 second')
-      const response2 = yield* Effect.fork(
+      const response2 = yield* Effect.forkChild(
         Effect.andThen(client.get('http://not-example.com/'), response => response.text),
       )
 
@@ -113,8 +124,8 @@ describe('requestCollapsingHttpClient', () => {
   )
 })
 
-const stubbedClient = (response: () => Response, responseDelay: Duration.DurationInput = 0): HttpClient.HttpClient =>
-  HttpClient.makeWith<never, never, never, never>(
+const stubbedClient = (response: () => Response, responseDelay: Duration.Input = 0): HttpClient.HttpClient =>
+  HttpClient.makeWith<never, never, HttpClientError.HttpClientError, never>(
     Effect.andThen(request =>
       Effect.delay(
         Effect.sync(() => HttpClientResponse.fromWeb(request, response())),

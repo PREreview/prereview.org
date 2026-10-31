@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { Effect, Either, Option } from 'effect'
+import { Effect, Result, Option } from 'effect'
 import { Keyv } from '../../src/keyv.ts'
 import * as _ from '../../src/PreprintReviews/CheckIfUserCanAddToAClub.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../src/PreprintReviews/index.ts'
@@ -19,15 +19,15 @@ const preprintWithReviewClub = new BiorxivPreprintId({ value: Doi('10.1101/with-
 const clubId = Uuid('13e21570-0d1a-47f0-b378-b8c20776496a')
 
 it.effect.each<[string, _.Input, _.Result]>([
-  ['no review', { orcidId, preprintId: preprintWithNoReview }, Either.left(new PreprintReviewNotFound({}))],
+  ['no review', { orcidId, preprintId: preprintWithNoReview }, Result.fail(new PreprintReviewNotFound({}))],
   [
     'different ORCID iD',
     { orcidId: differentOrcidId, preprintId: preprintWithReview },
-    Either.left(new PreprintReviewNotFound({})),
+    Result.fail(new PreprintReviewNotFound({})),
   ],
-  ['not answered', { orcidId, preprintId: preprintWithReview }, Either.right(Option.none())],
-  ['answered, no club', { orcidId, preprintId: preprintWithReviewNoClub }, Either.right(Option.some(null))],
-  ['answered, with club', { orcidId, preprintId: preprintWithReviewClub }, Either.right(Option.some(clubId))],
+  ['not answered', { orcidId, preprintId: preprintWithReview }, Result.succeed(Option.none())],
+  ['answered, no club', { orcidId, preprintId: preprintWithReviewNoClub }, Result.succeed(Option.some(null))],
+  ['answered, with club', { orcidId, preprintId: preprintWithReviewClub }, Result.succeed(Option.some(clubId))],
 ])('%s', ([, input, expectedReturn]) =>
   Effect.gen(function* () {
     const formStore = new Keyv()
@@ -36,7 +36,7 @@ it.effect.each<[string, _.Input, _.Result]>([
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
 
-    const actualReturn = yield* Effect.either(_.CheckIfUserCanAddToAClub(formStore)(input))
+    const actualReturn = yield* Effect.result(_.CheckIfUserCanAddToAClub(formStore)(input))
 
     expect(actualReturn).toStrictEqual(expectedReturn)
   }),

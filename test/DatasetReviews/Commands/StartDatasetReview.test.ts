@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option, Predicate } from 'effect'
+import { Result, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/StartDatasetReview.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -55,13 +55,13 @@ describe('decide', () => {
     const result = _.decide(new _.NotStarted(), { authorId, datasetId, datasetReviewId })
 
     expect(result).toStrictEqual(
-      Either.right(Option.some(new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId }))),
+      Result.succeed(Option.some(new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId }))),
     )
   })
 
   test('has already been started', () => {
     const result = _.decide(new _.HasBeenStarted(), { authorId, datasetId, datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewWasAlreadyStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewWasAlreadyStarted()))
   })
 })

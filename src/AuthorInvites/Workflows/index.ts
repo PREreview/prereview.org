@@ -1,4 +1,4 @@
-import { Activity, Workflow } from '@effect/workflow'
+import { Activity, Workflow } from 'effect/workflow'
 import { flow, Layer, Struct } from 'effect'
 import { UuidSchema } from '../../types/Uuid.ts'
 import {
@@ -6,8 +6,7 @@ import {
   FailedToSendAuthorInviteEmails,
 } from './SendAuthorInviteEmails.ts'
 
-export const SendAuthorInviteEmails = Workflow.make({
-  name: 'SendAuthorInviteEmails',
+export const SendAuthorInviteEmails = Workflow.make('SendAuthorInviteEmails', {
   error: FailedToSendAuthorInviteEmails,
   payload: {
     reviewId: UuidSchema,
@@ -18,7 +17,7 @@ export const SendAuthorInviteEmails = Workflow.make({
 export const workflowsLayer = Layer.mergeAll(
   SendAuthorInviteEmails.toLayer(({ reviewId }) =>
     Activity.make({
-      name: SendAuthorInviteEmails.name,
+      name: SendAuthorInviteEmails._tag,
       error: SendAuthorInviteEmails.errorSchema,
       execute: executeSendAuthorInviteEmails(reviewId),
     }),

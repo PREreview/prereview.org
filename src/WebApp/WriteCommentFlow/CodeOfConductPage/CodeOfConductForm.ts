@@ -1,4 +1,4 @@
-import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
+import { Data, Effect, Result, Match, pipe, Schema } from 'effect'
 import type * as Comments from '../../../Comments/index.ts'
 
 export type CodeOfConductForm = EmptyForm | InvalidForm | CompletedForm
@@ -8,17 +8,17 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  agree: Either.Either<never, Missing>
+  agree: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm') {}
 
 export const fromBody = (body: unknown) =>
   Effect.gen(function* () {
-    yield* Schema.decodeUnknown(AgreeFieldSchema)(body)
+    yield* Schema.decodeUnknownEffect(AgreeFieldSchema)(body)
 
     return new CompletedForm()
-  }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ agree: Either.left(new Missing()) }))))
+  }).pipe(Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ agree: Result.fail(new Missing()) }))))
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),

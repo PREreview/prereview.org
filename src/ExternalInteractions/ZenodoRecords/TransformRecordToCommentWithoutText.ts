@@ -1,4 +1,4 @@
-import { Array, Data, Either, Option, pipe, Schema, String } from 'effect'
+import { Array, Data, Result, Option, pipe, Schema, String } from 'effect'
 import type * as ReviewPage from '../../WebApp/review-page/index.ts'
 import { Doi, Name, OrcidId, Temporal } from '../../types/index.ts'
 import * as Iso639 from '../../types/iso639.ts'
@@ -11,7 +11,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
     Schema.Struct({
       key: Schema.String,
       links: Schema.Struct({
-        self: Schema.URL,
+        self: Schema.URLFromString,
       }),
     }),
   ),
@@ -20,11 +20,11 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
     creators: Schema.NonEmptyArray(
       Schema.Struct({
         name: Name.NameSchema,
-        orcid: Schema.optionalWith(OrcidId.OrcidIdSchema, { exact: true }),
+        orcid: Schema.optionalKey(OrcidId.OrcidIdSchema),
       }),
     ),
     doi: Doi.DoiSchema,
-    language: Schema.optionalWith(Iso639.Iso6393Schema, { exact: true }),
+    language: Schema.optionalKey(Iso639.Iso6393Schema),
     license: Schema.Struct({
       id: Schema.Literal('cc-by-4.0'),
     }),
@@ -46,11 +46,11 @@ class NoTextUrlAvailable extends Data.TaggedError('NoTextUrlAvailable')<{ affect
 
 export const transformRecordToCommentWithoutText = (
   record: ZenodoRecordForAComment,
-): Either.Either<CommentWithoutText, NoTextUrlAvailable> =>
+): Result.Result<CommentWithoutText, NoTextUrlAvailable> =>
   pipe(
     pickOutTextUrl(record.files),
-    Either.fromOption(() => new NoTextUrlAvailable({ affectedRecordId: record.id })),
-    Either.andThen(
+    Result.fromOption(() => new NoTextUrlAvailable({ affectedRecordId: record.id })),
+    Result.andThen(
       textUrl =>
         ({
           authors: { named: record.metadata.creators },

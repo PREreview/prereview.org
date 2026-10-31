@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as RemoveInvitationToAppearForm from '../../../src/WebApp/ReviewADatasetFlow/RemoveInvitationToAppearPage/RemoveInvitationToAppearForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/RemoveInvitationToAppearPage/RemoveInvitationToAppearPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -42,7 +42,7 @@ test('content looks right when missing', async ({ showPage }) => {
     datasetReviewId,
     invitationId,
     form: new RemoveInvitationToAppearForm.InvalidForm({
-      removeAuthor: Either.left(new RemoveInvitationToAppearForm.Missing()),
+      removeAuthor: Result.fail(new RemoveInvitationToAppearForm.Missing()),
     }),
     locale,
   })

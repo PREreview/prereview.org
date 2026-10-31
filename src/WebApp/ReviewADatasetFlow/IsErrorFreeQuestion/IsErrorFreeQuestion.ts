@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -38,7 +38,7 @@ export const IsErrorFreeQuestion = ({
               role="group"
               aria-describedby="is-error-free-tip"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.isErrorFree)
+                hasAnError && Result.isFailure(form.isErrorFree)
                   ? 'aria-invalid="true" aria-errormessage="is-error-free-error"'
                   : '',
               )}
@@ -50,11 +50,11 @@ export const IsErrorFreeQuestion = ({
               <p id="is-error-free-tip" role="note">${t('relativelyErrorFreeTip')()}</p>
 
               ${
-                hasAnError && Either.isLeft(form.isErrorFree)
+                hasAnError && Result.isFailure(form.isErrorFree)
                   ? html`
                       <div class="error-message" id="is-error-free-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.isErrorFree.left, {
+                        ${Match.valueTags(form.isErrorFree.failure, {
                           Missing: () => t('selectRelativelyErrorFree')(),
                         })}
                       </div>
@@ -95,7 +95,8 @@ export const IsErrorFreeQuestion = ({
                       >
 ${Match.valueTags(form, {
   EmptyForm: () => '',
-  InvalidForm: form => Option.getOrElse(Option.flatten(Either.getRight(form.isErrorFreeYesDetail)), () => String.empty),
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isErrorFreeYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isErrorFreeYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -133,7 +134,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.isErrorFreePartlyDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isErrorFreePartlyDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isErrorFreePartlyDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -170,7 +171,8 @@ ${Match.valueTags(form, {
                       >
 ${Match.valueTags(form, {
   EmptyForm: () => '',
-  InvalidForm: form => Option.getOrElse(Option.flatten(Either.getRight(form.isErrorFreeNoDetail)), () => String.empty),
+  InvalidForm: form =>
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isErrorFreeNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isErrorFreeNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -208,12 +210,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.isErrorFree)
+  Result.isFailure(form.isErrorFree)
     ? html`
         <li>
           <a href="#is-error-free-yes">
             ${pipe(
-              Match.value(form.isErrorFree.left),
+              Match.value(form.isErrorFree.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRelativelyErrorFree')()),
               Match.exhaustive,
             )}

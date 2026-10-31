@@ -21,7 +21,7 @@ import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReview
 import { ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications } from './ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
-export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
+export class ReviewRequestQueries extends Context.Service<
   ReviewRequestQueries,
   {
     doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<typeof DoesAPreprintHaveAReviewRequest>
@@ -52,7 +52,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
       typeof DoesAReviewRequestNeedADecisionOnReviewNotifications
     >
   }
->() {}
+>()('ReviewRequestQueries') {}
 
 export const doesAPreprintHaveAReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestQueries.Service)['doesAPreprintHaveAReviewRequest']>
@@ -161,8 +161,8 @@ const makeReviewRequestQueries: Effect.Effect<
       GetNextExpectedCommandForAUserOnAReviewRequest,
     ),
     getReviewRequestReadyToBePublished: Effect.fnUntraced(function* (input) {
-      const contactAddressFiber = yield* Effect.fork(doesAReviewRequestNeedAContactAddressToBeVerified(input))
-      const needsNotificationsDecisionFiber = yield* Effect.fork(
+      const contactAddressFiber = yield* Effect.forkChild(doesAReviewRequestNeedAContactAddressToBeVerified(input))
+      const needsNotificationsDecisionFiber = yield* Effect.forkChild(
         doesAReviewRequestNeedADecisionOnReviewNotifications(input),
       )
 

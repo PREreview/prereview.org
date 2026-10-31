@@ -1,11 +1,11 @@
-import { Array, Data, Either, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Match, Option, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/index.ts'
 
 export type Input = OrcidId.OrcidId
 
-export type Result = Either.Either<HasNotOptedIn | HasOptedIn | HasOptedOut, UnknownPrereviewer>
+export type Result = Result.Result<HasNotOptedIn | HasOptedIn | HasOptedOut, UnknownPrereviewer>
 
 export class HasNotOptedIn extends Data.TaggedClass('HasNotOptedIn') {}
 
@@ -29,13 +29,13 @@ const createFilter = (orcidId: Input) =>
   ])
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    if (Array.isEmptyArray(filteredEvents)) {
-      return yield* Either.left(new UnknownPrereviewer({}))
+    if (Array.isArrayEmpty(filteredEvents)) {
+      return yield* Result.fail(new UnknownPrereviewer({}))
     }
 
     const lastChoice = Array.findLast(

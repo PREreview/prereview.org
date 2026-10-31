@@ -1,4 +1,4 @@
-import { Url, UrlParams } from '@effect/platform'
+import { Url, UrlParams } from 'effect/http'
 import { Effect } from 'effect'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import type { Doi } from '../../types/index.ts'

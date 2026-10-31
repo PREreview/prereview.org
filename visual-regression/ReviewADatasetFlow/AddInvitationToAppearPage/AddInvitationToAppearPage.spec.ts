@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as AddInvitationToAppearForm from '../../../src/WebApp/ReviewADatasetFlow/AddInvitationToAppearPage/AddInvitationToAppearForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/AddInvitationToAppearPage/AddInvitationToAppearPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -54,8 +54,8 @@ test('content looks right when missing', async ({ showPage }) => {
   const response = _.AddInvitationToAppearPage({
     datasetReviewId,
     form: new AddInvitationToAppearForm.InvalidForm({
-      name: Either.left(new AddInvitationToAppearForm.Missing()),
-      emailAddress: Either.left(new AddInvitationToAppearForm.Missing()),
+      name: Result.fail(new AddInvitationToAppearForm.Missing()),
+      emailAddress: Result.fail(new AddInvitationToAppearForm.Missing()),
     }),
     locale: DefaultLocale,
     otherAuthors: false,
@@ -70,8 +70,8 @@ test('content looks right when invalid', async ({ showPage }) => {
   const response = _.AddInvitationToAppearPage({
     datasetReviewId,
     form: new AddInvitationToAppearForm.InvalidForm({
-      name: Either.right(Name('Josiah Carberry')),
-      emailAddress: Either.left(
+      name: Result.succeed(Name('Josiah Carberry')),
+      emailAddress: Result.fail(
         new AddInvitationToAppearForm.Invalid({ actual: NonEmptyString('not an email address') }),
       ),
     }),

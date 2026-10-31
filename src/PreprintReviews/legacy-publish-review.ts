@@ -70,7 +70,7 @@ export const completedFormToNewPrereview = ({
         ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
-          club: Option.fromNullable(form.club),
+          club: Option.fromNullishOr(form.club),
           language,
           license: getLicense(form),
           locale,

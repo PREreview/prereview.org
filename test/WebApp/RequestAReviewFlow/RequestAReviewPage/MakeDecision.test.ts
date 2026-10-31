@@ -1,6 +1,6 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { describe, expect, it, vi } from '../../../vitest.ts'
-import { Array, Effect, Either, Layer, Option, Tuple } from 'effect'
+import { Array, Effect, Result, Layer, Option, Tuple } from 'effect'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import {
   BiorxivOrMedrxivPreprintId,
@@ -179,7 +179,7 @@ describe('makeDecision', () => {
           expect(actual).toStrictEqual({
             _tag: 'ShowFormWithErrors',
             form: new RequestAReviewForm.InvalidForm({
-              whichPreprint: Either.left(new RequestAReviewForm.Invalid({ value: whichPreprint })),
+              whichPreprint: Result.fail(new RequestAReviewForm.Invalid({ value: whichPreprint })),
             }),
           })
         }).pipe(Effect.provide(Layer.mock(Preprints.Preprints, {}))),
@@ -200,7 +200,7 @@ describe('makeDecision', () => {
           expect(actual).toStrictEqual({
             _tag: 'ShowFormWithErrors',
             form: new RequestAReviewForm.InvalidForm({
-              whichPreprint: Either.left(new RequestAReviewForm.Missing()),
+              whichPreprint: Result.fail(new RequestAReviewForm.Missing()),
             }),
           })
         }).pipe(Effect.provide(Layer.mock(Preprints.Preprints, {}))),

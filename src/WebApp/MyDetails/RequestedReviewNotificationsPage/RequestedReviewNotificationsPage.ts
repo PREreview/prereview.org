@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
@@ -37,11 +37,11 @@ export function RequestedReviewNotificationsPage({
             </legend>
 
             ${
-              hasAnError && Either.isLeft(form.requestedReviewNotifications)
+              hasAnError && Result.isFailure(form.requestedReviewNotifications)
                 ? html`
                     <div class="error-message" id="requested-review-notifications-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${Match.valueTags(form.requestedReviewNotifications.left, {
+                      ${Match.valueTags(form.requestedReviewNotifications.failure, {
                         Missing: () => t('selectReceiveRequestedReviewNotificationsError')(),
                       })}
                     </div>
@@ -108,11 +108,11 @@ export function RequestedReviewNotificationsPage({
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
   ${
-    Either.isLeft(form.requestedReviewNotifications)
+    Result.isFailure(form.requestedReviewNotifications)
       ? html`
           <li>
             <a href="#requested-review-notifications-yes">
-              ${Match.valueTags(form.requestedReviewNotifications.left, {
+              ${Match.valueTags(form.requestedReviewNotifications.failure, {
                 Missing: () => translate(locale, 'my-details', 'selectReceiveRequestedReviewNotificationsError')(),
               })}
             </a>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReviewDetails.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -69,7 +69,7 @@ describe('GetPublishedReviewDetails', () => {
         ([[events, expected]]) => {
           const actual = _.GetPublishedReviewDetails(events)
 
-          expect(actual).toStrictEqual(Either.right(expected))
+          expect(actual).toStrictEqual(Result.succeed(expected))
         },
         {
           fastCheck: {
@@ -171,7 +171,7 @@ describe('GetPublishedReviewDetails', () => {
         ([events]) => {
           const actual = _.GetPublishedReviewDetails(events)
 
-          expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+          expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
         },
         {
           fastCheck: {
@@ -197,7 +197,7 @@ describe('GetPublishedReviewDetails', () => {
       ([events]) => {
         const actual = _.GetPublishedReviewDetails(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()))
       },
       {
         fastCheck: {
@@ -231,7 +231,7 @@ describe('GetPublishedReviewDetails', () => {
       ([events]) => {
         const actual = _.GetPublishedReviewDetails(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsInProgress()))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsInProgress()))
       },
       {
         fastCheck: {
@@ -251,7 +251,7 @@ describe('GetPublishedReviewDetails', () => {
       ([events]) => {
         const actual = _.GetPublishedReviewDetails(events)
 
-        expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+        expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
       },
       {
         fastCheck: {

@@ -1,4 +1,4 @@
-import { Effect, Either } from 'effect'
+import { Effect } from 'effect'
 import type { CoarNotify } from '../../ExternalApis/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
@@ -16,7 +16,7 @@ export const ProcessCoarNotifyMessage = Effect.fn(
     messageId: Uuid.Uuid
     receivedAt: Temporal.Instant
   }) {
-    const preprintId = yield* Either.fromOption(
+    const preprintId = yield* Effect.fromOption(
       Preprints.parsePreprintDoi(message.object['ietf:cite-as']),
       () => new Preprints.NotAPreprint({ cause: `failed to parse as preprint Doi: ${message.object['ietf:cite-as']}` }),
     )

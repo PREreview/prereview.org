@@ -14,5 +14,5 @@ export const NotifyCommunitySlack = Effect.fn(
 
     yield* CommunitySlack.sharePreprintReview({ author, url })
   },
-  Effect.catchAll(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
+  Effect.catch(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
 )

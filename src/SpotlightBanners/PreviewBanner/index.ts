@@ -13,14 +13,14 @@ export const PreviewBanner: (
 
     const { items } = yield* contentful.getEntries({ content_type: 'banner', limit: 1, 'sys.id': id })
 
-    if (!Array.isNonEmptyReadonlyArray(items)) {
+    if (!Array.isReadonlyArrayNonEmpty(items)) {
       return Option.none()
     }
 
-    return yield* Effect.asSome(Schema.decodeUnknown(EntryToSpotlightBanner)(items[0]))
+    return yield* Effect.asSome(Schema.decodeUnknownEffect(EntryToSpotlightBanner)(items[0]))
   },
   Effect.provideService(UsePreviewApi, true),
-  Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
+  Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>
     pipe(
       Effect.logError('Unable to preview banner'),
       Effect.annotateLogs({ error }),

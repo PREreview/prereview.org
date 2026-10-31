@@ -1,13 +1,5 @@
-import {
-  FileSystem,
-  Headers,
-  HttpMethod,
-  HttpMiddleware,
-  HttpServerRequest,
-  HttpServerResponse,
-  Path,
-} from '@effect/platform'
-import { Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
+import { FileSystem, Path, Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
+import { Headers, HttpMethod, HttpMiddleware, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { AllowSiteCrawlers, FlashMessage, Locale, ScietyListToken, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
@@ -36,12 +28,9 @@ export const removeTrailingSlashes = HttpMiddleware.make(app =>
       return yield* app
     }
 
-    return yield* HttpServerResponse.redirect(
-      new URL(`${publicUrl.origin}${request.url.slice(0, request.url.length - 1)}`),
-      {
-        status: StatusCodes.MovedPermanently,
-      },
-    )
+    return HttpServerResponse.redirect(new URL(`${publicUrl.origin}${request.url.slice(0, request.url.length - 1)}`), {
+      status: StatusCodes.MovedPermanently,
+    })
   }),
 )
 
@@ -63,10 +52,10 @@ export const serveStaticFiles = HttpMiddleware.make(app =>
     const response = yield* HttpServerResponse.file(filePath, {})
 
     if (!/\.[A-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.test(filePath)) {
-      return yield* response
+      return response
     }
 
-    return yield* HttpServerResponse.setHeader(
+    return HttpServerResponse.setHeader(
       response,
       'Cache-Control',
       `public, max-age=${Duration.toSeconds('365 days')}, immutable`,
@@ -79,7 +68,7 @@ const isFile = (path: string) =>
     FileSystem.FileSystem,
     Effect.andThen(fs => fs.stat(path)),
     Effect.map(stat => stat.type === 'File'),
-    Effect.catchAll(() => Effect.succeed(false)),
+    Effect.catch(() => Effect.succeed(false)),
   )
 
 export const logRequest = HttpMiddleware.make(app =>
@@ -138,7 +127,7 @@ export const annotateLogsWithRequestId = HttpMiddleware.make(app =>
   pipe(
     HttpServerRequest.HttpServerRequest,
     Effect.map(req => req.headers),
-    Effect.flatMap(Headers.get('Fly-Request-Id')),
+    Effect.flatMap(headers => Effect.fromOption(Headers.get(headers, 'Fly-Request-Id'))),
     Effect.orElseSucceed(() => null),
     Effect.andThen(requestId => Effect.annotateLogs(app, 'requestId', requestId)),
   ),
@@ -161,10 +150,10 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
 
     const sessionId = yield* pipe(
       HttpServerRequest.schemaCookies(
-        Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(cookie)) }),
+        Schema.Struct({ session: Schema.String }).pipe(Schema.encodeKeys({ session: cookie })),
       ),
       Effect.andThen(({ session }) => CookieSignature.unsign(session)),
-      Effect.andThen(Schema.decodeUnknown(Uuid.UuidSchema)),
+      Effect.andThen(Schema.decodeUnknownEffect(Uuid.UuidSchema)),
       Effect.option,
     )
 
@@ -173,7 +162,7 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
       onSome: sessionId =>
         pipe(
           Effect.tryPromise(() => store.get(sessionId)),
-          Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
+          Effect.andThen(Schema.decodeUnknownEffect(Schema.Struct({ user: UserSchema }))),
           Effect.option,
         ),
     })
@@ -184,7 +173,7 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
         Effect.gen(function* () {
           const userOnboarding = yield* pipe(
             Effect.tryPromise(() => userOnboardingStore.get(user.orcid)),
-            Effect.andThen(Schema.decodeUnknown(Schema.Struct({ seenMyDetailsPage: Schema.Boolean }))),
+            Effect.andThen(Schema.decodeUnknownEffect(Schema.Struct({ seenMyDetailsPage: Schema.Boolean }))),
             Effect.orElseSucceed(() => ({ seenMyDetailsPage: false })),
           )
 
@@ -228,7 +217,7 @@ export const getLocale = HttpMiddleware.make(app =>
       HttpServerRequest.HttpServerRequest,
       Effect.map(request => request.url),
       Effect.andThen(LocaleInPath.getLocaleFromPath),
-      Effect.flatten,
+      Effect.flatMap(Effect.fromOption),
       Effect.orElseSucceed(() => undefined),
     )
 
@@ -246,9 +235,9 @@ export const getLocale = HttpMiddleware.make(app =>
     const request = yield* HttpServerRequest.HttpServerRequest
 
     const detectedLocale = yield* pipe(
-      Headers.get(request.headers, 'Accept-Language'),
+      Effect.fromOption(Headers.get(request.headers, 'Accept-Language')),
       Effect.andThen(detectLocale),
-      Effect.flatten,
+      Effect.flatMap(Effect.fromOption),
       Effect.orElseSucceed(() => DefaultLocale),
     )
 
@@ -266,11 +255,11 @@ export const requireScietyListToken = HttpMiddleware.make(app =>
     const authorizationHeader = Headers.get(request.headers, 'Authorization')
 
     if (Option.isNone(authorizationHeader)) {
-      return yield* HttpServerResponse.empty({ status: StatusCodes.Unauthorized })
+      return HttpServerResponse.empty({ status: StatusCodes.Unauthorized })
     }
 
     if (authorizationHeader.value !== `Bearer ${Redacted.value(scietyListToken)}`) {
-      return yield* HttpServerResponse.empty({ status: StatusCodes.Forbidden })
+      return HttpServerResponse.empty({ status: StatusCodes.Forbidden })
     }
 
     return yield* app
@@ -301,19 +290,17 @@ export const stopSuspiciousRequests = HttpMiddleware.make(app =>
     )
 
     if (Option.isSome(isRequestSuspicious)) {
-      return yield* HttpServerResponse.empty({ status: StatusCodes.NotFound })
+      return HttpServerResponse.empty({ status: StatusCodes.NotFound })
     }
 
     return yield* app
   }),
 )
 
-export const logStopped = Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
+export const logStopped = Layer.effectDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 
-export const logDefects = Effect.tapDefect(cause =>
-  Effect.annotateLogs(
-    Effect.logFatal('Failed to create response'),
-    'cause',
-    Cause.pretty(cause, { renderErrorCause: true }),
-  ),
+export const logDefects = Effect.tapCause(cause =>
+  Cause.hasDies(cause)
+    ? Effect.annotateLogs(Effect.logFatal('Failed to create response'), 'cause', Cause.pretty(cause))
+    : Effect.void,
 )

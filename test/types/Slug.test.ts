@@ -1,8 +1,9 @@
 import { describe, expect, it } from '../vitest.ts'
-import { Effect, Either, Schema, Tuple } from 'effect'
-import { ArrayFormatter } from 'effect/ParseResult'
+import { Effect, Result, Schema, Tuple, SchemaIssue } from 'effect'
 import * as _ from '../../src/types/Slug.ts'
 import * as fc from '../fc.ts'
+
+const formatError = (error: Schema.SchemaError) => SchemaIssue.makeFormatterStandardSchemaV1()(error.issue).issues
 
 describe('SlugSchema', () => {
   describe('decode', () => {
@@ -11,7 +12,7 @@ describe('SlugSchema', () => {
       [fc.slug().map(slug => Tuple.make<[string, string]>(slug, slug))],
       ([[input, expected]]) =>
         Effect.gen(function* () {
-          const actual = yield* Schema.decode(_.SlugSchema)(input)
+          const actual = yield* Schema.decodeEffect(_.SlugSchema)(input)
 
           expect(actual).toStrictEqual(expected)
         }),
@@ -38,9 +39,9 @@ describe('SlugSchema', () => {
       'with a non-slug',
       [fc.stringMatching(/[^a-z0-9-]/)],
       ([string]) => {
-        const actual = Either.mapLeft(Schema.decodeEither(_.SlugSchema)(string), ArrayFormatter.formatErrorSync)
+        const actual = Result.mapError(Schema.decodeResult(_.SlugSchema)(string), formatError)
 
-        expect(actual).toStrictEqual(Either.left(expect.anything()))
+        expect(actual).toStrictEqual(Result.fail(expect.anything()))
       },
       {
         fastCheck: {
@@ -78,9 +79,9 @@ describe('SlugSchema', () => {
       'with a non-string',
       [fc.anything().filter(value => typeof value !== 'string')],
       ([value]) => {
-        const actual = Schema.decodeUnknownEither(_.SlugSchema)(value)
+        const actual = Schema.decodeUnknownResult(_.SlugSchema)(value)
 
-        expect(actual).toStrictEqual(Either.left(expect.anything()))
+        expect(actual).toStrictEqual(Result.fail(expect.anything()))
       },
       {
         fastCheck: {
@@ -92,7 +93,7 @@ describe('SlugSchema', () => {
 
   it.effect.prop('encode', [fc.slug()], ([slug]) =>
     Effect.gen(function* () {
-      const actual = yield* Schema.encode(_.SlugSchema)(slug)
+      const actual = yield* Schema.encodeEffect(_.SlugSchema)(slug)
 
       expect(actual).toStrictEqual(slug)
     }),

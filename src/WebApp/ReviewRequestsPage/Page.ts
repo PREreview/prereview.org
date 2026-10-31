@@ -54,7 +54,7 @@ export const form = ({
                 language =>
                   [language, new Intl.DisplayNames(locale, { type: 'language' }).of(language) ?? language] as const,
               ),
-              Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.getSecond)),
+              Array.sort<readonly [string, string]>(Order.mapInput(StringOrder(locale), Tuple.get(1))),
               Array.map(
                 ([code, name]) =>
                   html` <option value="${code}" ${code === language ? html`selected` : ''}>${name}</option>`,

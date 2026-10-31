@@ -1,5 +1,5 @@
-import { HttpServerResponse } from '@effect/platform'
-import { Effect, Match, ParseResult, pipe, Schema } from 'effect'
+import { HttpServerResponse } from 'effect/http'
+import { Effect, Match, pipe, Schema, SchemaIssue, SchemaGetter } from 'effect'
 import * as Preprints from '../Preprints/index.ts'
 import * as ReviewRequests from '../ReviewRequests/index.ts'
 import * as StatusCodes from '../StatusCodes.ts'
@@ -10,7 +10,7 @@ import { SubfieldIdSchema } from '../types/subfield.ts'
 
 type Server = typeof ServerSchema.Type
 
-const ServerSchema = Schema.Literal(
+const ServerSchema = Schema.Literals([
   'advance',
   'africarxiv',
   'arcadia-science',
@@ -45,7 +45,7 @@ const ServerSchema = Schema.Literal(
   'umsida',
   'verixiv',
   'zenodo',
-)
+])
 
 const preprintIdToServer = Match.typeTags<Preprints.PreprintId, Server>()({
   AdvancePreprintId: () => 'advance',
@@ -91,28 +91,29 @@ const RequestSchema = Schema.Struct({
   requestId: Uuid.UuidSchema,
   timestamp: Temporal.InstantSchema,
   preprint: Preprints.IndeterminatePreprintIdFromStringSchema,
-  server: Schema.Union(ServerSchema, Schema.Literal('unable to determine server')),
+  server: Schema.Union([ServerSchema, Schema.Literal('unable to determine server')]),
   language: Schema.NullOr(Iso639.Iso6391Schema),
   fields: Schema.Array(FieldIdSchema),
   subfields: Schema.Array(SubfieldIdSchema),
   domains: Schema.Array(DomainIdSchema),
 })
 
-const DataToRequestSchema = Schema.transformOrFail(
-  RequestSchema,
-  Schema.typeSchema(ReviewRequests.ReviewRequestForStats),
-  {
-    strict: true,
-    decode: (value, _, ast) => ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Not implemented.')),
-    encode: (data: ReviewRequests.ReviewRequestForStats, _, ast) =>
+const DataToRequestSchema = RequestSchema.pipe(
+  Schema.decodeTo(Schema.toType(ReviewRequests.ReviewRequestForStats), {
+    decode: SchemaGetter.transformEffect(value =>
+      Effect.fail(new SchemaIssue.Forbidden({ message: 'Not implemented.' }, value)),
+    ),
+    encode: SchemaGetter.transformEffect((data: ReviewRequests.ReviewRequestForStats) =>
       Effect.gen(function* () {
         const server = yield* pipe(
           Preprints.getPreprintId(data.preprintId),
           Effect.map(preprintIdToServer),
-          Effect.catchTag('NotAPreprint', 'PreprintIsNotFound', () =>
+          Effect.catchTag(['NotAPreprint', 'PreprintIsNotFound'], () =>
             Effect.succeed('unable to determine server' as const),
           ),
-          Effect.mapError(() => new ParseResult.Type(ast, data.preprintId, 'Failed to get preprint ID')),
+          Effect.mapError(
+            () => new SchemaIssue.InvalidValue({ message: 'Failed to get preprint ID' }, data.preprintId),
+          ),
         )
 
         return {
@@ -126,17 +127,18 @@ const DataToRequestSchema = Schema.transformOrFail(
           domains: data.domains,
         }
       }),
-  },
+    ),
+  }),
 )
 
 export const RequestsData = pipe(
   ReviewRequests.listAllPublishedReviewRequestsForStats(),
   Effect.andThen(
-    HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema).annotations({ concurrency: 'unbounded' })),
+    HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema).annotate({ concurrency: 'unbounded' })),
   ),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create requests data list'), { error })),
   Effect.catchTags({
-    HttpBodyError: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
-    UnableToQuery: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+    HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
+    UnableToQuery: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
 )

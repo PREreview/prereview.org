@@ -1,4 +1,4 @@
-import { Cookies, FetchHttpClient, HttpServerResponse, Url } from '@effect/platform'
+import { Cookies, FetchHttpClient, HttpServerResponse, Url } from 'effect/http'
 import { Boolean, Context, Duration, Effect, Match, Redacted, Struct, flow, identity, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as F from 'fetch-fp-ts'
@@ -38,7 +38,7 @@ export interface OrcidOAuthEnv {
   orcidOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
 }
 
-export class IsUserBlocked extends Context.Tag('IsUserBlocked')<IsUserBlocked, (user: OrcidId) => boolean>() {}
+export class IsUserBlocked extends Context.Service<IsUserBlocked, (user: OrcidId) => boolean>()('IsUserBlocked') {}
 
 export const logIn = LogInResponse({ location: Routes.HomePage })
 
@@ -46,16 +46,16 @@ export const LogOut = Effect.gen(function* () {
   const { cookie, store } = yield* SessionStore
 
   yield* pipe(
-    Effect.serviceOptional(SessionId),
+    Effect.flatMap(Effect.serviceOption(SessionId), Effect.fromOption),
     Effect.andThen(sessionId => Effect.tryPromise(() => store.delete(sessionId))),
     Effect.ignore,
   )
 
-  return yield* HttpServerResponse.redirect(Routes.HomePage, {
+  return HttpServerResponse.redirect(Routes.HomePage, {
     status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
-      Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
-      Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+      Cookies.makeCookieUnsafe('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+      Cookies.makeCookieUnsafe(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
     ]),
   })
 })
@@ -123,7 +123,7 @@ export const authenticate = Effect.fn(
       Effect.andThen(
         Boolean.match(referer === Routes.HomePage, {
           onTrue: () => HttpServerResponse.setCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
-          onFalse: () => identity<HttpServerResponse.HttpServerResponse>,
+          onFalse: () => Effect.succeed<HttpServerResponse.HttpServerResponse>,
         }),
       ),
     )
@@ -132,7 +132,7 @@ export const authenticate = Effect.fn(
     error => error === 'blocked',
     () => Effect.succeed(FlashMessageResponse({ location: Routes.HomePage, message: 'blocked' })),
   ),
-  Effect.orElse(() => Effect.map(Locale, failureMessage)),
+  Effect.catch(() => Effect.map(Locale, failureMessage)),
 )
 
 export const AuthenticateError = pipe(
@@ -144,7 +144,12 @@ export const AuthenticateError = pipe(
 
 const getReferer: (state: string) => Effect.Effect<string, never, PublicUrl> = flow(
   Url.fromString,
-  Effect.filterEffectOrFail({ predicate: ifHasSameOrigin, orFailWith: () => 'not-same-origin' }),
+  Effect.fromResult,
+  Effect.flatMap(referer =>
+    Effect.flatMap(ifHasSameOrigin(referer), hasSameOrigin =>
+      hasSameOrigin ? Effect.succeed(referer) : Effect.fail('not-same-origin' as const),
+    ),
+  ),
   Effect.match({ onSuccess: referer => referer.href, onFailure: () => Routes.HomePage }),
 )
 

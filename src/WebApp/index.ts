@@ -1,5 +1,5 @@
-import { FileSystem, HttpServer, Multipart } from '@effect/platform'
-import { flow, Layer, Option, pipe } from 'effect'
+import { HttpServer, Multipart } from 'effect/http'
+import { ByteSize, Effect, flow, Layer, pipe } from 'effect'
 import { CmsContent } from '../CmsContent/index.ts'
 import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
@@ -10,20 +10,26 @@ import * as TemplatePage from './TemplatePage.ts'
 export { optionsLayer, optionsLayerConfig, TemplatePageOptions } from './TemplatePage.ts'
 
 export const layer = pipe(
-  Router,
-  Multipart.withMaxFileSize(Option.some(FileSystem.MiB(5))),
-  HttpMiddleware.removeLocaleFromPathForRouting,
-  HttpMiddleware.serveStaticFiles,
-  HttpMiddleware.removeTrailingSlashes,
-  HttpMiddleware.addSecurityHeaders,
-  HttpMiddleware.addXRobotsTagHeader,
-  HttpMiddleware.getFlashMessage,
-  HttpMiddleware.getLoggedInUser,
-  HttpMiddleware.getLocale,
-  HttpMiddleware.stopSuspiciousRequests,
-  HttpMiddleware.logRequest,
-  HttpMiddleware.logDefects,
-  HttpServer.serve(flow(HttpMiddleware.logger, HttpMiddleware.annotateLogsWithRequestId)),
+  Layer.unwrap(
+    Effect.map(Router, router =>
+      pipe(
+        router,
+        Effect.provideService(Multipart.MaxFileSize, ByteSize.mebibytes(5)),
+        HttpMiddleware.removeLocaleFromPathForRouting,
+        HttpMiddleware.serveStaticFiles,
+        HttpMiddleware.removeTrailingSlashes,
+        HttpMiddleware.addSecurityHeaders,
+        HttpMiddleware.addXRobotsTagHeader,
+        HttpMiddleware.getFlashMessage,
+        HttpMiddleware.getLoggedInUser,
+        HttpMiddleware.getLocale,
+        HttpMiddleware.stopSuspiciousRequests,
+        HttpMiddleware.logRequest,
+        HttpMiddleware.logDefects,
+        HttpServer.serve(flow(HttpMiddleware.logger, HttpMiddleware.annotateLogsWithRequestId)),
+      ),
+    ),
+  ),
   HttpServer.withLogAddress,
   Layer.provide(HttpMiddleware.logStopped),
   Layer.provide([TemplatePage.layer, CmsContent.layer, SpotlightBanners.layer]),

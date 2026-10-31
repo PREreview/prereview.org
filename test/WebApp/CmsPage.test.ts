@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../vitest.ts'
-import { Effect, HashSet, Layer, Struct } from 'effect'
+import { Effect, Layer, Struct } from 'effect'
 import { CmsContent } from '../../src/CmsContent/index.ts'
 import { Locale } from '../../src/Context.ts'
 import { UnableToQuery } from '../../src/Queries.ts'
@@ -33,7 +33,7 @@ describe('CmsPage', () => {
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
-          js: HashSet.toValues(page.js),
+          js: globalThis.Array.from(page.js),
         })
         expect(getPage).toHaveBeenCalledWith(slug, preview ?? false)
       }).pipe(Effect.provideService(Locale, locale)),

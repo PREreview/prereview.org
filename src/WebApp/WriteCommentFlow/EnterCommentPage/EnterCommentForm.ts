@@ -1,4 +1,4 @@
-import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
+import { Data, Effect, Result, Match, pipe, Schema, SchemaTransformation } from 'effect'
 import markdownIt from 'markdown-it'
 import type * as Comments from '../../../Comments/index.ts'
 import { type Html, SanitizeHtmlSchema } from '../../../html.ts'
@@ -11,7 +11,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  comment: Either.Either<never, Missing>
+  comment: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -20,10 +20,12 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = (body: unknown) =>
   Effect.gen(function* () {
-    const { comment } = yield* Schema.decodeUnknown(CommentFieldSchema)(body)
+    const { comment } = yield* Schema.decodeUnknownEffect(CommentFieldSchema)(body)
 
     return new CompletedForm({ comment })
-  }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ comment: Either.left(new Missing()) }))))
+  }).pipe(
+    Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ comment: Result.fail(new Missing()) }))),
+  )
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
@@ -32,10 +34,13 @@ export const fromComment = pipe(
   Match.exhaustive,
 )
 
-const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, SanitizeHtmlSchema(), {
-  strict: true,
-  decode: string => markdownIt({ html: true }).render(string),
-  encode: String,
-})
+const HtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
+  Schema.decodeTo(
+    SanitizeHtmlSchema(),
+    SchemaTransformation.transform({ decode: string => markdownIt({ html: true }).render(string), encode: String }),
+  ),
+)
 
-const CommentFieldSchema = Schema.Struct({ comment: Schema.compose(NonEmptyString.NonEmptyStringSchema, HtmlSchema) })
+const CommentFieldSchema = Schema.Struct({
+  comment: NonEmptyString.NonEmptyStringSchema.pipe(Schema.decodeTo(HtmlSchema)),
+})

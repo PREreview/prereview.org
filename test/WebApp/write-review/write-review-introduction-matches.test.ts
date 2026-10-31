@@ -36,7 +36,7 @@ describe('writeReviewIntroductionMatches', () => {
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method: 'POST', id: preprintId, user })({
@@ -81,7 +81,7 @@ describe('writeReviewIntroductionMatches', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method: 'POST', id: preprintId, user })({
@@ -107,7 +107,7 @@ describe('writeReviewIntroductionMatches', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method, id: preprintId, user })({
@@ -129,7 +129,7 @@ describe('writeReviewIntroductionMatches', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method, id: preprintId, user })({
@@ -154,7 +154,7 @@ describe('writeReviewIntroductionMatches', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method, id: preprintId, user })({
@@ -189,7 +189,7 @@ describe('writeReviewIntroductionMatches', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method: 'POST', id: preprintId, user })({
@@ -226,7 +226,7 @@ describe('writeReviewIntroductionMatches', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method, id: preprintId, user })({
@@ -248,7 +248,7 @@ describe('writeReviewIntroductionMatches', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewIntroductionMatches({ body, locale, method, id: preprintId, user: undefined })({

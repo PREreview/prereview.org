@@ -1,4 +1,4 @@
-import { Array, Data, Effect, Option, pipe, Ref, Struct, type Either, identity } from 'effect'
+import { Array, Data, Effect, identity, Option, pipe, Ref, Struct, type Result } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
@@ -6,7 +6,7 @@ import * as EventStore from './EventStore.ts'
 /** @deprecated */
 export type Query<F extends (...args: never) => unknown, E = never> = (
   ...args: Parameters<F>
-) => ReturnType<F> extends Either.Either<infer R, infer L>
+) => ReturnType<F> extends Result.Result<infer R, infer L>
   ? Effect.Effect<R, UnableToQuery | Exclude<E | L, UnexpectedSequenceOfEvents>>
   : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
@@ -35,14 +35,14 @@ export interface OnDemandQuery<Input extends ReadonlyArray<unknown>, Result, Err
   query: (
     events: ReadonlyArray<Events.Event>,
     ...input: Input
-  ) => Either.Either<Result, Error | UnexpectedSequenceOfEvents>
+  ) => Result.Result<Result, Error | UnexpectedSequenceOfEvents>
 }
 
 export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown> {
   name: string
   initialState: State
   updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
-  query: (state: State, ...input: Input) => Either.Either<Result, Error>
+  query: (state: State, ...input: Input) => Result.Result<Result, Error>
 }
 
 export const OnDemandQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never>(
@@ -75,11 +75,11 @@ export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, 
         )
 
         return yield* pipe(
-          Effect.suspend(() => query(events, ...input)),
+          Effect.suspend(() => Effect.fromResult(query(events, ...input))),
           Effect.withSpan('query'),
         )
       },
-      Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+      Effect.catchTag(['FailedToGetEvents', 'UnexpectedSequenceOfEvents'], cause => new UnableToQuery({ cause })),
     )
   })
 
@@ -109,7 +109,7 @@ export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, 
     return Effect.fn(name)(function* (...input: Input) {
       const currentState = yield* Ref.get(state)
 
-      return yield* query(currentState, ...input)
+      return yield* Effect.fromResult(query(currentState, ...input))
     })
   })
 
@@ -120,7 +120,7 @@ export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Erro
   query: (
     events: ReadonlyArray<Events.EventsForFilter<Filter>>,
     input: Input,
-  ) => Either.Either<Result, UnexpectedSequenceOfEvents | Error>,
+  ) => Result.Result<Result, UnexpectedSequenceOfEvents | Error>,
 ): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore
@@ -135,10 +135,10 @@ export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Erro
         )
 
         return yield* pipe(
-          Effect.suspend(() => query(events, input)),
+          Effect.suspend(() => Effect.fromResult(query(events, input))),
           Effect.withSpan('query'),
         )
       },
-      Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+      Effect.catchTag(['FailedToGetEvents', 'UnexpectedSequenceOfEvents'], cause => new UnableToQuery({ cause })),
     )
   })

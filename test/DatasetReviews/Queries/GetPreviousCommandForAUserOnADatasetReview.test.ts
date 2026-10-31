@@ -1,5 +1,5 @@
 import { expect, test } from '../../vitest.ts'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import type * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPreviousCommandForAUserOnADatasetReview.ts'
 import * as Events from '../../../src/Events.ts'
@@ -113,5 +113,5 @@ test.each<[string, ReadonlyArray<Events.Event>, DatasetReviews.NextExpectedComma
 
   const actual = query(events, { datasetReviewId, command })
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(Result.succeed(expected))
 })

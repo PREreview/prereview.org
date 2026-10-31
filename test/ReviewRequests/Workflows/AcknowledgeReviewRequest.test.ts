@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import { Nodemailer } from '../../../src/ExternalApis/index.ts'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
@@ -15,9 +15,9 @@ describe('AcknowledgeReviewRequest', () => {
       [fc.uuid(), fc.reviewRequestToAcknowledge(), fc.preprintTitle()],
       ([reviewRequestId, reviewRequest, preprint]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
@@ -41,10 +41,10 @@ describe('AcknowledgeReviewRequest', () => {
       ],
       ([reviewRequestId, reviewRequest, preprint, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.result)
 
           expect(actual).toStrictEqual(
-            Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })),
+            Result.fail(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })),
           )
         }).pipe(
           Effect.provide([
@@ -71,9 +71,9 @@ describe('AcknowledgeReviewRequest', () => {
     ],
     ([reviewRequestId, reviewRequest, preprint, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, { acknowledgeReviewRequest: () => error }),
@@ -99,9 +99,9 @@ describe('AcknowledgeReviewRequest', () => {
     ],
     ([reviewRequestId, reviewRequest, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),
@@ -129,9 +129,9 @@ describe('AcknowledgeReviewRequest', () => {
     ],
     ([reviewRequestId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.void)
+        expect(actual).toStrictEqual(Result.void)
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),
@@ -159,9 +159,9 @@ describe('AcknowledgeReviewRequest', () => {
     ],
     ([reviewRequestId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.AcknowledgeReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({})))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToAcknowledgeReviewRequest({})))
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),

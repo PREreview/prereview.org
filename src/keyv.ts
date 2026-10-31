@@ -28,7 +28,7 @@ import { type UserOnboarding, UserOnboardingC } from './user-onboarding.ts'
 
 export { Keyv } from 'keyv'
 
-export class KeyvStores extends Context.Tag('KeyvStores')<
+export class KeyvStores extends Context.Service<
   KeyvStores,
   AvatarStoreEnv &
     AuthorInviteStoreEnv &
@@ -41,7 +41,7 @@ export class KeyvStores extends Context.Tag('KeyvStores')<
     SlackUserIdStoreEnv &
     UserOnboardingStoreEnv &
     FormStoreEnv
->() {}
+>()('KeyvStores') {}
 
 export const keyvStoresLayer = Layer.effect(
   KeyvStores,

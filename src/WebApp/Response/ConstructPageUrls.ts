@@ -22,7 +22,7 @@ export const constructPageUrls = (
   enabledLocales: HashSet.HashSet<UserSelectableLocale>,
 ): Option.Option<PageUrls> =>
   pipe(
-    Option.fromNullable(response.canonical),
+    Option.fromNullishOr(response.canonical),
     Option.map(canonical => ({
       canonical: Boolean.match(isUserSelectableLocale(locale), {
         onTrue: () => new URL(`${appOrigin}/${locale.toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`),

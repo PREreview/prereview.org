@@ -1,5 +1,21 @@
-import { UrlParams } from '@effect/platform'
-import { Array, Match, Option, Record, Schema, String, Tuple, flow, identity, pipe } from 'effect'
+import { UrlParams } from 'effect/http'
+import {
+  Array,
+  Match,
+  Option,
+  Record,
+  Schema,
+  String,
+  Tuple,
+  flow,
+  identity,
+  pipe,
+  SchemaTransformation,
+  Effect,
+  SchemaGetter,
+  Number as EffectNumber,
+  SchemaIssue,
+} from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -18,10 +34,22 @@ import { PseudonymC } from './types/Pseudonym.ts'
 import { SlugSchema } from './types/Slug.ts'
 import { UuidC } from './types/Uuid.ts'
 
+const NumberFromStringSchema = Schema.String.pipe(
+  Schema.decodeTo(Schema.Number, {
+    decode: SchemaGetter.transformEffect(string =>
+      Option.match(EffectNumber.parse(string), {
+        onNone: () => Effect.fail(new SchemaIssue.InvalidValue(undefined, string)),
+        onSome: Effect.succeed,
+      }),
+    ),
+    encode: SchemaGetter.String(),
+  }),
+)
+
 export interface Route<A extends { readonly [K in keyof A]: unknown }> {
   path: `/${string}`
   href: (a: A) => `/${string}`
-  schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
+  schema: Schema.Codec<A, { readonly [K in keyof A]: string }>
 }
 
 export interface QueryRoute<
@@ -30,7 +58,7 @@ export interface QueryRoute<
 > {
   path: `/${string}`
   href: (a: A) => `/${string}`
-  schema: Schema.Schema<A, I>
+  schema: Schema.Codec<A, I>
 }
 
 const Route: <A extends { readonly [K in keyof A]: unknown }>(route: Route<A>) => Route<A> = identity
@@ -43,16 +71,16 @@ const QueryRoute = <
   schema,
 }: {
   path: `/${string}`
-  schema: Schema.Schema<A, I>
+  schema: Schema.Codec<A, I>
 }): QueryRoute<A, I> => ({
   path,
   href: flow(
     Record.filter(value => value !== undefined) as never,
-    Schema.encodeSync(UrlParams.schemaRecord(schema)),
-    Array.match({
-      onEmpty: () => path,
-      onNonEmpty: urlParams => `${path}?${UrlParams.toString(urlParams)}` satisfies `/${string}`,
-    }),
+    Schema.encodeSync(Schema.RecordFromUrlParams.pipe(Schema.decodeTo(schema))),
+    urlParams =>
+      Array.isReadonlyArrayEmpty(urlParams.params)
+        ? path
+        : (`${path}?${UrlParams.toString(urlParams)}` satisfies `/${string}`),
   ),
   schema,
 })
@@ -88,76 +116,89 @@ const stringStartsWith =
   (s: string): s is `${P}${string}` =>
     s.startsWith(prefix)
 
-const EmptyStringAsOptional = <A, R>(schema: Schema.Schema<A, string, R>) =>
-  Schema.optionalToOptional(Schema.String, schema, {
-    decode: Option.filter(value => value !== ''),
-    encode: Option.filter(value => typeof value === 'string' && value !== ''),
-  })
+const EmptyStringAsOptional = <A, R>(schema: Schema.Codec<A, string, R, R>) =>
+  Schema.optionalKey(Schema.String).pipe(
+    Schema.decodeTo(Schema.optionalKey(schema), {
+      decode: SchemaGetter.transformOptional(Option.filter(value => value !== '')),
+      encode: SchemaGetter.transformOptional(Option.filter(value => typeof value === 'string' && value !== '')),
+    }),
+  )
 
-const PositiveInt = Schema.Positive.pipe(Schema.int()).annotations({ identifier: 'PositiveInt' })
+const PositiveInt = Schema.Number.check(Schema.isGreaterThan(0))
+  .pipe(Schema.check(Schema.isInt()))
+  .annotate({ identifier: 'PositiveInt' })
 
-const PageNumberSchema = Schema.optionalToRequired(Schema.NumberFromString, PositiveInt, {
-  decode: Option.getOrElse(() => 1),
-  encode: Option.liftPredicate(page => page !== 1),
-})
-
-const PreprintIdSchema = Schema.transform(
-  Schema.compose(
-    Schema.String,
-    Schema.Union(
-      Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased())),
-      Schema.TemplateLiteralParser('philsci-', Schema.NonNegativeInt),
-    ),
-  ),
-  Preprints.IndeterminatePreprintIdFromStringSchema,
-  {
-    strict: true,
-    decode: flow(
-      Match.value,
-      Match.when(
-        ['doi-', Match.string],
-        ([, match]) => `doi:${match.replaceAll('-', '/').replaceAll('+', '-')}` as const,
-      ),
-      Match.when(['philsci-', Match.number], ([, match]) => `https://philsci-archive.pitt.edu/${match}/` as const),
-      Match.exhaustive,
-    ),
-    encode: flow(
-      Match.value,
-      Match.when(stringStartsWith('doi:'), id =>
-        Tuple.make('doi-' as const, id.slice(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
-      ),
-      Match.when(stringStartsWith('https://philsci-archive.pitt.edu/'), id =>
-        Tuple.make('philsci-' as const, Number.parseInt(id.slice(33, -1), 10)),
-      ),
-      Match.exhaustive,
-    ),
-  },
+const PageNumberSchema = Schema.optionalKey(NumberFromStringSchema).pipe(
+  Schema.decodeTo(PositiveInt, {
+    decode: SchemaGetter.transformOptional(Option.orElseSome(() => 1)),
+    encode: SchemaGetter.transformOptional(Option.filter(page => page !== 1)),
+  }),
 )
 
-const DatasetIdSchema = Schema.transform(
-  Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),
-  Datasets.DatasetIdFromString,
-  {
-    strict: true,
-    decode: ([, match]) => `doi:${match.replaceAll('-', '/').replaceAll('+', '-')}` as const,
-    encode: value =>
-      Tuple.make('doi-' as const, value.slice(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
-  },
+const PreprintIdSchema = Schema.String.pipe(
+  Schema.decodeTo(
+    Schema.Union([
+      Schema.TemplateLiteralParser(['doi-', pipe(Schema.NonEmptyString, Schema.check(Schema.isLowercased()))]),
+      Schema.TemplateLiteralParser(['philsci-', Schema.Int.check(Schema.isGreaterThanOrEqualTo(0))]),
+    ]),
+  ),
+).pipe(
+  Schema.decodeTo(
+    Preprints.IndeterminatePreprintIdFromStringSchema,
+    SchemaTransformation.transform({
+      decode: parts =>
+        parts[0] === 'doi-'
+          ? (`doi:${parts[1].replaceAll('-', '/').replaceAll('+', '-')}` as const)
+          : (`https://philsci-archive.pitt.edu/${parts[1]}/` as const),
+      encode: flow(
+        Match.value,
+        Match.when(
+          stringStartsWith('doi:'),
+          id => ['doi-', id.slice(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')] as const,
+        ),
+        Match.when(
+          stringStartsWith('https://philsci-archive.pitt.edu/'),
+          id => ['philsci-', Number.parseInt(id.slice(33, -1), 10)] as const,
+        ),
+        Match.exhaustive,
+      ),
+    }),
+  ),
+)
+
+const DatasetIdSchema = Schema.String.pipe(
+  Schema.decodeTo(
+    Schema.TemplateLiteralParser(['doi-', pipe(Schema.NonEmptyString, Schema.check(Schema.isLowercased()))]),
+  ),
+).pipe(
+  Schema.decodeTo(
+    Datasets.DatasetIdFromString,
+    SchemaTransformation.transform({
+      decode: ([, match]) => `doi:${match.replaceAll('-', '/').replaceAll('+', '-')}` as const,
+      encode: value => ['doi-', value.slice(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')] as const,
+    }),
+  ),
 )
 
 export const OrcidAuth = QueryRoute({
   path: '/orcid',
-  schema: Schema.Union(
-    Schema.Struct({ code: Schema.String, state: Schema.optionalWith(Schema.String, { default: () => '' }) }),
-    Schema.Struct({ error: Schema.String, state: Schema.optionalWith(Schema.String, { default: () => '' }) }),
-  ),
+  schema: Schema.Union([
+    Schema.Struct({
+      code: Schema.String,
+      state: Schema.String.pipe(Schema.withDecodingDefaultType(Effect.succeed(''))),
+    }),
+    Schema.Struct({
+      error: Schema.String,
+      state: Schema.String.pipe(Schema.withDecodingDefaultType(Effect.succeed(''))),
+    }),
+  ]),
 })
 
 export const VerifyEmailAddress = QueryRoute({
   path: '/verify-email-address',
   schema: Schema.Struct({
     verificationToken: Uuid.UuidSchema,
-    redirectTo: Schema.optional(Schema.TemplateLiteral('/', Schema.String)),
+    redirectTo: Schema.optional(Schema.TemplateLiteral(['/', Schema.String])),
   }),
 })
 
@@ -480,13 +521,13 @@ export const AuthorInvitePublished = Route({
 export const WriteComment = Route({
   path: '/reviews/:id/write-a-comment',
   href: params => `/reviews/${params.id}/write-a-comment`,
-  schema: Schema.Struct({ id: Schema.NumberFromString }),
+  schema: Schema.Struct({ id: NumberFromStringSchema }),
 })
 
 export const WriteCommentStartNow = Route({
   path: '/reviews/:id/write-a-comment/start-now',
   href: params => `/reviews/${params.id}/write-a-comment/start-now`,
-  schema: Schema.Struct({ id: Schema.NumberFromString }),
+  schema: Schema.Struct({ id: NumberFromStringSchema }),
 })
 
 export const WriteCommentEnterComment = Route({
@@ -963,7 +1004,7 @@ export const scietyListMatch = pipe(P.lit('sciety-list'), P.andThen(P.end))
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
     new P.Parser(r =>
-      Option.map(Option.getRight(FptsToEffect.either(codec.decode(r.query))), query =>
+      Option.map(Option.getSuccess(FptsToEffect.either(codec.decode(r.query))), query =>
         Tuple.make(query, new P.Route(r.parts, {})),
       ),
     ),
@@ -980,7 +1021,7 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 
       const head = r.parts[0]
       const tail = r.parts.slice(1)
-      return Option.map(Option.getRight(FptsToEffect.either(type.decode(head))), a =>
+      return Option.map(Option.getSuccess(FptsToEffect.either(type.decode(head))), a =>
         Tuple.make(singleton(k, a), new P.Route(tail, r.query)),
       )
     }),

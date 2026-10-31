@@ -1,4 +1,4 @@
-import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Function, Match, Option, type Types } from 'effect'
 import type { Temporal, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
@@ -42,23 +42,23 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
     return new IsBeingPublished()
   }
 
-  return Either.match(FindRequirementsToBePublished(events), {
-    onLeft: missing => new NotReady({ missing }),
-    onRight: () => new IsReady(),
+  return Result.match(FindRequirementsToBePublished(events), {
+    onFailure: missing => new NotReady({ missing }),
+    onSuccess: () => new IsReady(),
   })
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBePublished({ missing })),
-    IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
-    HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotReady: ({ missing }) => Result.fail(new Errors.DatasetReviewNotReadyToBePublished({ missing })),
+    IsBeingPublished: () => Result.fail(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Result.fail(new Errors.DatasetReviewHasBeenPublished()),
     IsReady: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.PublicationOfDatasetReviewWasRequested({
             datasetReviewId: command.datasetReviewId,

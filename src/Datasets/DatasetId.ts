@@ -1,5 +1,17 @@
-import { Url, UrlParams } from '@effect/platform'
-import { Array, Data, Either, flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
+import { Url, UrlParams } from 'effect/http'
+import {
+  Array,
+  Data,
+  Result,
+  flow,
+  Match,
+  Option,
+  pipe,
+  type Predicate,
+  Schema,
+  Tuple,
+  SchemaTransformation,
+} from 'effect'
 import { Doi } from '../types/index.ts'
 
 export type DatasetId = typeof DatasetId.Type
@@ -28,29 +40,30 @@ export class ZenodoDatasetId extends Schema.TaggedClass<ZenodoDatasetId>()('Zeno
   value: Doi.RegistrantDoiSchema('5281'),
 }) {}
 
-export const DatasetId = Schema.Union(DryadDatasetId, ScieloDatasetId, ZenodoDatasetId)
+export const DatasetId = Schema.Union([DryadDatasetId, ScieloDatasetId, ZenodoDatasetId])
 
-const DatasetDoiSchema = Schema.Union(...Array.map(DatasetId.members, id => id.fields.value))
+const DatasetDoiSchema = Schema.Union(Array.map(DatasetId.members, id => id.fields.value))
 
-export const DatasetIdFromDoi = Schema.transform(DatasetDoiSchema, Schema.typeSchema(DatasetId), {
-  strict: true,
-  decode: doi =>
-    Doi.hasRegistrant('48331')(doi)
-      ? new ScieloDatasetId({ value: doi })
-      : Doi.hasRegistrant('5281')(doi)
-        ? new ZenodoDatasetId({ value: doi })
-        : new DryadDatasetId({ value: doi }),
-  encode: datasetId => datasetId.value,
-})
+export const DatasetIdFromDoi = DatasetDoiSchema.pipe(
+  Schema.decodeTo(
+    Schema.toType(DatasetId),
+    SchemaTransformation.transform({
+      decode: doi =>
+        Doi.hasRegistrant('48331')(doi)
+          ? new ScieloDatasetId({ value: doi })
+          : Doi.hasRegistrant('5281')(doi)
+            ? new ZenodoDatasetId({ value: doi })
+            : new DryadDatasetId({ value: doi }),
+      encode: datasetId => datasetId.value,
+    }),
+  ),
+)
 
-export const DatasetIdFromString = Schema.transform(
-  Schema.TemplateLiteralParser('doi:', DatasetIdFromDoi),
-  Schema.typeSchema(DatasetId),
-  {
-    strict: true,
-    decode: Tuple.getSecond,
-    encode: id => Tuple.make('doi:' as const, id),
-  },
+export const DatasetIdFromString = Schema.TemplateLiteralParser(['doi:', DatasetIdFromDoi]).pipe(
+  Schema.decodeTo(
+    Schema.toType(DatasetId),
+    SchemaTransformation.transform({ decode: Tuple.get(1), encode: id => ['doi:', id] as const }),
+  ),
 )
 
 export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = Schema.is(DatasetDoiSchema)
@@ -84,9 +97,9 @@ class UnsupportedUrl extends Data.TaggedError('UnsupportedUrl')<{ url: URL }> {}
 
 export const parseDatasetIdInput = pipe(
   Match.type<Doi.Doi | URL>(),
-  Match.withReturnType<Either.Either<DatasetId, UnsupportedDoi | UnsupportedUrl>>(),
-  Match.when(Match.string, doi => Either.fromOption(parseDatasetDoi(doi), () => new UnsupportedDoi({ doi }))),
-  Match.when({ href: Match.string }, url => Either.fromOption(fromUrl(url), () => new UnsupportedUrl({ url }))),
+  Match.withReturnType<Result.Result<DatasetId, UnsupportedDoi | UnsupportedUrl>>(),
+  Match.when(Match.string, doi => Result.fromOption(parseDatasetDoi(doi), () => new UnsupportedDoi({ doi }))),
+  Match.when({ href: Match.string }, url => Result.fromOption(fromUrl(url), () => new UnsupportedUrl({ url }))),
   Match.exhaustive,
 )
 
@@ -94,7 +107,7 @@ const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)
 
 const extractFromDryadPath = flow(
   decodeURIComponent,
-  Option.liftNullable(s => /^dataset\/doi:(.+?)\/?$/i.exec(s)?.[1]),
+  Option.liftNullishOr(s => /^dataset\/doi:(.+?)\/?$/i.exec(s)?.[1]),
   Option.filter(Schema.is(DryadDatasetId.fields.value)),
   Option.andThen(doi => new DryadDatasetId({ value: doi })),
 )
@@ -102,7 +115,7 @@ const extractFromDryadPath = flow(
 const extractFromScieloParams = (searchParams: UrlParams.UrlParams) =>
   pipe(
     UrlParams.getFirst(searchParams, 'persistentId'),
-    Option.andThen(Option.liftNullable(s => /^doi:(.+)$/i.exec(s)?.[1])),
+    Option.andThen(Option.liftNullishOr(s => /^doi:(.+)$/i.exec(s)?.[1])),
     Option.filter(Schema.is(ScieloDatasetId.fields.value)),
     Option.andThen(doi => new ScieloDatasetId({ value: doi })),
   )

@@ -1,6 +1,6 @@
-import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { Headers, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import { describe, expect, it, vi } from '../vitest.ts'
-import { DateTime, Effect, Either, Option, Schema } from 'effect'
+import { DateTime, Effect, Result, Option, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.ts'
@@ -17,7 +17,7 @@ describe('getFromRedis', () => {
     describe('the value can be read', () => {
       it.effect.prop('succeeds', [fc.httpClientRequest()], ([request]) =>
         Effect.gen(function* () {
-          const decodableValue = yield* Schema.encode(CacheValueFromStringSchema)({
+          const decodableValue = yield* Schema.encodeEffect(CacheValueFromStringSchema)({
             staleAt: yield* DateTime.now,
             response: {
               status: 200,
@@ -27,9 +27,9 @@ describe('getFromRedis', () => {
           })
           const redis = stubbedRedisReturning(decodableValue)
 
-          const result = yield* Effect.either(_.getFromRedis(redis)(request))
+          const result = yield* Effect.result(_.getFromRedis(redis)(request))
 
-          expect(result).toStrictEqual(Either.right(Option.some(expect.anything())))
+          expect(result).toStrictEqual(Result.succeed(Option.some(expect.anything())))
         }),
       )
     })
@@ -77,9 +77,9 @@ describe('getFromRedis', () => {
           get: (() => Promise.reject(error)) satisfies IoRedis['get'],
         } as unknown as IoRedis
 
-        const result = yield* Effect.either(_.getFromRedis(redis)(request))
+        const result = yield* Effect.result(_.getFromRedis(redis)(request))
 
-        expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
+        expect(result).toStrictEqual(Result.fail(new InternalHttpCacheFailure({ cause: error.toString() })))
       }),
     )
   })
@@ -102,9 +102,9 @@ describe('writeToRedis', () => {
         Effect.gen(function* () {
           const redis = stubbedRedis()
 
-          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+          const result = yield* Effect.result(_.writeToRedis(redis)(response, staleAt))
 
-          expect(result).toStrictEqual(Either.right(undefined))
+          expect(result).toStrictEqual(Result.succeed(undefined))
           // oxlint-disable-next-line typescript/unbound-method
           expect(redis.set as unknown).toHaveBeenCalledWith(
             _.keyForRequest(response.request),
@@ -125,9 +125,9 @@ describe('writeToRedis', () => {
           const redis = stubbedRedis()
           yield* Effect.promise(async () => fetchResponse.body?.cancel())
 
-          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+          const result = yield* Effect.result(_.writeToRedis(redis)(response, staleAt))
 
-          expect(result).toStrictEqual(Either.left(expect.anything()))
+          expect(result).toStrictEqual(Result.fail(expect.anything()))
           // oxlint-disable-next-line typescript/unbound-method
           expect(redis.set).not.toHaveBeenCalled()
         }),
@@ -144,9 +144,9 @@ describe('writeToRedis', () => {
             set: (() => Promise.reject<'OK'>(error)) satisfies IoRedis['set'],
           } as unknown as IoRedis
 
-          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+          const result = yield* Effect.result(_.writeToRedis(redis)(response, staleAt))
 
-          expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
+          expect(result).toStrictEqual(Result.fail(new InternalHttpCacheFailure({ cause: error.toString() })))
         }),
     )
   })
@@ -160,9 +160,9 @@ describe('deleteFromRedis', () => {
           del: vi.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
         } as unknown as IoRedis
 
-        const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
+        const result = yield* Effect.result(_.deleteFromRedis(redis)(url))
 
-        expect(result).toStrictEqual(Either.void)
+        expect(result).toStrictEqual(Result.void)
         // oxlint-disable-next-line typescript/unbound-method
         expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
       }),
@@ -176,9 +176,9 @@ describe('deleteFromRedis', () => {
           del: vi.fn(() => Promise.resolve(0)) satisfies IoRedis['del'],
         } as unknown as IoRedis
 
-        const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
+        const result = yield* Effect.result(_.deleteFromRedis(redis)(url))
 
-        expect(result).toStrictEqual(Either.void)
+        expect(result).toStrictEqual(Result.void)
         // oxlint-disable-next-line typescript/unbound-method
         expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
       }),
@@ -192,9 +192,9 @@ describe('deleteFromRedis', () => {
           del: (() => Promise.reject(error)) satisfies IoRedis['del'],
         } as unknown as IoRedis
 
-        const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
+        const result = yield* Effect.result(_.deleteFromRedis(redis)(url))
 
-        expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
+        expect(result).toStrictEqual(Result.fail(new InternalHttpCacheFailure({ cause: error.toString() })))
       }),
     )
   })

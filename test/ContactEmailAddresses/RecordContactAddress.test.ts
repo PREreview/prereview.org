@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import {
   ContactAddressIdHasAlreadyBeenUsed,
   ContactEmailAddressHasAlreadyBeenVerified,
@@ -67,12 +67,12 @@ const authorInviteAddressChosen = new Events.AuthorInviteEmailAddressChosenAsCon
   chosenAt: Temporal.Now.instant(),
 })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
   [
     'no events',
     [],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...input,
@@ -81,37 +81,37 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
       ),
     ),
   ],
-  ['same as recorded', [addressRecorded], input, Either.right(Option.none())],
+  ['same as recorded', [addressRecorded], input, Result.succeed(Option.none())],
   [
     'same as recorded then verified',
     [addressRecorded, addressVerified],
     input,
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'same as invite used',
     [authorInviteAddressChosen],
     input,
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'same as imported verified',
     [verifiedImported],
     input,
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
-  ['same as imported unverified', [unverifiedImported], input, Either.right(Option.none())],
+  ['same as imported unverified', [unverifiedImported], input, Result.succeed(Option.none())],
   [
     'same as imported then verified',
     [unverifiedImported, verifiedPreviouslyUnverified],
     input,
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
   ],
   [
     'different from recorded',
     [addressRecorded],
     inputDifferentEmail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...inputDifferentEmail,
@@ -124,7 +124,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'different from recorded then verified',
     [addressRecorded, addressVerified],
     inputDifferentEmail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...inputDifferentEmail,
@@ -137,7 +137,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'different from invite used',
     [authorInviteAddressChosen],
     inputDifferentEmail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...inputDifferentEmail,
@@ -150,7 +150,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'different from imported verified',
     [verifiedImported],
     inputDifferentEmail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...inputDifferentEmail,
@@ -163,7 +163,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'different from imported unverified',
     [unverifiedImported],
     inputDifferentEmail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...inputDifferentEmail,
@@ -176,7 +176,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'different from imported then verified',
     [unverifiedImported, verifiedPreviouslyUnverified],
     inputDifferentEmail,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...inputDifferentEmail,
@@ -189,7 +189,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'newer address recorded',
     [verifiedImported, newerAddressRecorded],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.ContactAddressRecorded({
           ...input,
@@ -202,7 +202,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     'contact address ID has been used',
     [addressRecorded],
     { ...input, contactAddressId: addressRecorded.contactAddressId },
-    Either.left(new ContactAddressIdHasAlreadyBeenUsed()),
+    Result.fail(new ContactAddressIdHasAlreadyBeenUsed()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.RecordContactAddress

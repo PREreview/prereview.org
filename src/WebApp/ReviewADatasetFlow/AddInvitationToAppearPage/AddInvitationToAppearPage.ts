@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,17 +41,17 @@ export const AddInvitationToAppearPage = ({
 
         <h1>${t(otherAuthors ? 'addAnotherAuthor' : 'addAnAuthor')()}</h1>
 
-        <div ${rawHtml(form._tag === 'InvalidForm' && Either.isLeft(form.name) ? 'class="error"' : '')}>
+        <div ${rawHtml(form._tag === 'InvalidForm' && Result.isFailure(form.name) ? 'class="error"' : '')}>
           <h2><label for="name">${t('addAnAuthorName')()}</label></h2>
 
           <p id="name-tip" role="note">${t('addAnAuthorNameTip')()}</p>
           ${
-            form._tag === 'InvalidForm' && Either.isLeft(form.name)
+            form._tag === 'InvalidForm' && Result.isFailure(form.name)
               ? html`
                   <div class="error-message" id="name-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${pipe(
-                      Match.value(form.name.left),
+                      Match.value(form.name.failure),
                       Match.tag('Missing', () => t('addAnAuthorNameError')()),
                       Match.exhaustive,
                     )}
@@ -71,28 +71,28 @@ export const AddInvitationToAppearPage = ({
             ${pipe(
               Match.value(form),
               Match.tag('CompletedForm', ({ name }) => html`value="${name}"`),
-              Match.when({ _tag: 'InvalidForm', name: Either.isRight }, ({ name }) => html`value="${name.right}"`),
+              Match.when({ _tag: 'InvalidForm', name: Result.isSuccess }, ({ name }) => html`value="${name.success}"`),
               Match.orElse(() => ''),
             )}
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.name)
+              form._tag === 'InvalidForm' && Result.isFailure(form.name)
                 ? html`aria-invalid="true" aria-errormessage="name-error"`
                 : ''
             }
           />
         </div>
 
-        <div ${rawHtml(form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress) ? 'class="error"' : '')}>
+        <div ${rawHtml(form._tag === 'InvalidForm' && Result.isFailure(form.emailAddress) ? 'class="error"' : '')}>
           <h2><label for="email-address">${t('addAnAuthorEmailAddress')()}</label></h2>
 
           <p id="email-address-tip" role="note">${t('addAnAuthorEmailAddressTip')()}</p>
           ${
-            form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+            form._tag === 'InvalidForm' && Result.isFailure(form.emailAddress)
               ? html`
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${pipe(
-                      Match.value(form.emailAddress.left),
+                      Match.value(form.emailAddress.failure),
                       Match.tag('Missing', () => t('addAnAuthorEmailAddressError')()),
                       Match.tag('Invalid', () =>
                         t('addAnAuthorEmailAddressInvalidError')({
@@ -119,21 +119,21 @@ export const AddInvitationToAppearPage = ({
               Match.value(form),
               Match.tag('CompletedForm', ({ emailAddress }) => html`value="${emailAddress}"`),
               Match.when(
-                { _tag: 'InvalidForm', emailAddress: Either.isRight },
-                ({ emailAddress }) => html`value="${emailAddress.right}"`,
+                { _tag: 'InvalidForm', emailAddress: Result.isSuccess },
+                ({ emailAddress }) => html`value="${emailAddress.success}"`,
               ),
               Match.when(
                 {
                   _tag: 'InvalidForm',
-                  emailAddress: Either.isLeft,
+                  emailAddress: Result.isFailure,
                 },
                 ({ emailAddress }) =>
-                  emailAddress.left._tag === 'Invalid' ? html`value="${emailAddress.left.actual}"` : '',
+                  emailAddress.failure._tag === 'Invalid' ? html`value="${emailAddress.failure.actual}"` : '',
               ),
               Match.orElse(() => ''),
             )}
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+              form._tag === 'InvalidForm' && Result.isFailure(form.emailAddress)
                 ? html`aria-invalid="true" aria-errormessage="email-address-error"`
                 : ''
             }
@@ -151,12 +151,12 @@ export const AddInvitationToAppearPage = ({
 
 const toErrorItems = (locale: SupportedLocale) => (form: AddInvitationToAppearForm.InvalidForm) => html`
   ${
-    Either.isLeft(form.name)
+    Result.isFailure(form.name)
       ? html`
           <li>
             <a href="#name">
               ${pipe(
-                Match.value(form.name.left),
+                Match.value(form.name.failure),
                 Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorNameError')()),
                 Match.exhaustive,
               )}
@@ -166,12 +166,12 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddInvitationToAppearFo
       : ''
   }
   ${
-    Either.isLeft(form.emailAddress)
+    Result.isFailure(form.emailAddress)
       ? html`
           <li>
             <a href="#email-address">
               ${pipe(
-                Match.value(form.emailAddress.left),
+                Match.value(form.emailAddress.failure),
                 Match.tag('Missing', () =>
                   translate(locale, 'review-a-dataset-flow', 'addAnAuthorEmailAddressError')(),
                 ),

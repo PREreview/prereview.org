@@ -9,7 +9,7 @@ export class SpotlightBanner extends Schema.Class<SpotlightBanner>('SpotlightBan
   description: HtmlSchema,
   callToAction: Schema.Struct({
     text: HtmlSchema,
-    url: Schema.URL,
+    url: Schema.URLFromString,
   }),
-  theme: Schema.Literal('community', 'product'),
+  theme: Schema.Literals(['community', 'product']),
 }) {}

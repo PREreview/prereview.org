@@ -1,4 +1,4 @@
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted, Tuple } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/CreateRequest.ts'

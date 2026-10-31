@@ -1,4 +1,4 @@
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -40,7 +40,7 @@ test('content looks right when there is a persona', async ({ showPage }) => {
 test('content looks right when the persona is missing', async ({ showPage }) => {
   const response = _.ChoosePersonaPage({
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
-    form: new ChoosePersonaForm.InvalidForm({ persona: Either.left(new ChoosePersonaForm.Missing()) }),
+    form: new ChoosePersonaForm.InvalidForm({ persona: Result.fail(new ChoosePersonaForm.Missing()) }),
     locale: DefaultLocale,
     publicPersona,
     pseudonymPersona,

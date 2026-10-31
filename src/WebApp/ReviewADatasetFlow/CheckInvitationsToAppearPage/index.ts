@@ -27,7 +27,7 @@ export const CheckInvitationsToAppearPage = ({
 
     const authors = yield* DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId })
 
-    if (!Array.isNonEmptyReadonlyArray(authors)) {
+    if (!Array.isReadonlyArrayNonEmpty(authors)) {
       return RedirectResponse({ location: Routes.ReviewADatasetAddInvitationToAppear.href({ datasetReviewId }) })
     }
 
@@ -58,11 +58,12 @@ export const CheckInvitationsToAppearSubmission = ({
   datasetReviewId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
-    const nextExpectedCommand = yield* Effect.flatten(
+    const nextExpectedCommand = yield* Effect.flatMap(
       DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+      Effect.fromOption,
     )
 
     return RedirectResponse({
       location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
     })
-  }).pipe(Effect.catchAll(() => HavingProblemsPage))
+  }).pipe(Effect.catch(() => HavingProblemsPage))

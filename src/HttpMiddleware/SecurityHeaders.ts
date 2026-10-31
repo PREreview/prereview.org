@@ -1,4 +1,4 @@
-import { Headers } from '@effect/platform'
+import { Headers } from 'effect/http'
 import cspBuilder from 'content-security-policy-builder'
 import { Duration } from 'effect'
 

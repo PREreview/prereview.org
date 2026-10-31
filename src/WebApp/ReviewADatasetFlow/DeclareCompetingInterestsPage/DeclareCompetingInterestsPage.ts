@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe } from 'effect'
+import { Result, Match, Option, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -48,7 +48,7 @@ export const DeclareCompetingInterestsPage = ({
               role="group"
               aria-describedby="declare-competing-interests-tip"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.declareCompetingInterests)
+                hasAnError && Result.isFailure(form.declareCompetingInterests)
                   ? 'aria-invalid="true" aria-errormessage="declare-competing-interests-error"'
                   : '',
               )}
@@ -85,12 +85,12 @@ export const DeclareCompetingInterestsPage = ({
               </details>
 
               ${
-                hasAnError && Either.isLeft(form.declareCompetingInterests)
+                hasAnError && Result.isFailure(form.declareCompetingInterests)
                   ? html`
                       <div class="error-message" id="declare-competing-interests-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                         ${pipe(
-                          Match.value(form.declareCompetingInterests.left),
+                          Match.value(form.declareCompetingInterests.failure),
                           Match.tag('Missing', () => t('selectCompetingInterests')()),
                           Match.exhaustive,
                         )}
@@ -138,7 +138,7 @@ export const DeclareCompetingInterestsPage = ({
                           },
                           {
                             _tag: 'InvalidForm',
-                            declareCompetingInterests: Either.right('yes' as const),
+                            declareCompetingInterests: Result.succeed('yes' as const),
                           },
                           () => 'checked',
                         ),
@@ -148,18 +148,20 @@ export const DeclareCompetingInterestsPage = ({
                     ${t('yes')()}
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
-                    <div ${rawHtml(hasAnError && Either.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>
+                    <div
+                      ${rawHtml(hasAnError && Result.isFailure(form.competingInterestsDetails) ? 'class="error"' : '')}
+                    >
                       <label for="competing-interests-details" class="textarea"
                         >${t('competingInterestsDetails')()}</label
                       >
 
                       ${
-                        hasAnError && Either.isLeft(form.competingInterestsDetails)
+                        hasAnError && Result.isFailure(form.competingInterestsDetails)
                           ? html`
                               <div class="error-message" id="competing-interests-details-error">
                                 <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                                 ${pipe(
-                                  Match.value(form.competingInterestsDetails.left),
+                                  Match.value(form.competingInterestsDetails.failure),
                                   Match.tag('Missing', () => t('enterCompetingInterestsDetails')()),
                                   Match.exhaustive,
                                 )}
@@ -175,7 +177,7 @@ export const DeclareCompetingInterestsPage = ({
                         dir="auto"
                         rows="5"
                         ${rawHtml(
-                          hasAnError && Either.isLeft(form.competingInterestsDetails)
+                          hasAnError && Result.isFailure(form.competingInterestsDetails)
                             ? 'aria-invalid="true" aria-errormessage="competing-interests-details-error"'
                             : '',
                         )}
@@ -207,12 +209,12 @@ ${pipe(
 
 const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInterestsForm.InvalidForm) => html`
   ${
-    Either.isLeft(form.declareCompetingInterests)
+    Result.isFailure(form.declareCompetingInterests)
       ? html`
           <li>
             <a href="#declare-competing-interests-no">
               ${pipe(
-                Match.value(form.declareCompetingInterests.left),
+                Match.value(form.declareCompetingInterests.failure),
                 Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectCompetingInterests')()),
                 Match.exhaustive,
               )}
@@ -222,12 +224,12 @@ const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInteres
       : ''
   }
   ${
-    Either.isLeft(form.competingInterestsDetails)
+    Result.isFailure(form.competingInterestsDetails)
       ? html`
           <li>
             <a href="#competing-interests-details">
               ${pipe(
-                Match.value(form.competingInterestsDetails.left),
+                Match.value(form.competingInterestsDetails.failure),
                 Match.tag('Missing', () =>
                   translate(locale, 'review-a-dataset-flow', 'enterCompetingInterestsDetails')(),
                 ),

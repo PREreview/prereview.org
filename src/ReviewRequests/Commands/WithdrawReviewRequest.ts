@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Match, Option, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -96,12 +96,12 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return new HasBeenPublished()
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.ReviewRequestEvent>, Error> =>
   Match.valueTags(state, {
-    UnknownReviewRequest: () => Either.left(new Errors.UnknownReviewRequest({})),
-    HasNotBeenPublished: () => Either.left(new Errors.UnknownReviewRequest({})),
+    UnknownReviewRequest: () => Result.fail(new Errors.UnknownReviewRequest({})),
+    HasNotBeenPublished: () => Result.fail(new Errors.UnknownReviewRequest({})),
     HasNotBeenAccepted: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.ReviewRequestForAPreprintWasWithdrawn({
             withdrawnAt: input.withdrawnAt,
@@ -110,9 +110,9 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
           }),
         ),
       ),
-    HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
+    HasBeenRejected: () => Result.fail(new Errors.ReviewRequestHasBeenRejected({})),
     HasBeenPublished: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.ReviewRequestForAPreprintWasWithdrawn({
             withdrawnAt: input.withdrawnAt,
@@ -121,7 +121,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
           }),
         ),
       ),
-    HasBeenWithdrawn: () => Either.right(Option.none()),
+    HasBeenWithdrawn: () => Result.succeed(Option.none()),
   })
 
 export const WithdrawReviewRequest = Commands.Command({

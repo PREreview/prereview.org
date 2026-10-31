@@ -1,4 +1,4 @@
-import { Effect, flow, HashSet, Option, type ParseResult, pipe, Predicate, Record, Ref, Schema } from 'effect'
+import { Effect, flow, HashSet, Option, pipe, Predicate, Record, Ref, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
@@ -12,8 +12,8 @@ const PageEntry = Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('page')) }) }),
   }),
   fields: Schema.Struct({
-    title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
-    content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Document }),
+    title: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.Trimmed.check(Schema.isNonEmpty())),
+    content: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Document),
   }),
 })
 
@@ -43,8 +43,8 @@ const PageEntryToContentfulPage = Effect.fnUntraced(
 
 export const EntryToContentfulPage: (
   entry: Entry,
-) => Effect.Effect<ContentfulPage, ParseResult.ParseError, DynamicEmbedder | Locale> = flow(
-  Schema.decodeUnknown(Schema.typeSchema(PageEntry)),
+) => Effect.Effect<ContentfulPage, Schema.SchemaError, DynamicEmbedder | Locale> = flow(
+  Schema.decodeUnknownEffect(Schema.toType(PageEntry)),
   Effect.andThen(PageEntryToContentfulPage),
 )
 

@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Effect, flow } from 'effect'
 import { PersonalDetailsAreUnavailable } from '../PersonalDetails.ts'
 import { CreateRequest } from './CreateRequest.ts'
@@ -8,5 +8,5 @@ export const GetPersonalDetails = flow(
   CreateRequest,
   Effect.andThen(HttpClient.execute),
   Effect.andThen(HandleResponse),
-  Effect.catchTag('RequestError', 'ResponseError', error => new PersonalDetailsAreUnavailable({ cause: error })),
+  Effect.catchTag('HttpClientError', error => new PersonalDetailsAreUnavailable({ cause: error })),
 )

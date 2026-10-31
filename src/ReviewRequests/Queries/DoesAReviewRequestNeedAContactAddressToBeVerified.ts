@@ -1,4 +1,4 @@
-import { Array, Data, Either, HashMap, Match, Option, Schema } from 'effect'
+import { Array, Data, Result, HashMap, Match, Option, Schema } from 'effect'
 import * as Events from '../../Events.ts'
 import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -12,7 +12,7 @@ export interface Input {
   preprintId: IndeterminatePreprintId
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   { contactAddress: ContactAddress; reviewRequestId: Uuid },
   Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenPublished
 >
@@ -182,19 +182,19 @@ const updateReviewRequestIdsByInputStateWithPertinentEvent = (
   })
 
 const query = (state: State, input: Input): Result =>
-  Either.gen(function* () {
-    const reviewRequestId = yield* Either.fromOption(
+  Result.gen(function* () {
+    const reviewRequestId = yield* Result.fromOption(
       HashMap.get(state.reviewRequestIdsByInput, inputToHashKey(input)),
       () => new Errors.UnknownReviewRequest({}),
     )
 
-    const reviewRequest = yield* Either.fromOption(
+    const reviewRequest = yield* Result.fromOption(
       HashMap.get(state.reviewRequestsById, reviewRequestId),
       () => new Errors.UnknownReviewRequest({}),
     )
 
     if (reviewRequest.publicationStatus === 'published') {
-      return yield* Either.left(new Errors.ReviewRequestHasBeenPublished({}))
+      return yield* Result.fail(new Errors.ReviewRequestHasBeenPublished({}))
     }
 
     const contactAddressId = HashMap.get(state.contactAddressesByOrcidId, input.requesterId)
@@ -213,7 +213,7 @@ const query = (state: State, input: Input): Result =>
       })
     }
 
-    const contactAddress = yield* Either.fromOption(
+    const contactAddress = yield* Result.fromOption(
       HashMap.get(state.contactAddressesById, contactAddressId.value),
       () => new Errors.UnknownReviewRequest({ cause: 'Unexpected query state' }),
     )
@@ -237,8 +237,8 @@ const query = (state: State, input: Input): Result =>
 
 export const DoesAReviewRequestNeedAContactAddressToBeVerified: Queries.StatefulQuery<
   [Input],
-  Either.Either.Right<Result>,
-  Either.Either.Left<Result>,
+  Result.Result.Success<Result>,
+  Result.Result.Failure<Result>,
   State
 > = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.doesAReviewRequestNeedAContactAddressToBeVerified',

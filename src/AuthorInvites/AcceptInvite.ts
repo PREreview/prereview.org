@@ -1,4 +1,4 @@
-import { Array, Data, Either, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Match, Option, type Types } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -81,15 +81,15 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return new OpenInvitation()
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
-    NoSuchInvitation: () => Either.left(new InvitationNotFound()),
-    PendingInvitation: () => Either.left(new InvitationNotFound()),
-    OpenInvitation: () => Either.right(Option.some(new Events.AuthorInviteAccepted(input))),
+    NoSuchInvitation: () => Result.fail(new InvitationNotFound()),
+    PendingInvitation: () => Result.fail(new InvitationNotFound()),
+    OpenInvitation: () => Result.succeed(Option.some(new Events.AuthorInviteAccepted(input))),
     AcceptedInvitation: ({ acceptedBy }) =>
       acceptedBy === input.orcidId
-        ? Either.right(Option.none())
-        : Either.left(new InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer()),
+        ? Result.succeed(Option.none())
+        : Result.fail(new InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer()),
   })
 
 export const AcceptInvite = Commands.Command({

@@ -1,4 +1,4 @@
-import { HttpMiddleware, HttpServerResponse } from '@effect/platform'
+import { HttpMiddleware, HttpServerResponse } from 'effect/http'
 import { Data, Effect, Option } from 'effect'
 import { DataStoreRedis } from '../Redis.ts'
 import * as StatusCodes from '../StatusCodes.ts'
@@ -11,7 +11,7 @@ export const HealthCheck = Effect.gen(function* () {
   const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
 
   if (Option.isNone(maybeRedis)) {
-    return yield* HttpServerResponse.unsafeJson({ status: 'ok' })
+    return HttpServerResponse.jsonUnsafe({ status: 'ok' })
   }
 
   const redis = maybeRedis.value
@@ -22,9 +22,11 @@ export const HealthCheck = Effect.gen(function* () {
 
   yield* Effect.tryPromise({ try: () => redis.ping(), catch: error => new RedisUnavailable({ cause: error }) })
 
-  return yield* HttpServerResponse.unsafeJson({ status: 'ok' })
+  return HttpServerResponse.jsonUnsafe({ status: 'ok' })
 }).pipe(
   Effect.tapError(error => Effect.logError('Health check failed').pipe(Effect.annotateLogs({ error }))),
-  Effect.orElse(() => HttpServerResponse.unsafeJson({ status: 'error' }, { status: StatusCodes.ServiceUnavailable })),
+  Effect.catch(() =>
+    Effect.succeed(HttpServerResponse.jsonUnsafe({ status: 'error' }, { status: StatusCodes.ServiceUnavailable })),
+  ),
   HttpMiddleware.withLoggerDisabled,
 )

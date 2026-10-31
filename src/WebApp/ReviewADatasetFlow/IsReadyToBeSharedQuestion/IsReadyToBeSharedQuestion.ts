@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -37,7 +37,7 @@ export const IsReadyToBeSharedQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.isReadyToBeShared)
+                hasAnError && Result.isFailure(form.isReadyToBeShared)
                   ? 'aria-invalid="true" aria-errormessage="is-ready-to-be-shared-error"'
                   : '',
               )}
@@ -47,11 +47,11 @@ export const IsReadyToBeSharedQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.isReadyToBeShared)
+                hasAnError && Result.isFailure(form.isReadyToBeShared)
                   ? html`
                       <div class="error-message" id="is-ready-to-be-shared-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.isReadyToBeShared.left, {
+                        ${Match.valueTags(form.isReadyToBeShared.failure, {
                           Missing: () => t('selectReadyToBeShared')(),
                         })}
                       </div>
@@ -91,7 +91,7 @@ export const IsReadyToBeSharedQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.isReadyToBeSharedYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isReadyToBeSharedYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isReadyToBeSharedYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -127,7 +127,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.isReadyToBeSharedNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.isReadyToBeSharedNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.isReadyToBeSharedNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -165,12 +165,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.isReadyToBeShared)
+  Result.isFailure(form.isReadyToBeShared)
     ? html`
         <li>
           <a href="#is-ready-to-be-shared-yes">
             ${pipe(
-              Match.value(form.isReadyToBeShared.left),
+              Match.value(form.isReadyToBeShared.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectReadyToBeShared')()),
               Match.exhaustive,
             )}

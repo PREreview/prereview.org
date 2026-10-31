@@ -1,4 +1,4 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { CreateDeposition } from './CreateDeposition/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
@@ -10,35 +10,29 @@ export * from './Deposition.ts'
 export { type File } from './UploadFile/index.ts'
 export { ZenodoApi } from './ZenodoApi.ts'
 
-export class Zenodo extends Context.Tag('Zenodo')<
+export class Zenodo extends Context.Service<
   Zenodo,
   {
     createDeposition: (
       ...args: Parameters<typeof CreateDeposition>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof CreateDeposition>>,
-      Effect.Effect.Error<ReturnType<typeof CreateDeposition>>
+      Effect.Success<ReturnType<typeof CreateDeposition>>,
+      Effect.Error<ReturnType<typeof CreateDeposition>>
     >
     getDeposition: (
       ...args: Parameters<typeof GetDeposition>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetDeposition>>,
-      Effect.Effect.Error<ReturnType<typeof GetDeposition>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetDeposition>>, Effect.Error<ReturnType<typeof GetDeposition>>>
     publishDeposition: (
       ...args: Parameters<typeof PublishDeposition>
     ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof PublishDeposition>>,
-      Effect.Effect.Error<ReturnType<typeof PublishDeposition>>
+      Effect.Success<ReturnType<typeof PublishDeposition>>,
+      Effect.Error<ReturnType<typeof PublishDeposition>>
     >
     uploadFile: (
       ...args: Parameters<typeof UploadFile>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof UploadFile>>,
-      Effect.Effect.Error<ReturnType<typeof UploadFile>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof UploadFile>>, Effect.Error<ReturnType<typeof UploadFile>>>
   }
->() {}
+>()('Zenodo') {}
 
 export const createDeposition = (...args: Parameters<(typeof Zenodo.Service)['createDeposition']>) =>
   Effect.flatMap(Zenodo, service => service.createDeposition(...args))

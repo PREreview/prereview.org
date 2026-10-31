@@ -1,6 +1,7 @@
-import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import { beforeEach, describe, expect, it } from '../vitest.ts'
-import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock, TestContext } from 'effect'
+import { Duration, Effect, Result, Fiber, Layer, pipe, Queue } from 'effect'
+import { TestClock } from 'effect/testing'
 import * as _ from '../../src/CachingHttpClient/index.ts'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -9,9 +10,12 @@ import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 const stubbedClient = (
   response: HttpClientResponse.HttpClientResponse,
-  responseDuration: Duration.DurationInput = 0,
-): HttpClient.HttpClient.With<never> =>
-  HttpClient.makeWith(() => Effect.succeed(response).pipe(Effect.delay(responseDuration)), Effect.succeed)
+  responseDuration: Duration.Input = 0,
+): HttpClient.HttpClient =>
+  HttpClient.makeWith<never, never, HttpClientError.HttpClientError, never>(
+    () => Effect.succeed(response).pipe(Effect.delay(responseDuration)),
+    Effect.succeed,
+  )
 
 const stubbedFailingClient = (
   error: HttpClientError.HttpClientError,
@@ -86,11 +90,11 @@ describe('there is no cache entry', () => {
             Effect.provide(_.layerInMemory(cache)),
           )
 
-          const fiber = yield* pipe(client.execute(response.request), Effect.either, Effect.fork)
+          const fiber = yield* pipe(client.execute(response.request), Effect.result, Effect.forkChild)
           yield* TestClock.adjust('3 seconds')
           const actualResponse = yield* Fiber.join(fiber)
 
-          expect(actualResponse).toStrictEqual(Either.left(expect.objectContaining({ _tag: 'RequestError' })))
+          expect(actualResponse).toStrictEqual(Result.fail(expect.objectContaining({ _tag: 'HttpClientError' })))
           expect(cache.size).toBe(0)
         }).pipe(Effect.provide(emptyQueue)),
     )
@@ -111,9 +115,9 @@ describe('there is no cache entry', () => {
             Effect.provide(_.layerInMemory(cache)),
           )
 
-          const actualResponse = yield* Effect.either(client.execute(request))
+          const actualResponse = yield* Effect.result(client.execute(request))
 
-          expect(actualResponse).toStrictEqual(Either.left(error))
+          expect(actualResponse).toStrictEqual(Result.fail(error))
           expect(cache.size).toBe(0)
         }).pipe(Effect.provide(emptyQueue)),
     )
@@ -165,7 +169,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
         Effect.provide(_.layerInMemory(cache)),
       )
       yield* clientToPopulateCache.get(url)
-    }).pipe(Effect.provide(emptyQueue), Effect.provide(TestContext.TestContext), Effect.runPromise),
+    }).pipe(Effect.provide(emptyQueue), Effect.provide(TestClock.layer()), Effect.runPromise),
   )
 
   describe('the cached response is fresh', () => {
@@ -197,7 +201,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
             Effect.provide(_.layerInMemory(cache)),
           )
 
-          yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+          yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
           const responseFromStaleCache = yield* client.execute(request)
 
           expect(responseFromStaleCache.status).toStrictEqual(originalResponse.status)
@@ -217,7 +221,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Layer.launch(_.layerRevalidationWorker),
                 Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
-                Effect.fork,
+                Effect.forkChild,
               )
 
               const client = yield* pipe(
@@ -226,7 +230,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Effect.provide(_.layerInMemory(cache)),
               )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+              yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
               yield* client.execute(request)
               yield* TestClock.adjust('1 seconds')
               const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
@@ -252,7 +256,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Layer.launch(_.layerRevalidationWorker),
                 Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
-                Effect.fork,
+                Effect.forkChild,
               )
 
               const client = yield* pipe(
@@ -261,12 +265,12 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Effect.provide(_.layerInMemory(cache)),
               )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-              const responseFromStaleCache = yield* client.execute(request).pipe(Effect.either)
+              yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
+              const responseFromStaleCache = yield* client.execute(request).pipe(Effect.result)
               yield* TestClock.adjust('1 seconds')
               const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
 
-              expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+              expect(responseFromStaleCache).toStrictEqual(Result.succeed(expect.anything()))
               expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
                 yield* originalResponse.text,
               )
@@ -295,7 +299,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Layer.launch(_.layerRevalidationWorker),
                 Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
-                Effect.fork,
+                Effect.forkChild,
               )
 
               const client = yield* pipe(
@@ -304,7 +308,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Effect.provide(_.layerInMemory(cache)),
               )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
+              yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
               yield* client.execute(request)
               yield* TestClock.adjust('1 seconds')
 
@@ -337,7 +341,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Layer.launch(_.layerRevalidationWorker),
                 Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
-                Effect.fork,
+                Effect.forkChild,
               )
 
               const client = yield* pipe(
@@ -346,12 +350,12 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Effect.provide(_.layerInMemory(cache)),
               )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-              const responseFromStaleCache = yield* client.execute(request).pipe(Effect.either)
+              yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
+              const responseFromStaleCache = yield* client.execute(request).pipe(Effect.result)
               yield* TestClock.adjust('1 seconds')
               const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
 
-              expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+              expect(responseFromStaleCache).toStrictEqual(Result.succeed(expect.anything()))
               expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
                 yield* originalResponse.text,
               )
@@ -371,7 +375,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Layer.launch(_.layerRevalidationWorker),
                 Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
                 Effect.provide(_.layerInMemory(cache)),
-                Effect.fork,
+                Effect.forkChild,
               )
 
               const client = yield* pipe(
@@ -380,12 +384,12 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Effect.provide(_.layerInMemory(cache)),
               )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-              const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
+              yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
+              const responseFromStaleCache = yield* client.get(url).pipe(Effect.result)
               yield* TestClock.adjust('1 seconds')
               const responseFromCacheFollowingServingOfStaleEntry = yield* client.get(url)
 
-              expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+              expect(responseFromStaleCache).toStrictEqual(Result.succeed(expect.anything()))
               expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
                 yield* originalResponse.text,
               )
@@ -410,7 +414,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Layer.launch(_.layerRevalidationWorker),
                 Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
                 Effect.provide(_.layerInMemory(cache)),
-                Effect.fork,
+                Effect.forkChild,
               )
 
               const client = yield* pipe(
@@ -419,12 +423,12 @@ describe('there is a cache entry', { concurrent: false }, () => {
                 Effect.provide(_.layerInMemory(cache)),
               )
 
-              yield* TestClock.adjust(Duration.sum(timeToStale, '2 seconds'))
-              const responseFromStaleCache = yield* client.get(url).pipe(Effect.either)
+              yield* TestClock.adjust(Duration.sum(Duration.fromInputUnsafe(timeToStale), Duration.seconds(2)))
+              const responseFromStaleCache = yield* client.get(url).pipe(Effect.result)
               yield* TestClock.adjust('1 seconds')
               const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(response.request)
 
-              expect(responseFromStaleCache).toStrictEqual(Either.right(expect.anything()))
+              expect(responseFromStaleCache).toStrictEqual(Result.succeed(expect.anything()))
               expect(yield* responseFromCacheFollowingServingOfStaleEntry.text).toStrictEqual(
                 yield* originalResponse.text,
               )
@@ -446,12 +450,16 @@ describe('getting from the cache is too slow', () => {
           Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
           Effect.provide(
             Layer.mock(_.HttpCache, {
-              get: () => pipe(Effect.sync(shouldNotBeCalled), Effect.delay(Duration.sum(_.CacheTimeout, delay))),
+              get: () =>
+                pipe(
+                  Effect.sync(shouldNotBeCalled),
+                  Effect.delay(Duration.sum(Duration.fromInputUnsafe(_.CacheTimeout), Duration.fromInputUnsafe(delay))),
+                ),
               set: () => Effect.void,
             }),
           ),
         )
-        const fiber = yield* pipe(client.execute(response.request), Effect.fork)
+        const fiber = yield* pipe(client.execute(response.request), Effect.forkChild)
         yield* TestClock.adjust(_.CacheTimeout)
         const actualResponse = yield* Fiber.join(fiber)
 

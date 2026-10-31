@@ -1,4 +1,4 @@
-import { HttpClientResponse } from '@effect/platform'
+import { HttpClientResponse } from 'effect/http'
 import { Effect, flow, Struct } from 'effect'
 import { Response, SlackError } from '../Types.ts'
 import { ChatPostMessageResponse } from './ChatPostMessageResponse.ts'
@@ -9,5 +9,5 @@ export const HandleResponse = flow(
     response => response.ok,
     error => new SlackError({ message: error.error }),
   ),
-  Effect.map(Struct.omit('ok')),
+  Effect.map(Struct.omit(['ok'])),
 )

@@ -25,5 +25,5 @@ export const NotifyCommunitySlack = Effect.fn(
       url,
     })
   },
-  Effect.catchAll(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
+  Effect.catch(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
 )

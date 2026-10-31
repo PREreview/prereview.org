@@ -1,5 +1,5 @@
-import { Url } from '@effect/platform'
-import { Array, Effect, Either, flow, Match, pipe } from 'effect'
+import { Url } from 'effect/http'
+import { Array, Effect, Result, flow, Match, pipe } from 'effect'
 import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import type { Crossref } from '../../../ExternalApis/index.ts'
@@ -13,34 +13,34 @@ import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './Preprint
 
 const determineCrossrefPreprintId = (
   work: Crossref.Work,
-): Either.Either<CrossrefPreprintId, Preprints.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Result.Result<CrossrefPreprintId, Preprints.PreprintIsUnavailable> =>
+  Result.gen(function* () {
     const doi = work.DOI
 
     if (!isDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
+      return yield* Result.fail(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     if (Doi.hasRegistrant('12688')(doi) && work['group-title'] !== 'Gates Foundation') {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
       )
     }
 
     if (Doi.hasRegistrant('31234')(doi) && work['group-title'] !== 'PsyArXiv') {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
       )
     }
 
     if (Doi.hasRegistrant('31730')(doi) && work['group-title'] !== 'AfricArXiv') {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
       )
     }
 
     if (Doi.hasRegistrant('35542')(doi) && work['group-title'] !== 'EdArXiv') {
-      return yield* Either.left(
+      return yield* Result.fail(
         new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
       )
     }
@@ -61,7 +61,7 @@ const determineCrossrefPreprintId = (
       return new Preprints.MedrxivPreprintId({ value: indeterminateId.value })
     }
 
-    return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
+    return yield* Result.fail(new Preprints.PreprintIsUnavailable({ cause: doi }))
   })
 
 export const workToPreprint = (
@@ -72,13 +72,13 @@ export const workToPreprint = (
   LanguageDetection.LanguageDetection
 > =>
   Effect.gen(function* () {
-    yield* ensureIsAPreprint(work)
+    yield* Effect.fromResult(ensureIsAPreprint(work))
 
-    const id = yield* determineCrossrefPreprintId(work)
+    const id = yield* Effect.fromResult(determineCrossrefPreprintId(work))
 
     const workLanguage = Iso639.isIso6391(work.language) ? work.language : undefined
 
-    const authors = yield* getAuthors(work.author)
+    const authors = yield* Effect.fromResult(getAuthors(work.author))
 
     const title = yield* getTitle(work.title, id, workLanguage)
 
@@ -94,18 +94,18 @@ export const workToPreprint = (
     })
   })
 
-const ensureIsAPreprint = (work: Crossref.Work): Either.Either<void, Preprints.NotAPreprint> =>
+const ensureIsAPreprint = (work: Crossref.Work): Result.Result<void, Preprints.NotAPreprint> =>
   work.type === 'posted-content' && work.subtype === 'preprint'
-    ? Either.void
-    : Either.left(new Preprints.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
+    ? Result.void
+    : Result.fail(new Preprints.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
 
 const getAuthors = (
   author: Crossref.Work['author'],
-): Either.Either<Preprints.Preprint['authors'], Preprints.PreprintIsUnavailable> =>
+): Result.Result<Preprints.Preprint['authors'], Preprints.PreprintIsUnavailable> =>
   Array.match(author, {
-    onEmpty: () => Either.left(new Preprints.PreprintIsUnavailable({ cause: { author } })),
+    onEmpty: () => Result.fail(new Preprints.PreprintIsUnavailable({ cause: { author } })),
     onNonEmpty: authors =>
-      Either.right(
+      Result.succeed(
         Array.map(
           authors,
           flow(

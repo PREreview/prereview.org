@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import * as _ from '../../../src/DatasetReviews/Commands/AddInvitationToAppearToTheList.ts'
 import * as Errors from '../../../src/DatasetReviews/Errors.ts'
@@ -93,17 +93,17 @@ test.each<
     string,
     ReadonlyArray<Events.Event>,
     _.Input,
-    Either.Either<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
+    Result.Result<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
   ]
 >([
-  ['no events', [], input, Either.left(new Errors.DatasetReviewHasNotBeenStarted())],
-  ['not answered', [started], input, Either.left(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())],
-  ['answered no', [started, answeredNo], input, Either.left(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())],
+  ['no events', [], input, Result.fail(new Errors.DatasetReviewHasNotBeenStarted())],
+  ['not answered', [started], input, Result.fail(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())],
+  ['answered no', [started, answeredNo], input, Result.fail(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())],
   [
     'answered yes',
     [started, answeredYes],
     input,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
           datasetReviewId: input.datasetReviewId,
@@ -113,18 +113,18 @@ test.each<
       ),
     ),
   ],
-  ['answered yes, already added', [started, answeredYes, addedToList], input, Either.right(Option.none())],
+  ['answered yes, already added', [started, answeredYes, addedToList], input, Result.succeed(Option.none())],
   [
     'answered yes, already added with different name',
     [started, answeredYes, addedToList],
     inputDifferentName,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'answered yes, already added with different email address',
     [started, answeredYes, addedToList],
     inputDifferentEmailAddress,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
           datasetReviewId: inputDifferentEmailAddress.datasetReviewId,
@@ -141,25 +141,25 @@ test.each<
     'answered yes, already added with different email address casing',
     [started, answeredYes, addedToList],
     inputDifferentEmailAddressCase,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'answered yes, already added with different invitation ID',
     [started, answeredYes, addedToList],
     inputDifferentInvitationId,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'answered yes, already added and removed with same invitation ID',
     [started, answeredYes, addedToList, removedFromList],
     input,
-    Either.right(Option.none()),
+    Result.succeed(Option.none()),
   ],
   [
     'answered yes, already added and removed with different invitation ID',
     [started, answeredYes, addedToList, removedFromList],
     inputDifferentInvitationId,
-    Either.right(
+    Result.succeed(
       Option.some(
         new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
           datasetReviewId: inputDifferentInvitationId.datasetReviewId,
@@ -176,25 +176,25 @@ test.each<
     'different dataset review ID',
     [started],
     inputDifferentDatasetReviewId,
-    Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different user ID',
     [started],
     inputDifferentUserId,
-    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+    Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
   [
     'publication requested',
     [started, answeredYes, publicationRequested],
     input,
-    Either.left(new Errors.DatasetReviewIsBeingPublished()),
+    Result.fail(new Errors.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     [started, answeredYes, publicationRequested, published],
     input,
-    Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    Result.fail(new Errors.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, authorize, decide } = _.AddInvitationToAppearToTheList
@@ -203,7 +203,7 @@ test.each<
 
   const actual = authorize(state, input)
     ? decide(state, input)
-    : Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
+    : Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
 
   expect(actual).toStrictEqual(expected)
 })

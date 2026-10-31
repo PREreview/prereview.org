@@ -1,6 +1,6 @@
-import type { HttpClient } from '@effect/platform'
-import type { SqlClient, SqlError } from '@effect/sql'
-import { Effect, Option, pipe, type Redacted, Schema } from 'effect'
+import type { HttpClient } from 'effect/http'
+import type { SqlClient, SqlError } from 'effect/sql'
+import { Effect, Option, pipe, type Redacted, Schema, Struct } from 'effect'
 import { generateEmbeddings } from './OpenRouter.ts'
 import { PgVector, UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
 import type { Doi } from '../types/Doi.ts'
@@ -35,7 +35,7 @@ const getStoredEmbedding = (
 
     if (rows.length === 0) return Option.none()
 
-    const decoded = yield* Schema.decodeUnknown(EmbeddingRow.pick('embedding'))(rows[0])
+    const decoded = yield* Schema.decodeUnknownEffect(EmbeddingRow.mapFields(Struct.pick(['embedding'])))(rows[0])
 
     return Option.some(decoded.embedding)
   }).pipe(Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })))

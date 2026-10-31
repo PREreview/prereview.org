@@ -1,4 +1,4 @@
-import { Effect, Either, type Equivalence, type Order, pipe, Runtime } from 'effect'
+import { type Context, Effect, type Equivalence, type Order, pipe, Result } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as Eq from 'fp-ts/lib/Eq.js'
 import type * as IO from 'fp-ts/lib/IO.js'
@@ -11,12 +11,14 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { withEnv } from '../Fpts.ts'
 
 export interface EffectEnv<R = never> {
-  readonly runtime: Runtime.Runtime<R>
+  readonly runtime: Context.Context<R>
 }
 
-export const either: <R, L>(either: Either.Either<R, L>) => E.Either<L, R> = Either.match({
-  onLeft: E.left,
-  onRight: E.right,
+export type ContextServices<C> = C extends Context.Context<infer R> ? R : never
+
+export const either: <R, L>(either: Result.Result<R, L>) => E.Either<L, R> = Result.match({
+  onFailure: E.left,
+  onSuccess: E.right,
 })
 
 export const ord = <A>(order: Order.Order<A>): Ord.Ord<A> => Ord.fromCompare(order)
@@ -31,20 +33,20 @@ export const toReaderTaskEitherK =
     toReaderTaskEither(f(...a))
 
 export const toReaderTaskEither = <A, E, R>(effect: Effect.Effect<A, E, R>): RTE.ReaderTaskEither<EffectEnv<R>, E, A> =>
-  toReaderTask(Effect.map(Effect.either(effect), either))
+  toReaderTask(Effect.map(Effect.result(effect), either))
 
 export const toTaskEitherK =
   <A extends ReadonlyArray<unknown>, B, E, R>(
     f: (...a: A) => Effect.Effect<B, E, R>,
-    runtime: Runtime.Runtime<R>,
+    runtime: Context.Context<R>,
   ): ((...a: A) => TE.TaskEither<E, B>) =>
   (...a) =>
     toTaskEither(f(...a), runtime)
 
 export const toTaskEither = <A, E, R>(
   effect: Effect.Effect<A, E, R>,
-  runtime: Runtime.Runtime<R>,
-): TE.TaskEither<E, A> => toTask(Effect.map(Effect.either(effect), either), runtime)
+  runtime: Context.Context<R>,
+): TE.TaskEither<E, A> => toTask(Effect.map(Effect.result(effect), either), runtime)
 
 export const toReaderTaskK =
   <A extends ReadonlyArray<unknown>, B, R>(
@@ -62,15 +64,15 @@ export const toReaderTask = <A, R>(effect: Effect.Effect<A, never, R>): RT.Reade
 export const toTaskK =
   <A extends ReadonlyArray<unknown>, B, R>(
     f: (...a: A) => Effect.Effect<B, never, R>,
-    runtime: Runtime.Runtime<R>,
+    runtime: Context.Context<R>,
   ): ((...a: A) => T.Task<B>) =>
   (...a) =>
     toTask(f(...a), runtime)
 
 export const toTask =
-  <A, R>(effect: Effect.Effect<A, never, R>, runtime: Runtime.Runtime<R>): T.Task<A> =>
+  <A, R>(effect: Effect.Effect<A, never, R>, runtime: Context.Context<R>): T.Task<A> =>
   () =>
-    Runtime.runPromise(runtime)(effect)
+    Effect.runPromiseWith(runtime)(effect)
 
 export const toReaderIO = <A, R>(effect: Effect.Effect<A, never, R>): RIO.ReaderIO<EffectEnv<R>, A> =>
   pipe(
@@ -81,21 +83,21 @@ export const toReaderIO = <A, R>(effect: Effect.Effect<A, never, R>): RIO.Reader
 export const toIOK =
   <A extends ReadonlyArray<unknown>, B, R>(
     f: (...a: A) => Effect.Effect<B, never, R>,
-    runtime: Runtime.Runtime<R>,
+    runtime: Context.Context<R>,
   ): ((...a: A) => IO.IO<B>) =>
   (...a) =>
     toIO(f(...a), runtime)
 
 export const toIO =
-  <A, R>(effect: Effect.Effect<A, never, R>, runtime: Runtime.Runtime<R>): IO.IO<A> =>
+  <A, R>(effect: Effect.Effect<A, never, R>, runtime: Context.Context<R>): IO.IO<A> =>
   () =>
-    Runtime.runSync(runtime)(effect)
+    Effect.runSyncWith(runtime)(effect)
 
 export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E, R>(
   f: (...a: A) => Effect.Effect<B, E, R>,
 ): Effect.Effect<(...a: A) => TE.TaskEither<E, B>, never, R> =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime<R>()
+    const runtime = yield* Effect.context<R>()
 
     return withEnv(toReaderTaskEitherK(f), { runtime })
   })
@@ -104,14 +106,14 @@ export const makeTaskK = <A extends ReadonlyArray<unknown>, B, R>(
   f: (...a: A) => Effect.Effect<B, never, R>,
 ): Effect.Effect<(...a: A) => T.Task<B>, never, R> =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime<R>()
+    const runtime = yield* Effect.context<R>()
 
     return withEnv(toReaderTaskK(f), { runtime })
   })
 
 export const makeIO = <A, R>(effect: Effect.Effect<A, never, R>): Effect.Effect<IO.IO<A>, never, R> =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime<R>()
+    const runtime = yield* Effect.context<R>()
 
     return toReaderIO(effect)({ runtime })
   })

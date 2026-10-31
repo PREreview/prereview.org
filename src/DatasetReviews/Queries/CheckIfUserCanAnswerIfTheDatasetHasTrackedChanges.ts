@@ -1,4 +1,4 @@
-import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
+import { Array, Result, Equal, Option, Struct, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import { EventFilter } from '../../Events.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
@@ -9,7 +9,7 @@ export interface Input {
   userId: OrcidId.OrcidId
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   Option.Option<Pick<Events.AnsweredIfTheDatasetHasTrackedChanges, 'answer' | 'detail'>>,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
@@ -29,31 +29,31 @@ export const createFilter = ({ datasetReviewId }: Input) =>
   })
 
 export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const started = yield* Either.fromOption(
+    const started = yield* Result.fromOption(
       Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')),
       () => new Errors.DatasetReviewHasNotBeenStarted(),
     )
 
     if (!Equal.equals(started.authorId, input.userId)) {
-      return yield* Either.left(new Errors.DatasetReviewWasStartedByAnotherUser())
+      return yield* Result.fail(new Errors.DatasetReviewWasStartedByAnotherUser())
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
-      return yield* Either.left(new Errors.DatasetReviewHasBeenPublished())
+      return yield* Result.fail(new Errors.DatasetReviewHasBeenPublished())
     }
 
     if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
-      return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
+      return yield* Result.fail(new Errors.DatasetReviewIsBeingPublished())
     }
 
     return Option.map(
       Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
-      Struct.pick('answer', 'detail'),
+      Struct.pick(['answer', 'detail']),
     )
   })
 

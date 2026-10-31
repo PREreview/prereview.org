@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import type { SqlClient } from '@effect/sql'
+import type { SqlClient } from 'effect/sql'
 import { describe, expect, it } from 'vitest'
 import { findExistingWorks, storeEmbeddings } from '../../src/Embeddings/WorksWithRequests.ts'
 import type { Embedding } from '../../src/Embeddings/Shared.ts'

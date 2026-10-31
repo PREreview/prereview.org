@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Option, pipe, Scope, type Either, identity } from 'effect'
+import { Context, Data, Effect, identity, Option, pipe, Scope, type Result } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -25,13 +25,13 @@ export type Command<
       createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       authorize: (state: State, ...input: Input) => boolean
-      decide: (state: State, ...input: Input) => Either.Either<Option.Option<Events.Event>, Error>
+      decide: (state: State, ...input: Input) => Result.Result<Option.Option<Events.Event>, Error>
     }
   : {
       name: string
       createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
-      decide: (state: State, ...input: Input) => Either.Either<Option.Option<Events.Event>, Error>
+      decide: (state: State, ...input: Input) => Result.Result<Option.Option<Events.Event>, Error>
     }
 
 export interface StatelessCommand<Input extends ReadonlyArray<unknown>> {
@@ -75,18 +75,16 @@ export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, 
           throw new UnableToHandleCommand({ cause: 'unauthorized' })
         }
 
-        const decision = yield* decide(state, ...input)
+        const decision = yield* Effect.fromResult(decide(state, ...input))
 
         yield* Option.match(decision, {
           onNone: () => Effect.void,
           onSome: event =>
-            EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+            EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
         })
       },
       Effect.catchTag(
-        'FailedToCommitEvent',
-        'FailedToGetEvents',
-        'NewEventsFound',
+        ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
         cause => new UnableToHandleCommand({ cause }),
       ),
       Effect.provide(context),

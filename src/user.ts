@@ -7,9 +7,9 @@ import { OrcidC } from './types/OrcidId.ts'
 
 export type User = C.TypeOf<typeof UserC>
 
-export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
+export class LoggedInUser extends Context.Service<LoggedInUser, User>()('User') {}
 
-export class SessionId extends Context.Tag('SessionId')<SessionId, string>() {}
+export class SessionId extends Context.Service<SessionId, string>()('SessionId') {}
 
 export const UserC = C.struct({
   orcid: OrcidC,
@@ -22,7 +22,7 @@ export const UserSchema = Schema.Struct({
 export const newSessionForUser: (user: User) => JsonRecord = flow(UserC.encode, user => Record.singleton('user', user))
 
 export const EnsureUserIsLoggedIn: Effect.Effect<User, UserIsNotLoggedIn> = Effect.mapError(
-  Effect.serviceOptional(LoggedInUser),
+  Effect.flatMap(Effect.serviceOption(LoggedInUser), Effect.fromOption),
   () => new UserIsNotLoggedIn(),
 )
 

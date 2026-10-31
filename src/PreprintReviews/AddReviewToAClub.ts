@@ -46,6 +46,6 @@ export const AddReviewToAClub = (
         saveForm(input.orcidId, input.preprintId)(updateForm(form)({ club: input.clubId })),
         { formStore },
       ),
-      Effect.catchAll(() => new UnableToHandleCommand({})),
+      Effect.catch(() => new UnableToHandleCommand({})),
     )
   })

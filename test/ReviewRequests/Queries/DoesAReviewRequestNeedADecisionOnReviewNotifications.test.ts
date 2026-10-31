@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either } from 'effect'
+import { Array, Result } from 'effect'
 import * as Events from '../../../src/Events.ts'
 import { BiorxivOrMedrxivPreprintId, BiorxivPreprintId } from '../../../src/Preprints/PreprintId.ts'
 import { ReviewRequestHasBeenPublished, UnknownReviewRequest } from '../../../src/ReviewRequests/Errors.ts'
@@ -53,18 +53,18 @@ const optedOut = new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishe
 })
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', [], Either.left(new UnknownReviewRequest({}))],
-  ['request imported', [requestImported], Either.left(new ReviewRequestHasBeenPublished({}))],
-  ['request published', [requestStarted, requestPublished], Either.left(new ReviewRequestHasBeenPublished({}))],
-  ['request started, no decision', [requestStarted], Either.right(true)],
+  ['no events', [], Result.fail(new UnknownReviewRequest({}))],
+  ['request imported', [requestImported], Result.fail(new ReviewRequestHasBeenPublished({}))],
+  ['request published', [requestStarted, requestPublished], Result.fail(new ReviewRequestHasBeenPublished({}))],
+  ['request started, no decision', [requestStarted], Result.succeed(true)],
   [
     'request started with indeterminate preprint ID, no decision',
     [requestStartedWithIndeterminatePreprintId],
-    Either.right(true),
+    Result.succeed(true),
   ],
-  ['request started, opted-in', [requestStarted, optedIn], Either.right(false)],
-  ['request started, opted-out', [requestStarted, optedOut], Either.right(false)],
-  ['request started, opted-in and out', [requestStarted, optedIn, optedOut], Either.right(false)],
+  ['request started, opted-in', [requestStarted, optedIn], Result.succeed(false)],
+  ['request started, opted-out', [requestStarted, optedOut], Result.succeed(false)],
+  ['request started, opted-in and out', [requestStarted, optedIn, optedOut], Result.succeed(false)],
 ])('%s', (_name, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.DoesAReviewRequestNeedADecisionOnReviewNotifications
 

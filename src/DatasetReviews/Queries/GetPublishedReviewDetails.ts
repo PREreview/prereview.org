@@ -1,4 +1,4 @@
-import { Array, Either, Option, Struct, type Types } from 'effect'
+import { Array, Result, Option, Struct, type Types } from 'effect'
 import * as Queries from '../../Queries.ts'
 import type { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -13,12 +13,12 @@ export interface PublishedReviewDetails {
 
 export const GetPublishedReviewDetails = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-): Either.Either<
+): Result.Result<
   PublishedReviewDetails,
   Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewIsInProgress | Queries.UnexpectedSequenceOfEvents
 > => {
   if (!hasEvent(events, 'DatasetReviewWasStarted')) {
-    return Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   if (hasEvent(events, 'DatasetReviewWasPublished')) {
@@ -28,9 +28,9 @@ export const GetPublishedReviewDetails = (
 
     return Option.match(Array.findLast(events, hasTag('DatasetReviewWasAssignedADoi')), {
       onNone: () =>
-        Either.left(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasAssignedADoi event found' })),
+        Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasAssignedADoi event found' })),
       onSome: datasetReviewWasAssignedADoi =>
-        Either.right({
+        Result.succeed({
           doi: datasetReviewWasAssignedADoi.doi,
           id: datasetReviewWasAssignedADoi.datasetReviewId,
           persona: Option.match(persona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
@@ -43,10 +43,10 @@ export const GetPublishedReviewDetails = (
   }
 
   if (hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
-    return Either.left(new Errors.DatasetReviewIsBeingPublished())
+    return Result.fail(new Errors.DatasetReviewIsBeingPublished())
   }
 
-  return Either.left(new Errors.DatasetReviewIsInProgress())
+  return Result.fail(new Errors.DatasetReviewIsInProgress())
 }
 
 function hasEvent(

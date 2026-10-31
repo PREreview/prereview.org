@@ -1,4 +1,4 @@
-import { Option, pipe, Schema, Struct } from 'effect'
+import { Option, pipe, Schema } from 'effect'
 import iso6391, { type LanguageCode as Iso6391Code } from 'iso-639-1'
 import type iso6393 from 'iso-639-3/to-1.json'
 import type { SupportedLocale } from '../locales/index.ts'
@@ -8,9 +8,9 @@ export type Iso6393Code = keyof Omit<typeof iso6393, 'hbs'>
 export const iso6393Validate = (code: string): code is Iso6393Code =>
   Object.prototype.hasOwnProperty.call(iso6393To1Mapping, code)
 
-export const Iso6393Schema = pipe(Schema.String, Schema.filter(iso6393Validate))
+export const Iso6393Schema = pipe(Schema.String, Schema.refine(iso6393Validate))
 
-export const Iso6391Schema = pipe(Schema.String, Schema.filter(iso6391.validate))
+export const Iso6391Schema = pipe(Schema.String, Schema.refine(iso6391.validate))
 
 export const isIso6391: (value: unknown) => value is Iso6391Code = Schema.is(Iso6391Schema)
 
@@ -211,6 +211,6 @@ const iso6393To1Mapping = {
 } satisfies Record<Iso6393Code, Iso6391Code>
 
 const swapFn = <T extends Record<string, S>, S extends string>(obj: T): { [K in keyof T as T[K]]: K } =>
-  Struct.entries(obj).reduce((res, [key, value]) => {
+  Object.entries(obj).reduce((res, [key, value]) => {
     return { ...res, [value]: key }
   }, {}) as never

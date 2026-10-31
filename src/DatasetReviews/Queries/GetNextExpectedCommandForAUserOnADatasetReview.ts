@@ -1,4 +1,4 @@
-import { Array, Option, type Types } from 'effect'
+import { Array, Option, type Types, Filter } from 'effect'
 import type * as Events from '../Events.ts'
 
 export type NextExpectedCommand =
@@ -92,16 +92,22 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
   }
 
   if (others.value.answer === 'yes') {
-    const added = Array.filterMap(events, event =>
-      event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList'
-        ? Option.some(event.invitationId)
-        : Option.none(),
+    const added = Array.filterMap(
+      events,
+      Filter.fromPredicateOption(event =>
+        event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList'
+          ? Option.some(event.invitationId)
+          : Option.none(),
+      ),
     )
 
-    const removed = Array.filterMap(events, event =>
-      event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-        ? Option.some(event.invitationId)
-        : Option.none(),
+    const removed = Array.filterMap(
+      events,
+      Filter.fromPredicateOption(event =>
+        event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+          ? Option.some(event.invitationId)
+          : Option.none(),
+      ),
     )
 
     if (added.length === removed.length) {

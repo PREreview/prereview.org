@@ -1,4 +1,4 @@
-import { Context, Data, Effect, flow, identity, Layer, Scope } from 'effect'
+import { Context, Data, Effect, flow, Layer, Scope } from 'effect'
 import { Clubs } from '../../Clubs/index.ts'
 import type { Locale } from '../../Context.ts'
 import type { Ghost } from '../../ExternalApis/index.ts'
@@ -9,10 +9,10 @@ import { addListOfClubs } from './AddListOfClubs.ts'
 import { getPage } from './GetPage.ts'
 import { getGhostIdAndLocaleForPage, getPageIdForSlug } from './PageIds.ts'
 
-export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
+export class GetPageFromGhost extends Context.Service<
   GetPageFromGhost,
   (slug: Slug) => Effect.Effect<GhostPage, PageIsUnavailable, Locale>
->() {}
+>()('GetPageFromGhost') {}
 
 export interface GhostPage {
   readonly html: Html
@@ -21,7 +21,8 @@ export interface GhostPage {
 
 export class PageIsUnavailable extends Data.TaggedError('PageIsUnavailable') {}
 
-export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, identity)
+export const getPageFromGhost = (...args: Parameters<typeof GetPageFromGhost.Service>) =>
+  GetPageFromGhost.use(getPage => getPage(...args))
 
 export const layer = Layer.effect(
   GetPageFromGhost,
@@ -32,14 +33,12 @@ export const layer = Layer.effect(
     const listOfClubs = yield* clubs.listClubs
 
     return flow(
-      slug => getPageIdForSlug(slug),
+      slug => Effect.fromOption(getPageIdForSlug(slug)),
       Effect.andThen(getGhostIdAndLocaleForPage),
       Effect.bind('html', ({ id, locale }) => Effect.map(getPage(id), addListOfClubs(locale, listOfClubs))),
       Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
       Effect.catchTag(
-        'GhostPageNotFound',
-        'GhostPageUnavailable',
-        'NoSuchElementException',
+        ['GhostPageNotFound', 'GhostPageUnavailable', 'NoSuchElementError'],
         () => new PageIsUnavailable(),
       ),
       Effect.provide(context),

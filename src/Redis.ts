@@ -1,15 +1,15 @@
-import { Config, Context, Duration, Effect, flow, Inspectable, Layer, pipe, Redacted, Runtime } from 'effect'
+import { Config, Context, Duration, Effect, flow, Inspectable, Layer, pipe, Redacted } from 'effect'
 import { Redis as IoRedis } from 'ioredis'
 
 const makeRedis = (url: Redacted.Redacted<URL>) =>
   Effect.gen(function* () {
-    const runtime = yield* Effect.runtime()
+    const runtime = yield* Effect.context()
     const redis = new IoRedis(Redacted.value(url).href, {
       commandTimeout: Duration.toMillis('2 seconds'),
       enableAutoPipelining: true,
     })
 
-    const runSync = Runtime.runSync(runtime)
+    const runSync = Effect.runSyncWith(runtime)
 
     redis.on('connect', () =>
       runSync(
@@ -64,17 +64,16 @@ const teardownRedis = (redis: IoRedis) =>
 export const redisLifecycle = (...args: Parameters<typeof makeRedis>) =>
   Effect.acquireRelease(makeRedis(...args), teardownRedis)
 
-export class DataStoreRedis extends Context.Tag('DataStoreRedis')<DataStoreRedis, IoRedis>() {}
+export class DataStoreRedis extends Context.Service<DataStoreRedis, IoRedis>()('DataStoreRedis') {}
 
-export const layerDataStore = flow(redisLifecycle, Layer.scoped(DataStoreRedis))
+export const layerDataStore = flow(redisLifecycle, Layer.effect(DataStoreRedis))
 
-export const layerDataStoreConfig = (options: Config.Config.Wrap<Parameters<typeof layerDataStore>[0]>) =>
-  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layerDataStore))
+export const layerDataStoreConfig = (options: Config.Wrap<Parameters<typeof layerDataStore>[0]>) =>
+  Layer.unwrap(Effect.map(Config.unwrap(options), layerDataStore))
 
-export class HttpCacheRedis extends Context.Tag('HttpCacheRedis')<
-  HttpCacheRedis,
-  { primary: IoRedis; readonlyFallback: IoRedis }
->() {}
+export class HttpCacheRedis extends Context.Service<HttpCacheRedis, { primary: IoRedis; readonlyFallback: IoRedis }>()(
+  'HttpCacheRedis',
+) {}
 
 const layerHttpCache = ({
   primaryUri,
@@ -88,17 +87,17 @@ const layerHttpCache = ({
       primary: redisLifecycle(primaryUri),
       readonlyFallback: redisLifecycle(readonlyFallbackUri),
     }),
-    Layer.scoped(HttpCacheRedis),
+    Layer.effect(HttpCacheRedis),
   )
 
-export const layerHttpCacheConfig = (options: Config.Config.Wrap<Parameters<typeof layerHttpCache>[0]>) =>
-  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layerHttpCache))
+export const layerHttpCacheConfig = (options: Config.Wrap<Parameters<typeof layerHttpCache>[0]>) =>
+  Layer.unwrap(Effect.map(Config.unwrap(options), layerHttpCache))
 
-export const httpCacheRedisUri = Config.url('HTTP_CACHE_REDIS_URI').pipe(
+export const httpCacheRedisUri = Config.URL('HTTP_CACHE_REDIS_URI').pipe(
   Config.orElse(() =>
     Config.all({
-      uriTemplate: Config.string('HTTP_CACHE_REDIS_URI_TEMPLATE'),
-      region: Config.nonEmptyString('FLY_REGION'),
+      uriTemplate: Config.String('HTTP_CACHE_REDIS_URI_TEMPLATE'),
+      region: Config.NonEmptyString('FLY_REGION'),
     }).pipe(Config.map(({ uriTemplate, region }) => new URL(uriTemplate.replace('{region}', region)))),
   ),
 )

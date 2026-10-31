@@ -42,7 +42,7 @@ export const AcceptInvite = ({
           const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
 
           return RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })
-        }).pipe(Effect.catchAll(() => HavingProblemsPage)),
+        }).pipe(Effect.catch(() => HavingProblemsPage)),
       PrereviewerIsNotListedOnTheReview: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,

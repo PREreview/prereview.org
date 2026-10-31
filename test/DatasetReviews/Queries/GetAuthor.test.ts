@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Tuple } from 'effect'
+import { Array, Result, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetAuthor.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -38,7 +38,7 @@ describe('GetAuthor', () => {
       ([[events, expected]]) => {
         const actual = _.GetAuthor(events)
 
-        expect(actual).toStrictEqual(Either.right(expected))
+        expect(actual).toStrictEqual(Result.succeed(expected))
       },
       {
         fastCheck: {
@@ -59,7 +59,7 @@ describe('GetAuthor', () => {
       ([events]) => {
         const actual = _.GetAuthor(events)
 
-        expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+        expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
       },
       {
         fastCheck: {

@@ -1,4 +1,4 @@
-import type { HttpClient } from '@effect/platform'
+import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetPage } from './GetPage/index.ts'
 import type { GhostApi } from './GhostApi.ts'
@@ -7,17 +7,14 @@ export { GhostPageNotFound, GhostPageUnavailable } from './GetPage/index.ts'
 export * from './GhostApi.ts'
 export { Page } from './Page.ts'
 
-export class Ghost extends Context.Tag('Ghost')<
+export class Ghost extends Context.Service<
   Ghost,
   {
     getPage: (
       ...args: Parameters<typeof GetPage>
-    ) => Effect.Effect<
-      Effect.Effect.Success<ReturnType<typeof GetPage>>,
-      Effect.Effect.Error<ReturnType<typeof GetPage>>
-    >
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetPage>>, Effect.Error<ReturnType<typeof GetPage>>>
   }
->() {}
+>()('Ghost') {}
 
 export const getPage = (...args: Parameters<(typeof Ghost.Service)['getPage']>) =>
   Effect.flatMap(Ghost, service => service.getPage(...args))

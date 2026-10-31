@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
 import * as _ from '../../../src/PreprintReviews/Workflows/NotifyCommunitySlack.ts'
@@ -13,9 +13,9 @@ describe('NotifyCommunitySlack', () => {
     [fc.integer(), fc.origin(), fc.prereview()],
     ([preprintReviewId, publicUrl, prereview]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(preprintReviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(preprintReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.void)
+        expect(actual).toStrictEqual(Result.void)
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => Effect.void }),
@@ -35,9 +35,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([preprintReviewId, publicUrl, prereview, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(preprintReviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(preprintReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyCommunitySlack({})))
+        expect(actual).toStrictEqual(Result.fail(new PreprintReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => error }),
@@ -60,9 +60,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([preprintReviewId, publicUrl, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(preprintReviewId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(preprintReviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyCommunitySlack({})))
+        expect(actual).toStrictEqual(Result.fail(new PreprintReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),

@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Effect, flow } from 'effect'
 import { CreateRequest } from './CreateRequest.ts'
 import { GhostPageUnavailable } from './Errors.ts'
@@ -10,5 +10,5 @@ export const GetPage = flow(
   CreateRequest,
   Effect.andThen(HttpClient.execute),
   Effect.andThen(HandleResponse),
-  Effect.catchTag('RequestError', 'ResponseError', error => new GhostPageUnavailable({ cause: error })),
+  Effect.catchTag('HttpClientError', error => new GhostPageUnavailable({ cause: error })),
 )

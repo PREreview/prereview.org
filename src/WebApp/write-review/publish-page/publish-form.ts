@@ -101,7 +101,7 @@ export function publishForm(
               </div>
 
               ${
-                review.moreAuthors === 'yes' && Array.isNonEmptyReadonlyArray(review.otherAuthors)
+                review.moreAuthors === 'yes' && Array.isReadonlyArrayNonEmpty(review.otherAuthors)
                   ? html`
                       <div>
                         <dt>${t('invitedAuthors')({ number: review.otherAuthors.length })}</dt>

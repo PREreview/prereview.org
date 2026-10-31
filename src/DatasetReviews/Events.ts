@@ -1,4 +1,4 @@
-import { Array, Schema, Struct } from 'effect'
+import { Array, Schema } from 'effect'
 import * as Datasets from '../Datasets/index.ts'
 import { SensitiveData } from '../SensitiveData.ts'
 import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
@@ -14,8 +14,8 @@ export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWas
 export class RatedTheQualityOfTheDataset extends Schema.TaggedClass<RatedTheQualityOfTheDataset>()(
   'RatedTheQualityOfTheDataset',
   {
-    rating: Schema.Literal('excellent', 'fair', 'poor', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    rating: Schema.Literals(['excellent', 'fair', 'poor', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -23,8 +23,8 @@ export class RatedTheQualityOfTheDataset extends Schema.TaggedClass<RatedTheQual
 export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.TaggedClass<AnsweredIfTheDatasetFollowsFairAndCarePrinciples>()(
   'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -32,8 +32,8 @@ export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.Tag
 export class AnsweredIfTheDatasetHasEnoughMetadata extends Schema.TaggedClass<AnsweredIfTheDatasetHasEnoughMetadata>()(
   'AnsweredIfTheDatasetHasEnoughMetadata',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -41,8 +41,8 @@ export class AnsweredIfTheDatasetHasEnoughMetadata extends Schema.TaggedClass<An
 export class AnsweredIfTheDatasetHasTrackedChanges extends Schema.TaggedClass<AnsweredIfTheDatasetHasTrackedChanges>()(
   'AnsweredIfTheDatasetHasTrackedChanges',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -50,8 +50,8 @@ export class AnsweredIfTheDatasetHasTrackedChanges extends Schema.TaggedClass<An
 export class AnsweredIfTheDatasetHasDataCensoredOrDeleted extends Schema.TaggedClass<AnsweredIfTheDatasetHasDataCensoredOrDeleted>()(
   'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -59,8 +59,8 @@ export class AnsweredIfTheDatasetHasDataCensoredOrDeleted extends Schema.TaggedC
 export class AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch extends Schema.TaggedClass<AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch>()(
   'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -68,8 +68,8 @@ export class AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch extends Sche
 export class AnsweredIfTheDatasetSupportsRelatedConclusions extends Schema.TaggedClass<AnsweredIfTheDatasetSupportsRelatedConclusions>()(
   'AnsweredIfTheDatasetSupportsRelatedConclusions',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -77,8 +77,8 @@ export class AnsweredIfTheDatasetSupportsRelatedConclusions extends Schema.Tagge
 export class AnsweredIfTheDatasetIsErrorFree extends Schema.TaggedClass<AnsweredIfTheDatasetIsErrorFree>()(
   'AnsweredIfTheDatasetIsErrorFree',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -86,8 +86,8 @@ export class AnsweredIfTheDatasetIsErrorFree extends Schema.TaggedClass<Answered
 export class AnsweredIfTheDatasetIsDetailedEnough extends Schema.TaggedClass<AnsweredIfTheDatasetIsDetailedEnough>()(
   'AnsweredIfTheDatasetIsDetailedEnough',
   {
-    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'partly', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -95,8 +95,8 @@ export class AnsweredIfTheDatasetIsDetailedEnough extends Schema.TaggedClass<Ans
 export class AnsweredIfTheDatasetMattersToItsAudience extends Schema.TaggedClass<AnsweredIfTheDatasetMattersToItsAudience>()(
   'AnsweredIfTheDatasetMattersToItsAudience',
   {
-    answer: Schema.Literal('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -104,8 +104,8 @@ export class AnsweredIfTheDatasetMattersToItsAudience extends Schema.TaggedClass
 export class AnsweredIfTheDatasetIsReadyToBeShared extends Schema.TaggedClass<AnsweredIfTheDatasetIsReadyToBeShared>()(
   'AnsweredIfTheDatasetIsReadyToBeShared',
   {
-    answer: Schema.Literal('yes', 'no', 'unsure'),
-    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    answer: Schema.Literals(['yes', 'no', 'unsure']),
+    detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
@@ -127,7 +127,7 @@ export class PersonaForDatasetReviewWasChosen extends Schema.TaggedClass<Persona
   'PersonaForDatasetReviewWasChosen',
   {
     datasetReviewId: Uuid.UuidSchema,
-    persona: Schema.Literal('public', 'pseudonym'),
+    persona: Schema.Literals(['public', 'pseudonym']),
   },
 ) {}
 
@@ -135,7 +135,7 @@ export class AnsweredIfOthersNeedToBeListedOnTheReview extends Schema.TaggedClas
   'AnsweredIfOthersNeedToBeListedOnTheReview',
   {
     datasetReviewId: Uuid.UuidSchema,
-    answer: Schema.Literal('no', 'yes'),
+    answer: Schema.Literals(['no', 'yes']),
   },
 ) {}
 
@@ -165,13 +165,13 @@ export class DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview extends Sche
   'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
   {
     datasetReviewId: Uuid.UuidSchema,
-    generativeAiIdeas: Schema.Union(
+    generativeAiIdeas: Schema.Union([
       Schema.Struct({
         answer: Schema.Literal('yes'),
-        detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+        detail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
       }),
       Schema.Struct({ answer: Schema.Literal('no') }),
-    ),
+    ]),
   },
 ) {}
 
@@ -214,7 +214,10 @@ export class DatasetReviewWasAddedToAClub extends Schema.TaggedClass<DatasetRevi
 
 export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewWasPublished>()(
   'DatasetReviewWasPublished',
-  { datasetReviewId: Uuid.UuidSchema, publicationDate: Schema.Union(Temporal.InstantSchema, Temporal.PlainDateSchema) },
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    publicationDate: Schema.Union([Temporal.InstantSchema, Temporal.PlainDateSchema]),
+  },
 ) {}
 
 export class ZenodoRecordForDatasetReviewWasPublished extends Schema.TaggedClass<ZenodoRecordForDatasetReviewWasPublished>()(
@@ -227,7 +230,7 @@ export class DatasetReviewDoiWasActivated extends Schema.TaggedClass<DatasetRevi
   { datasetReviewId: Uuid.UuidSchema },
 ) {}
 
-export const DatasetReviewEvent = Schema.Union(
+export const DatasetReviewEvent = Schema.Union([
   DatasetReviewWasStarted,
   RatedTheQualityOfTheDataset,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -255,6 +258,9 @@ export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasPublished,
   ZenodoRecordForDatasetReviewWasPublished,
   DatasetReviewDoiWasActivated,
-)
+])
 
-export const DatasetReviewEventTypes = Array.map(DatasetReviewEvent.members, Struct.get('_tag'))
+export const DatasetReviewEventTypes = Array.map(
+  DatasetReviewEvent.members,
+  member => member.identifier as DatasetReviewEvent['_tag'],
+)

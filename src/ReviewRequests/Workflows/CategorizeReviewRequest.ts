@@ -25,5 +25,5 @@ export const CategorizeReviewRequest = Effect.fn(
       reviewRequestId: reviewRequest.id,
     })
   },
-  Effect.catchAll(error => new Errors.FailedToCategorizeReviewRequest({ cause: error })),
+  Effect.catch(error => new Errors.FailedToCategorizeReviewRequest({ cause: error })),
 )

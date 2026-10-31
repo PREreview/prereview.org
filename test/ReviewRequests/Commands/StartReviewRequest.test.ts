@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/StartReviewRequest.ts'
@@ -112,7 +112,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
     const actual = decide(state, input)
 
     expect(actual).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasStarted({
             startedAt: now,
@@ -139,6 +139,6 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
 
     const actual = decide(state, input)
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyStarted({})))
+    expect(actual).toStrictEqual(Result.fail(new ReviewRequests.ReviewRequestWasAlreadyStarted({})))
   })
 })

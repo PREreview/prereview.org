@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -41,7 +41,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.hasDataCensoredOrDeleted)
+                hasAnError && Result.isFailure(form.hasDataCensoredOrDeleted)
                   ? 'aria-invalid="true" aria-errormessage="has-data-censored-or-deleted-error"'
                   : '',
               )}
@@ -51,11 +51,11 @@ export const HasDataCensoredOrDeletedQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.hasDataCensoredOrDeleted)
+                hasAnError && Result.isFailure(form.hasDataCensoredOrDeleted)
                   ? html`
                       <div class="error-message" id="has-data-censored-or-deleted-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.hasDataCensoredOrDeleted.left, {
+                        ${Match.valueTags(form.hasDataCensoredOrDeleted.failure, {
                           Missing: () => t('selectSignsOfAlteration')(),
                         })}
                       </div>
@@ -97,7 +97,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasDataCensoredOrDeletedYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasDataCensoredOrDeletedYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -135,7 +135,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedPartlyDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasDataCensoredOrDeletedPartlyDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasDataCensoredOrDeletedPartlyDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -173,7 +173,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasDataCensoredOrDeletedNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasDataCensoredOrDeletedNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasDataCensoredOrDeletedNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -211,12 +211,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.hasDataCensoredOrDeleted)
+  Result.isFailure(form.hasDataCensoredOrDeleted)
     ? html`
         <li>
           <a href="#has-data-censored-or-deleted-yes">
             ${pipe(
-              Match.value(form.hasDataCensoredOrDeleted.left),
+              Match.value(form.hasDataCensoredOrDeleted.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSignsOfAlteration')()),
               Match.exhaustive,
             )}

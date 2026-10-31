@@ -20,13 +20,13 @@ export const GetBlogPost: (slug: Slug, preview?: boolean) => Effect.Effect<BlogP
         })
         .pipe(Effect.provideService(UsePreviewApi, preview))
 
-      if (!Array.isNonEmptyReadonlyArray(items)) {
+      if (!Array.isReadonlyArrayNonEmpty(items)) {
         return yield* new ContentfulIsUnavailable({ cause: 'blog post is not found' })
       }
 
       return yield* EntryToContentfulBlogPost(items[0])
     },
-    Effect.catchTag('ContentfulIsUnavailable', 'ParseError', error =>
+    Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>
       pipe(
         Effect.logError('Unable to get blog post'),
         Effect.annotateLogs({ error }),

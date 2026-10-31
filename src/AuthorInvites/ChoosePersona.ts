@@ -1,4 +1,4 @@
-import { Array, Data, Either, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Match, Option, type Types } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -58,14 +58,16 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     AuthorChoicesForAReviewConfirmed: () => new HasBeenConfirmed(),
   })
 }
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
-    NoInvitationAccepted: () => Either.left(new PersonaDoesNotNeedToBeChosen()),
-    StartedTheReview: () => Either.left(new PersonaCannotBeChanged()),
-    NotChosen: () => Either.right(Option.some(new Events.PersonaForAReviewChosen(input))),
+    NoInvitationAccepted: () => Result.fail(new PersonaDoesNotNeedToBeChosen()),
+    StartedTheReview: () => Result.fail(new PersonaCannotBeChanged()),
+    NotChosen: () => Result.succeed(Option.some(new Events.PersonaForAReviewChosen(input))),
     HasBeenChosen: ({ persona }) =>
-      Either.right(persona === input.persona ? Option.none() : Option.some(new Events.PersonaForAReviewChosen(input))),
-    HasBeenConfirmed: () => Either.left(new PersonaCannotBeChanged()),
+      Result.succeed(
+        persona === input.persona ? Option.none() : Option.some(new Events.PersonaForAReviewChosen(input)),
+      ),
+    HasBeenConfirmed: () => Result.fail(new PersonaCannotBeChanged()),
   })
 
 export const ChoosePersona = Commands.Command({

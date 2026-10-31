@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as IsDetailedEnoughForm from '../../../src/WebApp/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughQuestion.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -38,10 +38,10 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
   const response = _.IsDetailedEnoughQuestion({
     datasetReviewId,
     form: new IsDetailedEnoughForm.InvalidForm({
-      isDetailedEnough: Either.left(new IsDetailedEnoughForm.Missing()),
-      isDetailedEnoughYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
-      isDetailedEnoughPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
-      isDetailedEnoughNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
+      isDetailedEnough: Result.fail(new IsDetailedEnoughForm.Missing()),
+      isDetailedEnoughYesDetail: Result.succeed(NonEmptyString.fromString('Detail about the yes.')),
+      isDetailedEnoughPartlyDetail: Result.succeed(NonEmptyString.fromString('Detail about the partly.')),
+      isDetailedEnoughNoDetail: Result.succeed(NonEmptyString.fromString('Detail about the no.')),
     }),
     locale: DefaultLocale,
   })

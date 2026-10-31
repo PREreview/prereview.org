@@ -1,4 +1,4 @@
-import { HttpServerRequest, HttpServerResponse, Url } from '@effect/platform'
+import { HttpServerRequest, HttpServerResponse, Url } from 'effect/http'
 import { describe, expect, it } from '../vitest.ts'
 import { Effect, Redacted } from 'effect'
 import { Locale } from '../../src/Context.ts'

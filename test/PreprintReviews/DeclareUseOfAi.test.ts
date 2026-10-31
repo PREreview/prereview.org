@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { Effect, Either, Option } from 'effect'
+import { Effect, Result, Option } from 'effect'
 import { Keyv } from '../../src/keyv.ts'
 import * as _ from '../../src/PreprintReviews/DeclareUseOfAi.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../src/PreprintReviews/index.ts'
@@ -26,14 +26,14 @@ it.effect.each<
   [
     string,
     _.Input,
-    Either.Either<void, _.Error>,
+    Result.Result<void, _.Error>,
     { generativeAiIdeas: 'yes' | 'no'; generativeAiIdeasDetails?: NonEmptyString }?,
   ]
 >([
   [
     'no review',
     { orcidId, preprintId: preprintWithNoReview, generativeAiIdeas: 'yes', generativeAiIdeasDetails: Option.none() },
-    Either.left(new PreprintReviewNotFound({})),
+    Result.fail(new PreprintReviewNotFound({})),
   ],
   [
     'different ORCID iD',
@@ -43,12 +43,12 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.none(),
     },
-    Either.left(new PreprintReviewNotFound({})),
+    Result.fail(new PreprintReviewNotFound({})),
   ],
   [
     'not answered',
     { orcidId, preprintId: preprintWithReview, generativeAiIdeas: 'yes', generativeAiIdeasDetails: Option.none() },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes' },
   ],
   [
@@ -59,7 +59,7 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.some(details),
     },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes', generativeAiIdeasDetails: details },
   ],
   [
@@ -70,7 +70,7 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.none(),
     },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes' },
   ],
   [
@@ -81,7 +81,7 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.none(),
     },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes' },
   ],
   [
@@ -92,7 +92,7 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.some(details),
     },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes', generativeAiIdeasDetails: details },
   ],
   [
@@ -103,7 +103,7 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.some(otherDetails),
     },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes', generativeAiIdeasDetails: otherDetails },
   ],
   [
@@ -114,13 +114,13 @@ it.effect.each<
       generativeAiIdeas: 'yes',
       generativeAiIdeasDetails: Option.none(),
     },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'yes' },
   ],
   [
     'changed to no',
     { orcidId, preprintId: preprintWithReviewAnsweredYesWithDetails, generativeAiIdeas: 'no' },
-    Either.void,
+    Result.void,
     { generativeAiIdeas: 'no' },
   ],
 ])('%s', ([, input, expectedReturn, expectedState]) =>
@@ -141,7 +141,7 @@ it.effect.each<
       ),
     )
 
-    const actualReturn = yield* Effect.either(_.DeclareUseOfAi(formStore)(input))
+    const actualReturn = yield* Effect.result(_.DeclareUseOfAi(formStore)(input))
     const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
 
     expect(actualReturn).toStrictEqual(expectedReturn)

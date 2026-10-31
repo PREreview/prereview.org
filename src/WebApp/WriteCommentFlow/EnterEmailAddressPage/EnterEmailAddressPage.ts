@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -38,12 +38,12 @@ export const EnterEmailAddressPage = ({
                   <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${
-                      Either.isLeft(form.emailAddress)
+                      Result.isFailure(form.emailAddress)
                         ? html`
                             <li>
                               <a href="#email-address">
                                 ${pipe(
-                                  Match.value(form.emailAddress.left),
+                                  Match.value(form.emailAddress.failure),
                                   Match.tag('Missing', () =>
                                     translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
                                   ),
@@ -81,12 +81,12 @@ export const EnterEmailAddressPage = ({
           </h2>
 
           ${
-            form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+            form._tag === 'InvalidForm' && Result.isFailure(form.emailAddress)
               ? html`
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${pipe(
-                      Match.value(form.emailAddress.left),
+                      Match.value(form.emailAddress.failure),
                       Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')()),
                       Match.tag('Invalid', () =>
                         translate(
@@ -114,13 +114,13 @@ export const EnterEmailAddressPage = ({
               Match.value(form),
               Match.tag('CompletedForm', form => html`value="${form.emailAddress}"`),
               Match.when(
-                { _tag: 'InvalidForm', emailAddress: { _tag: 'Left', left: { _tag: 'Invalid' } } },
-                form => html`value="${form.emailAddress.left.value}"`,
+                { _tag: 'InvalidForm', emailAddress: { _tag: 'Failure', failure: { _tag: 'Invalid' } } },
+                form => html`value="${form.emailAddress.failure.value}"`,
               ),
               Match.orElse(() => ''),
             )}
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.emailAddress)
+              form._tag === 'InvalidForm' && Result.isFailure(form.emailAddress)
                 ? html`aria-invalid="true" aria-errormessage="email-address-error"`
                 : ''
             }

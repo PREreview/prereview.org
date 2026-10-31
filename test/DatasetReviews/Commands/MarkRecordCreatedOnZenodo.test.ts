@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Predicate } from 'effect'
+import { Array, Result, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkRecordCreatedOnZenodo.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -90,14 +90,14 @@ describe('decide', () => {
   it.prop('has not been started', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.NotStarted(), { recordId, datasetReviewId })
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   it.prop('does not have a record', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.DoesNotHaveARecord(), { recordId, datasetReviewId })
 
     expect(result).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId, datasetReviewId })),
       ),
     )
@@ -107,7 +107,7 @@ describe('decide', () => {
     it.prop('with a different answer', [fc.integer()], ([recordId]) => {
       const result = _.decide(new _.AlreadyHasARecord(), { recordId, datasetReviewId })
 
-      expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewAlreadyHasAZenodoRecord({})))
+      expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewAlreadyHasAZenodoRecord({})))
     })
   })
 })

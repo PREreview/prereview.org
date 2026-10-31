@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, pipe, flow } from 'effect'
 import { Philsci } from '../../../ExternalApis/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -13,20 +13,15 @@ export const getPreprintFromPhilsci = (
 > =>
   pipe(
     Philsci.getEprint(id.value),
-    Effect.andThen(EprintToPreprint),
+    Effect.andThen(flow(EprintToPreprint, Effect.fromResult)),
     Effect.catchIf(
       error =>
-        error._tag === 'ResponseError' &&
-        error.reason === 'StatusCode' &&
-        error.response.status === StatusCodes.NotFound,
+        error._tag === 'HttpClientError' &&
+        error.reason._tag === 'StatusCodeError' &&
+        error.reason.response.status === StatusCodes.NotFound,
       error => new Preprints.PreprintIsNotFound({ cause: error }),
     ),
-    Effect.catchTag(
-      'ParseError',
-      'RequestError',
-      'ResponseError',
-      error => new Preprints.PreprintIsUnavailable({ cause: error }),
-    ),
+    Effect.catchTag(['SchemaError', 'HttpClientError'], error => new Preprints.PreprintIsUnavailable({ cause: error })),
     Effect.tapErrorTag('PreprintIsUnavailable', error =>
       Effect.logError('Failed to get preprint from PhilSci-Archive').pipe(Effect.annotateLogs({ error })),
     ),

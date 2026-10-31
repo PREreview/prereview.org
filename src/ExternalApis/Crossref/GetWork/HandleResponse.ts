@@ -1,4 +1,4 @@
-import { HttpClientResponse } from '@effect/platform'
+import { HttpClientResponse } from 'effect/http'
 import { Effect, Equal, flow, Match } from 'effect'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import * as Work from '../Work.ts'

@@ -1,17 +1,4 @@
-import {
-  Array,
-  Effect,
-  flow,
-  HashSet,
-  Layer,
-  Option,
-  type ParseResult,
-  pipe,
-  Predicate,
-  Record,
-  Ref,
-  Schema,
-} from 'effect'
+import { Array, Effect, flow, HashSet, Layer, Option, pipe, Predicate, Record, Ref, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
@@ -25,7 +12,7 @@ import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { Author, ContentfulBlogPost } from '../Types.ts'
 
 const AuthorEntry = Schema.Struct({
-  fields: Schema.Struct({ name: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: NameSchema }) }),
+  fields: Schema.Struct({ name: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), NameSchema) }),
 })
 
 const BlogPostEntry = Schema.Struct({
@@ -34,20 +21,18 @@ const BlogPostEntry = Schema.Struct({
     createdAt: InstantSchema,
   }),
   fields: Schema.Struct({
-    authors: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyArray(AuthorEntry) }),
-    channel: Schema.Record({
-      key: Schema.NonEmptyTrimmedString,
-      value: Schema.Literal('blog', 'newsletter', 'weeknote'),
-    }),
-    title: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyTrimmedString }),
+    authors: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyArray(AuthorEntry)),
+    channel: Schema.Record(
+      Schema.Trimmed.check(Schema.isNonEmpty()),
+      Schema.Literals(['blog', 'newsletter', 'weeknote']),
+    ),
+    title: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.Trimmed.check(Schema.isNonEmpty())),
     heroImage: Schema.optional(
-      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.encodedSchema(HeroImageEntry) }),
+      Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toEncoded(HeroImageEntry)),
     ),
-    excerpt: Schema.optional(Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.NonEmptyString })),
-    content: Schema.Record({ key: Schema.NonEmptyTrimmedString, value: Schema.typeSchema(Document) }),
-    firstPublishedAtOverride: Schema.optional(
-      Schema.Record({ key: Schema.NonEmptyTrimmedString, value: InstantSchema }),
-    ),
+    excerpt: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyString)),
+    content: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toType(Document)),
+    firstPublishedAtOverride: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), InstantSchema)),
   }),
 })
 
@@ -101,12 +86,11 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
   Effect.provideServiceEffect(RequiredJs, Ref.make(HashSet.empty())),
 )
 
-export const EntryToContentfulBlogPost: (entry: Entry) => Effect.Effect<ContentfulBlogPost, ParseResult.ParseError> =
-  flow(
-    Schema.decodeUnknown(Schema.typeSchema(BlogPostEntry)),
-    Effect.andThen(BlogPostEntryToContentfulBlogPost),
-    Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale)]),
-  )
+export const EntryToContentfulBlogPost: (entry: Entry) => Effect.Effect<ContentfulBlogPost, Schema.SchemaError> = flow(
+  Schema.decodeUnknownEffect(Schema.toType(BlogPostEntry)),
+  Effect.andThen(BlogPostEntryToContentfulBlogPost),
+  Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale)]),
+)
 
 const getValueForDefaultLocale = <T>(values: Record<string, T | undefined>): T =>
   pipe(

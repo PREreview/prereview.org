@@ -10,6 +10,7 @@ import * as _ from '../../../src/WebApp/write-review/index.ts'
 import { PublishedReviewC } from '../../../src/WebApp/write-review/published-review.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('writeReviewPublished', () => {
   it.effect.prop(
@@ -34,7 +35,7 @@ describe('writeReviewPublished', () => {
           TE.of(PublishedReviewC.encode(publishedReview)),
         )
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({ popFromSession, publicUrl, runtime }),
@@ -63,11 +64,11 @@ describe('writeReviewPublished', () => {
     ],
     ([preprintId, preprintTitle, publishedReview, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({
-            popFromSession: () => TE.fromEither(publishedReview),
+            popFromSession: () => TE.fromEither(EffectToFpts.either(publishedReview)),
             publicUrl: new URL('http://example.com'),
             runtime,
           }),
@@ -86,7 +87,7 @@ describe('writeReviewPublished', () => {
     [fc.indeterminatePreprintId(), fc.user(), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({
@@ -112,7 +113,7 @@ describe('writeReviewPublished', () => {
     [fc.indeterminatePreprintId(), fc.user(), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user })({
@@ -138,7 +139,7 @@ describe('writeReviewPublished', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.supportedLocale()],
     ([preprintId, preprintTitle, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewPublished({ id: preprintId, locale, user: undefined })({

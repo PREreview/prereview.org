@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, type Either, Layer, Option, pipe, Scope, Struct } from 'effect'
+import { Array, Context, Data, Effect, type Result, Layer, Option, pipe, Scope, Struct, flow } from 'effect'
 import { Clubs } from '../../Clubs/index.ts'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
@@ -33,7 +33,7 @@ import * as RateTheQuality from './RateTheQuality.ts'
 import { RemoveInvitationToAppearFromTheList } from './RemoveInvitationToAppearFromTheList.ts'
 import * as StartDatasetReview from './StartDatasetReview.ts'
 
-export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
+export class DatasetReviewCommands extends Context.Service<
   DatasetReviewCommands,
   {
     startDatasetReview: CommandHandler<StartDatasetReview.StartDatasetReview, Errors.DatasetReviewWasAlreadyStarted>
@@ -106,7 +106,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       MarkDatasetReviewAsPublished.Error
     >
   }
->() {}
+>()('DatasetReviewCommands') {}
 
 type CommandHandler<Command extends { datasetReviewId: Uuid.Uuid }, Error> = (
   command: Command,
@@ -246,7 +246,7 @@ const makeDatasetReviewCommands: Effect.Effect<
     createFilter: (datasetReviewId: Uuid.Uuid) => Filter,
     foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, datasetReviewId: Uuid.Uuid) => State,
     authorize: (command: Command) => (state: State) => boolean,
-    decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
+    decide: (command: Command) => (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>,
   ): CommandHandler<Command, Error> =>
     Effect.fn(
       function* (command) {
@@ -260,20 +260,18 @@ const makeDatasetReviewCommands: Effect.Effect<
         yield* pipe(
           Effect.succeed(foldState(events, command.datasetReviewId)),
           Effect.filterOrElse(authorize(command), () => new NotAuthorizedToRunCommand({})),
-          Effect.andThen(decide(command)),
+          Effect.andThen(flow(decide(command), Effect.fromResult)),
           Effect.tap(
             Option.match({
               onNone: () => Effect.void,
               onSome: event =>
-                EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+                EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
             }),
           ),
         )
       },
       Effect.catchTag(
-        'FailedToCommitEvent',
-        'FailedToGetEvents',
-        'NewEventsFound',
+        ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
         cause => new UnableToHandleCommand({ cause }),
       ),
       Effect.provide(context),

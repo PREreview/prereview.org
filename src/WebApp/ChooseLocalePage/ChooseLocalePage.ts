@@ -35,7 +35,7 @@ export const createChooseLocalePage = ({
               ),
               Array.sortWith(
                 ([, b]) => b,
-                (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a),
+                (a, b) => String.localeCompare(b, [locale], { sensitivity: 'base' })(a),
               ),
               Array.map(
                 ([code, name]) => html`

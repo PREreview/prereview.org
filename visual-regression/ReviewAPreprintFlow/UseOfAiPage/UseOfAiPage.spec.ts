@@ -1,4 +1,4 @@
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
@@ -81,7 +81,7 @@ test('content looks right when AI was used and there are other authors', async (
 test('content looks right when use of AI for ideas is missing', async ({ showPage }) => {
   const response = _.renderUseOfAiPage({
     form: new UseOfAiForm.InvalidForm({
-      generativeAiIdeas: Either.left(new UseOfAiForm.Missing()),
+      generativeAiIdeas: Result.fail(new UseOfAiForm.Missing()),
       generativeAiIdeasDetails: Option.none(),
     }),
     locale,

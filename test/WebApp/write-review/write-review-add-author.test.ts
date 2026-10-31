@@ -40,7 +40,7 @@ describe('writeReviewAddAuthor', () => {
             formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
           )
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -83,7 +83,7 @@ describe('writeReviewAddAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -123,7 +123,7 @@ describe('writeReviewAddAuthor', () => {
             formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
           )
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -162,7 +162,7 @@ describe('writeReviewAddAuthor', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -197,7 +197,7 @@ describe('writeReviewAddAuthor', () => {
     ],
     ([id, preprintTitle, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
@@ -231,7 +231,7 @@ describe('writeReviewAddAuthor', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({ formStore, runtime }),
@@ -257,7 +257,7 @@ describe('writeReviewAddAuthor', () => {
           () => new PreprintIsUnavailable({}),
         )
 
-        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
+        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
@@ -283,7 +283,7 @@ describe('writeReviewAddAuthor', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean().map(T.of)],
     ([id, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
@@ -315,7 +315,7 @@ describe('writeReviewAddAuthor', () => {
     ],
     ([id, preprintTitle, body, method, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method })({

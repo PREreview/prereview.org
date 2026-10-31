@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -23,9 +23,9 @@ describe('NotifyCommunitySlack', () => {
           ],
           ([reviewRequestId, reviewRequest, publicPersona, preprint, response]) =>
             Effect.gen(function* () {
-              const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+              const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-              expect(actual).toStrictEqual(Either.void)
+              expect(actual).toStrictEqual(Result.void)
             }).pipe(
               Effect.provide([
                 Layer.mock(CommunitySlack.CommunitySlack, {
@@ -54,9 +54,9 @@ describe('NotifyCommunitySlack', () => {
           ],
           ([reviewRequestId, reviewRequest, pseudonymPersona, preprint, response]) =>
             Effect.gen(function* () {
-              const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+              const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-              expect(actual).toStrictEqual(Either.void)
+              expect(actual).toStrictEqual(Result.void)
             }).pipe(
               Effect.provide([
                 Layer.mock(CommunitySlack.CommunitySlack, {
@@ -85,9 +85,9 @@ describe('NotifyCommunitySlack', () => {
         ],
         ([reviewRequestId, reviewRequest, preprint, response]) =>
           Effect.gen(function* () {
-            const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+            const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-            expect(actual).toStrictEqual(Either.void)
+            expect(actual).toStrictEqual(Result.void)
           }).pipe(
             Effect.provide([
               Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
@@ -117,9 +117,9 @@ describe('NotifyCommunitySlack', () => {
       ],
       ([reviewRequestId, reviewRequest, publicPersona, pseudonymPersona, preprint, response, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
+          expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
         }).pipe(
           Effect.provide([
             Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
@@ -151,9 +151,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([reviewRequestId, reviewRequest, publicPersona, pseudonymPersona, preprint, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => error }),
@@ -185,9 +185,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([reviewRequestId, reviewRequest, publicPersona, pseudonymPersona, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
@@ -213,9 +213,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([reviewRequestId, reviewRequest, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
@@ -244,9 +244,9 @@ describe('NotifyCommunitySlack', () => {
     ],
     ([reviewRequestId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({})))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToNotifyCommunitySlack({})))
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),

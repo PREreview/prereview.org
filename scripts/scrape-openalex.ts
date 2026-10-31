@@ -1,110 +1,144 @@
 import {
   FileSystem,
-  HttpClient,
-  type HttpClientError,
-  HttpClientRequest,
-  HttpClientResponse,
-  UrlParams,
-} from '@effect/platform'
-import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
-import {
-  Chunk,
+  SchemaIssue,
+  SchemaGetter,
+  SchemaTransformation,
   Effect,
+  Chunk,
   flow,
   identity,
   Layer,
   Logger,
-  LogLevel,
   Order,
-  ParseResult,
+  References,
   pipe,
   Record,
   Schema,
   Stream,
   String,
+  Number,
+  Option,
 } from 'effect'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
+import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
 import crypto from 'node:crypto'
 import path from 'node:path'
 
-const NormalizedWhitespaceSchema = Schema.transform(Schema.String, Schema.Trim, {
-  strict: true,
-  decode: String.replaceAll(/\s+/g, ' '),
-  encode: identity,
-})
+const NumberFromStringSchema = Schema.String.pipe(
+  Schema.decodeTo(Schema.Number, {
+    decode: SchemaGetter.transformEffect(string =>
+      Option.match(Number.parse(string), {
+        onNone: () => Effect.fail(new SchemaIssue.InvalidValue(undefined, string)),
+        onSome: Effect.succeed,
+      }),
+    ),
+    encode: SchemaGetter.String(),
+  }),
+)
 
-const NormalizeApostrophesSchema = Schema.transform(Schema.String, Schema.Trim, {
-  strict: true,
-  decode: String.replaceAll(/(?<=\p{L})'(?=\p{L}|\s+\p{L})/gu, '’'),
-  encode: identity,
-})
+const NormalizedWhitespaceSchema = Schema.String.pipe(
+  Schema.decodeTo(
+    Schema.Trim,
+    SchemaTransformation.transform({ decode: String.replaceAll(/\s+/g, ' '), encode: identity }),
+  ),
+)
+
+const NormalizeApostrophesSchema = Schema.String.pipe(
+  Schema.decodeTo(
+    Schema.Trim,
+    SchemaTransformation.transform({
+      decode: String.replaceAll(/(?<=\p{L})'(?=\p{L}|\s+\p{L})/gu, '’'),
+      encode: identity,
+    }),
+  ),
+)
 
 const TextSchema = pipe(
   NormalizedWhitespaceSchema,
-  Schema.compose(NormalizeApostrophesSchema),
-  Schema.compose(Schema.NonEmptyTrimmedString),
+  Schema.decodeTo(NormalizeApostrophesSchema),
+  Schema.decodeTo(Schema.Trimmed.check(Schema.isNonEmpty())),
 )
 
-const ListResponse = <A, I, R>(resultSchema: Schema.Schema<A, I, R>) =>
+const ListResponse = <A, I, R>(resultSchema: Schema.Codec<A, I, R, R>) =>
   Schema.Struct({
-    meta: Schema.Struct({ next_cursor: Schema.optionalWith(Schema.String, { as: 'Option', nullable: true }) }),
-    results: Schema.Chunk(resultSchema),
+    meta: Schema.Struct({ next_cursor: Schema.OptionFromOptionalNullOr(Schema.String) }),
+    results: Schema.Array(resultSchema),
   })
 
-const DomainIdSchema = pipe(Schema.NumberFromString, Schema.brand('DomainId'))
+const DomainIdSchema = pipe(NumberFromStringSchema, Schema.brand('DomainId'))
 
-const DomainIdFromUrlSchema = Schema.transformOrFail(Schema.URL, DomainIdSchema, {
-  strict: true,
-  decode: (url, _, ast) =>
-    url.origin === 'https://openalex.org' && url.pathname.startsWith('/domains/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(9)))
-      : ParseResult.fail(new ParseResult.Type(ast, url)),
-  encode: domainId => ParseResult.succeed(new URL(`https://openalex.org/domains/${encodeURIComponent(domainId)}`)),
-})
+const DomainIdFromUrlSchema = Schema.URLFromString.pipe(
+  Schema.decodeTo(DomainIdSchema, {
+    decode: SchemaGetter.transformEffect(url =>
+      url.origin === 'https://openalex.org' && url.pathname.startsWith('/domains/')
+        ? Effect.succeed(decodeURIComponent(url.pathname.slice(9)))
+        : Effect.fail(new SchemaIssue.InvalidValue(undefined, url)),
+    ),
+    encode: SchemaGetter.transformEffect(domainId =>
+      Effect.succeed(new URL(`https://openalex.org/domains/${encodeURIComponent(domainId)}`)),
+    ),
+  }),
+)
 
-const FieldIdSchema = pipe(Schema.NumberFromString, Schema.brand('FieldId'))
+const FieldIdSchema = pipe(NumberFromStringSchema, Schema.brand('FieldId'))
 
-const FieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, FieldIdSchema, {
-  strict: true,
-  decode: (url, _, ast) =>
-    url.origin === 'https://openalex.org' && url.pathname.startsWith('/fields/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(8)))
-      : ParseResult.fail(new ParseResult.Type(ast, url)),
-  encode: fieldId => ParseResult.succeed(new URL(`https://openalex.org/fields/${encodeURIComponent(fieldId)}`)),
-})
+const FieldIdFromUrlSchema = Schema.URLFromString.pipe(
+  Schema.decodeTo(FieldIdSchema, {
+    decode: SchemaGetter.transformEffect(url =>
+      url.origin === 'https://openalex.org' && url.pathname.startsWith('/fields/')
+        ? Effect.succeed(decodeURIComponent(url.pathname.slice(8)))
+        : Effect.fail(new SchemaIssue.InvalidValue(undefined, url)),
+    ),
+    encode: SchemaGetter.transformEffect(fieldId =>
+      Effect.succeed(new URL(`https://openalex.org/fields/${encodeURIComponent(fieldId)}`)),
+    ),
+  }),
+)
 
-const SubfieldIdSchema = pipe(Schema.NumberFromString, Schema.brand('SubfieldId'))
+const SubfieldIdSchema = pipe(NumberFromStringSchema, Schema.brand('SubfieldId'))
 
-const SubfieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, SubfieldIdSchema, {
-  strict: true,
-  decode: (url, _, ast) =>
-    url.origin === 'https://openalex.org' && url.pathname.startsWith('/subfields/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(11)))
-      : ParseResult.fail(new ParseResult.Type(ast, url)),
-  encode: subfieldId =>
-    ParseResult.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),
-})
+const SubfieldIdFromUrlSchema = Schema.URLFromString.pipe(
+  Schema.decodeTo(SubfieldIdSchema, {
+    decode: SchemaGetter.transformEffect(url =>
+      url.origin === 'https://openalex.org' && url.pathname.startsWith('/subfields/')
+        ? Effect.succeed(decodeURIComponent(url.pathname.slice(11)))
+        : Effect.fail(new SchemaIssue.InvalidValue(undefined, url)),
+    ),
+    encode: SchemaGetter.transformEffect(subfieldId =>
+      Effect.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),
+    ),
+  }),
+)
 
-const TopicIdSchema = pipe(Schema.NumberFromString, Schema.brand('TopicId'))
+const TopicIdSchema = pipe(NumberFromStringSchema, Schema.brand('TopicId'))
 
-const TopicIdFromUrlSchema = Schema.transformOrFail(Schema.URL, TopicIdSchema, {
-  strict: true,
-  decode: (url, _, ast) =>
-    url.origin === 'https://openalex.org' && url.pathname.startsWith('/T')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(2)))
-      : ParseResult.fail(new ParseResult.Type(ast, url)),
-  encode: topicId => ParseResult.succeed(new URL(`https://openalex.org/T${encodeURIComponent(topicId)}`)),
-})
+const TopicIdFromUrlSchema = Schema.URLFromString.pipe(
+  Schema.decodeTo(TopicIdSchema, {
+    decode: SchemaGetter.transformEffect(url =>
+      url.origin === 'https://openalex.org' && url.pathname.startsWith('/T')
+        ? Effect.succeed(decodeURIComponent(url.pathname.slice(2)))
+        : Effect.fail(new SchemaIssue.InvalidValue(undefined, url)),
+    ),
+    encode: SchemaGetter.transformEffect(topicId =>
+      Effect.succeed(new URL(`https://openalex.org/T${encodeURIComponent(topicId)}`)),
+    ),
+  }),
+)
 
 const KeywordIdSchema = pipe(Schema.String, Schema.brand('KeywordId'))
 
-const KeywordIdFromUrlSchema = Schema.transformOrFail(Schema.URL, KeywordIdSchema, {
-  strict: true,
-  decode: (url, _, ast) =>
-    url.origin === 'https://openalex.org' && url.pathname.startsWith('/keywords/')
-      ? ParseResult.succeed(decodeURIComponent(url.pathname.slice(10)))
-      : ParseResult.fail(new ParseResult.Type(ast, url)),
-  encode: keywordId => ParseResult.succeed(new URL(`https://openalex.org/keywords/${encodeURIComponent(keywordId)}`)),
-})
+const KeywordIdFromUrlSchema = Schema.URLFromString.pipe(
+  Schema.decodeTo(KeywordIdSchema, {
+    decode: SchemaGetter.transformEffect(url =>
+      url.origin === 'https://openalex.org' && url.pathname.startsWith('/keywords/')
+        ? Effect.succeed(decodeURIComponent(url.pathname.slice(10)))
+        : Effect.fail(new SchemaIssue.InvalidValue(undefined, url)),
+    ),
+    encode: SchemaGetter.transformEffect(keywordId =>
+      Effect.succeed(new URL(`https://openalex.org/keywords/${encodeURIComponent(keywordId)}`)),
+    ),
+  }),
+)
 
 const DomainSchema = Schema.Struct({
   id: DomainIdFromUrlSchema,
@@ -141,61 +175,61 @@ const KeywordSchema = Schema.Struct({
   display_name: TextSchema,
 })
 
-const LocaleFileSchema = Schema.Record({
-  key: Schema.String,
-  value: Schema.Struct({
+const LocaleFileSchema = Schema.Record(
+  Schema.String,
+  Schema.Struct({
     message: TextSchema,
     description: Schema.optional(TextSchema),
   }),
-})
+)
 
-const DomainTypesFileSchema = Schema.Record({
-  key: Schema.String,
-  value: Schema.Struct({
+const DomainTypesFileSchema = Schema.Record(
+  Schema.String,
+  Schema.Struct({
     name: TextSchema,
   }),
-})
+)
 
-const FieldTypesFileSchema = Schema.Record({
-  key: Schema.String,
-  value: Schema.Struct({
+const FieldTypesFileSchema = Schema.Record(
+  Schema.String,
+  Schema.Struct({
     name: TextSchema,
     domain: DomainIdSchema,
   }),
-})
+)
 
-const SubfieldTypesFileSchema = Schema.Record({
-  key: Schema.String,
-  value: Schema.Struct({
+const SubfieldTypesFileSchema = Schema.Record(
+  Schema.String,
+  Schema.Struct({
     name: TextSchema,
     domain: DomainIdSchema,
     field: FieldIdSchema,
   }),
-})
+)
 
-const TopicTypesFileSchema = Schema.Record({
-  key: Schema.String,
-  value: Schema.Struct({
+const TopicTypesFileSchema = Schema.Record(
+  Schema.String,
+  Schema.Struct({
     name: TextSchema,
     domain: DomainIdSchema,
     field: FieldIdSchema,
     subfield: SubfieldIdSchema,
   }),
-})
+)
 
-const KeywordTypesFileSchema = Schema.Record({
-  key: Schema.String,
-  value: Schema.Struct({
+const KeywordTypesFileSchema = Schema.Record(
+  Schema.String,
+  Schema.Struct({
     name: TextSchema,
   }),
-})
+)
 
 const GetDomains: Effect.Effect<
   Chunk.Chunk<typeof DomainSchema.Type>,
-  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClientError.HttpClientError | Schema.SchemaError,
   HttpClient.HttpClient
 > = pipe(
-  Stream.paginateChunkEffect(
+  Stream.paginate(
     '*',
     flow(
       cursor =>
@@ -208,15 +242,16 @@ const GetDomains: Effect.Effect<
     ),
   ),
   Stream.runCollect,
-  Effect.map(Chunk.sortWith(domain => domain.id, Order.number)),
+  Effect.map(Chunk.fromIterable),
+  Effect.map(Chunk.sortWith(domain => domain.id, Order.Number)),
 )
 
 const GetFields: Effect.Effect<
   Chunk.Chunk<typeof FieldSchema.Type>,
-  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClientError.HttpClientError | Schema.SchemaError,
   HttpClient.HttpClient
 > = pipe(
-  Stream.paginateChunkEffect(
+  Stream.paginate(
     '*',
     flow(
       cursor =>
@@ -229,15 +264,16 @@ const GetFields: Effect.Effect<
     ),
   ),
   Stream.runCollect,
-  Effect.map(Chunk.sortWith(field => field.id, Order.number)),
+  Effect.map(Chunk.fromIterable),
+  Effect.map(Chunk.sortWith(field => field.id, Order.Number)),
 )
 
 const GetSubfields: Effect.Effect<
   Chunk.Chunk<typeof SubfieldSchema.Type>,
-  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClientError.HttpClientError | Schema.SchemaError,
   HttpClient.HttpClient
 > = pipe(
-  Stream.paginateChunkEffect(
+  Stream.paginate(
     '*',
     flow(
       cursor =>
@@ -250,15 +286,16 @@ const GetSubfields: Effect.Effect<
     ),
   ),
   Stream.runCollect,
-  Effect.map(Chunk.sortWith(subfield => subfield.id, Order.number)),
+  Effect.map(Chunk.fromIterable),
+  Effect.map(Chunk.sortWith(subfield => subfield.id, Order.Number)),
 )
 
 const GetTopics: Effect.Effect<
   Chunk.Chunk<typeof TopicSchema.Type>,
-  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClientError.HttpClientError | Schema.SchemaError,
   HttpClient.HttpClient
 > = pipe(
-  Stream.paginateChunkEffect(
+  Stream.paginate(
     '*',
     flow(
       cursor =>
@@ -271,15 +308,16 @@ const GetTopics: Effect.Effect<
     ),
   ),
   Stream.runCollect,
-  Effect.map(Chunk.sortWith(topic => topic.id, Order.number)),
+  Effect.map(Chunk.fromIterable),
+  Effect.map(Chunk.sortWith(topic => topic.id, Order.Number)),
 )
 
 const GetKeywords: Effect.Effect<
   Chunk.Chunk<typeof KeywordSchema.Type>,
-  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClientError.HttpClientError | Schema.SchemaError,
   HttpClient.HttpClient
 > = pipe(
-  Stream.paginateChunkEffect(
+  Stream.paginate(
     '*',
     flow(
       cursor =>
@@ -292,7 +330,8 @@ const GetKeywords: Effect.Effect<
     ),
   ),
   Stream.runCollect,
-  Effect.map(Chunk.sortWith(keyword => keyword.id, Order.string)),
+  Effect.map(Chunk.fromIterable),
+  Effect.map(Chunk.sortWith(keyword => keyword.id, Order.String)),
 )
 
 const WriteToFile = (filePath: string) => (content: string) =>
@@ -319,7 +358,7 @@ const FieldsToLocaleFile = flow(
         .trim(),
     },
   })),
-  Schema.encode(Schema.parseJson(LocaleFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(LocaleFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('locales/en-US/fields.json')),
 )
@@ -340,7 +379,7 @@ const SubfieldsToLocaleFile = flow(
         .trim(),
     },
   })),
-  Schema.encode(Schema.parseJson(LocaleFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(LocaleFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('locales/en-US/subfields.json')),
 )
@@ -350,7 +389,7 @@ const DomainsToTypesFile = flow(
     ...accumulator,
     [domain.id]: { name: domain.display_name },
   })),
-  Schema.encode(Schema.parseJson(DomainTypesFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(DomainTypesFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/domains.json')),
 )
@@ -360,7 +399,7 @@ const FieldsToTypesFile = flow(
     ...accumulator,
     [field.id]: { name: field.display_name, domain: field.domain.id },
   })),
-  Schema.encode(Schema.parseJson(FieldTypesFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(FieldTypesFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/fields.json')),
 )
@@ -370,7 +409,7 @@ const SubfieldsToTypesFile = flow(
     ...accumulator,
     [subfield.id]: { name: subfield.display_name, domain: subfield.domain.id, field: subfield.field.id },
   })),
-  Schema.encode(Schema.parseJson(SubfieldTypesFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(SubfieldTypesFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/subfields.json')),
 )
@@ -385,7 +424,7 @@ const TopicsToTypesFile = flow(
       subfield: topic.subfield.id,
     },
   })),
-  Schema.encode(Schema.parseJson(TopicTypesFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(TopicTypesFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/topics.json')),
 )
@@ -396,7 +435,7 @@ const KeywordsToTypesFile = flow(
     { name: keyword.display_name },
   ]),
   Record.fromEntries,
-  Schema.encode(Schema.parseJson(KeywordTypesFileSchema, { space: 2 })),
+  Schema.encodeEffect(Schema.fromJsonString(KeywordTypesFileSchema, { space: 2 })),
   Effect.map(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/keywords.json')),
 )
@@ -436,10 +475,10 @@ void pipe(
           ),
         ),
       ),
-      Layer.provideMerge(Layer.mergeAll(NodeHttpClient.layer, NodeFileSystem.layer)),
-      Layer.provideMerge(Logger.pretty),
+      Layer.provideMerge(Layer.mergeAll(NodeHttpClient.layerNodeHttp, NodeFileSystem.layer)),
+      Layer.provideMerge(Logger.layer([Logger.consolePretty(), Logger.tracerLogger])),
     ),
   ),
-  Logger.withMinimumLogLevel(LogLevel.Debug),
+  Effect.provideService(References.MinimumLogLevel, 'Debug'),
   Effect.runPromise,
 )

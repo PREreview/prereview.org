@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Array, Effect, Either, Layer, pipe } from 'effect'
+import { Array, Effect, Result, Layer, pipe } from 'effect'
 import * as AuthorInvites from '../../../src/AuthorInvites/index.ts'
 import * as _ from '../../../src/AuthorInvites/Workflows/SendAuthorInviteEmails.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
@@ -47,10 +47,10 @@ describe('SendAuthorInviteEmails', () => {
                   recordEmailSentToInviteAuthor,
                 }),
               ]),
-              Effect.either,
+              Effect.result,
             )
 
-            expect(actual).toStrictEqual(Either.void)
+            expect(actual).toStrictEqual(Result.void)
             expect(inviteAuthorToReview).toHaveBeenCalledTimes(Array.length(invitations))
             expect(hasAnEmailToInviteAuthorBeenSent).toHaveBeenCalledTimes(Array.length(invitations))
             expect(recordEmailSentToInviteAuthor).toHaveBeenCalledTimes(Array.length(invitations))
@@ -90,9 +90,9 @@ describe('SendAuthorInviteEmails', () => {
       ],
       ([reviewId, review, dataset, publicPersona, pseudonymPersona, invitations]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.SendAuthorInviteEmails(reviewId), Effect.either)
+          const actual = yield* pipe(_.SendAuthorInviteEmails(reviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(AuthorInvites.AuthorInvites, {
@@ -117,9 +117,9 @@ describe('SendAuthorInviteEmails', () => {
       [fc.uuid(), fc.publishedDatasetReview(), fc.dataset(), fc.publicPersona(), fc.pseudonymPersona()],
       ([reviewId, review, dataset, publicPersona, pseudonymPersona]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.SendAuthorInviteEmails(reviewId), Effect.either)
+          const actual = yield* pipe(_.SendAuthorInviteEmails(reviewId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(AuthorInvites.AuthorInvites, {}),
@@ -154,9 +154,9 @@ describe('SendAuthorInviteEmails', () => {
     ],
     ([reviewId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.SendAuthorInviteEmails(reviewId), Effect.either)
+        const actual = yield* pipe(_.SendAuthorInviteEmails(reviewId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new _.FailedToSendAuthorInviteEmails({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new _.FailedToSendAuthorInviteEmails({ cause: error })))
       }).pipe(
         Effect.provide([
           Layer.mock(AuthorInvites.AuthorInvites, {}),

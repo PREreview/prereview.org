@@ -1,6 +1,6 @@
-import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
+import { Cookies, FetchHttpClient, HttpServerResponse } from 'effect/http'
 import { describe, expect, it, test, vi } from '../../vitest.ts'
-import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
+import { Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
 import fetchMock from 'fetch-mock'
 import { Keyv } from 'keyv'
 import { UnableToHandleCommand } from '../../../src/Commands.ts'
@@ -44,8 +44,8 @@ describe('LogOut', () => {
         HttpServerResponse.redirect(Routes.HomePage, {
           status: StatusCodes.SeeOther,
           cookies: Cookies.fromIterable([
-            Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
-            Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+            Cookies.makeCookieUnsafe('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+            Cookies.makeCookieUnsafe(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
           ]),
         }),
       )
@@ -72,8 +72,8 @@ describe('LogOut', () => {
           HttpServerResponse.redirect(Routes.HomePage, {
             status: StatusCodes.SeeOther,
             cookies: Cookies.fromIterable([
-              Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
-              Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+              Cookies.makeCookieUnsafe('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+              Cookies.makeCookieUnsafe(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
             ]),
           }),
         )
@@ -90,8 +90,8 @@ describe('LogOut', () => {
         HttpServerResponse.redirect(Routes.HomePage, {
           status: StatusCodes.SeeOther,
           cookies: Cookies.fromIterable([
-            Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
-            Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+            Cookies.makeCookieUnsafe('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+            Cookies.makeCookieUnsafe(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
           ]),
         }),
       )
@@ -134,12 +134,12 @@ describe('authenticate', () => {
             HttpServerResponse.redirect(referer.href, {
               status: StatusCodes.Found,
               cookies: Cookies.fromIterable([
-                Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
+                Cookies.makeCookieUnsafe(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
               ]),
             }),
           )
         }).pipe(
-          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
+          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId, unsign: shouldNotBeCalled })),
           Effect.provideService(FetchHttpClient.Fetch, (...args) =>
             fetchMock
               .createInstance()
@@ -197,13 +197,13 @@ describe('authenticate', () => {
             HttpServerResponse.redirect(Routes.HomePage, {
               status: StatusCodes.Found,
               cookies: Cookies.fromIterable([
-                Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
-                Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
+                Cookies.makeCookieUnsafe(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
+                Cookies.makeCookieUnsafe('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
               ]),
             }),
           )
         }).pipe(
-          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
+          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId, unsign: shouldNotBeCalled })),
           Effect.provideService(FetchHttpClient.Fetch, (...args) =>
             fetchMock
               .createInstance()
@@ -251,7 +251,7 @@ describe('authenticate', () => {
           expect(registerSpy).toHaveBeenCalled()
         }).pipe(
           Effect.provide([
-            Layer.mock(CookieSignature, { sign: () => signedSessionId }),
+            Layer.mock(CookieSignature, { sign: () => signedSessionId, unsign: shouldNotBeCalled }),
             Layer.succeed(FetchHttpClient.Fetch, (...args) =>
               fetchMock
                 .createInstance()
@@ -310,7 +310,7 @@ describe('authenticate', () => {
         })
         expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
       }).pipe(
-        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
+        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled, unsign: shouldNotBeCalled })),
         Effect.provideService(FetchHttpClient.Fetch, (...args) =>
           fetchMock
             .createInstance()
@@ -370,7 +370,7 @@ describe('authenticate', () => {
         })
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(
-        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
+        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled, unsign: shouldNotBeCalled })),
         Effect.provide(
           Layer.mock(Prereviewers, {
             register: () => new UnableToHandleCommand({}),
@@ -427,7 +427,7 @@ describe('authenticate', () => {
         })
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(
-        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
+        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled, unsign: shouldNotBeCalled })),
         Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => new UnableToQuery({}) })),
         Effect.provideService(_.IsUserBlocked, () => false),
         Effect.provideService(Locale, locale),
@@ -471,5 +471,5 @@ describe('AuthenticateError', () => {
 })
 
 function all<A>(iterable: AsyncIterable<A>): Effect.Effect<ReadonlyArray<A>, unknown> {
-  return Stream.fromAsyncIterable(iterable, identity).pipe(Stream.runCollect, Effect.map(Chunk.toArray))
+  return Stream.fromAsyncIterable(iterable, identity).pipe(Stream.runCollect)
 }

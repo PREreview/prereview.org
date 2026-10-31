@@ -1,4 +1,4 @@
-import { type Array, Either } from 'effect'
+import { type Array, Result } from 'effect'
 import type { ClubName } from '../../../src/Clubs/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -73,7 +73,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
   const response = _.renderAddToAClubPage({
     clubs,
     form: new AddToAClubForm.InvalidForm({
-      addToClub: Either.left(new AddToAClubForm.Missing()),
+      addToClub: Result.fail(new AddToAClubForm.Missing()),
     }),
     locale,
     preprint,

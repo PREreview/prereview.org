@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { Effect, Either, Option } from 'effect'
+import { Effect, Result, Option } from 'effect'
 import { Keyv } from '../../src/keyv.ts'
 import * as _ from '../../src/PreprintReviews/GetUseOfAiDetails.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../src/PreprintReviews/index.ts'
@@ -24,16 +24,16 @@ const preprintWithReviewAnsweredNoWithDetails = new BiorxivPreprintId({
 const details = NonEmptyString('Some details')
 
 it.effect.each<[string, _.Input, _.Result]>([
-  ['no review', { orcidId, preprintId: preprintWithNoReview }, Either.left(new PreprintReviewNotFound({}))],
+  ['no review', { orcidId, preprintId: preprintWithNoReview }, Result.fail(new PreprintReviewNotFound({}))],
   [
     'different ORCID iD',
     { orcidId: differentOrcidId, preprintId: preprintWithReview },
-    Either.left(new PreprintReviewNotFound({})),
+    Result.fail(new PreprintReviewNotFound({})),
   ],
   [
     'not answered',
     { orcidId, preprintId: preprintWithReview },
-    Either.right({
+    Result.succeed({
       _tag: 'NotAnswered',
       moreAuthors: undefined,
       alreadyWritten: undefined,
@@ -42,7 +42,7 @@ it.effect.each<[string, _.Input, _.Result]>([
   [
     'answered',
     { orcidId, preprintId: preprintWithReviewAnswered },
-    Either.right({
+    Result.succeed({
       _tag: 'AiWasUsed',
       generativeAiIdeasDetails: Option.none(),
       moreAuthors: 'yes-private',
@@ -52,7 +52,7 @@ it.effect.each<[string, _.Input, _.Result]>([
   [
     'answered with details',
     { orcidId, preprintId: preprintWithReviewAnsweredWithDetails },
-    Either.right({
+    Result.succeed({
       _tag: 'AiWasUsed',
       generativeAiIdeasDetails: Option.some(details),
       moreAuthors: undefined,
@@ -62,7 +62,7 @@ it.effect.each<[string, _.Input, _.Result]>([
   [
     'answered no with leftover details',
     { orcidId, preprintId: preprintWithReviewAnsweredNoWithDetails },
-    Either.right({
+    Result.succeed({
       _tag: 'AiWasNotUsed',
       moreAuthors: undefined,
       alreadyWritten: undefined,
@@ -92,7 +92,7 @@ it.effect.each<[string, _.Input, _.Result]>([
       ),
     )
 
-    const actualReturn = yield* Effect.either(_.GetUseOfAiDetails(formStore)(input))
+    const actualReturn = yield* Effect.result(_.GetUseOfAiDetails(formStore)(input))
 
     expect(actualReturn).toStrictEqual(expectedReturn)
   }),

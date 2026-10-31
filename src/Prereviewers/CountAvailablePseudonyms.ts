@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap } from 'effect'
+import { Array, Result, flow, HashMap } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -44,5 +44,5 @@ export const CountAvailablePseudonyms = (possiblePseudonyms: Set<Pseudonym>) =>
   Queries.OnDemandQuery({
     name: 'Prereviewers.countAvailablePseudonyms',
     createFilter,
-    query: flow(query(possiblePseudonyms), Either.right),
+    query: flow(query(possiblePseudonyms), Result.succeed),
   })

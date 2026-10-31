@@ -1,4 +1,4 @@
-import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Function, Match, Option, type Types } from 'effect'
 import type { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
@@ -48,16 +48,18 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
-    NotPublished: () => Either.left(new Errors.DatasetReviewHasNotBeenPublished({})),
-    HasNotBeenAssignedADoi: () => Either.left(new Errors.DatasetReviewHasNotBeenAssignedADoi({})),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotPublished: () => Result.fail(new Errors.DatasetReviewHasNotBeenPublished({})),
+    HasNotBeenAssignedADoi: () => Result.fail(new Errors.DatasetReviewHasNotBeenAssignedADoi({})),
     HasAnInactiveDoi: () =>
-      Either.right(Option.some(new Events.DatasetReviewDoiWasActivated({ datasetReviewId: command.datasetReviewId }))),
-    HasAnActiveDoi: () => Either.right(Option.none()),
+      Result.succeed(
+        Option.some(new Events.DatasetReviewDoiWasActivated({ datasetReviewId: command.datasetReviewId })),
+      ),
+    HasAnActiveDoi: () => Result.succeed(Option.none()),
   }),
 )
 

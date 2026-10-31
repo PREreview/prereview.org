@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -69,67 +69,67 @@ const published = new Events.DatasetReviewWasPublished({
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not answered', input, [started], Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
+  ['no events', input, [], Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
+  ['not answered', input, [started], Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different author ID',
     inputDifferentAuthorId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
+    Result.fail(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
   ],
   [
     'answered no',
     input,
     [started, answeredNo],
-    Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
+    Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
   ],
   [
     'answered yes, not added',
     input,
     [started, answeredYes],
-    Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
+    Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
   [
     'answered yes, added',
     input,
     [started, answeredYes, invited],
-    Either.right(Option.getOrThrow(invited.contactDetails).name),
+    Result.succeed(Option.getOrThrow(invited.contactDetails).name),
   ],
   [
     'different invitation ID, answered yes, added',
     inputDifferentInvitationId,
     [started, answeredYes, invited],
-    Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
+    Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
   [
     'answered yes, added with no contact details',
     input,
     [started, answeredYes, invitedNoContactDetails],
-    Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
+    Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
   [
     'answered yes, added and removed',
     input,
     [started, answeredYes, invited, removed],
-    Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
+    Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
   [
     'publication requested',
     input,
     [started, answeredYes, publicationRequested],
-    Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     input,
     [started, answeredYes, publicationRequested, published],
-    Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()),
+    Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList

@@ -19,7 +19,7 @@ describe('writeReviewStart', () => {
           const formStore = new Keyv()
           yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewStart({ id: preprintId, locale, user })({ formStore, runtime }),
@@ -43,7 +43,7 @@ describe('writeReviewStart', () => {
       [fc.indeterminatePreprintId(), fc.preprint(), fc.user(), fc.supportedLocale()],
       ([preprintId, preprint, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewStart({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
@@ -79,7 +79,7 @@ describe('writeReviewStart', () => {
             yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
           }
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewStart({ id: preprintId, locale, user })({ formStore, runtime }),
@@ -104,7 +104,7 @@ describe('writeReviewStart', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale()],
     ([preprintId, preprint, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewStart({ id: preprintId, locale, user: undefined })({ formStore: new Keyv(), runtime }),
@@ -122,7 +122,7 @@ describe('writeReviewStart', () => {
     [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewStart({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),
@@ -144,7 +144,7 @@ describe('writeReviewStart', () => {
     [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewStart({ id: preprintId, locale, user })({ formStore: new Keyv(), runtime }),

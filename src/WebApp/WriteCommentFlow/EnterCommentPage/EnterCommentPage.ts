@@ -1,4 +1,4 @@
-import { absurd, Either, Match, pipe } from 'effect'
+import { absurd, Result, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { type Html, html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -42,12 +42,12 @@ export const EnterCommentPage = ({
                   <h2 id="error-summary-title">${translate(locale, 'forms', 'errorSummaryTitle')()}</h2>
                   <ul>
                     ${
-                      Either.isLeft(form.comment)
+                      Result.isFailure(form.comment)
                         ? html`
                             <li>
                               <a href="#comment">
                                 ${pipe(
-                                  Match.value(form.comment.left),
+                                  Match.value(form.comment.failure),
                                   Match.tag('Missing', () =>
                                     translate(locale, 'write-comment-flow', 'errorEnterComment')(),
                                   ),
@@ -72,12 +72,12 @@ export const EnterCommentPage = ({
           </h1>
 
           ${
-            form._tag === 'InvalidForm' && Either.isLeft(form.comment)
+            form._tag === 'InvalidForm' && Result.isFailure(form.comment)
               ? html`
                   <div class="error-message" id="comment-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${pipe(
-                      Match.value(form.comment.left),
+                      Match.value(form.comment.failure),
                       Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')()),
                       Match.exhaustive,
                     )}
@@ -94,8 +94,8 @@ export const EnterCommentPage = ({
                 () => html`<textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20"></textarea>`,
               ),
               Match.tag('InvalidForm', form =>
-                Either.match(form.comment, {
-                  onLeft: () => html`
+                Result.match(form.comment, {
+                  onFailure: () => html`
                     <textarea
                       id="comment"
                       name="comment"
@@ -106,7 +106,7 @@ export const EnterCommentPage = ({
                       aria-errormessage="comment-error"
                     ></textarea>
                   `,
-                  onRight: absurd<Html>,
+                  onSuccess: absurd<Html>,
                 }),
               ),
               Match.tag(

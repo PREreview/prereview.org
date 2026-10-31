@@ -17,7 +17,7 @@ export const AcknowledgeReviewRequest = Effect.fn(
 
     yield* Commands.recordEmailSentToAcknowledgeReviewRequest({ sentAt, reviewRequestId })
   },
-  Effect.catchTag('ReviewRequestCannotBeAcknowledged', 'ReviewRequestWasAlreadyAcknowledged', () => Effect.void),
-  Effect.catchAll(error => new Errors.FailedToAcknowledgeReviewRequest({ cause: error })),
+  Effect.catchTag(['ReviewRequestCannotBeAcknowledged', 'ReviewRequestWasAlreadyAcknowledged'], () => Effect.void),
+  Effect.catch(error => new Errors.FailedToAcknowledgeReviewRequest({ cause: error })),
   Effect.scoped,
 )

@@ -1,4 +1,4 @@
-import { Arbitrary, Effect, Either, Number, Option, pipe, Random, Schema, type Brand } from 'effect'
+import { Effect, Result, Number, Option, pipe, Random, Schema, type Brand } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
@@ -12,7 +12,7 @@ export const PseudonymC = C.fromDecoder(
     D.string,
     D.parse(s =>
       EffectToFpts.either(
-        Either.try({
+        Result.try({
           try: () => PseudonymSchema.make(s),
           catch: () => D.error(s, 'Pseudonym'),
         }),
@@ -21,7 +21,7 @@ export const PseudonymC = C.fromDecoder(
   ),
 )
 
-const Color = Schema.Literal(
+export const Color = Schema.Literals([
   'Aliceblue',
   'Amber',
   'Amthyst', // [sic]
@@ -95,9 +95,9 @@ const Color = Schema.Literal(
   'White',
   'Yellow',
   'Yellowgreen',
-)
+])
 
-const Animal = Schema.Literal(
+export const Animal = Schema.Literals([
   'Albatross',
   'Ant',
   'Ape',
@@ -187,7 +187,7 @@ const Animal = Schema.Literal(
   'Wolf',
   'Yak',
   'Zebra',
-)
+])
 
 export const possiblePseudonyms = Effect.gen(function* () {
   const animals = new Set(Animal.literals)
@@ -207,23 +207,9 @@ export const possiblePseudonyms = Effect.gen(function* () {
 
 export const PseudonymSchema = pipe(
   NonEmptyStringSchema,
-  Schema.filter(isPseudonym, { message: () => 'not a pseudonym' }),
+  Schema.refine(isPseudonym, { message: 'not a pseudonym' }),
   Schema.brand('Pseudonym'),
-).annotations({
-  arbitrary: () => fc =>
-    fc
-      .record(
-        {
-          color: Arbitrary.make(Color),
-          animal: Arbitrary.make(Animal),
-          number: Arbitrary.make(Schema.NonNegativeInt),
-        },
-        { requiredKeys: ['color', 'animal'] },
-      )
-      .map(({ color, animal, number }) =>
-        number === undefined ? (`${color} ${animal}` as Pseudonym) : (`${color} ${animal} ${number}` as Pseudonym),
-      ),
-})
+)
 
 export function isPseudonym(value: string): value is Pseudonym {
   const parts = value.split(' ', 3)
@@ -235,7 +221,7 @@ export function isPseudonym(value: string): value is Pseudonym {
   if (typeof parts[2] === 'string') {
     const number = Option.getOrUndefined(Number.parse(parts[2]))
 
-    if (!Schema.is(Schema.NonNegativeInt)(number)) {
+    if (!Schema.is(Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)))(number)) {
       return false
     }
 

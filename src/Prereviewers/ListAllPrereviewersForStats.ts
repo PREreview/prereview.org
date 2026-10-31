@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, Match, Struct, type Order } from 'effect'
+import { Array, Result, flow, HashMap, Match, Struct, type Order } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type OrcidId } from '../types/index.ts'
@@ -80,5 +80,5 @@ export const ListAllPrereviewersForStats = Queries.StatefulQuery({
   name: 'Prereviewers.listAllPrereviewersForStats',
   initialState: HashMap.empty(),
   updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })

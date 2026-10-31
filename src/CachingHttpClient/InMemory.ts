@@ -1,4 +1,4 @@
-import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
+import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import { Effect, Layer, pipe, Schema } from 'effect'
 import _normalizeUrl from 'normalize-url'
 import { type CacheValue, HttpCache, InternalHttpCacheFailure, StoredResponseSchema } from './HttpCache.ts'
@@ -21,7 +21,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
       get: request =>
         pipe(
           cache.get(keyForRequest(request)),
-          Effect.fromNullable,
+          Effect.fromNullishOr,
           Effect.map(({ staleAt, response }) => ({
             staleAt,
             response: HttpClientResponse.fromWeb(
@@ -32,7 +32,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
               }),
             ),
           })),
-          Effect.optionFromOptional,
+          Effect.catchNoSuchElement,
         ),
       set: (response, staleAt) =>
         pipe(
@@ -43,13 +43,13 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
               body: yield* response.text,
             }
           }),
-          Effect.andThen(Schema.encode(StoredResponseSchema)),
+          Effect.andThen(Schema.encodeEffect(StoredResponseSchema)),
           Effect.andThen(storedResponse =>
             Effect.sync(() => {
               cache.set(keyForRequest(response.request), { staleAt, response: storedResponse })
             }),
           ),
-          Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
+          Effect.catch(cause => new InternalHttpCacheFailure({ cause })),
         ),
       delete: url => Effect.succeed(cache.delete(normalizeUrl(url))),
     }

@@ -1,4 +1,4 @@
-import { Array, Either, HashMap, Match, Option, Schema } from 'effect'
+import { Array, Result, HashMap, Match, Option, Schema } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -20,7 +20,7 @@ export interface Input {
   preprintId: Preprints.IndeterminatePreprintId
 }
 
-export type Result = Either.Either<Uuid.Uuid, Errors.UnknownReviewRequest>
+export type Result = Result.Result<Uuid.Uuid, Errors.UnknownReviewRequest>
 
 interface ReviewRequest {
   requesterId: OrcidId.OrcidId
@@ -109,20 +109,20 @@ const query = (state: State, input: Input): Result => {
   const reviewRequestId = HashMap.get(state.reviewRequestIdsByInput, inputToHashKey(input))
 
   if (Option.isNone(reviewRequestId)) {
-    return Either.left(new Errors.UnknownReviewRequest({}))
+    return Result.fail(new Errors.UnknownReviewRequest({}))
   }
 
   const reviewRequest = HashMap.get(state.reviewRequestsById, reviewRequestId.value)
 
   if (Option.isNone(reviewRequest)) {
-    return Either.left(new Errors.UnknownReviewRequest({ cause: 'Unexpected query state' }))
+    return Result.fail(new Errors.UnknownReviewRequest({ cause: 'Unexpected query state' }))
   }
 
   if (reviewRequest.value.requestState !== 'published') {
-    return Either.left(new Errors.UnknownReviewRequest({ cause: 'Not published' }))
+    return Result.fail(new Errors.UnknownReviewRequest({ cause: 'Not published' }))
   }
 
-  return Either.right(reviewRequestId.value)
+  return Result.succeed(reviewRequestId.value)
 }
 
 export const GetPublishedReviewRequestByAPrereviewer = Queries.StatefulQuery({

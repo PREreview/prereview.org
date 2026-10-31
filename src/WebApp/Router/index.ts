@@ -1,5 +1,5 @@
-import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Cause, Effect, flow, Match, pipe, Record, Schema, Struct } from 'effect'
+import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from 'effect/http'
+import { Array, Cause, Effect, flow, Match, pipe, Record, Schema, Struct, SchemaTransformation } from 'effect'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import * as Routes from '../../routes.ts'
@@ -41,17 +41,55 @@ import { nonEffectRouter } from './NonEffectRouter/index.ts'
 import { MatchmakingPage, MatchmakingSubmission } from '../MatchmakingPage/index.ts'
 import { LoggedInUser } from '../../user.ts'
 
-const MakeRoute = <A, E extends HttpServerError.RequestError, R>(
+const BooleanFromStringSchema = Schema.Literals(['true', 'false']).pipe(
+  Schema.decodeTo(
+    Schema.Boolean,
+    SchemaTransformation.transform({
+      decode: literal => literal === 'true',
+      encode: boolean => (boolean ? 'true' : 'false'),
+    }),
+  ),
+)
+
+// oxlint-disable-next-line typescript/no-explicit-any
+const useMiddleware = <Routes extends ReadonlyArray<HttpRouter.Route<any, any>>, E, R>(
+  routes: Routes,
+  middleware: (
+    handler: Effect.Effect<
+      HttpServerResponse.HttpServerResponse,
+      HttpRouter.Route.Error<Routes[number]>,
+      HttpRouter.Route.Context<Routes[number]>
+    >,
+  ) => Effect.Effect<HttpServerResponse.HttpServerResponse, E, R>,
+) =>
+  Array.map(routes, route =>
+    HttpRouter.route(
+      route.method,
+      route.path,
+      middleware(
+        route.handler as Effect.Effect<
+          HttpServerResponse.HttpServerResponse,
+          HttpRouter.Route.Error<Routes[number]>,
+          HttpRouter.Route.Context<Routes[number]>
+        >,
+      ),
+      { uninterruptible: route.uninterruptible },
+    ),
+  )
+
+type RouteError = HttpServerError.HttpServerError | HttpServerError.RequestError
+
+const MakeRoute = <A, E extends RouteError, R>(
   method: HttpMethod.HttpMethod,
   route: Routes.Route<A>,
   handler: (a: A) => Effect.Effect<Response.Response, E, R>,
 ) =>
-  HttpRouter.makeRoute(
+  HttpRouter.route(
     method,
     route.path,
     pipe(
       HttpRouter.schemaParams(route.schema),
-      Effect.catchTag('ParseError', () =>
+      Effect.catchTag('SchemaError', () =>
         Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
       ),
       Effect.andThen(handler),
@@ -62,33 +100,35 @@ const MakeRoute = <A, E extends HttpServerError.RequestError, R>(
 const MakeQueryRoute = <
   A extends { readonly [K in keyof A]: unknown },
   I extends { readonly [K in keyof I]: string | ReadonlyArray<string> },
-  E extends HttpServerError.RequestError,
+  E extends RouteError,
   R,
 >(
   method: HttpMethod.HttpMethod,
   route: Routes.QueryRoute<A, I>,
   handler: (a: A) => Effect.Effect<Response.Response | HttpServerResponse.HttpServerResponse, E, R>,
 ) =>
-  HttpRouter.makeRoute(
+  HttpRouter.route(
     method,
     route.path,
     pipe(
       HttpServerRequest.schemaSearchParams(route.schema),
-      Effect.catchTag('ParseError', () =>
+      Effect.catchTag('SchemaError', () =>
         Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
       ),
       Effect.andThen(handler),
       Effect.andThen(response =>
-        HttpServerResponse.isServerResponse(response) ? response : Response.toHttpServerResponse(response),
+        HttpServerResponse.isHttpServerResponse(response)
+          ? Effect.succeed(response)
+          : Response.toHttpServerResponse(response),
       ),
     ),
   )
 
-const MakeStaticRoute = <E extends HttpServerError.RequestError, R>(
+const MakeStaticRoute = <E extends RouteError, R>(
   method: HttpMethod.HttpMethod,
   path: `/${string}`,
   handler: Effect.Effect<Response.Response, E, R>,
-) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
+) => HttpRouter.route(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefined) =>
   MakeStaticRoute(
@@ -98,7 +138,7 @@ const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefin
       Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
         condition
           ? pipe(
-              HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
+              HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: BooleanFromStringSchema })),
               Effect.map(Struct.get('preview')),
               Effect.orElseSucceed(() => false),
             )
@@ -108,7 +148,7 @@ const MakeCmsPageRoute = (path: `/${string}`, current: Page['current'] | undefin
     ),
   )
 
-const RequestAReviewFlowRouter = HttpRouter.fromIterable([
+const RequestAReviewFlowRouter = [
   MakeStaticRoute('GET', Routes.RequestAReview, RequestAReviewFlow.RequestAReviewPage()),
   MakeStaticRoute(
     'POST',
@@ -155,296 +195,311 @@ const RequestAReviewFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.RequestAReviewCheckYourRequest, RequestAReviewFlow.CheckYourRequestPage),
   MakeRoute('POST', Routes.RequestAReviewCheckYourRequest, RequestAReviewFlow.CheckYourRequestSubmission),
   MakeRoute('GET', Routes.RequestAReviewPublished, RequestAReviewFlow.PublishedPage),
-])
+]
 
-const ReviewAPreprintFlowRouter = HttpRouter.fromIterable([
-  MakeRoute('GET', Routes.ReviewAPreprintAddToAClub, ReviewAPreprintFlow.AddToAClubPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewAPreprintAddToAClub,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewAPreprintFlow.AddToAClubSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewAPreprintUseOfAi, ReviewAPreprintFlow.UseOfAiPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewAPreprintUseOfAi,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewAPreprintFlow.UseOfAiSubmission),
-    ),
-  ),
-]).pipe(HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn))
-
-const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
-  MakeRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
-  MakeRoute(
-    'GET',
-    Routes.ReviewADatasetFollowsFairAndCarePrinciples,
-    ReviewADatasetFlow.FollowsFairAndCarePrinciplesQuestion,
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetRateTheQuality, ReviewADatasetFlow.RateTheQualityQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetRateTheQuality,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.RateTheQualitySubmission),
-    ),
-  ),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetFollowsFairAndCarePrinciples,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.FollowsFairAndCarePrinciplesSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetHasEnoughMetadata, ReviewADatasetFlow.HasEnoughMetadataQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetHasEnoughMetadata,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.HasEnoughMetadataSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetHasTrackedChanges, ReviewADatasetFlow.HasTrackedChangesQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetHasTrackedChanges,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.HasTrackedChangesSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetHasDataCensoredOrDeleted, ReviewADatasetFlow.HasDataCensoredOrDeletedQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetHasDataCensoredOrDeleted,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.HasDataCensoredOrDeletedSubmission),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
-    ReviewADatasetFlow.IsAppropriateForThisKindOfResearchQuestion,
-  ),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.IsAppropriateForThisKindOfResearchSubmission),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.ReviewADatasetSupportsRelatedConclusions,
-    ReviewADatasetFlow.SupportsRelatedConclusionsQuestion,
-  ),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetSupportsRelatedConclusions,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.SupportsRelatedConclusionsSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetIsDetailedEnough, ReviewADatasetFlow.IsDetailedEnoughQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetIsDetailedEnough,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.IsDetailedEnoughSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetIsErrorFree, ReviewADatasetFlow.IsErrorFreeQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetIsErrorFree,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.IsErrorFreeSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetMattersToItsAudience, ReviewADatasetFlow.MattersToItsAudienceQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetMattersToItsAudience,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.MattersToItsAudienceSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetIsReadyToBeShared, ReviewADatasetFlow.IsReadyToBeSharedQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetIsReadyToBeShared,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.IsReadyToBeSharedSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetIsMissingAnything, ReviewADatasetFlow.IsMissingAnythingQuestion),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetIsMissingAnything,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.IsMissingAnythingSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetChooseYourPersona, ReviewADatasetFlow.ChooseYourPersonaPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetChooseYourPersona,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.ChooseYourPersonaSubmission),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
-    ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewPage,
-  ),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetAddInvitationToAppear, ReviewADatasetFlow.AddInvitationToAppearPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetAddInvitationToAppear,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.AddInvitationToAppearSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetRemoveInvitationToAppear, ReviewADatasetFlow.RemoveInvitationToAppearPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetRemoveInvitationToAppear,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.RemoveInvitationToAppearSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetCheckInvitationsToAppear, ReviewADatasetFlow.CheckInvitationsToAppearPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetCheckInvitationsToAppear,
-    ReviewADatasetFlow.CheckInvitationsToAppearSubmission,
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetUseOfAi, ReviewADatasetFlow.UseOfAiPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetUseOfAi,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.UseOfAiSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetDeclareCompetingInterests, ReviewADatasetFlow.DeclareCompetingInterestsPage),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetDeclareCompetingInterests,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.DeclareCompetingInterestsSubmission),
-    ),
-  ),
-  MakeRoute(
-    'GET',
-    Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
-    ReviewADatasetFlow.DeclareFollowingCodeOfConductPage,
-  ),
-  MakeRoute(
-    'POST',
-    Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
-    flow(
-      Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.DeclareFollowingCodeOfConductSubmission),
-    ),
-  ),
-  MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
-  MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
-  MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, ReviewADatasetFlow.ReviewBeingPublishedPage),
-  MakeRoute('GET', Routes.ReviewADatasetReviewPublished, ReviewADatasetFlow.ReviewPublishedPage),
-]).pipe(
-  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
-  HttpRouter.append(MakeStaticRoute('GET', Routes.ReviewADataset, ReviewADatasetFlow.ReviewADatasetPage)),
-  HttpRouter.append(
-    MakeStaticRoute(
+const ReviewAPreprintFlowRouter = useMiddleware(
+  [
+    MakeRoute('GET', Routes.ReviewAPreprintAddToAClub, ReviewAPreprintFlow.AddToAClubPage),
+    MakeRoute(
       'POST',
-      Routes.ReviewADataset,
-      pipe(
-        Effect.Do,
+      Routes.ReviewAPreprintAddToAClub,
+      flow(
+        Effect.succeed,
         Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-        Effect.andThen(ReviewADatasetFlow.ReviewADatasetSubmission),
+        Effect.andThen(ReviewAPreprintFlow.AddToAClubSubmission),
       ),
     ),
-  ),
-  HttpRouter.append(MakeRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
+    MakeRoute('GET', Routes.ReviewAPreprintUseOfAi, ReviewAPreprintFlow.UseOfAiPage),
+    MakeRoute(
+      'POST',
+      Routes.ReviewAPreprintUseOfAi,
+      flow(
+        Effect.succeed,
+        Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+        Effect.andThen(ReviewAPreprintFlow.UseOfAiSubmission),
+      ),
+    ),
+  ],
+  HttpMiddleware.ensureUserIsLoggedIn,
 )
 
-const AuthorInviteFlowRouter = HttpRouter.fromIterable([
-  MakeRoute('GET', Routes.AuthorInviteAcceptInvite, AuthorInviteFlow.AcceptInvite),
-  MakeRoute('GET', Routes.AuthorInviteChooseYourPersona, AuthorInviteFlow.ChooseYourPersonaPage),
-  MakeRoute(
+const ReviewADatasetFlowRouter = [
+  ...useMiddleware(
+    [
+      MakeRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+        ReviewADatasetFlow.FollowsFairAndCarePrinciplesQuestion,
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetRateTheQuality, ReviewADatasetFlow.RateTheQualityQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetRateTheQuality,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.RateTheQualitySubmission),
+        ),
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.FollowsFairAndCarePrinciplesSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetHasEnoughMetadata, ReviewADatasetFlow.HasEnoughMetadataQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetHasEnoughMetadata,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.HasEnoughMetadataSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetHasTrackedChanges, ReviewADatasetFlow.HasTrackedChangesQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetHasTrackedChanges,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.HasTrackedChangesSubmission),
+        ),
+      ),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetHasDataCensoredOrDeleted,
+        ReviewADatasetFlow.HasDataCensoredOrDeletedQuestion,
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetHasDataCensoredOrDeleted,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.HasDataCensoredOrDeletedSubmission),
+        ),
+      ),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
+        ReviewADatasetFlow.IsAppropriateForThisKindOfResearchQuestion,
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.IsAppropriateForThisKindOfResearchSubmission),
+        ),
+      ),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetSupportsRelatedConclusions,
+        ReviewADatasetFlow.SupportsRelatedConclusionsQuestion,
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetSupportsRelatedConclusions,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.SupportsRelatedConclusionsSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetIsDetailedEnough, ReviewADatasetFlow.IsDetailedEnoughQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetIsDetailedEnough,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.IsDetailedEnoughSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetIsErrorFree, ReviewADatasetFlow.IsErrorFreeQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetIsErrorFree,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.IsErrorFreeSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetMattersToItsAudience, ReviewADatasetFlow.MattersToItsAudienceQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetMattersToItsAudience,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.MattersToItsAudienceSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetIsReadyToBeShared, ReviewADatasetFlow.IsReadyToBeSharedQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetIsReadyToBeShared,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.IsReadyToBeSharedSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetIsMissingAnything, ReviewADatasetFlow.IsMissingAnythingQuestion),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetIsMissingAnything,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.IsMissingAnythingSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetChooseYourPersona, ReviewADatasetFlow.ChooseYourPersonaPage),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetChooseYourPersona,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.ChooseYourPersonaSubmission),
+        ),
+      ),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+        ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewPage,
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetAddInvitationToAppear, ReviewADatasetFlow.AddInvitationToAppearPage),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetAddInvitationToAppear,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.AddInvitationToAppearSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetRemoveInvitationToAppear, ReviewADatasetFlow.RemoveInvitationToAppearPage),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetRemoveInvitationToAppear,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.RemoveInvitationToAppearSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetCheckInvitationsToAppear, ReviewADatasetFlow.CheckInvitationsToAppearPage),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetCheckInvitationsToAppear,
+        ReviewADatasetFlow.CheckInvitationsToAppearSubmission,
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetUseOfAi, ReviewADatasetFlow.UseOfAiPage),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetUseOfAi,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.UseOfAiSubmission),
+        ),
+      ),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetDeclareCompetingInterests,
+        ReviewADatasetFlow.DeclareCompetingInterestsPage,
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetDeclareCompetingInterests,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.DeclareCompetingInterestsSubmission),
+        ),
+      ),
+      MakeRoute(
+        'GET',
+        Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
+        ReviewADatasetFlow.DeclareFollowingCodeOfConductPage,
+      ),
+      MakeRoute(
+        'POST',
+        Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(ReviewADatasetFlow.DeclareFollowingCodeOfConductSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
+      MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
+      MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, ReviewADatasetFlow.ReviewBeingPublishedPage),
+      MakeRoute('GET', Routes.ReviewADatasetReviewPublished, ReviewADatasetFlow.ReviewPublishedPage),
+    ],
+    HttpMiddleware.ensureUserIsLoggedIn,
+  ),
+  MakeStaticRoute('GET', Routes.ReviewADataset, ReviewADatasetFlow.ReviewADatasetPage),
+  MakeStaticRoute(
     'POST',
-    Routes.AuthorInviteChooseYourPersona,
-    flow(
-      Effect.succeed,
+    Routes.ReviewADataset,
+    pipe(
+      Effect.Do,
       Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(AuthorInviteFlow.ChooseYourPersonaSubmission),
+      Effect.andThen(ReviewADatasetFlow.ReviewADatasetSubmission),
     ),
   ),
-  MakeRoute('GET', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesPage),
-  MakeRoute('POST', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesSubmission),
-  MakeRoute('GET', Routes.AuthorInvitePublished, AuthorInviteFlow.PublishedPage),
-]).pipe(
-  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
-  HttpRouter.append(MakeRoute('GET', Routes.AuthorInviteStartNow, AuthorInviteFlow.StartNowPage)),
-)
+  MakeRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage),
+]
 
-const DatasetReviewPages = HttpRouter.fromIterable([
+const AuthorInviteFlowRouter = [
+  ...useMiddleware(
+    [
+      MakeRoute('GET', Routes.AuthorInviteAcceptInvite, AuthorInviteFlow.AcceptInvite),
+      MakeRoute('GET', Routes.AuthorInviteChooseYourPersona, AuthorInviteFlow.ChooseYourPersonaPage),
+      MakeRoute(
+        'POST',
+        Routes.AuthorInviteChooseYourPersona,
+        flow(
+          Effect.succeed,
+          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.andThen(AuthorInviteFlow.ChooseYourPersonaSubmission),
+        ),
+      ),
+      MakeRoute('GET', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesPage),
+      MakeRoute('POST', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesSubmission),
+      MakeRoute('GET', Routes.AuthorInvitePublished, AuthorInviteFlow.PublishedPage),
+    ],
+    HttpMiddleware.ensureUserIsLoggedIn,
+  ),
+  MakeRoute('GET', Routes.AuthorInviteStartNow, AuthorInviteFlow.StartNowPage),
+]
+
+const DatasetReviewPages = [
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
   MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
-])
+]
 
-const WriteCommentFlowRouter = HttpRouter.fromIterable([
+const WriteCommentFlowRouter = [
   MakeRoute('GET', Routes.WriteComment, WriteCommentFlow.WriteCommentPage),
   MakeRoute('GET', Routes.WriteCommentStartNow, WriteCommentFlow.StartNow),
   MakeRoute('GET', Routes.WriteCommentEnterComment, WriteCommentFlow.EnterCommentPage),
@@ -537,23 +592,26 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('POST', Routes.WriteCommentCheck, WriteCommentFlow.CheckPageSubmission),
   MakeRoute('GET', Routes.WriteCommentPublishing, WriteCommentFlow.PublishingPage),
   MakeRoute('GET', Routes.WriteCommentPublished, WriteCommentFlow.PublishedPage),
-])
+]
 
-const MyDetailsRouter = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', Routes.ChangeRequestedReviewNotifications, MyDetails.RequestedReviewNotificationsPage),
-  MakeStaticRoute(
-    'POST',
-    Routes.ChangeRequestedReviewNotifications,
-    pipe(
-      Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody')),
-      Effect.andThen(MyDetails.RequestedReviewNotificationsSubmission),
+const MyDetailsRouter = useMiddleware(
+  [
+    MakeStaticRoute('GET', Routes.ChangeRequestedReviewNotifications, MyDetails.RequestedReviewNotificationsPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeRequestedReviewNotifications,
+      pipe(
+        Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.RequestedReviewNotificationsSubmission),
+      ),
     ),
-  ),
-]).pipe(HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn))
+  ],
+  HttpMiddleware.ensureUserIsLoggedIn,
+)
 
-const AuthRouter = HttpRouter.fromIterable([
+const AuthRouter = [
   MakeStaticRoute('GET', Routes.LogIn, Effect.succeed(logIn)),
-  HttpRouter.makeRoute(
+  HttpRouter.route(
     'GET',
     Routes.LogInDemo,
     Effect.andThen(
@@ -565,7 +623,7 @@ const AuthRouter = HttpRouter.fromIterable([
       ),
     ),
   ),
-  HttpRouter.makeRoute('GET', Routes.LogOut, LogOut),
+  HttpRouter.route('GET', Routes.LogOut, LogOut),
   MakeQueryRoute(
     'GET',
     Routes.OrcidAuth,
@@ -576,76 +634,74 @@ const AuthRouter = HttpRouter.fromIterable([
       Match.exhaustive,
     ),
   ),
-])
+]
 
-const DataRouter = HttpRouter.fromIterable([
-  HttpRouter.makeRoute('GET', Routes.ClubsData, ClubsData),
-  HttpRouter.makeRoute('GET', Routes.RequestsData, RequestsData),
-]).pipe(HttpRouter.use(HttpMiddleware.requireScietyListToken))
-
-const BlogRouter = HttpRouter.fromIterable([
-  MakeQueryRoute('GET', Routes.Blog, BlogPage),
-  MakeRoute(
-    'GET',
-    Routes.BlogPost,
-    flow(
-      Effect.succeed,
-      Effect.bind('preview', () =>
-        Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
-          condition
-            ? pipe(
-                HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: Schema.BooleanFromString })),
-                Effect.map(Struct.get('preview')),
-                Effect.orElseSucceed(() => false),
-              )
-            : Effect.succeed(false),
-        ),
-      ),
-      Effect.andThen(CmsBlogPostPage),
-    ),
-  ),
-  MakeQueryRoute(
-    'GET',
-    Routes.Tag,
-    flow(
-      Effect.succeed,
-      Effect.let('tag', () => 'champions-program' as const),
-      Effect.andThen(TagPage),
-    ),
-  ),
-  MakeQueryRoute('GET', Routes.Newsletter, NewsletterPage),
-  MakeQueryRoute('GET', Routes.Weeknotes, WeeknotesPage),
-]).pipe(
-  HttpRouter.use(
-    HttpMiddleware.make(app =>
-      Effect.gen(function* () {
-        if (yield* FeatureFlags.loadBlogFromContentful) {
-          return yield* app
-        }
-
-        return yield* Response.toHttpServerResponse(
-          Response.RedirectResponse({ location: 'https://content.prereview.org' }),
-        )
-      }),
-    ),
-  ),
+const DataRouter = useMiddleware(
+  [HttpRouter.route('GET', Routes.ClubsData, ClubsData), HttpRouter.route('GET', Routes.RequestsData, RequestsData)],
+  HttpMiddleware.requireScietyListToken,
 )
 
-const MatchmakingRouter = pipe(
-  HttpRouter.fromIterable([
-    MakeStaticRoute('GET', Routes.Matchmaking, MatchmakingPage),
-    MakeStaticRoute(
-      'POST',
-      Routes.Matchmaking,
-      pipe(
-        HttpServerRequest.HttpServerRequest,
-        Effect.andThen(Struct.get('urlParamsBody')),
-        Effect.andThen(MatchmakingSubmission),
+const BlogRouter = useMiddleware(
+  [
+    MakeQueryRoute('GET', Routes.Blog, BlogPage),
+    MakeRoute(
+      'GET',
+      Routes.BlogPost,
+      flow(
+        Effect.succeed,
+        Effect.bind('preview', () =>
+          Effect.flatMap(FeatureFlags.canPreviewContentFromContentful, condition =>
+            condition
+              ? pipe(
+                  HttpServerRequest.schemaSearchParams(Schema.Struct({ preview: BooleanFromStringSchema })),
+                  Effect.map(Struct.get('preview')),
+                  Effect.orElseSucceed(() => false),
+                )
+              : Effect.succeed(false),
+          ),
+        ),
+        Effect.andThen(CmsBlogPostPage),
       ),
     ),
-  ]),
-  HttpRouter.use(
-    HttpMiddleware.make(app =>
+    MakeQueryRoute(
+      'GET',
+      Routes.Tag,
+      flow(
+        Effect.succeed,
+        Effect.let('tag', () => 'champions-program' as const),
+        Effect.andThen(TagPage),
+      ),
+    ),
+    MakeQueryRoute('GET', Routes.Newsletter, NewsletterPage),
+    MakeQueryRoute('GET', Routes.Weeknotes, WeeknotesPage),
+  ],
+  app =>
+    Effect.gen(function* () {
+      if (yield* FeatureFlags.loadBlogFromContentful) {
+        return yield* app
+      }
+
+      return yield* Response.toHttpServerResponse(
+        Response.RedirectResponse({ location: 'https://content.prereview.org' }),
+      )
+    }),
+)
+
+const MatchmakingRouter = useMiddleware(
+  useMiddleware(
+    [
+      MakeStaticRoute('GET', Routes.Matchmaking, MatchmakingPage),
+      MakeStaticRoute(
+        'POST',
+        Routes.Matchmaking,
+        pipe(
+          HttpServerRequest.HttpServerRequest,
+          Effect.andThen(Struct.get('urlParamsBody')),
+          Effect.andThen(MatchmakingSubmission),
+        ),
+      ),
+    ],
+    app =>
       Effect.gen(function* () {
         const featureFlags = yield* FeatureFlags.FeatureFlags
         const user = yield* LoggedInUser
@@ -656,14 +712,13 @@ const MatchmakingRouter = pipe(
 
         return yield* Effect.andThen(PageNotFound, Response.toHttpServerResponse)
       }),
-    ),
   ),
-  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+  HttpMiddleware.ensureUserIsLoggedIn,
 )
 
-export const Router = pipe(
-  HttpRouter.concatAll(
-    HttpRouter.fromIterable([
+const routes = [
+  ...useMiddleware(
+    [
       MakeStaticRoute('GET', Routes.HomePage, HomePage),
       MakeCmsPageRoute(Routes.AboutUs, 'about-us'),
       MakeCmsPageRoute(Routes.ChampionsProgram, 'champions-program'),
@@ -682,47 +737,54 @@ export const Router = pipe(
       MakeCmsPageRoute(Routes.Trainings, 'trainings'),
       MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
       MakeQueryRoute('GET', Routes.ReviewRequests, ReviewRequestsPage),
-    ]),
-    pipe(
-      HttpRouter.fromIterable([
-        MakeStaticRoute('GET', Routes.MyReviewRequests, MyReviewRequestsPage),
-        MakeQueryRoute('GET', Routes.VerifyEmailAddress, VerifyEmailAddress),
-      ]),
-      HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+      ...useMiddleware(
+        [
+          MakeStaticRoute('GET', Routes.MyReviewRequests, MyReviewRequestsPage),
+          MakeQueryRoute('GET', Routes.VerifyEmailAddress, VerifyEmailAddress),
+        ],
+        HttpMiddleware.ensureUserIsLoggedIn,
+      ),
+      ...MatchmakingRouter,
+      ...AuthRouter,
+      ...DatasetReviewPages,
+      ...MyDetailsRouter,
+      ...RequestAReviewFlowRouter,
+      ...ReviewAPreprintFlowRouter,
+      ...ReviewADatasetFlowRouter,
+      ...AuthorInviteFlowRouter,
+      ...WriteCommentFlowRouter,
+      ...BlogRouter,
+    ],
+    Effect.map(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
+  ),
+  ...DataRouter,
+  HttpRouter.route('POST', Routes.Inbox, Inbox),
+  HttpRouter.route('GET', '/health', HealthCheck),
+  HttpRouter.route('GET', '/robots.txt', RobotsTxt),
+  ...LegacyRouter,
+]
+
+const isRouteNotFound = (error: unknown) =>
+  error instanceof HttpServerError.RouteNotFound ||
+  (HttpServerError.isHttpServerError(error) && error.reason._tag === 'RouteNotFound')
+
+export const Router = Effect.map(
+  Effect.provideService(HttpRouter.toHttpEffect(HttpRouter.addAll(routes)), HttpRouter.RouterConfig, {
+    maxParamLength: 256,
+  }),
+  flow(
+    Effect.catchIf(isRouteNotFound, () => Effect.interruptible(nonEffectRouter)),
+    Effect.catchIf(isRouteNotFound, () =>
+      Effect.interruptible(Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
     ),
-    MatchmakingRouter,
-    AuthRouter,
-    DatasetReviewPages,
-    MyDetailsRouter,
-    RequestAReviewFlowRouter,
-    ReviewAPreprintFlowRouter,
-    ReviewADatasetFlowRouter,
-    AuthorInviteFlowRouter,
-    WriteCommentFlowRouter,
-    BlogRouter,
-  ),
-  HttpRouter.use(
-    HttpMiddleware.make(
-      Effect.map(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
-    ),
-  ),
-  HttpRouter.concat(DataRouter),
-  HttpRouter.post(Routes.Inbox, Inbox),
-  HttpRouter.get('/health', HealthCheck),
-  HttpRouter.get('/robots.txt', RobotsTxt),
-  HttpRouter.concat(LegacyRouter),
-  HttpRouter.withRouterConfig({ maxParamLength: 256 }),
-  Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
-  Effect.catchTag('RouteNotFound', () =>
-    Effect.interruptible(Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
-  ),
-  Effect.catchAllCause(cause =>
-    pipe(
-      Effect.logFatal('Failed to create response'),
-      Effect.annotateLogs('cause', Cause.pretty(cause, { renderErrorCause: true })),
-      Effect.andThen(HavingProblemsPage),
-      Effect.andThen(Response.toHttpServerResponse),
-      Effect.interruptible,
+    Effect.catchCause(cause =>
+      pipe(
+        Effect.logFatal('Failed to create response'),
+        Effect.annotateLogs('cause', Cause.pretty(cause)),
+        Effect.andThen(HavingProblemsPage),
+        Effect.andThen(Response.toHttpServerResponse),
+        Effect.interruptible,
+      ),
     ),
   ),
 )

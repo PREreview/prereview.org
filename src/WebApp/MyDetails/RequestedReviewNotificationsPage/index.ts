@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../Context.ts'
@@ -28,7 +28,7 @@ export const RequestedReviewNotificationsPage: Effect.Effect<Response, never, Lo
 
       return CreatePage({ locale, form })
     }),
-    Effect.catchTag('UnableToQuery', 'UnknownPrereviewer', () => HavingProblemsPage),
+    Effect.catchTag(['UnableToQuery', 'UnknownPrereviewer'], () => HavingProblemsPage),
     Effect.withSpan('MyDetails.RequestedReviewNotificationsPage'),
   )
 
@@ -60,5 +60,5 @@ export const RequestedReviewNotificationsSubmission: (
       }),
     })
   },
-  Effect.catchTag('UnableToHandleCommand', 'UnknownPrereviewer', () => HavingProblemsPage),
+  Effect.catchTag(['UnableToHandleCommand', 'UnknownPrereviewer'], () => HavingProblemsPage),
 )

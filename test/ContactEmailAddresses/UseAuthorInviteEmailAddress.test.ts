@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '../vitest.ts'
-import { Array, Effect, Either, Layer, Option, pipe, Struct, PubSub } from 'effect'
+import { Array, Effect, Result, Layer, Option, pipe, Struct, PubSub } from 'effect'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
 import { type Event, Events } from '../../src/Events.ts'
 import { EventStore } from '../../src/EventStore.ts'
@@ -24,36 +24,36 @@ const acceptedInvitationBySomeoneElseEmailAddress = EmailAddress('accepted-someo
 const orcidId = OrcidId('0000-0002-1825-0097')
 const someoneElseOrcidId = OrcidId('0000-0002-5753-2556')
 
-it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ReadonlyArray<Event['_tag']>]>([
+it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Event['_tag']>]>([
   [
     'accepted invitation, no email address',
     { orcidId, inviteId: acceptedInvitationId },
-    Either.void,
+    Result.void,
     ['AuthorInviteEmailAddressChosenAsContactAddress'],
   ],
   [
     'accepted invitation, unverified email address',
     { orcidId, inviteId: acceptedInvitationId },
-    Either.void,
+    Result.void,
     ['AuthorInviteEmailAddressChosenAsContactAddress'],
   ],
-  ['open invitation', { orcidId, inviteId: openInvitationId }, Either.left(new _.AcceptedInvitationIsNotFound()), []],
+  ['open invitation', { orcidId, inviteId: openInvitationId }, Result.fail(new _.AcceptedInvitationIsNotFound()), []],
   [
     'invitation accepted by someone else',
     { orcidId, inviteId: acceptedInvitationBySomeoneElseId },
-    Either.left(new _.AcceptedInvitationIsNotFound()),
+    Result.fail(new _.AcceptedInvitationIsNotFound()),
     [],
   ],
   [
     'declined invitation',
     { orcidId, inviteId: declinedInvitation },
-    Either.left(new _.AcceptedInvitationIsNotFound()),
+    Result.fail(new _.AcceptedInvitationIsNotFound()),
     [],
   ],
   [
     'completed invitation',
     { orcidId, inviteId: completedInvitation },
-    Either.left(new _.AcceptedInvitationIsNotFound()),
+    Result.fail(new _.AcceptedInvitationIsNotFound()),
     [],
   ],
 ])('%s', ([, input, expectedReturn, expectedEvents]) =>
@@ -99,7 +99,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, ReadonlyArray<Eve
       }),
     )
 
-    const actualReturn = yield* Effect.either(
+    const actualReturn = yield* Effect.result(
       _.UseAuthorInviteEmailAddress(authorInviteStore)(input).pipe(Effect.provideService(EventStore, eventStore)),
     )
     const actualEvents = yield* pipe(

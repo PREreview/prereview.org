@@ -242,7 +242,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ field, language, page, query })({
@@ -422,7 +422,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ page })({
@@ -600,7 +600,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ page })({
@@ -629,7 +629,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
   it.effect.prop('when the list is empty', [fc.integer({ min: 1 })], ([page]) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getRecentPrereviewsFromZenodo({ page })({
@@ -680,7 +680,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           response: { status },
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getRecentPrereviewsFromZenodo({ page })({
@@ -700,7 +700,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
   it.effect.prop('when the page number is impossible', [fc.integer({ max: 0 })], ([page]) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getRecentPrereviewsFromZenodo({ page })({
@@ -807,7 +807,7 @@ describe('getPrereviewFromZenodo', () => {
 
         const getPreprint = vi.fn(() => Effect.succeed(preprint))
 
-        const runtime = yield* Effect.provide(Effect.runtime<Preprints>(), Layer.mock(Preprints, { getPreprint }))
+        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprint }))
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -864,7 +864,7 @@ describe('getPrereviewFromZenodo', () => {
     Effect.gen(function* () {
       const wasPrereviewRemoved = vi.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(() => true)
 
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
@@ -886,7 +886,7 @@ describe('getPrereviewFromZenodo', () => {
     [fc.integer(), fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone)],
     ([id, status]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -962,7 +962,7 @@ describe('getPrereviewFromZenodo', () => {
           })
           .getOnce('http://example.com/review.html/content', { status: textStatus })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -987,7 +987,7 @@ describe('getPrereviewFromZenodo', () => {
         status: StatusCodes.ServiceUnavailable,
       })
 
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
@@ -1059,7 +1059,7 @@ describe('getPrereviewFromZenodo', () => {
           })
           .getOnce('http://example.com/review.html/content', { body: 'Some text' })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -1126,7 +1126,7 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
@@ -1192,7 +1192,7 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getPrereviewFromZenodo(id)({
@@ -1285,7 +1285,7 @@ describe('getPrereviewFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -1360,7 +1360,7 @@ describe('getPrereviewFromZenodo', () => {
           status: StatusCodes.OK,
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -1424,7 +1424,7 @@ describe('getPrereviewFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -1504,7 +1504,7 @@ describe('getPrereviewFromZenodo', () => {
           status: StatusCodes.OK,
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewFromZenodo(id)({
@@ -1677,7 +1677,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             },
           }
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.getPrereviewsForProfileFromZenodo(profile)({
@@ -1952,7 +1952,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             },
           }
 
-          const runtime = yield* Effect.runtime<Preprints>()
+          const runtime = yield* Effect.context<Preprints>()
 
           const actual = yield* Effect.promise(
             _.getPrereviewsForProfileFromZenodo(profile)({
@@ -2164,7 +2164,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForProfileFromZenodo(profile)({
@@ -2244,7 +2244,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           response: { status },
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForProfileFromZenodo(profile)({
@@ -2463,7 +2463,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForUserFromZenodo(user)({
@@ -2678,7 +2678,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForUserFromZenodo(user)({
@@ -2758,7 +2758,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           response: { status },
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForUserFromZenodo(user)({
@@ -2942,7 +2942,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
@@ -3016,7 +3016,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
   it.effect.prop('when there are no Prereviews', [fc.origin(), fc.clubDetails()], ([publicUrl, club]) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime<Preprints>()
+      const runtime = yield* Effect.context<Preprints>()
 
       const actual = yield* Effect.promise(
         _.getPrereviewsForClubFromZenodo(club)({
@@ -3086,7 +3086,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           response: { status },
         })
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
@@ -3216,7 +3216,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
@@ -3333,7 +3333,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
         }
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.getPrereviewsForClubFromZenodo(club)({
@@ -4572,7 +4572,7 @@ describe('createRecordOnZenodo', () => {
 ${newPrereview.review.toString()}`,
                         ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                         ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                        ...(Array.isNonEmptyArray(subjects)
+                        ...(Array.isArrayNonEmpty(subjects)
                           ? {
                               subjects: subjects.map(({ id, name }) => ({
                                 term: name,
@@ -4764,7 +4764,7 @@ ${newPrereview.review.toString()}`,
                           String.isString,
                         ),
                         ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                        ...(Array.isNonEmptyArray(subjects)
+                        ...(Array.isArrayNonEmpty(subjects)
                           ? {
                               subjects: subjects.map(({ id, name }) => ({
                                 term: name,
@@ -4940,7 +4940,7 @@ ${newPrereview.review.toString()}`,
 ${newPrereview.review.toString()}`,
                         ...(requested ? { keywords: ['Requested PREreview'] } : {}),
                         ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                        ...(Array.isNonEmptyArray(subjects)
+                        ...(Array.isArrayNonEmpty(subjects)
                           ? {
                               subjects: subjects.map(({ id, name }) => ({
                                 term: name,
@@ -5114,7 +5114,7 @@ ${newPrereview.review.toString()}`,
                           String.isString,
                         ),
                         ...(Option.isSome(newPrereview.language) ? { language: newPrereview.language.value } : {}),
-                        ...(Array.isNonEmptyArray(subjects)
+                        ...(Array.isArrayNonEmpty(subjects)
                           ? {
                               subjects: subjects.map(({ id, name }) => ({
                                 term: name,

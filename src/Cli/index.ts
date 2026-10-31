@@ -1,4 +1,4 @@
-import { Command } from '@effect/cli'
+import { Command } from 'effect/cli'
 import { pipe } from 'effect'
 import { AddDatasetReviewToClub } from './AddDatasetReviewToClub.ts'
 import { PopulateRequestEmbeddings } from './PopulateRequestEmbeddings.ts'
@@ -17,7 +17,4 @@ const app = pipe(
   ]),
 )
 
-export const Cli = Command.run(app, {
-  name: 'PREreview',
-  version: 'latest',
-})
+export const Cli = Command.runWith(app, { version: 'latest' })

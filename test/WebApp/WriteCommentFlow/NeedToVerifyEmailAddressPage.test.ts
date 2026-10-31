@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Equal, Layer } from 'effect'
+import { Effect, Result, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/ContactEmailAddresses/index.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
@@ -33,7 +33,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
               const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
               const getNextExpectedCommandForUserOnAComment = vi.fn<
                 typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-              >(() => Effect.succeed(Either.right(nextCommand)))
+              >(() => Effect.succeed(Result.succeed(nextCommand)))
 
               const actual = yield* _.NeedToVerifyEmailAddressPage({ commentId }).pipe(
                 Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
@@ -185,7 +185,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
           Effect.gen(function* () {
             const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
-            >(() => Effect.succeed(Either.right(nextCommand)))
+            >(() => Effect.succeed(Result.succeed(nextCommand)))
 
             const actual = yield* Effect.provideService(
               _.NeedToVerifyEmailAddressPage({ commentId }),

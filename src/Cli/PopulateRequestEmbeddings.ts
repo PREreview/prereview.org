@@ -1,5 +1,5 @@
-import { Command } from '@effect/cli'
-import { Array, Effect, Console, Option } from 'effect'
+import { Command } from 'effect/cli'
+import { Array, Effect, Console, Option, Filter } from 'effect'
 import { Embeddings } from '../Embeddings/index.ts'
 import { ReviewRequestQueries } from '../ReviewRequests/index.ts'
 import { Preprints } from '../Preprints/index.ts'
@@ -21,7 +21,10 @@ const program = Effect.fnUntraced(function* () {
         preprintId: preprint.id,
         title: preprint.title.text.value,
         abstract: preprint.abstract ? preprint.abstract.text.value : '',
-        authors: Array.filterMap(preprint.authors, author => Option.fromNullable(author.orcid)),
+        authors: Array.filterMap(
+          preprint.authors,
+          Filter.fromPredicateOption(author => Option.fromNullishOr(author.orcid)),
+        ),
       }
     }),
   )

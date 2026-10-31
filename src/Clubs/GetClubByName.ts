@@ -1,16 +1,16 @@
-import { Array, Either, Equal, Option } from 'effect'
+import { Array, Result, Equal, Option } from 'effect'
 import type { Name } from '../types/Name.ts'
 import type { ClubDetails, ClubName } from './Clubs.ts'
 import { ClubNotFound } from './Errors.ts'
 
 export type Input = Name
 
-export type Result = Either.Either<ClubName, ClubNotFound>
+export type Result = Result.Result<ClubName, ClubNotFound>
 
 export const GetClubByName =
   (clubs: Array.NonEmptyReadonlyArray<ClubDetails>) =>
   (input: Input): Result =>
-    Either.fromOption(
+    Result.fromOption(
       Array.findFirst(clubs, club => {
         if (!Equal.equals(club.name.text, input) && !Array.contains(club.formerNames ?? [], input)) {
           return Option.none()

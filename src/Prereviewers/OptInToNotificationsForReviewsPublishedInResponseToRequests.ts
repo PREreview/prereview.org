@@ -1,4 +1,4 @@
-import { Array, Data, Either, Match, Option, type Types } from 'effect'
+import { Array, Data, Result, Match, Option, type Types } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { OrcidId, Temporal } from '../types/index.ts'
@@ -38,7 +38,7 @@ const createFilter = (input: Input) =>
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
 
-  if (Array.isEmptyArray(filteredEvents)) {
+  if (Array.isArrayEmpty(filteredEvents)) {
     return new UnknownPrereviewer()
   }
 
@@ -61,18 +61,18 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   })
 }
 
-const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
     PrereviewerHasNotOptedIn: () =>
-      Either.right(
+      Result.succeed(
         Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
       ),
     PrereviewerHasOptedOut: () =>
-      Either.right(
+      Result.succeed(
         Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
       ),
-    PrereviewerHasOptedIn: () => Either.right(Option.none()),
-    UnknownPrereviewer: state => Either.left(state),
+    PrereviewerHasOptedIn: () => Result.succeed(Option.none()),
+    UnknownPrereviewer: state => Result.fail(state),
   })
 
 export const OptInToNotificationsForReviewsPublishedInResponseToRequests = Commands.Command({

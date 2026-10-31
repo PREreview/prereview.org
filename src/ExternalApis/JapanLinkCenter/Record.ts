@@ -1,35 +1,54 @@
-import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { Array, Data, Effect, flow, identity, Match, pipe, Schema, Struct } from 'effect'
+import { HttpClient, HttpClientResponse } from 'effect/http'
+import {
+  Array,
+  Data,
+  Effect,
+  pipe,
+  Schema,
+  SchemaTransformation,
+  Number,
+  Option,
+  SchemaGetter,
+  SchemaIssue,
+} from 'effect'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { Doi, OrcidId, Temporal } from '../../types/index.ts'
 
-const PublicationDateSchema = Schema.transform(
-  Schema.Struct({
-    year: Schema.propertySignature(Schema.NumberFromString).pipe(Schema.fromKey('publication_year')),
-    month: Schema.optional(Schema.NumberFromString).pipe(Schema.fromKey('publication_month')),
-    day: Schema.optional(Schema.NumberFromString).pipe(Schema.fromKey('publication_day')),
-  }),
-  Schema.Union(Temporal.PlainDateFromPartsSchema, Temporal.PlainYearMonthFromPartsSchema, Schema.Number),
-  {
-    strict: true,
-    decode: flow(
-      Match.value,
-      Match.when({ year: Match.number, month: Match.number }, identity),
-      Match.when({ year: Match.number }, Struct.get('year')),
-      Match.exhaustive,
+const NumberFromStringSchema = Schema.String.pipe(
+  Schema.decodeTo(Schema.Number, {
+    decode: SchemaGetter.transformEffect(string =>
+      Option.match(Number.parse(string), {
+        onNone: () => Effect.fail(new SchemaIssue.InvalidValue(undefined, string)),
+        onSome: Effect.succeed,
+      }),
     ),
-    encode: date => (typeof date === 'number' ? { year: date } : date),
-  },
+    encode: SchemaGetter.String(),
+  }),
+)
+
+const PublicationDateSchema = Schema.Struct({
+  year: NumberFromStringSchema,
+  month: Schema.optional(NumberFromStringSchema),
+  day: Schema.optional(NumberFromStringSchema),
+}).pipe(
+  Schema.encodeKeys({ year: 'publication_year', month: 'publication_month', day: 'publication_day' }),
+  Schema.decodeTo(
+    Schema.Union([Temporal.PlainDateFromPartsSchema, Temporal.PlainYearMonthFromPartsSchema, Schema.Number]),
+    SchemaTransformation.transform({
+      decode: parts => (typeof parts.month === 'number' ? { ...parts, month: parts.month } : parts.year),
+      encode: date => (typeof date === 'number' ? { year: date } : date),
+    }),
+  ),
 )
 
 export class Record extends Schema.Class<Record>('Record')({
   doi: Doi.DoiSchema,
-  url: Schema.URL,
-  content_type: Schema.Literal('JA', 'BK', 'RD', 'EL', 'GD'),
+  url: Schema.URLFromString,
+  content_type: Schema.Literals(['JA', 'BK', 'RD', 'EL', 'GD']),
   publication_date: PublicationDateSchema,
   title_list: Schema.NonEmptyArray(
     Schema.Struct({
-      lang: Schema.Literal('en', 'ja'),
+      lang: Schema.Literals(['en', 'ja']),
       title: Schema.String,
       subtitle: Schema.optional(Schema.String),
     }),
@@ -39,20 +58,19 @@ export class Record extends Schema.Class<Record>('Record')({
       type: Schema.Literal('person'),
       names: Schema.NonEmptyArray(
         Schema.Struct({
-          lang: Schema.Literal('en', 'ja'),
+          lang: Schema.Literals(['en', 'ja']),
           last_name: Schema.optional(Schema.String),
           first_name: Schema.String,
         }),
       ),
-      researcher_id_list: Schema.optionalWith(
-        Schema.Array(Schema.Struct({ id_code: OrcidId.OrcidIdFromUrlSchema, type: Schema.Literal('ORCID') })),
-        { default: Array.empty },
-      ),
+      researcher_id_list: Schema.Array(
+        Schema.Struct({ id_code: OrcidId.OrcidIdFromUrlSchema, type: Schema.Literal('ORCID') }),
+      ).pipe(Schema.withDecodingDefaultType(Effect.sync(Array.empty))),
     }),
   ),
 }) {}
 
-const ResponseSchema = <A, I, R>(data: Schema.Schema<A, I, R>) =>
+const ResponseSchema = <A, I, R>(data: Schema.Codec<A, I, R, R>) =>
   Schema.Struct({
     status: Schema.Literal('OK'),
     data,
@@ -71,13 +89,13 @@ export const GetRecord = (
     Effect.andThen(
       HttpClientResponse.matchStatus({
         [StatusCodes.OK]: response => Effect.succeed(response),
-        [StatusCodes.NotFound]: response => new RecordIsNotFound({ cause: response }),
-        orElse: response => new RecordIsUnavailable({ cause: response }),
+        [StatusCodes.NotFound]: response => Effect.fail(new RecordIsNotFound({ cause: response })),
+        orElse: response => Effect.fail(new RecordIsUnavailable({ cause: response })),
       }),
     ),
     Effect.andThen(HttpClientResponse.schemaBodyJson(ResponseSchema(Record))),
     Effect.map(body => body.data),
-    Effect.catchTag('ParseError', 'ResponseError', error => new RecordIsUnavailable({ cause: error })),
+    Effect.catchTag(['SchemaError', 'HttpClientError'], error => new RecordIsUnavailable({ cause: error })),
     Effect.tapErrorTag('RecordIsUnavailable', error =>
       Effect.logError('Failed to get record from Japan Link Center').pipe(Effect.annotateLogs({ error })),
     ),

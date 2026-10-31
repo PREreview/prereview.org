@@ -29,7 +29,7 @@ describe('changeContactEmailAddress', () => {
     ],
     ([body, method, user, locale, emailAddress]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+        const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
         const actual = yield* Effect.promise(_.changeContactEmailAddress({ body, locale, method, user })({ runtime }))
 
@@ -46,7 +46,7 @@ describe('changeContactEmailAddress', () => {
       }).pipe(
         Effect.provide([
           Layer.succeed(Locale, locale),
-          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => emailAddress }),
+          Layer.mock(ContactEmailAddresses, { getContactEmailAddress: () => Effect.fromResult(emailAddress) }),
         ]),
       ),
   )
@@ -62,7 +62,7 @@ describe('changeContactEmailAddress', () => {
           >(() => Effect.void)
 
           const runtime = yield* Effect.provide(
-            Effect.runtime<ContactEmailAddresses | Locale>(),
+            Effect.context<ContactEmailAddresses | Locale>(),
             Layer.mock(ContactEmailAddresses, { startVerificationOfContactEmailAddress }),
           )
 
@@ -91,7 +91,7 @@ describe('changeContactEmailAddress', () => {
       [fc.emailAddress(), fc.user(), fc.supportedLocale()],
       ([emailAddress, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.changeContactEmailAddress({
@@ -130,7 +130,7 @@ describe('changeContactEmailAddress', () => {
       ],
       ([body, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.changeContactEmailAddress({ body, locale, method: 'POST', user })({ runtime }),
@@ -154,7 +154,7 @@ describe('changeContactEmailAddress', () => {
       [fc.record({ emailAddress: fc.emailAddress() }), fc.user(), fc.supportedLocale()],
       ([body, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+          const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
           const actual = yield* Effect.promise(
             _.changeContactEmailAddress({ body, locale, method: 'POST', user })({ runtime }),
@@ -184,7 +184,7 @@ describe('changeContactEmailAddress', () => {
     [fc.anything(), fc.string(), fc.supportedLocale()],
     ([body, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ContactEmailAddresses | Locale>()
+        const runtime = yield* Effect.context<ContactEmailAddresses | Locale>()
 
         const actual = yield* Effect.promise(
           _.changeContactEmailAddress({ body, locale, method, user: undefined })({ runtime }),

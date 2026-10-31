@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPreviewForAReviewReadyToBePublished.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -310,7 +310,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
       ([[events, expected]]) => {
         const actual = _.GetPreviewForAReviewReadyToBePublished(events)
 
-        expect(actual).toStrictEqual(Either.right(expected))
+        expect(actual).toStrictEqual(Result.succeed(expected))
       },
       {
         fastCheck: {
@@ -996,7 +996,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
         const actual = _.GetPreviewForAReviewReadyToBePublished(events)
 
         expect(actual).toStrictEqual(
-          Either.left(
+          Result.fail(
             new DatasetReviews.DatasetReviewNotReadyToBePublished({
               missing: [
                 'RatedTheQualityOfTheDataset',
@@ -1054,7 +1054,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
       ])
 
       expect(actual).toStrictEqual(
-        Either.left(
+        Result.fail(
           new DatasetReviews.DatasetReviewNotReadyToBePublished({
             missing: ['DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'],
           }),
@@ -1074,7 +1074,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
       ([events]) => {
         const actual = _.GetPreviewForAReviewReadyToBePublished(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()))
       },
       {
         fastCheck: {
@@ -1111,7 +1111,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
       ([events]) => {
         const actual = _.GetPreviewForAReviewReadyToBePublished(events)
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()))
       },
       {
         fastCheck: {
@@ -1132,7 +1132,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
       ([events]) => {
         const actual = _.GetPreviewForAReviewReadyToBePublished(events)
 
-        expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
+        expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
       },
       {
         fastCheck: {

@@ -1,4 +1,4 @@
-import { HttpClient } from '@effect/platform'
+import { HttpClient } from 'effect/http'
 import { Effect, pipe } from 'effect'
 import type { Doi } from '../../../types/index.ts'
 import { type Work, type WorkIsNotFound, WorkIsUnavailable } from '../Work.ts'
@@ -10,7 +10,7 @@ export const GetWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | Work
     CreateRequest(doi),
     HttpClient.execute,
     Effect.andThen(HandleResponse),
-    Effect.catchTag('RequestError', 'ResponseError', error => new WorkIsUnavailable({ cause: error })),
+    Effect.catchTag('HttpClientError', error => new WorkIsUnavailable({ cause: error })),
     Effect.tapErrorTag('WorkIsUnavailable', error =>
       Effect.logError('Failed to get work from OpenAlex').pipe(Effect.annotateLogs({ doi, error })),
     ),

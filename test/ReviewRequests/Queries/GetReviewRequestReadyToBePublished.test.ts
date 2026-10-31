@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either } from 'effect'
+import { Array, Result } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetReviewRequestReadyToBePublished.ts'
@@ -51,49 +51,49 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'no events',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [],
-    Either.left(new ReviewRequests.UnknownReviewRequest({})),
+    Result.fail(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
     'different requester',
     { requesterId: requesterId2, preprintId: preprintId1 },
     [started, imported],
-    Either.left(new ReviewRequests.UnknownReviewRequest({})),
+    Result.fail(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
     'different preprint',
     { requesterId: requesterId1, preprintId: preprintId2 },
     [started, imported],
-    Either.left(new ReviewRequests.UnknownReviewRequest({})),
+    Result.fail(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
     'has been imported',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [imported],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+    Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'has been published',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [started, publicChosen, published],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+    Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'started with same DOI, different preprint ID',
     { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
     [started, publicChosen, published],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+    Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'imported with same DOI, different preprint ID',
     { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
     [imported],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+    Result.fail(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'without persona choice',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [started],
-    Either.left(
+    Result.fail(
       new ReviewRequests.ReviewRequestNotReadyToBePublished({
         missing: ['PersonaForAReviewRequestForAPreprintWasChosen'],
       }),
@@ -103,13 +103,13 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'ready',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [started, publicChosen],
-    Either.right({ reviewRequestId: reviewRequestId1, personaChoice: 'public' }),
+    Result.succeed({ reviewRequestId: reviewRequestId1, personaChoice: 'public' }),
   ],
   [
     'ready with multiple choices',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [started, publicChosen, pseudonymChosen],
-    Either.right({ reviewRequestId: reviewRequestId1, personaChoice: 'pseudonym' }),
+    Result.succeed({ reviewRequestId: reviewRequestId1, personaChoice: 'pseudonym' }),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.GetReviewRequestReadyToBePublished

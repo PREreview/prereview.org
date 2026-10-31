@@ -1,4 +1,4 @@
-import { Array, Either, MutableHashMap, MutableHashSet, Option, pipe, Struct, type Types } from 'effect'
+import { Array, Result, MutableHashMap, MutableHashSet, Option, pipe, Struct, type Types, Filter } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
@@ -73,7 +73,7 @@ export type Input = Uuid.Uuid
 export type Error =
   Errors.DatasetReviewHasNotBeenPublished | Errors.UnknownDatasetReview | Queries.UnexpectedSequenceOfEvents
 
-export type Result = Either.Either<PublishedReview, Error>
+export type Result = Result.Result<PublishedReview, Error>
 
 const createFilter = (datasetReviewId: Input) =>
   Events.EventFilter([
@@ -95,11 +95,11 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   const started = Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted'))
 
   if (Option.isNone(started)) {
-    return Either.left(new Errors.UnknownDatasetReview({ cause: 'No DatasetReviewWasStarted event found' }))
+    return Result.fail(new Errors.UnknownDatasetReview({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
   if (!hasEvent(filteredEvents, 'DatasetReviewWasPublished')) {
-    return Either.left(
+    return Result.fail(
       new Errors.DatasetReviewHasNotBeenPublished({ cause: 'No DatasetReviewWasPublished event found' }),
     )
   }
@@ -125,42 +125,42 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
 
   const answerToIfTheDatasetHasTrackedChanges = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetHasDataCensoredOrDeleted = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetSupportsRelatedConclusions = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetIsDetailedEnough = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsDetailedEnough')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetIsErrorFree = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsErrorFree')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetMattersToItsAudience = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetMattersToItsAudience')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetIsReadyToBeShared = Option.map(
     Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
-    Struct.pick('answer', 'detail'),
+    Struct.pick(['answer', 'detail']),
   )
 
   const answerToIfTheDatasetIsMissingAnything = Option.andThen(
@@ -194,10 +194,13 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   const includeOtherAuthors = Array.some(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview'))
 
   const invitations = MutableHashSet.fromIterable(
-    Array.filterMap(filteredEvents, event =>
-      event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList'
-        ? Option.some(event.invitationId)
-        : Option.none(),
+    Array.filterMap(
+      filteredEvents,
+      Filter.fromPredicateOption(event =>
+        event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList'
+          ? Option.some(event.invitationId)
+          : Option.none(),
+      ),
     ),
   )
 
@@ -237,24 +240,27 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
     }
   })
 
-  const confirmedAuthors = Array.filterMap([...namedAuthors], ([orcidId, { persona, confirmedAt }]) =>
-    typeof persona === 'string' && confirmedAt !== undefined
-      ? Option.some({ orcidId, persona, confirmedAt })
-      : Option.none(),
+  const confirmedAuthors = Array.filterMap(
+    [...namedAuthors],
+    Filter.fromPredicateOption(([orcidId, { persona, confirmedAt }]) =>
+      typeof persona === 'string' && confirmedAt !== undefined
+        ? Option.some({ orcidId, persona, confirmedAt })
+        : Option.none(),
+    ),
   )
 
   const otherAuthors = pipe(
     Array.sortWith(confirmedAuthors, Struct.get('confirmedAt'), Temporal.OrderInstant),
-    Array.map(Struct.pick('orcidId', 'persona')),
+    Array.map(Struct.pick(['orcidId', 'persona'])),
   )
 
   const anonymousAuthors =
     MutableHashSet.size(invitations) + (MutableHashMap.size(namedAuthors) - Array.length(otherAuthors))
 
   return Option.match(data, {
-    onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
+    onNone: () => Result.fail(new Queries.UnexpectedSequenceOfEvents({})),
     onSome: data =>
-      Either.right({
+      Result.succeed({
         author: {
           orcidId: data.datasetReviewWasStarted.authorId,
           persona: Option.match(author, { onSome: Struct.get('persona'), onNone: () => 'public' }),
@@ -266,15 +272,14 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {
-          qualityRating: Option.andThen(ratedTheQualityOfTheDataset, Struct.pick('rating', 'detail')),
+          qualityRating: Option.andThen(ratedTheQualityOfTheDataset, Struct.pick(['rating', 'detail'])),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples,
-            'answer',
-            'detail',
+            ['answer', 'detail'],
           ),
           answerToIfTheDatasetHasEnoughMetadata: Option.andThen(
             answerToIfTheDatasetHasEnoughMetadata,
-            Struct.pick('answer', 'detail'),
+            Struct.pick(['answer', 'detail']),
           ),
           answerToIfTheDatasetHasTrackedChanges,
           answerToIfTheDatasetHasDataCensoredOrDeleted,

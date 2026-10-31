@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
@@ -34,7 +34,7 @@ test('content looks right when there is an email address', async ({ showPage }) 
 test('content looks right when the email address is missing', async ({ showPage }) => {
   const response = _.renderEnterEmailAddressPage({
     preprintId,
-    form: new EnterEmailAddressForm.InvalidForm({ emailAddress: Either.left(new EnterEmailAddressForm.Missing()) }),
+    form: new EnterEmailAddressForm.InvalidForm({ emailAddress: Result.fail(new EnterEmailAddressForm.Missing()) }),
     locale,
   })
 
@@ -47,7 +47,7 @@ test('content looks right when the email address is invalid', async ({ showPage 
   const response = _.renderEnterEmailAddressPage({
     preprintId,
     form: new EnterEmailAddressForm.InvalidForm({
-      emailAddress: Either.left(new EnterEmailAddressForm.Invalid({ value: 'not an email address' })),
+      emailAddress: Result.fail(new EnterEmailAddressForm.Invalid({ value: 'not an email address' })),
     }),
     locale,
   })

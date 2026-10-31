@@ -1,11 +1,11 @@
-import { Array, Data, Either, Iterable, pipe } from 'effect'
+import { Array, Data, Result, Iterable, pipe } from 'effect'
 import type * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
 
 export class NoPseudonymAvailable extends Data.TaggedError('NoPseudonymAvailable') {}
 
-export type Result = Either.Either<Pseudonym, NoPseudonymAvailable>
+export type Result = Result.Result<Pseudonym, NoPseudonymAvailable>
 
 type State = Set<Pseudonym>
 
@@ -26,7 +26,7 @@ const query = (state: State): Result =>
   pipe(
     state.values(),
     Iterable.head,
-    Either.fromOption(() => new NoPseudonymAvailable()),
+    Result.fromOption(() => new NoPseudonymAvailable()),
   )
 
 export const GetAvailablePseudonym = (possiblePseudonyms: Set<Pseudonym>) =>

@@ -1,6 +1,6 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as _ from '../../src/AuthorInvites/AcceptInvite.ts'
 import * as Events from '../../src/Events.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -43,39 +43,44 @@ const inviteAccepted = new Events.AuthorInviteAccepted(input)
 
 const publicationRequested = new Events.PublicationOfDatasetReviewWasRequested({ datasetReviewId: input.reviewId })
 
-test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Either.left(new _.InvitationNotFound())],
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
+  ['no events', [], input, Result.fail(new _.InvitationNotFound())],
   [
     'author added, publication requested',
     [authorAdded, publicationRequested],
     input,
-    Either.right(Option.some(new Events.AuthorInviteAccepted(input))),
+    Result.succeed(Option.some(new Events.AuthorInviteAccepted(input))),
   ],
   [
     'author added, publication requested, different invitation ID',
     [authorAdded, publicationRequested],
     inputWithDifferentInvitationId,
-    Either.left(new _.InvitationNotFound()),
+    Result.fail(new _.InvitationNotFound()),
   ],
   [
     'author added, publication requested, different review ID',
     [authorAdded, publicationRequested],
     inputWithDifferentReviewId,
-    Either.left(new _.InvitationNotFound()),
+    Result.fail(new _.InvitationNotFound()),
   ],
   [
     'author added then removed, publication requested',
     [authorAdded, authorRemoved, publicationRequested],
     input,
-    Either.left(new _.InvitationNotFound()),
+    Result.fail(new _.InvitationNotFound()),
   ],
-  ['author added, publication not requested', [authorAdded], input, Either.left(new _.InvitationNotFound())],
-  ['invite has been accepted', [authorAdded, publicationRequested, inviteAccepted], input, Either.right(Option.none())],
+  ['author added, publication not requested', [authorAdded], input, Result.fail(new _.InvitationNotFound())],
+  [
+    'invite has been accepted',
+    [authorAdded, publicationRequested, inviteAccepted],
+    input,
+    Result.succeed(Option.none()),
+  ],
   [
     'invite has been accepted by a different PREreviewer',
     [authorAdded, publicationRequested, inviteAccepted],
     inputWithDifferentOrcidId,
-    Either.left(new _.InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer()),
+    Result.fail(new _.InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.AcceptInvite

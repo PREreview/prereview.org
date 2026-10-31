@@ -1,4 +1,4 @@
-import { HttpClientRequest } from '@effect/platform'
+import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe, Redacted } from 'effect'
 import { GhostApi } from '../GhostApi.ts'
 

@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Result } from 'effect'
 import * as DeclareCompetingInterestsForm from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -51,8 +51,8 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
   const response = _.DeclareCompetingInterestsPage({
     datasetReviewId,
     form: new DeclareCompetingInterestsForm.InvalidForm({
-      declareCompetingInterests: Either.left(new DeclareCompetingInterestsForm.Missing()),
-      competingInterestsDetails: Either.left(new DeclareCompetingInterestsForm.Missing()),
+      declareCompetingInterests: Result.fail(new DeclareCompetingInterestsForm.Missing()),
+      competingInterestsDetails: Result.fail(new DeclareCompetingInterestsForm.Missing()),
     }),
     locale: DefaultLocale,
     otherAuthors: false,

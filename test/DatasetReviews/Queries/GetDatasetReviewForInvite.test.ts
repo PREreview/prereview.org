@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option } from 'effect'
+import { Array, Result, Option } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetDatasetReviewForInvite.ts'
 import { DryadDatasetId } from '../../../src/Datasets/index.ts'
@@ -99,30 +99,30 @@ const club = new Events.DatasetReviewWasAddedToAClub({
 })
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
-  ['no events', [], input, Either.left(new DatasetReviews.DatasetReviewInvitationNotInList())],
+  ['no events', [], input, Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList())],
   [
     'invitation ID not in list',
     [started, authorAdded],
     inputWithOtherInvitationId,
-    Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
+    Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
   [
     'review not published',
     [started, authorAdded],
     input,
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenPublished({})),
   ],
   [
     'review has published event, but details missing',
     [started, authorAdded, publication],
     input,
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenPublished({})),
   ],
   [
     'review published, only author added',
     [started, persona, authorAdded, doi, publication],
     input,
-    Either.right({
+    Result.succeed({
       author: {
         orcidId: started.authorId,
         persona: persona.persona,
@@ -141,7 +141,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
     'review published, only author added, added to a club',
     [started, persona, authorAdded, doi, publication, club],
     input,
-    Either.right({
+    Result.succeed({
       author: {
         orcidId: started.authorId,
         persona: persona.persona,
@@ -160,7 +160,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
     'review published, AI was used',
     [started, persona, authorAdded, declaredAiWasUsed, doi, publication],
     input,
-    Either.right({
+    Result.succeed({
       author: {
         orcidId: started.authorId,
         persona: persona.persona,
@@ -179,7 +179,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
     'review published, AI was not used',
     [started, persona, authorAdded, declaredAiWasNotUsed, doi, publication],
     input,
-    Either.right({
+    Result.succeed({
       author: {
         orcidId: started.authorId,
         persona: persona.persona,
@@ -198,7 +198,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
     'review published, AI answer changed',
     [started, persona, authorAdded, declaredAiWasUsed, declaredAiWasNotUsed, doi, publication],
     input,
-    Either.right({
+    Result.succeed({
       author: {
         orcidId: started.authorId,
         persona: persona.persona,
@@ -217,7 +217,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
     'review published, only author added and removed',
     [started, persona, authorAdded, authorRemoved, doi, publication],
     input,
-    Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
+    Result.fail(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
   [
     'review published, other authors added',
@@ -235,7 +235,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
       publication,
     ],
     input,
-    Either.right({
+    Result.succeed({
       author: {
         orcidId: started.authorId,
         persona: persona.persona,

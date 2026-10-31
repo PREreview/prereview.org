@@ -71,7 +71,7 @@ export const writeReviewChangeAuthor = ({
             'author',
             RTE.fromOptionK(() => 'no-author' as const)(
               flow(
-                Option.liftNullable(({ form }) => form.otherAuthors),
+                Option.liftNullishOr(({ form }) => form.otherAuthors),
                 Option.flatMap(Array.get(number - 1)),
               ),
             ),
@@ -153,9 +153,7 @@ const handleChangeAuthorForm = ({
         RTE.Do,
         RTE.apS(
           'otherAuthors',
-          RTE.fromOption(() => 'form-unavailable' as const)(
-            Array.replaceOption(form.otherAuthors ?? [], number - 1, author),
-          ),
+          RTE.fromOption(() => 'form-unavailable' as const)(Array.replace(form.otherAuthors ?? [], number - 1, author)),
         ),
         RTE.map(updateForm(form)),
         RTE.chainFirst(saveForm(user.orcid, preprint.id)),

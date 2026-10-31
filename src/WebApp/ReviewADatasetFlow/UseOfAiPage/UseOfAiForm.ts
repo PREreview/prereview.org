@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Either, Match, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Result, Match, Option, pipe, Schema, Struct } from 'effect'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import { NonEmptyString } from '../../../types/index.ts'
 
@@ -14,7 +14,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  generativeAiIdeas: Either.Either<never, Missing>
+  generativeAiIdeas: Result.Result<never, Missing>
   generativeAiIdeasDetails: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
@@ -25,10 +25,10 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
   const generativeAiIdeas = pipe(
-    Schema.decodeEither(GenerativeAiIdeasFieldSchema)(body),
-    Either.mapBoth({
-      onRight: Struct.get('generativeAiIdeas'),
-      onLeft: () => new Missing(),
+    Schema.decodeResult(GenerativeAiIdeasFieldSchema)(body),
+    Result.mapBoth({
+      onSuccess: Struct.get('generativeAiIdeas'),
+      onFailure: () => new Missing(),
     }),
   )
   const generativeAiIdeasDetails = pipe(
@@ -36,14 +36,14 @@ export const fromBody = (body: UrlParams.UrlParams): SubmittedForm => {
     Option.flatMap(Struct.get('generativeAiIdeasDetails')),
   )
 
-  return Either.match(generativeAiIdeas, {
-    onRight: generativeAiIdeas =>
+  return Result.match(generativeAiIdeas, {
+    onSuccess: generativeAiIdeas =>
       new CompletedForm({
         generativeAiIdeas,
         generativeAiIdeasDetails: generativeAiIdeas === 'yes' ? generativeAiIdeasDetails : Option.none(),
       }),
-    onLeft: generativeAiIdeas =>
-      new InvalidForm({ generativeAiIdeas: Either.left(generativeAiIdeas), generativeAiIdeasDetails }),
+    onFailure: generativeAiIdeas =>
+      new InvalidForm({ generativeAiIdeas: Result.fail(generativeAiIdeas), generativeAiIdeasDetails }),
   })
 }
 
@@ -54,14 +54,18 @@ export const fromAnswer: (answer: DatasetReviews.UseOfAi) => ValidForm = Match.v
   NotAnswered: () => new EmptyForm(),
 })
 
-const GenerativeAiIdeasFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    generativeAiIdeas: Schema.Literal('yes', 'no'),
-  }),
+const GenerativeAiIdeasFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      generativeAiIdeas: Schema.Literals(['yes', 'no']),
+    }),
+  ),
 )
 
-const GenerativeAiIdeasDetailsFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    generativeAiIdeasDetails: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const GenerativeAiIdeasDetailsFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      generativeAiIdeasDetails: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, flow, Match, Option } from 'effect'
+import { Array, Data, Result, flow, Match, Option } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
@@ -38,11 +38,11 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return Array.match(filteredEvents, { onNonEmpty: () => new HasBeenStarted(), onEmpty: () => new NotStarted() })
 }
 
-const decide = (state: State, input: Input): Either.Either<Events.ReviewRequestEvent, Error> =>
+const decide = (state: State, input: Input): Result.Result<Events.ReviewRequestEvent, Error> =>
   Match.valueTags(state, {
-    HasBeenStarted: () => Either.left(new Errors.ReviewRequestWasAlreadyStarted({})),
+    HasBeenStarted: () => Result.fail(new Errors.ReviewRequestWasAlreadyStarted({})),
     NotStarted: () =>
-      Either.right(
+      Result.succeed(
         new Events.ReviewRequestForAPreprintWasStarted({
           startedAt: input.startedAt,
           preprintId: input.preprintId,
@@ -56,5 +56,5 @@ export const StartReviewRequest = Commands.Command({
   name: 'ReviewRequestCommands.startReviewRequest',
   createFilter,
   foldState,
-  decide: flow(decide, Either.map(Option.some)),
+  decide: flow(decide, Result.map(Option.some)),
 })

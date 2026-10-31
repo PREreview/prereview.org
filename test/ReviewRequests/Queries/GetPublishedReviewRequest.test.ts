@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, Option, Predicate, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -149,7 +149,7 @@ describe('GetPublishedReviewRequest', () => {
     ([events, reviewRequestId]) => {
       const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.UnknownReviewRequest({})))
     },
     {
       fastCheck: {
@@ -186,7 +186,7 @@ describe('GetPublishedReviewRequest', () => {
     ([events, reviewRequestId]) => {
       const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+      expect(actual).toStrictEqual(Result.fail(new ReviewRequests.UnknownReviewRequest({})))
     },
     {
       fastCheck: {
@@ -232,7 +232,7 @@ describe('GetPublishedReviewRequest', () => {
       const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
       expect(actual).toStrictEqual(
-        Either.right(
+        Result.succeed(
           new _.PublishedPrereviewerReviewRequest({
             author: { orcidId: expected[0].requesterId, persona: expected[1].persona },
             preprintId: expected[0].preprintId,
@@ -337,7 +337,7 @@ describe('GetPublishedReviewRequest', () => {
       const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
       expect(actual).toStrictEqual(
-        Either.right(
+        Result.succeed(
           new _.PublishedReceivedReviewRequest({
             author: expected[0].requester,
             preprintId: expected[0].preprintId,
@@ -409,7 +409,7 @@ describe('GetPublishedReviewRequest', () => {
         const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
         expect(actual).toStrictEqual(
-          Either.right(
+          Result.succeed(
             new _.PublishedPrereviewerReviewRequest({
               author: expected.requester,
               preprintId: expected.preprintId,
@@ -453,7 +453,7 @@ describe('GetPublishedReviewRequest', () => {
         const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
         expect(actual).toStrictEqual(
-          Either.right(
+          Result.succeed(
             new _.PublishedReceivedReviewRequest({
               author: expected.requester,
               preprintId: expected.preprintId,

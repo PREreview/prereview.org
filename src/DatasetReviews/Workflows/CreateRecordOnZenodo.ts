@@ -36,5 +36,5 @@ export const CreateRecordOnZenodo = Effect.fn(
 
     yield* Commands.markRecordCreatedOnZenodo({ recordId, datasetReviewId })
   },
-  Effect.catchAll(error => new Errors.FailedToCreateRecordOnZenodo({ cause: error })),
+  Effect.catch(error => new Errors.FailedToCreateRecordOnZenodo({ cause: error })),
 )

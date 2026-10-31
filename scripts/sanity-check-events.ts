@@ -1,18 +1,20 @@
-import { SqlClient } from '@effect/sql'
+import { SqlClient } from 'effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {
   Array,
   Console,
   Data,
   Effect,
-  Either,
+  Result,
   Inspectable,
   Layer,
   Match,
   Option,
-  ParseResult,
   Schema,
   pipe,
+  SchemaIssue,
+  SchemaGetter,
+  Filter,
 } from 'effect'
 import type { NonEmptyReadonlyArray } from 'effect/Array'
 import path from 'node:path'
@@ -27,30 +29,33 @@ const SensitiveDataStoreStub = Layer.succeed(SensitiveDataStore.SensitiveDataSto
   add: () => Effect.die('not implemented'),
 })
 
-const EventRow = Schema.transformOrFail(
-  Schema.Struct({
-    position: Schema.Number,
-    type: Schema.String,
-    payload: Schema.Union(
-      Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-      Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
-    ),
-  }),
-  Schema.typeSchema(
-    Schema.Struct({
-      position: Schema.Number,
-      event: Event,
-    }),
-  ),
-  {
-    strict: true,
-    decode: ({ type, payload, ...rest }) =>
-      Effect.gen(function* () {
-        const event = yield* ParseResult.decodeUnknown(Event)({ _tag: type, ...payload })
-        return { ...rest, event }
+const EventRow = Schema.Struct({
+  position: Schema.Number,
+  type: Schema.String,
+  payload: Schema.Union([
+    Schema.Record(Schema.String, Schema.Unknown),
+    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
+  ]),
+}).pipe(
+  Schema.decodeTo(
+    Schema.toType(
+      Schema.Struct({
+        position: Schema.Number,
+        event: Event,
       }),
-    encode: (value, _, ast) => ParseResult.fail(new ParseResult.Forbidden(ast, value)),
-  },
+    ),
+    {
+      decode: SchemaGetter.transformEffect(({ type, payload, ...rest }) =>
+        Effect.gen(function* () {
+          const event = yield* Schema.decodeUnknownEffect(Event)({ _tag: type, ...payload }).pipe(
+            Effect.mapError(error => error.issue),
+          )
+          return { ...rest, event }
+        }),
+      ),
+      encode: SchemaGetter.transformEffect(value => Effect.fail(new SchemaIssue.Forbidden(undefined, value))),
+    },
+  ),
 )
 
 type EventType = (typeof EventTypes)[number]
@@ -209,19 +214,22 @@ const getPertinentPrecedingEvents = (
     matchingEntries.push([field, value])
   }
 
-  return Array.filterMap(rows, row => {
-    return filter.types.includes(row.event._tag) &&
-      matchingEntries.every(([field, value]) => row.event[field as never] === value)
-      ? Option.some(row.event._tag)
-      : Option.none()
-  })
+  return Array.filterMap(
+    rows,
+    Filter.fromPredicateOption(row => {
+      return filter.types.includes(row.event._tag) &&
+        matchingEntries.every(([field, value]) => row.event[field as never] === value)
+        ? Option.some(row.event._tag)
+        : Option.none()
+    }),
+  )
 }
 
 const sanityCheck = (
   rows: ReadonlyArray<typeof EventRow.Type>,
-): Either.Either<void, Array.NonEmptyReadonlyArray<string>> => {
-  if (!Array.isNonEmptyReadonlyArray(rows)) {
-    return Either.void
+): Result.Result<void, Array.NonEmptyReadonlyArray<string>> => {
+  if (!Array.isReadonlyArrayNonEmpty(rows)) {
+    return Result.void
   }
 
   const row = Array.lastNonEmpty(rows)
@@ -229,7 +237,7 @@ const sanityCheck = (
 
   const rulesForType = allRules[row.event._tag]
   if (!rulesForType) {
-    return Either.void
+    return Result.void
   }
   const rules = Array.ensure(rulesForType)
   const failures: Array<string> = []
@@ -256,16 +264,16 @@ const sanityCheck = (
     }
   })
 
-  return Array.match(failures, { onEmpty: () => Either.void, onNonEmpty: Either.left })
+  return Array.match(failures, { onEmpty: () => Result.void, onNonEmpty: Result.fail })
 }
 
 Array.forEach(examples, (example, i) => {
   const exampleNumber = i + 1
   const actualResult = sanityCheck(Array.map(example.sequence, (event, i) => ({ position: i + 1, event })))
 
-  if (example.expectation === 'pass' && Either.isLeft(actualResult)) {
-    console.log(`Example ${exampleNumber} expected to pass but failed: ${actualResult.left.join(', ')}`)
-  } else if (example.expectation === 'fail' && Either.isRight(actualResult)) {
+  if (example.expectation === 'pass' && Result.isFailure(actualResult)) {
+    console.log(`Example ${exampleNumber} expected to pass but failed: ${actualResult.failure.join(', ')}`)
+  } else if (example.expectation === 'fail' && Result.isSuccess(actualResult)) {
     console.log(`Example ${exampleNumber} expected to fail but passed`)
   }
 })
@@ -284,14 +292,14 @@ const program = pipe(
         position ASC
     `,
   ),
-  Effect.andThen(Schema.decodeUnknown(Schema.Array(EventRow))),
+  Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventRow))),
   Effect.tap(rows => Console.log(`Loaded ${rows.length} events`)),
   Effect.map(rows => Array.map(rows, (row, i) => sanityCheck(Array.take(rows, i + 1)))),
   Effect.andThen(results =>
     Effect.gen(function* () {
-      const failures = Array.flatten(Array.getLefts(results))
+      const failures = Array.flatten(Array.getFailures(results))
 
-      if (Array.isEmptyReadonlyArray(failures)) {
+      if (Array.isReadonlyArrayEmpty(failures)) {
         return
       }
 

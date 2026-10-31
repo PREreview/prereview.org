@@ -1,4 +1,4 @@
-import { HttpClientRequest } from '@effect/platform'
+import { HttpClientRequest } from 'effect/http'
 import { pipe } from 'effect'
 import { MessageSchema, type Message } from '../Types.ts'
 

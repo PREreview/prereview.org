@@ -38,7 +38,7 @@ describe('writeReviewMethodsAppropriate', () => {
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method: 'POST', id: preprintId, user })({
@@ -85,7 +85,7 @@ describe('writeReviewMethodsAppropriate', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method: 'POST', id: preprintId, user })({
@@ -111,7 +111,7 @@ describe('writeReviewMethodsAppropriate', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method, id: preprintId, user })({
@@ -133,7 +133,7 @@ describe('writeReviewMethodsAppropriate', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method, id: preprintId, user })({
@@ -158,7 +158,7 @@ describe('writeReviewMethodsAppropriate', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method, id: preprintId, user })({
@@ -193,7 +193,7 @@ describe('writeReviewMethodsAppropriate', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method: 'POST', id: preprintId, user })({
@@ -230,7 +230,7 @@ describe('writeReviewMethodsAppropriate', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method, id: preprintId, user })({ formStore, runtime }),
@@ -249,7 +249,7 @@ describe('writeReviewMethodsAppropriate', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewMethodsAppropriate({ body, locale, method, id: preprintId, user: undefined })({

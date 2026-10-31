@@ -22,13 +22,13 @@ export interface Comment {
 
 export class UnableToInvalidateComments extends Data.TaggedError('UnableToInvalidateComments')<{ cause: unknown }> {}
 
-export class CommentsForReview extends Context.Tag('CommentsForReview')<
+export class CommentsForReview extends Context.Service<
   CommentsForReview,
   {
     get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
     invalidate: (prereviewId: number) => Effect.Effect<void, UnableToInvalidateComments>
   }
->() {}
+>()('CommentsForReview') {}
 
 export interface GetCommentsEnv {
   getComments: (id: Doi) => TE.TaskEither<'unavailable', ReadonlyArray<Comment>>

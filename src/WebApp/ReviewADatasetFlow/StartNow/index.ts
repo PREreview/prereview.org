@@ -40,25 +40,27 @@ export const StartNow: ({
 
           yield* DatasetReviews.startDatasetReview({ authorId: user.orcid, datasetId, datasetReviewId: reviewId })
 
-          const nextExpectedCommand = yield* Effect.flatten(
+          const nextExpectedCommand = yield* Effect.flatMap(
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(reviewId),
+            Effect.fromOption,
           )
 
           return Response.RedirectResponse({
             location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId: reviewId }),
           })
         },
-        Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
+        Effect.catchTag(['UnknownDatasetReview', 'NoSuchElementError'], () => HavingProblemsPage),
       ),
       onSome: Effect.fn(
         function* (datasetReviewId) {
-          const nextExpectedCommand = yield* Effect.flatten(
+          const nextExpectedCommand = yield* Effect.flatMap(
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+            Effect.fromOption,
           )
 
           return CarryOnPage({ dataset, datasetReviewId, locale, nextRoute: RouteForCommand(nextExpectedCommand) })
         },
-        Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
+        Effect.catchTag(['UnknownDatasetReview', 'NoSuchElementError'], () => HavingProblemsPage),
       ),
     })
   },

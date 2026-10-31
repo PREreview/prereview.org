@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type RateTheQualityForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,31 +9,31 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  qualityRating: Either.Either<never, Missing>
-  qualityRatingExcellentDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  qualityRatingFairDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  qualityRatingPoorDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  qualityRating: Result.Result<never, Missing>
+  qualityRatingExcellentDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  qualityRatingFairDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  qualityRatingPoorDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const qualityRatingExcellentDetail = yield* pipe(
-    Schema.decode(QualityRatingExcellentDetailSchema)(body),
-    Effect.andThen(Struct.get('qualityRatingExcellentDetail')),
+    Schema.decodeEffect(QualityRatingExcellentDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('qualityRatingExcellentDetail'), Effect.fromOption)),
     Effect.option,
   )
   const qualityRatingFairDetail = yield* pipe(
-    Schema.decode(QualityRatingFairDetailSchema)(body),
-    Effect.andThen(Struct.get('qualityRatingFairDetail')),
+    Schema.decodeEffect(QualityRatingFairDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('qualityRatingFairDetail'), Effect.fromOption)),
     Effect.option,
   )
   const qualityRatingPoorDetail = yield* pipe(
-    Schema.decode(QualityRatingPoorDetailSchema)(body),
-    Effect.andThen(Struct.get('qualityRatingPoorDetail')),
+    Schema.decodeEffect(QualityRatingPoorDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('qualityRatingPoorDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(QualityRatingSchema)(body),
+    Schema.decodeEffect(QualityRatingSchema)(body),
     Effect.map(
       ({ qualityRating }) =>
         new CompletedForm({
@@ -43,13 +43,13 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           qualityRatingPoorDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          qualityRating: Either.left(new Missing()),
-          qualityRatingExcellentDetail: Either.right(qualityRatingExcellentDetail),
-          qualityRatingFairDetail: Either.right(qualityRatingFairDetail),
-          qualityRatingPoorDetail: Either.right(qualityRatingPoorDetail),
+          qualityRating: Result.fail(new Missing()),
+          qualityRatingExcellentDetail: Result.succeed(qualityRatingExcellentDetail),
+          qualityRatingFairDetail: Result.succeed(qualityRatingFairDetail),
+          qualityRatingPoorDetail: Result.succeed(qualityRatingPoorDetail),
         }),
       ),
     ),
@@ -79,26 +79,34 @@ export const fromAnswer: (
     }),
 })
 
-const QualityRatingSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    qualityRating: Schema.Literal('excellent', 'fair', 'poor', 'unsure'),
-  }),
+const QualityRatingSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      qualityRating: Schema.Literals(['excellent', 'fair', 'poor', 'unsure']),
+    }),
+  ),
 )
 
-const QualityRatingExcellentDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    qualityRatingExcellentDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const QualityRatingExcellentDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      qualityRatingExcellentDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const QualityRatingFairDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    qualityRatingFairDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const QualityRatingFairDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      qualityRatingFairDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const QualityRatingPoorDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    qualityRatingPoorDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const QualityRatingPoorDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      qualityRatingPoorDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

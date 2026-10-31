@@ -28,6 +28,6 @@ export const NotifyCommunitySlack = Effect.fn(
       reviewRequestId: reviewRequest.id,
     })
   },
-  Effect.catchAll(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
+  Effect.catch(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
   Effect.scoped,
 )

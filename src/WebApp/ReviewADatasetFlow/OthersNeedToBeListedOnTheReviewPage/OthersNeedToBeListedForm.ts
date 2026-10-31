@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, Schema } from 'effect'
 
 export type OthersNeedToBeListedForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -8,7 +8,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  othersNeedToBeListed: Either.Either<never, Missing>
+  othersNeedToBeListed: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -17,12 +17,12 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
-    const { othersNeedToBeListed } = yield* Schema.decode(OthersNeedToBeListedFieldSchema)(body)
+    const { othersNeedToBeListed } = yield* Schema.decodeEffect(OthersNeedToBeListedFieldSchema)(body)
 
     return new CompletedForm({ othersNeedToBeListed })
   },
-  Effect.catchTag('ParseError', () =>
-    Effect.succeed(new InvalidForm({ othersNeedToBeListed: Either.left(new Missing()) })),
+  Effect.catchTag('SchemaError', () =>
+    Effect.succeed(new InvalidForm({ othersNeedToBeListed: Result.fail(new Missing()) })),
   ),
 )
 
@@ -31,8 +31,10 @@ export const fromAnswer: (answer: Option.Option<'no' | 'yes'>) => OthersNeedToBe
   onSome: answer => new CompletedForm({ othersNeedToBeListed: answer }),
 })
 
-const OthersNeedToBeListedFieldSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    othersNeedToBeListed: Schema.Literal('no', 'yes'),
-  }),
+const OthersNeedToBeListedFieldSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      othersNeedToBeListed: Schema.Literals(['no', 'yes']),
+    }),
+  ),
 )

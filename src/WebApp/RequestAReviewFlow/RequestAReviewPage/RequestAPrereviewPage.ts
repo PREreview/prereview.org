@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -61,7 +61,7 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
           </details>
 
           ${
-            hasAnError && Either.isLeft(form.whichPreprint)
+            hasAnError && Result.isFailure(form.whichPreprint)
               ? html`
                   <div class="error-message" id="which-preprint-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
@@ -80,9 +80,9 @@ export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
             spellcheck="false"
             aria-describedby="which-preprint-tip"
             ${
-              hasAnError && Either.isLeft(form.whichPreprint)
+              hasAnError && Result.isFailure(form.whichPreprint)
                 ? html`aria-invalid="true" aria-errormessage="which-preprint-error"
-                  ${Match.valueTags(form.whichPreprint.left, {
+                  ${Match.valueTags(form.whichPreprint.failure, {
                     Invalid: ({ value }) => html`value="${value}"`,
                     Missing: () => '',
                   })}`

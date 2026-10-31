@@ -9,7 +9,7 @@ export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(
     const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
     const result = yield* Effect.option(
-      Effect.orElse(
+      Effect.catch(
         Effect.tryPromise(() =>
           cld.detect(text.toString(), { bestEffort: true, isHTML: !(text instanceof PlainText), languageHint }),
         ),
@@ -33,7 +33,7 @@ export function detectLanguageFrom(...languages: ReadonlyArray<LanguageCode>) {
       const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
       const result = yield* Effect.option(
-        Effect.orElse(
+        Effect.catch(
           Effect.tryPromise(() =>
             cld.detect(text.toString(), { bestEffort: true, isHTML: !(text instanceof PlainText), languageHint }),
           ),

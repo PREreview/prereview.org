@@ -29,5 +29,5 @@ export const CreateRecordForDatasetReview = Effect.fn(
 
     return deposition.id
   },
-  Effect.catchAll(error => new FailedToCreateRecordForDatasetReview({ cause: error })),
+  Effect.catch(error => new FailedToCreateRecordForDatasetReview({ cause: error })),
 )

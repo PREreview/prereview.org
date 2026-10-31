@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Either, Layer, pipe, TestClock } from 'effect'
+import { Effect, Result, Layer, pipe } from 'effect'
+import { TestClock } from 'effect/testing'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -22,10 +23,10 @@ describe('ProcessReceivedReviewRequest', () => {
           const actual = yield* pipe(
             _.ProcessReceivedReviewRequest(reviewRequestId),
             Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, { acceptReviewRequest })),
-            Effect.either,
+            Effect.result,
           )
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
           expect(acceptReviewRequest).toHaveBeenCalledWith({ acceptedAt, reviewRequestId: reviewRequest.id })
         }).pipe(
           Effect.provide([
@@ -47,10 +48,10 @@ describe('ProcessReceivedReviewRequest', () => {
       ],
       ([reviewRequestId, reviewRequest, preprint, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.result)
 
           expect(actual).toStrictEqual(
-            Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
+            Result.fail(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
           )
         }).pipe(
           Effect.provide([
@@ -75,9 +76,9 @@ describe('ProcessReceivedReviewRequest', () => {
       ],
       ([reviewRequestId, reviewRequest, preprint, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.result)
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
         }).pipe(
           Effect.provide([
             Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprint) }),
@@ -112,10 +113,10 @@ describe('ProcessReceivedReviewRequest', () => {
           const actual = yield* pipe(
             _.ProcessReceivedReviewRequest(reviewRequestId),
             Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, { rejectReviewRequest })),
-            Effect.either,
+            Effect.result,
           )
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Result.void)
           expect(rejectReviewRequest).toHaveBeenCalledWith({
             rejectedAt,
             reviewRequestId: reviewRequest.id,
@@ -141,10 +142,10 @@ describe('ProcessReceivedReviewRequest', () => {
       ],
       ([reviewRequestId, reviewRequest, preprintError, error]) =>
         Effect.gen(function* () {
-          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.result)
 
           expect(actual).toStrictEqual(
-            Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
+            Result.fail(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
           )
         }).pipe(
           Effect.provide([
@@ -165,9 +166,9 @@ describe('ProcessReceivedReviewRequest', () => {
     [fc.uuid(), fc.receivedReviewRequest(), fc.anything().map(cause => new Preprints.PreprintIsNotFound({ cause }))],
     ([reviewRequestId, reviewRequest, preprintError]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(preprintError))
+        expect(actual).toStrictEqual(Result.fail(preprintError))
       }).pipe(
         Effect.provide([
           Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
@@ -184,10 +185,10 @@ describe('ProcessReceivedReviewRequest', () => {
     [fc.uuid(), fc.receivedReviewRequest(), fc.anything().map(cause => new Preprints.PreprintIsUnavailable({ cause }))],
     ([reviewRequestId, reviewRequest, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.result)
 
         expect(actual).toStrictEqual(
-          Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
+          Result.fail(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
         )
       }).pipe(
         Effect.provide([
@@ -217,9 +218,9 @@ describe('ProcessReceivedReviewRequest', () => {
     ],
     ([reviewRequestId, error]) =>
       Effect.gen(function* () {
-        const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+        const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.result)
 
-        expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({})))
+        expect(actual).toStrictEqual(Result.fail(new ReviewRequests.FailedToProcessReceivedReviewRequest({})))
       }).pipe(
         Effect.provide([
           Layer.mock(Preprints.Preprints, {}),

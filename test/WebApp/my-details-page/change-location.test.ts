@@ -7,6 +7,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-location.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('changeLocation', () => {
   it.effect.prop(
@@ -23,7 +24,7 @@ describe('changeLocation', () => {
         const actual = yield* Effect.promise(
           _.changeLocation({ body, locale, method, user })({
             deleteLocation: shouldNotBeCalled,
-            getLocation: () => TE.fromEither(location),
+            getLocation: () => TE.fromEither(EffectToFpts.either(location)),
             saveLocation: shouldNotBeCalled,
           }),
         )
@@ -107,7 +108,7 @@ describe('changeLocation', () => {
         const actual = yield* Effect.promise(
           _.changeLocation({ body, locale, method: 'POST', user })({
             deleteLocation: () => TE.left('unavailable'),
-            getLocation: () => TE.fromEither(existingLocation),
+            getLocation: () => TE.fromEither(EffectToFpts.either(existingLocation)),
             saveLocation: () => TE.left('unavailable'),
           }),
         )

@@ -1,6 +1,6 @@
 import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as Errors from '../../../src/DatasetReviews/Errors.ts'
@@ -56,46 +56,46 @@ test.each<
     string,
     ReadonlyArray<Events.Event>,
     _.Input,
-    Either.Either<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
+    Result.Result<Option.Option<Events.Event>, _.Error | Commands.UnableToHandleCommand>,
   ]
 >([
-  ['no events', [], input, Either.left(new Errors.DatasetReviewHasNotBeenStarted())],
+  ['no events', [], input, Result.fail(new Errors.DatasetReviewHasNotBeenStarted())],
   [
     'not answered',
     [started],
     input,
-    Either.right(Option.some(new Events.AnsweredIfOthersNeedToBeListedOnTheReview(input))),
+    Result.succeed(Option.some(new Events.AnsweredIfOthersNeedToBeListedOnTheReview(input))),
   ],
-  ['same answer', [started, answered], input, Either.right(Option.none())],
+  ['same answer', [started, answered], input, Result.succeed(Option.none())],
   [
     'different answer',
     [started, answered],
     inputDifferentAnswer,
-    Either.right(Option.some(new Events.AnsweredIfOthersNeedToBeListedOnTheReview(inputDifferentAnswer))),
+    Result.succeed(Option.some(new Events.AnsweredIfOthersNeedToBeListedOnTheReview(inputDifferentAnswer))),
   ],
   [
     'different dataset review ID',
     [started],
     inputDifferentDatasetReviewId,
-    Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'different user ID',
     [started],
     inputDifferentUserId,
-    Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
+    Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' })),
   ],
   [
     'publication requested',
     [started, answered, publicationRequested],
     input,
-    Either.left(new Errors.DatasetReviewIsBeingPublished()),
+    Result.fail(new Errors.DatasetReviewIsBeingPublished()),
   ],
   [
     'published',
     [started, answered, publicationRequested, published],
     input,
-    Either.left(new Errors.DatasetReviewHasBeenPublished()),
+    Result.fail(new Errors.DatasetReviewHasBeenPublished()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, authorize, decide } = _.AnswerIfOthersNeedToBeListedOnTheReview
@@ -104,7 +104,7 @@ test.each<
 
   const actual = authorize(state, input)
     ? decide(state, input)
-    : Either.left(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
+    : Result.fail(new Commands.UnableToHandleCommand({ cause: 'unauthorized' }))
 
   expect(actual).toStrictEqual(expected)
 })

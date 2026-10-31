@@ -17,6 +17,7 @@ import { profileMatch } from '../../../src/routes.ts'
 import { ProfileId } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {
@@ -82,13 +83,17 @@ describe('profile', () => {
             const getAvatar = vi.fn<_.Env['getAvatar']>(() => TE.of(avatar))
             const getName = vi.fn<_.Env['getName']>(() => TE.of(name))
             const getPrereviews = vi.fn<_.Env['getPrereviews']>(() => TE.of(prereviews))
-            const getCareerStage = vi.fn<_.Env['getCareerStage']>(() => TE.fromEither(careerStage))
-            const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(() => TE.fromEither(researchInterests))
-            const getLocation = vi.fn<_.Env['getLocation']>(() => TE.fromEither(location))
-            const getLanguages = vi.fn<_.Env['getLanguages']>(() => TE.fromEither(languages))
-            const getSlackUser = vi.fn<_.Env['getSlackUser']>(() => TE.fromEither(slackUser))
-            const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(() => TE.fromEither(openForRequests))
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const getCareerStage = vi.fn<_.Env['getCareerStage']>(() => TE.fromEither(EffectToFpts.either(careerStage)))
+            const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(() =>
+              TE.fromEither(EffectToFpts.either(researchInterests)),
+            )
+            const getLocation = vi.fn<_.Env['getLocation']>(() => TE.fromEither(EffectToFpts.either(location)))
+            const getLanguages = vi.fn<_.Env['getLanguages']>(() => TE.fromEither(EffectToFpts.either(languages)))
+            const getSlackUser = vi.fn<_.Env['getSlackUser']>(() => TE.fromEither(EffectToFpts.either(slackUser)))
+            const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(() =>
+              TE.fromEither(EffectToFpts.either(openForRequests)),
+            )
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -169,7 +174,7 @@ describe('profile', () => {
         ],
         ([locale, profile, avatar, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -240,7 +245,7 @@ describe('profile', () => {
         ],
         ([locale, profile, avatar, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -311,7 +316,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -383,7 +388,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -454,7 +459,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -525,7 +530,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -596,7 +601,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -667,7 +672,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -738,7 +743,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -809,7 +814,7 @@ describe('profile', () => {
         ],
         ([locale, profile, name, prereviews, clubs]) =>
           Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -848,7 +853,7 @@ describe('profile', () => {
       [fc.supportedLocale(), fc.orcidProfileId()],
       ([locale, profile]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+          const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
@@ -918,7 +923,7 @@ describe('profile', () => {
         ([locale, profile, prereviews]) =>
           Effect.gen(function* () {
             const getPrereviews = vi.fn<_.Env['getPrereviews']>(() => TE.of(prereviews))
-            const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+            const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
             const actual = yield* Effect.promise(
               _.profile({ locale, profile })({
@@ -960,7 +965,7 @@ describe('profile', () => {
     [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.name(), { nil: undefined }), fc.array(fc.clubName())],
     ([locale, profile, avatar, name, clubs]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+        const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.profile({ locale, profile })({
@@ -1001,7 +1006,7 @@ describe('profile', () => {
     [fc.supportedLocale(), fc.pseudonymProfileId()],
     ([locale, profile]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+        const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.profile({ locale, profile })({
@@ -1039,7 +1044,7 @@ describe('profile', () => {
     [fc.supportedLocale(), fc.pseudonymProfileId(), fc.pseudonym()],
     ([locale, profile, replacedWith]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Clubs | Prereviewers>()
+        const runtime = yield* Effect.context<Clubs | Prereviewers>()
 
         const actual = yield* Effect.promise(
           _.profile({ locale, profile })({

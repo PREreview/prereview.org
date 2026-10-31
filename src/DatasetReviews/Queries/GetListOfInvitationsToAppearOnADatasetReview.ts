@@ -1,4 +1,4 @@
-import { Array, Either, Equal, HashSet, Option, Struct, type Types } from 'effect'
+import { Array, Result, Equal, HashSet, Option, Struct, type Types, Filter } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { EmailAddress, Name, Uuid } from '../../types/index.ts'
@@ -14,7 +14,7 @@ export interface InvitationToAppear {
   emailAddress: EmailAddress.EmailAddress
 }
 
-export type Result = Either.Either<
+export type Result = Result.Result<
   ReadonlyArray<InvitationToAppear>,
   Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewDoesNotNeedInvitationsToAppear
 >
@@ -31,12 +31,12 @@ const createFilter = ({ datasetReviewId }: Input) =>
   })
 
 const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
-  Either.gen(function* () {
+  Result.gen(function* () {
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    yield* Either.fromOption(
+    yield* Result.fromOption(
       Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')),
       () => new Errors.DatasetReviewHasNotBeenStarted(),
     )
@@ -47,16 +47,19 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     )
 
     if (!Equal.equals(needInvitations, Option.some('yes'))) {
-      return yield* Either.left(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())
+      return yield* Result.fail(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())
     }
 
     const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
 
     const removedInvitations = HashSet.fromIterable(
-      Array.filterMap(events, event =>
-        event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-          ? Option.some(event.invitationId)
-          : Option.none(),
+      Array.filterMap(
+        events,
+        Filter.fromPredicateOption(event =>
+          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+            ? Option.some(event.invitationId)
+            : Option.none(),
+        ),
       ),
     )
 
@@ -65,12 +68,15 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
       invitation => !HashSet.has(removedInvitations, invitation.invitationId),
     )
 
-    return Array.filterMap(currentInvitations, invitation =>
-      Option.map(invitation.contactDetails, contactDetails => ({
-        invitationId: invitation.invitationId,
-        name: contactDetails.name,
-        emailAddress: contactDetails.emailAddress,
-      })),
+    return Array.filterMap(
+      currentInvitations,
+      Filter.fromPredicateOption(invitation =>
+        Option.map(invitation.contactDetails, contactDetails => ({
+          invitationId: invitation.invitationId,
+          name: contactDetails.name,
+          emailAddress: contactDetails.emailAddress,
+        })),
+      ),
     )
   })
 

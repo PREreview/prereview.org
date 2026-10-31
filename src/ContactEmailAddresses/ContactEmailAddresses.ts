@@ -12,7 +12,7 @@ import * as StartVerificationOfContactEmailAddress from './StartVerificationOfCo
 import * as UseAuthorInviteEmailAddress from './UseAuthorInviteEmailAddress.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress.ts'
 
-export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
+export class ContactEmailAddresses extends Context.Service<
   ContactEmailAddresses,
   {
     getContactEmailAddress: Queries.FromOnDemandQuery<typeof GetContactEmailAddress>
@@ -27,7 +27,7 @@ export class ContactEmailAddresses extends Context.Tag('ContactEmailAddresses')<
       args: ResendVerificationEmail.Input,
     ) => Effect.Effect<void, ResendVerificationEmail.Error, Locale>
   }
->() {}
+>()('ContactEmailAddresses') {}
 
 export const layer = Layer.effect(
   ContactEmailAddresses,

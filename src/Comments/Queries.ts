@@ -1,4 +1,4 @@
-import { Array, Data, Either, Equal, Option, pipe, Record } from 'effect'
+import { Array, Data, Result, Equal, Option, pipe, Record } from 'effect'
 import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -26,7 +26,7 @@ export const GetNextExpectedCommandForUser =
     const [commentId, comment] = pipe(
       Array.reduce(events, Record.empty<Uuid.Uuid, ReadonlyArray<CommentEvent>>(), (candidates, event) =>
         pipe(
-          Record.modifyOption(candidates, event.commentId, Array.append(event)),
+          Record.modify(candidates, event.commentId, Array.append(event)),
           Option.getOrElse(() => {
             if (
               event._tag === 'CommentWasStarted' &&
@@ -78,7 +78,7 @@ export const GetNextExpectedCommandForUserOnAComment =
   (events: ReadonlyArray<CommentEvent>) =>
   (
     commentId: Uuid.Uuid,
-  ): Either.Either<
+  ): Result.Result<
     Exclude<ExpectedCommand.ExpectedCommandForUser, ExpectedCommand.ExpectedToStartAComment>,
     Errors.CommentHasNotBeenStarted | Errors.CommentIsBeingPublished | Errors.CommentWasAlreadyPublished
   > => {
@@ -87,43 +87,43 @@ export const GetNextExpectedCommandForUserOnAComment =
     )
 
     if (comment._tag === 'CommentNotStarted') {
-      return Either.left(new Errors.CommentHasNotBeenStarted())
+      return Result.fail(new Errors.CommentHasNotBeenStarted())
     }
 
     if (comment._tag === 'CommentBeingPublished') {
-      return Either.left(new Errors.CommentIsBeingPublished())
+      return Result.fail(new Errors.CommentIsBeingPublished())
     }
 
     if (comment._tag === 'CommentPublished') {
-      return Either.left(new Errors.CommentWasAlreadyPublished())
+      return Result.fail(new Errors.CommentWasAlreadyPublished())
     }
 
     if (!comment.comment) {
-      return Either.right(new ExpectedCommand.ExpectedToEnterAComment({ commentId }))
+      return Result.succeed(new ExpectedCommand.ExpectedToEnterAComment({ commentId }))
     }
 
     if (!comment.persona) {
-      return Either.right(new ExpectedCommand.ExpectedToChooseAPersona({ commentId }))
+      return Result.succeed(new ExpectedCommand.ExpectedToChooseAPersona({ commentId }))
     }
 
     if (!comment.competingInterests) {
-      return Either.right(new ExpectedCommand.ExpectedToDeclareCompetingInterests({ commentId }))
+      return Result.succeed(new ExpectedCommand.ExpectedToDeclareCompetingInterests({ commentId }))
     }
 
     if (comment._tag === 'CommentInProgress' && !comment.codeOfConductAgreed) {
-      return Either.right(new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId }))
+      return Result.succeed(new ExpectedCommand.ExpectedToAgreeToCodeOfConduct({ commentId }))
     }
 
     if (comment._tag === 'CommentInProgress' && !comment.verifiedEmailAddressExists) {
-      return Either.right(new ExpectedCommand.ExpectedToVerifyEmailAddress({ commentId }))
+      return Result.succeed(new ExpectedCommand.ExpectedToVerifyEmailAddress({ commentId }))
     }
 
-    return Either.right(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
+    return Result.succeed(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
 
 export const buildInputForCommentZenodoRecord = (
   events: ReadonlyArray<CommentEvent>,
-): Either.Either<InputForCommentZenodoRecord, Queries.UnexpectedSequenceOfEvents> => {
+): Result.Result<InputForCommentZenodoRecord, Queries.UnexpectedSequenceOfEvents> => {
   const authorId = pipe(
     events,
     Array.findLast(event => event._tag === 'CommentWasStarted'),
@@ -150,7 +150,7 @@ export const buildInputForCommentZenodoRecord = (
     Option.map(event => event.competingInterests),
   )
 
-  return Either.fromOption(
+  return Result.fromOption(
     Option.all({ authorId, prereviewId, persona, comment, competingInterests }),
     () => new Queries.UnexpectedSequenceOfEvents({}),
   )
@@ -160,7 +160,7 @@ export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOf
 
 export const GetACommentInNeedOfADoi = (
   events: ReadonlyArray<PublicationOfCommentWasRequested | CommentWasAssignedADoi>,
-): Either.Either<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
+): Result.Result<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
   const hasADoi = new Set()
 
   for (const event of events.toReversed()) {
@@ -170,9 +170,9 @@ export const GetACommentInNeedOfADoi = (
     }
 
     if (!hasADoi.has(event.commentId)) {
-      return Either.right(event.commentId)
+      return Result.succeed(event.commentId)
     }
   }
 
-  return Either.left(new NoCommentsInNeedOfADoi())
+  return Result.fail(new NoCommentsInNeedOfADoi())
 }

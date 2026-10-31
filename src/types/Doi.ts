@@ -1,25 +1,25 @@
 import * as Doi from 'doi-ts'
-import { Either, type Equivalence, ParseResult, pipe, Schema } from 'effect'
+import { type Equivalence, pipe, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
 export { Doi, getRegistrant, hasRegistrant, isDoi, toUrl } from 'doi-ts'
 
-export const DoiSchema: Schema.Schema<Doi.Doi, string> = pipe(Schema.String, Schema.filter(Doi.isDoi))
+export const DoiSchema: Schema.Codec<Doi.Doi, string> = pipe(Schema.String, Schema.refine(Doi.isDoi))
 
 export const RegistrantDoiSchema = <R extends string>(
   ...registrants: ReadonlyArray<R>
-): Schema.Schema<Doi.Doi<R>, string> & { readonly registrants: ReadonlyArray<R> } =>
-  Object.assign(pipe(DoiSchema, Schema.filter(Doi.hasRegistrant(...registrants))), { registrants })
+): Schema.Codec<Doi.Doi<R>, string> & { readonly registrants: ReadonlyArray<R> } =>
+  Object.assign(pipe(DoiSchema, Schema.refine(Doi.hasRegistrant(...registrants))), { registrants })
 
-export const DoiFromUrlSchema: Schema.Schema<Doi.Doi, string> = Schema.transformOrFail(
-  Schema.URL,
-  Schema.typeSchema(DoiSchema),
-  {
-    decode: s => Either.fromOption(parse(s.href), () => new ParseResult.Type(DoiSchema.ast, s)),
-    encode: doi => ParseResult.succeed(Doi.toUrl(doi)),
-  },
+export const DoiFromUrlSchema: Schema.Codec<Doi.Doi, string> = Schema.URLFromString.pipe(
+  Schema.decodeTo(Schema.toType(DoiSchema), {
+    decode: SchemaGetter.transformEffect(s =>
+      Effect.fromOption(parse(s.href), () => new SchemaIssue.InvalidValue(undefined, s)),
+    ),
+    encode: SchemaGetter.transformEffect(doi => Effect.succeed(Doi.toUrl(doi))),
+  }),
 )
 
 export const parse = FptsToEffect.optionK(Doi.parse)

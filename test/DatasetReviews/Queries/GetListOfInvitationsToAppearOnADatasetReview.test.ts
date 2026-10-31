@@ -1,5 +1,5 @@
 import { expect, test } from '../../vitest.ts'
-import { Either, Option } from 'effect'
+import { Result, Option } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetListOfInvitationsToAppearOnADatasetReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -55,26 +55,26 @@ const removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFrom
 })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not answered', input, [started], Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
+  ['no events', input, [], Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
+  ['not answered', input, [started], Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
     [started],
-    Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
+    Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
   ],
   [
     'answered no',
     input,
     [started, answeredNo],
-    Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
+    Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
   ],
-  ['answered yes', input, [started, answeredYes], Either.right([])],
+  ['answered yes', input, [started, answeredYes], Result.succeed([])],
   [
     'answered yes, one invite',
     input,
     [started, answeredYes, invited1],
-    Either.right([
+    Result.succeed([
       {
         invitationId: invited1.invitationId,
         name: Option.getOrThrow(invited1.contactDetails).name,
@@ -86,7 +86,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'answered yes, multiple invites',
     input,
     [started, answeredYes, invited1, invited2, invited3],
-    Either.right([
+    Result.succeed([
       {
         invitationId: invited1.invitationId,
         name: Option.getOrThrow(invited1.contactDetails).name,
@@ -99,7 +99,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
       },
     ]),
   ],
-  ['answered yes, one invite removed', input, [started, answeredYes, invited1, removed], Either.right([])],
+  ['answered yes, one invite removed', input, [started, answeredYes, invited1, removed], Result.succeed([])],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetListOfInvitationsToAppearOnADatasetReview
 

@@ -5,15 +5,15 @@ import { html, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import * as Routes from '../../routes.ts'
 
-export const DynamicEmbed = Schema.transformLiterals(
-  ['list-of-active-clubs', 'listOfActiveClubs'],
-  ['list-of-inactive-clubs', 'listOfInactiveClubs'],
-)
+export const DynamicEmbed = Schema.Literals(['list-of-active-clubs', 'list-of-inactive-clubs']).transform([
+  'listOfActiveClubs',
+  'listOfInactiveClubs',
+])
 
-export class DynamicEmbedder extends Context.Tag('DynamicEmbedder')<
+export class DynamicEmbedder extends Context.Service<
   DynamicEmbedder,
   Record<typeof DynamicEmbed.Type, Effect.Effect<Html, never, Locale>>
->() {
+>()('DynamicEmbedder') {
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
@@ -37,7 +37,7 @@ const ListOfActiveClubs = Effect.gen(function* () {
     <ul>
       ${pipe(
         Array.filter(allClubs, club => club.status === 'active'),
-        Array.sortWith(Struct.get('name'), (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a)),
+        Array.sortWith(Struct.get('name'), (a, b) => String.localeCompare(b, [locale], { sensitivity: 'base' })(a)),
         Array.map(club => {
           return html`
             <li>
@@ -62,7 +62,7 @@ const ListOfInactiveClubs = Effect.gen(function* () {
     <ul>
       ${pipe(
         Array.filter(allClubs, club => club.status === 'inactive'),
-        Array.sortWith(Struct.get('name'), (a, b) => String.localeCompare(b, locale, { sensitivity: 'base' })(a)),
+        Array.sortWith(Struct.get('name'), (a, b) => String.localeCompare(b, [locale], { sensitivity: 'base' })(a)),
         Array.map(club => {
           return html`
             <li>

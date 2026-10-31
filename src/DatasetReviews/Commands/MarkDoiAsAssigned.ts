@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Result, Equal, Function, Match, Option, type Types } from 'effect'
 import type { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
@@ -30,18 +30,18 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
-} = Function.dual(2, (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
   Match.valueTags(state, {
-    NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
     AlreadyHasADoi: ({ doi }) =>
       Boolean.match(Equal.equals(command.doi, doi), {
-        onFalse: () => Either.left(new Errors.DatasetReviewAlreadyHasADoi({})),
-        onTrue: () => Either.right(Option.none()),
+        onFalse: () => Result.fail(new Errors.DatasetReviewAlreadyHasADoi({})),
+        onTrue: () => Result.succeed(Option.none()),
       }),
     DoesNotHaveADoi: () =>
-      Either.right(
+      Result.succeed(
         Option.some(
           new Events.DatasetReviewWasAssignedADoi({
             doi: command.doi,

@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -44,7 +44,7 @@ export const RemoveInvitationToAppearPage = ({
           <fieldset
             role="group"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.removeAuthor)
+              form._tag === 'InvalidForm' && Result.isFailure(form.removeAuthor)
                 ? 'aria-invalid="true" aria-errormessage="remove-author-error"'
                 : '',
             )}
@@ -54,12 +54,12 @@ export const RemoveInvitationToAppearPage = ({
             </legend>
 
             ${
-              form._tag === 'InvalidForm' && Either.isLeft(form.removeAuthor)
+              form._tag === 'InvalidForm' && Result.isFailure(form.removeAuthor)
                 ? html`
                     <div class="error-message" id="remove-author-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${pipe(
-                        Match.value(form.removeAuthor.left),
+                        Match.value(form.removeAuthor.failure),
                         Match.tag('Missing', () => t('wantToRemoveNameError')({ name: authorName })),
                         Match.exhaustive,
                       )}
@@ -118,12 +118,12 @@ export const RemoveInvitationToAppearPage = ({
 const toErrorItems =
   (locale: SupportedLocale, authorName: Name.Name) => (form: RemoveInvitationToAppearForm.InvalidForm) => html`
     ${
-      Either.isLeft(form.removeAuthor)
+      Result.isFailure(form.removeAuthor)
         ? html`
             <li>
               <a href="#remove-author-no">
                 ${pipe(
-                  Match.value(form.removeAuthor.left),
+                  Match.value(form.removeAuthor.failure),
                   Match.tag('Missing', () =>
                     translate(locale, 'review-a-dataset-flow', 'wantToRemoveNameError')({ name: authorName }),
                   ),

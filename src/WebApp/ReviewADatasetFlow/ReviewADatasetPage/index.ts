@@ -1,4 +1,4 @@
-import type { UrlParams } from '@effect/platform'
+import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as Datasets from '../../../Datasets/index.ts'
@@ -31,7 +31,7 @@ export const ReviewADatasetSubmission = ({
       CompletedForm: Effect.fn(
         function* (form: ReviewADatasetForm.CompletedForm) {
           const datasetId = yield* Effect.andThen(
-            Datasets.parseDatasetIdInput(form.whichDataset),
+            Effect.fromResult(Datasets.parseDatasetIdInput(form.whichDataset)),
             Datasets.resolveDatasetId,
           )
 

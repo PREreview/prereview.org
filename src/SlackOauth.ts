@@ -1,6 +1,6 @@
 import { Config, Context, Effect, Layer, type Redacted } from 'effect'
 
-export class SlackOauth extends Context.Tag('SlackOauth')<
+export class SlackOauth extends Context.Service<
   SlackOauth,
   {
     readonly authorizeUrl: URL
@@ -8,7 +8,7 @@ export class SlackOauth extends Context.Tag('SlackOauth')<
     readonly clientSecret: Redacted.Redacted
     readonly tokenUrl: URL
   }
->() {}
+>()('SlackOauth') {}
 
 export const layer = ({
   clientId,
@@ -24,5 +24,5 @@ export const layer = ({
     tokenUrl: new URL('https://slack.com/api/oauth.v2.access'),
   })
 
-export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
-  Layer.unwrapEffect(Effect.map(Config.unwrap(options), layer))
+export const layerConfig = (options: Config.Wrap<Parameters<typeof layer>[0]>) =>
+  Layer.unwrap(Effect.map(Config.unwrap(options), layer))

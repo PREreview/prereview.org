@@ -5,13 +5,13 @@ import {
   HashSet,
   Match,
   Option,
-  type ParseResult,
   pipe,
   Predicate,
   Record,
   Ref,
   Schema,
   type Types,
+  Filter,
 } from 'effect'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
@@ -43,13 +43,15 @@ import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
-const EmbeddedEntry = Schema.Union(CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, YouTubeEntry)
+const EmbeddedEntry = Schema.Union([CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, YouTubeEntry])
 
-export class RequiredJs extends Context.Tag('RequiredJs')<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>() {}
+export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>()(
+  'RequiredJs',
+) {}
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
-  Effect.Effect<Html, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs>
+  Effect.Effect<Html, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs>
 >()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
@@ -213,7 +215,7 @@ const VideoAssetToHtml = ({ asset, altText }: { asset: VideoAsset; altText: stri
 
 const BlockElementToHtml = Match.typeTags<
   Block,
-  Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs>
+  Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs>
 >()({
   BlockQuote: blockQuote =>
     Effect.map(
@@ -225,7 +227,7 @@ const BlockElementToHtml = Match.typeTags<
     Effect.succeedSome(AssetToHtml({ asset: embeddedAssetBlock.data.target, altText: '' })),
   EmbeddedEntryBlock: embeddedEntryBlock =>
     pipe(
-      Schema.decodeUnknown(EmbeddedEntry)(embeddedEntryBlock.data.target),
+      Schema.decodeUnknownEffect(EmbeddedEntry)(embeddedEntryBlock.data.target),
       Effect.andThen(EmbeddedEntryToHtml),
       Effect.asSome,
     ),
@@ -317,7 +319,7 @@ const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
 
 export const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> =>
+): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -340,7 +342,7 @@ export const BlockContentToHtml = (
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<Option.Option<Html>, ParseResult.ParseError, DynamicEmbedder | Locale | RequiredJs> => {
+): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }
@@ -364,7 +366,8 @@ const InlineElementToHtml = Match.typeTags<Inline, Option.Option<Html>>()({
     ),
 })
 
-const InlineContentToHtml = (inline: Inline): ReadonlyArray<Html> => Array.filterMap(inline.content, TextToHtml)
+const InlineContentToHtml = (inline: Inline): ReadonlyArray<Html> =>
+  Array.filterMap(inline.content, Filter.fromPredicateOption(TextToHtml))
 
 const TextToHtml = (text: Text): Option.Option<Html> =>
   text.value === ''

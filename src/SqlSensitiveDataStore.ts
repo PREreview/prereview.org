@@ -1,5 +1,6 @@
-import { Model, SqlClient, SqlSchema, type SqlError } from '@effect/sql'
-import { Array, Effect, Layer, Option, pipe, Record, Schema, Struct, Tuple } from 'effect'
+import { Model } from 'effect/schema'
+import { SqlClient, SqlModel, SqlSchema, type SqlError } from 'effect/sql'
+import { Array, Effect, flow, Layer, Option, pipe, Record, Schema, Struct, Tuple } from 'effect'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 
@@ -18,7 +19,7 @@ export const make: Effect.Effect<
 
   yield* sql`CREATE TABLE IF NOT EXISTS sensitive_data (id UUID PRIMARY KEY, value TEXT NOT NULL)`
 
-  const sensitiveData = yield* Model.makeRepository(SensitiveData, {
+  const sensitiveData = yield* SqlModel.makeRepository(SensitiveData, {
     tableName: 'sensitive_data',
     spanPrefix: 'SensitiveData',
     idColumn: 'id',
@@ -41,8 +42,10 @@ export const make: Effect.Effect<
     get: id =>
       pipe(
         sensitiveData.findById(id),
-        Effect.map(Option.map(Struct.get('value'))),
-        Effect.catchAllDefect(cause => new SensitiveDataStore.FailedToGetSensitiveData({ cause })),
+        Effect.map(flow(Struct.get('value'), Option.some)),
+        Effect.catchTag('NoSuchElementError', () => Effect.succeedNone),
+        Effect.orDie,
+        Effect.catchDefect(cause => new SensitiveDataStore.FailedToGetSensitiveData({ cause })),
       ),
     getMany: ids =>
       pipe(
@@ -50,14 +53,14 @@ export const make: Effect.Effect<
         Effect.orDie,
         Effect.map(Array.map(row => Tuple.make(row.id, row.value))),
         Effect.map(Record.fromEntries),
-        Effect.catchAllDefect(cause => new SensitiveDataStore.FailedToGetSensitiveData({ cause })),
+        Effect.catchDefect(cause => new SensitiveDataStore.FailedToGetSensitiveData({ cause })),
         Effect.withSpan('SqlSensitiveDataStore.getMany', { attributes: { ids } }),
       ),
     add: value =>
       pipe(
         generateUuid,
-        Effect.tap(id => sensitiveData.insert({ id, value })),
-        Effect.catchAllDefect(cause => new SensitiveDataStore.FailedToAddSensitiveData({ cause })),
+        Effect.tap(id => Effect.orDie(sensitiveData.insert({ id, value }))),
+        Effect.catchDefect(cause => new SensitiveDataStore.FailedToAddSensitiveData({ cause })),
       ),
   } satisfies typeof SensitiveDataStore.SensitiveDataStore.Service
 })

@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -37,7 +37,7 @@ export const HasTrackedChangesQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.hasTrackedChanges)
+                hasAnError && Result.isFailure(form.hasTrackedChanges)
                   ? 'aria-invalid="true" aria-errormessage="has-tracked-changes-error"'
                   : '',
               )}
@@ -47,11 +47,11 @@ export const HasTrackedChangesQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.hasTrackedChanges)
+                hasAnError && Result.isFailure(form.hasTrackedChanges)
                   ? html`
                       <div class="error-message" id="has-tracked-changes-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
-                        ${Match.valueTags(form.hasTrackedChanges.left, {
+                        ${Match.valueTags(form.hasTrackedChanges.failure, {
                           Missing: () => t('selectTrackChanges')(),
                         })}
                       </div>
@@ -93,7 +93,7 @@ export const HasTrackedChangesQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasTrackedChangesYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasTrackedChangesYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasTrackedChangesYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -131,7 +131,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasTrackedChangesPartlyDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasTrackedChangesPartlyDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasTrackedChangesPartlyDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -168,7 +168,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasTrackedChangesNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasTrackedChangesNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasTrackedChangesNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -206,12 +206,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.hasTrackedChanges)
+  Result.isFailure(form.hasTrackedChanges)
     ? html`
         <li>
           <a href="#has-tracked-changes-yes">
             ${pipe(
-              Match.value(form.hasTrackedChanges.left),
+              Match.value(form.hasTrackedChanges.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectTrackChanges')()),
               Match.exhaustive,
             )}

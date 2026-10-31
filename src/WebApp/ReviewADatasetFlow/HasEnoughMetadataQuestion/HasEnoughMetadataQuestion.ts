@@ -1,4 +1,4 @@
-import { Either, Match, Option, pipe, String } from 'effect'
+import { Result, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -37,7 +37,7 @@ export const HasEnoughMetadataQuestion = ({
             <fieldset
               role="group"
               ${rawHtml(
-                hasAnError && Either.isLeft(form.hasEnoughMetadata)
+                hasAnError && Result.isFailure(form.hasEnoughMetadata)
                   ? 'aria-invalid="true" aria-errormessage="has-enough-metadata-error"'
                   : '',
               )}
@@ -47,11 +47,11 @@ export const HasEnoughMetadataQuestion = ({
               </legend>
 
               ${
-                hasAnError && Either.isLeft(form.hasEnoughMetadata)
+                hasAnError && Result.isFailure(form.hasEnoughMetadata)
                   ? html`
                       <div class="error-message" id="has-enough-metadata-error">
                         <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                        ${Match.valueTags(form.hasEnoughMetadata.left, {
+                        ${Match.valueTags(form.hasEnoughMetadata.failure, {
                           Missing: () => t('selectEnoughMetadata')(),
                         })}
                       </div>
@@ -93,7 +93,7 @@ export const HasEnoughMetadataQuestion = ({
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasEnoughMetadataYesDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasEnoughMetadataYesDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataYesDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -131,7 +131,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasEnoughMetadataPartlyDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasEnoughMetadataPartlyDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataPartlyDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -169,7 +169,7 @@ ${Match.valueTags(form, {
 ${Match.valueTags(form, {
   EmptyForm: () => '',
   InvalidForm: form =>
-    Option.getOrElse(Option.flatten(Either.getRight(form.hasEnoughMetadataNoDetail)), () => String.empty),
+    Option.getOrElse(Option.flatten(Result.getSuccess(form.hasEnoughMetadataNoDetail)), () => String.empty),
   CompletedForm: form => Option.getOrElse(form.hasEnoughMetadataNoDetail, () => String.empty),
 })}</textarea>
                     </div>
@@ -207,12 +207,12 @@ ${Match.valueTags(form, {
 }
 
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
-  Either.isLeft(form.hasEnoughMetadata)
+  Result.isFailure(form.hasEnoughMetadata)
     ? html`
         <li>
           <a href="#has-enough-metadata-yes">
             ${pipe(
-              Match.value(form.hasEnoughMetadata.left),
+              Match.value(form.hasEnoughMetadata.failure),
               Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectEnoughMetadata')()),
               Match.exhaustive,
             )}

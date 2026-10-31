@@ -1,19 +1,19 @@
 import cookieSignature from 'cookie-signature'
-import { Context, Data, Effect, Either, Layer, Redacted } from 'effect'
+import { Context, Data, Effect, Result, Layer, Redacted } from 'effect'
 import { SessionSecret } from './Context.ts'
 
-export class CookieSignature extends Context.Tag('CookieSignature')<
+export class CookieSignature extends Context.Service<
   CookieSignature,
   {
     sign: (value: string) => string
-    unsign: (value: string) => Either.Either<string, SignatureIsInvalid>
+    unsign: (value: string) => Result.Result<string, SignatureIsInvalid>
   }
->() {}
+>()('CookieSignature') {}
 
 export const sign = (value: string) => Effect.map(CookieSignature, ({ sign }) => sign(value))
 
 export const unsign = (...args: Parameters<(typeof CookieSignature.Service)['unsign']>) =>
-  Effect.flatMap(CookieSignature, service => service.unsign(...args))
+  Effect.flatMap(CookieSignature, service => Effect.fromResult(service.unsign(...args)))
 
 export class SignatureIsInvalid extends Data.TaggedError('SignatureIsInvalid')<{ cause?: unknown }> {}
 
@@ -23,11 +23,11 @@ export const make = Effect.gen(function* () {
   return {
     sign: value => cookieSignature.sign(value, Redacted.value(secret)),
     unsign: value =>
-      Either.gen(function* () {
+      Result.gen(function* () {
         const unsigned = cookieSignature.unsign(value, Redacted.value(secret))
 
         if (unsigned === false) {
-          return yield* Either.left(new SignatureIsInvalid({}))
+          return yield* Result.fail(new SignatureIsInvalid({}))
         }
 
         return unsigned

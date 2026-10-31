@@ -1,4 +1,4 @@
-import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
+import { Data, Effect, Result, Match, pipe, Schema } from 'effect'
 import type * as Comments from '../../../Comments/index.ts'
 
 export type ChoosePersonaForm = EmptyForm | InvalidForm | CompletedForm
@@ -8,7 +8,7 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  persona: Either.Either<never, Missing>
+  persona: Result.Result<never, Missing>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -17,10 +17,12 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = (body: unknown) =>
   Effect.gen(function* () {
-    const { persona } = yield* Schema.decodeUnknown(PersonaFieldSchema)(body)
+    const { persona } = yield* Schema.decodeUnknownEffect(PersonaFieldSchema)(body)
 
     return new CompletedForm({ persona })
-  }).pipe(Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ persona: Either.left(new Missing()) }))))
+  }).pipe(
+    Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ persona: Result.fail(new Missing()) }))),
+  )
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),
@@ -29,4 +31,4 @@ export const fromComment = pipe(
   Match.exhaustive,
 )
 
-const PersonaFieldSchema = Schema.Struct({ persona: Schema.Literal('public', 'pseudonym') })
+const PersonaFieldSchema = Schema.Struct({ persona: Schema.Literals(['public', 'pseudonym']) })

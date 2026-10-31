@@ -1,4 +1,4 @@
-import { HttpServerResponse } from '@effect/platform'
+import { HttpServerResponse } from 'effect/http'
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, pipe, Schema } from 'effect'
 import { Clubs } from '../../Clubs/index.ts'
@@ -35,7 +35,7 @@ const ClubSchema = Schema.Struct({
   id: UuidSchema,
   name: Name.NameSchema,
   added: PlainDateSchema,
-  status: Schema.Literal('active', 'inactive'),
+  status: Schema.Literals(['active', 'inactive']),
 })
 
 const ClubsSchema = Schema.Array(ClubSchema)
@@ -45,6 +45,6 @@ export const ClubsData = pipe(
   Effect.andThen(HttpServerResponse.schemaJson(ClubsSchema)),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create clubs data list'), { error })),
   Effect.catchTags({
-    HttpBodyError: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+    HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
 )

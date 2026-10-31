@@ -1,5 +1,5 @@
-import { UrlParams } from '@effect/platform'
-import { Data, Effect, Either, Option, pipe, Schema, Struct } from 'effect'
+import type { UrlParams } from 'effect/http'
+import { Data, Effect, Result, Option, pipe, Schema, Struct, flow } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type MattersToItsAudienceForm = EmptyForm | InvalidForm | CompletedForm
@@ -9,10 +9,10 @@ export class Missing extends Data.TaggedError('Missing') {}
 export class EmptyForm extends Data.TaggedClass('EmptyForm') {}
 
 export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
-  mattersToItsAudience: Either.Either<never, Missing>
-  mattersToItsAudienceVeryConsequentialDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  mattersToItsAudienceSomewhatConsequentialDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
-  mattersToItsAudienceNotConsequentialDetail: Either.Either<Option.Option<NonEmptyString.NonEmptyString>>
+  mattersToItsAudience: Result.Result<never, Missing>
+  mattersToItsAudienceVeryConsequentialDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  mattersToItsAudienceSomewhatConsequentialDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
+  mattersToItsAudienceNotConsequentialDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
@@ -24,23 +24,23 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 
 export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
   const mattersToItsAudienceVeryConsequentialDetail = yield* pipe(
-    Schema.decode(MattersToItsAudienceVeryConsequentialDetailSchema)(body),
-    Effect.andThen(Struct.get('mattersToItsAudienceVeryConsequentialDetail')),
+    Schema.decodeEffect(MattersToItsAudienceVeryConsequentialDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('mattersToItsAudienceVeryConsequentialDetail'), Effect.fromOption)),
     Effect.option,
   )
   const mattersToItsAudienceSomewhatConsequentialDetail = yield* pipe(
-    Schema.decode(MattersToItsAudienceSomewhatConsequentialDetailSchema)(body),
-    Effect.andThen(Struct.get('mattersToItsAudienceSomewhatConsequentialDetail')),
+    Schema.decodeEffect(MattersToItsAudienceSomewhatConsequentialDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('mattersToItsAudienceSomewhatConsequentialDetail'), Effect.fromOption)),
     Effect.option,
   )
   const mattersToItsAudienceNotConsequentialDetail = yield* pipe(
-    Schema.decode(MattersToItsAudienceNotConsequentialDetailSchema)(body),
-    Effect.andThen(Struct.get('mattersToItsAudienceNotConsequentialDetail')),
+    Schema.decodeEffect(MattersToItsAudienceNotConsequentialDetailSchema)(body),
+    Effect.andThen(flow(Struct.get('mattersToItsAudienceNotConsequentialDetail'), Effect.fromOption)),
     Effect.option,
   )
 
   return yield* pipe(
-    Schema.decode(MattersToItsAudienceSchema)(body),
+    Schema.decodeEffect(MattersToItsAudienceSchema)(body),
     Effect.map(
       ({ mattersToItsAudience }) =>
         new CompletedForm({
@@ -50,15 +50,15 @@ export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
           mattersToItsAudienceNotConsequentialDetail,
         }),
     ),
-    Effect.catchTag('ParseError', () =>
+    Effect.catchTag('SchemaError', () =>
       Effect.succeed(
         new InvalidForm({
-          mattersToItsAudience: Either.left(new Missing()),
-          mattersToItsAudienceVeryConsequentialDetail: Either.right(mattersToItsAudienceVeryConsequentialDetail),
-          mattersToItsAudienceSomewhatConsequentialDetail: Either.right(
+          mattersToItsAudience: Result.fail(new Missing()),
+          mattersToItsAudienceVeryConsequentialDetail: Result.succeed(mattersToItsAudienceVeryConsequentialDetail),
+          mattersToItsAudienceSomewhatConsequentialDetail: Result.succeed(
             mattersToItsAudienceSomewhatConsequentialDetail,
           ),
-          mattersToItsAudienceNotConsequentialDetail: Either.right(mattersToItsAudienceNotConsequentialDetail),
+          mattersToItsAudienceNotConsequentialDetail: Result.succeed(mattersToItsAudienceNotConsequentialDetail),
         }),
       ),
     ),
@@ -81,26 +81,39 @@ export const fromAnswer: (
     }),
 })
 
-const MattersToItsAudienceSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    mattersToItsAudience: Schema.Literal('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
-  }),
+const MattersToItsAudienceSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      mattersToItsAudience: Schema.Literals([
+        'very-consequential',
+        'somewhat-consequential',
+        'not-consequential',
+        'unsure',
+      ]),
+    }),
+  ),
 )
 
-const MattersToItsAudienceVeryConsequentialDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    mattersToItsAudienceVeryConsequentialDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const MattersToItsAudienceVeryConsequentialDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      mattersToItsAudienceVeryConsequentialDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const MattersToItsAudienceSomewhatConsequentialDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    mattersToItsAudienceSomewhatConsequentialDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const MattersToItsAudienceSomewhatConsequentialDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      mattersToItsAudienceSomewhatConsequentialDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )
 
-const MattersToItsAudienceNotConsequentialDetailSchema = UrlParams.schemaRecord(
-  Schema.Struct({
-    mattersToItsAudienceNotConsequentialDetail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
-  }),
+const MattersToItsAudienceNotConsequentialDetailSchema = Schema.RecordFromUrlParams.pipe(
+  Schema.decodeTo(
+    Schema.Struct({
+      mattersToItsAudienceNotConsequentialDetail: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
+    }),
+  ),
 )

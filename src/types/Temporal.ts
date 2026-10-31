@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Clock, Effect, type Order, ParseResult, Schema } from 'effect'
+import { Clock, Effect, type Order, Schema, SchemaIssue, SchemaGetter } from 'effect'
 
 export type Instant = Temporal.Instant
 export type PlainDate = Temporal.PlainDate
@@ -20,83 +20,96 @@ export const PlainDateTimeFromSelfSchema = Schema.instanceOf(Temporal.PlainDateT
 
 export const InstantFromSelfSchema = Schema.instanceOf(Temporal.Instant)
 
-export const PlainYearMonthFromPartsSchema = Schema.transformOrFail(
-  Schema.Struct({
-    year: Schema.Number,
-    month: Schema.Number,
-  }),
-  PlainYearMonthFromSelfSchema,
-  {
-    decode: (parts, _, ast) =>
-      ParseResult.try({
+export const PlainYearMonthFromPartsSchema = Schema.Struct({
+  year: Schema.Number,
+  month: Schema.Number,
+}).pipe(
+  Schema.decodeTo(PlainYearMonthFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(parts =>
+      Effect.try({
         try: () => Temporal.PlainYearMonth.from(parts, { overflow: 'reject' }),
-        catch: () => new ParseResult.Type(ast, parts),
+        catch: () => new SchemaIssue.InvalidValue(undefined, parts),
       }),
-    encode: ParseResult.succeed,
-  },
-)
-
-export const PlainYearMonthSchema = Schema.transformOrFail(Schema.String, PlainYearMonthFromSelfSchema, {
-  decode: (parts, _, ast) =>
-    ParseResult.try({
-      try: () => Temporal.PlainYearMonth.from(parts, { overflow: 'reject' }),
-      catch: () => new ParseResult.Type(ast, parts),
-    }),
-  encode: date => ParseResult.succeed(date.toString()),
-})
-
-export const PlainDateFromPartsSchema = Schema.transformOrFail(
-  Schema.Struct({
-    year: Schema.Number,
-    month: Schema.Number,
-    day: Schema.Number,
+    ),
+    encode: SchemaGetter.transformEffect(Effect.succeed),
   }),
-  PlainDateFromSelfSchema,
-  {
-    decode: (parts, _, ast) =>
-      ParseResult.try({
-        try: () => Temporal.PlainDate.from(parts, { overflow: 'reject' }),
-        catch: () => new ParseResult.Type(ast, parts),
-      }),
-    encode: ParseResult.succeed,
-  },
 )
 
-export const PlainDateTimeSchema = Schema.transformOrFail(Schema.String, PlainDateTimeFromSelfSchema, {
-  decode: (parts, _, ast) =>
-    ParseResult.try({
-      try: () => Temporal.PlainDateTime.from(parts, { overflow: 'reject' }),
-      catch: () => new ParseResult.Type(ast, parts),
-    }),
-  encode: dateTime => ParseResult.succeed(dateTime.toString()),
-})
+export const PlainYearMonthSchema = Schema.String.pipe(
+  Schema.decodeTo(PlainYearMonthFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(parts =>
+      Effect.try({
+        try: () => Temporal.PlainYearMonth.from(parts, { overflow: 'reject' }),
+        catch: () => new SchemaIssue.InvalidValue(undefined, parts),
+      }),
+    ),
+    encode: SchemaGetter.transformEffect(date => Effect.succeed(date.toString())),
+  }),
+)
 
-export const PlainDateSchema = Schema.transformOrFail(Schema.String, PlainDateFromSelfSchema, {
-  decode: (parts, _, ast) =>
-    ParseResult.try({
-      try: () => Temporal.PlainDate.from(parts, { overflow: 'reject' }),
-      catch: () => new ParseResult.Type(ast, parts),
-    }),
-  encode: date => ParseResult.succeed(date.toString()),
-})
+export const PlainDateFromPartsSchema = Schema.Struct({
+  year: Schema.Number,
+  month: Schema.Number,
+  day: Schema.Number,
+}).pipe(
+  Schema.decodeTo(PlainDateFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(parts =>
+      Effect.try({
+        try: () => Temporal.PlainDate.from(parts, { overflow: 'reject' }),
+        catch: () => new SchemaIssue.InvalidValue(undefined, parts),
+      }),
+    ),
+    encode: SchemaGetter.transformEffect(Effect.succeed),
+  }),
+)
 
-export const InstantSchema = Schema.transformOrFail(Schema.String, InstantFromSelfSchema, {
-  decode: (parts, _, ast) =>
-    ParseResult.try({
-      try: () => Temporal.Instant.from(parts),
-      catch: () => new ParseResult.Type(ast, parts),
-    }),
-  encode: date => ParseResult.succeed(date.toString()),
-})
+export const PlainDateTimeSchema = Schema.String.pipe(
+  Schema.decodeTo(PlainDateTimeFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(parts =>
+      Effect.try({
+        try: () => Temporal.PlainDateTime.from(parts, { overflow: 'reject' }),
+        catch: () => new SchemaIssue.InvalidValue(undefined, parts),
+      }),
+    ),
+    encode: SchemaGetter.transformEffect(dateTime => Effect.succeed(dateTime.toString())),
+  }),
+)
 
-export const InstantFromMillisecondsSchema = Schema.transformOrFail(Schema.Number, InstantFromSelfSchema, {
-  decode: (milliseconds, _, ast) =>
-    ParseResult.try({
-      try: () => Temporal.Instant.fromEpochMilliseconds(milliseconds),
-      catch: () => new ParseResult.Type(ast, milliseconds),
-    }),
-  encode: date => ParseResult.succeed(date.epochMilliseconds),
-})
+export const PlainDateSchema = Schema.String.pipe(
+  Schema.decodeTo(PlainDateFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(parts =>
+      Effect.try({
+        try: () => Temporal.PlainDate.from(parts, { overflow: 'reject' }),
+        catch: () => new SchemaIssue.InvalidValue(undefined, parts),
+      }),
+    ),
+    encode: SchemaGetter.transformEffect(date => Effect.succeed(date.toString())),
+  }),
+)
+
+export const InstantSchema = Schema.String.pipe(
+  Schema.decodeTo(InstantFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(parts =>
+      Effect.try({
+        try: () => Temporal.Instant.from(parts),
+        catch: () => new SchemaIssue.InvalidValue(undefined, parts),
+      }),
+    ),
+    encode: SchemaGetter.transformEffect(date => Effect.succeed(date.toString())),
+  }),
+)
+
+export const InstantFromMillisecondsSchema = Schema.Number.pipe(
+  Schema.decodeTo(InstantFromSelfSchema, {
+    decode: SchemaGetter.transformEffect(milliseconds =>
+      Effect.try({
+        try: () => Temporal.Instant.fromEpochMilliseconds(milliseconds),
+        catch: () => new SchemaIssue.InvalidValue(undefined, milliseconds),
+      }),
+    ),
+    encode: SchemaGetter.transformEffect(date => Effect.succeed(date.epochMilliseconds)),
+  }),
+)
 
 export const OrderPlainDate: Order.Order<Temporal.PlainDate> = (self, that) => Temporal.PlainDate.compare(self, that)
 

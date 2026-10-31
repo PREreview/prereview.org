@@ -30,7 +30,7 @@ describe('writeReviewCompetingInterests', () => {
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({
@@ -71,7 +71,7 @@ describe('writeReviewCompetingInterests', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({
@@ -99,7 +99,7 @@ describe('writeReviewCompetingInterests', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
@@ -121,7 +121,7 @@ describe('writeReviewCompetingInterests', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
@@ -146,7 +146,7 @@ describe('writeReviewCompetingInterests', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
@@ -171,7 +171,7 @@ describe('writeReviewCompetingInterests', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user: undefined })({
@@ -209,7 +209,7 @@ describe('writeReviewCompetingInterests', () => {
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-        const runtime = yield* Effect.runtime<Preprints>()
+        const runtime = yield* Effect.context<Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
+import { Array, Result, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/DeclareCompetingInterests.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -312,14 +312,14 @@ describe('decide', () => {
   it.prop('has not been started', [command()], ([command]) => {
     const result = _.decide(new _.NotStarted(), command)
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
   it.prop('has not been declared', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.NotDeclared({ authorId }), command)
 
     expect(result).toStrictEqual(
-      Either.right(
+      Result.succeed(
         Option.some(
           new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
             competingInterests: command.competingInterests,
@@ -343,7 +343,7 @@ describe('decide', () => {
         const result = _.decide(new _.HasBeenDeclared({ competingInterests, authorId }), command)
 
         expect(result).toStrictEqual(
-          Either.right(
+          Result.succeed(
             Option.some(
               new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
                 competingInterests: command.competingInterests,
@@ -361,19 +361,19 @@ describe('decide', () => {
         command,
       )
 
-      expect(result).toStrictEqual(Either.right(Option.none()))
+      expect(result).toStrictEqual(Result.succeed(Option.none()))
     })
   })
 
   it.prop('is being published', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.IsBeingPublished({ authorId }), command)
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
   it.prop('has been published', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.HasBeenPublished({ authorId }), command)
 
-    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+    expect(result).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()))
   })
 })

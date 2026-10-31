@@ -5,7 +5,7 @@ export class RegisteredPrereviewerImported extends Schema.TaggedClass<Registered
   'RegisteredPrereviewerImported',
   {
     orcidId: OrcidId.OrcidIdSchema,
-    registeredAt: Schema.Union(Temporal.InstantSchema, Schema.Literal('not available from import source')),
+    registeredAt: Schema.Union([Temporal.InstantSchema, Schema.Literal('not available from import source')]),
     pseudonym: Pseudonym.PseudonymSchema,
   },
 ) {}
@@ -38,10 +38,10 @@ export class PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTh
   },
 ) {}
 
-export const PrereviewerEvent = Schema.Union(
+export const PrereviewerEvent = Schema.Union([
   RegisteredPrereviewerImported,
   PrereviewerRegistered,
   PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests,
   PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests,
   LegacyPseudonymReplaced,
-)
+])

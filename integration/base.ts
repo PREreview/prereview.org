@@ -1,10 +1,11 @@
-import { LanguageModel } from '@effect/ai'
-import { FetchHttpClient, HttpClient, HttpClientResponse, PlatformLogger, Url } from '@effect/platform'
+import { LanguageModel } from 'effect/ai'
+import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from 'effect/http'
+import { Config, Effect, Fiber, Layer, Logger, Option, pipe, Redacted, References, Schedule } from 'effect'
 import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
-import type { SqlClient } from '@effect/sql'
+import type { SqlClient } from 'effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { WorkflowEngine } from '@effect/workflow'
+import { WorkflowEngine } from 'effect/workflow'
 import { Temporal } from '@js-temporal/polyfill'
 import {
   test as baseTest,
@@ -14,7 +15,6 @@ import {
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
 } from '@playwright/test'
-import { Config, Effect, Fiber, Layer, Logger, LogLevel, Option, pipe, Redacted, Schedule } from 'effect'
 import fetchMock, { type FetchMock } from 'fetch-mock'
 import { Keyv } from 'keyv'
 import * as fs from 'node:fs/promises'
@@ -86,7 +86,7 @@ interface AppFixtures {
   fetch: FetchMock
   oauthServer: OAuth2Server
   port: number
-  server: Fiber.RuntimeFiber<never>
+  server: Fiber.Fiber<never>
   formStore: Keyv
   careerStageStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
@@ -2529,20 +2529,17 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           OpenAlex.layerApi({ key: Redacted.make('key') }),
           WebApp.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           WorkflowEngine.layerMemory,
-          Layer.mock(LanguageModel.LanguageModel, {}),
+          Layer.mock(LanguageModel.LanguageModel, { [LanguageModel.TypeId]: LanguageModel.TypeId } as never),
           Layer.mock(Embeddings, {}),
         ]),
         Layer.provide(sqlClientLayer),
         Layer.launch,
-        Effect.tapErrorCause(Effect.logError),
+        Effect.tapCause(Effect.logError),
         Effect.provide(
-          Logger.replaceScoped(
-            Logger.defaultLogger,
-            PlatformLogger.toFile(Logger.logfmtLogger, testInfo.outputPath('server.log')),
-          ),
+          Logger.layer([Logger.toFile(Logger.formatLogFmt, testInfo.outputPath('server.log')), Logger.tracerLogger]),
         ),
         Effect.provide(NodeFileSystem.layer),
-        Logger.withMinimumLogLevel(LogLevel.Debug),
+        Effect.provideService(References.MinimumLogLevel, 'Debug'),
         Effect.orDie,
       )
 
@@ -2607,7 +2604,7 @@ export const usePostgresDB: Fixtures<{ postgresUrl: URL }, NoFixtures, Pick<AppF
         // oxlint-disable-next-line typescript/no-non-null-assertion
         return Url.setPathname(new URL(Redacted.value(pgClient.config.url!)), databaseName)
       }),
-      Effect.provide(PgClient.layerConfig({ url: Config.redacted(Config.string('POSTGRES_URL')) })),
+      Effect.provide(PgClient.layerConfig({ url: Config.Redacted('POSTGRES_URL') })),
       Effect.runPromise,
     )
 

@@ -1,4 +1,4 @@
-import { Array, Either, flow, HashMap, Order, Predicate, Schema, Struct, type Types } from 'effect'
+import { Array, Result, flow, HashMap, Order, Schema, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { OrcidId, Temporal } from '../../types/index.ts'
@@ -20,20 +20,18 @@ export interface Input {
 }
 
 const query = (state: shared.State, input: Input): Result => {
-  const filteredReviewRequests = HashMap.filter(
-    state,
-    Predicate.compose(
-      hasTag('PublishedReviewRequest'),
-      reviewRequest =>
-        typeof reviewRequest.requesterId === 'string' &&
-        OrcidId.OrcidIdEquivalence(reviewRequest.requesterId, input.requesterId),
-    ),
+  const filteredReviewRequests = HashMap.filterMap(state, reviewRequest =>
+    reviewRequest._tag === 'PublishedReviewRequest' &&
+    typeof reviewRequest.requesterId === 'string' &&
+    OrcidId.OrcidIdEquivalence(reviewRequest.requesterId, input.requesterId)
+      ? Result.succeed(reviewRequest)
+      : Result.fail(reviewRequest),
   )
 
   const sortedReviewRequests = Array.sortWith(
     HashMap.values(filteredReviewRequests),
     Struct.get('published'),
-    Order.reverse(Temporal.OrderInstant),
+    Order.flip(Temporal.OrderInstant),
   )
 
   return Array.map(sortedReviewRequests, reviewRequest => PublishedReviewRequestByAPrereviewer.make(reviewRequest))
@@ -43,9 +41,5 @@ export const ListAllPublishedReviewRequestsByAPrereviewer = Queries.StatefulQuer
   name: 'ReviewRequestQueries.listAllPublishedReviewRequestsByAPrereviewer',
   initialState: shared.initialState,
   updateStateWithEvents: shared.updateStateWithEvents,
-  query: flow(query, Either.right),
+  query: flow(query, Result.succeed),
 })
-
-function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
-  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
-}

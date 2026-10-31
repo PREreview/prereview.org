@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it, vi } from '../vitest.ts'
-import { Array, Effect, Either, Layer, Option, Struct, pipe, PubSub } from 'effect'
+import { Array, Effect, Result, Layer, Option, Struct, pipe, PubSub } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
 import { Locale } from '../../src/Context.ts'
@@ -25,39 +25,39 @@ const existingVerifiedEmailAddress = EmailAddress('verified@example.com')
 
 const name = Option.some(Name('Josiah Carberry'))
 
-it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, ReadonlyArray<Event['_tag']>]>([
+it.effect.each<[string, _.Input, Result.Result<void, _.Error>, boolean, ReadonlyArray<Event['_tag']>]>([
   [
     'no email address',
     { orcidId: orcidIdWithNoEmailAddress, emailAddress: newEmailAddress, resumeAt: '/resume' },
-    Either.void,
+    Result.void,
     true,
     ['ContactAddressRecorded', 'EmailToVerifyContactAddressSent'],
   ],
   [
     'same as unverified email address',
     { orcidId: orcidIdWithUnverified, emailAddress: existingUnverifiedEmailAddress, resumeAt: '/resume' },
-    Either.void,
+    Result.void,
     true,
     ['EmailToVerifyContactAddressSent'],
   ],
   [
     'different to unverified email address',
     { orcidId: orcidIdWithUnverified, emailAddress: newEmailAddress, resumeAt: '/resume' },
-    Either.void,
+    Result.void,
     true,
     ['ContactAddressRecorded', 'EmailToVerifyContactAddressSent'],
   ],
   [
     'same as verified email address',
     { orcidId: orcidIdWithVerified, emailAddress: existingVerifiedEmailAddress, resumeAt: '/resume' },
-    Either.left(new ContactEmailAddressHasAlreadyBeenVerified()),
+    Result.fail(new ContactEmailAddressHasAlreadyBeenVerified()),
     false,
     [],
   ],
   [
     'different to verified email address',
     { orcidId: orcidIdWithVerified, emailAddress: newEmailAddress, resumeAt: '/resume' },
-    Either.void,
+    Result.void,
     true,
     ['ContactAddressRecorded', 'EmailToVerifyContactAddressSent'],
   ],
@@ -88,7 +88,7 @@ it.effect.each<[string, _.Input, Either.Either<void, _.Error>, boolean, Readonly
       () => Effect.void,
     )
 
-    const actualReturn = yield* Effect.either(
+    const actualReturn = yield* Effect.result(
       Effect.provide(_.StartVerificationOfContactEmailAddress(input), [
         Layer.mock(Email.Email, { verifyContactEmailAddress }),
         Layer.succeed(EventStore, eventStore),

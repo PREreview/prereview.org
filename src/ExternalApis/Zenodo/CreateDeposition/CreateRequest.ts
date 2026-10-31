@@ -1,4 +1,4 @@
-import { HttpClientRequest } from '@effect/platform'
+import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe, Schema } from 'effect'
 import { DepositMetadata } from '../Deposition.ts'
 import { ZenodoApi } from '../ZenodoApi.ts'

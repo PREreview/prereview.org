@@ -1,4 +1,4 @@
-import { HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
+import { HttpServerRequest, HttpServerResponse, UrlParams } from 'effect/http'
 import { Effect } from 'effect'
 import { Locale } from '../Context.ts'
 import { OrcidOauth } from '../OrcidOauth.ts'
@@ -16,7 +16,7 @@ export const forceLogIn = Effect.gen(function* () {
     state: new URL(`${publicUrl.origin}${request.url}`).href,
   })
 
-  return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
+  return HttpServerResponse.redirect(location, { status: StatusCodes.Found })
 })
 
 function generateAuthorizationRequestUrl({

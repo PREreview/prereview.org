@@ -1,6 +1,6 @@
 import { Array, Struct, Effect, Option, pipe } from 'effect'
 import { createMatchmakingPage } from './MatchmakingPage.ts'
-import { UrlParams } from '@effect/platform'
+import { UrlParams } from 'effect/http'
 import * as Doi from '../../types/Doi.ts'
 import { PlainDate } from '../../types/Temporal.ts'
 import { Preprints } from '../../Preprints/index.ts'
