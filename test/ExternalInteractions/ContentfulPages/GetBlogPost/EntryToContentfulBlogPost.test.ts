@@ -1806,7 +1806,7 @@ it.effect.each([
       Effect.andThen(Schema.decodeUnknown(Entries)),
       Effect.map(Struct.get('items')),
       Effect.map(Array.map(item => _.EntryToContentfulBlogPost(item))),
-      Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
+      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'either' })),
     )
 
     actual.forEach(result => {

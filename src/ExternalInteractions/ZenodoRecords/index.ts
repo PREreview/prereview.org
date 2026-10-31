@@ -115,7 +115,7 @@ export const invalidatePrereviewInCache = ({
   pipe(
     constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
     Effect.map(Array.map(invalidateCacheEntry)),
-    Effect.andThen(Effect.allWith({ mode: 'either', concurrency: 'unbounded' })),
+    Effect.andThen(effects => Effect.all(effects, { mode: 'either', concurrency: 'unbounded' })),
     Effect.map(Array.getLefts),
     Effect.andThen(
       Effect.forEach(error =>

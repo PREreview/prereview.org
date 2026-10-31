@@ -91,7 +91,7 @@ it.effect.each([['pages-assets']])("can't parse a record (%s)", ([response]) =>
       Effect.andThen(Schema.decodeUnknown(Entries)),
       Effect.map(Struct.get('items')),
       Effect.map(Array.map(item => Schema.decodeUnknown(_.EntryToSpotlightBanner)(item))),
-      Effect.andThen(Effect.allWith({ concurrency: 'unbounded', mode: 'either' })),
+      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'either' })),
     )
 
     actual.forEach(result => {

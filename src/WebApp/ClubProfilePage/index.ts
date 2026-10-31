@@ -20,7 +20,7 @@ export const ClubProfilePage = Effect.fn(
       {
         club: pipe(
           Array.map(clubDetails.leads, prereviewers.getPublicPersona),
-          Effect.allWith({ concurrency: 'unbounded' }),
+          effects => Effect.all(effects, { concurrency: 'unbounded' }),
           Effect.map(leads => ({ ...clubDetails, leads })),
         ),
         prereviews: Prereviews.getForClub(clubDetails.id),
