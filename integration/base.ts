@@ -55,6 +55,7 @@ import {
 } from '../src/keyv.ts'
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
+import * as OrcidTokens from '../src/OrcidTokens.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as Prereviewers from '../src/Prereviewers/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
@@ -2453,13 +2454,13 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             formStore,
             isOpenForRequestsStore,
             languagesStore,
-            orcidTokenStore: new Keyv(),
             researchInterestsStore,
             slackUserIdStore,
             userOnboardingStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
           Prereviewers.Locations.layerInMemory,
+          OrcidTokens.layerInMemory,
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),

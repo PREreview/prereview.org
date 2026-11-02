@@ -35,6 +35,7 @@ import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
 import { UserSelectableLocales } from './locales/index.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
+import * as OrcidTokens from './OrcidTokens.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
@@ -141,7 +142,7 @@ pipe(
     CachingHttpClient.layerPersistedToRedis,
     Keyv.keyvStoresLayer,
     Layer.provide(
-      Layer.mergeAll(Prereviewers.CareerStages.layer, Prereviewers.Locations.layer),
+      Layer.mergeAll(Prereviewers.CareerStages.layer, Prereviewers.Locations.layer, OrcidTokens.layer),
       Redis.layerPersistenceFromDataStore,
     ),
     ClusterWorkflowEngine.layer,

@@ -1,5 +1,5 @@
 import KeyvRedis from '@keyv/redis'
-import { Context, Effect, flow, Layer, pipe, Record } from 'effect'
+import { Context, Effect, flow, Layer, pipe, type Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -12,7 +12,6 @@ import { Keyv } from 'keyv'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
-import { OrcidTokenC } from './orcid-token.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
 import { LanguagesC } from './Prereviewers/legacy-languages.ts' // oxlint-disable-line module-boundaries/use-index
@@ -32,7 +31,6 @@ export class KeyvStores extends Context.Service<
     AuthorInviteStoreEnv &
     IsOpenForRequestsStoreEnv &
     LanguagesStoreEnv &
-    OrcidTokenStoreEnv &
     ResearchInterestsStoreEnv &
     SlackUserIdStoreEnv &
     UserOnboardingStoreEnv &
@@ -56,7 +54,6 @@ export const keyvStoresLayer = Layer.effect(
         store: createKeyvStore(),
       }),
       languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
-      orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
       researchInterestsStore: new Keyv({
         emitErrors: false,
         namespace: 'research-interests',
@@ -86,10 +83,6 @@ export interface LanguagesStoreEnv {
 
 export interface ResearchInterestsStoreEnv {
   researchInterestsStore: Keyv
-}
-
-export interface OrcidTokenStoreEnv {
-  orcidTokenStore: Keyv
 }
 
 export interface SessionStoreEnv {
@@ -136,25 +129,6 @@ const deleteKey =
       ),
       RTE.mapLeft(() => 'unavailable'),
     )
-
-const getAll = <K extends string, V>(
-  keyDecoder: Decoder<unknown, K>,
-  valueDecoder: Decoder<unknown, V>,
-): RTE.ReaderTaskEither<
-  KeyvEnv & L.LoggerEnv,
-  'unavailable',
-  Record.ReadonlyRecord<Record.ReadonlyRecord.NonLiteralKey<K>, V>
-> =>
-  pipe(
-    RTE.ask<KeyvEnv>(),
-    RTE.chainW(({ keyv }) =>
-      RTE.fromTaskEither(
-        TE.tryCatch(() => (keyv.iterator ? toArray(keyv.iterator(undefined)) : Promise.resolve([])), E.toError),
-      ),
-    ),
-    RTE.chainEitherKW(D.array(D.tuple(keyDecoder, valueDecoder)).decode),
-    RTE.bimap(() => 'unavailable' as const, Record.fromEntries),
-  )
 
 const getKey =
   <K, V>(keyEncoder: Encoder<string, K>, valueDecoder: Decoder<unknown, V>) =>
@@ -264,26 +238,6 @@ export const saveResearchInterests = flow(
   RTE.local((env: ResearchInterestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.researchInterestsStore })),
 )
 
-export const deleteOrcidToken = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
-)
-
-export const getOrcidToken = flow(
-  getKey(OrcidC, OrcidTokenC),
-  RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
-)
-
-export const getAllOrcidTokens = pipe(
-  getAll(OrcidC, OrcidTokenC),
-  RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
-)
-
-export const saveOrcidToken = flow(
-  setKey(OrcidC, OrcidTokenC),
-  RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
-)
-
 export const deleteSlackUserId = flow(
   deleteKey(OrcidC),
   RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
@@ -370,11 +324,3 @@ export const popFromSession = (sessionId: string, key: string) =>
     RTE.map(({ value }) => value),
     RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
   )
-
-async function toArray<T>(asyncIterator: AsyncIterable<T>): Promise<ReadonlyArray<T>> {
-  const array = []
-  for await (const item of asyncIterator) {
-    array.push(item)
-  }
-  return array
-}

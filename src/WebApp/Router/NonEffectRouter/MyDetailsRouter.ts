@@ -11,6 +11,7 @@ import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
+import * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -279,7 +280,7 @@ export const MyDetailsRouter = pipe(
           ...env.logger,
         }),
         deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
-        deleteOrcidToken: withEnv(Keyv.deleteOrcidToken, { orcidTokenStore: env.users.orcidTokenStore, ...env.logger }),
+        deleteOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.remove, env.runtime),
         deleteResearchInterests: withEnv(Keyv.deleteResearchInterests, {
           researchInterestsStore: env.users.researchInterestsStore,
           ...env.logger,
@@ -311,10 +312,7 @@ export const MyDetailsRouter = pipe(
           userOnboardingStore: env.users.userOnboardingStore,
           ...env.logger,
         }),
-        getOrcidToken: withEnv(Keyv.getOrcidToken, {
-          orcidTokenStore: env.users.orcidTokenStore,
-          ...env.logger,
-        }),
+        getOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.get, env.runtime),
         getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
           getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
           cloudinaryApi: {
@@ -404,7 +402,7 @@ export const MyDetailsRouter = pipe(
           isOpenForRequestsStore: env.users.isOpenForRequestsStore,
           ...env.logger,
         }),
-        saveOrcidToken: withEnv(Keyv.saveOrcidToken, { orcidTokenStore: env.users.orcidTokenStore, ...env.logger }),
+        saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
         saveResearchInterests: withEnv(Keyv.saveResearchInterests, {
           researchInterestsStore: env.users.researchInterestsStore,
           ...env.logger,

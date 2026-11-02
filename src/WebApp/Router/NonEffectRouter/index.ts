@@ -45,6 +45,7 @@ import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
+import type * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -131,7 +132,6 @@ export const nonEffectRouter: Effect.Effect<
   const users = {
     avatarStore: keyvStores.avatarStore,
     userOnboardingStore: keyvStores.userOnboardingStore,
-    orcidTokenStore: keyvStores.orcidTokenStore,
     slackUserIdStore: keyvStores.slackUserIdStore,
     isOpenForRequestsStore: keyvStores.isOpenForRequestsStore,
     researchInterestsStore: keyvStores.researchInterestsStore,
@@ -214,6 +214,7 @@ export interface Env {
     | Prereviewers.Prereviewers
     | Prereviewers.CareerStages.Store
     | Prereviewers.Locations.Store
+    | OrcidTokens.Store
     | Prereviews.Prereviews
     | PublicUrl
     | SpotlightBanners
@@ -231,7 +232,6 @@ export interface Env {
   logger: LoggerEnv
   users: {
     userOnboardingStore: Keyv.Keyv
-    orcidTokenStore: Keyv.Keyv
     avatarStore: Keyv.Keyv
     slackUserIdStore: Keyv.Keyv
     isOpenForRequestsStore: Keyv.Keyv

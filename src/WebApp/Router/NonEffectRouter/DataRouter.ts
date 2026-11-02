@@ -6,7 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { Clubs } from '../../../Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Keyv from '../../../keyv.ts'
+import * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -72,7 +72,7 @@ export const DataRouter = pipe(
                 ),
                 RTE.apSW('careerStages', EffectToFpts.toReaderTaskEither(Prereviewers.CareerStages.getAll())),
                 RTE.apSW('locations', EffectToFpts.toReaderTaskEither(Prereviewers.Locations.getAll())),
-                RTE.apSW('orcidTokens', Keyv.getAllOrcidTokens),
+                RTE.apSW('orcidTokens', EffectToFpts.toReaderTaskEither(OrcidTokens.getAll())),
                 RTE.map(({ users, careerStages, locations, orcidTokens }) =>
                   pipe(
                     users,
@@ -88,7 +88,6 @@ export const DataRouter = pipe(
                 ),
               ),
             {
-              orcidTokenStore: env.users.orcidTokenStore,
               runtime: env.runtime,
               ...env.logger,
             },
