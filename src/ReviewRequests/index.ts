@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Data, Effect, Exit, flow, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, flow, Layer, pipe, Scope, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -92,8 +92,8 @@ export const layer = pipe(
         getFiveMostRecent: pipe(
           Queries.getFiveMostRecentReviewRequests(),
           Effect.andThen(
-            flow(
-              Array.map(reviewRequest =>
+            Effect.partition(
+              reviewRequest =>
                 Effect.gen(function* () {
                   return {
                     ...reviewRequest,
@@ -103,14 +103,10 @@ export const layer = pipe(
                     subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
                   }
                 }),
-              ),
-              effects =>
-                Effect.map(
-                  Effect.all(Array.map(effects, Effect.exit), { concurrency: 'unbounded' }),
-                  Array.flatMap(exit => (Exit.isSuccess(exit) ? [exit.value] : [])),
-                ),
+              { concurrency: 'unbounded' },
             ),
           ),
+          Effect.map(Tuple.get(0)),
           Effect.orElseSucceed(Array.empty),
           Effect.provide(context),
           Effect.withSpan('ReviewRequests.getFiveMostRecent'),
@@ -143,22 +139,20 @@ export const layer = pipe(
           Effect.andThen(pageOfReviewRequests =>
             pipe(
               pageOfReviewRequests.reviewRequests,
-              Array.map(reviewRequest =>
-                Effect.gen(function* () {
-                  return {
-                    ...reviewRequest,
-                    published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
-                    preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
-                    fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
-                    subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
-                  }
-                }),
+              Effect.partition(
+                reviewRequest =>
+                  Effect.gen(function* () {
+                    return {
+                      ...reviewRequest,
+                      published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
+                      preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
+                      fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
+                      subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
+                    }
+                  }),
+                { concurrency: 'unbounded' },
               ),
-              effects =>
-                Effect.map(
-                  Effect.all(Array.map(effects, Effect.exit), { concurrency: 'unbounded' }),
-                  Array.flatMap(exit => (Exit.isSuccess(exit) ? [exit.value] : [])),
-                ),
+              Effect.map(Tuple.get(0)),
               Effect.andThen(
                 Array.match({
                   onNonEmpty: reviewRequests => Effect.succeed({ ...pageOfReviewRequests, reviewRequests }),

@@ -1,5 +1,5 @@
 import { FetchHttpClient } from 'effect/http'
-import { Array, Context, Effect, Exit, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
@@ -121,22 +121,17 @@ export const layer = Layer.effect(
           }),
           Effect.map(Struct.get('recentPrereviews')),
           Effect.andThen(
-            flow(
-              Array.map(
-                flow(
-                  Match.value,
-                  Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
-                  Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
-                  Match.exhaustive,
-                ),
+            Effect.partition(
+              flow(
+                Match.value,
+                Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
+                Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
+                Match.exhaustive,
               ),
-              effects =>
-                Effect.map(
-                  Effect.all(Array.map(effects, Effect.exit), { concurrency: 'unbounded' }),
-                  Array.flatMap(exit => (Exit.isSuccess(exit) ? [exit.value] : [])),
-                ),
+              { concurrency: 'unbounded' },
             ),
           ),
+          Effect.map(Tuple.get(0)),
           Effect.orElseSucceed(Array.empty),
           Effect.withSpan('Prereviews.getFiveMostRecent'),
         )
