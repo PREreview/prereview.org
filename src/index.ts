@@ -140,7 +140,10 @@ pipe(
     NodeHttpClient.layerNodeHttp,
     CachingHttpClient.layerPersistedToRedis,
     Keyv.keyvStoresLayer,
-    Layer.provide(Prereviewers.CareerStages.layer, Redis.layerPersistenceFromDataStore),
+    Layer.provide(
+      Layer.mergeAll(Prereviewers.CareerStages.layer, Prereviewers.Locations.layer),
+      Redis.layerPersistenceFromDataStore,
+    ),
     ClusterWorkflowEngine.layer,
   ]),
   Layer.provide(ClusterLayer),

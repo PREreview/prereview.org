@@ -71,7 +71,7 @@ export const DataRouter = pipe(
                   ),
                 ),
                 RTE.apSW('careerStages', EffectToFpts.toReaderTaskEither(Prereviewers.CareerStages.getAll())),
-                RTE.apSW('locations', Keyv.getAllLocations),
+                RTE.apSW('locations', EffectToFpts.toReaderTaskEither(Prereviewers.Locations.getAll())),
                 RTE.apSW('orcidTokens', Keyv.getAllOrcidTokens),
                 RTE.map(({ users, careerStages, locations, orcidTokens }) =>
                   pipe(
@@ -88,7 +88,6 @@ export const DataRouter = pipe(
                 ),
               ),
             {
-              locationStore: env.users.locationStore,
               orcidTokenStore: env.users.orcidTokenStore,
               runtime: env.runtime,
               ...env.logger,

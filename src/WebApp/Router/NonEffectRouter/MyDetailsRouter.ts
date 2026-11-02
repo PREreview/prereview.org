@@ -278,10 +278,7 @@ export const MyDetailsRouter = pipe(
           languagesStore: env.users.languagesStore,
           ...env.logger,
         }),
-        deleteLocation: withEnv(Keyv.deleteLocation, {
-          locationStore: env.users.locationStore,
-          ...env.logger,
-        }),
+        deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
         deleteOrcidToken: withEnv(Keyv.deleteOrcidToken, { orcidTokenStore: env.users.orcidTokenStore, ...env.logger }),
         deleteResearchInterests: withEnv(Keyv.deleteResearchInterests, {
           researchInterestsStore: env.users.researchInterestsStore,
@@ -350,10 +347,7 @@ export const MyDetailsRouter = pipe(
           researchInterestsStore: env.users.researchInterestsStore,
           ...env.logger,
         }),
-        getLocation: withEnv(Keyv.getLocation, {
-          locationStore: env.users.locationStore,
-          ...env.logger,
-        }),
+        getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
         getLanguages: withEnv(Keyv.getLanguages, {
           languagesStore: env.users.languagesStore,
           ...env.logger,
@@ -405,10 +399,7 @@ export const MyDetailsRouter = pipe(
           languagesStore: env.users.languagesStore,
           ...env.logger,
         }),
-        saveLocation: withEnv(Keyv.saveLocation, {
-          locationStore: env.users.locationStore,
-          ...env.logger,
-        }),
+        saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),
         saveOpenForRequests: withEnv(Keyv.saveOpenForRequests, {
           isOpenForRequestsStore: env.users.isOpenForRequestsStore,
           ...env.logger,

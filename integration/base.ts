@@ -50,7 +50,6 @@ import {
   type AuthorInviteStoreEnv,
   type IsOpenForRequestsStoreEnv,
   type LanguagesStoreEnv,
-  type LocationStoreEnv,
   type ResearchInterestsStoreEnv,
   type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
@@ -91,7 +90,6 @@ interface AppFixtures {
   formStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   languagesStore: LanguagesStoreEnv['languagesStore']
-  locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: Keyv
   clubs: typeof Clubs.ClubsData.Service
@@ -2375,9 +2373,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   languagesStore: async ({}, use) => {
     await use(new Keyv())
   },
-  locationStore: async ({}, use) => {
-    await use(new Keyv())
-  },
   emails: async ({}, use, testInfo) => {
     const emails: Array<SendMailOptions> = []
 
@@ -2431,7 +2426,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         clubs,
         isUserBlocked,
         languagesStore,
-        locationStore,
         researchInterestsStore,
         slackUserIdStore,
         userOnboardingStore,
@@ -2459,13 +2453,13 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             formStore,
             isOpenForRequestsStore,
             languagesStore,
-            locationStore,
             orcidTokenStore: new Keyv(),
             researchInterestsStore,
             slackUserIdStore,
             userOnboardingStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
+          Prereviewers.Locations.layerInMemory,
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),

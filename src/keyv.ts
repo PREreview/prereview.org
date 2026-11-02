@@ -16,7 +16,6 @@ import { OrcidTokenC } from './orcid-token.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
 import { LanguagesC } from './Prereviewers/legacy-languages.ts' // oxlint-disable-line module-boundaries/use-index
-import { LocationC } from './Prereviewers/legacy-location.ts' // oxlint-disable-line module-boundaries/use-index
 import { type ResearchInterests, ResearchInterestsC } from './Prereviewers/legacy-research-interests.ts' // oxlint-disable-line module-boundaries/use-index
 import { DataStoreRedis } from './Redis.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
@@ -33,7 +32,6 @@ export class KeyvStores extends Context.Service<
     AuthorInviteStoreEnv &
     IsOpenForRequestsStoreEnv &
     LanguagesStoreEnv &
-    LocationStoreEnv &
     OrcidTokenStoreEnv &
     ResearchInterestsStoreEnv &
     SlackUserIdStoreEnv &
@@ -58,7 +56,6 @@ export const keyvStoresLayer = Layer.effect(
         store: createKeyvStore(),
       }),
       languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
-      locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
       orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
       researchInterestsStore: new Keyv({
         emitErrors: false,
@@ -85,10 +82,6 @@ export interface IsOpenForRequestsStoreEnv {
 
 export interface LanguagesStoreEnv {
   languagesStore: Keyv
-}
-
-export interface LocationStoreEnv {
-  locationStore: Keyv
 }
 
 export interface ResearchInterestsStoreEnv {
@@ -304,26 +297,6 @@ export const getSlackUserId = flow(
 export const saveSlackUserId = flow(
   setKey(OrcidC, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
-)
-
-export const deleteLocation = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
-)
-
-export const getLocation = flow(
-  getKey(OrcidC, LocationC),
-  RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
-)
-
-export const getAllLocations = pipe(
-  getAll(OrcidC, LocationC),
-  RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
-)
-
-export const saveLocation = flow(
-  setKey(OrcidC, LocationC),
-  RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
 )
 
 export const deleteLanguages = flow(
