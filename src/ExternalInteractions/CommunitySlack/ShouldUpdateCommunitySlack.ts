@@ -4,7 +4,7 @@ export class ShouldUpdateCommunitySlack extends Context.Service<ShouldUpdateComm
   'ShouldUpdateCommunitySlack',
 ) {}
 
-export const shouldUpdateCommunitySlack = Effect.map(ShouldUpdateCommunitySlack, identity)
+export const shouldUpdateCommunitySlack = ShouldUpdateCommunitySlack.useSync(identity)
 
 export const layerShouldUpdateCommunitySlack = (
   shouldUpdateCommunitySlack: typeof ShouldUpdateCommunitySlack.Service,

@@ -90,15 +90,15 @@ export const CheckYourRequestSubmission: ({
   (error, { preprintId }) =>
     Effect.catchTags(error, {
       PreprintIsNotFound: () => PageNotFound,
-      PreprintIsUnavailable: () => Effect.map(Locale, FailureMessage),
+      PreprintIsUnavailable: () => Locale.useSync(FailureMessage),
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
       ReviewRequestNotReadyToBePublished: error =>
         Effect.succeed(
           RedirectResponse({ location: routeForMissing[Array.headNonEmpty(error.missing)].href({ preprintId }) }),
         ),
-      UnableToHandleCommand: () => Effect.map(Locale, FailureMessage),
-      UnableToQuery: () => Effect.map(Locale, FailureMessage),
+      UnableToHandleCommand: () => Locale.useSync(FailureMessage),
+      UnableToQuery: () => Locale.useSync(FailureMessage),
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),

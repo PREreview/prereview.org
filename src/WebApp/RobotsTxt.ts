@@ -1,8 +1,7 @@
 import { HttpServerResponse } from 'effect/http'
-import { Effect } from 'effect'
 import { AllowSiteCrawlers } from '../Context.ts'
 
-export const RobotsTxt = Effect.map(AllowSiteCrawlers, condition =>
+export const RobotsTxt = AllowSiteCrawlers.useSync(condition =>
   condition
     ? HttpServerResponse.text(
         `

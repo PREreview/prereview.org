@@ -48,26 +48,26 @@ export class Prereviewers extends Context.Service<
 
 export const countAvailablePseudonyms = (
   ...args: Parameters<(typeof Prereviewers.Service)['countAvailablePseudonyms']>
-) => Effect.flatMap(Prereviewers, service => service.countAvailablePseudonyms(...args))
+) => Prereviewers.use(service => service.countAvailablePseudonyms(...args))
 
 export const listAllPrereviewersForStats = (
   ...args: Parameters<(typeof Prereviewers.Service)['listAllPrereviewersForStats']>
-) => Effect.flatMap(Prereviewers, service => service.listAllPrereviewersForStats(...args))
+) => Prereviewers.use(service => service.listAllPrereviewersForStats(...args))
 
 export const getContactDetails = (...args: Parameters<(typeof Prereviewers.Service)['getContactDetails']>) =>
-  Effect.flatMap(Prereviewers, service => service.getContactDetails(...args))
+  Prereviewers.use(service => service.getContactDetails(...args))
 
 export const isRegistered = (...args: Parameters<(typeof Prereviewers.Service)['isRegistered']>) =>
-  Effect.flatMap(Prereviewers, service => service.isRegistered(...args))
+  Prereviewers.use(service => service.isRegistered(...args))
 
 export const isPseudonymInUse = (...args: Parameters<(typeof Prereviewers.Service)['isPseudonymInUse']>) =>
-  Effect.flatMap(Prereviewers, service => service.isPseudonymInUse(...args))
+  Prereviewers.use(service => service.isPseudonymInUse(...args))
 
 export const getPublicPersona = (...args: Parameters<(typeof Prereviewers.Service)['getPublicPersona']>) =>
-  Effect.flatMap(Prereviewers, service => service.getPublicPersona(...args))
+  Prereviewers.use(service => service.getPublicPersona(...args))
 
 export const getPseudonymPersona = (...args: Parameters<(typeof Prereviewers.Service)['getPseudonymPersona']>) =>
-  Effect.flatMap(Prereviewers, service => service.getPseudonymPersona(...args))
+  Prereviewers.use(service => service.getPseudonymPersona(...args))
 
 export const getPersona = pipe(
   Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),

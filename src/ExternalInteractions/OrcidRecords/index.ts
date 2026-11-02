@@ -14,7 +14,7 @@ export class OrcidRecords extends Context.Service<
 >()('OrcidRecords') {}
 
 export const getName = (...args: Parameters<(typeof OrcidRecords.Service)['getName']>) =>
-  Effect.flatMap(OrcidRecords, service => service.getName(...args))
+  OrcidRecords.use(service => service.getName(...args))
 
 const make: Effect.Effect<typeof OrcidRecords.Service, never, Orcid.Orcid> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))

@@ -90,7 +90,7 @@ const MakeRoute = <A, E extends RouteError, R>(
     pipe(
       HttpRouter.schemaParams(route.schema),
       Effect.catchTag('SchemaError', () =>
-        Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
+        HttpServerRequest.HttpServerRequest.use(request => new HttpServerError.RouteNotFound({ request })),
       ),
       Effect.andThen(handler),
       Effect.andThen(Response.toHttpServerResponse),
@@ -113,7 +113,7 @@ const MakeQueryRoute = <
     pipe(
       HttpServerRequest.schemaSearchParams(route.schema),
       Effect.catchTag('SchemaError', () =>
-        Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
+        HttpServerRequest.HttpServerRequest.use(request => new HttpServerError.RouteNotFound({ request })),
       ),
       Effect.andThen(handler),
       Effect.andThen(response =>
@@ -155,7 +155,7 @@ const RequestAReviewFlowRouter = [
     Routes.RequestAReview,
     pipe(
       Effect.Do,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
       Effect.andThen(RequestAReviewFlow.RequestAReviewSubmission),
     ),
   ),
@@ -167,7 +167,7 @@ const RequestAReviewFlowRouter = [
     Routes.RequestAReviewChooseYourPersona,
     flow(
       Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
       Effect.andThen(RequestAReviewFlow.ChooseYourPersonaSubmission),
     ),
   ),
@@ -177,7 +177,7 @@ const RequestAReviewFlowRouter = [
     Routes.RequestAReviewEnterEmailAddress,
     flow(
       Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
       Effect.andThen(RequestAReviewFlow.EnterEmailAddressSubmission),
     ),
   ),
@@ -187,7 +187,7 @@ const RequestAReviewFlowRouter = [
     Routes.RequestAReviewReceiveNotifications,
     flow(
       Effect.succeed,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
       Effect.andThen(RequestAReviewFlow.ReceiveNotificationsSubmission),
     ),
   ),
@@ -205,7 +205,7 @@ const ReviewAPreprintFlowRouter = useMiddleware(
       Routes.ReviewAPreprintAddToAClub,
       flow(
         Effect.succeed,
-        Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+        Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
         Effect.andThen(ReviewAPreprintFlow.AddToAClubSubmission),
       ),
     ),
@@ -215,7 +215,7 @@ const ReviewAPreprintFlowRouter = useMiddleware(
       Routes.ReviewAPreprintUseOfAi,
       flow(
         Effect.succeed,
-        Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+        Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
         Effect.andThen(ReviewAPreprintFlow.UseOfAiSubmission),
       ),
     ),
@@ -238,7 +238,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetRateTheQuality,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.RateTheQualitySubmission),
         ),
       ),
@@ -247,7 +247,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetFollowsFairAndCarePrinciples,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.FollowsFairAndCarePrinciplesSubmission),
         ),
       ),
@@ -257,7 +257,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetHasEnoughMetadata,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.HasEnoughMetadataSubmission),
         ),
       ),
@@ -267,7 +267,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetHasTrackedChanges,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.HasTrackedChangesSubmission),
         ),
       ),
@@ -281,7 +281,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetHasDataCensoredOrDeleted,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.HasDataCensoredOrDeletedSubmission),
         ),
       ),
@@ -295,7 +295,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.IsAppropriateForThisKindOfResearchSubmission),
         ),
       ),
@@ -309,7 +309,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetSupportsRelatedConclusions,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.SupportsRelatedConclusionsSubmission),
         ),
       ),
@@ -319,7 +319,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetIsDetailedEnough,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.IsDetailedEnoughSubmission),
         ),
       ),
@@ -329,7 +329,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetIsErrorFree,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.IsErrorFreeSubmission),
         ),
       ),
@@ -339,7 +339,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetMattersToItsAudience,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.MattersToItsAudienceSubmission),
         ),
       ),
@@ -349,7 +349,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetIsReadyToBeShared,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.IsReadyToBeSharedSubmission),
         ),
       ),
@@ -359,7 +359,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetIsMissingAnything,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.IsMissingAnythingSubmission),
         ),
       ),
@@ -369,7 +369,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetChooseYourPersona,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.ChooseYourPersonaSubmission),
         ),
       ),
@@ -383,7 +383,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewSubmission),
         ),
       ),
@@ -393,7 +393,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetAddInvitationToAppear,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.AddInvitationToAppearSubmission),
         ),
       ),
@@ -403,7 +403,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetRemoveInvitationToAppear,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.RemoveInvitationToAppearSubmission),
         ),
       ),
@@ -419,7 +419,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetUseOfAi,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.UseOfAiSubmission),
         ),
       ),
@@ -433,7 +433,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetDeclareCompetingInterests,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.DeclareCompetingInterestsSubmission),
         ),
       ),
@@ -447,7 +447,7 @@ const ReviewADatasetFlowRouter = [
         Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(ReviewADatasetFlow.DeclareFollowingCodeOfConductSubmission),
         ),
       ),
@@ -464,7 +464,7 @@ const ReviewADatasetFlowRouter = [
     Routes.ReviewADataset,
     pipe(
       Effect.Do,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
       Effect.andThen(ReviewADatasetFlow.ReviewADatasetSubmission),
     ),
   ),
@@ -481,7 +481,7 @@ const AuthorInviteFlowRouter = [
         Routes.AuthorInviteChooseYourPersona,
         flow(
           Effect.succeed,
-          Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+          Effect.bind('body', () => HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody'))),
           Effect.andThen(AuthorInviteFlow.ChooseYourPersonaSubmission),
         ),
       ),
@@ -601,7 +601,7 @@ const MyDetailsRouter = useMiddleware(
       'POST',
       Routes.ChangeRequestedReviewNotifications,
       pipe(
-        Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody')),
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
         Effect.andThen(MyDetails.RequestedReviewNotificationsSubmission),
       ),
     ),

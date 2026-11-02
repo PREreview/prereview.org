@@ -60,25 +60,25 @@ export class WasPrereviewRemoved extends Context.Service<WasPrereviewRemoved, (i
   'WasPrereviewRemoved',
 ) {}
 
-export const getFiveMostRecent = Effect.flatMap(Prereviews, service => service.getFiveMostRecent)
+export const getFiveMostRecent = Prereviews.use(service => service.getFiveMostRecent)
 
 export const getForClub = (...args: Parameters<(typeof Prereviews.Service)['getForClub']>) =>
-  Effect.flatMap(Prereviews, service => service.getForClub(...args))
+  Prereviews.use(service => service.getForClub(...args))
 
 export const getForPreprint = (...args: Parameters<(typeof Prereviews.Service)['getForPreprint']>) =>
-  Effect.flatMap(Prereviews, service => service.getForPreprint(...args))
+  Prereviews.use(service => service.getForPreprint(...args))
 
 export const getForProfile = (...args: Parameters<(typeof Prereviews.Service)['getForProfile']>) =>
-  Effect.flatMap(Prereviews, service => service.getForProfile(...args))
+  Prereviews.use(service => service.getForProfile(...args))
 
 export const getForUser = (...args: Parameters<(typeof Prereviews.Service)['getForUser']>) =>
-  Effect.flatMap(Prereviews, service => service.getForUser(...args))
+  Prereviews.use(service => service.getForUser(...args))
 
 export const getPrereview = (...args: Parameters<(typeof Prereviews.Service)['getPrereview']>) =>
-  Effect.flatMap(Prereviews, service => service.getPrereview(...args))
+  Prereviews.use(service => service.getPrereview(...args))
 
 export const search = (...args: Parameters<(typeof Prereviews.Service)['search']>) =>
-  Effect.flatMap(Prereviews, service => service.search(...args))
+  Prereviews.use(service => service.search(...args))
 
 export const layer = Layer.effect(
   Prereviews,

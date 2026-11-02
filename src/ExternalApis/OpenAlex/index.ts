@@ -16,13 +16,12 @@ export class OpenAlex extends Context.Service<
 >()('OpenAlex') {}
 
 export const getWork = (...args: Parameters<(typeof OpenAlex.Service)['getWork']>) =>
-  Effect.flatMap(OpenAlex, service => service.getWork(...args))
+  OpenAlex.use(service => service.getWork(...args))
 
 const make: Effect.Effect<typeof OpenAlex.Service, never, HttpClient.HttpClient | OpenAlexApi> = Effect.gen(
   function* () {
     const openAlexApi = yield* OpenAlexApi
-    const httpClient = yield* Effect.map(
-      HttpClient.HttpClient,
+    const httpClient = yield* HttpClient.HttpClient.useSync(
       HttpClient.mapRequest(HttpClientRequest.bearerToken(openAlexApi.key)),
     )
 

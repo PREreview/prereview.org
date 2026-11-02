@@ -16,13 +16,12 @@ export class DetectLanguage extends Context.Service<
 >()('DetectLanguage') {}
 
 export const detect = (...args: Parameters<(typeof DetectLanguage.Service)['detect']>) =>
-  Effect.flatMap(DetectLanguage, service => service.detect(...args))
+  DetectLanguage.use(service => service.detect(...args))
 
 const make: Effect.Effect<typeof DetectLanguage.Service, never, HttpClient.HttpClient | DetectLanguageApi> = Effect.gen(
   function* () {
     const detectLanguageApi = yield* DetectLanguageApi
-    const httpClient = yield* Effect.map(
-      HttpClient.HttpClient,
+    const httpClient = yield* HttpClient.HttpClient.useSync(
       HttpClient.mapRequest(flow(HttpClientRequest.acceptJson, HttpClientRequest.bearerToken(detectLanguageApi.key))),
     )
 

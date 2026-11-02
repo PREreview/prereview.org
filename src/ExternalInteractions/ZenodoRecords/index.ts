@@ -47,14 +47,14 @@ export class ZenodoRecords extends Context.Service<
 
 export const createRecordForDatasetReview = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['createRecordForDatasetReview']>
-) => Effect.flatMap(ZenodoRecords, service => service.createRecordForDatasetReview(...args))
+) => ZenodoRecords.use(service => service.createRecordForDatasetReview(...args))
 
 export const getDoiForDatasetReviewRecord = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['getDoiForDatasetReviewRecord']>
-) => Effect.flatMap(ZenodoRecords, service => service.getDoiForDatasetReviewRecord(...args))
+) => ZenodoRecords.use(service => service.getDoiForDatasetReviewRecord(...args))
 
 export const publishRecord = (...args: Parameters<(typeof ZenodoRecords.Service)['publishRecord']>) =>
-  Effect.flatMap(ZenodoRecords, service => service.publishRecord(...args))
+  ZenodoRecords.use(service => service.publishRecord(...args))
 
 export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.Zenodo> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<ZenodoApi.Zenodo>(), Context.omit(Scope.Scope))

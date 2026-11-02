@@ -117,4 +117,4 @@ export const DataRouter = pipe(
 >
 
 const getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>
-  Effect.flatMap(Clubs, service => service.getClubByName(...args))
+  Clubs.use(service => service.getClubByName(...args))

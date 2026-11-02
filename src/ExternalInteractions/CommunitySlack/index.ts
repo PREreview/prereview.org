@@ -44,17 +44,17 @@ export class CommunitySlack extends Context.Service<
 >()('CommunitySlack') {}
 
 export const getSlackUser = (...args: Parameters<(typeof CommunitySlack.Service)['getSlackUser']>) =>
-  Effect.flatMap(CommunitySlack, service => service.getSlackUser(...args))
+  CommunitySlack.use(service => service.getSlackUser(...args))
 
 export const shareDatasetReview = (...args: Parameters<(typeof CommunitySlack.Service)['shareDatasetReview']>) =>
-  Effect.flatMap(CommunitySlack, service => service.shareDatasetReview(...args))
+  CommunitySlack.use(service => service.shareDatasetReview(...args))
 
 export const sharePreprintReview = (...args: Parameters<(typeof CommunitySlack.Service)['sharePreprintReview']>) =>
-  Effect.flatMap(CommunitySlack, service => service.sharePreprintReview(...args))
+  CommunitySlack.use(service => service.sharePreprintReview(...args))
 
 export const sharePreprintReviewRequest = (
   ...args: Parameters<(typeof CommunitySlack.Service)['sharePreprintReviewRequest']>
-) => Effect.flatMap(CommunitySlack, service => service.sharePreprintReviewRequest(...args))
+) => CommunitySlack.use(service => service.sharePreprintReviewRequest(...args))
 
 export const make: Effect.Effect<
   typeof CommunitySlack.Service,

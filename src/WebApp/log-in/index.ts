@@ -132,14 +132,14 @@ export const authenticate = Effect.fn(
     error => error === 'blocked',
     () => Effect.succeed(FlashMessageResponse({ location: Routes.HomePage, message: 'blocked' })),
   ),
-  Effect.catch(() => Effect.map(Locale, failureMessage)),
+  Effect.catch(() => Locale.useSync(failureMessage)),
 )
 
 export const AuthenticateError = pipe(
   Match.type<{ error: string }>(),
   Match.withReturnType<Effect.Effect<PageResponse, never, Locale>>(),
-  Match.when({ error: 'access_denied' }, () => Effect.map(Locale, accessDeniedMessage)),
-  Match.orElse(() => Effect.map(Locale, failureMessage)),
+  Match.when({ error: 'access_denied' }, () => Locale.useSync(accessDeniedMessage)),
+  Match.orElse(() => Locale.useSync(failureMessage)),
 )
 
 const getReferer: (state: string) => Effect.Effect<string, never, PublicUrl> = flow(

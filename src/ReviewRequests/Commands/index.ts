@@ -42,46 +42,46 @@ type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = neve
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
 export const startReviewRequest = (...args: Parameters<(typeof ReviewRequestCommands.Service)['startReviewRequest']>) =>
-  Effect.flatMap(ReviewRequestCommands, service => service.startReviewRequest(...args))
+  ReviewRequestCommands.use(service => service.startReviewRequest(...args))
 
 export const choosePersona = (...args: Parameters<(typeof ReviewRequestCommands.Service)['choosePersona']>) =>
-  Effect.flatMap(ReviewRequestCommands, service => service.choosePersona(...args))
+  ReviewRequestCommands.use(service => service.choosePersona(...args))
 
 export const publishReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['publishReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.publishReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.publishReviewRequest(...args))
 
 export const receiveReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['receiveReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.receiveReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.receiveReviewRequest(...args))
 
 export const acceptReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['acceptReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.acceptReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.acceptReviewRequest(...args))
 
 export const rejectReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['rejectReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.rejectReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.rejectReviewRequest(...args))
 
 export const withdrawReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['withdrawReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.withdrawReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.withdrawReviewRequest(...args))
 
 export const categorizeReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['categorizeReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.categorizeReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.categorizeReviewRequest(...args))
 
 export const recordReviewRequestSharedOnTheCommunitySlack = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['recordReviewRequestSharedOnTheCommunitySlack']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.recordReviewRequestSharedOnTheCommunitySlack(...args))
+) => ReviewRequestCommands.use(service => service.recordReviewRequestSharedOnTheCommunitySlack(...args))
 
 export const recordFailureToCategorizeReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['recordFailureToCategorizeReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.recordFailureToCategorizeReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.recordFailureToCategorizeReviewRequest(...args))
 
 export const recordEmailSentToAcknowledgeReviewRequest = (
   ...args: Parameters<(typeof ReviewRequestCommands.Service)['recordEmailSentToAcknowledgeReviewRequest']>
-) => Effect.flatMap(ReviewRequestCommands, service => service.recordEmailSentToAcknowledgeReviewRequest(...args))
+) => ReviewRequestCommands.use(service => service.recordEmailSentToAcknowledgeReviewRequest(...args))
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {

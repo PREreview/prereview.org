@@ -1,6 +1,6 @@
-import { Effect } from 'effect'
+import type { Effect } from 'effect'
 import { Locale } from '../../Context.ts'
 import type { PageResponse } from '../Response/index.ts'
 import { createPageNotFound } from './PageNotFound.ts'
 
-export const PageNotFound: Effect.Effect<PageResponse, never, Locale> = Effect.map(Locale, createPageNotFound)
+export const PageNotFound: Effect.Effect<PageResponse, never, Locale> = Locale.useSync(createPageNotFound)

@@ -15,7 +15,7 @@ export class CoarNotify extends Context.Service<
 >()('CoarNotify') {}
 
 export const sendMessage = (...args: Parameters<(typeof CoarNotify.Service)['sendMessage']>) =>
-  Effect.flatMap(CoarNotify, service => service.sendMessage(...args))
+  CoarNotify.use(service => service.sendMessage(...args))
 
 const make: Effect.Effect<typeof CoarNotify.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))

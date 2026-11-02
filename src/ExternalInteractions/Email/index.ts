@@ -47,19 +47,19 @@ export class Email extends Context.Service<
 >()('Email') {}
 
 export const acknowledgeReviewRequest = (...args: Parameters<(typeof Email.Service)['acknowledgeReviewRequest']>) =>
-  Effect.flatMap(Email, service => service.acknowledgeReviewRequest(...args))
+  Email.use(service => service.acknowledgeReviewRequest(...args))
 
 export const inviteAuthor = (...args: Parameters<(typeof Email.Service)['inviteAuthor']>) =>
-  Effect.flatMap(Email, service => service.inviteAuthor(...args))
+  Email.use(service => service.inviteAuthor(...args))
 
 export const inviteAuthorToReview = (...args: Parameters<(typeof Email.Service)['inviteAuthorToReview']>) =>
-  Effect.flatMap(Email, service => service.inviteAuthorToReview(...args))
+  Email.use(service => service.inviteAuthorToReview(...args))
 
 export const notifyRequesterOfReview = (...args: Parameters<(typeof Email.Service)['notifyRequesterOfReview']>) =>
-  Effect.flatMap(Email, service => service.notifyRequesterOfReview(...args))
+  Email.use(service => service.notifyRequesterOfReview(...args))
 
 export const verifyContactEmailAddress = (...args: Parameters<(typeof Email.Service)['verifyContactEmailAddress']>) =>
-  Effect.flatMap(Email, service => service.verifyContactEmailAddress(...args))
+  Email.use(service => service.verifyContactEmailAddress(...args))
 
 export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer | PublicUrl> = Effect.gen(
   function* () {

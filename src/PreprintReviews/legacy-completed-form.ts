@@ -248,7 +248,7 @@ export const CompletedFormC = pipe(
 export const guessLanguage = (form: CompletedForm) =>
   match(form)
     .returnType<Effect.Effect<Option.Option<LanguageCode>, never, Locale | LanguageDetection.LanguageDetection>>()
-    .with({ reviewType: 'questions' }, () => Effect.map(Locale, localeToIso6391))
+    .with({ reviewType: 'questions' }, () => Locale.useSync(localeToIso6391))
     .with({ reviewType: 'freeform' }, form => Effect.option(LanguageDetection.detectLanguage(form.review)))
     .exhaustive()
 

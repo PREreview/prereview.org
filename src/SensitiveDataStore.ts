@@ -18,10 +18,10 @@ export interface SensitiveDataStore {
 }
 
 export const add = (...args: Parameters<(typeof SensitiveDataStore.Service)['add']>) =>
-  Effect.flatMap(SensitiveDataStore, service => service.add(...args))
+  SensitiveDataStore.use(service => service.add(...args))
 
 export const getMany = (...args: Parameters<(typeof SensitiveDataStore.Service)['getMany']>) =>
-  Effect.flatMap(SensitiveDataStore, service => service.getMany(...args))
+  SensitiveDataStore.use(service => service.getMany(...args))
 
 export const get = (id: Uuid.Uuid) => Effect.request(new GetSensitiveData({ id }), GetSensitiveDataResolver)
 

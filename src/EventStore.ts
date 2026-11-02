@@ -44,16 +44,16 @@ export interface EventStore {
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
 
-export const all = Effect.flatMap(EventStore, service => service.all)
+export const all = EventStore.use(service => service.all)
 
 export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
-  Effect.flatMap(EventStore, service => service.since(...args))
+  EventStore.use(service => service.since(...args))
 
 export const append = (...args: Parameters<(typeof EventStore.Service)['append']>) =>
-  Effect.flatMap(EventStore, service => service.append(...args))
+  EventStore.use(service => service.append(...args))
 
 export const appendIf = (...args: Parameters<(typeof EventStore.Service)['appendIf']>) =>
-  Effect.flatMap(EventStore, service => service.appendIf(...args))
+  EventStore.use(service => service.appendIf(...args))
 
 export const query = Effect.fn(function* <Filter extends EventFilter>(filter: Filter) {
   const eventStore = yield* EventStore

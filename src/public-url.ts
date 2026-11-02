@@ -10,8 +10,7 @@ export interface PublicUrlEnv {
 
 export class PublicUrl extends Context.Service<PublicUrl, URL>()('PublicUrl') {}
 
-const fromString = (url: string) =>
-  Effect.andThen(PublicUrl, publicUrl => Effect.fromResult(Url.fromString(url, publicUrl)))
+const fromString = (url: string) => PublicUrl.use(publicUrl => Effect.fromResult(Url.fromString(url, publicUrl)))
 
 export const forRoute: {
   <

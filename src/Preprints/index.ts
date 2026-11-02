@@ -1,4 +1,4 @@
-import { type Array, Context, Effect } from 'effect'
+import { type Array, Context, type Effect } from 'effect'
 import type * as Preprint from './Preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from './PreprintId.ts'
 
@@ -25,13 +25,13 @@ export class Preprints extends Context.Service<
 >()('Preprints') {}
 
 export const getPreprint = (...args: Parameters<(typeof Preprints.Service)['getPreprint']>) =>
-  Effect.flatMap(Preprints, service => service.getPreprint(...args))
+  Preprints.use(service => service.getPreprint(...args))
 
 export const getPreprintId = (...args: Parameters<(typeof Preprints.Service)['getPreprintId']>) =>
-  Effect.flatMap(Preprints, service => service.getPreprintId(...args))
+  Preprints.use(service => service.getPreprintId(...args))
 
 export const getPreprintTitle = (...args: Parameters<(typeof Preprints.Service)['getPreprintTitle']>) =>
-  Effect.flatMap(Preprints, service => service.getPreprintTitle(...args))
+  Preprints.use(service => service.getPreprintTitle(...args))
 
 export const resolvePreprintId = (...args: Parameters<(typeof Preprints.Service)['resolvePreprintId']>) =>
-  Effect.flatMap(Preprints, service => service.resolvePreprintId(...args))
+  Preprints.use(service => service.resolvePreprintId(...args))

@@ -28,16 +28,16 @@ const MakeQueryRoute = <A, I extends { readonly [K in keyof I]: string | Readonl
     pipe(
       HttpServerRequest.schemaSearchParams(schema),
       Effect.catchTag('SchemaError', () =>
-        Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
+        HttpServerRequest.HttpServerRequest.use(request => new HttpServerError.RouteNotFound({ request })),
       ),
       Effect.andThen(response),
       Effect.andThen(Response.toHttpServerResponse),
     ),
   )
 
-const showRemovedPermanentlyMessage = Effect.map(Locale, removedPermanentlyPage)
+const showRemovedPermanentlyMessage = Locale.useSync(removedPermanentlyPage)
 
-const showRemovedForNowMessage = Effect.map(Locale, removedForNowPage)
+const showRemovedForNowMessage = Locale.useSync(removedForNowPage)
 
 const PreprintIdWithDoiSchema = Schema.String.pipe(
   Schema.decodeTo(

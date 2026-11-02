@@ -10,10 +10,10 @@ export class CookieSignature extends Context.Service<
   }
 >()('CookieSignature') {}
 
-export const sign = (value: string) => Effect.map(CookieSignature, ({ sign }) => sign(value))
+export const sign = (value: string) => CookieSignature.useSync(({ sign }) => sign(value))
 
 export const unsign = (...args: Parameters<(typeof CookieSignature.Service)['unsign']>) =>
-  Effect.flatMap(CookieSignature, service => Effect.fromResult(service.unsign(...args)))
+  CookieSignature.use(service => Effect.fromResult(service.unsign(...args)))
 
 export class SignatureIsInvalid extends Data.TaggedError('SignatureIsInvalid')<{ cause?: unknown }> {}
 

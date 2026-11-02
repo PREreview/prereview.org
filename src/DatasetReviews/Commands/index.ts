@@ -117,109 +117,106 @@ export class NotAuthorizedToRunCommand extends Data.TaggedError('NotAuthorizedTo
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
 export const startDatasetReview = (...args: Parameters<(typeof DatasetReviewCommands.Service)['startDatasetReview']>) =>
-  Effect.flatMap(DatasetReviewCommands, service => service.startDatasetReview(...args))
+  DatasetReviewCommands.use(service => service.startDatasetReview(...args))
 
 export const rateTheQuality = (...args: Parameters<(typeof DatasetReviewCommands.Service)['rateTheQuality']>) =>
-  Effect.flatMap(DatasetReviewCommands, service => service.rateTheQuality(...args))
+  DatasetReviewCommands.use(service => service.rateTheQuality(...args))
 
 export const answerIfTheDatasetFollowsFairAndCarePrinciples = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetFollowsFairAndCarePrinciples']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetFollowsFairAndCarePrinciples(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetFollowsFairAndCarePrinciples(...args))
 
 export const answerIfTheDatasetHasDataCensoredOrDeleted = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetHasDataCensoredOrDeleted']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetHasDataCensoredOrDeleted(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetHasDataCensoredOrDeleted(...args))
 
 export const answerIfTheDatasetHasEnoughMetadata = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetHasEnoughMetadata']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetHasEnoughMetadata(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetHasEnoughMetadata(...args))
 
 export const answerIfTheDatasetHasTrackedChanges = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetHasTrackedChanges']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetHasTrackedChanges(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetHasTrackedChanges(...args))
 
 export const answerIfTheDatasetIsAppropriateForThisKindOfResearch = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetIsAppropriateForThisKindOfResearch']>
-) =>
-  Effect.flatMap(DatasetReviewCommands, service =>
-    service.answerIfTheDatasetIsAppropriateForThisKindOfResearch(...args),
-  )
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetIsAppropriateForThisKindOfResearch(...args))
 
 export const answerIfTheDatasetSupportsRelatedConclusions = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetSupportsRelatedConclusions']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetSupportsRelatedConclusions(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetSupportsRelatedConclusions(...args))
 
 export const answerIfTheDatasetIsDetailedEnough = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetIsDetailedEnough']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetIsDetailedEnough(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetIsDetailedEnough(...args))
 
 export const answerIfTheDatasetIsErrorFree = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetIsErrorFree']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetIsErrorFree(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetIsErrorFree(...args))
 
 export const answerIfTheDatasetMattersToItsAudience = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetMattersToItsAudience']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetMattersToItsAudience(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetMattersToItsAudience(...args))
 
 export const answerIfTheDatasetIsReadyToBeShared = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetIsReadyToBeShared']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetIsReadyToBeShared(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetIsReadyToBeShared(...args))
 
 export const answerIfTheDatasetIsMissingAnything = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfTheDatasetIsMissingAnything']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfTheDatasetIsMissingAnything(...args))
+) => DatasetReviewCommands.use(service => service.answerIfTheDatasetIsMissingAnything(...args))
 
 export const choosePersona = (...args: Parameters<(typeof DatasetReviewCommands.Service)['choosePersona']>) =>
-  Effect.flatMap(DatasetReviewCommands, service => service.choosePersona(...args))
+  DatasetReviewCommands.use(service => service.choosePersona(...args))
 
 export const answerIfOthersNeedToBeListedOnTheReview = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['answerIfOthersNeedToBeListedOnTheReview']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.answerIfOthersNeedToBeListedOnTheReview(...args))
+) => DatasetReviewCommands.use(service => service.answerIfOthersNeedToBeListedOnTheReview(...args))
 
 export const addInvitationToAppearToTheList = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['addInvitationToAppearToTheList']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.addInvitationToAppearToTheList(...args))
+) => DatasetReviewCommands.use(service => service.addInvitationToAppearToTheList(...args))
 
 export const removeInvitationToAppearFromTheList = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['removeInvitationToAppearFromTheList']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.removeInvitationToAppearFromTheList(...args))
+) => DatasetReviewCommands.use(service => service.removeInvitationToAppearFromTheList(...args))
 
 export const declareIfAiWasUsedToGenerateNewIdeas = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['declareIfAiWasUsedToGenerateNewIdeas']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.declareIfAiWasUsedToGenerateNewIdeas(...args))
+) => DatasetReviewCommands.use(service => service.declareIfAiWasUsedToGenerateNewIdeas(...args))
 
 export const declareCompetingInterests = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['declareCompetingInterests']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.declareCompetingInterests(...args))
+) => DatasetReviewCommands.use(service => service.declareCompetingInterests(...args))
 
 export const declareFollowingCodeOfConduct = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['declareFollowingCodeOfConduct']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.declareFollowingCodeOfConduct(...args))
+) => DatasetReviewCommands.use(service => service.declareFollowingCodeOfConduct(...args))
 
 export const markRecordCreatedOnZenodo = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['markRecordCreatedOnZenodo']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.markRecordCreatedOnZenodo(...args))
+) => DatasetReviewCommands.use(service => service.markRecordCreatedOnZenodo(...args))
 
 export const markRecordAsPublishedOnZenodo = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['markRecordAsPublishedOnZenodo']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.markRecordAsPublishedOnZenodo(...args))
+) => DatasetReviewCommands.use(service => service.markRecordAsPublishedOnZenodo(...args))
 
 export const markDoiAsAssigned = (...args: Parameters<(typeof DatasetReviewCommands.Service)['markDoiAsAssigned']>) =>
-  Effect.flatMap(DatasetReviewCommands, service => service.markDoiAsAssigned(...args))
+  DatasetReviewCommands.use(service => service.markDoiAsAssigned(...args))
 
 export const markDoiAsActivated = (...args: Parameters<(typeof DatasetReviewCommands.Service)['markDoiAsActivated']>) =>
-  Effect.flatMap(DatasetReviewCommands, service => service.markDoiAsActivated(...args))
+  DatasetReviewCommands.use(service => service.markDoiAsActivated(...args))
 
 export const addReviewToAClub = (...args: Parameters<(typeof DatasetReviewCommands.Service)['addReviewToAClub']>) =>
-  Effect.flatMap(DatasetReviewCommands, service => service.addReviewToAClub(...args))
+  DatasetReviewCommands.use(service => service.addReviewToAClub(...args))
 
 export const publishDatasetReview = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['publishDatasetReview']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.publishDatasetReview(...args))
+) => DatasetReviewCommands.use(service => service.publishDatasetReview(...args))
 
 export const markDatasetReviewAsPublished = (
   ...args: Parameters<(typeof DatasetReviewCommands.Service)['markDatasetReviewAsPublished']>
-) => Effect.flatMap(DatasetReviewCommands, service => service.markDatasetReviewAsPublished(...args))
+) => DatasetReviewCommands.use(service => service.markDatasetReviewAsPublished(...args))
 
 const allDatasetReviewEvents = (datasetReviewId: Uuid.Uuid) =>
   Events.EventFilter({

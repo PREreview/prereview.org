@@ -33,13 +33,13 @@ export class Slack extends Context.Service<
 >()('Slack') {}
 
 export const chatDelete = (...args: Parameters<(typeof Slack.Service)['chatDelete']>) =>
-  Effect.flatMap(Slack, service => service.chatDelete(...args))
+  Slack.use(service => service.chatDelete(...args))
 
 export const chatPostMessage = (...args: Parameters<(typeof Slack.Service)['chatPostMessage']>) =>
-  Effect.flatMap(Slack, service => service.chatPostMessage(...args))
+  Slack.use(service => service.chatPostMessage(...args))
 
 export const usersProfileGet = (...args: Parameters<(typeof Slack.Service)['usersProfileGet']>) =>
-  Effect.flatMap(Slack, service => service.usersProfileGet(...args))
+  Slack.use(service => service.usersProfileGet(...args))
 
 const make: Effect.Effect<typeof Slack.Service, never, HttpClient.HttpClient | SlackApi> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | SlackApi>(), Context.omit(Scope.Scope))

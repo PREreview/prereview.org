@@ -156,42 +156,36 @@ export class DatasetReviewQueries extends Context.Service<
 
 export const checkIfReviewIsBeingPublished = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfReviewIsBeingPublished']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfReviewIsBeingPublished(...args))
+) => DatasetReviewQueries.use(service => service.checkIfReviewIsBeingPublished(...args))
 
 export const checkIfUserCanRateTheQuality = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanRateTheQuality']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanRateTheQuality(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanRateTheQuality(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples = (
   ...args: Parameters<
     (typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples']
   >
-) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
-    service.checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples(...args),
-  )
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted']>
-) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
-    service.checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted(...args),
-  )
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetHasTrackedChanges = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetHasTrackedChanges']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetHasTrackedChanges(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetHasTrackedChanges(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch = (
   ...args: Parameters<
     (typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch']
   >
 ) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
+  DatasetReviewQueries.use(service =>
     service.checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch(...args),
   )
 
@@ -199,122 +193,111 @@ export const checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions = (
   ...args: Parameters<
     (typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions']
   >
-) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
-    service.checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions(...args),
-  )
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetIsDetailedEnough = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetIsDetailedEnough']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetIsDetailedEnough(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetIsDetailedEnough(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetIsErrorFree = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetIsErrorFree']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetIsErrorFree(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetIsErrorFree(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetMattersToItsAudience = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetMattersToItsAudience']>
-) =>
-  Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetMattersToItsAudience(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetMattersToItsAudience(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared(...args))
 
 export const checkIfUserCanAnswerIfTheDatasetIsMissingAnything = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfTheDatasetIsMissingAnything']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanAnswerIfTheDatasetIsMissingAnything(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfTheDatasetIsMissingAnything(...args))
 
 export const checkIfUserCanChoosePersona = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanChoosePersona']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanChoosePersona(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanChoosePersona(...args))
 
 export const checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview']>
-) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
-    service.checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview(...args),
-  )
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview(...args))
 
 export const checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList = (
   ...args: Parameters<
     (typeof DatasetReviewQueries.Service)['checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList']
   >
-) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
-    service.checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList(...args),
-  )
+) => DatasetReviewQueries.use(service => service.checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList(...args))
 
 export const checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList = (
   ...args: Parameters<
     (typeof DatasetReviewQueries.Service)['checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList']
   >
 ) =>
-  Effect.flatMap(DatasetReviewQueries, service =>
+  DatasetReviewQueries.use(service =>
     service.checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList(...args),
   )
 
 export const checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas']>
-) =>
-  Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas(...args))
 
 export const checkIfUserCanDeclareCompetingInterests = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanDeclareCompetingInterests']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanDeclareCompetingInterests(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanDeclareCompetingInterests(...args))
 
 export const checkIfUserCanDeclareFollowingCodeOfConduct = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfUserCanDeclareFollowingCodeOfConduct']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.checkIfUserCanDeclareFollowingCodeOfConduct(...args))
+) => DatasetReviewQueries.use(service => service.checkIfUserCanDeclareFollowingCodeOfConduct(...args))
 
 export const getPublishedReview = (...args: Parameters<(typeof DatasetReviewQueries.Service)['getPublishedReview']>) =>
-  Effect.flatMap(DatasetReviewQueries, service => service.getPublishedReview(...args))
+  DatasetReviewQueries.use(service => service.getPublishedReview(...args))
 
 export const getPublishedReviewDetails = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getPublishedReviewDetails']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getPublishedReviewDetails(...args))
+) => DatasetReviewQueries.use(service => service.getPublishedReviewDetails(...args))
 
 export const areThereMultipleAuthorsOnAReview = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['areThereMultipleAuthorsOnAReview']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.areThereMultipleAuthorsOnAReview(...args))
+) => DatasetReviewQueries.use(service => service.areThereMultipleAuthorsOnAReview(...args))
 
 export const findInProgressReviewForADataset = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['findInProgressReviewForADataset']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.findInProgressReviewForADataset(...args))
+) => DatasetReviewQueries.use(service => service.findInProgressReviewForADataset(...args))
 
 export const findPublishedReviewsForADataset = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['findPublishedReviewsForADataset']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.findPublishedReviewsForADataset(...args))
+) => DatasetReviewQueries.use(service => service.findPublishedReviewsForADataset(...args))
 
 export const getAuthor = (...args: Parameters<(typeof DatasetReviewQueries.Service)['getAuthor']>) =>
-  Effect.flatMap(DatasetReviewQueries, service => service.getAuthor(...args))
+  DatasetReviewQueries.use(service => service.getAuthor(...args))
 
 export const getNextExpectedCommandForAUserOnADatasetReview = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getNextExpectedCommandForAUserOnADatasetReview']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getNextExpectedCommandForAUserOnADatasetReview(...args))
+) => DatasetReviewQueries.use(service => service.getNextExpectedCommandForAUserOnADatasetReview(...args))
 
 export const getPreviousCommandForAUserOnADatasetReview = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getPreviousCommandForAUserOnADatasetReview']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getPreviousCommandForAUserOnADatasetReview(...args))
+) => DatasetReviewQueries.use(service => service.getPreviousCommandForAUserOnADatasetReview(...args))
 
 export const getListOfInvitationsToAppearOnADatasetReview = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getListOfInvitationsToAppearOnADatasetReview']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getListOfInvitationsToAppearOnADatasetReview(...args))
+) => DatasetReviewQueries.use(service => service.getListOfInvitationsToAppearOnADatasetReview(...args))
 
 export const getPreviewForAReviewReadyToBePublished = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getPreviewForAReviewReadyToBePublished']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getPreviewForAReviewReadyToBePublished(...args))
+) => DatasetReviewQueries.use(service => service.getPreviewForAReviewReadyToBePublished(...args))
 
 export const getDataForZenodoRecord = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getDataForZenodoRecord']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getDataForZenodoRecord(...args))
+) => DatasetReviewQueries.use(service => service.getDataForZenodoRecord(...args))
 
 export const getZenodoRecordId = (...args: Parameters<(typeof DatasetReviewQueries.Service)['getZenodoRecordId']>) =>
-  Effect.flatMap(DatasetReviewQueries, service => service.getZenodoRecordId(...args))
+  DatasetReviewQueries.use(service => service.getZenodoRecordId(...args))
 
 export const getDatasetReviewForInvite = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['getDatasetReviewForInvite']>
-) => Effect.flatMap(DatasetReviewQueries, service => service.getDatasetReviewForInvite(...args))
+) => DatasetReviewQueries.use(service => service.getDatasetReviewForInvite(...args))
 
 export type { DataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 

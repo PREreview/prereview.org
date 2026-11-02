@@ -15,7 +15,7 @@ export class Nodemailer extends Context.Service<
 >()('Nodemailer') {}
 
 export const sendEmail = (...args: Parameters<(typeof Nodemailer.Service)['sendEmail']>) =>
-  Effect.flatMap(Nodemailer, service => service.sendEmail(...args))
+  Nodemailer.use(service => service.sendEmail(...args))
 
 export const make: Effect.Effect<typeof Nodemailer.Service, never, NodemailerTransporter> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<NodemailerTransporter>(), Context.omit(Scope.Scope))

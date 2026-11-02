@@ -31,27 +31,23 @@ const defaults = {
   showSpotlight: false,
 } satisfies typeof FeatureFlags.Service
 
-export const canAddMultipleAuthors = (user?: User) =>
-  Effect.flatMap(FeatureFlags, service => service.canAddMultipleAuthors(user))
+export const canAddMultipleAuthors = (user?: User) => FeatureFlags.use(service => service.canAddMultipleAuthors(user))
 
-export const canLogInAsDemoUser = Effect.map(FeatureFlags, service => service.canLogInAsDemoUser)
+export const canLogInAsDemoUser = FeatureFlags.useSync(service => service.canLogInAsDemoUser)
 
-export const canClubLeadsAddReviewsToClubs = Effect.map(FeatureFlags, service => service.canClubLeadsAddReviewsToClubs)
+export const canClubLeadsAddReviewsToClubs = FeatureFlags.useSync(service => service.canClubLeadsAddReviewsToClubs)
 
-export const canPreviewContentFromContentful = Effect.map(
-  FeatureFlags,
-  service => service.canPreviewContentFromContentful,
-)
+export const canPreviewContentFromContentful = FeatureFlags.useSync(service => service.canPreviewContentFromContentful)
 
-export const loadBlogFromContentful = Effect.map(FeatureFlags, service => service.loadBlogFromContentful)
+export const loadBlogFromContentful = FeatureFlags.useSync(service => service.loadBlogFromContentful)
 
-export const loadPagesFromContentful = Effect.map(FeatureFlags, service => service.loadPagesFromContentful)
+export const loadPagesFromContentful = FeatureFlags.useSync(service => service.loadPagesFromContentful)
 
-export const sendCoarNotifyMessages = Effect.map(FeatureFlags, service => service.sendCoarNotifyMessages)
+export const sendCoarNotifyMessages = FeatureFlags.useSync(service => service.sendCoarNotifyMessages)
 
-export const useCrowdinInContext = Effect.map(FeatureFlags, service => service.useCrowdinInContext)
+export const useCrowdinInContext = FeatureFlags.useSync(service => service.useCrowdinInContext)
 
-export const showSpotlight = Effect.map(FeatureFlags, service => service.showSpotlight)
+export const showSpotlight = FeatureFlags.useSync(service => service.showSpotlight)
 
 export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
 
