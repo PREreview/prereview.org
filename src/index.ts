@@ -74,6 +74,7 @@ const ClusterLayer = Layer.unwrap(
         shardingConfig: {
           runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
           runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),
+          shardLockDisableAdvisory: true,
         },
       }),
   ),
