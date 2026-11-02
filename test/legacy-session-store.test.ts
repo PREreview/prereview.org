@@ -4,7 +4,7 @@ import { Effect, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import { KeyValueStore } from 'effect/persistence'
-import * as _ from '../src/keyv.ts'
+import * as _ from '../src/legacy-session-store.ts'
 import { fromKeyValueStore } from '../src/SessionStore.ts'
 import * as fc from './fc.ts'
 

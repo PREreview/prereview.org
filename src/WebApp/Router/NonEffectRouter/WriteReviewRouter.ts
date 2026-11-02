@@ -9,7 +9,7 @@ import type { OpenAuthorInvite } from '../../../author-invite.ts'
 import * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import { OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Keyv from '../../../keyv.ts'
+import * as LegacySessionStore from '../../../legacy-session-store.ts'
 import { publishPrereview } from '../../../PreprintReviews/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
@@ -398,7 +398,7 @@ export const WriteReviewRouter = pipe(
         addToSession: withEnv(
           (key: string, value: Json) =>
             typeof env.sessionId === 'string'
-              ? Keyv.addToSession(env.sessionId, key, value)
+              ? LegacySessionStore.addToSession(env.sessionId, key, value)
               : RTE.left('unavailable' as const),
           { sessionStore: env.sessionStore, ...env.logger },
         ),
@@ -406,7 +406,7 @@ export const WriteReviewRouter = pipe(
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'
-              ? Keyv.popFromSession(env.sessionId, key)
+              ? LegacySessionStore.popFromSession(env.sessionId, key)
               : RTE.left('unavailable' as const),
           { sessionStore: env.sessionStore, ...env.logger },
         ),

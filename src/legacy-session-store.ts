@@ -14,18 +14,18 @@ export interface SessionStoreEnv {
   sessionStore: LegacySessionStore
 }
 
-interface KeyvEnv {
-  keyv: LegacySessionStore
+interface StoreEnv {
+  store: LegacySessionStore
 }
 
 const getKey =
   <K, V>(keyEncoder: Encoder<string, K>, valueDecoder: Decoder<unknown, V>) =>
-  (key: K): RTE.ReaderTaskEither<KeyvEnv & L.LoggerEnv, 'unavailable' | 'not-found', V> =>
+  (key: K): RTE.ReaderTaskEither<StoreEnv & L.LoggerEnv, 'unavailable' | 'not-found', V> =>
     pipe(
-      RTE.ask<KeyvEnv>(),
-      RTE.chainW(({ keyv }) =>
+      RTE.ask<StoreEnv>(),
+      RTE.chainW(({ store }) =>
         pipe(
-          RTE.fromTaskEither(TE.tryCatch(() => keyv.get(keyEncoder.encode(key)), E.toError)),
+          RTE.fromTaskEither(TE.tryCatch(() => store.get(keyEncoder.encode(key)), E.toError)),
           RTE.orElseFirstW(
             RTE.fromReaderIOK(
               flow(
@@ -50,14 +50,14 @@ const getKey =
 
 const setKey =
   <K, V>(keyEncoder: Encoder<string, K>, valueEncoder: Encoder<unknown, V>) =>
-  (key: K, value: V): RTE.ReaderTaskEither<KeyvEnv & L.LoggerEnv, 'unavailable', void> =>
+  (key: K, value: V): RTE.ReaderTaskEither<StoreEnv & L.LoggerEnv, 'unavailable', void> =>
     pipe(
-      RTE.ask<KeyvEnv>(),
-      RTE.chainW(({ keyv }) =>
+      RTE.ask<StoreEnv>(),
+      RTE.chainW(({ store }) =>
         pipe(
           RTE.fromTaskEither(
             TE.tryCatch(async () => {
-              await keyv.set(keyEncoder.encode(key), valueEncoder.encode(value))
+              await store.set(keyEncoder.encode(key), valueEncoder.encode(value))
             }, E.toError),
           ),
           RTE.orElseFirstW(
@@ -83,7 +83,7 @@ export const addToSession = (sessionId: string, key: string, value: Json) =>
     RTE.chain(session =>
       setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: value }),
     ),
-    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
+    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, store: env.sessionStore })),
   )
 
 export const popFromSession = (sessionId: string, key: string) =>
@@ -99,5 +99,5 @@ export const popFromSession = (sessionId: string, key: string) =>
       setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: undefined }),
     ),
     RTE.map(({ value }) => value),
-    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
+    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, store: env.sessionStore })),
   )

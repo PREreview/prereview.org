@@ -9,7 +9,7 @@ import type * as T from 'fp-ts/lib/Task.js'
 import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Keyv from '../../../keyv.ts'
+import * as LegacySessionStore from '../../../legacy-session-store.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as SlackUserIds from '../../../SlackUserIds.ts'
 import * as UserOnboardingStore from '../../../UserOnboardingStore.ts'
@@ -260,7 +260,7 @@ export const MyDetailsRouter = pipe(
         addToSession: withEnv(
           (key: string, value: Json) =>
             typeof env.sessionId === 'string'
-              ? Keyv.addToSession(env.sessionId, key, value)
+              ? LegacySessionStore.addToSession(env.sessionId, key, value)
               : RTE.left('unavailable' as const),
           { sessionStore: env.sessionStore, ...env.logger },
         ),
@@ -348,7 +348,7 @@ export const MyDetailsRouter = pipe(
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'
-              ? Keyv.popFromSession(env.sessionId, key)
+              ? LegacySessionStore.popFromSession(env.sessionId, key)
               : RTE.left('unavailable' as const),
           { sessionStore: env.sessionStore, ...env.logger },
         ),
