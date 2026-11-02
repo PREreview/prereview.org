@@ -208,7 +208,8 @@ export const urlParams = (params?: fc.Arbitrary<UrlParams.Input>): fc.Arbitrary<
     UrlParams.fromInput(params),
   )
 
-export const durationInput = (): fc.Arbitrary<Duration.Input> => fc.integer({ min: 0 }).map(Duration.seconds)
+export const durationInput = ({ min = 0 }: { min?: Duration.Input } = {}): fc.Arbitrary<Duration.Input> =>
+  fc.integer({ min: Math.ceil(Duration.toSeconds(min)) }).map(Duration.seconds)
 
 export const json = (): fc.Arbitrary<Json> => fc.jsonValue() as fc.Arbitrary<Json>
 

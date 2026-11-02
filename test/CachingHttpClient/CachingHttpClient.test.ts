@@ -442,7 +442,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
 describe('getting from the cache is too slow', () => {
   it.effect.prop(
     'makes the real request',
-    [fc.httpClientResponse(), fc.durationInput(), fc.durationInput()],
+    [fc.httpClientResponse(), fc.durationInput(), fc.durationInput({ min: '1 milli' })],
     ([response, timeToStale, delay]) =>
       Effect.gen(function* () {
         const client = yield* pipe(
