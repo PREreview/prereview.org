@@ -1,4 +1,5 @@
-import { Config, Context, Duration, Effect, flow, Inspectable, Layer, pipe, Redacted } from 'effect'
+import { Config, Context, Deferred, Duration, Effect, flow, Inspectable, Layer, pipe, Redacted } from 'effect'
+import { Redis } from 'effect/persistence'
 import { Redis as IoRedis } from 'ioredis'
 
 const makeRedis = (url: Redacted.Redacted<URL>) =>
@@ -73,6 +74,59 @@ export const layerDataStore = flow(redisLifecycle, Layer.effect(DataStoreRedis))
 
 export const layerDataStoreConfig = (options: Config.Wrap<Parameters<typeof layerDataStore>[0]>) =>
   Layer.unwrap(Effect.map(Config.unwrap(options), layerDataStore))
+
+export const layerPersistenceFromDataStore = Layer.effect(
+  Redis.Redis,
+  Effect.gen(function* () {
+    const redis = yield* DataStoreRedis
+    const runSync = Effect.runSyncWith(yield* Effect.context())
+
+    const duplicate = (name: string) =>
+      Effect.sync(() =>
+        redis
+          .duplicate()
+          .on('error', error =>
+            runSync(
+              pipe(Effect.logWarning(`Redis ${name} connection error`), Effect.annotateLogs({ error: error.message })),
+            ),
+          ),
+      )
+
+    return yield* Redis.make({
+      send: sendWith(redis),
+      connect: Effect.map(duplicate('reserved'), connection => ({
+        send: sendWith(connection),
+        close: Effect.sync(() => connection.disconnect()),
+      })),
+      subscribe: Effect.fnUntraced(function* (channel, onMessage) {
+        const terminal = yield* Deferred.make<never, Redis.RedisError>()
+        const subscriber = yield* Effect.acquireRelease(duplicate('subscriber'), subscriber =>
+          Effect.sync(() => subscriber.disconnect()),
+        )
+
+        subscriber.on('message', (channel: string, message: string) => onMessage({ channel, message }))
+        subscriber.on('end', () =>
+          runSync(Deferred.fail(terminal, new Redis.RedisError({ cause: new Error('Subscriber connection ended') }))),
+        )
+
+        yield* Effect.tryPromise({
+          try: () => subscriber.subscribe(channel),
+          catch: cause => new Redis.RedisError({ cause }),
+        })
+
+        return Deferred.await(terminal)
+      }),
+    })
+  }),
+)
+
+const sendWith =
+  (redis: IoRedis) =>
+  <A = unknown>(command: string, ...args: ReadonlyArray<string>) =>
+    Effect.tryPromise({
+      try: () => redis.call(command, ...args) as Promise<A>,
+      catch: cause => new Redis.RedisError({ cause }),
+    })
 
 export class HttpCacheRedis extends Context.Service<HttpCacheRedis, { primary: IoRedis; readonlyFallback: IoRedis }>()(
   'HttpCacheRedis',
