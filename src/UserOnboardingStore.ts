@@ -24,7 +24,7 @@ export const layer = Layer.provide(
   Layer.effect(KeyValueStore.KeyValueStore, RedisKeyValueStore.make('user-onboarding')),
 )
 
-export const layerInMemory = Layer.provide(layerKeyValueStore, KeyValueStore.layerMemory)
+export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
 export const get = Effect.fn('UserOnboardingStore.get')(function* (orcid: OrcidId.OrcidId) {
   const store = yield* Store

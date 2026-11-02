@@ -44,7 +44,7 @@ export const layer = Layer.provide(
   Layer.effect(KeyValueStore.KeyValueStore, RedisKeyValueStore.make('author-invite')),
 )
 
-export const layerInMemory = Layer.provide(layerKeyValueStore, KeyValueStore.layerMemory)
+export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
 export const get = Effect.fn('AuthorInviteStore.get')(function* (id: Uuid.Uuid) {
   const store = yield* Store

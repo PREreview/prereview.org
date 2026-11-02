@@ -1,6 +1,7 @@
 import { describe, expect, it } from './vitest.ts'
 import { Effect, Layer, Result } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
+import { IsOpenForRequestsStore } from '../src/Prereviewers/index.ts'
 import * as _ from '../src/SlackUserIds.ts'
 import * as fc from './fc.ts'
 
@@ -103,5 +104,21 @@ describe('remove', () => {
 
       expect(actual).toStrictEqual(Result.fail('unavailable'))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
+  )
+})
+
+describe('layerInMemory', () => {
+  it.effect.prop(
+    'does not share values with other in-memory stores',
+    [fc.orcidId(), fc.slackUserId(), fc.isOpenForRequests()],
+    ([orcid, slackUserId, isOpenForRequests]) =>
+      Effect.gen(function* () {
+        yield* _.save(orcid, slackUserId)
+        yield* IsOpenForRequestsStore.save(orcid, isOpenForRequests)
+
+        const actual = yield* _.get(orcid)
+
+        expect(actual).toStrictEqual(slackUserId)
+      }).pipe(Effect.provide([_.layerInMemory, IsOpenForRequestsStore.layerInMemory])),
   )
 })
