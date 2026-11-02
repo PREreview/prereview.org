@@ -49,7 +49,11 @@ import * as WebApp from './WebApp/index.ts'
 import { IsUserBlocked } from './WebApp/log-in/index.ts'
 
 const PostgresClientLayer = Layer.mergeAll(
-  PgClient.layerConfig({ url: Config.Redacted('POSTGRES_URL') }),
+  PgClient.layerConfig({
+    url: Config.Redacted('POSTGRES_URL'),
+    acquireTimeout: Config.succeed('5 seconds'),
+    keepAlive: Config.succeed('30 seconds'),
+  }),
   Layer.effectDiscard(Effect.logDebug('Postgres Database connected')),
   Layer.effectDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
 )
