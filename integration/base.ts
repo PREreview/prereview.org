@@ -32,7 +32,7 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import { AuthorInviteC } from '../src/author-invite.ts'
+import * as AuthorInviteStore from '../src/AuthorInviteStore.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as Clubs from '../src/Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
@@ -45,7 +45,7 @@ import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '.
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
-import { KeyvStores, type AuthorInviteStoreEnv } from '../src/keyv.ts'
+import { KeyvStores } from '../src/keyv.ts'
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import * as OrcidTokens from '../src/OrcidTokens.ts'
@@ -88,7 +88,7 @@ interface AppFixtures {
   isUserBlocked: typeof IsUserBlocked.Service
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
   userOnboardingStore: typeof UserOnboardingStore.Store.Service
-  authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
+  authorInviteStore: typeof AuthorInviteStore.Store.Service
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canClubLeadsAddReviewsToClubs: (typeof FeatureFlags.FeatureFlags.Service)['canClubLeadsAddReviewsToClubs']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
@@ -100,7 +100,16 @@ interface AppFixtures {
 
 const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & PlaywrightTestOptions> = {
   authorInviteStore: async ({}, use) => {
-    await use(new Keyv())
+    await use(
+      await Effect.runPromise(
+        Effect.provide(
+          Effect.gen(function* () {
+            return yield* AuthorInviteStore.Store
+          }),
+          AuthorInviteStore.layerInMemory,
+        ),
+      ),
+    )
   },
   baseURL: async ({ port }, use) => {
     await use(`http://localhost:${port}`)
@@ -2427,7 +2436,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         Layer.provide(FetchHttpClient.layer),
         Layer.provide([
           Layer.succeed(KeyvStores, {
-            authorInviteStore,
             formStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
@@ -2435,6 +2443,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Prereviewers.LanguagesStore.layerInMemory,
           Prereviewers.Locations.layerInMemory,
           Prereviewers.ResearchInterestsStore.layerInMemory,
+          Layer.succeed(AuthorInviteStore.Store, authorInviteStore),
           Prereviewers.Avatars.layerInMemory,
           OrcidTokens.layerInMemory,
           SlackUserIds.layerInMemory,
@@ -3444,9 +3453,8 @@ export const invitedToBeAnAuthor: Fixtures<
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
 
-    await authorInviteStore.set(
-      'bec5727e-9992-4f3b-85be-6712df617b9d',
-      AuthorInviteC.encode({
+    await Effect.runPromise(
+      authorInviteStore.set('bec5727e-9992-4f3b-85be-6712df617b9d', {
         status: 'open',
         emailAddress: EmailAddress('jcarberry@example.com'),
         review: 1055806,

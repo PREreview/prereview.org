@@ -10,14 +10,12 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import * as EN from 'io-ts/lib/Encoder.js'
 import { Keyv } from 'keyv'
 import * as L from 'logger-fp-ts'
-import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { DataStoreRedis } from './Redis.ts'
-import { UuidC } from './types/Uuid.ts'
 
 export { Keyv } from 'keyv'
 
-export class KeyvStores extends Context.Service<KeyvStores, AuthorInviteStoreEnv & FormStoreEnv>()('KeyvStores') {}
+export class KeyvStores extends Context.Service<KeyvStores, FormStoreEnv>()('KeyvStores') {}
 
 export const keyvStoresLayer = Layer.effect(
   KeyvStores,
@@ -27,15 +25,10 @@ export const keyvStoresLayer = Layer.effect(
     const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
     return {
-      authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
     }
   }),
 )
-
-export interface AuthorInviteStoreEnv {
-  authorInviteStore: Keyv
-}
 
 export interface SessionStoreEnv {
   sessionStore: Keyv
@@ -104,16 +97,6 @@ const setKey =
       ),
       RTE.mapLeft(() => 'unavailable'),
     )
-
-export const getAuthorInvite = flow(
-  getKey(UuidC, AuthorInviteC),
-  RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const saveAuthorInvite = flow(
-  setKey(UuidC, AuthorInviteC),
-  RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
 
 export const addToSession = (sessionId: string, key: string, value: Json) =>
   pipe(

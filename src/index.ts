@@ -24,6 +24,7 @@ import {
   Schema,
 } from 'effect'
 import { createServer } from 'node:http'
+import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
@@ -145,6 +146,7 @@ pipe(
     Keyv.keyvStoresLayer,
     Layer.provide(
       Layer.mergeAll(
+        AuthorInviteStore.layer,
         Prereviewers.CareerStages.layer,
         Prereviewers.IsOpenForRequestsStore.layer,
         Prereviewers.LanguagesStore.layer,

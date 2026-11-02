@@ -3,9 +3,9 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Keyv from '../../../keyv.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -131,15 +131,9 @@ export const AuthorInviteFlowRouter = pipe(
           ),
           env.runtime,
         ),
-        getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
-          authorInviteStore: env.authorInviteStore,
-          ...env.logger,
-        }),
+        getAuthorInvite: EffectToFpts.toTaskEitherK(AuthorInviteStore.get, env.runtime),
         runtime: env.runtime,
-        saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, {
-          authorInviteStore: env.authorInviteStore,
-          ...env.logger,
-        }),
+        saveAuthorInvite: EffectToFpts.toTaskEitherK(AuthorInviteStore.save, env.runtime),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>

@@ -1,9 +1,9 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type * as AuthorInviteStore from '../AuthorInviteStore.ts'
 import * as Commands from '../Commands.ts'
 import type { Locale } from '../Context.ts'
 import type { EventStore } from '../EventStore.ts'
 import type { Email, OrcidRecords } from '../ExternalInteractions/index.ts'
-import * as Keyv from '../keyv.ts'
 import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/index.ts'
 import { GetContactEmailAddress } from './GetContactEmailAddress.ts'
@@ -33,17 +33,17 @@ export const layer = Layer.effect(
   ContactEmailAddresses,
   Effect.gen(function* () {
     const context = yield* Effect.map(
-      Effect.context<Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid | EventStore>(),
+      Effect.context<
+        Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid | EventStore | AuthorInviteStore.Store
+      >(),
       Context.omit(Scope.Scope),
     )
-
-    const { authorInviteStore } = yield* Keyv.KeyvStores
 
     return {
       getContactEmailAddress: yield* Queries.makeOnDemandQuery(GetContactEmailAddress),
       verifyContactEmailAddress: yield* Commands.makeCommand(VerifyContactEmailAddress),
       useAuthorInviteEmailAddress: flow(
-        UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress(authorInviteStore),
+        UseAuthorInviteEmailAddress.UseAuthorInviteEmailAddress,
         Effect.provide(context),
       ),
       startVerificationOfContactEmailAddress: flow(

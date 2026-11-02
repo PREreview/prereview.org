@@ -1,10 +1,10 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '../vitest.ts'
 import { Array, Effect, Result, Layer, Option, pipe, Struct, PubSub } from 'effect'
+import * as AuthorInviteStore from '../../src/AuthorInviteStore.ts'
 import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
 import { type Event, Events } from '../../src/Events.ts'
 import { EventStore } from '../../src/EventStore.ts'
-import { Keyv } from '../../src/keyv.ts'
 import { make as makeSqlEventStore } from '../../src/SqlEventStore.ts'
 import { layer as sqlSensitiveDataStoreLayer } from '../../src/SqlSensitiveDataStore.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
@@ -58,49 +58,37 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
   ],
 ])('%s', ([, input, expectedReturn, expectedEvents]) =>
   Effect.gen(function* () {
-    const authorInviteStore = new Keyv()
-
     const eventStore = yield* makeSqlEventStore
 
-    yield* Effect.promise(() =>
-      authorInviteStore.set(openInvitationId, {
-        status: 'open',
-        emailAddress: openInvitationEmailAddress,
-        review: 1234,
-      }),
-    )
-    yield* Effect.promise(() =>
-      authorInviteStore.set(acceptedInvitationId, {
-        status: 'assigned',
-        emailAddress: acceptedInvitationEmailAddress,
-        orcid: input.orcidId,
-        review: 1234,
-      }),
-    )
-    yield* Effect.promise(() =>
-      authorInviteStore.set(acceptedInvitationBySomeoneElseId, {
-        status: 'assigned',
-        emailAddress: acceptedInvitationBySomeoneElseEmailAddress,
-        orcid: someoneElseOrcidId,
-        review: 1234,
-      }),
-    )
-    yield* Effect.promise(() =>
-      authorInviteStore.set(declinedInvitation, {
-        status: 'declined',
-        review: 1234,
-      }),
-    )
-    yield* Effect.promise(() =>
-      authorInviteStore.set(completedInvitation, {
-        status: 'completed',
-        orcid: input.orcidId,
-        review: 1234,
-      }),
-    )
+    yield* AuthorInviteStore.save(openInvitationId, {
+      status: 'open',
+      emailAddress: openInvitationEmailAddress,
+      review: 1234,
+    })
+    yield* AuthorInviteStore.save(acceptedInvitationId, {
+      status: 'assigned',
+      emailAddress: acceptedInvitationEmailAddress,
+      orcid: input.orcidId,
+      review: 1234,
+    })
+    yield* AuthorInviteStore.save(acceptedInvitationBySomeoneElseId, {
+      status: 'assigned',
+      emailAddress: acceptedInvitationBySomeoneElseEmailAddress,
+      orcid: someoneElseOrcidId,
+      review: 1234,
+    })
+    yield* AuthorInviteStore.save(declinedInvitation, {
+      status: 'declined',
+      review: 1234,
+    })
+    yield* AuthorInviteStore.save(completedInvitation, {
+      status: 'completed',
+      orcid: input.orcidId,
+      review: 1234,
+    })
 
     const actualReturn = yield* Effect.result(
-      _.UseAuthorInviteEmailAddress(authorInviteStore)(input).pipe(Effect.provideService(EventStore, eventStore)),
+      _.UseAuthorInviteEmailAddress(input).pipe(Effect.provideService(EventStore, eventStore)),
     )
     const actualEvents = yield* pipe(
       eventStore.all,
@@ -112,6 +100,11 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
     expect(actualEvents).toStrictEqual(expectedEvents)
   }).pipe(
     Effect.provide(sqlSensitiveDataStoreLayer),
-    Effect.provide([uuidLayer, Layer.effect(Events, PubSub.unbounded()), LibsqlClient.layer({ url: ':memory:' })]),
+    Effect.provide([
+      AuthorInviteStore.layerInMemory,
+      uuidLayer,
+      Layer.effect(Events, PubSub.unbounded()),
+      LibsqlClient.layer({ url: ':memory:' }),
+    ]),
   ),
 )

@@ -27,6 +27,7 @@ import type { WorkflowEngine } from 'effect/workflow'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type { LoggerEnv } from 'logger-fp-ts'
+import type * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import type { Clubs } from '../../../Clubs/index.ts'
 import type { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
@@ -166,7 +167,6 @@ export const nonEffectRouter: Effect.Effect<
     shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
-    authorInviteStore: keyvStores.authorInviteStore,
     formStore: keyvStores.formStore,
     sessionStore: sessionStore.store,
   } satisfies Env
@@ -208,6 +208,7 @@ export interface Env {
     | Prereviewers.Locations.Store
     | Prereviewers.ResearchInterestsStore.Store
     | Prereviewers.Avatars.Store
+    | AuthorInviteStore.Store
     | OrcidTokens.Store
     | SlackUserIds.Store
     | UserOnboardingStore.Store
@@ -226,7 +227,6 @@ export interface Env {
     | Email.Email
   >
   logger: LoggerEnv
-  authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
   sessionStore: Keyv.Keyv
   orcidOauth: typeof OrcidOauth.Service

@@ -6,6 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
 import type { OpenAuthorInvite } from '../../../author-invite.ts'
+import * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import { OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -415,11 +416,11 @@ export const WriteReviewRouter = pipe(
             (authorInvite: OpenAuthorInvite) =>
               pipe(
                 RTE.rightReaderIO(generateUuidIO),
-                RTE.chainFirstW(uuid => Keyv.saveAuthorInvite(uuid, authorInvite)),
+                RTE.chainFirstW(uuid => EffectToFpts.toReaderTaskEither(AuthorInviteStore.save(uuid, authorInvite))),
               ),
             {
-              authorInviteStore: env.authorInviteStore,
               generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
+              runtime: env.runtime,
               ...env.logger,
             },
           ),

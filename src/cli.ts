@@ -1,6 +1,7 @@
 import { NodeServices, NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Layer, pipe, Redacted } from 'effect'
+import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
@@ -44,6 +45,7 @@ pipe(
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),
         Keyv.keyvStoresLayer,
+        Layer.provide(AuthorInviteStore.layer, Redis.layerPersistenceFromDataStore),
       ]),
       Layer.provide([
         Crossref.layer,
