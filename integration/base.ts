@@ -16,7 +16,6 @@ import {
   type PlaywrightTestOptions,
 } from '@playwright/test'
 import fetchMock, { type FetchMock } from 'fetch-mock'
-import { Keyv } from 'keyv'
 import * as fs from 'node:fs/promises'
 import http from 'node:http'
 import { URL } from 'node:url'
@@ -84,7 +83,7 @@ interface AppFixtures {
   oauthServer: OAuth2Server
   port: number
   server: Fiber.Fiber<never>
-  formStore: Keyv
+  formStore: typeof PreprintReviews.FormStore.Store.Service
   clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
@@ -2340,7 +2339,16 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
     await use(fetch)
   },
   formStore: async ({}, use) => {
-    await use(new Keyv())
+    await use(
+      await Effect.runPromise(
+        Effect.provide(
+          Effect.gen(function* () {
+            return yield* PreprintReviews.FormStore.Store
+          }),
+          PreprintReviews.FormStore.layerInMemory,
+        ),
+      ),
+    )
   },
   clubs: async ({}, use) => {
     await use([
