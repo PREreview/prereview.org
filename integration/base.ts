@@ -57,6 +57,7 @@ import {
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
+import * as Prereviewers from '../src/Prereviewers/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
@@ -88,7 +89,6 @@ interface AppFixtures {
   port: number
   server: Fiber.Fiber<never>
   formStore: Keyv
-  careerStageStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   languagesStore: LanguagesStoreEnv['languagesStore']
   locationStore: LocationStoreEnv['locationStore']
@@ -123,9 +123,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   },
   canLogInAsDemoUser: async ({}, use) => {
     await use(false)
-  },
-  careerStageStore: async ({}, use) => {
-    await use(new Keyv())
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.createInstance()
@@ -2430,7 +2427,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         oauthServer,
         port,
         formStore,
-        careerStageStore,
         isOpenForRequestsStore,
         clubs,
         isUserBlocked,
@@ -2461,7 +2457,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             authorInviteStore,
             avatarStore: new Keyv(),
             formStore,
-            careerStageStore,
             isOpenForRequestsStore,
             languagesStore,
             locationStore,
@@ -2470,6 +2465,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             slackUserIdStore,
             userOnboardingStore,
           }),
+          Prereviewers.CareerStages.layerInMemory,
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),

@@ -11,6 +11,7 @@ import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
@@ -272,10 +273,7 @@ export const MyDetailsRouter = pipe(
           getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
           ...env.logger,
         }),
-        deleteCareerStage: withEnv(Keyv.deleteCareerStage, {
-          careerStageStore: env.users.careerStageStore,
-          ...env.logger,
-        }),
+        deleteCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.remove, env.runtime),
         deleteLanguages: withEnv(Keyv.deleteLanguages, {
           languagesStore: env.users.languagesStore,
           ...env.logger,
@@ -347,10 +345,7 @@ export const MyDetailsRouter = pipe(
           isOpenForRequestsStore: env.users.isOpenForRequestsStore,
           ...env.logger,
         }),
-        getCareerStage: withEnv(Keyv.getCareerStage, {
-          careerStageStore: env.users.careerStageStore,
-          ...env.logger,
-        }),
+        getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
         getResearchInterests: withEnv(Keyv.getResearchInterests, {
           researchInterestsStore: env.users.researchInterestsStore,
           ...env.logger,
@@ -405,10 +400,7 @@ export const MyDetailsRouter = pipe(
           publicUrl: env.publicUrl,
           ...env.logger,
         }),
-        saveCareerStage: withEnv(Keyv.saveCareerStage, {
-          careerStageStore: env.users.careerStageStore,
-          ...env.logger,
-        }),
+        saveCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.save, env.runtime),
         saveLanguages: withEnv(Keyv.saveLanguages, {
           languagesStore: env.users.languagesStore,
           ...env.logger,

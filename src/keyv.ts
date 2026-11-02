@@ -14,7 +14,6 @@ import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import { OrcidTokenC } from './orcid-token.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
-import { type CareerStage, CareerStageC } from './Prereviewers/legacy-career-stage.ts' // oxlint-disable-line module-boundaries/use-index
 import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
 import { LanguagesC } from './Prereviewers/legacy-languages.ts' // oxlint-disable-line module-boundaries/use-index
 import { LocationC } from './Prereviewers/legacy-location.ts' // oxlint-disable-line module-boundaries/use-index
@@ -32,7 +31,6 @@ export class KeyvStores extends Context.Service<
   KeyvStores,
   AvatarStoreEnv &
     AuthorInviteStoreEnv &
-    CareerStageStoreEnv &
     IsOpenForRequestsStoreEnv &
     LanguagesStoreEnv &
     LocationStoreEnv &
@@ -54,7 +52,6 @@ export const keyvStoresLayer = Layer.effect(
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
-      careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
       isOpenForRequestsStore: new Keyv({
         emitErrors: false,
         namespace: 'is-open-for-requests',
@@ -80,10 +77,6 @@ export interface AuthorInviteStoreEnv {
 
 export interface AvatarStoreEnv {
   avatarStore: Keyv
-}
-
-export interface CareerStageStoreEnv {
-  careerStageStore: Keyv
 }
 
 export interface IsOpenForRequestsStoreEnv {
@@ -238,44 +231,6 @@ export const getAuthorInvite = flow(
 export const saveAuthorInvite = flow(
   setKey(UuidC, AuthorInviteC),
   RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const deleteCareerStage = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
-)
-
-export const getCareerStage = flow(
-  getKey(
-    OrcidC,
-    D.union(
-      CareerStageC,
-      pipe(
-        D.literal('early', 'mid', 'late'),
-        D.map(value => ({ value, visibility: 'restricted' }) satisfies CareerStage),
-      ),
-    ),
-  ),
-  RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
-)
-
-export const getAllCareerStages = pipe(
-  getAll(
-    OrcidC,
-    D.union(
-      CareerStageC,
-      pipe(
-        D.literal('early', 'mid', 'late'),
-        D.map(value => ({ value, visibility: 'restricted' }) satisfies CareerStage),
-      ),
-    ),
-  ),
-  RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
-)
-
-export const saveCareerStage = flow(
-  setKey(OrcidC, CareerStageC),
-  RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
 )
 
 export const isOpenForRequests = flow(
