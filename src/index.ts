@@ -150,6 +150,7 @@ pipe(
         Prereviewers.LanguagesStore.layer,
         Prereviewers.Locations.layer,
         Prereviewers.ResearchInterestsStore.layer,
+        Prereviewers.Avatars.layer,
         OrcidTokens.layer,
         SlackUserIds.layer,
         UserOnboardingStore.layer,

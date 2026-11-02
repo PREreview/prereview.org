@@ -13,15 +13,11 @@ import * as L from 'logger-fp-ts'
 import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { DataStoreRedis } from './Redis.ts'
-import { NonEmptyStringC } from './types/NonEmptyString.ts'
-import { OrcidC } from './types/OrcidId.ts'
 import { UuidC } from './types/Uuid.ts'
 
 export { Keyv } from 'keyv'
 
-export class KeyvStores extends Context.Service<KeyvStores, AvatarStoreEnv & AuthorInviteStoreEnv & FormStoreEnv>()(
-  'KeyvStores',
-) {}
+export class KeyvStores extends Context.Service<KeyvStores, AuthorInviteStoreEnv & FormStoreEnv>()('KeyvStores') {}
 
 export const keyvStoresLayer = Layer.effect(
   KeyvStores,
@@ -32,7 +28,6 @@ export const keyvStoresLayer = Layer.effect(
 
     return {
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
-      avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
     }
   }),
@@ -42,10 +37,6 @@ export interface AuthorInviteStoreEnv {
   authorInviteStore: Keyv
 }
 
-export interface AvatarStoreEnv {
-  avatarStore: Keyv
-}
-
 export interface SessionStoreEnv {
   sessionStore: Keyv
 }
@@ -53,35 +44,6 @@ export interface SessionStoreEnv {
 interface KeyvEnv {
   keyv: Keyv
 }
-
-const deleteKey =
-  <K>(keyEncoder: Encoder<string, K>) =>
-  (key: K): RTE.ReaderTaskEither<KeyvEnv & L.LoggerEnv, 'unavailable', void> =>
-    pipe(
-      RTE.ask<KeyvEnv>(),
-      RTE.chainW(({ keyv }) =>
-        pipe(
-          RTE.fromTaskEither(
-            TE.tryCatch(async () => {
-              await keyv.delete(keyEncoder.encode(key))
-            }, E.toError),
-          ),
-          RTE.orElseFirstW(
-            RTE.fromReaderIOK(
-              flow(
-                error => ({
-                  error: error.message,
-                  key: keyEncoder.encode(key),
-                  namespace: keyv.opts.namespace as Json,
-                }),
-                L.errorP('Failed to delete key'),
-              ),
-            ),
-          ),
-        ),
-      ),
-      RTE.mapLeft(() => 'unavailable'),
-    )
 
 const getKey =
   <K, V>(keyEncoder: Encoder<string, K>, valueDecoder: Decoder<unknown, V>) =>
@@ -151,21 +113,6 @@ export const getAuthorInvite = flow(
 export const saveAuthorInvite = flow(
   setKey(UuidC, AuthorInviteC),
   RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const getAvatar = flow(
-  getKey(OrcidC, NonEmptyStringC),
-  RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
-)
-
-export const saveAvatar = flow(
-  setKey(OrcidC, NonEmptyStringC),
-  RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
-)
-
-export const deleteAvatar = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
 )
 
 export const addToSession = (sessionId: string, key: string, value: Json) =>

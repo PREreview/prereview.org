@@ -130,11 +130,6 @@ export const nonEffectRouter: Effect.Effect<
   const sessionStore = yield* SessionStore
 
   const commentsForReview = yield* CommentsForReview
-  const users = {
-    avatarStore: keyvStores.avatarStore,
-    authorInviteStore: keyvStores.authorInviteStore,
-  }
-
   const body = yield* Effect.suspend(() =>
     HttpMethod.hasBody(request.method)
       ? pipe(
@@ -171,7 +166,6 @@ export const nonEffectRouter: Effect.Effect<
     shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
-    users,
     authorInviteStore: keyvStores.authorInviteStore,
     formStore: keyvStores.formStore,
     sessionStore: sessionStore.store,
@@ -213,6 +207,7 @@ export interface Env {
     | Prereviewers.LanguagesStore.Store
     | Prereviewers.Locations.Store
     | Prereviewers.ResearchInterestsStore.Store
+    | Prereviewers.Avatars.Store
     | OrcidTokens.Store
     | SlackUserIds.Store
     | UserOnboardingStore.Store
@@ -231,9 +226,6 @@ export interface Env {
     | Email.Email
   >
   logger: LoggerEnv
-  users: {
-    avatarStore: Keyv.Keyv
-  }
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
   sessionStore: Keyv.Keyv
@@ -296,7 +288,7 @@ const routerWithoutHyperTs = pipe(
           (env: Env) =>
             profile({ locale: env.locale, profile: id })({
               getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
-                getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
+                getCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
                 cloudinaryApi: {
                   cloudName: env.cloudinaryApiConfig.cloudName,
                   key: Redacted.value(env.cloudinaryApiConfig.key),

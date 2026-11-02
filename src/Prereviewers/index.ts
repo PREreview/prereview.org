@@ -1,3 +1,4 @@
+export * as Avatars from './Avatars.ts'
 export * from './legacy-avatar.ts'
 export * as CareerStages from './CareerStages.ts'
 export * from './legacy-career-stage.ts'

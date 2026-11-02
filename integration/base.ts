@@ -2428,7 +2428,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         Layer.provide([
           Layer.succeed(KeyvStores, {
             authorInviteStore,
-            avatarStore: new Keyv(),
             formStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
@@ -2436,6 +2435,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Prereviewers.LanguagesStore.layerInMemory,
           Prereviewers.Locations.layerInMemory,
           Prereviewers.ResearchInterestsStore.layerInMemory,
+          Prereviewers.Avatars.layerInMemory,
           OrcidTokens.layerInMemory,
           SlackUserIds.layerInMemory,
           Layer.succeed(UserOnboardingStore.Store, userOnboardingStore),
