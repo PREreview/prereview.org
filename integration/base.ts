@@ -54,6 +54,7 @@ import * as Prereviewers from '../src/Prereviewers/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
+import * as SessionStore from '../src/SessionStore.ts'
 import { SlackOauth } from '../src/SlackOauth.ts'
 import * as SlackUserIds from '../src/SlackUserIds.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
@@ -2436,6 +2437,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         Layer.provide(FetchHttpClient.layer),
         Layer.provide([
           Layer.succeed(PreprintReviews.FormStore.Store, formStore),
+          SessionStore.layerInMemory,
           Prereviewers.CareerStages.layerInMemory,
           Prereviewers.IsOpenForRequestsStore.layerInMemory,
           Prereviewers.LanguagesStore.layerInMemory,

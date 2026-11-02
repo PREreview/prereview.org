@@ -42,6 +42,7 @@ import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
+import * as SessionStore from './SessionStore.ts'
 import * as SlackOauth from './SlackOauth.ts'
 import * as SlackUserIds from './SlackUserIds.ts'
 import * as UserOnboardingStore from './UserOnboardingStore.ts'
@@ -146,6 +147,7 @@ pipe(
     Layer.provide(
       Layer.mergeAll(
         AuthorInviteStore.layer,
+        SessionStore.layer,
         PreprintReviews.FormStore.layer,
         Prereviewers.CareerStages.layer,
         Prereviewers.IsOpenForRequestsStore.layer,

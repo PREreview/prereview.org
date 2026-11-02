@@ -31,7 +31,13 @@ import type * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import type { Clubs } from '../../../Clubs/index.ts'
 import type { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
-import { type EnabledLocales, Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
+import {
+  type EnabledLocales,
+  type LegacySessionStore,
+  Locale,
+  ScietyListToken,
+  SessionStore,
+} from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
 import { Cloudinary, Slack, Zenodo } from '../../../ExternalApis/index.ts'
 import {
@@ -42,7 +48,6 @@ import {
 } from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import { withEnv } from '../../../Fpts.ts'
-import type * as Keyv from '../../../keyv.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import type * as OrcidTokens from '../../../OrcidTokens.ts'
@@ -228,7 +233,7 @@ export interface Env {
   >
   logger: LoggerEnv
   formStore: PreprintReviews.LegacyFormStore
-  sessionStore: Keyv.Keyv
+  sessionStore: LegacySessionStore
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
   slackOauth: typeof SlackOauth.Service

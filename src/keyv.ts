@@ -7,17 +7,17 @@ import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
 import * as EN from 'io-ts/lib/Encoder.js'
-import type { Keyv } from 'keyv'
+import type { LegacySessionStore } from './Context.ts'
 import * as L from 'logger-fp-ts'
 
 export { Keyv } from 'keyv'
 
 export interface SessionStoreEnv {
-  sessionStore: Keyv
+  sessionStore: LegacySessionStore
 }
 
 interface KeyvEnv {
-  keyv: Keyv
+  keyv: LegacySessionStore
 }
 
 const getKey =
@@ -34,7 +34,6 @@ const getKey =
                 error => ({
                   error: error.message,
                   key: keyEncoder.encode(key),
-                  namespace: keyv.opts.namespace as Json,
                 }),
                 L.errorP('Failed to get key'),
               ),
@@ -69,7 +68,6 @@ const setKey =
                 error => ({
                   error: error.message,
                   key: keyEncoder.encode(key),
-                  namespace: keyv.opts.namespace as Json,
                 }),
                 L.errorP('Failed to set key'),
               ),

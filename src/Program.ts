@@ -1,12 +1,10 @@
 import type { HttpClient } from 'effect/http'
-import KeyvRedis from '@keyv/redis'
-import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
+import { Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
 import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
-import { SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
@@ -40,14 +38,12 @@ import {
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
-import * as Keyv from './keyv.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
-import { DataStoreRedis } from './Redis.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
@@ -214,25 +210,6 @@ export const Program = pipe(
     GhostPage.layer,
     CommunitySlack.layer,
     ZenodoRecords.layer,
-    Layer.effect(
-      SessionStore,
-      Effect.gen(function* () {
-        const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
-
-        return {
-          cookie: 'session',
-          store: new Keyv.Keyv({
-            emitErrors: false,
-            namespace: 'sessions',
-            store: Option.match(maybeRedis, {
-              onSome: redis => new KeyvRedis(redis).on('error', () => undefined),
-              onNone: () => new Map(),
-            }),
-            ttl: Duration.toMillis('30 days'),
-          }),
-        }
-      }),
-    ),
   ]),
   Layer.provide(Clubs.layer),
   Layer.provide([Email.layer, LanguageDetection.layerCld]),

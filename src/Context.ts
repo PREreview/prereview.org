@@ -1,5 +1,4 @@
 import { Context, type HashSet, type Redacted } from 'effect'
-import type * as Keyv from './keyv.ts'
 import type { SupportedLocale, UserSelectableLocale } from './locales/index.ts'
 import type { NonEmptyString } from './types/index.ts'
 import type { FlashMessageSchema } from './WebApp/Response/index.ts'
@@ -18,7 +17,13 @@ export class FlashMessage extends Context.Service<FlashMessage, typeof FlashMess
 
 export class SessionSecret extends Context.Service<SessionSecret, Redacted.Redacted>()('SessionSecret') {}
 
-export class SessionStore extends Context.Service<SessionStore, { cookie: string; store: Keyv.Keyv }>()(
+export interface LegacySessionStore {
+  readonly get: (key: string) => Promise<unknown>
+  readonly set: (key: string, value: unknown) => Promise<unknown>
+  readonly delete: (key: string) => Promise<unknown>
+}
+
+export class SessionStore extends Context.Service<SessionStore, { cookie: string; store: LegacySessionStore }>()(
   'SessionStore',
 ) {}
 
