@@ -3,7 +3,6 @@ import { Effect, Struct } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Keyv } from 'keyv'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../../src/routes.ts'
 import type { EditSlackUserIdEnv } from '../../../src/slack-user-id.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -219,7 +218,6 @@ describe('connectSlackCode', () => {
     [fc.string(), fc.user(), fc.supportedLocale(), fc.oauth(), fc.origin(), fc.string(), fc.string()],
     ([code, user, locale, oauth, publicUrl, accessToken, state]) =>
       Effect.gen(function* () {
-        const slackUserIdStore = new Keyv()
         const fetch = fetchMock.createInstance().postOnce(oauth.tokenUrl.href, {
           status: StatusCodes.OK,
           body: accessToken,
@@ -243,7 +241,6 @@ describe('connectSlackCode', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => slackUserIdStore.has(user.orcid))).toBeFalsy()
         expect(fetch.callHistory.done()).toBeTruthy()
       }),
   )
@@ -287,7 +284,6 @@ describe('connectSlackCode', () => {
     ],
     ([code, user, locale, oauth, publicUrl, accessToken, state]) =>
       Effect.gen(function* () {
-        const slackUserIdStore = new Keyv()
         const fetch = fetchMock.createInstance().postOnce(oauth.tokenUrl.href, {
           status: StatusCodes.OK,
           body: accessToken,
@@ -311,7 +307,6 @@ describe('connectSlackCode', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => slackUserIdStore.has(user.orcid))).toBeFalsy()
         expect(fetch.callHistory.done()).toBeTruthy()
       }),
   )
@@ -321,8 +316,6 @@ describe('connectSlackCode', () => {
     [fc.string(), fc.user(), fc.supportedLocale(), fc.oauth(), fc.origin(), fc.error(), fc.string()],
     ([code, user, locale, oauth, publicUrl, error, state]) =>
       Effect.gen(function* () {
-        const slackUserIdStore = new Keyv()
-
         const actual = yield* Effect.promise(
           _.connectSlackCode({ code, locale, state, user })({
             fetch: () => Promise.reject(error),
@@ -341,7 +334,6 @@ describe('connectSlackCode', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => slackUserIdStore.has(user.orcid))).toBeFalsy()
       }),
   )
 })

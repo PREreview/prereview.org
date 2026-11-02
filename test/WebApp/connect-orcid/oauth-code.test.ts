@@ -3,7 +3,6 @@ import { Effect } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Keyv } from 'keyv'
 import type { EditOrcidTokenEnv } from '../../../src/orcid-token.ts'
 import { connectOrcidMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -157,7 +156,6 @@ describe('connectOrcidCode', () => {
     [fc.string(), fc.user(), fc.supportedLocale(), fc.oauth(), fc.origin(), fc.string()],
     ([code, user, locale, orcidOauth, publicUrl, accessToken]) =>
       Effect.gen(function* () {
-        const orcidUserIdStore = new Keyv()
         const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
           status: StatusCodes.OK,
           body: accessToken,
@@ -181,7 +179,6 @@ describe('connectOrcidCode', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => orcidUserIdStore.has(user.orcid))).toBeFalsy()
         expect(fetch.callHistory.done()).toBeTruthy()
       }),
   )
@@ -200,7 +197,6 @@ describe('connectOrcidCode', () => {
     ],
     ([code, user, locale, oauth, publicUrl, accessToken]) =>
       Effect.gen(function* () {
-        const orcidUserIdStore = new Keyv()
         const fetch = fetchMock.createInstance().postOnce(oauth.tokenUrl.href, {
           status: StatusCodes.OK,
           body: accessToken,
@@ -224,7 +220,6 @@ describe('connectOrcidCode', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => orcidUserIdStore.has(user.orcid))).toBeFalsy()
         expect(fetch.callHistory.done()).toBeTruthy()
       }),
   )
@@ -234,8 +229,6 @@ describe('connectOrcidCode', () => {
     [fc.string(), fc.user(), fc.supportedLocale(), fc.oauth(), fc.origin(), fc.error()],
     ([code, user, locale, orcidOauth, publicUrl, error]) =>
       Effect.gen(function* () {
-        const orcidUserIdStore = new Keyv()
-
         const actual = yield* Effect.promise(
           _.connectOrcidCode({ code, locale, user })({
             fetch: () => Promise.reject(error),
@@ -254,7 +247,6 @@ describe('connectOrcidCode', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => orcidUserIdStore.has(user.orcid))).toBeFalsy()
       }),
   )
 })
