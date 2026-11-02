@@ -275,10 +275,7 @@ export const MyDetailsRouter = pipe(
           ...env.logger,
         }),
         deleteCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.remove, env.runtime),
-        deleteLanguages: withEnv(Keyv.deleteLanguages, {
-          languagesStore: env.users.languagesStore,
-          ...env.logger,
-        }),
+        deleteLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.remove, env.runtime),
         deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
         deleteOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.remove, env.runtime),
         deleteResearchInterests: withEnv(Keyv.deleteResearchInterests, {
@@ -346,10 +343,7 @@ export const MyDetailsRouter = pipe(
           ...env.logger,
         }),
         getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
-        getLanguages: withEnv(Keyv.getLanguages, {
-          languagesStore: env.users.languagesStore,
-          ...env.logger,
-        }),
+        getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
         isSlackUser: withEnv(
           flow(
             Keyv.getSlackUserId,
@@ -393,10 +387,7 @@ export const MyDetailsRouter = pipe(
           ...env.logger,
         }),
         saveCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.save, env.runtime),
-        saveLanguages: withEnv(Keyv.saveLanguages, {
-          languagesStore: env.users.languagesStore,
-          ...env.logger,
-        }),
+        saveLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.save, env.runtime),
         saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),
         saveOpenForRequests: withEnv(Keyv.saveOpenForRequests, {
           isOpenForRequestsStore: env.users.isOpenForRequestsStore,

@@ -142,7 +142,12 @@ pipe(
     CachingHttpClient.layerPersistedToRedis,
     Keyv.keyvStoresLayer,
     Layer.provide(
-      Layer.mergeAll(Prereviewers.CareerStages.layer, Prereviewers.Locations.layer, OrcidTokens.layer),
+      Layer.mergeAll(
+        Prereviewers.CareerStages.layer,
+        Prereviewers.LanguagesStore.layer,
+        Prereviewers.Locations.layer,
+        OrcidTokens.layer,
+      ),
       Redis.layerPersistenceFromDataStore,
     ),
     ClusterWorkflowEngine.layer,

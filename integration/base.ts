@@ -49,7 +49,6 @@ import {
   KeyvStores,
   type AuthorInviteStoreEnv,
   type IsOpenForRequestsStoreEnv,
-  type LanguagesStoreEnv,
   type ResearchInterestsStoreEnv,
   type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
@@ -90,7 +89,6 @@ interface AppFixtures {
   server: Fiber.Fiber<never>
   formStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
-  languagesStore: LanguagesStoreEnv['languagesStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: Keyv
   clubs: typeof Clubs.ClubsData.Service
@@ -2371,9 +2369,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   isUserBlocked: async ({}, use) => {
     await use(() => false)
   },
-  languagesStore: async ({}, use) => {
-    await use(new Keyv())
-  },
   emails: async ({}, use, testInfo) => {
     const emails: Array<SendMailOptions> = []
 
@@ -2426,7 +2421,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         isOpenForRequestsStore,
         clubs,
         isUserBlocked,
-        languagesStore,
         researchInterestsStore,
         slackUserIdStore,
         userOnboardingStore,
@@ -2453,12 +2447,12 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             avatarStore: new Keyv(),
             formStore,
             isOpenForRequestsStore,
-            languagesStore,
             researchInterestsStore,
             slackUserIdStore,
             userOnboardingStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
+          Prereviewers.LanguagesStore.layerInMemory,
           Prereviewers.Locations.layerInMemory,
           OrcidTokens.layerInMemory,
           Layer.succeed(Clubs.ClubsData, clubs),

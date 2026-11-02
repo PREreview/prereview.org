@@ -135,7 +135,6 @@ export const nonEffectRouter: Effect.Effect<
     slackUserIdStore: keyvStores.slackUserIdStore,
     isOpenForRequestsStore: keyvStores.isOpenForRequestsStore,
     researchInterestsStore: keyvStores.researchInterestsStore,
-    languagesStore: keyvStores.languagesStore,
     authorInviteStore: keyvStores.authorInviteStore,
   }
 
@@ -213,6 +212,7 @@ export interface Env {
     | Preprints.Preprints
     | Prereviewers.Prereviewers
     | Prereviewers.CareerStages.Store
+    | Prereviewers.LanguagesStore.Store
     | Prereviewers.Locations.Store
     | OrcidTokens.Store
     | Prereviews.Prereviews
@@ -236,7 +236,6 @@ export interface Env {
     slackUserIdStore: Keyv.Keyv
     isOpenForRequestsStore: Keyv.Keyv
     researchInterestsStore: Keyv.Keyv
-    languagesStore: Keyv.Keyv
   }
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
@@ -308,10 +307,7 @@ const routerWithoutHyperTs = pipe(
                 },
               }),
               getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
-              getLanguages: withEnv(Keyv.getLanguages, {
-                languagesStore: env.users.languagesStore,
-                ...env.logger,
-              }),
+              getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
               getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
               getName: EffectToFpts.toTaskEitherK(
                 flow(

@@ -14,7 +14,6 @@ import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
-import { LanguagesC } from './Prereviewers/legacy-languages.ts' // oxlint-disable-line module-boundaries/use-index
 import { type ResearchInterests, ResearchInterestsC } from './Prereviewers/legacy-research-interests.ts' // oxlint-disable-line module-boundaries/use-index
 import { DataStoreRedis } from './Redis.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
@@ -30,7 +29,6 @@ export class KeyvStores extends Context.Service<
   AvatarStoreEnv &
     AuthorInviteStoreEnv &
     IsOpenForRequestsStoreEnv &
-    LanguagesStoreEnv &
     ResearchInterestsStoreEnv &
     SlackUserIdStoreEnv &
     UserOnboardingStoreEnv &
@@ -53,7 +51,6 @@ export const keyvStoresLayer = Layer.effect(
         namespace: 'is-open-for-requests',
         store: createKeyvStore(),
       }),
-      languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
       researchInterestsStore: new Keyv({
         emitErrors: false,
         namespace: 'research-interests',
@@ -75,10 +72,6 @@ export interface AvatarStoreEnv {
 
 export interface IsOpenForRequestsStoreEnv {
   isOpenForRequestsStore: Keyv
-}
-
-export interface LanguagesStoreEnv {
-  languagesStore: Keyv
 }
 
 export interface ResearchInterestsStoreEnv {
@@ -251,21 +244,6 @@ export const getSlackUserId = flow(
 export const saveSlackUserId = flow(
   setKey(OrcidC, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
-)
-
-export const deleteLanguages = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
-)
-
-export const getLanguages = flow(
-  getKey(OrcidC, LanguagesC),
-  RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
-)
-
-export const saveLanguages = flow(
-  setKey(OrcidC, LanguagesC),
-  RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
 )
 
 export const getUserOnboarding = flow(
