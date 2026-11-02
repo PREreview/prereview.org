@@ -10,21 +10,18 @@ import type { Encoder } from 'io-ts/lib/Encoder.js'
 import * as EN from 'io-ts/lib/Encoder.js'
 import { Keyv } from 'keyv'
 import * as L from 'logger-fp-ts'
-import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { UuidC } from './types/Uuid.ts'
-import { type UserOnboarding, UserOnboardingC } from './user-onboarding.ts'
 
 export { Keyv } from 'keyv'
 
-export class KeyvStores extends Context.Service<
-  KeyvStores,
-  AvatarStoreEnv & AuthorInviteStoreEnv & UserOnboardingStoreEnv & FormStoreEnv
->()('KeyvStores') {}
+export class KeyvStores extends Context.Service<KeyvStores, AvatarStoreEnv & AuthorInviteStoreEnv & FormStoreEnv>()(
+  'KeyvStores',
+) {}
 
 export const keyvStoresLayer = Layer.effect(
   KeyvStores,
@@ -37,7 +34,6 @@ export const keyvStoresLayer = Layer.effect(
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
-      userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
     }
   }),
 )
@@ -52,10 +48,6 @@ export interface AvatarStoreEnv {
 
 export interface SessionStoreEnv {
   sessionStore: Keyv
-}
-
-export interface UserOnboardingStoreEnv {
-  userOnboardingStore: Keyv
 }
 
 interface KeyvEnv {
@@ -159,22 +151,6 @@ export const getAuthorInvite = flow(
 export const saveAuthorInvite = flow(
   setKey(UuidC, AuthorInviteC),
   RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const getUserOnboarding = flow(
-  getKey(OrcidC, UserOnboardingC),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.right({ seenMyDetailsPage: false } satisfies UserOnboarding))
-      .with('unavailable', RTE.left)
-      .exhaustive(),
-  ),
-  RTE.local((env: UserOnboardingStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.userOnboardingStore })),
-)
-
-export const saveUserOnboarding = flow(
-  setKey(OrcidC, UserOnboardingC),
-  RTE.local((env: UserOnboardingStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.userOnboardingStore })),
 )
 
 export const getAvatar = flow(

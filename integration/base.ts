@@ -45,7 +45,7 @@ import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '.
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
-import { KeyvStores, type AuthorInviteStoreEnv, type UserOnboardingStoreEnv } from '../src/keyv.ts'
+import { KeyvStores, type AuthorInviteStoreEnv } from '../src/keyv.ts'
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import * as OrcidTokens from '../src/OrcidTokens.ts'
@@ -67,6 +67,7 @@ import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
 import { Slug } from '../src/types/Slug.ts'
+import * as UserOnboardingStore from '../src/UserOnboardingStore.ts'
 import * as WebApp from '../src/WebApp/index.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
 import { Embeddings } from '../src/Embeddings/index.ts'
@@ -86,7 +87,7 @@ interface AppFixtures {
   clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
-  userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
+  userOnboardingStore: typeof UserOnboardingStore.Store.Service
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canClubLeadsAddReviewsToClubs: (typeof FeatureFlags.FeatureFlags.Service)['canClubLeadsAddReviewsToClubs']
@@ -2429,7 +2430,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             authorInviteStore,
             avatarStore: new Keyv(),
             formStore,
-            userOnboardingStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
           Prereviewers.IsOpenForRequestsStore.layerInMemory,
@@ -2438,6 +2438,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Prereviewers.ResearchInterestsStore.layerInMemory,
           OrcidTokens.layerInMemory,
           SlackUserIds.layerInMemory,
+          Layer.succeed(UserOnboardingStore.Store, userOnboardingStore),
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),
@@ -2549,7 +2550,16 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
     await use(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` }))
   },
   userOnboardingStore: async ({}, use) => {
-    await use(new Keyv())
+    await use(
+      await Effect.runPromise(
+        Effect.provide(
+          Effect.gen(function* () {
+            return yield* UserOnboardingStore.Store
+          }),
+          UserOnboardingStore.layerInMemory,
+        ),
+      ),
+    )
   },
   wasPrereviewRemoved: async ({}, use) => {
     await use(() => false)
@@ -2610,7 +2620,7 @@ export const canLogIn: Fixtures<
       },
     })
 
-    await userOnboardingStore.set('0000-0002-1825-0097', { seenMyDetailsPage: hasSeenMyDetailsPage })
+    await Effect.runPromise(userOnboardingStore.set('0000-0002-1825-0097', { seenMyDetailsPage: hasSeenMyDetailsPage }))
 
     await use(page)
   },

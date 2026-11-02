@@ -3,13 +3,13 @@ import { Headers, HttpMethod, HttpMiddleware, HttpServerRequest, HttpServerRespo
 import { AllowSiteCrawlers, FlashMessage, Locale, ScietyListToken, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
-import { KeyvStores } from '../keyv.ts'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { Uuid } from '../types/index.ts'
 import { UserOnboardingService } from '../user-onboarding.ts'
 import { EnsureUserIsLoggedIn, LoggedInUser, SessionId, UserSchema } from '../user.ts'
+import * as UserOnboardingStore from '../UserOnboardingStore.ts'
 import { FlashMessageSchema } from '../WebApp/Response/index.ts'
 import { detectLocale } from './DetectLocale.ts'
 import { forceLogIn } from './ForceLogIn.ts'
@@ -146,7 +146,6 @@ export const getFlashMessage = HttpMiddleware.make(app =>
 export const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const { cookie, store } = yield* SessionStore
-    const { userOnboardingStore } = yield* KeyvStores
 
     const sessionId = yield* pipe(
       HttpServerRequest.schemaCookies(
@@ -171,11 +170,9 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
       onNone: () => app,
       onSome: ({ session: { user }, sessionId }) =>
         Effect.gen(function* () {
-          const userOnboarding = yield* pipe(
-            Effect.tryPromise(() => userOnboardingStore.get(user.orcid)),
-            Effect.andThen(Schema.decodeUnknownEffect(Schema.Struct({ seenMyDetailsPage: Schema.Boolean }))),
-            Effect.orElseSucceed(() => ({ seenMyDetailsPage: false })),
-          )
+          const userOnboarding = yield* Effect.orElseSucceed(UserOnboardingStore.get(user.orcid), () => ({
+            seenMyDetailsPage: false,
+          }))
 
           return yield* pipe(
             app,

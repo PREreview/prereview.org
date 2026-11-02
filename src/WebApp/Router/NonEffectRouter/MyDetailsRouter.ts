@@ -12,6 +12,7 @@ import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as SlackUserIds from '../../../SlackUserIds.ts'
+import * as UserOnboardingStore from '../../../UserOnboardingStore.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -302,10 +303,7 @@ export const MyDetailsRouter = pipe(
         ),
         fetch: env.fetch,
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
-        getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
-          userOnboardingStore: env.users.userOnboardingStore,
-          ...env.logger,
-        }),
+        getUserOnboarding: EffectToFpts.toTaskEitherK(UserOnboardingStore.get, env.runtime),
         getOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.get, env.runtime),
         getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
           getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
@@ -389,10 +387,7 @@ export const MyDetailsRouter = pipe(
             ...env.logger,
           },
         ),
-        saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, {
-          userOnboardingStore: env.users.userOnboardingStore,
-          ...env.logger,
-        }),
+        saveUserOnboarding: EffectToFpts.toTaskEitherK(UserOnboardingStore.save, env.runtime),
         slackOauth: {
           authorizeUrl: env.slackOauth.authorizeUrl,
           clientId: env.slackOauth.clientId,

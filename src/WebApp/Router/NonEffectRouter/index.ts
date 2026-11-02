@@ -46,6 +46,7 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import type * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as SlackUserIds from '../../../SlackUserIds.ts'
+import type * as UserOnboardingStore from '../../../UserOnboardingStore.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -131,7 +132,6 @@ export const nonEffectRouter: Effect.Effect<
   const commentsForReview = yield* CommentsForReview
   const users = {
     avatarStore: keyvStores.avatarStore,
-    userOnboardingStore: keyvStores.userOnboardingStore,
     authorInviteStore: keyvStores.authorInviteStore,
   }
 
@@ -215,6 +215,7 @@ export interface Env {
     | Prereviewers.ResearchInterestsStore.Store
     | OrcidTokens.Store
     | SlackUserIds.Store
+    | UserOnboardingStore.Store
     | Prereviews.Prereviews
     | PublicUrl
     | SpotlightBanners
@@ -231,7 +232,6 @@ export interface Env {
   >
   logger: LoggerEnv
   users: {
-    userOnboardingStore: Keyv.Keyv
     avatarStore: Keyv.Keyv
   }
   authorInviteStore: Keyv.Keyv

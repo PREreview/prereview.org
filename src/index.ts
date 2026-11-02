@@ -43,6 +43,7 @@ import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
 import * as SlackOauth from './SlackOauth.ts'
 import * as SlackUserIds from './SlackUserIds.ts'
+import * as UserOnboardingStore from './UserOnboardingStore.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { Name } from './types/Name.ts'
 import { Slug } from './types/Slug.ts'
@@ -151,6 +152,7 @@ pipe(
         Prereviewers.ResearchInterestsStore.layer,
         OrcidTokens.layer,
         SlackUserIds.layer,
+        UserOnboardingStore.layer,
       ),
       Redis.layerPersistenceFromDataStore,
     ),
