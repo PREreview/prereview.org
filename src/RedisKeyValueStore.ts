@@ -1,9 +1,13 @@
-import { Array, Clock, Effect, pipe, Schema } from 'effect'
+import { Array, Clock, Duration, Effect, Option, pipe, Schema } from 'effect'
 import { KeyValueStore, Redis } from 'effect/persistence'
 
 const KeyvEnvelopeSchema = Schema.Struct({ value: Schema.Unknown, expires: Schema.NullOr(Schema.Number) })
 
-export const make = Effect.fnUntraced(function* (namespace: string) {
+export const make = Effect.fnUntraced(function* (
+  namespace: string,
+  options: { readonly timeToLive?: Duration.Input } = {},
+) {
+  const timeToLive = Option.map(Option.fromUndefinedOr(options.timeToLive), Duration.fromInputUnsafe)
   const redis = yield* Redis.Redis
 
   const keyFor = (key: string) => `${namespace}:${key}`
@@ -58,13 +62,24 @@ export const make = Effect.fnUntraced(function* (namespace: string) {
       }),
     set: (key, value) =>
       Effect.gen(function* () {
+        const now = yield* Clock.currentTimeMillis
+        const expires = Option.map(timeToLive, timeToLive => now + Duration.toMillis(timeToLive))
+
         const envelope = yield* Effect.try({
-          try: () => JSON.stringify({ value: JSON.parse(value) as unknown, expires: null }, escapeKeyvString),
+          try: () =>
+            JSON.stringify(
+              { value: JSON.parse(value) as unknown, expires: Option.getOrNull(expires) },
+              escapeKeyvString,
+            ),
           catch: cause =>
             new KeyValueStore.KeyValueStoreError({ message: 'Unable to encode', method: 'set', key, cause }),
         })
 
-        yield* send('set', key)('SET', keyFor(key), envelope)
+        yield* Option.match(timeToLive, {
+          onNone: () => send('set', key)('SET', keyFor(key), envelope),
+          onSome: timeToLive =>
+            send('set', key)('SET', keyFor(key), envelope, 'PX', Duration.toMillis(timeToLive).toString()),
+        })
       }),
     remove: key => Effect.asVoid(send('remove', key)('UNLINK', keyFor(key))),
     clear: pipe(

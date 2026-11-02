@@ -7,10 +7,12 @@ import * as _ from '../src/RedisKeyValueStore.ts'
 import * as fc from './fc.ts'
 import { shouldNotBeCalled } from './should-not-be-called.ts'
 
-const redisBackedBy = (data: Map<string, string>) =>
+const redisBackedBy = (data: Map<string, string>, commands: Array<ReadonlyArray<string>> = []) =>
   Layer.succeed(Redis.Redis, {
     send: <A>(command: string, ...args: ReadonlyArray<string>) =>
       Effect.sync(() => {
+        commands.push([command, ...args])
+
         switch (command) {
           case 'GET':
             return (data.get(args[0] ?? '') ?? null) as A
@@ -175,5 +177,57 @@ describe('keys', () => {
         expect(actual).toStrictEqual(keys)
       }).pipe(Effect.provide(redisBackedBy(data)))
     },
+  )
+})
+
+describe('with a time to live', () => {
+  it.effect.prop(
+    'sets an expiry',
+    [fc.string(), fc.string(), fc.json(), fc.integer({ min: 1, max: 1_000_000 })],
+    ([namespace, key, value, timeToLive]) => {
+      const commands: Array<ReadonlyArray<string>> = []
+
+      return Effect.gen(function* () {
+        const store = yield* _.make(namespace, { timeToLive })
+        yield* store.set(key, JSON.stringify(value))
+
+        expect(commands).toContainEqual(['SET', `${namespace}:${key}`, expect.any(String), 'PX', `${timeToLive}`])
+      }).pipe(Effect.provide(redisBackedBy(new Map(), commands)))
+    },
+  )
+
+  it.effect.prop(
+    'writes the expiry in the Keyv format',
+    [fc.string(), fc.string(), fc.json(), fc.integer({ min: 1, max: 1_000_000 })],
+    ([namespace, key, value, timeToLive]) => {
+      const data = new Map<string, string>()
+
+      return Effect.gen(function* () {
+        yield* TestClock.setTime(1000)
+        const store = yield* _.make(namespace, { timeToLive })
+        yield* store.set(key, JSON.stringify(value))
+
+        expect(JSON.parse(data.get(`${namespace}:${key}`) ?? '')).toMatchObject({ expires: 1000 + timeToLive })
+      }).pipe(Effect.provide(redisBackedBy(data)))
+    },
+  )
+
+  it.effect.prop(
+    'can be read until it expires',
+    [fc.string(), fc.string(), fc.json(), fc.integer({ min: 1, max: 1_000_000 })],
+    ([namespace, key, value, timeToLive]) =>
+      Effect.gen(function* () {
+        const store = yield* _.make(namespace, { timeToLive })
+        yield* store.set(key, JSON.stringify(value))
+
+        yield* TestClock.adjust(timeToLive)
+        const beforeExpiry = yield* store.get(key)
+
+        yield* TestClock.adjust(1)
+        const afterExpiry = yield* store.get(key)
+
+        expect(beforeExpiry).toStrictEqual(JSON.stringify(value))
+        expect(afterExpiry).toBeUndefined()
+      }).pipe(Effect.provide(redisBackedBy(new Map()))),
   )
 })
