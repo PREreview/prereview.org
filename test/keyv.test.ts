@@ -3,8 +3,9 @@ import { SystemClock } from 'clock-ts'
 import { Effect, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import { Keyv } from 'keyv'
+import { KeyValueStore } from 'effect/persistence'
 import * as _ from '../src/keyv.ts'
+import { fromKeyValueStore } from '../src/SessionStore.ts'
 import * as fc from './fc.ts'
 
 describe('addToSession', () => {
@@ -13,7 +14,7 @@ describe('addToSession', () => {
     [fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem(), fc.string()],
     ([sessionId, session, key, value]) =>
       Effect.gen(function* () {
-        const store = new Keyv()
+        const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
         yield* Effect.promise(() => store.set(sessionId, session))
 
         const actual = yield* Effect.promise(
@@ -30,12 +31,13 @@ describe('addToSession', () => {
 
         expect(actual).toStrictEqual(E.right(undefined))
         expect(yield* Effect.promise(() => store.get(sessionId))).toStrictEqual({ ...session, [key]: value })
-      }),
+      }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 
   it.effect.prop('when the session is not set', [fc.string(), fc.lorem(), fc.string()], ([sessionId, key, value]) =>
     Effect.gen(function* () {
-      const store = new Keyv()
+      const keyValueStore = yield* KeyValueStore.KeyValueStore
+      const store = yield* fromKeyValueStore(keyValueStore)
 
       const actual = yield* Effect.promise(
         _.addToSession(
@@ -50,8 +52,8 @@ describe('addToSession', () => {
       )
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(yield* Effect.promise(() => store.has(sessionId))).toBeFalsy()
-    }),
+      expect(yield* keyValueStore.has(sessionId)).toBeFalsy()
+    }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 
   it.effect.prop(
@@ -59,9 +61,8 @@ describe('addToSession', () => {
     [fc.string(), fc.json(), fc.string(), fc.json(), fc.anything()],
     ([sessionId, session, key, value, error]) =>
       Effect.gen(function* () {
-        const store = new Keyv()
+        const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
         yield* Effect.promise(() => store.set(sessionId, session))
-        store.set = () => Promise.reject(error)
 
         const actual = yield* Effect.promise(
           _.addToSession(
@@ -69,14 +70,14 @@ describe('addToSession', () => {
             key,
             value,
           )({
-            sessionStore: store,
+            sessionStore: { ...store, set: () => Promise.reject(error) },
             clock: SystemClock,
             logger: () => IO.of(undefined),
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-      }),
+      }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 })
 
@@ -92,7 +93,7 @@ describe('popFromSession', () => {
     ],
     ([sessionId, [session, key], value]) =>
       Effect.gen(function* () {
-        const store = new Keyv()
+        const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
         yield* Effect.promise(() => store.set(sessionId, { ...session, [key]: value }))
 
         const actual = yield* Effect.promise(
@@ -108,7 +109,7 @@ describe('popFromSession', () => {
 
         expect(actual).toStrictEqual(E.right(value))
         expect(yield* Effect.promise(() => store.get(sessionId))).toStrictEqual(session)
-      }),
+      }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 
   it.effect.prop(
@@ -121,7 +122,7 @@ describe('popFromSession', () => {
     ],
     ([sessionId, [session, key]]) =>
       Effect.gen(function* () {
-        const store = new Keyv()
+        const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
         yield* Effect.promise(() => store.set(sessionId, session))
 
         const actual = yield* Effect.promise(
@@ -137,12 +138,12 @@ describe('popFromSession', () => {
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(yield* Effect.promise(() => store.get(sessionId))).toStrictEqual(session)
-      }),
+      }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 
   it.effect.prop('when the session is not found', [fc.string(), fc.lorem()], ([sessionId, key]) =>
     Effect.gen(function* () {
-      const store = new Keyv()
+      const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
 
       const actual = yield* Effect.promise(
         _.popFromSession(
@@ -156,7 +157,7 @@ describe('popFromSession', () => {
       )
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-    }),
+    }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 
   it.effect.prop(
@@ -164,21 +165,20 @@ describe('popFromSession', () => {
     [fc.string(), fc.lorem(), fc.anything()],
     ([sessionId, key, error]) =>
       Effect.gen(function* () {
-        const store = new Keyv()
-        store.get = (): Promise<never> => Promise.reject(error)
+        const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
 
         const actual = yield* Effect.promise(
           _.popFromSession(
             sessionId,
             key,
           )({
-            sessionStore: store,
+            sessionStore: { ...store, get: () => Promise.reject(error) },
             clock: SystemClock,
             logger: () => IO.of(undefined),
           }),
         )
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-      }),
+      }).pipe(Effect.provide(KeyValueStore.layerMemory)),
   )
 })
