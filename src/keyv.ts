@@ -10,8 +10,6 @@ import * as EN from 'io-ts/lib/Encoder.js'
 import type { LegacySessionStore } from './Context.ts'
 import * as L from 'logger-fp-ts'
 
-export { Keyv } from 'keyv'
-
 export interface SessionStoreEnv {
   sessionStore: LegacySessionStore
 }

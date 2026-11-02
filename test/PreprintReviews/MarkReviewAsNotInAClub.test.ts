@@ -1,6 +1,6 @@
 import { expect, it } from '../vitest.ts'
 import { Effect, Result } from 'effect'
-import { Keyv } from '../../src/keyv.ts'
+import * as FormStore from '../../src/PreprintReviews/FormStore.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../src/PreprintReviews/index.ts'
 import * as _ from '../../src/PreprintReviews/MarkReviewAsNotInAClub.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
@@ -30,7 +30,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, (Uuid | null)?]>(
   ['answered with club', { orcidId, preprintId: preprintWithReviewClub }, Result.void, null],
 ])('%s', ([, input, expectedReturn, expectedClub]) =>
   Effect.gen(function* () {
-    const formStore = new Keyv()
+    const formStore = yield* FormStore.Store
 
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
@@ -45,5 +45,5 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, (Uuid | null)?]>(
     } else {
       expect(actualState).toBeUndefined()
     }
-  }),
+  }).pipe(Effect.provide(FormStore.layerInMemory)),
 )

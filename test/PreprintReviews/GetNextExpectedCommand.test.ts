@@ -1,6 +1,6 @@
 import { expect, it } from '../vitest.ts'
 import { Effect, Result } from 'effect'
-import { Keyv } from '../../src/keyv.ts'
+import * as FormStore from '../../src/PreprintReviews/FormStore.ts'
 import * as _ from '../../src/PreprintReviews/GetNextExpectedCommand.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
@@ -25,7 +25,7 @@ it.effect.each<[string, _.Input, _.Result]>([
   ['already written', { orcidId, preprintId: preprintWithReviewAlreadyWritten }, Result.succeed('DeclareUseOfAi')],
 ])('%s', ([, input, expectedReturn]) =>
   Effect.gen(function* () {
-    const formStore = new Keyv()
+    const formStore = yield* FormStore.Store
 
     yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
     yield* Effect.promise(() =>
@@ -35,5 +35,5 @@ it.effect.each<[string, _.Input, _.Result]>([
     const actualReturn = yield* Effect.result(_.GetNextExpectedCommand(formStore)(input))
 
     expect(actualReturn).toStrictEqual(expectedReturn)
-  }),
+  }).pipe(Effect.provide(FormStore.layerInMemory)),
 )

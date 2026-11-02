@@ -26,3 +26,5 @@ export const layer = Layer.provide(
   layerKeyValueStore,
   Layer.effect(KeyValueStore.KeyValueStore, RedisKeyValueStore.make('forms')),
 )
+
+export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
