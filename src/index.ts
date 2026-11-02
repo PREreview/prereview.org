@@ -33,10 +33,10 @@ import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '.
 import { CommunitySlack, LanguageDetection } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { html } from './html.ts'
-import * as Keyv from './keyv.ts'
 import { UserSelectableLocales } from './locales/index.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import * as OrcidTokens from './OrcidTokens.ts'
+import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
@@ -143,10 +143,10 @@ pipe(
     NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
     NodeHttpClient.layerNodeHttp,
     CachingHttpClient.layerPersistedToRedis,
-    Keyv.keyvStoresLayer,
     Layer.provide(
       Layer.mergeAll(
         AuthorInviteStore.layer,
+        PreprintReviews.FormStore.layer,
         Prereviewers.CareerStages.layer,
         Prereviewers.IsOpenForRequestsStore.layer,
         Prereviewers.LanguagesStore.layer,

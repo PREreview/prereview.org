@@ -1,5 +1,4 @@
-import KeyvRedis from '@keyv/redis'
-import { Context, Effect, flow, Layer, pipe, type Record } from 'effect'
+import { flow, pipe, type Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -8,27 +7,10 @@ import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
 import * as EN from 'io-ts/lib/Encoder.js'
-import { Keyv } from 'keyv'
+import type { Keyv } from 'keyv'
 import * as L from 'logger-fp-ts'
-import type { FormStoreEnv } from './PreprintReviews/index.ts'
-import { DataStoreRedis } from './Redis.ts'
 
 export { Keyv } from 'keyv'
-
-export class KeyvStores extends Context.Service<KeyvStores, FormStoreEnv>()('KeyvStores') {}
-
-export const keyvStoresLayer = Layer.effect(
-  KeyvStores,
-  Effect.gen(function* () {
-    const redis = yield* DataStoreRedis
-
-    const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
-
-    return {
-      formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
-    }
-  }),
-)
 
 export interface SessionStoreEnv {
   sessionStore: Keyv

@@ -1,11 +1,10 @@
 import { Effect, pipe } from 'effect'
 import { UnableToHandleCommand } from '../Commands.ts'
-import type { Keyv } from '../keyv.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as Errors from './Errors.ts'
-import { getForm, saveForm, updateForm } from './legacy-form.ts'
+import { getForm, saveForm, updateForm, type LegacyFormStore } from './legacy-form.ts'
 
 export interface Input {
   preprintId: PreprintId
@@ -14,7 +13,7 @@ export interface Input {
 
 export type Error = Errors.PreprintReviewNotFound | UnableToHandleCommand
 
-export const MarkReviewAsNotInAClub = (formStore: Keyv<unknown>): ((input: Input) => Effect.Effect<void, Error>) =>
+export const MarkReviewAsNotInAClub = (formStore: LegacyFormStore): ((input: Input) => Effect.Effect<void, Error>) =>
   Effect.fn('PreprintReviews.markReviewAsNotInAClub')(function* (input) {
     const form = yield* pipe(
       FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),

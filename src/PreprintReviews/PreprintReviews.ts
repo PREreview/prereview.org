@@ -1,11 +1,11 @@
 import { Array, Context, Effect, type Result, Layer, pipe, Struct } from 'effect'
 import { Clubs } from '../Clubs/index.ts'
 import * as Commands from '../Commands.ts'
-import { KeyvStores } from '../keyv.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../Queries.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
+import * as FormStore from './FormStore.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { DeclareUseOfAi } from './DeclareUseOfAi.ts'
 import * as GetNextExpectedCommand from './GetNextExpectedCommand.ts'
@@ -86,7 +86,7 @@ export const layer = Layer.effect(
     const clubs = yield* Clubs
     const personas = yield* Prereviewers.Prereviewers
 
-    const { formStore } = yield* KeyvStores
+    const formStore = yield* FormStore.Store
 
     const getRapidPrereviewsForAPreprint = yield* Queries.makeOnDemandQuery(GetRapidPrereviewsForAPreprint)
 

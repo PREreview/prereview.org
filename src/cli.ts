@@ -11,8 +11,8 @@ import * as Events from './Events.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
-import * as Keyv from './keyv.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
+import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Redis from './Redis.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
@@ -44,8 +44,10 @@ pipe(
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),
-        Keyv.keyvStoresLayer,
-        Layer.provide(AuthorInviteStore.layer, Redis.layerPersistenceFromDataStore),
+        Layer.provide(
+          Layer.mergeAll(AuthorInviteStore.layer, PreprintReviews.FormStore.layer),
+          Redis.layerPersistenceFromDataStore,
+        ),
       ]),
       Layer.provide([
         Crossref.layer,

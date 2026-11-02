@@ -45,10 +45,10 @@ import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '.
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
-import { KeyvStores } from '../src/keyv.ts'
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import * as OrcidTokens from '../src/OrcidTokens.ts'
+import * as PreprintReviews from '../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as Prereviewers from '../src/Prereviewers/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
@@ -2435,9 +2435,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         Layer.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
         Layer.provide(FetchHttpClient.layer),
         Layer.provide([
-          Layer.succeed(KeyvStores, {
-            formStore,
-          }),
+          Layer.succeed(PreprintReviews.FormStore.Store, formStore),
           Prereviewers.CareerStages.layerInMemory,
           Prereviewers.IsOpenForRequestsStore.layerInMemory,
           Prereviewers.LanguagesStore.layerInMemory,

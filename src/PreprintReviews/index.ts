@@ -1,4 +1,5 @@
 export * from './Errors.ts'
+export * as FormStore from './FormStore.ts'
 export * from './legacy-completed-form.ts'
 export * from './legacy-form.ts'
 export * from './legacy-publish-review.ts'

@@ -5,7 +5,6 @@ import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
-import type Keyv from 'keyv'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
@@ -38,8 +37,14 @@ import { NextExpectedCommand } from './NextExpectedCommand.ts'
 
 export type Form = C.TypeOf<typeof FormC>
 
+export interface LegacyFormStore {
+  readonly get: (key: string) => Promise<unknown>
+  readonly set: (key: string, value: unknown) => Promise<unknown>
+  readonly delete: (key: string) => Promise<unknown>
+}
+
 export interface FormStoreEnv {
-  formStore: Keyv
+  formStore: LegacyFormStore
 }
 
 export function formKey(user: OrcidId, preprint: PreprintId) {

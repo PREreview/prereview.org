@@ -42,7 +42,7 @@ import {
 } from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Keyv from '../../../keyv.ts'
+import type * as Keyv from '../../../keyv.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import type * as OrcidTokens from '../../../OrcidTokens.ts'
@@ -80,7 +80,7 @@ export const nonEffectRouter: Effect.Effect<
   | FeatureFlags.FeatureFlags
   | CommentsForReview
   | SlackOauth
-  | Keyv.KeyvStores
+  | PreprintReviews.FormStore.Store
   | Slack.SlackApi
   | CommunitySlack.ShouldUpdateCommunitySlack
   | Cloudinary.CloudinaryApi
@@ -110,7 +110,7 @@ export const nonEffectRouter: Effect.Effect<
     }),
   )
 
-  const keyvStores = yield* Keyv.KeyvStores
+  const formStore = yield* PreprintReviews.FormStore.Store
   const runtime = yield* Effect.context<EffectToFpts.ContextServices<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
@@ -167,7 +167,7 @@ export const nonEffectRouter: Effect.Effect<
     shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
-    formStore: keyvStores.formStore,
+    formStore,
     sessionStore: sessionStore.store,
   } satisfies Env
 
@@ -227,7 +227,7 @@ export interface Env {
     | Email.Email
   >
   logger: LoggerEnv
-  formStore: Keyv.Keyv
+  formStore: PreprintReviews.LegacyFormStore
   sessionStore: Keyv.Keyv
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
