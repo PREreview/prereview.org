@@ -72,7 +72,11 @@ pipe(
             token: Config.option(Config.Redacted('ORCID_API_READ_PUBLIC_TOKEN')),
           }),
         ),
-        PgClient.layerConfig({ url: Config.Redacted('POSTGRES_URL') }),
+        PgClient.layerConfig({
+          url: Config.Redacted('POSTGRES_URL'),
+          acquireTimeout: Config.succeed('5 seconds'),
+          keepAlive: Config.succeed('30 seconds'),
+        }),
       ]),
       Layer.provideMerge(Layer.mergeAll(NodeServices.layer, Uuid.layer)),
     ),
