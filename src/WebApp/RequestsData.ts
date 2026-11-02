@@ -133,9 +133,7 @@ const DataToRequestSchema = RequestSchema.pipe(
 
 export const RequestsData = pipe(
   ReviewRequests.listAllPublishedReviewRequestsForStats(),
-  Effect.andThen(
-    HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema).annotate({ concurrency: 'unbounded' })),
-  ),
+  Effect.andThen(HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema), { concurrency: 'unbounded' })),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create requests data list'), { error })),
   Effect.catchTags({
     HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),

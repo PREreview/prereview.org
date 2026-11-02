@@ -116,11 +116,7 @@ export const make: Effect.Effect<
         ORDER BY
           position ASC
       `,
-      Effect.andThen(
-        Schema.decodeUnknownEffect(
-          Schema.Array(EventsTableSelect).annotate({ batching: true, concurrency: 'unbounded' }),
-        ),
-      ),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventsTableSelect), { concurrency: 'unbounded' })),
       Effect.filterOrElse(
         Array.every(
           (
@@ -149,11 +145,7 @@ export const make: Effect.Effect<
       ORDER BY
         position ASC
     `,
-    Effect.andThen(
-      Schema.decodeUnknownEffect(
-        Schema.Array(EventsTableSelect).annotate({ batching: true, concurrency: 'unbounded' }),
-      ),
-    ),
+    Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventsTableSelect), { concurrency: 'unbounded' })),
     Effect.andThen(
       Array.match({
         onEmpty: () => Effect.succeedNone,
@@ -190,11 +182,7 @@ export const make: Effect.Effect<
           ORDER BY
             position ASC
         `,
-        Effect.andThen(
-          Schema.decodeUnknownEffect(
-            Schema.Array(EventsTableSelect).annotate({ batching: true, concurrency: 'unbounded' }),
-          ),
-        ),
+        Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventsTableSelect), { concurrency: 'unbounded' })),
       )
 
       return yield* Array.match(rows, {
