@@ -2,14 +2,19 @@ import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Keyv } from 'keyv'
 import { merge } from 'ts-deepmerge'
 import { Clubs } from '../../../src/Clubs/index.ts'
 import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
-import { CompletedFormC, FormC, formKey, type PublishPrereviewEnv } from '../../../src/PreprintReviews/index.ts'
+import {
+  CompletedFormC,
+  FormC,
+  formKey,
+  FormStore,
+  type PublishPrereviewEnv,
+} from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -44,7 +49,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
@@ -72,6 +77,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -99,7 +105,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
@@ -128,6 +134,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -154,7 +161,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
@@ -183,6 +190,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -225,7 +233,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
@@ -266,7 +274,7 @@ describe('writeReviewPublish', () => {
           persona: newReview.persona,
           id: reviewId,
         })
-        expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toBeUndefined()
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
@@ -279,6 +287,7 @@ describe('writeReviewPublish', () => {
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -321,7 +330,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
         const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
@@ -360,7 +369,7 @@ describe('writeReviewPublish', () => {
           persona: newReview.persona,
           id: reviewId,
         })
-        expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toBeUndefined()
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
@@ -373,6 +382,7 @@ describe('writeReviewPublish', () => {
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -399,7 +409,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
 
         const actual = yield* Effect.promise(() =>
@@ -425,6 +435,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -444,10 +455,12 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
+        const formStore = yield* FormStore.Store
+
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore: new Keyv(),
+            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -467,6 +480,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -486,10 +500,12 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
+        const formStore = yield* FormStore.Store
+
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore: new Keyv(),
+            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -512,6 +528,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsUnavailable({}) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -531,10 +548,12 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
+        const formStore = yield* FormStore.Store
+
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore: new Keyv(),
+            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -557,6 +576,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsNotFound({}) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -576,10 +596,12 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
+        const formStore = yield* FormStore.Store
+
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user: undefined })({
             addToSession: shouldNotBeCalled,
-            formStore: new Keyv(),
+            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -599,6 +621,7 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
@@ -639,7 +662,7 @@ describe('writeReviewPublish', () => {
           | Prereviewers.Prereviewers
           | Preprints
         >()
-        const formStore = new Keyv()
+        const formStore = yield* FormStore.Store
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
         const actual = yield* Effect.promise(() =>
@@ -674,6 +697,7 @@ describe('writeReviewPublish', () => {
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          FormStore.layerInMemory,
         ]),
       ),
   )
