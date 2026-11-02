@@ -121,8 +121,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.1.0)(terser@5.46.1)(typescript@7.0.2)
       nodemailer:
-        specifier: ^10.1.7
-        version: 10.1.7
+        specifier: ^10.3.1
+        version: 10.3.1
       normalize-url:
         specifier: ^10.0.0
         version: 10.0.0
@@ -3325,8 +3325,8 @@ packages:
     resolution: {integrity: sha512-jVe6Z61gPcPjCElPZ6j8llB3wnqGcuQzefim1ERsqIakxnEy5JlzV7XKdO1KmacRG5TKwPc4vJTgSRQ0LfkbFw==}
     engines: {node: '>=8'}
 
-  nodemailer@10.1.7:
-    resolution: {integrity: sha512-OQa6FDln5fLttmqSbjDiRYvFDOFNrBqfiOwHPlEbURil3b+vPB1v8xpi+Sp46drzNDlsTnNsS502vthmz56r4w==}
+  nodemailer@10.3.1:
+    resolution: {integrity: sha512-uF0AFsJC07Y1vdW7p580DKAnh7rAO+4UPSSB3mDCPNDufoiaOebV6JmrzpxB14OjEEEiBsNdYoM2Y+fN8M7BBA==}
     engines: {node: '>=20.0.0'}
 
   nopt@10.0.1:
@@ -7480,7 +7480,7 @@ snapshots:
       '@types/pegjs': 0.10.6
       big-integer: 1.6.52
 
-  nodemailer@10.1.7: {}
+  nodemailer@10.3.1: {}
 
   nopt@10.0.1:
     dependencies:
