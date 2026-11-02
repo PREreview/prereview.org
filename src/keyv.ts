@@ -14,7 +14,6 @@ import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
 import { DataStoreRedis } from './Redis.ts'
-import { SlackUserIdC } from './slack-user-id.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { UuidC } from './types/Uuid.ts'
@@ -24,7 +23,7 @@ export { Keyv } from 'keyv'
 
 export class KeyvStores extends Context.Service<
   KeyvStores,
-  AvatarStoreEnv & AuthorInviteStoreEnv & SlackUserIdStoreEnv & UserOnboardingStoreEnv & FormStoreEnv
+  AvatarStoreEnv & AuthorInviteStoreEnv & UserOnboardingStoreEnv & FormStoreEnv
 >()('KeyvStores') {}
 
 export const keyvStoresLayer = Layer.effect(
@@ -38,7 +37,6 @@ export const keyvStoresLayer = Layer.effect(
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
-      slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
       userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
     }
   }),
@@ -54,10 +52,6 @@ export interface AvatarStoreEnv {
 
 export interface SessionStoreEnv {
   sessionStore: Keyv
-}
-
-export interface SlackUserIdStoreEnv {
-  slackUserIdStore: Keyv
 }
 
 export interface UserOnboardingStoreEnv {
@@ -165,21 +159,6 @@ export const getAuthorInvite = flow(
 export const saveAuthorInvite = flow(
   setKey(UuidC, AuthorInviteC),
   RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const deleteSlackUserId = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
-)
-
-export const getSlackUserId = flow(
-  getKey(OrcidC, SlackUserIdC),
-  RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
-)
-
-export const saveSlackUserId = flow(
-  setKey(OrcidC, SlackUserIdC),
-  RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
 )
 
 export const getUserOnboarding = flow(

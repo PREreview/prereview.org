@@ -55,6 +55,7 @@ import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import { SlackOauth } from '../src/SlackOauth.ts'
+import * as SlackUserIds from '../src/SlackUserIds.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
@@ -82,7 +83,6 @@ interface AppFixtures {
   port: number
   server: Fiber.Fiber<never>
   formStore: Keyv
-  slackUserIdStore: Keyv
   clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
@@ -2406,7 +2406,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         formStore,
         clubs,
         isUserBlocked,
-        slackUserIdStore,
         userOnboardingStore,
         wasPrereviewRemoved,
         authorInviteStore,
@@ -2430,7 +2429,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             authorInviteStore,
             avatarStore: new Keyv(),
             formStore,
-            slackUserIdStore,
             userOnboardingStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
@@ -2439,6 +2437,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Prereviewers.Locations.layerInMemory,
           Prereviewers.ResearchInterestsStore.layerInMemory,
           OrcidTokens.layerInMemory,
+          SlackUserIds.layerInMemory,
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),
@@ -2545,9 +2544,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   ],
   showSpotlight: async ({}, use) => {
     await use(false)
-  },
-  slackUserIdStore: async ({}, use) => {
-    await use(new Keyv())
   },
   sqlClientLayer: async ({}, use, testInfo) => {
     await use(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` }))
@@ -2692,7 +2688,7 @@ export const areAClubLead: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'c
   },
 }
 
-export const isASlackUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>> = {
+export const isASlackUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
     fetch.post('http://slack.test/token', {
       status: StatusCodes.OK,
@@ -2721,9 +2717,6 @@ export const isASlackUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 's
     })
 
     await use(fetch)
-  },
-  slackUserIdStore: async ({ slackUserIdStore }, use) => {
-    await use(slackUserIdStore)
   },
 }
 

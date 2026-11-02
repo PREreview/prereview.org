@@ -6,12 +6,12 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { match } from 'ts-pattern'
 import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
+import * as SlackUserIds from '../../../SlackUserIds.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -285,18 +285,18 @@ export const MyDetailsRouter = pipe(
               RTE.of(orcid),
               RTE.chainFirst(
                 flow(
-                  Keyv.getSlackUserId,
+                  EffectToFpts.toReaderTaskEitherK(SlackUserIds.get),
                   RTE.chainW(CommunitySlack.removeOrcidFromSlackProfile),
                   RTE.orElseW(() => RTE.right(undefined)),
                 ),
               ),
-              RTE.chainW(Keyv.deleteSlackUserId),
+              RTE.chainW(EffectToFpts.toReaderTaskEitherK(SlackUserIds.remove)),
             ),
           {
             fetch: env.fetch,
+            runtime: env.runtime,
             slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
             slackApiUpdate: env.shouldUpdateCommunitySlack,
-            slackUserIdStore: env.users.slackUserIdStore,
             ...env.logger,
           },
         ),
@@ -315,38 +315,30 @@ export const MyDetailsRouter = pipe(
             secret: Redacted.value(env.cloudinaryApiConfig.secret),
           },
         }),
-        getSlackUser: withEnv(
+        getSlackUser: EffectToFpts.toTaskEitherK(
           flow(
-            Keyv.getSlackUserId,
-            RTE.chainTaskEitherKW(
-              EffectToFpts.toTaskEitherK(
-                ({ userId }) => Effect.mapError(CommunitySlack.getSlackUser(userId), () => 'unavailable' as const),
-                env.runtime,
-              ),
+            SlackUserIds.get,
+            Effect.andThen(({ userId }) =>
+              Effect.mapError(CommunitySlack.getSlackUser(userId), () => 'unavailable' as const),
             ),
           ),
-          {
-            ...env.logger,
-            slackUserIdStore: env.users.slackUserIdStore,
-          },
+          env.runtime,
         ),
         isOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.get, env.runtime),
         getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
         getResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.get, env.runtime),
         getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
         getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
-        isSlackUser: withEnv(
+        isSlackUser: EffectToFpts.toTaskEitherK(
           flow(
-            Keyv.getSlackUserId,
-            RTE.map(() => true),
-            RTE.orElseW(error =>
-              match(error)
-                .with('not-found', () => RTE.right(false))
-                .with('unavailable', RTE.left)
-                .exhaustive(),
+            SlackUserIds.get,
+            Effect.as(true),
+            Effect.catchIf(
+              error => error === 'not-found',
+              () => Effect.succeed(false),
             ),
           ),
-          { slackUserIdStore: env.users.slackUserIdStore, ...env.logger },
+          env.runtime,
         ),
         orcidOauth: {
           authorizeUrl: env.orcidOauth.authorizeUrl,
@@ -386,14 +378,14 @@ export const MyDetailsRouter = pipe(
         saveSlackUserId: withEnv(
           (orcid: OrcidId, slackUser: SlackUserId) =>
             pipe(
-              Keyv.saveSlackUserId(orcid, slackUser),
+              EffectToFpts.toReaderTaskEither(SlackUserIds.save(orcid, slackUser)),
               RTE.chainFirstW(() => CommunitySlack.addOrcidToSlackProfile(slackUser, orcid)),
             ),
           {
             fetch: env.fetch,
+            runtime: env.runtime,
             slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
             slackApiUpdate: env.shouldUpdateCommunitySlack,
-            slackUserIdStore: env.users.slackUserIdStore,
             ...env.logger,
           },
         ),

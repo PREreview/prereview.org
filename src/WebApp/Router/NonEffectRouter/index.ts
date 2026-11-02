@@ -26,7 +26,6 @@ import {
 import type { WorkflowEngine } from 'effect/workflow'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LoggerEnv } from 'logger-fp-ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import type { Clubs } from '../../../Clubs/index.ts'
@@ -46,6 +45,7 @@ import * as Keyv from '../../../keyv.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import type * as OrcidTokens from '../../../OrcidTokens.ts'
+import * as SlackUserIds from '../../../SlackUserIds.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
@@ -132,7 +132,6 @@ export const nonEffectRouter: Effect.Effect<
   const users = {
     avatarStore: keyvStores.avatarStore,
     userOnboardingStore: keyvStores.userOnboardingStore,
-    slackUserIdStore: keyvStores.slackUserIdStore,
     authorInviteStore: keyvStores.authorInviteStore,
   }
 
@@ -215,6 +214,7 @@ export interface Env {
     | Prereviewers.Locations.Store
     | Prereviewers.ResearchInterestsStore.Store
     | OrcidTokens.Store
+    | SlackUserIds.Store
     | Prereviews.Prereviews
     | PublicUrl
     | SpotlightBanners
@@ -233,7 +233,6 @@ export interface Env {
   users: {
     userOnboardingStore: Keyv.Keyv
     avatarStore: Keyv.Keyv
-    slackUserIdStore: Keyv.Keyv
   }
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
@@ -324,21 +323,14 @@ const routerWithoutHyperTs = pipe(
                 env.runtime,
               ),
               getResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.get, env.runtime),
-              getSlackUser: withEnv(
+              getSlackUser: EffectToFpts.toTaskEitherK(
                 flow(
-                  Keyv.getSlackUserId,
-                  RTE.chainTaskEitherKW(
-                    EffectToFpts.toTaskEitherK(
-                      ({ userId }) =>
-                        Effect.mapError(CommunitySlack.getSlackUser(userId), () => 'unavailable' as const),
-                      env.runtime,
-                    ),
+                  SlackUserIds.get,
+                  Effect.andThen(({ userId }) =>
+                    Effect.mapError(CommunitySlack.getSlackUser(userId), () => 'unavailable' as const),
                   ),
                 ),
-                {
-                  ...env.logger,
-                  slackUserIdStore: env.users.slackUserIdStore,
-                },
+                env.runtime,
               ),
               isOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.get, env.runtime),
               runtime: env.runtime,
