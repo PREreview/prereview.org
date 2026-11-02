@@ -215,11 +215,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#has-data-censored-or-deleted-yes">
-            ${pipe(
-              Match.value(form.hasDataCensoredOrDeleted.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSignsOfAlteration')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.hasDataCensoredOrDeleted.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectSignsOfAlteration')(),
+            })}
           </a>
         </li>
       `

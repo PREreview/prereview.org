@@ -169,11 +169,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#is-ready-to-be-shared-yes">
-            ${pipe(
-              Match.value(form.isReadyToBeShared.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectReadyToBeShared')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.isReadyToBeShared.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectReadyToBeShared')(),
+            })}
           </a>
         </li>
       `

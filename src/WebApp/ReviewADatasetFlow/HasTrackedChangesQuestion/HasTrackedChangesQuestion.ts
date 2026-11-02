@@ -210,11 +210,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#has-tracked-changes-yes">
-            ${pipe(
-              Match.value(form.hasTrackedChanges.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectTrackChanges')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.hasTrackedChanges.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectTrackChanges')(),
+            })}
           </a>
         </li>
       `

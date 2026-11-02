@@ -75,11 +75,7 @@ export const ChooseYourPersonaPage = ({
                 ? html`
                     <div class="error-message" id="choose-your-persona-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.chooseYourPersona.failure),
-                        Match.tag('Missing', t('selectNameYouWouldLikeToUse')),
-                        Match.exhaustive,
-                      )}
+                      ${Match.valueTags(form.chooseYourPersona.failure, { Missing: t('selectNameYouWouldLikeToUse') })}
                     </div>
                   `
                 : ''
@@ -146,11 +142,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: ChooseYourPersonaForm.I
       ? html`
           <li>
             <a href="#choose-your-persona-public">
-              ${pipe(
-                Match.value(form.chooseYourPersona.failure),
-                Match.tag('Missing', translate(locale, 'review-a-dataset-flow', 'selectNameYouWouldLikeToUse')),
-                Match.exhaustive,
-              )}
+              ${Match.valueTags(form.chooseYourPersona.failure, {
+                Missing: translate(locale, 'review-a-dataset-flow', 'selectNameYouWouldLikeToUse'),
+              })}
             </a>
           </li>
         `

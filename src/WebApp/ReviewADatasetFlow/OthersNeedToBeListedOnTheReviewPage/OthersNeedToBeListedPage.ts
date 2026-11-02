@@ -57,11 +57,9 @@ export const OthersNeedToBeListedPage = ({
                 ? html`
                     <div class="error-message" id="others-need-to-be-listed-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.othersNeedToBeListed.failure),
-                        Match.tag('Missing', () => t('selectDidYouReviewWithAnyoneElse')()),
-                        Match.exhaustive,
-                      )}
+                      ${Match.valueTags(form.othersNeedToBeListed.failure, {
+                        Missing: () => t('selectDidYouReviewWithAnyoneElse')(),
+                      })}
                     </div>
                   `
                 : ''
@@ -130,13 +128,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: OthersNeedToBeListedFor
       ? html`
           <li>
             <a href="#others-need-to-be-listed-no">
-              ${pipe(
-                Match.value(form.othersNeedToBeListed.failure),
-                Match.tag('Missing', () =>
-                  translate(locale, 'review-a-dataset-flow', 'selectDidYouReviewWithAnyoneElse')(),
-                ),
-                Match.exhaustive,
-              )}
+              ${Match.valueTags(form.othersNeedToBeListed.failure, {
+                Missing: () => translate(locale, 'review-a-dataset-flow', 'selectDidYouReviewWithAnyoneElse')(),
+              })}
             </a>
           </li>
         `

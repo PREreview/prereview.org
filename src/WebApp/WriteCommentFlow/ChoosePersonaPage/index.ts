@@ -34,9 +34,8 @@ export const ChoosePersonaPage = ({
 
     const locale = yield* Locale
 
-    return yield* pipe(
-      Match.value(comment),
-      Match.tag('CommentInProgress', comment =>
+    return yield* Match.valueTags(comment, {
+      CommentInProgress: comment =>
         Effect.map(
           Effect.all(
             {
@@ -54,8 +53,7 @@ export const ChoosePersonaPage = ({
               pseudonymPersona,
             }),
         ),
-      ),
-      Match.tag('CommentReadyForPublishing', comment =>
+      CommentReadyForPublishing: comment =>
         Effect.map(
           Effect.all(
             {
@@ -73,15 +71,11 @@ export const ChoosePersonaPage = ({
               pseudonymPersona,
             }),
         ),
-      ),
-      Match.tag('CommentBeingPublished', () =>
+      CommentBeingPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
-      ),
-      Match.tag('CommentPublished', () =>
+      CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
-      ),
-      Match.exhaustive,
-    )
+    })
   }).pipe(
     Effect.catchTags({
       UnableToGetPersona: () => HavingProblemsPage,
@@ -125,9 +119,8 @@ export const ChoosePersonaSubmission = ({
         Effect.gen(function* () {
           const form = yield* ChoosePersonaForm.fromBody(body)
 
-          return yield* pipe(
-            Match.value(form),
-            Match.tag('CompletedForm', form =>
+          return yield* Match.valueTags(form, {
+            CompletedForm: form =>
               Effect.gen(function* () {
                 const handleCommand = yield* Comments.HandleCommentCommand
                 const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
@@ -147,8 +140,7 @@ export const ChoosePersonaSubmission = ({
 
                 return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
-            ),
-            Match.tag('InvalidForm', form =>
+            InvalidForm: form =>
               Effect.map(
                 Effect.all(
                   {
@@ -166,9 +158,7 @@ export const ChoosePersonaSubmission = ({
                     pseudonymPersona,
                   }),
               ),
-            ),
-            Match.exhaustive,
-          )
+          })
         }),
       ),
       Match.tag('CommentBeingPublished', () =>

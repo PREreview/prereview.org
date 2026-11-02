@@ -207,11 +207,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
       ? html`
           <li>
             <a href="#rate-the-quality-excellent">
-              ${pipe(
-                Match.value(form.qualityRating.failure),
-                Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRateQuality')()),
-                Match.exhaustive,
-              )}
+              ${Match.valueTags(form.qualityRating.failure, {
+                Missing: () => translate(locale, 'review-a-dataset-flow', 'selectRateQuality')(),
+              })}
             </a>
           </li>
         `

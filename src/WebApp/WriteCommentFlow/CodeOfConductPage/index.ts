@@ -33,30 +33,23 @@ export const CodeOfConductPage = ({
 
     const locale = yield* Locale
 
-    return pipe(
-      Match.value(comment),
-      Match.tag('CommentInProgress', comment =>
+    return Match.valueTags(comment, {
+      CommentInProgress: comment =>
         MakeResponse({
           commentId,
           form: CodeOfConductForm.fromComment(comment),
           locale,
         }),
-      ),
-      Match.tag('CommentReadyForPublishing', comment =>
+      CommentReadyForPublishing: comment =>
         MakeResponse({
           commentId,
           form: CodeOfConductForm.fromComment(comment),
           locale,
         }),
-      ),
-      Match.tag('CommentBeingPublished', () =>
+      CommentBeingPublished: () =>
         Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
-      ),
-      Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
-      ),
-      Match.exhaustive,
-    )
+      CommentPublished: () => Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
+    })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => HavingProblemsPage,
@@ -95,9 +88,8 @@ export const CodeOfConductSubmission = ({
         Effect.gen(function* () {
           const form = yield* CodeOfConductForm.fromBody(body)
 
-          return yield* pipe(
-            Match.value(form),
-            Match.tag('CompletedForm', () =>
+          return yield* Match.valueTags(form, {
+            CompletedForm: () =>
               Effect.gen(function* () {
                 const handleCommand = yield* Comments.HandleCommentCommand
 
@@ -117,8 +109,7 @@ export const CodeOfConductSubmission = ({
 
                 return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
-            ),
-            Match.tag('InvalidForm', form =>
+            InvalidForm: form =>
               Effect.succeed(
                 MakeResponse({
                   commentId,
@@ -126,9 +117,7 @@ export const CodeOfConductSubmission = ({
                   locale,
                 }),
               ),
-            ),
-            Match.exhaustive,
-          )
+          })
         }),
       ),
       Match.tag('CommentBeingPublished', () =>

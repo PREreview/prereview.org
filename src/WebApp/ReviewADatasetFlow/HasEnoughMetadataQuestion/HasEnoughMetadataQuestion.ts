@@ -211,11 +211,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#has-enough-metadata-yes">
-            ${pipe(
-              Match.value(form.hasEnoughMetadata.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectEnoughMetadata')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.hasEnoughMetadata.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectEnoughMetadata')(),
+            })}
           </a>
         </li>
       `

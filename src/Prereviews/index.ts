@@ -122,12 +122,10 @@ export const layer = Layer.effect(
           Effect.map(Struct.get('recentPrereviews')),
           Effect.andThen(
             Effect.partition(
-              flow(
-                Match.value,
-                Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
-                Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
-                Match.exhaustive,
-              ),
+              Match.valueTags({
+                RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+                DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
+              }),
               { concurrency: 'unbounded' },
             ),
           ),
@@ -205,12 +203,10 @@ export const layer = Layer.effect(
         },
         Effect.andThen(
           Effect.forEach(
-            flow(
-              Match.value,
-              Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
-              Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
-              Match.exhaustive,
-            ),
+            Match.valueTags({
+              RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+              DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
+            }),
             { concurrency: 'unbounded' },
           ),
         ),
@@ -242,12 +238,10 @@ export const layer = Layer.effect(
         },
         Effect.andThen(
           Effect.forEach(
-            flow(
-              Match.value,
-              Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
-              Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
-              Match.exhaustive,
-            ),
+            Match.valueTags({
+              RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+              DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
+            }),
             { concurrency: 'unbounded' },
           ),
         ),
@@ -295,14 +289,11 @@ export const layer = Layer.effect(
             Effect.bind('recentPrereviews', () =>
               Effect.forEach(
                 recentPrereviews,
-                flow(
-                  Match.value,
-                  Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
-                  Match.tag('DatasetReview', ({ id }) =>
+                Match.valueTags({
+                  RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+                  DatasetReview: ({ id }) =>
                     Effect.mapError(getRecentDatasetPrereview(id), () => 'unavailable' as const),
-                  ),
-                  Match.exhaustive,
-                ),
+                }),
                 { concurrency: 'unbounded' },
               ),
             ),

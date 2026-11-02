@@ -42,13 +42,10 @@ export const CodeOfConductPage = ({
                         ? html`
                             <li>
                               <a href="#agree-yes">
-                                ${pipe(
-                                  Match.value(form.agree.failure),
-                                  Match.tag('Missing', () =>
+                                ${Match.valueTags(form.agree.failure, {
+                                  Missing: () =>
                                     translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                })}
                               </a>
                             </li>
                           `
@@ -123,13 +120,9 @@ export const CodeOfConductPage = ({
                 ? html`
                     <div class="error-message" id="agree-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.agree.failure),
-                        Match.tag('Missing', () =>
-                          translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
-                        ),
-                        Match.exhaustive,
-                      )}
+                      ${Match.valueTags(form.agree.failure, {
+                        Missing: () => translate(locale, 'write-comment-flow', 'errorFollowingCodeOfConduct')(),
+                      })}
                     </div>
                   `
                 : ''

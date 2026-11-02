@@ -242,11 +242,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#is-appropriate-for-this-kind-of-research-question-yes">
-            ${pipe(
-              Match.value(form.isAppropriateForThisKindOfResearch.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSuitedForPurpose')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.isAppropriateForThisKindOfResearch.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectSuitedForPurpose')(),
+            })}
           </a>
         </li>
       `

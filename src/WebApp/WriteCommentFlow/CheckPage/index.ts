@@ -32,10 +32,9 @@ export const CheckPage = ({
 
     const locale = yield* Locale
 
-    return yield* pipe(
-      Match.value(comment),
-      Match.tag('CommentInProgress', () => PageNotFound),
-      Match.tag('CommentReadyForPublishing', comment =>
+    return yield* Match.valueTags(comment, {
+      CommentInProgress: () => PageNotFound,
+      CommentReadyForPublishing: comment =>
         Effect.map(Prereviewers.getPersona({ orcidId: user.orcid, persona: comment.persona }), persona =>
           MakeResponse({
             competingInterests: comment.competingInterests,
@@ -45,15 +44,11 @@ export const CheckPage = ({
             persona,
           }),
         ),
-      ),
-      Match.tag('CommentBeingPublished', () =>
+      CommentBeingPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
-      ),
-      Match.tag('CommentPublished', () =>
+      CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
-      ),
-      Match.exhaustive,
-    )
+    })
   }).pipe(
     Effect.catchTags({
       UnableToGetPersona: () => HavingProblemsPage,
@@ -83,10 +78,9 @@ export const CheckPageSubmission = ({
       return yield* PageNotFound
     }
 
-    return yield* pipe(
-      Match.value(comment),
-      Match.tag('CommentInProgress', () => PageNotFound),
-      Match.tag('CommentReadyForPublishing', () =>
+    return yield* Match.valueTags(comment, {
+      CommentInProgress: () => PageNotFound,
+      CommentReadyForPublishing: () =>
         Effect.gen(function* () {
           const handleCommand = yield* Comments.HandleCommentCommand
 
@@ -100,15 +94,11 @@ export const CheckPageSubmission = ({
 
           return Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })
         }),
-      ),
-      Match.tag('CommentBeingPublished', () =>
+      CommentBeingPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
-      ),
-      Match.tag('CommentPublished', () =>
+      CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
-      ),
-      Match.exhaustive,
-    )
+    })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => HavingProblemsPage,

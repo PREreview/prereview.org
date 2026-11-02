@@ -47,13 +47,9 @@ export const ChoosePersonaPage = ({
                         ? html`
                             <li>
                               <a href="#persona-public">
-                                ${pipe(
-                                  Match.value(form.persona.failure),
-                                  Match.tag('Missing', () =>
-                                    translate(locale, 'write-comment-flow', 'errorSelectName')(),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                ${Match.valueTags(form.persona.failure, {
+                                  Missing: () => translate(locale, 'write-comment-flow', 'errorSelectName')(),
+                                })}
                               </a>
                             </li>
                           `
@@ -105,11 +101,9 @@ export const ChoosePersonaPage = ({
                 ? html`
                     <div class="error-message" id="persona-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.persona.failure),
-                        Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorSelectName')()),
-                        Match.exhaustive,
-                      )}
+                      ${Match.valueTags(form.persona.failure, {
+                        Missing: () => translate(locale, 'write-comment-flow', 'errorSelectName')(),
+                      })}
                     </div>
                   `
                 : ''

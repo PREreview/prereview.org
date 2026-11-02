@@ -33,32 +33,25 @@ export const EnterCommentPage = ({
 
     const locale = yield* Locale
 
-    return pipe(
-      Match.value(comment),
-      Match.tag('CommentInProgress', comment =>
+    return Match.valueTags(comment, {
+      CommentInProgress: comment =>
         MakeResponse({
           commentId,
           form: EnterCommentForm.fromComment(comment),
           locale,
           prereviewId: comment.prereviewId,
         }),
-      ),
-      Match.tag('CommentReadyForPublishing', comment =>
+      CommentReadyForPublishing: comment =>
         MakeResponse({
           commentId,
           form: EnterCommentForm.fromComment(comment),
           locale,
           prereviewId: comment.prereviewId,
         }),
-      ),
-      Match.tag('CommentBeingPublished', () =>
+      CommentBeingPublished: () =>
         Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
-      ),
-      Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
-      ),
-      Match.exhaustive,
-    )
+      CommentPublished: () => Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
+    })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => HavingProblemsPage,
@@ -97,9 +90,8 @@ export const EnterCommentSubmission = ({
         Effect.gen(function* () {
           const form = yield* EnterCommentForm.fromBody(body)
 
-          return yield* pipe(
-            Match.value(form),
-            Match.tag('CompletedForm', form =>
+          return yield* Match.valueTags(form, {
+            CompletedForm: form =>
               Effect.gen(function* () {
                 const handleCommand = yield* Comments.HandleCommentCommand
 
@@ -119,8 +111,7 @@ export const EnterCommentSubmission = ({
 
                 return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
               }),
-            ),
-            Match.tag('InvalidForm', form =>
+            InvalidForm: form =>
               Effect.succeed(
                 MakeResponse({
                   commentId,
@@ -129,9 +120,7 @@ export const EnterCommentSubmission = ({
                   prereviewId: comment.prereviewId,
                 }),
               ),
-            ),
-            Match.exhaustive,
-          )
+          })
         }),
       ),
       Match.tag('CommentBeingPublished', () =>

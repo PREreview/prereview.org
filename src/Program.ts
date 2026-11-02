@@ -80,13 +80,11 @@ const createRecordOnZenodoForComment = Layer.effect(
         const prereview = yield* pipe(
           Prereviews.getPrereview(comment.prereviewId),
           Effect.mapError(
-            flow(
-              Match.value,
-              Match.tag('PrereviewIsNotFound', error => new Comments.UnableToAssignADoi({ cause: error })),
-              Match.tag('PrereviewIsUnavailable', error => new Comments.UnableToAssignADoi({ cause: error })),
-              Match.tag('PrereviewWasRemoved', error => new Comments.UnableToAssignADoi({ cause: error })),
-              Match.exhaustive,
-            ),
+            Match.valueTags({
+              PrereviewIsNotFound: error => new Comments.UnableToAssignADoi({ cause: error }),
+              PrereviewIsUnavailable: error => new Comments.UnableToAssignADoi({ cause: error }),
+              PrereviewWasRemoved: error => new Comments.UnableToAssignADoi({ cause: error }),
+            }),
           ),
         )
 

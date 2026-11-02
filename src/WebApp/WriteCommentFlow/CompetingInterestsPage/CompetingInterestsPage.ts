@@ -42,13 +42,9 @@ export const CompetingInterestsPage = ({
                         ? html`
                             <li>
                               <a href="#competing-interests-no">
-                                ${pipe(
-                                  Match.value(form.competingInterests.failure),
-                                  Match.tag('Missing', () =>
-                                    translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                ${Match.valueTags(form.competingInterests.failure, {
+                                  Missing: () => translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
+                                })}
                               </a>
                             </li>
                           `
@@ -59,13 +55,10 @@ export const CompetingInterestsPage = ({
                         ? html`
                             <li>
                               <a href="#competing-interests-details">
-                                ${pipe(
-                                  Match.value(form.competingInterestsDetails.failure),
-                                  Match.tag('Missing', () =>
+                                ${Match.valueTags(form.competingInterestsDetails.failure, {
+                                  Missing: () =>
                                     translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                })}
                               </a>
                             </li>
                           `
@@ -122,13 +115,9 @@ export const CompetingInterestsPage = ({
                   ? html`
                       <div class="error-message" id="competing-interests-error">
                         <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                        ${pipe(
-                          Match.value(form.competingInterests.failure),
-                          Match.tag('Missing', () =>
-                            translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
-                          ),
-                          Match.exhaustive,
-                        )}
+                        ${Match.valueTags(form.competingInterests.failure, {
+                          Missing: () => translate(locale, 'write-comment-flow', 'errorCompetingInterests')(),
+                        })}
                       </div>
                     `
                   : ''
@@ -184,13 +173,10 @@ export const CompetingInterestsPage = ({
                           ? html`
                               <div class="error-message" id="competing-interests-details-error">
                                 <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                                ${pipe(
-                                  Match.value(form.competingInterestsDetails.failure),
-                                  Match.tag('Missing', () =>
+                                ${Match.valueTags(form.competingInterestsDetails.failure, {
+                                  Missing: () =>
                                     translate(locale, 'write-comment-flow', 'errorCompetingInterestsDetails')(),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                })}
                               </div>
                             `
                           : ''

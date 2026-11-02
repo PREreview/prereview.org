@@ -211,11 +211,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#is-detailed-enough-yes">
-            ${pipe(
-              Match.value(form.isDetailedEnough.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectGranularEnough')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.isDetailedEnough.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectGranularEnough')(),
+            })}
           </a>
         </li>
       `

@@ -46,13 +46,9 @@ export const EnterCommentPage = ({
                         ? html`
                             <li>
                               <a href="#comment">
-                                ${pipe(
-                                  Match.value(form.comment.failure),
-                                  Match.tag('Missing', () =>
-                                    translate(locale, 'write-comment-flow', 'errorEnterComment')(),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                ${Match.valueTags(form.comment.failure, {
+                                  Missing: () => translate(locale, 'write-comment-flow', 'errorEnterComment')(),
+                                })}
                               </a>
                             </li>
                           `
@@ -76,24 +72,19 @@ export const EnterCommentPage = ({
               ? html`
                   <div class="error-message" id="comment-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.comment.failure),
-                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterComment')()),
-                      Match.exhaustive,
-                    )}
+                    ${Match.valueTags(form.comment.failure, {
+                      Missing: () => translate(locale, 'write-comment-flow', 'errorEnterComment')(),
+                    })}
                   </div>
                 `
               : ''
           }
 
           <html-editor>
-            ${pipe(
-              Match.value(form),
-              Match.tag(
-                'EmptyForm',
-                () => html`<textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20"></textarea>`,
-              ),
-              Match.tag('InvalidForm', form =>
+            ${Match.valueTags(form, {
+              EmptyForm: () =>
+                html`<textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20"></textarea>`,
+              InvalidForm: form =>
                 Result.match(form.comment, {
                   onFailure: () => html`
                     <textarea
@@ -108,17 +99,12 @@ export const EnterCommentPage = ({
                   `,
                   onSuccess: absurd<Html>,
                 }),
-              ),
-              Match.tag(
-                'CompletedForm',
-                form => html`
-                  <textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20">
+              CompletedForm: form => html`
+                <textarea id="comment" name="comment" placeholder=" " dir="auto" rows="20">
 ${Turndown.turndown(form.comment.toString())}</textarea>
-                  <textarea hidden disabled>${form.comment}</textarea>
-                `,
-              ),
-              Match.exhaustive,
-            )}
+                <textarea hidden disabled>${form.comment}</textarea>
+              `,
+            })}
           </html-editor>
         </div>
 

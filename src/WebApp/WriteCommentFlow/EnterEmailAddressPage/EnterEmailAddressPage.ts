@@ -42,20 +42,15 @@ export const EnterEmailAddressPage = ({
                         ? html`
                             <li>
                               <a href="#email-address">
-                                ${pipe(
-                                  Match.value(form.emailAddress.failure),
-                                  Match.tag('Missing', () =>
-                                    translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
-                                  ),
-                                  Match.tag('Invalid', () =>
+                                ${Match.valueTags(form.emailAddress.failure, {
+                                  Missing: () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
+                                  Invalid: () =>
                                     translate(
                                       locale,
                                       'write-comment-flow',
                                       'errorEnterValidEmailAddress',
                                     )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
-                                  ),
-                                  Match.exhaustive,
-                                )}
+                                })}
                               </a>
                             </li>
                           `
@@ -85,18 +80,15 @@ export const EnterEmailAddressPage = ({
               ? html`
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.emailAddress.failure),
-                      Match.tag('Missing', () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')()),
-                      Match.tag('Invalid', () =>
+                    ${Match.valueTags(form.emailAddress.failure, {
+                      Missing: () => translate(locale, 'write-comment-flow', 'errorEnterEmailAddress')(),
+                      Invalid: () =>
                         translate(
                           locale,
                           'write-comment-flow',
                           'errorEnterValidEmailAddress',
                         )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
-                      ),
-                      Match.exhaustive,
-                    )}
+                    })}
                   </div>
                 `
               : ''

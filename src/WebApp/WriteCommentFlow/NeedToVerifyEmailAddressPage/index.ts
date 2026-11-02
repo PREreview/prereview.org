@@ -38,9 +38,8 @@ export const NeedToVerifyEmailAddressPage = ({
 
     const locale = yield* Locale
 
-    return yield* pipe(
-      Match.value(comment),
-      Match.tag('CommentInProgress', comment =>
+    return yield* Match.valueTags(comment, {
+      CommentInProgress: comment =>
         Effect.gen(function* () {
           if (comment.verifiedEmailAddressExists) {
             const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
@@ -89,18 +88,13 @@ export const NeedToVerifyEmailAddressPage = ({
             ),
           )
         }),
-      ),
-      Match.tag('CommentReadyForPublishing', () =>
+      CommentReadyForPublishing: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
-      ),
-      Match.tag('CommentBeingPublished', () =>
+      CommentBeingPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
-      ),
-      Match.tag('CommentPublished', () =>
+      CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
-      ),
-      Match.exhaustive,
-    )
+    })
   }).pipe(
     Effect.catchTags({
       CommentHasNotBeenStarted: () => HavingProblemsPage,

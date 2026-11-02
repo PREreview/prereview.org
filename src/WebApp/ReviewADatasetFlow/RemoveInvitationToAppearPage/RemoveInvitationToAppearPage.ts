@@ -58,11 +58,9 @@ export const RemoveInvitationToAppearPage = ({
                 ? html`
                     <div class="error-message" id="remove-author-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                      ${pipe(
-                        Match.value(form.removeAuthor.failure),
-                        Match.tag('Missing', () => t('wantToRemoveNameError')({ name: authorName })),
-                        Match.exhaustive,
-                      )}
+                      ${Match.valueTags(form.removeAuthor.failure, {
+                        Missing: () => t('wantToRemoveNameError')({ name: authorName }),
+                      })}
                     </div>
                   `
                 : ''
@@ -122,13 +120,10 @@ const toErrorItems =
         ? html`
             <li>
               <a href="#remove-author-no">
-                ${pipe(
-                  Match.value(form.removeAuthor.failure),
-                  Match.tag('Missing', () =>
+                ${Match.valueTags(form.removeAuthor.failure, {
+                  Missing: () =>
                     translate(locale, 'review-a-dataset-flow', 'wantToRemoveNameError')({ name: authorName }),
-                  ),
-                  Match.exhaustive,
-                )}
+                })}
               </a>
             </li>
           `

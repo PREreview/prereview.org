@@ -231,11 +231,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#matters-to-its-audience-very-consequential">
-            ${pipe(
-              Match.value(form.mattersToItsAudience.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectHowConsequential')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.mattersToItsAudience.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectHowConsequential')(),
+            })}
           </a>
         </li>
       `

@@ -218,11 +218,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#supports-related-conclusions-yes">
-            ${pipe(
-              Match.value(form.supportsRelatedConclusions.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSupportsConclusion')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.supportsRelatedConclusions.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectSupportsConclusion')(),
+            })}
           </a>
         </li>
       `

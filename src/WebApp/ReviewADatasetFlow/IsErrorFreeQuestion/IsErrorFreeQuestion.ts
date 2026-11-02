@@ -214,11 +214,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#is-error-free-yes">
-            ${pipe(
-              Match.value(form.isErrorFree.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRelativelyErrorFree')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.isErrorFree.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectRelativelyErrorFree')(),
+            })}
           </a>
         </li>
       `

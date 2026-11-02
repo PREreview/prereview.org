@@ -70,16 +70,11 @@ export const fromComment = pipe(
     ),
   ),
   Match.tag('CommentReadyForPublishing', ({ competingInterests }) =>
-    pipe(
-      Match.value(competingInterests),
-      Match.tag(
-        'Some',
-        competingInterests =>
-          new CompletedFormYes({ competingInterests: 'yes', competingInterestsDetails: competingInterests.value }),
-      ),
-      Match.tag('None', () => new CompletedFormNo({ competingInterests: 'no' })),
-      Match.exhaustive,
-    ),
+    Match.valueTags(competingInterests, {
+      Some: competingInterests =>
+        new CompletedFormYes({ competingInterests: 'yes', competingInterestsDetails: competingInterests.value }),
+      None: () => new CompletedFormNo({ competingInterests: 'no' }),
+    }),
   ),
   Match.exhaustive,
 )

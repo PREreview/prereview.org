@@ -259,11 +259,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
     ? html`
         <li>
           <a href="#follows-fair-and-care-principles-yes">
-            ${pipe(
-              Match.value(form.followsFairAndCarePrinciples.failure),
-              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectFollowFairAndCare')()),
-              Match.exhaustive,
-            )}
+            ${Match.valueTags(form.followsFairAndCarePrinciples.failure, {
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'selectFollowFairAndCare')(),
+            })}
           </a>
         </li>
       `

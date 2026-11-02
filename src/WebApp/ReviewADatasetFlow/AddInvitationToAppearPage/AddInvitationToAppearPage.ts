@@ -50,11 +50,7 @@ export const AddInvitationToAppearPage = ({
               ? html`
                   <div class="error-message" id="name-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.name.failure),
-                      Match.tag('Missing', () => t('addAnAuthorNameError')()),
-                      Match.exhaustive,
-                    )}
+                    ${Match.valueTags(form.name.failure, { Missing: () => t('addAnAuthorNameError')() })}
                   </div>
                 `
               : ''
@@ -91,16 +87,13 @@ export const AddInvitationToAppearPage = ({
               ? html`
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
-                    ${pipe(
-                      Match.value(form.emailAddress.failure),
-                      Match.tag('Missing', () => t('addAnAuthorEmailAddressError')()),
-                      Match.tag('Invalid', () =>
+                    ${Match.valueTags(form.emailAddress.failure, {
+                      Missing: () => t('addAnAuthorEmailAddressError')(),
+                      Invalid: () =>
                         t('addAnAuthorEmailAddressInvalidError')({
                           exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>`,
                         }),
-                      ),
-                      Match.exhaustive,
-                    )}
+                    })}
                   </div>
                 `
               : ''
@@ -155,11 +148,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddInvitationToAppearFo
       ? html`
           <li>
             <a href="#name">
-              ${pipe(
-                Match.value(form.name.failure),
-                Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorNameError')()),
-                Match.exhaustive,
-              )}
+              ${Match.valueTags(form.name.failure, {
+                Missing: () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorNameError')(),
+              })}
             </a>
           </li>
         `
@@ -170,20 +161,15 @@ const toErrorItems = (locale: SupportedLocale) => (form: AddInvitationToAppearFo
       ? html`
           <li>
             <a href="#email-address">
-              ${pipe(
-                Match.value(form.emailAddress.failure),
-                Match.tag('Missing', () =>
-                  translate(locale, 'review-a-dataset-flow', 'addAnAuthorEmailAddressError')(),
-                ),
-                Match.tag('Invalid', () =>
+              ${Match.valueTags(form.emailAddress.failure, {
+                Missing: () => translate(locale, 'review-a-dataset-flow', 'addAnAuthorEmailAddressError')(),
+                Invalid: () =>
                   translate(
                     locale,
                     'review-a-dataset-flow',
                     'addAnAuthorEmailAddressInvalidError',
                   )({ exampleEmailAddress: html`<bdi translate="no">name@example.com</bdi>` }),
-                ),
-                Match.exhaustive,
-              )}
+              })}
             </a>
           </li>
         `
