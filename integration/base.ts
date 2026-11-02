@@ -45,12 +45,7 @@ import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '.
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
-import {
-  KeyvStores,
-  type AuthorInviteStoreEnv,
-  type ResearchInterestsStoreEnv,
-  type UserOnboardingStoreEnv,
-} from '../src/keyv.ts'
+import { KeyvStores, type AuthorInviteStoreEnv, type UserOnboardingStoreEnv } from '../src/keyv.ts'
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import * as OrcidTokens from '../src/OrcidTokens.ts'
@@ -87,7 +82,6 @@ interface AppFixtures {
   port: number
   server: Fiber.Fiber<never>
   formStore: Keyv
-  researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   slackUserIdStore: Keyv
   clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
@@ -2400,9 +2394,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  researchInterestsStore: async ({}, use) => {
-    await use(new Keyv())
-  },
   seedEvents: async ({}, use) => {
     await use([])
   },
@@ -2415,7 +2406,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         formStore,
         clubs,
         isUserBlocked,
-        researchInterestsStore,
         slackUserIdStore,
         userOnboardingStore,
         wasPrereviewRemoved,
@@ -2440,7 +2430,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             authorInviteStore,
             avatarStore: new Keyv(),
             formStore,
-            researchInterestsStore,
             slackUserIdStore,
             userOnboardingStore,
           }),
@@ -2448,6 +2437,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Prereviewers.IsOpenForRequestsStore.layerInMemory,
           Prereviewers.LanguagesStore.layerInMemory,
           Prereviewers.Locations.layerInMemory,
+          Prereviewers.ResearchInterestsStore.layerInMemory,
           OrcidTokens.layerInMemory,
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),

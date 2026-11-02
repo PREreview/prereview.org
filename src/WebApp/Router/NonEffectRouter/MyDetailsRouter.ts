@@ -278,10 +278,7 @@ export const MyDetailsRouter = pipe(
         deleteLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.remove, env.runtime),
         deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
         deleteOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.remove, env.runtime),
-        deleteResearchInterests: withEnv(Keyv.deleteResearchInterests, {
-          researchInterestsStore: env.users.researchInterestsStore,
-          ...env.logger,
-        }),
+        deleteResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.remove, env.runtime),
         deleteSlackUserId: withEnv(
           (orcid: OrcidId) =>
             pipe(
@@ -335,10 +332,7 @@ export const MyDetailsRouter = pipe(
         ),
         isOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.get, env.runtime),
         getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
-        getResearchInterests: withEnv(Keyv.getResearchInterests, {
-          researchInterestsStore: env.users.researchInterestsStore,
-          ...env.logger,
-        }),
+        getResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.get, env.runtime),
         getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
         getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
         isSlackUser: withEnv(
@@ -388,10 +382,7 @@ export const MyDetailsRouter = pipe(
         saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),
         saveOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.save, env.runtime),
         saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
-        saveResearchInterests: withEnv(Keyv.saveResearchInterests, {
-          researchInterestsStore: env.users.researchInterestsStore,
-          ...env.logger,
-        }),
+        saveResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.save, env.runtime),
         saveSlackUserId: withEnv(
           (orcid: OrcidId, slackUser: SlackUserId) =>
             pipe(

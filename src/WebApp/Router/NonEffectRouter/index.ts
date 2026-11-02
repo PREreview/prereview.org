@@ -133,7 +133,6 @@ export const nonEffectRouter: Effect.Effect<
     avatarStore: keyvStores.avatarStore,
     userOnboardingStore: keyvStores.userOnboardingStore,
     slackUserIdStore: keyvStores.slackUserIdStore,
-    researchInterestsStore: keyvStores.researchInterestsStore,
     authorInviteStore: keyvStores.authorInviteStore,
   }
 
@@ -214,6 +213,7 @@ export interface Env {
     | Prereviewers.IsOpenForRequestsStore.Store
     | Prereviewers.LanguagesStore.Store
     | Prereviewers.Locations.Store
+    | Prereviewers.ResearchInterestsStore.Store
     | OrcidTokens.Store
     | Prereviews.Prereviews
     | PublicUrl
@@ -234,7 +234,6 @@ export interface Env {
     userOnboardingStore: Keyv.Keyv
     avatarStore: Keyv.Keyv
     slackUserIdStore: Keyv.Keyv
-    researchInterestsStore: Keyv.Keyv
   }
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
@@ -324,10 +323,7 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
-              getResearchInterests: withEnv(Keyv.getResearchInterests, {
-                researchInterestsStore: env.users.researchInterestsStore,
-                ...env.logger,
-              }),
+              getResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.get, env.runtime),
               getSlackUser: withEnv(
                 flow(
                   Keyv.getSlackUserId,

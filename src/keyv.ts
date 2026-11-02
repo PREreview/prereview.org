@@ -13,7 +13,6 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
-import { type ResearchInterests, ResearchInterestsC } from './Prereviewers/legacy-research-interests.ts' // oxlint-disable-line module-boundaries/use-index
 import { DataStoreRedis } from './Redis.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
@@ -25,12 +24,7 @@ export { Keyv } from 'keyv'
 
 export class KeyvStores extends Context.Service<
   KeyvStores,
-  AvatarStoreEnv &
-    AuthorInviteStoreEnv &
-    ResearchInterestsStoreEnv &
-    SlackUserIdStoreEnv &
-    UserOnboardingStoreEnv &
-    FormStoreEnv
+  AvatarStoreEnv & AuthorInviteStoreEnv & SlackUserIdStoreEnv & UserOnboardingStoreEnv & FormStoreEnv
 >()('KeyvStores') {}
 
 export const keyvStoresLayer = Layer.effect(
@@ -44,11 +38,6 @@ export const keyvStoresLayer = Layer.effect(
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
-      researchInterestsStore: new Keyv({
-        emitErrors: false,
-        namespace: 'research-interests',
-        store: createKeyvStore(),
-      }),
       slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
       userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
     }
@@ -61,10 +50,6 @@ export interface AuthorInviteStoreEnv {
 
 export interface AvatarStoreEnv {
   avatarStore: Keyv
-}
-
-export interface ResearchInterestsStoreEnv {
-  researchInterestsStore: Keyv
 }
 
 export interface SessionStoreEnv {
@@ -180,34 +165,6 @@ export const getAuthorInvite = flow(
 export const saveAuthorInvite = flow(
   setKey(UuidC, AuthorInviteC),
   RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const deleteResearchInterests = flow(
-  deleteKey(OrcidC),
-  RTE.local((env: ResearchInterestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.researchInterestsStore })),
-)
-
-export const getResearchInterests = flow(
-  getKey(
-    OrcidC,
-    D.union(
-      ResearchInterestsC,
-      pipe(
-        D.struct({ value: NonEmptyStringC }),
-        D.map(value => ({ ...value, visibility: 'restricted' }) satisfies ResearchInterests),
-      ),
-      pipe(
-        NonEmptyStringC,
-        D.map(value => ({ value, visibility: 'restricted' }) satisfies ResearchInterests),
-      ),
-    ),
-  ),
-  RTE.local((env: ResearchInterestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.researchInterestsStore })),
-)
-
-export const saveResearchInterests = flow(
-  setKey(OrcidC, ResearchInterestsC),
-  RTE.local((env: ResearchInterestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.researchInterestsStore })),
 )
 
 export const deleteSlackUserId = flow(

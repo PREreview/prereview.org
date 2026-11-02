@@ -147,6 +147,7 @@ pipe(
         Prereviewers.IsOpenForRequestsStore.layer,
         Prereviewers.LanguagesStore.layer,
         Prereviewers.Locations.layer,
+        Prereviewers.ResearchInterestsStore.layer,
         OrcidTokens.layer,
       ),
       Redis.layerPersistenceFromDataStore,
