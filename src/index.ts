@@ -144,6 +144,7 @@ pipe(
     Layer.provide(
       Layer.mergeAll(
         Prereviewers.CareerStages.layer,
+        Prereviewers.IsOpenForRequestsStore.layer,
         Prereviewers.LanguagesStore.layer,
         Prereviewers.Locations.layer,
         OrcidTokens.layer,

@@ -1,6 +1,7 @@
 export * from './legacy-avatar.ts'
 export * as CareerStages from './CareerStages.ts'
 export * from './legacy-career-stage.ts'
+export * as IsOpenForRequestsStore from './IsOpenForRequestsStore.ts'
 export * from './legacy-is-open-for-requests.ts'
 export * as LanguagesStore from './LanguagesStore.ts'
 export * from './legacy-languages.ts'

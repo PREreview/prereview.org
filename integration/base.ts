@@ -48,7 +48,6 @@ import { html, rawHtml } from '../src/html.ts'
 import {
   KeyvStores,
   type AuthorInviteStoreEnv,
-  type IsOpenForRequestsStoreEnv,
   type ResearchInterestsStoreEnv,
   type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
@@ -89,7 +88,6 @@ interface AppFixtures {
   server: Fiber.Fiber<never>
   formStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
-  isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: Keyv
   clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
@@ -2339,9 +2337,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   formStore: async ({}, use) => {
     await use(new Keyv())
   },
-  isOpenForRequestsStore: async ({}, use) => {
-    await use(new Keyv())
-  },
   clubs: async ({}, use) => {
     await use([
       {
@@ -2418,7 +2413,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
         oauthServer,
         port,
         formStore,
-        isOpenForRequestsStore,
         clubs,
         isUserBlocked,
         researchInterestsStore,
@@ -2446,12 +2440,12 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             authorInviteStore,
             avatarStore: new Keyv(),
             formStore,
-            isOpenForRequestsStore,
             researchInterestsStore,
             slackUserIdStore,
             userOnboardingStore,
           }),
           Prereviewers.CareerStages.layerInMemory,
+          Prereviewers.IsOpenForRequestsStore.layerInMemory,
           Prereviewers.LanguagesStore.layerInMemory,
           Prereviewers.Locations.layerInMemory,
           OrcidTokens.layerInMemory,

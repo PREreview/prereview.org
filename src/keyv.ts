@@ -13,7 +13,6 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
 import type { FormStoreEnv } from './PreprintReviews/index.ts'
-import { IsOpenForRequestsC } from './Prereviewers/legacy-is-open-for-requests.ts' // oxlint-disable-line module-boundaries/use-index
 import { type ResearchInterests, ResearchInterestsC } from './Prereviewers/legacy-research-interests.ts' // oxlint-disable-line module-boundaries/use-index
 import { DataStoreRedis } from './Redis.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
@@ -28,7 +27,6 @@ export class KeyvStores extends Context.Service<
   KeyvStores,
   AvatarStoreEnv &
     AuthorInviteStoreEnv &
-    IsOpenForRequestsStoreEnv &
     ResearchInterestsStoreEnv &
     SlackUserIdStoreEnv &
     UserOnboardingStoreEnv &
@@ -46,11 +44,6 @@ export const keyvStoresLayer = Layer.effect(
       authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
       avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
       formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
-      isOpenForRequestsStore: new Keyv({
-        emitErrors: false,
-        namespace: 'is-open-for-requests',
-        store: createKeyvStore(),
-      }),
       researchInterestsStore: new Keyv({
         emitErrors: false,
         namespace: 'research-interests',
@@ -68,10 +61,6 @@ export interface AuthorInviteStoreEnv {
 
 export interface AvatarStoreEnv {
   avatarStore: Keyv
-}
-
-export interface IsOpenForRequestsStoreEnv {
-  isOpenForRequestsStore: Keyv
 }
 
 export interface ResearchInterestsStoreEnv {
@@ -191,16 +180,6 @@ export const getAuthorInvite = flow(
 export const saveAuthorInvite = flow(
   setKey(UuidC, AuthorInviteC),
   RTE.local((env: AuthorInviteStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.authorInviteStore })),
-)
-
-export const isOpenForRequests = flow(
-  getKey(OrcidC, IsOpenForRequestsC),
-  RTE.local((env: IsOpenForRequestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.isOpenForRequestsStore })),
-)
-
-export const saveOpenForRequests = flow(
-  setKey(OrcidC, IsOpenForRequestsC),
-  RTE.local((env: IsOpenForRequestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.isOpenForRequestsStore })),
 )
 
 export const deleteResearchInterests = flow(

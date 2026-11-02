@@ -333,10 +333,7 @@ export const MyDetailsRouter = pipe(
             slackUserIdStore: env.users.slackUserIdStore,
           },
         ),
-        isOpenForRequests: withEnv(Keyv.isOpenForRequests, {
-          isOpenForRequestsStore: env.users.isOpenForRequestsStore,
-          ...env.logger,
-        }),
+        isOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.get, env.runtime),
         getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
         getResearchInterests: withEnv(Keyv.getResearchInterests, {
           researchInterestsStore: env.users.researchInterestsStore,
@@ -389,10 +386,7 @@ export const MyDetailsRouter = pipe(
         saveCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.save, env.runtime),
         saveLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.save, env.runtime),
         saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),
-        saveOpenForRequests: withEnv(Keyv.saveOpenForRequests, {
-          isOpenForRequestsStore: env.users.isOpenForRequestsStore,
-          ...env.logger,
-        }),
+        saveOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.save, env.runtime),
         saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
         saveResearchInterests: withEnv(Keyv.saveResearchInterests, {
           researchInterestsStore: env.users.researchInterestsStore,
