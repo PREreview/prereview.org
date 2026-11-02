@@ -4,8 +4,12 @@ services:
       context: .
       target: prod
     depends_on:
-      - mailpit
-      - redis
+      mailpit:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     env_file:
       - .env
     environment:
@@ -41,6 +45,11 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ['CMD', 'pg_isready', '--username', 'postgres']
+      interval: 1s
+      timeout: 1s
+      retries: 30
   redis:
     build:
       context: .
