@@ -97,4 +97,10 @@ export const worker = Layer.effectDiscard(
   ),
 )
 
-export const replayExistingEvents = dispatchNewEvents
+export const replayExistingEvents = pipe(
+  Effect.logDebug('Replaying existing events'),
+  Effect.andThen(dispatchNewEvents),
+  Effect.timeout('2 minutes'),
+  Effect.tap(() => Effect.logDebug('Existing events replayed')),
+  Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to replay existing events'), { error })),
+)
