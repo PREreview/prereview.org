@@ -1,5 +1,6 @@
 app = 'prereview-translate'
 primary_region = 'iad'
+kill_timeout = '60s'
 
 [[vm]]
 size = 'shared-cpu-2x'
