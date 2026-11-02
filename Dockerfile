@@ -89,12 +89,6 @@ COPY playwright.config.ts .
 ENTRYPOINT ["npx", "playwright", "test"]
 
 #
-# Stage: Build hivemind
-#
-FROM golang AS hivemind
-RUN go install github.com/DarthSim/hivemind@v1.1.0
-
-#
 # Stage: Build Redis
 #
 FROM redis:8.10.2 AS redis
@@ -108,12 +102,11 @@ ENV NODE_ENV=production
 RUN apt-get update && apt-get install --yes \
   wget \
   && rm --recursive --force /var/lib/apt/lists/*
-COPY --from=hivemind /go/bin/hivemind /app/
 
 RUN mkdir data && chown node:node data && echo '{"type": "module"}' > /app/package.json
 COPY --from=pnpm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
-COPY .dev/Procfile /app/
+COPY --chmod=755 .dev/start.sh /app/
 COPY --from=redis /usr/local/bin/redis-server /app/
 
 HEALTHCHECK --interval=5s --timeout=1s \
@@ -122,4 +115,4 @@ HEALTHCHECK --interval=5s --timeout=1s \
 EXPOSE 3000
 USER node
 
-CMD ["./hivemind", "--no-prefix"]
+CMD ["./start.sh"]
