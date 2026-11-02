@@ -38,10 +38,6 @@ updates:
       ibm-plex:
         patterns:
           - '@ibm/plex-*'
-      keyv:
-        patterns:
-          - '@keyv/*'
-          - 'keyv'
       opentelemetry:
         patterns:
           - '@opentelemetry/*'
