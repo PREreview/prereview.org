@@ -3,6 +3,9 @@ name: Sync Crowdin
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   sync-crowdin:
     name: 'Sync Crowdin'
