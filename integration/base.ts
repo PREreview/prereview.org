@@ -3798,3 +3798,10 @@ export const waitForProseMirrorFocus = async (editor: Locator) => {
       }),
   )
 }
+
+export const waitForEditor = async (editor: Locator) => {
+  // Seeing the editor's label means the new page has replaced the previous one, so its load state is the one checked
+  await expect(editor).toBeVisible()
+
+  await waitForNotBusy(editor.page())
+}
