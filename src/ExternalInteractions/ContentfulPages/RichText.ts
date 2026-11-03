@@ -13,6 +13,7 @@ import {
   type Types,
   Filter,
 } from 'effect'
+import { format } from 'fp-ts-routing'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import type {
@@ -30,6 +31,7 @@ import type {
 import { type Html, html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
+import * as Routes from '../../routes.ts'
 import { Slug } from '../../types/Slug.ts'
 import {
   CallToActionEntry,
@@ -37,13 +39,21 @@ import {
   MediaEntry,
   MediaGalleryEntry,
   PageEntry,
+  ReviewListEntry,
   YouTubeEntry,
 } from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
-const EmbeddedEntry = Schema.Union([CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, YouTubeEntry])
+const EmbeddedEntry = Schema.Union([
+  CallToActionEntry,
+  DynamicEmbedEntry,
+  MediaEntry,
+  MediaGalleryEntry,
+  ReviewListEntry,
+  YouTubeEntry,
+])
 
 export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>()(
   'RequiredJs',
@@ -112,6 +122,21 @@ const EmbeddedEntryToHtml = Match.typeTags<
 
     return html`<div class="media-gallery">${itemsHtml}</div>`
   }),
+  ReviewListEntry: reviewList =>
+    Effect.succeed(html`
+      <ul>
+        ${Array.map(getValueForDefaultLocale(reviewList.fields.reviews), id => {
+          const href =
+            typeof id === 'number'
+              ? format(Routes.reviewMatch.formatter, { id })
+              : Routes.DatasetReview.href({ datasetReviewId: id })
+
+          return html`<li>
+            <a href="${href}"><span ${languageAttributesFor('en')}>Review ${id}</span></a>
+          </li>`
+        })}
+      </ul>
+    `),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
     const url = getValueForDefaultLocale(youTube.fields.url)
     const title = getValueForDefaultLocale(youTube.fields.title)

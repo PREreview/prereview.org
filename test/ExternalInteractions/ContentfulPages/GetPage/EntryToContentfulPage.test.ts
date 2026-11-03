@@ -1169,6 +1169,7 @@ it.effect.each([
     'blog-posts-multiple-authors',
     'blog-posts-newsletter',
     'blog-posts-large-hero-image',
+    'blog-posts-review-list',
     'blog-posts-video',
   ],
 ])("can't parse a record (%s)", ([response]) =>

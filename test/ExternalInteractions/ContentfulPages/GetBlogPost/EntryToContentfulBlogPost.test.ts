@@ -1769,6 +1769,105 @@ it.effect.each<{
       js: HashSet.empty(),
     }),
   },
+  {
+    response: 'blog-posts-review-list',
+    index: 0,
+    expected: new ContentfulBlogPost({
+      title: html`PREreview platform news, 4 August 2023`,
+      channel: 'weeknote',
+      authors: [new Author({ name: Name('Chad Sansing') }), new Author({ name: Name('Chris Wilkinson') })],
+      publishedAt: Instant.from('2023-08-04T13:00:00Z'),
+      heroImage: undefined,
+      excerpt: 'Welcome back to our weekly update on all things PREreview.org!',
+      html: html`
+        <p><span>Welcome back to our weekly update on all things PREreview.org!</span></p>
+        <h1 id="whats-new-at-prereview"><span>What’s new at PREreview?</span></h1>
+        <p>
+          <span>
+            As we continue developing our Structured PREreview workflow (which will take the place of our old Rapid
+            PREReview workflow), we’re excited for all the new PREreviews being published by
+            <a href="https://asapbio.org/crowd-review-2023">ASAPbio Crowds</a> and their PREreview Clubs! Check them
+            out!
+          </span>
+        </p>
+        <ul>
+          <li>
+            <a href="/reviews/8199476"><span lang="en" dir="ltr">Review 8199476</span></a>
+          </li>
+          <li>
+            <a href="/reviews/8199664"><span lang="en" dir="ltr">Review 8199664</span></a>
+          </li>
+          <li>
+            <a href="/reviews/8201231"><span lang="en" dir="ltr">Review 8201231</span></a>
+          </li>
+          <li>
+            <a href="/reviews/8199502"><span lang="en" dir="ltr">Review 8199502</span></a>
+          </li>
+          <li>
+            <a href="/reviews/8199476"><span lang="en" dir="ltr">Review 8199476</span></a>
+          </li>
+          <li>
+            <a href="/reviews/8208261"><span lang="en" dir="ltr">Review 8208261</span></a>
+          </li>
+        </ul>
+        <p><span>Keep up with our blog for more news on Clubs - and how to start your own - very soon!</span></p>
+        <h1 id="whats-next"><span>What’s next?</span></h1>
+        <p>
+          <span>
+            Up next, we’ll be working on testing and releasing our Structured PREreview workflow, as well as updated
+            profile pages, and new request-a-review integrations powered by the
+            <a href="https://notify.coar-repositories.org/">COAR Notify Protocol</a>.
+          </span>
+        </p>
+        <h1 id="let-us-know-what-you-think"><span>Let us know what you think</span></h1>
+        <p>
+          <span>
+            Share your PREreview experiences with PREreview.org anytime by scheduling a user research interview with
+            Product Manager Chad Sansing. You can
+            <a
+              href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+              >click here to sign up for a chat</a
+            >. If you can’t find a time that works for you, please <a href="mailto:chad@prereview.org">email Chad</a> to
+            arrange a call. Whenever possible, we compensate interviewees.
+          </span>
+        </p>
+        <a
+          href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+          class="button"
+          ><span>Schedule a chat!</span></a
+        >
+        <p>
+          <span>
+            You can join our <a href="https://bit.ly/PREreview-Slack">community Slack</a> and share your PREreview
+            stories on the #community-feedback channel, as well.
+          </span>
+        </p>
+        <a href="https://bit.ly/PREreview-Slack" class="button"><span>Join our Slack!</span></a>
+        <h1 id="stay-connected"><span>Stay connected</span></h1>
+        <p><span>Join us again next Friday for more news from PREreview.org.</span></p>
+        <p>
+          <span>
+            Until then, you can find us on <a href="https://mas.to/@prereview">Mastodon</a>,<a
+              href="https://twitter.com/PREreview_"
+            >
+              Twitter</a
+            >, and<a href="https://www.linkedin.com/company/prereview?original_referer=https%3A%2F%2Fwww.google.com%2F">
+              LinkedIn</a
+            >. Please also take a moment to<a
+              href="https://prereview.civicrm.org/civicrm/profile/create?gid=14&amp;reset=1"
+            >
+              subscribe to our newsletter</a
+            >.
+          </span>
+        </p>
+        <a href="https://prereview.civicrm.org/civicrm/profile/create?gid=14&amp;reset=1" class="button"
+          ><span>Subscribe now!</span></a
+        >
+      `,
+      locale: DefaultLocale,
+      js: HashSet.empty(),
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

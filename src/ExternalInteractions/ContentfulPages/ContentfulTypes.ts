@@ -2,6 +2,7 @@ import { Schema, SchemaTransformation } from 'effect'
 import { ContentfulId, Document, ImageAsset, VideoAsset } from '../../ExternalApis/Contentful/index.ts'
 import { SlugSchema } from '../../types/Slug.ts'
 import { DynamicEmbed } from './DynamicEmbedder.ts'
+import { PrereviewIdFromUrl } from './PrereviewId.ts'
 
 export const PageEntry = Schema.Struct({
   sys: Schema.Struct({
@@ -77,6 +78,15 @@ export const HeroImageEntry = Schema.Struct({
     ),
   }),
 }).mapFields(fields => ({ ...fields, _tag: Schema.tagDefaultOmit('HeroImageEntry') }))
+
+export const ReviewListEntry = Schema.Struct({
+  sys: Schema.Struct({
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('reviewList')) }) }),
+  }),
+  fields: Schema.Struct({
+    reviews: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyArray(PrereviewIdFromUrl)),
+  }),
+}).mapFields(fields => ({ ...fields, _tag: Schema.tagDefaultOmit('ReviewListEntry') }))
 
 export const YouTubeEntry = Schema.Struct({
   sys: Schema.Struct({

@@ -1,0 +1,404 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "2YCQnIZvqtJYCBqtc7HN44",
+        "type": "Entry",
+        "createdAt": "2026-10-08T12:48:00.274Z",
+        "updatedAt": "2026-11-03T11:07:40.328Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 6,
+        "revision": 2,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "PREreview platform news, 4 August 2023" },
+        "slug": { "en-US": "prereview-platform-news-4-august-2023" },
+        "authors": {
+          "en-US": [
+            { "sys": { "type": "Link", "linkType": "Entry", "id": "7Dzsfl0UjH0jPB6Ux0mFZw" } },
+            { "sys": { "type": "Link", "linkType": "Entry", "id": "y947DDnS0pieb3kZIithc" } }
+          ]
+        },
+        "channel": { "en-US": "weeknote" },
+        "excerpt": { "en-US": "Welcome back to our weekly update on all things PREreview.org!" },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Welcome back to our weekly update on all things PREreview.org!",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "What’s new at PREreview?", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "As we continue developing our Structured PREreview workflow (which will take the place of our old Rapid PREReview workflow), we’re excited for all the new PREreviews being published by ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://asapbio.org/crowd-review-2023" },
+                    "content": [{ "nodeType": "text", "value": "ASAPbio Crowds", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " and their PREreview Clubs! Check them out!",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "neCcTtYkdVfEyOqMX7eOo", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Keep up with our blog for more news on Clubs - and how to start your own - very soon!",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "What’s next?", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Up next, we’ll be working on testing and releasing our Structured PREreview workflow, as well as updated profile pages, and new request-a-review integrations powered by the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://notify.coar-repositories.org/" },
+                    "content": [{ "nodeType": "text", "value": "COAR Notify Protocol", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Let us know what you think", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Share your PREreview experiences with PREreview.org anytime by scheduling a user research interview with Product Manager Chad Sansing. You can ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+                    },
+                    "content": [
+                      { "nodeType": "text", "value": "click here to sign up for a chat", "marks": [], "data": {} }
+                    ]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": ". If you can’t find a time that works for you, please ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "mailto:chad@prereview.org" },
+                    "content": [{ "nodeType": "text", "value": "email Chad", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to arrange a call. Whenever possible, we compensate interviewees.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "7aPEGdSXg0JsJIqOJu8n94", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "You can join our ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://bit.ly/PREreview-Slack" },
+                    "content": [{ "nodeType": "text", "value": "community Slack", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " and share your PREreview stories on the #community-feedback channel, as well.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "1MuRXkDcRt86unxnpNsTb4", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "heading-1",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Stay connected", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Join us again next Friday for more news from PREreview.org.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Until then, you can find us on ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://mas.to/@prereview" },
+                    "content": [{ "nodeType": "text", "value": "Mastodon", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ",", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://twitter.com/PREreview_" },
+                    "content": [{ "nodeType": "text", "value": " Twitter", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ", and", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": {
+                      "uri": "https://www.linkedin.com/company/prereview?original_referer=https%3A%2F%2Fwww.google.com%2F"
+                    },
+                    "content": [{ "nodeType": "text", "value": " LinkedIn", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ". Please also take a moment to", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.civicrm.org/civicrm/profile/create?gid=14&reset=1" },
+                    "content": [
+                      { "nodeType": "text", "value": " subscribe to our newsletter", "marks": [], "data": {} }
+                    ]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": { "target": { "sys": { "id": "8gKCIo8LMT1hbWzpLSEym", "type": "Link", "linkType": "Entry" } } },
+                "content": []
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "", "marks": [], "data": {} }]
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2023-08-04T13:00:00.000+00:00" },
+        "publishedAtOverride": { "en-US": "2023-08-04T15:50:29.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "1MuRXkDcRt86unxnpNsTb4",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:34:14.641Z",
+          "updatedAt": "2026-10-08T12:34:14.641Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
+        },
+        "fields": { "text": { "en-US": "Join our Slack!" }, "url": { "en-US": "https://bit.ly/PREreview-Slack" } }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "7Dzsfl0UjH0jPB6Ux0mFZw",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:33:52.585Z",
+          "updatedAt": "2026-10-08T12:33:52.585Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": { "name": { "en-US": "Chad Sansing" } }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "7aPEGdSXg0JsJIqOJu8n94",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:34:34.964Z",
+          "updatedAt": "2026-10-08T12:34:34.964Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
+        },
+        "fields": {
+          "text": { "en-US": "Schedule a chat!" },
+          "url": {
+            "en-US": "https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "8gKCIo8LMT1hbWzpLSEym",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:34:19.152Z",
+          "updatedAt": "2026-10-08T12:34:19.152Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "callToAction" } }
+        },
+        "fields": {
+          "text": { "en-US": "Subscribe now!" },
+          "url": { "en-US": "https://prereview.civicrm.org/civicrm/profile/create?gid=14&reset=1" }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "neCcTtYkdVfEyOqMX7eOo",
+          "type": "Entry",
+          "createdAt": "2026-11-03T11:07:37.984Z",
+          "updatedAt": "2026-11-03T11:07:37.984Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 7,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "reviewList" } }
+        },
+        "fields": {
+          "title": { "en-US": "ASAPBio Club Reviews" },
+          "reviews": {
+            "en-US": [
+              "https://prereview.org/reviews/8199476",
+              "https://prereview.org/reviews/8199664",
+              "https://prereview.org/reviews/8201231",
+              "https://prereview.org/reviews/8199502",
+              "https://prereview.org/reviews/8199476",
+              "https://prereview.org/reviews/8208261"
+            ]
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "y947DDnS0pieb3kZIithc",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:33:54.529Z",
+          "updatedAt": "2026-10-08T12:33:54.529Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Chris Wilkinson" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5CC8sSrc4hJtxDWZWk1mfM" } } }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5CC8sSrc4hJtxDWZWk1mfM",
+          "type": "Asset",
+          "createdAt": "2026-10-08T12:33:50.111Z",
+          "updatedAt": "2026-10-08T12:33:50.111Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Chris Wilkinson profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/5CC8sSrc4hJtxDWZWk1mfM/b0d031678ec725938d71d6dbff0a23e9/4ed4ad3d4daf86e7febbcf025a5f7c65",
+              "details": { "size": 16938, "image": { "width": 250, "height": 250 } },
+              "fileName": "4ed4ad3d4daf86e7febbcf025a5f7c65",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      }
+    ]
+  }
+}
