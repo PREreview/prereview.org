@@ -11,6 +11,7 @@ import {
   hasAVerifiedEmailAddress,
   usePostgresDB,
   waitForEditor,
+  waitForProseMirrorFocus,
   willPublishAComment,
 } from './base.ts'
 
@@ -273,19 +274,21 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('region', { name: 'Your comment' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your comment' })).toHaveText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
     await page.getByRole('link', { name: 'Change comment' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
 
+    await page.getByLabel('Write your comment').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Write your comment'))
     await page
       .getByLabel('Write your comment')
       .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('region', { name: 'Your comment' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your comment' })).toHaveText(
       'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
     )
   },
