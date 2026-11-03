@@ -147,4 +147,4 @@ categorize-review-request:
 
 .PHONY: dump-sandbox-events
 dump-sandbox-events:
-	echo "COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);" | fly mpg connect nvwq9oz78qe03kl1 -u readonly -d prereview-sandbox | tail -n +2 > data/sandbox-events-dump.csv
+	echo "COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);" | flyctl mpg connect nvwq9oz78qe03kl1 -u readonly -d prereview-sandbox | tail -n +2 > data/sandbox-events-dump.csv
