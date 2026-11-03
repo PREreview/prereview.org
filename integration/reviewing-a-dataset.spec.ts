@@ -14,37 +14,76 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
 
   await page.getByRole('button', { name: 'Start now' }).click()
 
-  await page.getByLabel('Fair', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+    .getByLabel('Fair', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('Yes', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Does the dataset have enough metadata?' })
+    .getByLabel('Yes', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('No', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+    })
+    .getByLabel('No', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('I don’t know', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+    })
+    .getByLabel('I don’t know', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('Yes', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+    .getByLabel('Yes', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('No', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+    .getByLabel('No', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('I don’t know', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset relatively error-free?' })
+    .getByLabel('I don’t know', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+    })
+    .getByLabel('Somewhat consequential', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('Yes', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is this dataset ready to be shared?' })
+    .getByLabel('Yes', { exact: true })
+    .check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page
@@ -57,15 +96,15 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you review this dataset with anyone else?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Use of Artificial Intelligence (AI)')
 
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.getByLabel('I’m following the Code of Conduct').check()
@@ -160,37 +199,76 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.getByLabel('Fair', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+      .getByLabel('Fair', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+      .getByLabel('Partly', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Does the dataset have enough metadata?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+      })
+      .getByLabel('No', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+      })
+      .getByLabel('I don’t know', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+      .getByLabel('Partly', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+      .getByLabel('No', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset relatively error-free?' })
+      .getByLabel('I don’t know', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Somewhat consequential', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+      })
+      .getByLabel('Somewhat consequential', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is this dataset ready to be shared?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page
@@ -203,14 +281,17 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await page.getByLabel('Orange Panda').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Did you review this dataset with anyone else?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('Yes')
+      .check()
     await page.getByLabel('How did you use it? (optional)').fill('Vivamus egestas risus vel ex tincidunt.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('I’m following the Code of Conduct').check()
@@ -304,37 +385,76 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishADatasetReview)(
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.getByLabel('Fair', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+      .getByLabel('Fair', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+      .getByLabel('Partly', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Does the dataset have enough metadata?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+      })
+      .getByLabel('No', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+      })
+      .getByLabel('I don’t know', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+      .getByLabel('Partly', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+      .getByLabel('No', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset relatively error-free?' })
+      .getByLabel('I don’t know', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Somewhat consequential', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+      })
+      .getByLabel('Somewhat consequential', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is this dataset ready to be shared?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page
@@ -347,7 +467,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishADatasetReview)(
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Did you review this dataset with anyone else?' })
+      .getByLabel('Yes', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Add an author')
@@ -358,10 +481,16 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishADatasetReview)(
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Do you, or any of the other authors, have any competing interests?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('I’m following the Code of Conduct').check()
@@ -449,7 +578,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Fair', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+      .getByLabel('Fair', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
 
@@ -664,57 +796,92 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
 test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Fair', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+    .getByLabel('Fair', { exact: true })
+    .check()
   await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page
     .getByLabel('How does it partly follow the principles?')
     .fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page.getByRole('group', { name: 'Does the dataset have enough metadata?' }).getByLabel('Partly').check()
   await page.getByLabel('What metadata does it have, and what is missing?').fill('Donec sed sodales ligula.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+    })
+    .getByLabel('Partly')
+    .check()
   await page
     .getByLabel('How does the dataset share its metadata? What’s missing?')
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+    })
+    .getByLabel('Partly')
+    .check()
   await page
     .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
     .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page
     .getByLabel('How is it only partly well-suited? Which parts seem well-suited? Which parts don’t?')
     .fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page.getByLabel('How does it partly support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page
     .getByLabel('How is it only partly granular enough? Which parts need to be more detailed?')
     .fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page.getByRole('group', { name: 'Is the dataset relatively error-free?' }).getByLabel('Partly').check()
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+    })
+    .getByLabel('Somewhat consequential', { exact: true })
+    .check()
   await page.getByLabel('How is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page.getByRole('group', { name: 'Is this dataset ready to be shared?' }).getByLabel('Yes').check()
   await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await expect(
+    page.getByLabel(
+      'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? (optional)',
+    ),
+  ).toBeVisible()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you review this dataset with anyone else?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -993,41 +1160,77 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Fair', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+    .getByLabel('Fair', { exact: true })
+    .check()
   await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page
+    .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+    .getByLabel('Yes')
+    .check()
   await page.getByLabel('How does it follow the principles?').fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page.getByRole('group', { name: 'Does the dataset have enough metadata?' }).getByLabel('Partly').check()
   await page.getByLabel('What metadata does it have, and what is missing?').fill('Donec sed sodales ligula.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+    })
+    .getByLabel('No', { exact: true })
+    .check()
   await page
     .getByLabel('How should the dataset present its missing metadata?')
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+    })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page
     .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
     .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+    .getByLabel('Yes', { exact: true })
+    .check()
   await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+    .getByLabel('Yes', { exact: true })
+    .check()
   await page.getByLabel('How does it support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+    .getByLabel('No', { exact: true })
+    .check()
   await page.getByLabel('How is it not detailed enough?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset relatively error-free?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+    })
+    .getByLabel('Somewhat consequential', { exact: true })
+    .check()
   await page.getByLabel('How is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is this dataset ready to be shared?' })
+    .getByLabel('Yes', { exact: true })
+    .check()
   await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page
@@ -1038,12 +1241,12 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you review this dataset with anyone else?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('Yes').check()
   await page.getByLabel('How did you use it? (optional)').fill('Vivamus egestas risus vel ex tincidunt.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
@@ -1152,41 +1355,74 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Fair', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+    .getByLabel('Fair', { exact: true })
+    .check()
   await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page
+    .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+    .getByLabel('Yes')
+    .check()
   await page.getByLabel('How does it follow the principles?').fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page.getByRole('group', { name: 'Does the dataset have enough metadata?' }).getByLabel('Partly').check()
   await page.getByLabel('What metadata does it have, and what is missing?').fill('Donec sed sodales ligula.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+    })
+    .getByLabel('No', { exact: true })
+    .check()
   await page
     .getByLabel('How should the dataset present its missing metadata?')
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+    })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page
     .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
     .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page
+    .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+    .getByLabel('Yes')
+    .check()
   await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page
+    .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+    .getByLabel('Yes')
+    .check()
   await page.getByLabel('How does it support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+    .getByLabel('No', { exact: true })
+    .check()
   await page.getByLabel('How is it not detailed enough?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByRole('group', { name: 'Is the dataset relatively error-free?' })
+    .getByLabel('Partly', { exact: true })
+    .check()
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page
+    .getByRole('group', {
+      name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+    })
+    .getByLabel('Somewhat consequential', { exact: true })
+    .check()
   await page.getByLabel('How is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page.getByRole('group', { name: 'Is this dataset ready to be shared?' }).getByLabel('Yes').check()
   await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page
@@ -1197,11 +1433,11 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you review this dataset with anyone else?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
@@ -1309,32 +1545,70 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Fair', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'How would you rate the quality of this data set?' })
+      .getByLabel('Fair', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes').check()
+    await page
+      .getByRole('group', { name: 'Does this dataset follow FAIR and CARE principles?' })
+      .getByLabel('Yes')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Partly').check()
+    await page.getByRole('group', { name: 'Does the dataset have enough metadata?' }).getByLabel('Partly').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+      })
+      .getByLabel('No', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+      })
+      .getByLabel('Partly', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes').check()
+    await page
+      .getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' })
+      .getByLabel('Yes')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes').check()
+    await page
+      .getByRole('group', { name: 'Does this dataset support the researcher’s stated conclusions?' })
+      .getByLabel('Yes')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset granular enough to be a reliable standard of measurement?' })
+      .getByLabel('No', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByRole('group', { name: 'Is the dataset relatively error-free?' })
+      .getByLabel('Partly', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Somewhat consequential', { exact: true }).check()
+    await page
+      .getByRole('group', {
+        name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+      })
+      .getByLabel('Somewhat consequential', { exact: true })
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes').check()
+    await page.getByRole('group', { name: 'Is this dataset ready to be shared?' }).getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await expect(
+      page.getByLabel(
+        'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? (optional)',
+      ),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes').check()
+    await page.getByRole('group', { name: 'Did you review this dataset with anyone else?' }).getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()
