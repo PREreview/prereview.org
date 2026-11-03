@@ -139,7 +139,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Would it benefit from language editing?' }).getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
@@ -152,9 +152,12 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -231,9 +234,15 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but they don’t want to be listed as authors').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Do you, or any of the other authors, have any competing interests?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -254,7 +263,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and Continue' }).click()
     await waitForNotBusy(page)
 
@@ -506,12 +518,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Use of Artificial Intelligence (AI)')
 
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Competing interests')
 
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Do you, or any of the other authors, have any competing interests?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -668,9 +686,15 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but they don’t want to be listed as authors').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Do you, or any of the other authors, have any competing interests?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -709,7 +733,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('How did you use it? (optional)').fill('Maecenas sed dapibus massa.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -739,7 +763,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('Yes').check()
@@ -772,9 +799,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -803,9 +833,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -842,9 +875,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -874,9 +910,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -911,9 +950,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -951,7 +993,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Would it benefit from language editing?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -961,9 +1003,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1122,9 +1167,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1180,7 +1228,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Paste your PREreview').focus()
@@ -1190,7 +1241,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1266,7 +1317,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when ans
   await page.getByLabel('Moderately likely', { exact: true }).check()
   await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Would it benefit from language editing?' }).getByLabel('No').check()
   await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes, but it needs to be improved').click()
@@ -1356,9 +1407,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1465,7 +1519,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await waitForNotBusy(page)
     await page.getByLabel('Paste your PREreview').focus()
@@ -1475,7 +1532,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1551,7 +1608,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Would it benefit from language editing?' }).getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
@@ -1564,9 +1621,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1856,9 +1916,9 @@ test
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No, I reviewed it alone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1889,9 +1949,9 @@ test
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No, I reviewed it alone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1919,9 +1979,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1966,9 +2029,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2003,9 +2069,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2079,9 +2148,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2168,7 +2240,10 @@ test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ jav
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('I’ve already written the review').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByLabel('No').check()
+  await page
+    .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+    .getByLabel('No')
+    .check()
   await page.getByRole('button', { name: 'Save and Continue' }).click()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2193,6 +2268,11 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
+    await expect(
+      page.getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      }),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2223,9 +2303,15 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('group', { name: 'Are the methods well-suited for this research?' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2256,11 +2342,20 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('group', { name: 'Are the conclusions supported by the data?' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2290,13 +2385,29 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the conclusions supported by the data?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(
+      page.getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      }),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2327,15 +2438,36 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the conclusions supported by the data?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(
+      page.getByRole('group', {
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+      }),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2366,17 +2498,41 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the conclusions supported by the data?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(
+      page.getByRole('group', { name: 'Is the preprint likely to advance academic knowledge?' }),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2407,19 +2563,44 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the conclusions supported by the data?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Is the preprint likely to advance academic knowledge?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('group', { name: 'Would it benefit from language editing?' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2445,21 +2626,46 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the conclusions supported by the data?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Is the preprint likely to advance academic knowledge?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Would it benefit from language editing?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('group', { name: 'Would you recommend this preprint to others?' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2485,23 +2691,53 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the methods well-suited for this research?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Are the conclusions supported by the data?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', {
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+      })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I don’t know').check()
+    await page
+      .getByRole('group', { name: 'Is the preprint likely to advance academic knowledge?' })
+      .getByLabel('I don’t know')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Would it benefit from language editing?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes, but it needs to be improved').check()
+    await page
+      .getByRole('group', { name: 'Would you recommend this preprint to others?' })
+      .getByLabel('Yes, but it needs to be improved')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(
+      page.getByRole('group', { name: 'Is it ready for attention from an editor, publisher or broader audience?' }),
+    ).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -2926,7 +3162,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2981,7 +3220,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you, or any of the other authors, use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -3032,9 +3274,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -3071,9 +3316,12 @@ test
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -3105,9 +3353,9 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', asyn
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No, I reviewed it alone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Did you use AI to generate ideas for this review?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
+  await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -3140,9 +3388,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page
+      .getByRole('group', { name: 'Did you use AI to generate ideas for this review?' })
+      .getByLabel('No')
+      .check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
+    await page.getByRole('group', { name: 'Do you have any competing interests?' }).getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
