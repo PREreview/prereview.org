@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { FormC, formKey, FormStore } from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
@@ -25,7 +25,7 @@ describe('writeReviewChangeAuthor', () => {
       ([id, preprintTitle, user, locale, body, [newReview, number]]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -41,7 +41,9 @@ describe('writeReviewChangeAuthor', () => {
             status: StatusCodes.SeeOther,
             location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
           })
-          expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+          expect(
+            yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+          ).toMatchObject({
             otherAuthors,
           })
         }).pipe(
@@ -76,7 +78,7 @@ describe('writeReviewChangeAuthor', () => {
       ([id, preprintTitle, user, locale, body, [newReview, number]]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -122,7 +124,7 @@ describe('writeReviewChangeAuthor', () => {
     ([id, preprintTitle, body, method, user, locale, [newReview, number]]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -171,7 +173,7 @@ describe('writeReviewChangeAuthor', () => {
     ([id, preprintTitle, body, method, user, locale, [newReview, number]]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -242,7 +244,7 @@ describe('writeReviewChangeAuthor', () => {
     ([id, preprintTitle, body, method, number, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 

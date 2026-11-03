@@ -225,7 +225,7 @@ export interface Env {
     | Email.Email
   >
   logger: LoggerEnv
-  formStore: PreprintReviews.LegacyFormStore
+  formStore: PreprintReviews.FormStorage
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
   slackOauth: typeof SlackOauth.Service

@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../vitest.ts'
-import { Effect, Layer, Result } from 'effect'
+import { Effect, Layer, Option, Result } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as _ from '../../src/PreprintReviews/FormStore.ts'
 import * as fc from '../fc.ts'
@@ -23,9 +23,9 @@ describe('get', () => {
       yield* keyValueStore.set(key, JSON.stringify(value))
       const store = yield* _.Store
 
-      const actual = yield* Effect.promise(() => store.get(key))
+      const actual = yield* store.get(key)
 
-      expect(actual).toStrictEqual(JSON.parse(JSON.stringify(value)))
+      expect(actual).toStrictEqual(Option.some(JSON.parse(JSON.stringify(value))))
     }).pipe(Effect.provide(Layer.provideMerge(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
@@ -33,9 +33,9 @@ describe('get', () => {
     Effect.gen(function* () {
       const store = yield* _.Store
 
-      const actual = yield* Effect.promise(() => store.get(key))
+      const actual = yield* store.get(key)
 
-      expect(actual).toBeUndefined()
+      expect(actual).toStrictEqual(Option.none())
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
@@ -43,7 +43,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const store = yield* _.Store
 
-      const actual = yield* Effect.result(Effect.tryPromise(() => store.get(key)))
+      const actual = yield* Effect.result(store.get(key))
 
       expect(actual).toStrictEqual(Result.fail(expect.anything()))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
@@ -54,7 +54,7 @@ describe('set', () => {
   it.effect.prop('stores the value', [fc.string(), fc.json()], ([key, value]) =>
     Effect.gen(function* () {
       const store = yield* _.Store
-      yield* Effect.promise(() => store.set(key, value))
+      yield* store.set(key, value)
 
       const keyValueStore = yield* KeyValueStore.KeyValueStore
       const actual = yield* keyValueStore.get(key)
@@ -67,7 +67,7 @@ describe('set', () => {
     Effect.gen(function* () {
       const store = yield* _.Store
 
-      const actual = yield* Effect.result(Effect.tryPromise(() => store.set(key, value)))
+      const actual = yield* Effect.result(store.set(key, value))
 
       expect(actual).toStrictEqual(Result.fail(expect.anything()))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
@@ -78,13 +78,13 @@ describe('delete', () => {
   it.effect.prop('removes the value', [fc.string(), fc.json()], ([key, value]) =>
     Effect.gen(function* () {
       const store = yield* _.Store
-      yield* Effect.promise(() => store.set(key, value))
+      yield* store.set(key, value)
 
-      yield* Effect.promise(() => store.delete(key))
+      yield* store.delete(key)
 
-      const actual = yield* Effect.promise(() => store.get(key))
+      const actual = yield* store.get(key)
 
-      expect(actual).toBeUndefined()
+      expect(actual).toStrictEqual(Option.none())
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
@@ -92,7 +92,7 @@ describe('delete', () => {
     Effect.gen(function* () {
       const store = yield* _.Store
 
-      const actual = yield* Effect.result(Effect.tryPromise(() => store.delete(key)))
+      const actual = yield* Effect.result(store.delete(key))
 
       expect(actual).toStrictEqual(Result.fail(expect.anything()))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),

@@ -50,9 +50,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() =>
-          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-        )
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -106,9 +104,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() =>
-          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-        )
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -162,9 +158,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() =>
-          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-        )
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -234,9 +228,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() =>
-          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-        )
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
         const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
@@ -274,7 +266,9 @@ describe('writeReviewPublish', () => {
           persona: newReview.persona,
           id: reviewId,
         })
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toBeUndefined()
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toBeUndefined()
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
@@ -331,7 +325,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
         const publishPrereview = vi.fn<PublishPrereviewEnv['publishPrereview']>(() => TE.right([reviewDoi, reviewId]))
         const addToSession = vi.fn<AddToSessionEnv['addToSession']>(() => TE.of(undefined))
 
@@ -369,7 +363,9 @@ describe('writeReviewPublish', () => {
           persona: newReview.persona,
           id: reviewId,
         })
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toBeUndefined()
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toBeUndefined()
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),
@@ -410,7 +406,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -663,7 +659,7 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
@@ -682,9 +678,9 @@ describe('writeReviewPublish', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toStrictEqual(
-          FormC.encode(newReview),
-        )
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toStrictEqual(FormC.encode(newReview))
       }).pipe(
         Effect.provide([
           Layer.mock(Clubs, newReview.club ? { getClubName: () => Effect.succeed(club) } : {}),

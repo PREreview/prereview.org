@@ -4,7 +4,7 @@ import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as Errors from './Errors.ts'
-import { getForm, type LegacyFormStore } from './legacy-form.ts'
+import { getForm, type FormStorage } from './legacy-form.ts'
 import { NextExpectedCommand } from './NextExpectedCommand.ts'
 
 export interface Input {
@@ -15,7 +15,7 @@ export interface Input {
 export type Result = Result.Result<NextExpectedCommand, Errors.PreprintReviewNotFound | UnableToQuery>
 
 export const GetNextExpectedCommand = (
-  formStore: LegacyFormStore,
+  formStore: FormStorage,
 ): ((input: Input) => Effect.Effect<Result.Result.Success<Result>, Result.Result.Failure<Result>>) =>
   Effect.fn('PreprintReviews.getNextExpectedCommand')(function* (input) {
     const form = yield* pipe(

@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Layer, Tuple } from 'effect'
+import { Effect, Layer, Option, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import { CompletedFormC, FormC, formKey, FormStore } from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
@@ -29,9 +29,7 @@ describe('writeReviewReadyFullReview', () => {
     ([preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, body], user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() =>
-          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-        )
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -39,7 +37,9 @@ describe('writeReviewReadyFullReview', () => {
           _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({ formStore, runtime }),
         )
 
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toMatchObject({
           readyFullReview,
           readyFullReviewDetails,
         })
@@ -76,7 +76,7 @@ describe('writeReviewReadyFullReview', () => {
     ([preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, body], user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -84,7 +84,9 @@ describe('writeReviewReadyFullReview', () => {
           _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({ formStore, runtime }),
         )
 
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toMatchObject({
           readyFullReview,
           readyFullReviewDetails,
         })
@@ -201,7 +203,7 @@ describe('writeReviewReadyFullReview', () => {
     ([preprintId, preprintTitle, body, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -240,7 +242,7 @@ describe('writeReviewReadyFullReview', () => {
     ([preprintId, preprintTitle, body, method, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 

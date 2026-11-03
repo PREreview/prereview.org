@@ -72,24 +72,18 @@ it.effect.each<[string, _.Input, _.Result]>([
   Effect.gen(function* () {
     const formStore = yield* FormStore.Store
 
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
-    yield* Effect.promise(() =>
-      formStore.set(
-        formKey(orcidId, preprintWithReviewAnswered),
-        FormC.encode({ generativeAiIdeas: 'yes', moreAuthors: 'yes-private', alreadyWritten: 'no' }),
-      ),
+    yield* formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({}))
+    yield* formStore.set(
+      formKey(orcidId, preprintWithReviewAnswered),
+      FormC.encode({ generativeAiIdeas: 'yes', moreAuthors: 'yes-private', alreadyWritten: 'no' }),
     )
-    yield* Effect.promise(() =>
-      formStore.set(
-        formKey(orcidId, preprintWithReviewAnsweredWithDetails),
-        FormC.encode({ generativeAiIdeas: 'yes', generativeAiIdeasDetails: details }),
-      ),
+    yield* formStore.set(
+      formKey(orcidId, preprintWithReviewAnsweredWithDetails),
+      FormC.encode({ generativeAiIdeas: 'yes', generativeAiIdeasDetails: details }),
     )
-    yield* Effect.promise(() =>
-      formStore.set(
-        formKey(orcidId, preprintWithReviewAnsweredNoWithDetails),
-        FormC.encode({ generativeAiIdeas: 'no', generativeAiIdeasDetails: details }),
-      ),
+    yield* formStore.set(
+      formKey(orcidId, preprintWithReviewAnsweredNoWithDetails),
+      FormC.encode({ generativeAiIdeas: 'no', generativeAiIdeasDetails: details }),
     )
 
     const actualReturn = yield* Effect.result(_.GetUseOfAiDetails(formStore)(input))

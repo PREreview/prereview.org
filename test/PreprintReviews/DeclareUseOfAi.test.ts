@@ -127,22 +127,19 @@ it.effect.each<
   Effect.gen(function* () {
     const formStore = yield* FormStore.Store
 
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
-    yield* Effect.promise(() =>
-      formStore.set(formKey(orcidId, preprintWithReviewAnsweredYes), FormC.encode({ generativeAiIdeas: 'yes' })),
-    )
-    yield* Effect.promise(() =>
-      formStore.set(formKey(orcidId, preprintWithReviewAnsweredNo), FormC.encode({ generativeAiIdeas: 'no' })),
-    )
-    yield* Effect.promise(() =>
-      formStore.set(
-        formKey(orcidId, preprintWithReviewAnsweredYesWithDetails),
-        FormC.encode({ generativeAiIdeas: 'yes', generativeAiIdeasDetails: details }),
-      ),
+    yield* formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({}))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewAnsweredYes), FormC.encode({ generativeAiIdeas: 'yes' }))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewAnsweredNo), FormC.encode({ generativeAiIdeas: 'no' }))
+    yield* formStore.set(
+      formKey(orcidId, preprintWithReviewAnsweredYesWithDetails),
+      FormC.encode({ generativeAiIdeas: 'yes', generativeAiIdeasDetails: details }),
     )
 
     const actualReturn = yield* Effect.result(_.DeclareUseOfAi(formStore)(input))
-    const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
+    const actualState = yield* Effect.map(
+      formStore.get(formKey(input.orcidId, input.preprintId)),
+      Option.getOrUndefined,
+    )
 
     expect(actualReturn).toStrictEqual(expectedReturn)
     expect(actualState).toEqual(expectedState)

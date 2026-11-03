@@ -1,5 +1,5 @@
 import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { CompletedFormC, FormC, formKey, FormStore } from '../../../src/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
@@ -25,9 +25,7 @@ describe('writeReviewCompetingInterests', () => {
     ([preprintId, preprintTitle, competingInterests, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() =>
-          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-        )
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -41,9 +39,9 @@ describe('writeReviewCompetingInterests', () => {
           })({ formStore, runtime }),
         )
 
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject(
-          competingInterests,
-        )
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toMatchObject(competingInterests)
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
@@ -73,7 +71,7 @@ describe('writeReviewCompetingInterests', () => {
     ([preprintId, preprintTitle, competingInterests, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -87,9 +85,9 @@ describe('writeReviewCompetingInterests', () => {
           })({ formStore, runtime }),
         )
 
-        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject(
-          competingInterests,
-        )
+        expect(
+          yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+        ).toMatchObject(competingInterests)
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
@@ -236,7 +234,7 @@ describe('writeReviewCompetingInterests', () => {
     ([preprintId, preprintTitle, body, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 

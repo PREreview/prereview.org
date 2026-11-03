@@ -27,10 +27,8 @@ it.effect.each<[string, _.Input, _.Result]>([
   Effect.gen(function* () {
     const formStore = yield* FormStore.Store
 
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
-    yield* Effect.promise(() =>
-      formStore.set(formKey(orcidId, preprintWithReviewAlreadyWritten), FormC.encode({ alreadyWritten: 'yes' })),
-    )
+    yield* formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({}))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewAlreadyWritten), FormC.encode({ alreadyWritten: 'yes' }))
 
     const actualReturn = yield* Effect.result(_.GetNextExpectedCommand(formStore)(input))
 

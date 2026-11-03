@@ -5,7 +5,7 @@ import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as Errors from './Errors.ts'
-import { getForm, type Form, type LegacyFormStore } from './legacy-form.ts'
+import { getForm, type Form, type FormStorage } from './legacy-form.ts'
 
 export interface Input {
   preprintId: PreprintId
@@ -24,7 +24,7 @@ export type UseOfAiDetails = {
 export type Result = Result.Result<UseOfAiDetails, Errors.PreprintReviewNotFound | UnableToQuery>
 
 export const GetUseOfAiDetails = (
-  formStore: LegacyFormStore,
+  formStore: FormStorage,
 ): ((input: Input) => Effect.Effect<Result.Result.Success<Result>, Result.Result.Failure<Result>>) =>
   Effect.fn('PreprintReviews.getUseOfAiDetails')(function* (input) {
     const form = yield* pipe(

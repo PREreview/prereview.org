@@ -16,7 +16,7 @@ describe('writeReviewStart', () => {
       ([preprintId, preprint, newReview, user, locale]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
+          yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -85,7 +85,7 @@ describe('writeReviewStart', () => {
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
           if (newReview) {
-            yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview)))
+            yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
           }
 
           const runtime = yield* Effect.context<Preprints>()

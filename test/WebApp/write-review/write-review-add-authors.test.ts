@@ -22,9 +22,7 @@ describe('writeReviewAddAuthors', () => {
       ([preprintId, preprintTitle, user, locale, newReview]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() =>
-            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-          )
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -62,7 +60,7 @@ describe('writeReviewAddAuthors', () => {
       ([preprintId, preprintTitle, user, locale, newReview]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -102,7 +100,7 @@ describe('writeReviewAddAuthors', () => {
     ([preprintId, preprintTitle, method, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 
@@ -163,7 +161,7 @@ describe('writeReviewAddAuthors', () => {
     ([preprintId, preprintTitle, method, user, locale, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 

@@ -5,7 +5,7 @@ import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import * as Errors from './Errors.ts'
-import { getForm, saveForm, updateForm, type LegacyFormStore } from './legacy-form.ts'
+import { getForm, saveForm, updateForm, type FormStorage } from './legacy-form.ts'
 
 export interface Input {
   preprintId: PreprintId
@@ -16,7 +16,7 @@ export interface Input {
 export type Error = Errors.PreprintReviewNotFound | Errors.UnknownClub | UnableToHandleCommand
 
 export const AddReviewToAClub = (
-  formStore: LegacyFormStore,
+  formStore: FormStorage,
   clubs: ReadonlyArray<Uuid>,
 ): ((input: Input) => Effect.Effect<void, Error>) =>
   Effect.fn('PreprintReviews.addReviewToAClub')(function* (input) {

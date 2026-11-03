@@ -30,7 +30,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
 
@@ -67,7 +67,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
 
@@ -107,7 +107,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     ([preprintId, preprintTitle, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
         const resendVerificationEmail = vi.fn<(typeof ContactEmailAddresses.Service)['resendVerificationEmail']>(
           () => Effect.void,
         )
@@ -151,7 +151,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
 

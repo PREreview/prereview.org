@@ -1,13 +1,13 @@
-import { flow, identity, pipe } from 'effect'
+import { Context, Effect, identity, Option, pipe } from 'effect'
+import type { KeyValueStore } from 'effect/persistence'
 import { format, type Match } from 'fp-ts-routing'
-import * as E from 'fp-ts/lib/Either.js'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
 import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
+import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
 import * as Routes from '../routes.ts'
 import {
   writeReviewAuthorsMatch,
@@ -37,14 +37,14 @@ import { NextExpectedCommand } from './NextExpectedCommand.ts'
 
 export type Form = C.TypeOf<typeof FormC>
 
-export interface LegacyFormStore {
-  readonly get: (key: string) => Promise<unknown>
-  readonly set: (key: string, value: unknown) => Promise<unknown>
-  readonly delete: (key: string) => Promise<unknown>
+export interface FormStorage {
+  readonly get: (key: string) => Effect.Effect<Option.Option<unknown>, KeyValueStore.KeyValueStoreError>
+  readonly set: (key: string, value: unknown) => Effect.Effect<void, KeyValueStore.KeyValueStoreError>
+  readonly delete: (key: string) => Effect.Effect<void, KeyValueStore.KeyValueStoreError>
 }
 
 export interface FormStoreEnv {
-  formStore: LegacyFormStore
+  formStore: FormStorage
 }
 
 export function formKey(user: OrcidId, preprint: PreprintId) {
@@ -58,18 +58,20 @@ export function getForm(
   user: OrcidId,
   preprint: PreprintId,
 ): ReaderTaskEither<FormStoreEnv, 'no-form' | 'form-unavailable', Form> {
-  return flow(
-    TE.tryCatchK(
-      async ({ formStore }): Promise<unknown> => await formStore.get(formKey(user, preprint)),
-      () => 'form-unavailable' as const,
-    ),
-    TE.chainEitherKW(
-      flow(
-        FormC.decode,
-        E.mapLeft(() => 'no-form' as const),
+  return ({ formStore }) =>
+    EffectToFpts.toTaskEither(
+      pipe(
+        formStore.get(formKey(user, preprint)),
+        Effect.mapError(() => 'form-unavailable' as const),
+        Effect.flatMap(form =>
+          Effect.mapError(
+            Effect.fromResult(FptsToEffect.either(FormC.decode(Option.getOrUndefined(form)))),
+            () => 'no-form' as const,
+          ),
+        ),
       ),
-    ),
-  )
+      Context.empty(),
+    )
 }
 
 export function createForm(): Form {
@@ -85,24 +87,22 @@ export function saveForm(
   preprint: PreprintId,
 ): (form: Form) => ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
   return form =>
-    TE.tryCatchK(
-      async ({ formStore }) => {
-        await formStore.set(formKey(user, preprint), FormC.encode(form))
-      },
-      () => 'form-unavailable',
-    )
+    ({ formStore }) =>
+      EffectToFpts.toTaskEither(
+        Effect.mapError(formStore.set(formKey(user, preprint), FormC.encode(form)), () => 'form-unavailable' as const),
+        Context.empty(),
+      )
 }
 
 export function deleteForm(
   user: OrcidId,
   preprint: PreprintId,
 ): ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
-  return TE.tryCatchK(
-    async ({ formStore }) => {
-      await formStore.delete(formKey(user, preprint))
-    },
-    () => 'form-unavailable',
-  )
+  return ({ formStore }) =>
+    EffectToFpts.toTaskEither(
+      Effect.mapError(formStore.delete(formKey(user, preprint)), () => 'form-unavailable' as const),
+      Context.empty(),
+    )
 }
 
 export const nextFormPath = ({ form, preprintId }: { form: Form; preprintId: PreprintId }) =>

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Array, Effect, Layer, Tuple } from 'effect'
+import { Array, Effect, Layer, Option, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as T from 'fp-ts/lib/Task.js'
 import { CompletedFormC, FormC, formKey, FormStore } from '../../../src/PreprintReviews/index.ts'
@@ -35,9 +35,7 @@ describe('writeReviewAddAuthor', () => {
       ([id, preprintTitle, [body, expected], user, locale, newReview]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() =>
-            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-          )
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -57,7 +55,9 @@ describe('writeReviewAddAuthor', () => {
             status: StatusCodes.SeeOther,
             location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
           })
-          expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+          expect(
+            yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+          ).toMatchObject({
             otherAuthors: [...newReview.otherAuthors, ...expected],
           })
         }).pipe(
@@ -85,7 +85,7 @@ describe('writeReviewAddAuthor', () => {
       ([id, preprintTitle, body, user, locale, newReview]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -128,9 +128,7 @@ describe('writeReviewAddAuthor', () => {
       ([id, preprintTitle, body, user, locale, newReview]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() =>
-            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-          )
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -150,7 +148,9 @@ describe('writeReviewAddAuthor', () => {
             status: StatusCodes.SeeOther,
             location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
           })
-          expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+          expect(
+            yield* Effect.map(formStore.get(formKey(user.orcid, preprintTitle.id)), Option.getOrUndefined),
+          ).toMatchObject({
             otherAuthors: [...newReview.otherAuthors, body],
           })
         }).pipe(
@@ -174,7 +174,7 @@ describe('writeReviewAddAuthor', () => {
       ([id, preprintTitle, body, user, locale, newReview]) =>
         Effect.gen(function* () {
           const formStore = yield* FormStore.Store
-          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+          yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
           const runtime = yield* Effect.context<Preprints>()
 
@@ -253,7 +253,7 @@ describe('writeReviewAddAuthor', () => {
     ([id, preprintTitle, body, method, user, locale, canAddMultipleAuthors, newReview]) =>
       Effect.gen(function* () {
         const formStore = yield* FormStore.Store
-        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const runtime = yield* Effect.context<Preprints>()
 

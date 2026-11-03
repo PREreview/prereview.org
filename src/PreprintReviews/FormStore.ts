@@ -1,24 +1,42 @@
 import { Context, Effect, Layer, pipe, UndefinedOr } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
-import type { LegacyFormStore } from './legacy-form.ts'
+import type { FormStorage } from './legacy-form.ts'
 
-export class Store extends Context.Service<Store, LegacyFormStore>()('PreprintReviews/FormStore/Store') {}
+export class Store extends Context.Service<Store, FormStorage>()('PreprintReviews/FormStore/Store') {}
 
-export const fromKeyValueStore = Effect.fnUntraced(function* (store: KeyValueStore.KeyValueStore) {
-  const runPromise = Effect.runPromiseWith(yield* Effect.context())
-
-  return Store.of({
-    get: key => runPromise(pipe(store.get(key), Effect.map(UndefinedOr.map(value => JSON.parse(value) as unknown)))),
-    set: (key, value) => runPromise(store.set(key, JSON.stringify(value))),
-    delete: key => runPromise(store.remove(key)),
-  })
+export const fromKeyValueStore = (store: KeyValueStore.KeyValueStore): FormStorage => ({
+  get: key =>
+    Effect.flatMap(
+      store.get(key),
+      UndefinedOr.match({
+        onUndefined: () => Effect.succeedNone,
+        onDefined: value =>
+          Effect.asSome(
+            Effect.try({
+              try: () => JSON.parse(value) as unknown,
+              catch: cause =>
+                new KeyValueStore.KeyValueStoreError({ message: 'Unable to parse', method: 'get', key, cause }),
+            }),
+          ),
+      }),
+    ),
+  set: (key, value) =>
+    pipe(
+      Effect.try({
+        try: () => JSON.stringify(value),
+        catch: cause =>
+          new KeyValueStore.KeyValueStoreError({ message: 'Unable to encode', method: 'set', key, cause }),
+      }),
+      Effect.flatMap(json => store.set(key, json)),
+    ),
+  delete: key => Effect.asVoid(store.remove(key)),
 })
 
 export const layerKeyValueStore = Layer.effect(
   Store,
   Effect.gen(function* () {
-    return yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
+    return fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
   }),
 )
 

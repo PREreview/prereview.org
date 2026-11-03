@@ -1,5 +1,5 @@
 import { expect, it } from '../vitest.ts'
-import { Effect, Result } from 'effect'
+import { Effect, Option, Result } from 'effect'
 import * as FormStore from '../../src/PreprintReviews/FormStore.ts'
 import * as _ from '../../src/PreprintReviews/AddReviewToAClub.ts'
 import { FormC, formKey, PreprintReviewNotFound, UnknownClub } from '../../src/PreprintReviews/index.ts'
@@ -48,12 +48,15 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, (Uuid | null)?]>(
   Effect.gen(function* () {
     const formStore = yield* FormStore.Store
 
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
+    yield* formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({}))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null }))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId }))
 
     const actualReturn = yield* Effect.result(_.AddReviewToAClub(formStore, clubs)(input))
-    const actualState = yield* Effect.promise(() => formStore.get(formKey(input.orcidId, input.preprintId)))
+    const actualState = yield* Effect.map(
+      formStore.get(formKey(input.orcidId, input.preprintId)),
+      Option.getOrUndefined,
+    )
 
     expect(actualReturn).toStrictEqual(expectedReturn)
     if (expectedClub !== undefined) {

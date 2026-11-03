@@ -32,9 +32,9 @@ it.effect.each<[string, _.Input, _.Result]>([
   Effect.gen(function* () {
     const formStore = yield* FormStore.Store
 
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({})))
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null })))
-    yield* Effect.promise(() => formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId })))
+    yield* formStore.set(formKey(orcidId, preprintWithReview), FormC.encode({}))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewNoClub), FormC.encode({ club: null }))
+    yield* formStore.set(formKey(orcidId, preprintWithReviewClub), FormC.encode({ club: clubId }))
 
     const actualReturn = yield* Effect.result(_.CheckIfUserCanAddToAClub(formStore)(input))
 
