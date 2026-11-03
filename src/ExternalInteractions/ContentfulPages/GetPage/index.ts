@@ -32,11 +32,13 @@ export const GetPage: (
 
     return yield* EntryToContentfulPage(items[0])
   },
-  Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>
-    pipe(
-      Effect.logError('Unable to get page'),
-      Effect.annotateLogs({ error }),
-      Effect.andThen(new UnableToQuery({ cause: error })),
-    ),
+  Effect.catchTag(
+    ['ContentfulIsUnavailable', 'PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', 'SchemaError'],
+    error =>
+      pipe(
+        Effect.logError('Unable to get page'),
+        Effect.annotateLogs({ error }),
+        Effect.andThen(new UnableToQuery({ cause: error })),
+      ),
   ),
 )

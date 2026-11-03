@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { FileSystem, Effect, flow, Array, HashSet, Layer, pipe, Schema, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
@@ -7,9 +8,11 @@ import { Locale } from '../../../../src/Context.ts'
 import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlogPost/EntryToContentfulBlogPost.ts'
 import { Author, ContentfulBlogPost } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
-import { html } from '../../../../src/html.ts'
+import { html, rawHtml } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
+import { BiorxivPreprintId } from '../../../../src/Preprints/index.ts'
 import * as Prereviews from '../../../../src/Prereviews/index.ts'
+import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { Instant } from '../../../../src/types/Temporal.ts'
 
@@ -1791,26 +1794,134 @@ it.effect.each<{
             out!
           </span>
         </p>
-        <ul>
+        <ol class="cards">
           <li>
-            <a href="/reviews/8199476"><span lang="en" dir="ltr">Review 8199476</span></a>
+            <article>
+              <a href="/reviews/8199476">
+                <span
+                  ><b dir="auto">Josiah Carberry</b> reviewed
+                  <cite lang="en" dir="ltr">Preprint reviewed by 8199476</cite></span
+                >
+              </a>
+
+              <ul class="categories">
+                <li><span>Endocrinology</span></li>
+              </ul>
+
+              <dl>
+                <dt><span>Review published</span></dt>
+                <dd><time datetime="2023-07-28">July 28, 2023</time></dd>
+                <dt><span>Preprint server</span></dt>
+                <dd>bioRxiv</dd>
+              </dl>
+            </article>
           </li>
           <li>
-            <a href="/reviews/8199664"><span lang="en" dir="ltr">Review 8199664</span></a>
+            <article>
+              <a href="/reviews/8199664">
+                <span
+                  ><b dir="auto">Josiah Carberry</b> reviewed
+                  <cite lang="en" dir="ltr">Preprint reviewed by 8199664</cite></span
+                >
+              </a>
+
+              <ul class="categories">
+                <li><span>Endocrinology</span></li>
+              </ul>
+
+              <dl>
+                <dt><span>Review published</span></dt>
+                <dd><time datetime="2023-07-28">July 28, 2023</time></dd>
+                <dt><span>Preprint server</span></dt>
+                <dd>bioRxiv</dd>
+              </dl>
+            </article>
           </li>
           <li>
-            <a href="/reviews/8201231"><span lang="en" dir="ltr">Review 8201231</span></a>
+            <article>
+              <a href="/reviews/8201231">
+                <span
+                  ><b dir="auto">Josiah Carberry</b> reviewed
+                  <cite lang="en" dir="ltr">Preprint reviewed by 8201231</cite></span
+                >
+              </a>
+
+              <ul class="categories">
+                <li><span>Endocrinology</span></li>
+              </ul>
+
+              <dl>
+                <dt><span>Review published</span></dt>
+                <dd><time datetime="2023-07-28">July 28, 2023</time></dd>
+                <dt><span>Preprint server</span></dt>
+                <dd>bioRxiv</dd>
+              </dl>
+            </article>
           </li>
           <li>
-            <a href="/reviews/8199502"><span lang="en" dir="ltr">Review 8199502</span></a>
+            <article>
+              <a href="/reviews/8199502">
+                <span
+                  ><b dir="auto">Josiah Carberry</b> reviewed
+                  <cite lang="en" dir="ltr">Preprint reviewed by 8199502</cite></span
+                >
+              </a>
+
+              <ul class="categories">
+                <li><span>Endocrinology</span></li>
+              </ul>
+
+              <dl>
+                <dt><span>Review published</span></dt>
+                <dd><time datetime="2023-07-28">July 28, 2023</time></dd>
+                <dt><span>Preprint server</span></dt>
+                <dd>bioRxiv</dd>
+              </dl>
+            </article>
           </li>
           <li>
-            <a href="/reviews/8199476"><span lang="en" dir="ltr">Review 8199476</span></a>
+            <article>
+              <a href="/reviews/8199476">
+                <span
+                  ><b dir="auto">Josiah Carberry</b> reviewed
+                  <cite lang="en" dir="ltr">Preprint reviewed by 8199476</cite></span
+                >
+              </a>
+
+              <ul class="categories">
+                <li><span>Endocrinology</span></li>
+              </ul>
+
+              <dl>
+                <dt><span>Review published</span></dt>
+                <dd><time datetime="2023-07-28">July 28, 2023</time></dd>
+                <dt><span>Preprint server</span></dt>
+                <dd>bioRxiv</dd>
+              </dl>
+            </article>
           </li>
           <li>
-            <a href="/reviews/8208261"><span lang="en" dir="ltr">Review 8208261</span></a>
+            <article>
+              <a href="/reviews/8208261">
+                <span
+                  ><b dir="auto">Josiah Carberry</b> reviewed
+                  <cite lang="en" dir="ltr">Preprint reviewed by 8208261</cite></span
+                >
+              </a>
+
+              <ul class="categories">
+                <li><span>Endocrinology</span></li>
+              </ul>
+
+              <dl>
+                <dt><span>Review published</span></dt>
+                <dd><time datetime="2023-07-28">July 28, 2023</time></dd>
+                <dt><span>Preprint server</span></dt>
+                <dd>bioRxiv</dd>
+              </dl>
+            </article>
           </li>
-        </ul>
+        </ol>
         <p><span>Keep up with our blog for more news on Clubs - and how to start your own - very soon!</span></p>
         <h1 id="whats-next"><span>What’s next?</span></h1>
         <p>
@@ -1884,7 +1995,29 @@ it.effect.each<{
     expect(Struct.omit(actual, ['html'])).toStrictEqual(Struct.omit(expected, ['html']))
     assertEquals(actual.html, expected.html)
   }).pipe(
-    Effect.provide([Layer.mock(Prereviews.Prereviews, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
+    Effect.provide([
+      Layer.mock(Prereviews.Prereviews, {
+        getPrereviewSummary: id =>
+          typeof id === 'number'
+            ? Effect.succeed(
+                new Prereviews.RecentPreprintPrereview({
+                  id,
+                  reviewers: { named: [Name('Josiah Carberry')], anonymous: 0 },
+                  published: Temporal.PlainDate.from('2023-07-28'),
+                  fields: ['13'],
+                  subfields: ['1310'],
+                  preprint: {
+                    id: new BiorxivPreprintId({ value: Doi('10.1101/2023.07.20.549883') }),
+                    language: 'en',
+                    title: rawHtml(`Preprint reviewed by ${id}`),
+                  },
+                }),
+              )
+            : new Prereviews.PrereviewIsNotFound(),
+      }),
+      Layer.succeed(Locale, DefaultLocale),
+      NodeFileSystem.layer,
+    ]),
   ),
 )
 

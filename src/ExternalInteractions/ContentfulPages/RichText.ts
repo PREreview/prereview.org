@@ -2,6 +2,7 @@ import {
   Array,
   Context,
   Effect,
+  flow,
   HashSet,
   Match,
   Option,
@@ -10,12 +11,14 @@ import {
   Record,
   Ref,
   Schema,
+  Struct,
   type Types,
   Filter,
 } from 'effect'
 import { format } from 'fp-ts-routing'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
+import * as Datasets from '../../Datasets/index.ts'
 import type {
   Asset,
   Block,
@@ -28,12 +31,18 @@ import type {
   Text,
   VideoAsset,
 } from '../../ExternalApis/Contentful/index.ts'
-import { type Html, html } from '../../html.ts'
+import { type Html, html, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
-import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
-import type { Prereviews } from '../../Prereviews/index.ts'
+import { DefaultLocale, type SupportedLocale, translate } from '../../locales/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
+import * as Prereviews from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
+import { reviewMatch } from '../../routes.ts'
+import { renderDate } from '../../time.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { Slug } from '../../types/Slug.ts'
+import { getSubfieldName } from '../../types/subfield.ts'
 import {
   CallToActionEntry,
   DynamicEmbedEntry,
@@ -62,7 +71,14 @@ export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.Hash
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
-  Effect.Effect<Html, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs>
+  Effect.Effect<
+    Html,
+    | Schema.SchemaError
+    | Prereviews.PrereviewIsNotFound
+    | Prereviews.PrereviewIsUnavailable
+    | Prereviews.PrereviewWasRemoved,
+    DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+  >
 >()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
@@ -123,21 +139,146 @@ const EmbeddedEntryToHtml = Match.typeTags<
 
     return html`<div class="media-gallery">${itemsHtml}</div>`
   }),
-  ReviewListEntry: reviewList =>
-    Effect.succeed(html`
-      <ul>
-        ${Array.map(getValueForDefaultLocale(reviewList.fields.reviews), id => {
-          const href =
-            typeof id === 'number'
-              ? format(Routes.reviewMatch.formatter, { id })
-              : Routes.DatasetReview.href({ datasetReviewId: id })
+  ReviewListEntry: Effect.fnUntraced(function* (reviewList) {
+    const locale = yield* Locale
 
-          return html`<li>
-            <a href="${href}"><span ${languageAttributesFor('en')}>Review ${id}</span></a>
-          </li>`
-        })}
-      </ul>
-    `),
+    const prereviews = yield* Effect.forEach(
+      getValueForDefaultLocale(reviewList.fields.reviews),
+      id => Prereviews.getPrereviewSummary(id),
+      { concurrency: 'unbounded' },
+    )
+
+    return html`
+      <ol class="cards">
+        ${prereviews.map(
+          Match.valueTags({
+            RecentPreprintPrereview: prereview => html`
+              <li>
+                <article>
+                  <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                    ${
+                      prereview.club
+                        ? translate(
+                            locale,
+                            'reviews-list',
+                            'clubReviewText',
+                          )({
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                            reviewers: pipe(
+                              prereview.reviewers.named,
+                              Array.appendAll(
+                                prereview.reviewers.anonymous > 0
+                                  ? [
+                                      translate(
+                                        locale,
+                                        'reviews-list',
+                                        'otherAuthors',
+                                      )({ number: prereview.reviewers.anonymous }),
+                                    ]
+                                  : [],
+                              ),
+                              Array.map(name => html`<b dir="auto">${name}</b>`),
+                              formatList(locale),
+                            ),
+                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                              >${prereview.preprint.title}</cite
+                            >`,
+                          })
+                        : translate(
+                            locale,
+                            'reviews-list',
+                            'reviewText',
+                          )({
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                            reviewers: pipe(
+                              prereview.reviewers.named,
+                              Array.appendAll(
+                                prereview.reviewers.anonymous > 0
+                                  ? [
+                                      translate(
+                                        locale,
+                                        'reviews-list',
+                                        'otherAuthors',
+                                      )({ number: prereview.reviewers.anonymous }),
+                                    ]
+                                  : [],
+                              ),
+                              Array.map(name => html`<b dir="auto">${name}</b>`),
+                              formatList(locale),
+                            ),
+                            preprint: html`<cite ${languageAttributesFor(prereview.preprint.language)}
+                              >${prereview.preprint.title}</cite
+                            >`,
+                          })
+                    }
+                  </a>
+
+                  ${
+                    prereview.subfields.length > 0
+                      ? html`
+                          <ul class="categories">
+                            ${prereview.subfields.map(subfield => html`<li>${getSubfieldName(subfield, locale)}</li>`)}
+                          </ul>
+                        `
+                      : ''
+                  }
+
+                  <dl>
+                    <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
+                    <dd>${renderDate(locale)(prereview.published)}</dd>
+                    <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
+                    <dd>${Preprints.getServerName(prereview.preprint.id)}</dd>
+                  </dl>
+                </article>
+              </li>
+            `,
+            RecentDatasetPrereview: prereview => html`
+              <li>
+                <article>
+                  <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
+                    ${
+                      prereview.club
+                        ? translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewTextInClub',
+                          )({
+                            club: html`<b ${languageAttributesFor(prereview.club.language)}>${prereview.club.name}</b>`,
+                            numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
+                            reviewer: authorList(prereview, locale),
+                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            >`,
+                          })
+                        : translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewText',
+                          )({
+                            numberOfReviewers: 1 + prereview.otherAuthors.length + prereview.anonymousAuthors,
+                            reviewer: authorList(prereview, locale),
+                            dataset: html`<cite ${languageAttributesFor(prereview.dataset.language)}
+                              >${prereview.dataset.title}</cite
+                            >`,
+                          })
+                    }
+                  </a>
+
+                  <dl>
+                    <dt>${translate(locale, 'dataset-reviews-list', 'reviewPublished')()}</dt>
+                    <dd>${renderDate(locale)(prereview.published)}</dd>
+                    <dt>${translate(locale, 'dataset-reviews-list', 'repository')()}</dt>
+                    <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
+                  </dl>
+                </article>
+              </li>
+            `,
+          }),
+        )}
+      </ol>
+    `
+  }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
     const url = getValueForDefaultLocale(youTube.fields.url)
     const title = getValueForDefaultLocale(youTube.fields.title)
@@ -159,6 +300,36 @@ const EmbeddedEntryToHtml = Match.typeTags<
     `
   }),
 })
+
+const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: SupportedLocale) => {
+  const list: Array.NonEmptyArray<Html | NonEmptyString> = Array.map(
+    Array.make(datasetReview.author, ...datasetReview.otherAuthors),
+    displayPersona,
+  )
+
+  if (datasetReview.anonymousAuthors > 0) {
+    list.push(translate(locale, 'dataset-reviews-list', 'otherAuthors')({ number: datasetReview.anonymousAuthors }))
+  }
+
+  return formatList(locale)(Array.map(list, name => html`<b dir="auto">${name}</b>`))
+}
+
+const displayPersona = Prereviewers.matchPersona({
+  onPublic: Struct.get('displayName'),
+  onPseudonym: Struct.get('pseudonym'),
+})
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    Array.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
+}
 
 const YouTubeLink = Effect.fnUntraced(function* ({
   url,
@@ -241,7 +412,14 @@ const VideoAssetToHtml = ({ asset, altText }: { asset: VideoAsset; altText: stri
 
 const BlockElementToHtml = Match.typeTags<
   Block,
-  Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs>
+  Effect.Effect<
+    Option.Option<Html>,
+    | Schema.SchemaError
+    | Prereviews.PrereviewIsNotFound
+    | Prereviews.PrereviewIsUnavailable
+    | Prereviews.PrereviewWasRemoved,
+    DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+  >
 >()({
   BlockQuote: blockQuote =>
     Effect.map(
@@ -345,7 +523,14 @@ const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
 
 export const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs> =>
+): Effect.Effect<
+  Option.Option<Html>,
+  | Schema.SchemaError
+  | Prereviews.PrereviewIsNotFound
+  | Prereviews.PrereviewIsUnavailable
+  | Prereviews.PrereviewWasRemoved,
+  DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -368,7 +553,14 @@ export const BlockContentToHtml = (
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs> => {
+): Effect.Effect<
+  Option.Option<Html>,
+  | Schema.SchemaError
+  | Prereviews.PrereviewIsNotFound
+  | Prereviews.PrereviewIsUnavailable
+  | Prereviews.PrereviewWasRemoved,
+  DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }

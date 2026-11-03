@@ -3,7 +3,12 @@ import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../../locales/index.ts'
-import { Prereviews } from '../../../Prereviews/index.ts'
+import {
+  type PrereviewIsNotFound,
+  type PrereviewIsUnavailable,
+  type PrereviewWasRemoved,
+  Prereviews,
+} from '../../../Prereviews/index.ts'
 import type { DynamicEmbedder } from '../DynamicEmbedder.ts'
 import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { ContentfulPage } from '../Types.ts'
@@ -44,7 +49,11 @@ const PageEntryToContentfulPage = Effect.fnUntraced(
 
 export const EntryToContentfulPage: (
   entry: Entry,
-) => Effect.Effect<ContentfulPage, Schema.SchemaError, DynamicEmbedder | Locale> = flow(
+) => Effect.Effect<
+  ContentfulPage,
+  Schema.SchemaError | PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved,
+  DynamicEmbedder | Locale
+> = flow(
   Schema.decodeUnknownEffect(Schema.toType(PageEntry)),
   Effect.andThen(PageEntryToContentfulPage),
   Effect.provide(Layer.mock(Prereviews, {})),
