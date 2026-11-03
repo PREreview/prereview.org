@@ -21,12 +21,12 @@ services:
     ports:
       - 3000:3000
   mailpit:
-    image: axllent/mailpit
+    image: axllent/mailpit:v1.33.0
     ports:
       - 1080:8025
       - 1025:1025
   nginx:
-    image: nginx
+    image: nginx:1.31.8
     ports:
       - 443:443
     volumes:
@@ -34,7 +34,7 @@ services:
     extra_hosts:
       - 'host.docker.internal:host-gateway'
   opentelemetry:
-    image: grafana/otel-lgtm
+    image: grafana/otel-lgtm:0.39.0
     ports:
       - 3001:3000
       - 4317:4317
