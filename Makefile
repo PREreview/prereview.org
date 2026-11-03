@@ -55,11 +55,11 @@ start-services: .dev/server.crt .dev/server.key
 
 .PHONY: format
 format: node_modules
-	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
+	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" '**'
 
 .PHONY: fix-format
 fix-format: node_modules
-	npx prettier --write --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
+	npx prettier --write --ignore-unknown --check --cache --cache-location ".cache/prettier" '**'
 
 .PHONY: lint-ts
 lint-ts: node_modules src/manifest.json
