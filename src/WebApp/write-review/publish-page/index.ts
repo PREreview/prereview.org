@@ -14,7 +14,7 @@ import {
   type CompletedForm,
   CompletedFormC,
   type Form,
-  type FormStoreEnv,
+  type FormStore,
   type NewPrereview,
   type PublishPrereviewEnv,
   completedFormToNewPrereview,
@@ -52,13 +52,13 @@ export const writeReviewPublish = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  FormStoreEnv &
-    PublishPrereviewEnv &
+  PublishPrereviewEnv &
     AddToSessionEnv &
     EffectToFpts.EffectEnv<
       | Clubs
       | ContactEmailAddresses
       | FeatureFlags
+      | FormStore.Store
       | LanguageDetection.LanguageDetection
       | Locale
       | Prereviewers.Prereviewers

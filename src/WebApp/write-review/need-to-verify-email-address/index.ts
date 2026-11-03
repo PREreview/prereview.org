@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type FormStoreEnv, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
+import { type FormStore, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,
@@ -43,7 +43,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale | Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | ContactEmailAddresses | Locale | Preprints>,
   PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
 > =>
   pipe(

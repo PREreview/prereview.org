@@ -9,7 +9,7 @@ import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   type Form,
-  type FormStoreEnv,
+  type FormStore,
   createForm,
   getForm,
   nextFormPath,
@@ -49,7 +49,7 @@ export const writeReviewReviewType = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
   PageResponse | StreamlinePageResponse | RedirectResponse | LogInResponse
 > =>
   pipe(
@@ -103,7 +103,12 @@ export const writeReviewReviewType = ({
               ),
             state =>
               match(state)
-                .returnType<RT.ReaderTask<FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse>>()
+                .returnType<
+                  RT.ReaderTask<
+                    EffectToFpts.EffectEnv<FormStore.Store>,
+                    PageResponse | StreamlinePageResponse | RedirectResponse
+                  >
+                >()
                 .with({ method: 'POST' }, handleReviewTypeForm)
                 .otherwise(state => RT.of(showReviewTypeForm(state))),
           ),

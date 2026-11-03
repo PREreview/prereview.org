@@ -30,10 +30,10 @@ describe('writeReviewReview', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReview({ id: preprintId, locale, user, body, method })({ formStore, runtime }),
+          _.writeReviewReview({ id: preprintId, locale, user, body, method })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -69,11 +69,10 @@ describe('writeReviewReview', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReview({ id: preprintId, locale, user, body: { review }, method: 'POST' })({
-            formStore,
             runtime,
           }),
         )
@@ -111,11 +110,10 @@ describe('writeReviewReview', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReview({ id: preprintId, locale, user, body: { review }, method: 'POST' })({
-            formStore,
             runtime,
           }),
         )
@@ -143,11 +141,10 @@ describe('writeReviewReview', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReview({ id: preprintId, user, locale, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -170,11 +167,10 @@ describe('writeReviewReview', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReview({ id: preprintId, locale, user, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -200,11 +196,10 @@ describe('writeReviewReview', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReview({ id: preprintId, locale, user, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -230,11 +225,10 @@ describe('writeReviewReview', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, body, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReview({ id: preprintId, locale, user: undefined, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -267,10 +261,10 @@ describe('writeReviewReview', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReview({ id: preprintId, locale, user, body, method: 'POST' })({ formStore, runtime }),
+          _.writeReviewReview({ id: preprintId, locale, user, body, method: 'POST' })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -307,10 +301,10 @@ describe('writeReviewReview', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReview({ id: preprintId, locale, user, body, method })({ formStore, runtime }),
+          _.writeReviewReview({ id: preprintId, locale, user, body, method })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -342,10 +336,10 @@ describe('writeReviewReview', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReview({ id: preprintId, locale, user, body, method })({ formStore, runtime }),
+          _.writeReviewReview({ id: preprintId, locale, user, body, method })({ runtime }),
         )
 
         expect(actual).toStrictEqual({

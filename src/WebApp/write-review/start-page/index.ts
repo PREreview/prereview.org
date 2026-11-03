@@ -4,7 +4,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match, P } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type FormStoreEnv, getForm } from '../../../PreprintReviews/index.ts'
+import { type FormStore, getForm } from '../../../PreprintReviews/index.ts'
 import { getPreprint, type IndeterminatePreprintId, type Preprints } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../../routes.ts'
@@ -23,7 +23,10 @@ export const writeReviewStart = ({
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
-}): RT.ReaderTask<EffectToFpts.EffectEnv<Preprints> & FormStoreEnv, PageResponse | RedirectResponse | LogInResponse> =>
+}): RT.ReaderTask<
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
+  PageResponse | RedirectResponse | LogInResponse
+> =>
   pipe(
     EffectToFpts.toReaderTaskEither(getPreprint(id)),
     RTE.matchEW(

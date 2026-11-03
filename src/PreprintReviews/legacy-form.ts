@@ -1,4 +1,4 @@
-import { Context, Effect, identity, Option, pipe } from 'effect'
+import { Effect, identity, Option, pipe } from 'effect'
 import type { KeyValueStore } from 'effect/persistence'
 import { format, type Match } from 'fp-ts-routing'
 import type { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither.js'
@@ -33,6 +33,7 @@ import { NameC } from '../types/Name.ts'
 import { NonEmptyStringC } from '../types/NonEmptyString.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { UuidC } from '../types/Uuid.ts'
+import * as FormStore from './FormStore.ts'
 import { NextExpectedCommand } from './NextExpectedCommand.ts'
 
 export type Form = C.TypeOf<typeof FormC>
@@ -41,10 +42,6 @@ export interface FormStorage {
   readonly get: (key: string) => Effect.Effect<Option.Option<unknown>, KeyValueStore.KeyValueStoreError>
   readonly set: (key: string, value: unknown) => Effect.Effect<void, KeyValueStore.KeyValueStoreError>
   readonly delete: (key: string) => Effect.Effect<void, KeyValueStore.KeyValueStoreError>
-}
-
-export interface FormStoreEnv {
-  formStore: FormStorage
 }
 
 export function formKey(user: OrcidId, preprint: PreprintId) {
@@ -57,21 +54,19 @@ export function formKey(user: OrcidId, preprint: PreprintId) {
 export function getForm(
   user: OrcidId,
   preprint: PreprintId,
-): ReaderTaskEither<FormStoreEnv, 'no-form' | 'form-unavailable', Form> {
-  return ({ formStore }) =>
-    EffectToFpts.toTaskEither(
-      pipe(
-        formStore.get(formKey(user, preprint)),
-        Effect.mapError(() => 'form-unavailable' as const),
-        Effect.flatMap(form =>
-          Effect.mapError(
-            Effect.fromResult(FptsToEffect.either(FormC.decode(Option.getOrUndefined(form)))),
-            () => 'no-form' as const,
-          ),
-        ),
-      ),
-      Context.empty(),
-    )
+): ReaderTaskEither<EffectToFpts.EffectEnv<FormStore.Store>, 'no-form' | 'form-unavailable', Form> {
+  return EffectToFpts.toReaderTaskEither(
+    Effect.gen(function* () {
+      const formStore = yield* FormStore.Store
+
+      const form = yield* Effect.mapError(formStore.get(formKey(user, preprint)), () => 'form-unavailable' as const)
+
+      return yield* Effect.mapError(
+        Effect.fromResult(FptsToEffect.either(FormC.decode(Option.getOrUndefined(form)))),
+        () => 'no-form' as const,
+      )
+    }),
+  )
 }
 
 export function createForm(): Form {
@@ -85,24 +80,31 @@ export function updateForm(originalForm: Form): (newForm: Form) => Form {
 export function saveForm(
   user: OrcidId,
   preprint: PreprintId,
-): (form: Form) => ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
+): (form: Form) => ReaderTaskEither<EffectToFpts.EffectEnv<FormStore.Store>, 'form-unavailable', void> {
   return form =>
-    ({ formStore }) =>
-      EffectToFpts.toTaskEither(
-        Effect.mapError(formStore.set(formKey(user, preprint), FormC.encode(form)), () => 'form-unavailable' as const),
-        Context.empty(),
-      )
+    EffectToFpts.toReaderTaskEither(
+      Effect.gen(function* () {
+        const formStore = yield* FormStore.Store
+
+        yield* Effect.mapError(
+          formStore.set(formKey(user, preprint), FormC.encode(form)),
+          () => 'form-unavailable' as const,
+        )
+      }),
+    )
 }
 
 export function deleteForm(
   user: OrcidId,
   preprint: PreprintId,
-): ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
-  return ({ formStore }) =>
-    EffectToFpts.toTaskEither(
-      Effect.mapError(formStore.delete(formKey(user, preprint)), () => 'form-unavailable' as const),
-      Context.empty(),
-    )
+): ReaderTaskEither<EffectToFpts.EffectEnv<FormStore.Store>, 'form-unavailable', void> {
+  return EffectToFpts.toReaderTaskEither(
+    Effect.gen(function* () {
+      const formStore = yield* FormStore.Store
+
+      yield* Effect.mapError(formStore.delete(formKey(user, preprint)), () => 'form-unavailable' as const)
+    }),
+  )
 }
 
 export const nextFormPath = ({ form, preprintId }: { form: Form; preprintId: PreprintId }) =>

@@ -28,10 +28,10 @@ describe('writeReviewReviewType', () => {
           yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
         }
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({ formStore, runtime }),
+          _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -72,7 +72,7 @@ describe('writeReviewReviewType', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({
@@ -81,7 +81,7 @@ describe('writeReviewReviewType', () => {
             user,
             body: { reviewType },
             method: 'POST',
-          })({ formStore, runtime }),
+          })({ runtime }),
         )
 
         expect(yield* Effect.map(formStore.get(formKey(user.orcid, preprint.id)), Option.getOrUndefined)).toMatchObject(
@@ -117,7 +117,7 @@ describe('writeReviewReviewType', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({
@@ -126,7 +126,7 @@ describe('writeReviewReviewType', () => {
             user,
             body: { reviewType },
             method: 'POST',
-          })({ formStore, runtime }),
+          })({ runtime }),
         )
 
         expect(yield* Effect.map(formStore.get(formKey(user.orcid, preprint.id)), Option.getOrUndefined)).toMatchObject(
@@ -152,7 +152,7 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.reviewType(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprint, reviewType, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({
@@ -161,7 +161,7 @@ describe('writeReviewReviewType', () => {
             user,
             body: { reviewType },
             method: 'POST',
-          })({ formStore: yield* FormStore.Store, runtime }),
+          })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -201,11 +201,10 @@ describe('writeReviewReviewType', () => {
           yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
         }
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -233,11 +232,10 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -263,11 +261,10 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, body, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewReviewType({ id: preprintId, locale, user, body, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -303,10 +300,10 @@ describe('writeReviewReviewType', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReviewType({ id: preprintId, locale, user, body, method: 'POST' })({ formStore, runtime }),
+          _.writeReviewReviewType({ id: preprintId, locale, user, body, method: 'POST' })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -332,12 +329,10 @@ describe('writeReviewReviewType', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.anything(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprint, body, method, locale]) =>
       Effect.gen(function* () {
-        const formStore = yield* FormStore.Store
-
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewReviewType({ id: preprintId, locale, user: undefined, body, method })({ formStore, runtime }),
+          _.writeReviewReviewType({ id: preprintId, locale, user: undefined, body, method })({ runtime }),
         )
 
         expect(actual).toStrictEqual({

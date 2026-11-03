@@ -1,10 +1,11 @@
-import { Array, Effect, pipe } from 'effect'
+import { Array, Context, Effect, pipe } from 'effect'
 import { UnableToHandleCommand } from '../Commands.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import * as Errors from './Errors.ts'
+import * as FormStore from './FormStore.ts'
 import { getForm, saveForm, updateForm, type FormStorage } from './legacy-form.ts'
 
 export interface Input {
@@ -21,7 +22,9 @@ export const AddReviewToAClub = (
 ): ((input: Input) => Effect.Effect<void, Error>) =>
   Effect.fn('PreprintReviews.addReviewToAClub')(function* (input) {
     const form = yield* pipe(
-      FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),
+      FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), {
+        runtime: Context.make(FormStore.Store, formStore),
+      }),
       Effect.catchIf(
         error => error === 'no-form',
         () => new Errors.PreprintReviewNotFound({}),
@@ -43,7 +46,7 @@ export const AddReviewToAClub = (
     yield* pipe(
       FptsToEffect.readerTaskEither(
         saveForm(input.orcidId, input.preprintId)(updateForm(form)({ club: input.clubId })),
-        { formStore },
+        { runtime: Context.make(FormStore.Store, formStore) },
       ),
       Effect.catch(() => new UnableToHandleCommand({})),
     )

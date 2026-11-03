@@ -7,7 +7,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../../../PreprintReviews/index.ts'
+import { type Form, type FormStore, getForm, saveForm, updateForm } from '../../../PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,
@@ -38,7 +38,7 @@ export const writeReviewChangeAuthor = ({
   number: number
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(

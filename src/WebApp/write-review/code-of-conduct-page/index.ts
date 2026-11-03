@@ -9,7 +9,7 @@ import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   type Form,
-  type FormStoreEnv,
+  type FormStore,
   getForm,
   nextFormPath,
   saveForm,
@@ -41,7 +41,7 @@ export const writeReviewConduct = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(

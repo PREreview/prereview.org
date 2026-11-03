@@ -402,7 +402,6 @@ export const WriteReviewRouter = pipe(
               : RTE.left('unavailable' as const),
           { runtime: env.runtime },
         ),
-        formStore: env.formStore,
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'

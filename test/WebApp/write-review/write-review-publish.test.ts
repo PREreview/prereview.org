@@ -41,6 +41,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -55,7 +56,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -95,6 +95,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress, club]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -109,7 +110,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -149,6 +149,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newReview, user, locale, club]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -163,7 +164,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -219,6 +219,7 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -235,7 +236,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
             addToSession,
-            formStore,
             publishPrereview,
             runtime,
           })(),
@@ -316,6 +316,7 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -332,7 +333,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
             addToSession,
-            formStore,
             publishPrereview,
             runtime,
           })(),
@@ -397,6 +397,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -411,7 +412,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -442,6 +442,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -451,12 +452,9 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
-        const formStore = yield* FormStore.Store
-
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -487,6 +485,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -496,12 +495,9 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
-        const formStore = yield* FormStore.Store
-
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -535,6 +531,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -544,12 +541,9 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
-        const formStore = yield* FormStore.Store
-
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -583,6 +577,7 @@ describe('writeReviewPublish', () => {
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -592,12 +587,9 @@ describe('writeReviewPublish', () => {
           | Preprints
         >()
 
-        const formStore = yield* FormStore.Store
-
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user: undefined })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: shouldNotBeCalled,
             runtime,
           })(),
@@ -650,6 +642,7 @@ describe('writeReviewPublish', () => {
     ]) =>
       Effect.gen(function* () {
         const runtime = yield* Effect.context<
+          | FormStore.Store
           | Clubs
           | ContactEmailAddresses
           | FeatureFlags.FeatureFlags
@@ -664,7 +657,6 @@ describe('writeReviewPublish', () => {
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
             addToSession: shouldNotBeCalled,
-            formStore,
             publishPrereview: () => TE.left('unavailable'),
             runtime,
           })(),

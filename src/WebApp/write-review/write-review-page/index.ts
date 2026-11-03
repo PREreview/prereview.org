@@ -11,7 +11,7 @@ import { type Html, sanitizeHtml } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   type Form,
-  type FormStoreEnv,
+  type FormStore,
   getForm,
   nextFormPath,
   saveForm,
@@ -47,7 +47,7 @@ export const writeReviewReview = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
   PageResponse | StreamlinePageResponse | RedirectResponse
 > =>
   pipe(
@@ -78,7 +78,12 @@ export const writeReviewReview = ({
               ),
             state =>
               match(state)
-                .returnType<RT.ReaderTask<FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse>>()
+                .returnType<
+                  RT.ReaderTask<
+                    EffectToFpts.EffectEnv<FormStore.Store>,
+                    PageResponse | StreamlinePageResponse | RedirectResponse
+                  >
+                >()
                 .with(
                   {
                     form: P.union(

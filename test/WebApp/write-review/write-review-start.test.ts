@@ -18,11 +18,9 @@ describe('writeReviewStart', () => {
           const formStore = yield* FormStore.Store
           yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
-          const actual = yield* Effect.promise(
-            _.writeReviewStart({ id: preprintId, locale, user })({ formStore, runtime }),
-          )
+          const actual = yield* Effect.promise(_.writeReviewStart({ id: preprintId, locale, user })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -47,11 +45,9 @@ describe('writeReviewStart', () => {
       [fc.indeterminatePreprintId(), fc.preprint(), fc.user(), fc.supportedLocale()],
       ([preprintId, preprint, user, locale]) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
-          const actual = yield* Effect.promise(
-            _.writeReviewStart({ id: preprintId, locale, user })({ formStore: yield* FormStore.Store, runtime }),
-          )
+          const actual = yield* Effect.promise(_.writeReviewStart({ id: preprintId, locale, user })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
@@ -88,11 +84,9 @@ describe('writeReviewStart', () => {
             yield* formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
           }
 
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
-          const actual = yield* Effect.promise(
-            _.writeReviewStart({ id: preprintId, locale, user })({ formStore, runtime }),
-          )
+          const actual = yield* Effect.promise(_.writeReviewStart({ id: preprintId, locale, user })({ runtime }))
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
@@ -118,11 +112,10 @@ describe('writeReviewStart', () => {
     [fc.indeterminatePreprintId(), fc.preprint(), fc.supportedLocale()],
     ([preprintId, preprint, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewStart({ id: preprintId, locale, user: undefined })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -144,11 +137,9 @@ describe('writeReviewStart', () => {
     [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
-        const actual = yield* Effect.promise(
-          _.writeReviewStart({ id: preprintId, locale, user })({ formStore: yield* FormStore.Store, runtime }),
-        )
+        const actual = yield* Effect.promise(_.writeReviewStart({ id: preprintId, locale, user })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -171,11 +162,9 @@ describe('writeReviewStart', () => {
     [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()],
     ([preprintId, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
-        const actual = yield* Effect.promise(
-          _.writeReviewStart({ id: preprintId, locale, user })({ formStore: yield* FormStore.Store, runtime }),
-        )
+        const actual = yield* Effect.promise(_.writeReviewStart({ id: preprintId, locale, user })({ runtime }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',

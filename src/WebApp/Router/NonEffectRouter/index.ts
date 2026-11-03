@@ -109,7 +109,6 @@ export const nonEffectRouter: Effect.Effect<
     }),
   )
 
-  const formStore = yield* PreprintReviews.FormStore.Store
   const runtime = yield* Effect.context<EffectToFpts.ContextServices<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
@@ -165,7 +164,6 @@ export const nonEffectRouter: Effect.Effect<
     shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
-    formStore,
   } satisfies Env
 
   return yield* Effect.map(
@@ -196,6 +194,7 @@ export interface Env {
     | LanguageDetection.LanguageDetection
     | OpenAlexWorks.OpenAlexWorks
     | OrcidOauth
+    | PreprintReviews.FormStore.Store
     | PreprintReviews.PreprintReviews
     | Preprints.Preprints
     | Prereviewers.Prereviewers
@@ -225,7 +224,6 @@ export interface Env {
     | Email.Email
   >
   logger: LoggerEnv
-  formStore: PreprintReviews.FormStorage
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
   slackOauth: typeof SlackOauth.Service

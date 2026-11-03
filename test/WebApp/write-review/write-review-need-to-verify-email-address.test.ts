@@ -32,10 +32,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({ formStore, runtime }),
+          _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -69,10 +69,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({ formStore, runtime }),
+          _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -113,7 +113,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         )
 
         const runtime = yield* Effect.provide(
-          Effect.context<ContactEmailAddresses | Locale | Preprints>(),
+          Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>(),
           Layer.mock(ContactEmailAddresses, {
             getContactEmailAddress: () => Effect.succeed(contactEmailAddress),
             resendVerificationEmail,
@@ -122,7 +122,6 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method: 'POST', user })({
-            formStore,
             runtime,
           }),
         )
@@ -153,10 +152,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({ formStore, runtime }),
+          _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -179,11 +178,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -208,11 +206,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -240,11 +237,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()],
     ([preprintId, method, user, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -272,11 +268,10 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.supportedLocale()],
     ([preprintId, preprintTitle, method, locale]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<ContactEmailAddresses | Locale | Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | ContactEmailAddresses | Locale | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user: undefined })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )

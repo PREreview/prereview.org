@@ -37,7 +37,7 @@ describe('writeReviewAddAuthor', () => {
           const formStore = yield* FormStore.Store
           yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -47,7 +47,7 @@ describe('writeReviewAddAuthor', () => {
               locale,
               method: 'POST',
               user,
-            })({ formStore, runtime }),
+            })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -87,7 +87,7 @@ describe('writeReviewAddAuthor', () => {
           const formStore = yield* FormStore.Store
           yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -97,7 +97,7 @@ describe('writeReviewAddAuthor', () => {
               locale,
               method: 'POST',
               user,
-            })({ formStore, runtime }),
+            })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -130,7 +130,7 @@ describe('writeReviewAddAuthor', () => {
           const formStore = yield* FormStore.Store
           yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -140,7 +140,7 @@ describe('writeReviewAddAuthor', () => {
               locale,
               method: 'POST',
               user,
-            })({ formStore, runtime }),
+            })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -176,7 +176,7 @@ describe('writeReviewAddAuthor', () => {
           const formStore = yield* FormStore.Store
           yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-          const runtime = yield* Effect.context<Preprints>()
+          const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
           const actual = yield* Effect.promise(
             _.writeReviewAddAuthor({
@@ -186,7 +186,7 @@ describe('writeReviewAddAuthor', () => {
               locale,
               method: 'POST',
               user,
-            })({ formStore, runtime }),
+            })({ runtime }),
           )
 
           expect(actual).toStrictEqual({
@@ -216,11 +216,10 @@ describe('writeReviewAddAuthor', () => {
     ],
     ([id, preprintTitle, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -255,10 +254,10 @@ describe('writeReviewAddAuthor', () => {
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
-          _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({ formStore, runtime }),
+          _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({ runtime }),
         )
 
         expect(actual).toStrictEqual({
@@ -286,11 +285,13 @@ describe('writeReviewAddAuthor', () => {
           () => new PreprintIsUnavailable({}),
         )
 
-        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
+        const runtime = yield* Effect.provide(
+          Effect.context<FormStore.Store | Preprints>(),
+          Layer.mock(Preprints, { getPreprintTitle }),
+        )
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -312,11 +313,10 @@ describe('writeReviewAddAuthor', () => {
     [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale(), fc.boolean().map(T.of)],
     ([id, body, method, user, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method, user })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )
@@ -349,11 +349,10 @@ describe('writeReviewAddAuthor', () => {
     ],
     ([id, preprintTitle, body, method, locale, canAddMultipleAuthors]) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.context<Preprints>()
+        const runtime = yield* Effect.context<FormStore.Store | Preprints>()
 
         const actual = yield* Effect.promise(
           _.writeReviewAddAuthor({ body, canAddMultipleAuthors, id, locale, method })({
-            formStore: yield* FormStore.Store,
             runtime,
           }),
         )

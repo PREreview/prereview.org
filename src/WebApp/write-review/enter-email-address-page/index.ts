@@ -9,7 +9,7 @@ import { ContactEmailAddresses, type UnverifiedContactEmailAddress } from '../..
 import type { Locale } from '../../../Context.ts'
 import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type FormStoreEnv, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
+import { type FormStore, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,
@@ -38,7 +38,7 @@ export const writeReviewEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<ContactEmailAddresses | Locale | Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | ContactEmailAddresses | Locale | Preprints>,
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(

@@ -1,10 +1,11 @@
-import { Effect, Option, pipe, type Result } from 'effect'
+import { Context, Effect, Option, pipe, type Result } from 'effect'
 import type { PreprintId } from '../Preprints/index.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import * as Errors from './Errors.ts'
+import * as FormStore from './FormStore.ts'
 import { getForm, type FormStorage } from './legacy-form.ts'
 
 export interface Input {
@@ -19,7 +20,9 @@ export const CheckIfUserCanAddToAClub = (
 ): ((input: Input) => Effect.Effect<Result.Result.Success<Result>, Result.Result.Failure<Result>>) =>
   Effect.fn('PreprintReviews.checkIfUserCanAddToAClub')(function* (input) {
     const form = yield* pipe(
-      FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),
+      FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), {
+        runtime: Context.make(FormStore.Store, formStore),
+      }),
       Effect.catchIf(
         error => error === 'no-form',
         () => new Errors.PreprintReviewNotFound({}),

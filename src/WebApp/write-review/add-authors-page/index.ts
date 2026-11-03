@@ -4,7 +4,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type Form, type FormStoreEnv, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
+import { type Form, type FormStore, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,
@@ -34,7 +34,7 @@ export const writeReviewAddAuthors = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(

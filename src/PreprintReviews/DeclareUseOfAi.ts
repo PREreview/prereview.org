@@ -1,10 +1,11 @@
-import { Effect, Option, pipe } from 'effect'
+import { Context, Effect, Option, pipe } from 'effect'
 import { UnableToHandleCommand } from '../Commands.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import * as Errors from './Errors.ts'
+import * as FormStore from './FormStore.ts'
 import { getForm, saveForm, updateForm, type FormStorage } from './legacy-form.ts'
 
 export type Input = {
@@ -19,7 +20,9 @@ export type Error = Errors.PreprintReviewNotFound | UnableToHandleCommand
 export const DeclareUseOfAi = (formStore: FormStorage): ((input: Input) => Effect.Effect<void, Error>) =>
   Effect.fn('PreprintReviews.declareUseOfAi')(function* (input) {
     const form = yield* pipe(
-      FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), { formStore }),
+      FptsToEffect.readerTaskEither(getForm(input.orcidId, input.preprintId), {
+        runtime: Context.make(FormStore.Store, formStore),
+      }),
       Effect.catchIf(
         error => error === 'no-form',
         () => new Errors.PreprintReviewNotFound({}),
@@ -43,7 +46,9 @@ export const DeclareUseOfAi = (formStore: FormStorage): ((input: Input) => Effec
     const updatedForm = updateForm(form)({ generativeAiIdeas: input.generativeAiIdeas, generativeAiIdeasDetails })
 
     yield* pipe(
-      FptsToEffect.readerTaskEither(saveForm(input.orcidId, input.preprintId)(updatedForm), { formStore }),
+      FptsToEffect.readerTaskEither(saveForm(input.orcidId, input.preprintId)(updatedForm), {
+        runtime: Context.make(FormStore.Store, formStore),
+      }),
       Effect.catch(() => new UnableToHandleCommand({})),
     )
   })

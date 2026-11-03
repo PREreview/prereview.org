@@ -10,7 +10,7 @@ import { type FieldDecoders, type ValidFields, decodeFields, optionalDecoder, re
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   type Form,
-  type FormStoreEnv,
+  type FormStore,
   getForm,
   nextFormPath,
   saveForm,
@@ -43,7 +43,7 @@ export const writeReviewReadyFullReview = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  EffectToFpts.EffectEnv<Preprints> & FormStoreEnv,
+  EffectToFpts.EffectEnv<FormStore.Store | Preprints>,
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
