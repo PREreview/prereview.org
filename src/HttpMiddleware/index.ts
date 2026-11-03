@@ -160,7 +160,8 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
       onNone: () => Effect.succeedNone,
       onSome: sessionId =>
         pipe(
-          Effect.tryPromise(() => store.get(sessionId)),
+          store.get(sessionId),
+          Effect.flatMap(Effect.fromOption),
           Effect.andThen(Schema.decodeUnknownEffect(Schema.Struct({ user: UserSchema }))),
           Effect.option,
         ),

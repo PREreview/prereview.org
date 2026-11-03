@@ -47,7 +47,7 @@ export const LogOut = Effect.gen(function* () {
 
   yield* pipe(
     Effect.flatMap(Effect.serviceOption(SessionId), Effect.fromOption),
-    Effect.andThen(sessionId => Effect.tryPromise(() => store.delete(sessionId))),
+    Effect.andThen(sessionId => store.delete(sessionId)),
     Effect.ignore,
   )
 
@@ -110,7 +110,7 @@ export const authenticate = Effect.fn(
 
     yield* pipe(
       newSessionForUser({ orcid: authenticatedOrcidId }),
-      session => Effect.tryPromise(() => store.set(sessionId, session)),
+      session => store.set(sessionId, session),
       Effect.tapError(error => Effect.logError('Unable to store new session').pipe(Effect.annotateLogs({ error }))),
     )
 

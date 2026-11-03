@@ -32,8 +32,8 @@ describe('LogOut', () => {
   it.effect.prop('when there is a session', [fc.uuid(), fc.cookieName(), fc.user()], ([cookie, sessionId, user]) =>
     Effect.gen(function* () {
       const keyValueStore = yield* KeyValueStore.KeyValueStore
-      const store = yield* fromKeyValueStore(keyValueStore)
-      yield* Effect.tryPromise(() => store.set(sessionId, { user: UserC.encode(user) }))
+      const store = fromKeyValueStore(keyValueStore)
+      yield* store.set(sessionId, { user: UserC.encode(user) })
 
       const actual = yield* pipe(
         _.LogOut,
@@ -60,13 +60,22 @@ describe('LogOut', () => {
     ([cookie, sessionId, user, error]) =>
       Effect.gen(function* () {
         const keyValueStore = yield* KeyValueStore.KeyValueStore
-        const store = yield* fromKeyValueStore(keyValueStore)
-        yield* Effect.tryPromise(() => store.set(sessionId, { user: UserC.encode(user) }))
+        const store = fromKeyValueStore(keyValueStore)
+        yield* store.set(sessionId, { user: UserC.encode(user) })
 
         const actual = yield* pipe(
           _.LogOut,
           Effect.provideService(SessionId, sessionId),
-          Effect.provideService(SessionStore, { cookie, store: { ...store, delete: () => Promise.reject(error) } }),
+          Effect.provideService(SessionStore, {
+            cookie,
+            store: {
+              ...store,
+              delete: () =>
+                Effect.fail(
+                  new KeyValueStore.KeyValueStoreError({ message: 'Unavailable', method: 'delete', cause: error }),
+                ),
+            },
+          }),
         )
 
         expect(yield* keyValueStore.has(sessionId)).toBeTruthy()
@@ -84,7 +93,7 @@ describe('LogOut', () => {
 
   it.effect.prop("when there isn't a session", [fc.cookieName()], ([cookie]) =>
     Effect.gen(function* () {
-      const store = yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
+      const store = fromKeyValueStore(yield* KeyValueStore.KeyValueStore)
 
       const actual = yield* pipe(_.LogOut, Effect.provideService(SessionStore, { cookie, store }))
 
@@ -123,7 +132,7 @@ describe('authenticate', () => {
       ([code, referer, orcidOauth, locale, accessToken, sessionCookie, sessionId, signedSessionId]) =>
         Effect.gen(function* () {
           const keyValueStore = yield* KeyValueStore.KeyValueStore
-          const sessionStore = yield* fromKeyValueStore(keyValueStore)
+          const sessionStore = fromKeyValueStore(keyValueStore)
 
           const actual = yield* pipe(
             _.authenticate(code, referer.href),
@@ -188,7 +197,7 @@ describe('authenticate', () => {
       ([code, [publicUrl, state], orcidOauth, locale, accessToken, sessionCookie, sessionId, signedSessionId]) =>
         Effect.gen(function* () {
           const keyValueStore = yield* KeyValueStore.KeyValueStore
-          const sessionStore = yield* fromKeyValueStore(keyValueStore)
+          const sessionStore = fromKeyValueStore(keyValueStore)
 
           const actual = yield* pipe(
             _.authenticate(code, state),
@@ -276,7 +285,7 @@ describe('authenticate', () => {
             Layer.effect(
               SessionStore,
               Effect.gen(function* () {
-                return { cookie: sessionCookie, store: yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore) }
+                return { cookie: sessionCookie, store: fromKeyValueStore(yield* KeyValueStore.KeyValueStore) }
               }),
             ).pipe(Layer.provide(KeyValueStore.layerMemory)),
           ]),
@@ -303,7 +312,7 @@ describe('authenticate', () => {
     ([code, referer, orcidOauth, locale, accessToken, sessionCookie]) =>
       Effect.gen(function* () {
         const keyValueStore = yield* KeyValueStore.KeyValueStore
-        const sessionStore = yield* fromKeyValueStore(keyValueStore)
+        const sessionStore = fromKeyValueStore(keyValueStore)
         const isUserBlocked = vi.fn<typeof _.IsUserBlocked.Service>(() => true)
 
         const actual = yield* pipe(
@@ -359,7 +368,7 @@ describe('authenticate', () => {
     ([code, referer, orcidOauth, locale, accessToken, sessionCookie]) =>
       Effect.gen(function* () {
         const keyValueStore = yield* KeyValueStore.KeyValueStore
-        const sessionStore = yield* fromKeyValueStore(keyValueStore)
+        const sessionStore = fromKeyValueStore(keyValueStore)
         const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
           status: StatusCodes.OK,
           body: accessToken,
@@ -418,7 +427,7 @@ describe('authenticate', () => {
     ([code, referer, orcidOauth, locale, accessToken, sessionCookie]) =>
       Effect.gen(function* () {
         const keyValueStore = yield* KeyValueStore.KeyValueStore
-        const sessionStore = yield* fromKeyValueStore(keyValueStore)
+        const sessionStore = fromKeyValueStore(keyValueStore)
         const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
           status: StatusCodes.OK,
           body: accessToken,

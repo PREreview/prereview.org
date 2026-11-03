@@ -260,9 +260,9 @@ export const MyDetailsRouter = pipe(
         addToSession: withEnv(
           (key: string, value: Json) =>
             typeof env.sessionId === 'string'
-              ? LegacySessionStore.addToSession(env.sessionId, key, value)
+              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.addToSession(env.sessionId, key, value))
               : RTE.left('unavailable' as const),
-          { sessionStore: env.sessionStore, ...env.logger },
+          { runtime: env.runtime },
         ),
         deleteAvatar: withEnv(Cloudinary.removeAvatarFromCloudinary, {
           cloudinaryApi: {
@@ -348,9 +348,9 @@ export const MyDetailsRouter = pipe(
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'
-              ? LegacySessionStore.popFromSession(env.sessionId, key)
+              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.popFromSession(env.sessionId, key))
               : RTE.left('unavailable' as const),
-          { sessionStore: env.sessionStore, ...env.logger },
+          { runtime: env.runtime },
         ),
         publicUrl: env.publicUrl,
         runtime: env.runtime,

@@ -398,17 +398,17 @@ export const WriteReviewRouter = pipe(
         addToSession: withEnv(
           (key: string, value: Json) =>
             typeof env.sessionId === 'string'
-              ? LegacySessionStore.addToSession(env.sessionId, key, value)
+              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.addToSession(env.sessionId, key, value))
               : RTE.left('unavailable' as const),
-          { sessionStore: env.sessionStore, ...env.logger },
+          { runtime: env.runtime },
         ),
         formStore: env.formStore,
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'
-              ? LegacySessionStore.popFromSession(env.sessionId, key)
+              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.popFromSession(env.sessionId, key))
               : RTE.left('unavailable' as const),
-          { sessionStore: env.sessionStore, ...env.logger },
+          { runtime: env.runtime },
         ),
         publicUrl: env.publicUrl,
         publishPrereview: withEnv(publishPrereview, {

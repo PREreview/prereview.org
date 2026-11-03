@@ -1,5 +1,5 @@
 import { describe, expect, it } from './vitest.ts'
-import { Duration, Effect, Layer } from 'effect'
+import { Duration, Effect, Layer, Option } from 'effect'
 import { Redis } from 'effect/persistence'
 import { SessionStore } from '../src/Context.ts'
 import * as _ from '../src/SessionStore.ts'
@@ -10,11 +10,11 @@ describe('layerInMemory', () => {
   it.effect.prop('stores values', [fc.string(), fc.jsonRecord()], ([key, value]) =>
     Effect.gen(function* () {
       const { store } = yield* SessionStore
-      yield* Effect.promise(() => store.set(key, value))
+      yield* store.set(key, value)
 
-      const actual = yield* Effect.promise(() => store.get(key))
+      const actual = yield* store.get(key)
 
-      expect(actual).toStrictEqual(JSON.parse(JSON.stringify(value)))
+      expect(actual).toStrictEqual(Option.some(JSON.parse(JSON.stringify(value))))
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -22,22 +22,22 @@ describe('layerInMemory', () => {
     Effect.gen(function* () {
       const { store } = yield* SessionStore
 
-      const actual = yield* Effect.promise(() => store.get(key))
+      const actual = yield* store.get(key)
 
-      expect(actual).toBeUndefined()
+      expect(actual).toStrictEqual(Option.none())
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
   it.effect.prop('removes values', [fc.string(), fc.jsonRecord()], ([key, value]) =>
     Effect.gen(function* () {
       const { store } = yield* SessionStore
-      yield* Effect.promise(() => store.set(key, value))
+      yield* store.set(key, value)
 
-      yield* Effect.promise(() => store.delete(key))
+      yield* store.delete(key)
 
-      const actual = yield* Effect.promise(() => store.get(key))
+      const actual = yield* store.get(key)
 
-      expect(actual).toBeUndefined()
+      expect(actual).toStrictEqual(Option.none())
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -56,7 +56,7 @@ describe('layer', () => {
 
     return Effect.gen(function* () {
       const { store } = yield* SessionStore
-      yield* Effect.promise(() => store.set(key, value))
+      yield* store.set(key, value)
 
       expect(commands).toContainEqual([
         'SET',

@@ -31,13 +31,7 @@ import type * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import type { Clubs } from '../../../Clubs/index.ts'
 import type { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
-import {
-  type EnabledLocales,
-  type LegacySessionStore,
-  Locale,
-  ScietyListToken,
-  SessionStore,
-} from '../../../Context.ts'
+import { type EnabledLocales, Locale, ScietyListToken, type SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
 import { Cloudinary, Slack, Zenodo } from '../../../ExternalApis/index.ts'
 import {
@@ -133,7 +127,6 @@ export const nonEffectRouter: Effect.Effect<
   const slackOauth = yield* SlackOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
-  const sessionStore = yield* SessionStore
 
   const commentsForReview = yield* CommentsForReview
   const body = yield* Effect.suspend(() =>
@@ -173,7 +166,6 @@ export const nonEffectRouter: Effect.Effect<
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
     formStore,
-    sessionStore: sessionStore.store,
   } satisfies Env
 
   return yield* Effect.map(
@@ -219,6 +211,7 @@ export interface Env {
     | UserOnboardingStore.Store
     | Prereviews.Prereviews
     | PublicUrl
+    | SessionStore
     | SpotlightBanners
     | TemplatePage
     | ReviewRequests.ReviewRequests
@@ -233,7 +226,6 @@ export interface Env {
   >
   logger: LoggerEnv
   formStore: PreprintReviews.LegacyFormStore
-  sessionStore: LegacySessionStore
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
   slackOauth: typeof SlackOauth.Service

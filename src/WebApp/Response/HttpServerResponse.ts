@@ -157,7 +157,7 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
   const encodedSessionId = yield* Schema.encodeEffect(Uuid.UuidSchema)(sessionId)
   const encodedSession = yield* Schema.encodeEffect(Schema.Struct({ user: UserSchema }))(session)
 
-  yield* Effect.tryPromise(() => store.set(encodedSessionId, encodedSession))
+  yield* store.set(encodedSessionId, encodedSession)
 
   return HttpServerResponse.redirect(Routes.HomePage, {
     status: StatusCodes.SeeOther,

@@ -1,4 +1,5 @@
-import { Context, type HashSet, type Redacted } from 'effect'
+import { Context, type Effect, type HashSet, type Option, type Redacted } from 'effect'
+import type { KeyValueStore } from 'effect/persistence'
 import type { SupportedLocale, UserSelectableLocale } from './locales/index.ts'
 import type { NonEmptyString } from './types/index.ts'
 import type { FlashMessageSchema } from './WebApp/Response/index.ts'
@@ -17,13 +18,13 @@ export class FlashMessage extends Context.Service<FlashMessage, typeof FlashMess
 
 export class SessionSecret extends Context.Service<SessionSecret, Redacted.Redacted>()('SessionSecret') {}
 
-export interface LegacySessionStore {
-  readonly get: (key: string) => Promise<unknown>
-  readonly set: (key: string, value: unknown) => Promise<unknown>
-  readonly delete: (key: string) => Promise<unknown>
+export interface SessionStorage {
+  readonly get: (key: string) => Effect.Effect<Option.Option<unknown>, KeyValueStore.KeyValueStoreError>
+  readonly set: (key: string, value: unknown) => Effect.Effect<void, KeyValueStore.KeyValueStoreError>
+  readonly delete: (key: string) => Effect.Effect<void, KeyValueStore.KeyValueStoreError>
 }
 
-export class SessionStore extends Context.Service<SessionStore, { cookie: string; store: LegacySessionStore }>()(
+export class SessionStore extends Context.Service<SessionStore, { cookie: string; store: SessionStorage }>()(
   'SessionStore',
 ) {}
 

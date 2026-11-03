@@ -1,103 +1,48 @@
-import { flow, pipe, type Record } from 'effect'
-import * as E from 'fp-ts/lib/Either.js'
+import { Effect, Option, pipe, Schema } from 'effect'
+import type { KeyValueStore } from 'effect/persistence'
 import type { Json } from 'fp-ts/lib/Json.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
-import type { Decoder } from 'io-ts/lib/Decoder.js'
-import * as D from 'io-ts/lib/Decoder.js'
-import type { Encoder } from 'io-ts/lib/Encoder.js'
-import * as EN from 'io-ts/lib/Encoder.js'
-import type { LegacySessionStore } from './Context.ts'
-import * as L from 'logger-fp-ts'
+import { SessionStore } from './Context.ts'
 
-export interface SessionStoreEnv {
-  sessionStore: LegacySessionStore
-}
+const SessionSchema = Schema.Record(Schema.String, Schema.Unknown)
 
-interface StoreEnv {
-  store: LegacySessionStore
-}
+const getSession = Effect.fnUntraced(function* (sessionId: string) {
+  const { store } = yield* SessionStore
 
-const getKey =
-  <K, V>(keyEncoder: Encoder<string, K>, valueDecoder: Decoder<unknown, V>) =>
-  (key: K): RTE.ReaderTaskEither<StoreEnv & L.LoggerEnv, 'unavailable' | 'not-found', V> =>
-    pipe(
-      RTE.ask<StoreEnv>(),
-      RTE.chainW(({ store }) =>
-        pipe(
-          RTE.fromTaskEither(TE.tryCatch(() => store.get(keyEncoder.encode(key)), E.toError)),
-          RTE.orElseFirstW(
-            RTE.fromReaderIOK(
-              flow(
-                error => ({
-                  error: error.message,
-                  key: keyEncoder.encode(key),
-                }),
-                L.errorP('Failed to get key'),
-              ),
-            ),
-          ),
-        ),
-      ),
-      RTE.mapLeft(() => 'unavailable' as const),
-      RTE.chainEitherKW(
-        flow(
-          valueDecoder.decode,
-          E.mapLeft(() => 'not-found' as const),
-        ),
-      ),
-    )
-
-const setKey =
-  <K, V>(keyEncoder: Encoder<string, K>, valueEncoder: Encoder<unknown, V>) =>
-  (key: K, value: V): RTE.ReaderTaskEither<StoreEnv & L.LoggerEnv, 'unavailable', void> =>
-    pipe(
-      RTE.ask<StoreEnv>(),
-      RTE.chainW(({ store }) =>
-        pipe(
-          RTE.fromTaskEither(
-            TE.tryCatch(async () => {
-              await store.set(keyEncoder.encode(key), valueEncoder.encode(value))
-            }, E.toError),
-          ),
-          RTE.orElseFirstW(
-            RTE.fromReaderIOK(
-              flow(
-                error => ({
-                  error: error.message,
-                  key: keyEncoder.encode(key),
-                }),
-                L.errorP('Failed to set key'),
-              ),
-            ),
-          ),
-        ),
-      ),
-      RTE.mapLeft(() => 'unavailable'),
-    )
-
-export const addToSession = (sessionId: string, key: string, value: Json) =>
-  pipe(
-    getKey(EN.id<string>(), D.UnknownRecord)(sessionId),
-    RTE.mapLeft(() => 'unavailable' as const),
-    RTE.chain(session =>
-      setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: value }),
-    ),
-    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, store: env.sessionStore })),
+  return yield* pipe(
+    store.get(sessionId),
+    Effect.flatMap(Effect.fromOption),
+    Effect.flatMap(Schema.decodeUnknownEffect(SessionSchema)),
   )
+})
 
-export const popFromSession = (sessionId: string, key: string) =>
+export const addToSession = Effect.fn('addToSession')(
+  function* (sessionId: string, key: string, value: Json) {
+    const { store } = yield* SessionStore
+    const session = yield* getSession(sessionId)
+
+    yield* store.set(sessionId, { ...session, [key]: value })
+  },
+  Effect.catchTag('KeyValueStoreError', error => unavailable(error)),
+  Effect.mapError(() => 'unavailable' as const),
+)
+
+export const popFromSession = Effect.fn('popFromSession')(
+  function* (sessionId: string, key: string) {
+    const { store } = yield* SessionStore
+    const session = yield* getSession(sessionId)
+    const value = yield* Effect.fromOption(Option.fromNullishOr(session[key] as Json))
+
+    yield* store.set(sessionId, { ...session, [key]: undefined })
+
+    return value
+  },
+  Effect.catchTag('KeyValueStoreError', error => unavailable(error)),
+  Effect.mapError(() => 'unavailable' as const),
+)
+
+const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
-    getKey(EN.id<string>(), D.UnknownRecord)(sessionId),
-    RTE.bindTo('session'),
-    RTE.bindW(
-      'value',
-      RTE.fromNullableK('unavailable' as const)(({ session }) => session[key] as Json),
-    ),
-    RTE.mapLeft(() => 'unavailable' as const),
-    RTE.chainFirst(({ session }) =>
-      setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: undefined }),
-    ),
-    RTE.map(({ value }) => value),
-    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, store: env.sessionStore })),
+    Effect.logError('Unable to access session'),
+    Effect.annotateLogs({ error: error.message, method: error.method }),
+    Effect.andThen(Effect.fail('unavailable' as const)),
   )

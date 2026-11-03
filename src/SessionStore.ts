@@ -1,22 +1,40 @@
 import { Effect, Layer, pipe, UndefinedOr } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
-import { type LegacySessionStore, SessionStore } from './Context.ts'
+import { SessionStore, type SessionStorage } from './Context.ts'
 import * as RedisKeyValueStore from './RedisKeyValueStore.ts'
 
-export const fromKeyValueStore = Effect.fnUntraced(function* (store: KeyValueStore.KeyValueStore) {
-  const runPromise = Effect.runPromiseWith(yield* Effect.context())
-
-  return {
-    get: key => runPromise(pipe(store.get(key), Effect.map(UndefinedOr.map(value => JSON.parse(value) as unknown)))),
-    set: (key, value) => runPromise(store.set(key, JSON.stringify(value))),
-    delete: key => runPromise(store.remove(key)),
-  } satisfies LegacySessionStore
+export const fromKeyValueStore = (store: KeyValueStore.KeyValueStore): SessionStorage => ({
+  get: key =>
+    Effect.flatMap(
+      store.get(key),
+      UndefinedOr.match({
+        onUndefined: () => Effect.succeedNone,
+        onDefined: value =>
+          Effect.asSome(
+            Effect.try({
+              try: () => JSON.parse(value) as unknown,
+              catch: cause =>
+                new KeyValueStore.KeyValueStoreError({ message: 'Unable to parse', method: 'get', key, cause }),
+            }),
+          ),
+      }),
+    ),
+  set: (key, value) =>
+    pipe(
+      Effect.try({
+        try: () => JSON.stringify(value),
+        catch: cause =>
+          new KeyValueStore.KeyValueStoreError({ message: 'Unable to encode', method: 'set', key, cause }),
+      }),
+      Effect.flatMap(json => store.set(key, json)),
+    ),
+  delete: key => Effect.asVoid(store.remove(key)),
 })
 
 export const layerKeyValueStore = Layer.effect(
   SessionStore,
   Effect.gen(function* () {
-    return { cookie: 'session', store: yield* fromKeyValueStore(yield* KeyValueStore.KeyValueStore) }
+    return { cookie: 'session', store: fromKeyValueStore(yield* KeyValueStore.KeyValueStore) }
   }),
 )
 
