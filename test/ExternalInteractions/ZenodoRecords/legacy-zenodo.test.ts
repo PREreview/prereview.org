@@ -1523,6 +1523,548 @@ describe('getPrereviewFromZenodo', () => {
   )
 })
 
+describe('getPrereviewSummaryFromZenodo', () => {
+  it.effect.prop(
+    'when the PREreview can be loaded',
+    [
+      fc.integer(),
+      fc.preprintTitle(),
+      fc.option(fc.clubName(), { nil: undefined }),
+      fc.oneof(
+        fc.constant([0, []]),
+        fc.constant([1, [{ name: '1 other author' }]]),
+        fc.integer({ min: 2 }).map(number => [number, [{ name: `${number} other authors` }]] as const),
+      ),
+    ],
+    ([id, preprint, club, [expectedAnonymous, otherAuthors]]) =>
+      Effect.gen(function* () {
+        const record: Record = {
+          conceptdoi: Doi('10.5072/zenodo.1061863'),
+          conceptrecid: 1061863,
+          files: [
+            {
+              links: {
+                self: new URL('http://example.com/review.html/content'),
+              },
+              key: 'review.html',
+              size: 58,
+            },
+          ],
+          id,
+          links: {
+            latest: new URL('http://example.com/latest'),
+            latest_html: new URL('http://example.com/latest_html'),
+          },
+          metadata: {
+            access_right: 'open',
+            communities: [{ id: 'prereview-reviews' }],
+            contributors: club
+              ? [
+                  {
+                    type: 'ResearchGroup',
+                    name: club.name,
+                  },
+                ]
+              : undefined,
+            creators: [{ name: 'PREreviewer' }, ...otherAuthors],
+            description: 'Description',
+            doi: Doi('10.5281/zenodo.1061864'),
+            language: 'eng',
+            license: { id: 'cc-by-4.0' },
+            publication_date: new Date('2022-07-05'),
+            related_identifiers: [
+              {
+                ..._.toExternalIdentifier(preprint.id),
+                relation: 'reviews',
+                resource_type: 'publication-preprint',
+              },
+            ],
+            resource_type: {
+              type: 'publication',
+              subtype: 'peerreview',
+            },
+            subjects: [
+              {
+                term: 'Endocrinology',
+                identifier: 'https://openalex.org/subfields/1310',
+                scheme: 'url',
+              },
+              {
+                term: 'Biochemistry, Genetics and Molecular Biology',
+                identifier: 'https://openalex.org/fields/13',
+                scheme: 'url',
+              },
+            ],
+            title: 'Title',
+          },
+        }
+
+        const getPreprintTitle = vi.fn(() => Effect.succeed(preprint))
+
+        const runtime = yield* Effect.provide(Effect.context<Preprints>(), Layer.mock(Preprints, { getPreprintTitle }))
+
+        const actual = yield* Effect.promise(
+          _.getPrereviewSummaryFromZenodo(id)({
+            clock: SystemClock,
+            fetch: (...args) =>
+              fetchMock
+                .createInstance()
+                .getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: RecordC.encode(record),
+                  status: StatusCodes.OK,
+                })
+                .fetchHandler(...args),
+            getClubByName: club ? () => T.of(Option.some(club)) : shouldNotBeCalled,
+            logger: () => IO.of(undefined),
+            runtime,
+            wasPrereviewRemoved: () => false,
+          }),
+        )
+
+        expect(actual).toStrictEqual(
+          E.right(
+            new Prereviews.RecentPreprintPrereview({
+              club,
+              id,
+              reviewers: { named: [Name('PREreviewer')], anonymous: expectedAnonymous },
+              published: Temporal.PlainDate.from('2022-07-05'),
+              fields: ['13'],
+              subfields: ['1310'],
+              preprint,
+            }),
+          ),
+        )
+        expect(getPreprintTitle).toHaveBeenCalledWith(expect.objectContaining({ value: preprint.id.value }))
+      }),
+  )
+
+  it.effect.prop('when the review was removed', [fc.integer()], ([id]) =>
+    Effect.gen(function* () {
+      const wasPrereviewRemoved = vi.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(() => true)
+
+      const runtime = yield* Effect.context<Preprints>()
+
+      const actual = yield* Effect.promise(
+        _.getPrereviewSummaryFromZenodo(id)({
+          clock: SystemClock,
+          fetch: shouldNotBeCalled,
+          getClubByName: shouldNotBeCalled,
+          logger: () => IO.of(undefined),
+          runtime,
+          wasPrereviewRemoved,
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewWasRemoved()))
+      expect(wasPrereviewRemoved).toHaveBeenCalledWith(id)
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+
+  it.effect.prop(
+    'when the review is not found',
+    [fc.integer(), fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone)],
+    ([id, status]) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.context<Preprints>()
+
+        const actual = yield* Effect.promise(
+          _.getPrereviewSummaryFromZenodo(id)({
+            clock: SystemClock,
+            fetch: (...args) =>
+              fetchMock
+                .createInstance()
+                .getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: undefined,
+                  status,
+                })
+                .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
+            logger: () => IO.of(undefined),
+            runtime,
+            wasPrereviewRemoved: () => false,
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+
+  it.effect.prop('when the review cannot be loaded', [fc.integer()], ([id]) =>
+    Effect.gen(function* () {
+      const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/records/${id}`, {
+        body: undefined,
+        status: StatusCodes.ServiceUnavailable,
+      })
+
+      const runtime = yield* Effect.context<Preprints>()
+
+      const actual = yield* Effect.promise(
+        _.getPrereviewSummaryFromZenodo(id)({
+          clock: SystemClock,
+          fetch: (...args) => fetch.fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
+          logger: () => IO.of(undefined),
+          runtime,
+          wasPrereviewRemoved: () => false,
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
+      expect(fetch.callHistory.done()).toBeTruthy()
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+
+  it.effect.prop(
+    'when the preprint cannot be loaded',
+    [fc.integer(), fc.preprintDoi(), fc.constantFrom(new PreprintIsNotFound({}), new PreprintIsUnavailable({}))],
+    ([id, preprintDoi, error]) =>
+      Effect.gen(function* () {
+        const record: Record = {
+          conceptdoi: Doi('10.5072/zenodo.1061863'),
+          conceptrecid: 1061863,
+          files: [
+            {
+              links: {
+                self: new URL('http://example.com/review.html/content'),
+              },
+              key: 'review.html',
+              size: 58,
+            },
+          ],
+          id,
+          links: {
+            latest: new URL('http://example.com/latest'),
+            latest_html: new URL('http://example.com/latest_html'),
+          },
+          metadata: {
+            access_right: 'open',
+            communities: [{ id: 'prereview-reviews' }],
+            creators: [{ name: 'PREreviewer' }],
+            description: 'Description',
+            doi: Doi('10.5281/zenodo.1061864'),
+            license: { id: 'cc-by-4.0' },
+            publication_date: new Date('2022-07-05'),
+            related_identifiers: [
+              {
+                scheme: 'doi',
+                identifier: preprintDoi,
+                relation: 'reviews',
+                resource_type: 'publication-preprint',
+              },
+            ],
+            resource_type: {
+              type: 'publication',
+              subtype: 'peerreview',
+            },
+            title: 'Title',
+          },
+        }
+
+        const runtime = yield* Effect.context<Preprints>()
+
+        const actual = yield* Effect.promise(
+          _.getPrereviewSummaryFromZenodo(id)({
+            clock: SystemClock,
+            fetch: (...args) =>
+              fetchMock
+                .createInstance()
+                .getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: RecordC.encode(record),
+                  status: StatusCodes.OK,
+                })
+                .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
+            logger: () => IO.of(undefined),
+            runtime,
+            wasPrereviewRemoved: () => false,
+          }),
+        )
+
+        expect(actual).toStrictEqual(
+          E.left(
+            error._tag === 'PreprintIsNotFound'
+              ? new Prereviews.PrereviewIsNotFound()
+              : new Prereviews.PrereviewIsUnavailable(),
+          ),
+        )
+      }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => error }))),
+  )
+
+  it.effect.prop('when the record is restricted', [fc.integer(), fc.preprintDoi()], ([id, preprintDoi]) =>
+    Effect.gen(function* () {
+      const record: Record = {
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/review.html/content'),
+            },
+            key: 'review.html',
+            size: 58,
+          },
+        ],
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          access_right: 'restricted',
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: Doi('10.5281/zenodo.1061864'),
+          license: { id: 'cc-by-4.0' },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              scheme: 'doi',
+              identifier: preprintDoi,
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'peerreview',
+          },
+          title: 'Title',
+        },
+      }
+
+      const runtime = yield* Effect.context<Preprints>()
+
+      const actual = yield* Effect.promise(
+        _.getPrereviewSummaryFromZenodo(id)({
+          clock: SystemClock,
+          fetch: (...args) =>
+            fetchMock
+              .createInstance()
+              .getOnce(`https://zenodo.org/api/records/${id}`, {
+                body: RecordC.encode(record),
+                status: StatusCodes.OK,
+              })
+              .fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
+          logger: () => IO.of(undefined),
+          runtime,
+          wasPrereviewRemoved: () => false,
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+
+  it.effect.prop('when the record is not in the community', [fc.integer(), fc.preprintDoi()], ([id, preprintDoi]) =>
+    Effect.gen(function* () {
+      const record: Record = {
+        conceptdoi: Doi('10.5072/zenodo.1061863'),
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/review.html/content'),
+            },
+            key: 'review.html',
+            size: 58,
+          },
+        ],
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          access_right: 'open',
+          communities: undefined,
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: Doi('10.5281/zenodo.1061864'),
+          license: { id: 'cc-by-4.0' },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              scheme: 'doi',
+              identifier: preprintDoi,
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'peerreview',
+          },
+          title: 'Title',
+        },
+      }
+
+      const runtime = yield* Effect.context<Preprints>()
+
+      const actual = yield* Effect.promise(
+        _.getPrereviewSummaryFromZenodo(id)({
+          clock: SystemClock,
+          fetch: (...args) =>
+            fetchMock
+              .createInstance()
+              .getOnce(`https://zenodo.org/api/records/${id}`, {
+                body: RecordC.encode(record),
+                status: StatusCodes.OK,
+              })
+              .fetchHandler(...args),
+          getClubByName: shouldNotBeCalled,
+          logger: () => IO.of(undefined),
+          runtime,
+          wasPrereviewRemoved: () => false,
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+    }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+
+  it.effect.prop(
+    'when the record is not a peer review',
+    [fc.integer(), fc.preprintDoi(), fc.constantFrom('article', 'preprint', 'report')],
+    ([id, preprintDoi, subtype]) =>
+      Effect.gen(function* () {
+        const record: Record = {
+          conceptdoi: Doi('10.5072/zenodo.1061863'),
+          conceptrecid: 1061863,
+          files: [
+            {
+              links: {
+                self: new URL('http://example.com/review.html/content'),
+              },
+              key: 'review.html',
+              size: 58,
+            },
+          ],
+          id,
+          links: {
+            latest: new URL('http://example.com/latest'),
+            latest_html: new URL('http://example.com/latest_html'),
+          },
+          metadata: {
+            access_right: 'open',
+            communities: [{ id: 'prereview-reviews' }],
+            creators: [{ name: 'PREreviewer' }],
+            description: 'Description',
+            doi: Doi('10.5281/zenodo.1061864'),
+            license: { id: 'cc-by-4.0' },
+            publication_date: new Date('2022-07-05'),
+            related_identifiers: [
+              {
+                scheme: 'doi',
+                identifier: preprintDoi,
+                relation: 'reviews',
+                resource_type: 'publication-preprint',
+              },
+            ],
+            resource_type: {
+              type: 'publication',
+              subtype,
+            },
+            title: 'Title',
+          },
+        }
+
+        const runtime = yield* Effect.context<Preprints>()
+
+        const actual = yield* Effect.promise(
+          _.getPrereviewSummaryFromZenodo(id)({
+            clock: SystemClock,
+            fetch: (...args) =>
+              fetchMock
+                .createInstance()
+                .getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: RecordC.encode(record),
+                  status: StatusCodes.OK,
+                })
+                .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
+            logger: () => IO.of(undefined),
+            runtime,
+            wasPrereviewRemoved: () => false,
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+
+  it.effect.prop(
+    'when the record does not review a preprint with a preprint DOI',
+    [fc.integer(), fc.oneof(fc.string(), fc.nonPreprintDoi())],
+    ([id, identifier]) =>
+      Effect.gen(function* () {
+        const record: Record = {
+          conceptdoi: Doi('10.5072/zenodo.1061863'),
+          conceptrecid: 1061863,
+          files: [
+            {
+              links: {
+                self: new URL('http://example.com/review.html/content'),
+              },
+              key: 'review.html',
+              size: 58,
+            },
+          ],
+          id,
+          links: {
+            latest: new URL('http://example.com/latest'),
+            latest_html: new URL('http://example.com/latest_html'),
+          },
+          metadata: {
+            access_right: 'open',
+            communities: [{ id: 'prereview-reviews' }],
+            creators: [{ name: 'PREreviewer' }],
+            description: 'Description',
+            doi: Doi('10.5281/zenodo.1061864'),
+            license: { id: 'cc-by-4.0' },
+            publication_date: new Date('2022-07-05'),
+            related_identifiers: [
+              {
+                scheme: 'doi',
+                identifier,
+                relation: 'reviews',
+                resource_type: 'publication-preprint',
+              },
+            ],
+            resource_type: {
+              type: 'publication',
+              subtype: 'peerreview',
+            },
+            title: 'Title',
+          },
+        }
+
+        const runtime = yield* Effect.context<Preprints>()
+
+        const actual = yield* Effect.promise(
+          _.getPrereviewSummaryFromZenodo(id)({
+            clock: SystemClock,
+            fetch: (...args) =>
+              fetchMock
+                .createInstance()
+                .getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: RecordC.encode(record),
+                  status: StatusCodes.OK,
+                })
+                .fetchHandler(...args),
+            getClubByName: shouldNotBeCalled,
+            logger: () => IO.of(undefined),
+            runtime,
+            wasPrereviewRemoved: () => false,
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+      }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
+  )
+})
+
 describe('getPrereviewsForProfileFromZenodo', () => {
   describe('when the PREreviews can be loaded', () => {
     it.effect.prop(

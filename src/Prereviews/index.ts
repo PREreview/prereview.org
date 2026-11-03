@@ -18,8 +18,8 @@ import type { ProfileId } from '../types/profile-id.ts'
 import {
   type PreprintPrereview,
   type Prereview,
-  type PrereviewIsNotFound,
-  type PrereviewIsUnavailable,
+  PrereviewIsNotFound,
+  PrereviewIsUnavailable,
   PrereviewsAreUnavailable,
   PrereviewsPageNotFound,
   type PrereviewWasRemoved,
@@ -47,6 +47,12 @@ export class Prereviews extends Context.Service<
     getPrereview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
+    getPrereviewSummary: (
+      id: number | Uuid.Uuid,
+    ) => Effect.Effect<
+      RecentPreprintPrereview | RecentDatasetPrereview,
+      PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved
+    >
     search: (args: {
       field?: FieldId
       language?: LanguageCode
@@ -76,6 +82,9 @@ export const getForUser = (...args: Parameters<(typeof Prereviews.Service)['getF
 
 export const getPrereview = (...args: Parameters<(typeof Prereviews.Service)['getPrereview']>) =>
   Prereviews.use(service => service.getPrereview(...args))
+
+export const getPrereviewSummary = (...args: Parameters<(typeof Prereviews.Service)['getPrereviewSummary']>) =>
+  Prereviews.use(service => service.getPrereviewSummary(...args))
 
 export const search = (...args: Parameters<(typeof Prereviews.Service)['search']>) =>
   Prereviews.use(service => service.search(...args))
@@ -256,6 +265,37 @@ export const layer = Layer.effect(
         const runtime = yield* Effect.context<Preprints>()
 
         return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
+          fetch,
+          getClubByName,
+          runtime,
+          wasPrereviewRemoved,
+          zenodoApiKey: Redacted.value(zenodoApi.key),
+          zenodoUrl: zenodoApi.origin,
+          ...loggerEnv,
+        })
+      }, Effect.provide(context)),
+      getPrereviewSummary: Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
+        yield* Effect.annotateCurrentSpan({ id })
+
+        if (typeof id !== 'number') {
+          return yield* pipe(
+            getRecentDatasetPrereview(id),
+            Effect.catchTag(
+              ['UnknownDatasetReview', 'DatasetReviewHasNotBeenPublished'],
+              () => new PrereviewIsNotFound(),
+            ),
+            Effect.catchTag(
+              ['ClubNotFound', 'DatasetIsNotFound', 'DatasetIsUnavailable', 'UnableToGetPersona', 'UnableToQuery'],
+              () => new PrereviewIsUnavailable(),
+            ),
+          )
+        }
+
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+        const runtime = yield* Effect.context<Preprints>()
+
+        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewSummaryFromZenodo(id), {
           fetch,
           getClubByName,
           runtime,

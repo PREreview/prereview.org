@@ -332,6 +332,55 @@ export const getPrereviewFromZenodo = (id: number) =>
     ),
   )
 
+export const getPrereviewSummaryFromZenodo = (id: number) =>
+  pipe(
+    RTE.fromReader(wasPrereviewRemoved(id)),
+    RTE.filterOrElse(
+      wasRemoved => !wasRemoved,
+      () => 'removed' as const,
+    ),
+    RTE.chainW(() => getRecord(id)),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(5000)),
+    RTE.filterOrElseW(
+      pipe(isInCommunity, Predicate.and(isPeerReview), Predicate.and(isOpen)),
+      () => 'not-found' as const,
+    ),
+    RTE.chainW(recordToRecentPrereview),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error =>
+            match(error)
+              .with({ _tag: 'PreprintIsUnavailable' }, () => Option.some('unavailable' as const))
+              .with({ _tag: 'PreprintIsNotFound' }, Option.none)
+              .with(P.instanceOf(Error), error => Option.some(error.message))
+              .with({ status: P.union(StatusCodes.NotFound, StatusCodes.Gone) }, Option.none)
+              .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
+              .with({ _tag: P.string }, error => Option.some(D.draw(error)))
+              .with('no reviewed preprint', 'removed', 'not-found', Option.none)
+              .exhaustive(),
+          Option.match({
+            onNone: () => RIO.of(undefined),
+            onSome: flow(error => ({ error }), L.errorP('Unable to get record from Zenodo')),
+          }),
+        ),
+      ),
+    ),
+    RTE.mapLeft(error =>
+      match(error)
+        .with('removed', () => new Prereview.PrereviewWasRemoved())
+        .with(
+          'no reviewed preprint',
+          'not-found',
+          { _tag: 'PreprintIsNotFound' },
+          { status: P.union(StatusCodes.NotFound, StatusCodes.Gone) },
+          () => new Prereview.PrereviewIsNotFound(),
+        )
+        .otherwise(() => new Prereview.PrereviewIsUnavailable()),
+    ),
+  )
+
 export const getPrereviewsForProfileFromZenodo = flow(
   (profile: ProfileId.ProfileId) =>
     RTE.asks(
