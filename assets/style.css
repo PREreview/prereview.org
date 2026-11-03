@@ -2974,13 +2974,13 @@ skip-link {
   }
 
   & img {
-    block-size: 100%;
-    max-block-size: calc(var(--space-xl) * 2);
-    inline-size: 100%;
-    max-inline-size: calc(var(--space-2xl) * 2);
+    block-size: calc(var(--space-xl) * 2);
+    inline-size: calc(var(--space-2xl) * 2);
+    max-inline-size: 100%;
+    object-fit: contain;
 
     &.wide {
-      max-inline-size: calc(var(--space-3xl) * 2);
+      inline-size: calc(var(--space-3xl) * 2);
     }
   }
 }
