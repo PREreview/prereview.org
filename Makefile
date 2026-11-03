@@ -15,6 +15,7 @@ node_modules: package.json pnpm-lock.yaml pnpm-workspace.yaml
 check: format lint-ts lint-css typecheck test-fast
 
 .PHONY: update-incontext-locale
+update-incontext-locale: SHELL := /usr/bin/env bash
 update-incontext-locale:
 	source .env && crowdin download --language=lol --token=$${CROWDIN_PERSONAL_TOKEN}
 
