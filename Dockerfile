@@ -6,7 +6,7 @@ WORKDIR /app
 # Stage: PNPM environment
 #
 FROM node AS pnpm
-RUN apt-get update && apt-get install --yes \
+RUN apt-get update && apt-get install --yes --no-install-recommends \
   build-essential \
   python3 \
   && rm --recursive --force /var/lib/apt/lists/*
@@ -32,7 +32,8 @@ FROM intlc-$TARGETARCH AS intlc
 FROM pnpm AS pnpm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN pnpm install --frozen-lockfile \
+RUN --mount=type=cache,target=/pnpm/store \
+  pnpm install --frozen-lockfile --store-dir=/pnpm/store \
   && rm --recursive --force node_modules/cld/deps/*
 
 #
@@ -40,7 +41,8 @@ RUN pnpm install --frozen-lockfile \
 #
 FROM pnpm AS pnpm-prod
 
-RUN pnpm install --frozen-lockfile --prod \
+RUN --mount=type=cache,target=/pnpm/store \
+  pnpm install --frozen-lockfile --prod --store-dir=/pnpm/store \
   && rm --recursive --force node_modules/cld/deps/*
 
 #
@@ -99,7 +101,7 @@ FROM redis:8.10.2 AS redis
 FROM node AS prod
 ENV NODE_ENV=production
 
-RUN apt-get update && apt-get install --yes \
+RUN apt-get update && apt-get install --yes --no-install-recommends \
   wget \
   && rm --recursive --force /var/lib/apt/lists/*
 
