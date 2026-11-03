@@ -24,7 +24,7 @@ ADD --chmod=+x https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-
 FROM scratch AS intlc-arm64
 ADD --chmod=+x https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-aarch64 /usr/local/bin/intlc
 
-FROM intlc-$BUILDARCH AS intlc
+FROM intlc-$TARGETARCH AS intlc
 
 #
 # Stage: Development PNPM install
