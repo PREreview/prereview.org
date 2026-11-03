@@ -74,8 +74,7 @@ smoketest:
 	docker build --tag prereview-smoketest --target prod .
 	docker compose down
 	docker compose up postgres redis --wait
-	scripts/smoke-test.sh prereview-smoketest
-	docker compose down
+	scripts/smoke-test.sh prereview-smoketest; status=$$?; docker compose down; exit $$status
 
 .PHONY: typecheck
 typecheck: node_modules src/manifest.json
