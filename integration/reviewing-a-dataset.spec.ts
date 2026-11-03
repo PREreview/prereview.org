@@ -1679,6 +1679,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a DOI', async ({ javaSc
 test.extend(canLogIn).extend(areLoggedIn)('have to rate the quality', async ({ javaScriptEnabled, page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
   await page.goto(`${page.url()}/../rate-the-quality`, { waitUntil: 'commit' })
 
   if (!javaScriptEnabled) {
@@ -1710,6 +1711,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../follows-fair-and-care-principles`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1746,6 +1748,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../has-enough-metadata`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1779,6 +1782,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../has-tracked-changes`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1818,6 +1822,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../has-data-censored-or-deleted`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1851,6 +1856,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../is-appropriate-for-this-kind-of-research`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1882,6 +1888,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../supports-related-conclusions`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1913,6 +1920,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../is-detailed-enough`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1946,6 +1954,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../is-error-free`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -1978,6 +1987,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../matters-to-its-audience`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -2011,6 +2021,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../is-ready-to-be-shared`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
@@ -2041,6 +2052,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a persona', async ({ javaScriptEnabled, page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
   await page.goto(`${page.url()}/../choose-name`, { waitUntil: 'commit' })
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2065,6 +2077,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2090,6 +2103,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
     await page.getByLabel('Yes').click()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2137,6 +2151,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
     await page.getByLabel('Yes').click()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2165,6 +2180,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 test.extend(canLogIn).extend(areLoggedIn)('have to declare the use of AI', async ({ javaScriptEnabled, page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
   await page.goto(`${page.url()}/../use-of-ai`, { waitUntil: 'commit' })
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2189,12 +2205,14 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../others-need-to-be-listed`, { waitUntil: 'commit' })
     await page.getByLabel('Yes').click()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
     await page.goto(`${page.url()}/../use-of-ai`, { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2225,6 +2243,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../declare-competing-interests`, { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2265,6 +2284,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
     await page.goto(`${page.url()}/../declare-following-code-of-conduct`, { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
