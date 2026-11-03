@@ -12,6 +12,7 @@ import {
   test as baseTest,
   expect,
   type Fixtures,
+  type Locator,
   type Page,
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
@@ -3784,4 +3785,16 @@ export const waitForNotBusy = async (page: Page) => {
   await page.waitForLoadState()
 
   await page.locator('body', { hasNot: page.locator('[aria-busy=true]') }).waitFor()
+}
+
+export const waitForProseMirrorFocus = async (editor: Locator) => {
+  await expect(editor).toBeFocused()
+
+  // ProseMirror resets the selection 20ms after gaining focus, undoing anything that moved it in the meantime
+  await editor.evaluate(
+    () =>
+      new Promise(resolve => {
+        setTimeout(resolve, 20)
+      }),
+  )
 }

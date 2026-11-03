@@ -17,6 +17,7 @@ import {
   test,
   usePostgresDB,
   waitForNotBusy,
+  waitForProseMirrorFocus,
   willPublishAReview,
 } from './base.ts'
 
@@ -315,12 +316,13 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     }
 
     await page.getByLabel('Write your PREreview').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await page.getByLabel('Write your PREreview').clear()
 
     await page.getByRole('button', { name: 'Heading level 1' }).click()
     await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-disabled', 'true')
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
 
     await page.keyboard.type('Lorem')
     await page.keyboard.press('Enter')
@@ -330,7 +332,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await page.keyboard.type('Ipsum')
     await page.getByRole('button', { name: 'Heading level 3' }).click()
     await page.getByRole('button', { name: 'Heading level 2' }).click()
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Heading level 3' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Heading level 2' })).toHaveAttribute('aria-pressed', 'true')
 
@@ -355,7 +357,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     })
     await page.getByRole('button', { name: 'Link' }).click()
 
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
 
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
@@ -369,7 +371,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
 
     await page.getByRole('button', { name: 'Link' }).click()
 
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'false')
 
     await page.keyboard.press('ArrowDown')
@@ -389,7 +391,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Italic' })).toHaveAttribute('aria-pressed', 'true')
 
     await page.keyboard.type('consectetur')
@@ -398,7 +400,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
 
     await page.keyboard.type(' ')
 
@@ -407,20 +409,20 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
 
     await page.keyboard.type('adipiscing ')
 
     await page.getByRole('button', { name: 'Subscript' }).click()
 
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Subscript' })).toHaveAttribute('aria-pressed', 'true')
     await page.keyboard.type('el')
 
     await page.getByRole('button', { name: 'Superscript' }).click()
 
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Subscript' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'true')
@@ -431,7 +433,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Superscript' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'false')
 
     await page.keyboard.press('Shift+Tab')
@@ -439,7 +441,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'false')
 
     await page.keyboard.type('.')
@@ -449,10 +451,12 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'true')
 
     await page.keyboard.press('ArrowDown')
+    await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'false')
+    await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'false')
     await page.keyboard.press('Enter')
 
     await page.getByRole('button', { name: 'Bulleted list' }).click()
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
 
     await page.keyboard.type('Mauris')
     await page.keyboard.press('Enter')
@@ -471,7 +475,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'true')
 
     await page.getByRole('button', { name: 'Numbered list' }).click()
-    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Numbered list' })).toHaveAttribute('aria-pressed', 'true')
   },

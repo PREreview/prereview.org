@@ -179,7 +179,6 @@
     {
       "files": ["**/*.test.ts"],
       "rules": {
-        "no-comments/disallowComments": "off",
         "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "reportVarsOnlyUsedAsTypes": true }],
         "typescript/no-non-null-assertion": "off",
         "typescript/no-unsafe-argument": "off",
@@ -200,6 +199,7 @@
     {
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
+        "no-comments/disallowComments": "off",
         "typescript/no-base-to-string": "off"
       }
     },
