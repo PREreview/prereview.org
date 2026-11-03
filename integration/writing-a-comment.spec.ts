@@ -549,6 +549,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await waitForEditor(page.getByLabel('Write your comment'))
     await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('What name would you like to use?')
     await page.goto('/reviews/1061864', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a comment' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -1224,6 +1225,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
   await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toBeVisible()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   if (javaScriptEnabled) {
@@ -1317,6 +1319,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('group', { name: 'Do you have any competing interests?' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1428,6 +1431,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('group', { name: 'Code of Conduct' })).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1524,6 +1528,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByLabel('What is your email address?')).toBeVisible()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
