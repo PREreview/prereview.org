@@ -11,11 +11,10 @@ import {
   isASlackUser,
   test,
   userIsBlocked,
-  waitForNotBusy,
 } from './base.ts'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -27,33 +26,36 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   }
 })
 
-test.extend(canRegisterAsNewUser).extend(areLoggedIn)('are prompted to view my details once', async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canRegisterAsNewUser).extend(areLoggedIn)(
+  'are prompted to view my details once',
+  async ({ javaScriptEnabled, page }) => {
+    const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
-  await menu.click()
+    await menu.click()
 
-  await expect(page.getByRole('link', { name: 'My details' })).toContainText('New notification')
+    await expect(page.getByRole('link', { name: 'My details' })).toContainText('New notification')
 
-  await page.getByRole('link', { name: 'My details' }).click()
+    await page.getByRole('link', { name: 'My details' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
+    await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
 
-  await menu.click()
+    await menu.click()
 
-  await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
+    await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
 
-  await page.getByRole('link', { name: 'My details' }).click()
+    await page.getByRole('link', { name: 'My details' }).click()
 
-  await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
+    await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
 
-  await page.goto('/', { waitUntil: 'commit' })
-  await menu.click()
+    await page.goto('/', { waitUntil: 'commit' })
+    await menu.click()
 
-  await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
-})
+    await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ emails, javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -96,7 +98,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can connect my ORCID record', async ({ fetch, javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -146,7 +148,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('can upload an avatar', async ({ fetch, javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -198,7 +200,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can upload an avatar', async ({ fetch
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',
   async ({ javaScriptEnabled, page }) => {
-    const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+    const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
     await menu.click()
     await page.getByRole('link', { name: 'My details' }).click()
@@ -248,8 +250,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can received notifications for requested PREreviews being published',
-  async ({ page }) => {
-    const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  async ({ javaScriptEnabled, page }) => {
+    const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
     await menu.click()
     await page.getByRole('link', { name: 'My details' }).click()
@@ -280,7 +282,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'have to say if you want to receive notifications for requested PREreviews being published',
   async ({ javaScriptEnabled, page }) => {
-    const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+    const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
     await menu.click()
     await page.getByRole('link', { name: 'My details' }).click()
@@ -307,8 +309,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ javaScriptEnabled, page }) => {
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -333,37 +335,40 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await expect(page.getByRole('main')).toContainText('Career stage Early Shown on your public profile')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm open for requests", async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
+  "can say if I'm open for requests",
+  async ({ javaScriptEnabled, page }) => {
+    const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
-  await menu.click()
-  await page.getByRole('link', { name: 'My details' }).click()
-  await page.getByRole('link', { name: 'Connect Slack account' }).click()
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByRole('link', { name: 'Enter preference for review requests' }).click()
-  await page.getByLabel('Yes').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await menu.click()
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.getByRole('link', { name: 'Connect Slack account' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByRole('link', { name: 'Enter preference for review requests' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
+    await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
 
-  await page.getByRole('link', { name: 'Set preference-for-review-requests visibility' }).click()
+    await page.getByRole('link', { name: 'Set preference-for-review-requests visibility' }).click()
 
-  await expect(page.getByLabel('Only PREreview')).toBeChecked()
+    await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
-  await page.getByLabel('Everyone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Everyone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
+    await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
 
-  await page.getByRole('link', { name: 'Change preference for review requests' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('link', { name: 'Change preference for review requests' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Open for review requests No')
-})
+    await expect(page.getByRole('main')).toContainText('Open for review requests No')
+  },
+)
 
-test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async ({ javaScriptEnabled, page }) => {
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -396,8 +401,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   )
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ javaScriptEnabled, page }) => {
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -423,8 +428,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
   await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna. Shown on your public profile')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ javaScriptEnabled, page }) => {
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await menu.click()
   await page.getByRole('link', { name: 'My details' }).click()
@@ -451,7 +456,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
 })
 
 test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
   const logIn = page.getByRole('link', { name: 'Log in' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
@@ -475,7 +480,7 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
 })
 
 test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async ({ javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
@@ -639,21 +644,21 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canRegisterAsNewUser)('can log in without having done so before', async ({ page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canRegisterAsNewUser)('can log in without having done so before', async ({ javaScriptEnabled, page }) => {
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
 
   await page.getByRole('link', { name: 'Log in' }).click()
-  await waitForNotBusy(page)
+  await expect(page.getByRole('alert', { name: 'Success' })).toContainText('You have been logged in.')
 
   await menu.click()
   await expect(page.getByRole('link', { name: 'Log out' })).toBeVisible()
 })
 
 test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
   const logIn = page.getByRole('link', { name: 'Log in as a demo user' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })

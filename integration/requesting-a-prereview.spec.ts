@@ -661,7 +661,7 @@ test
   )
   .extend(canLogIn)
   .extend(areLoggedIn)('can see my own requests', async ({ javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
 

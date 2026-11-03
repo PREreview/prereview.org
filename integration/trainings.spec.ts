@@ -2,7 +2,7 @@ import { Duration } from 'effect'
 import { expect, test } from './base.ts'
 
 test('can read about trainings', async ({ fetch, javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()

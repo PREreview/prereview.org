@@ -1,7 +1,7 @@
 import { areLoggedIn, canLogIn, expect, test } from './base.ts'
 
 test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ javaScriptEnabled, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
   const logOut = page.getByRole('link', { name: 'Log out' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })

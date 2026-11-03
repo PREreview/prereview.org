@@ -1,7 +1,7 @@
 import { expect, test } from './base.ts'
 
-test('can choose a locale through picker and path', async ({ fetch, page }) => {
-  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test('can choose a locale through picker and path', async ({ fetch, javaScriptEnabled, page }) => {
+  const menu = page.getByRole(javaScriptEnabled ? 'button' : 'link', { name: 'Menu' })
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
 
