@@ -35,7 +35,7 @@ start-app: .env node_modules start-services src/manifest.json
 	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	SMTP_URI=smtp://$(shell docker compose port mailpit 1025) \
 	ENABLE_OPENTELEMETRY=true \
-  node --watch --watch-preserve-output --env-file=.env src/index.ts
+	node --watch --watch-preserve-output --env-file=.env src/index.ts
 
 .PHONY: start
 start:
