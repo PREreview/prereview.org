@@ -2486,6 +2486,10 @@ skip-link {
     margin-block-start: var(--space-xs-s);
   }
 
+  & + :not(nav) {
+    margin-block-start: var(--space-m-l);
+  }
+
   > li {
     inline-size: auto;
     max-inline-size: 100%;
