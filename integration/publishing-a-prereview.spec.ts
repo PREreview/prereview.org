@@ -43,6 +43,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     }
 
     await page.getByLabel('Write your PREreview').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await page.getByLabel('Write your PREreview').clear()
     await page.keyboard.type('# Some title')
     await page.keyboard.press('Enter')
@@ -1161,6 +1162,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await waitForEditor(page.getByLabel('Write your PREreview'))
     await page.getByLabel('Write your PREreview').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1235,6 +1237,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await waitForEditor(page.getByLabel('Paste your PREreview'))
     await page.getByLabel('Paste your PREreview').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Paste your PREreview'))
     await page.getByLabel('Paste your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1401,6 +1404,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await waitForEditor(page.getByLabel('Write your PREreview'))
     await page.getByLabel('Write your PREreview').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1526,6 +1530,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await waitForEditor(page.getByLabel('Paste your PREreview'))
     await page.getByLabel('Paste your PREreview').focus()
+    await waitForProseMirrorFocus(page.getByLabel('Paste your PREreview'))
     await page.getByLabel('Paste your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -2197,6 +2202,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ jav
   await page.getByRole('button', { name: 'Continue' }).click()
   await waitForEditor(page.getByLabel('Write your PREreview'))
   await page.getByLabel('Write your PREreview').focus()
+  await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
   await page.getByLabel('Write your PREreview').clear()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
