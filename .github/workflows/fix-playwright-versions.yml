@@ -29,10 +29,6 @@ jobs:
         uses: actions/setup-node@v7.1.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'pnpm' || '' }}
-
-      - name: 'Install dependencies'
-        run: pnpm install --frozen-lockfile
 
       - name: 'Fix Playwright versions'
         run: scripts/fix-playwright-versions.sh
