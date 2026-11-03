@@ -3790,6 +3790,11 @@ export const waitForNotBusy = async (page: Page) => {
 export const waitForProseMirrorFocus = async (editor: Locator) => {
   await expect(editor).toBeFocused()
 
+  // Without JavaScript, it's a plain textarea and the page's timers never fire
+  if ((await editor.getAttribute('contenteditable')) !== 'true') {
+    return
+  }
+
   // ProseMirror resets the selection 20ms after gaining focus, undoing anything that moved it in the meantime
   await editor.evaluate(
     () =>
