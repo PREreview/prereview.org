@@ -10,9 +10,6 @@ const makeRedis = (url: Redacted.Redacted<URL>) =>
       enableAutoPipelining: true,
     })
 
-    // Each Keyv store using this client adds its own error listener
-    redis.setMaxListeners(15)
-
     const runSync = Effect.runSyncWith(runtime)
 
     redis.on('connect', () =>

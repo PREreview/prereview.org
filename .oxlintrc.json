@@ -84,17 +84,7 @@
     "no-comments/disallowComments": [
       "error",
       {
-        "allow": [
-          "\\* @deprecated",
-          "\\[sic\\]",
-          "oxlint",
-          "https://",
-          "Do",
-          "Each",
-          "Unfortunately",
-          "Refs",
-          "represents"
-        ]
+        "allow": ["\\* @deprecated", "\\[sic\\]", "oxlint", "https://", "Do", "Unfortunately", "Refs", "represents"]
       }
     ],
     "object-shorthand": "error",
