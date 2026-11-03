@@ -31,6 +31,7 @@ import type {
 import { type Html, html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale } from '../../locales/index.ts'
+import type { Prereviews } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { Slug } from '../../types/Slug.ts'
 import {
@@ -61,7 +62,7 @@ export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.Hash
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
-  Effect.Effect<Html, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs>
+  Effect.Effect<Html, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs>
 >()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
     const locale = yield* Locale
@@ -240,7 +241,7 @@ const VideoAssetToHtml = ({ asset, altText }: { asset: VideoAsset; altText: stri
 
 const BlockElementToHtml = Match.typeTags<
   Block,
-  Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs>
+  Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs>
 >()({
   BlockQuote: blockQuote =>
     Effect.map(
@@ -344,7 +345,7 @@ const SlugFromHeading = (heading: Heading1 | Heading2 | Heading3): Slug => {
 
 export const BlockContentToHtml = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs> =>
+): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs> =>
   Effect.forEach(
     block.content,
     (element: Block | Inline | Text) => {
@@ -367,7 +368,7 @@ export const BlockContentToHtml = (
 
 const BlockContentToHtmlSkippingOverSingleParagraph = (
   block: Types.ExcludeTag<Block, 'EmbeddedAssetBlock' | 'EmbeddedEntryBlock' | 'HorizontalRule'>,
-): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | RequiredJs> => {
+): Effect.Effect<Option.Option<Html>, Schema.SchemaError, DynamicEmbedder | Locale | Prereviews | RequiredJs> => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
   }

@@ -9,6 +9,7 @@ import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlog
 import { Author, ContentfulBlogPost } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
+import * as Prereviews from '../../../../src/Prereviews/index.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { Instant } from '../../../../src/types/Temporal.ts'
 
@@ -1882,7 +1883,9 @@ it.effect.each<{
 
     expect(Struct.omit(actual, ['html'])).toStrictEqual(Struct.omit(expected, ['html']))
     assertEquals(actual.html, expected.html)
-  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
+  }).pipe(
+    Effect.provide([Layer.mock(Prereviews.Prereviews, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
+  ),
 )
 
 it.effect.each([
@@ -1910,7 +1913,9 @@ it.effect.each([
     actual.forEach(result => {
       expect(result).toMatchObject({ _tag: 'Failure' })
     })
-  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
+  }).pipe(
+    Effect.provide([Layer.mock(Prereviews.Prereviews, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
+  ),
 )
 
 const ResolveEntries = (response: string) => {

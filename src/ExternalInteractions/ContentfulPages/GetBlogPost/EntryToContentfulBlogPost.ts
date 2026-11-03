@@ -3,6 +3,7 @@ import { Locale } from '../../../Context.ts'
 import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
+import type { Prereviews } from '../../../Prereviews/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
@@ -86,7 +87,9 @@ const BlogPostEntryToContentfulBlogPost = Effect.fnUntraced(
   Effect.provideServiceEffect(RequiredJs, Ref.make(HashSet.empty())),
 )
 
-export const EntryToContentfulBlogPost: (entry: Entry) => Effect.Effect<ContentfulBlogPost, Schema.SchemaError> = flow(
+export const EntryToContentfulBlogPost: (
+  entry: Entry,
+) => Effect.Effect<ContentfulBlogPost, Schema.SchemaError, Prereviews> = flow(
   Schema.decodeUnknownEffect(Schema.toType(BlogPostEntry)),
   Effect.andThen(BlogPostEntryToContentfulBlogPost),
   Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale)]),

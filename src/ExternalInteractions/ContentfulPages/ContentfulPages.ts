@@ -1,6 +1,7 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Locale } from '../../Context.ts'
 import type { Contentful } from '../../ExternalApis/Contentful/index.ts'
+import type { Prereviews } from '../../Prereviews/index.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import { GetBlogPost } from './GetBlogPost/index.ts'
 import { GetPage } from './GetPage/index.ts'
@@ -33,7 +34,10 @@ export class ContentfulPages extends Context.Service<
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const context = yield* Effect.map(Effect.context<Contentful | DynamicEmbedder>(), Context.omit(Scope.Scope))
+      const context = yield* Effect.map(
+        Effect.context<Contentful | DynamicEmbedder | Prereviews>(),
+        Context.omit(Scope.Scope),
+      )
 
       return {
         getBlogPost: flow(GetBlogPost, Effect.provide(context)),
