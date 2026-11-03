@@ -121,8 +121,6 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email addr
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
-
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
   await page.getByLabel('jcarberry@example.com').check()
@@ -138,8 +136,6 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
-
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
     await page.getByLabel('A different one').check()
@@ -175,8 +171,6 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
-
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
     await expect(page.getByLabel('A different one')).toBeChecked()
@@ -212,7 +206,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -253,7 +247,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address', { waitUntil: 'commit' })
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
     await page.getByLabel('A different one').check()
     await page.getByLabel('What is your email address?').fill('not an email address')
     await page.getByRole('button', { name: 'Save and continue' }).click()
