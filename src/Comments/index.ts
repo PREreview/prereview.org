@@ -1,4 +1,5 @@
 import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct, flow } from 'effect'
+import { type Sharding, Singleton } from 'effect/cluster'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../Events.ts'
 import * as EventStore from '../EventStore.ts'
@@ -138,6 +139,27 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
     )
 })
 
+const AssignADoiToCommentsInNeedOfOne = Singleton.make(
+  'Comments/AssignADoiToCommentsInNeedOfOne',
+  pipe(
+    EventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
+    Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+    Effect.andThen(events => Effect.fromResult(Queries.GetACommentInNeedOfADoi(events))),
+    Effect.bindTo('commentId'),
+    Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
+      pipe(
+        EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+        Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+        Effect.andThen(flow(Queries.buildInputForCommentZenodoRecord, Effect.fromResult)),
+      ),
+    ),
+    Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
+    Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
+    Effect.catch(error => Effect.annotateLogs(Effect.logError('AssignADoiToCommentsInNeedOfOne failed'), { error })),
+    Effect.repeat(Schedule.fixed('1 minute')),
+  ),
+)
+
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
@@ -149,29 +171,11 @@ export const ReactToCommentEvents: Layer.Layer<
   | CreateRecordOnZenodoForComment
   | PublishCommentOnZenodo
   | ReviewPage.CommentsForReview
+  | Sharding.Sharding
 > = Layer.effectDiscard(
   Effect.gen(function* () {
     const events = yield* Events.Events
     const dequeue = yield* PubSub.subscribe(events)
-
-    yield* pipe(
-      EventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
-      Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-      Effect.andThen(events => Effect.fromResult(Queries.GetACommentInNeedOfADoi(events))),
-      Effect.bindTo('commentId'),
-      Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
-        pipe(
-          EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-          Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-          Effect.andThen(flow(Queries.buildInputForCommentZenodoRecord, Effect.fromResult)),
-        ),
-      ),
-      Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-      Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
-      Effect.catch(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents on timer failed'), { error })),
-      Effect.repeat(Schedule.fixed('1 minute')),
-      Effect.forkChild,
-    )
 
     return yield* pipe(
       PubSub.take(dequeue),
@@ -218,4 +222,4 @@ export const ReactToCommentEvents: Layer.Layer<
       Effect.forever,
     )
   }),
-)
+).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne))

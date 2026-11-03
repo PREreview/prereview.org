@@ -5,6 +5,7 @@ import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from 'effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
+import { TestRunner } from 'effect/cluster'
 import { WorkflowEngine } from 'effect/workflow'
 import { Temporal } from '@js-temporal/polyfill'
 import {
@@ -2515,6 +2516,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           OpenAlex.layerApi({ key: Redacted.make('key') }),
           WebApp.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           WorkflowEngine.layerMemory,
+          TestRunner.layer,
           Layer.mock(LanguageModel.LanguageModel, { [LanguageModel.TypeId]: LanguageModel.TypeId } as never),
           Layer.mock(Embeddings, {}),
         ]),
