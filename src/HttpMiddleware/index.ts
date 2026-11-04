@@ -275,32 +275,36 @@ export const stopSuspiciousRequests = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const request = yield* HttpServerRequest.HttpServerRequest
 
-    const isRequestSuspicious = Array.findFirst(
-      [
-        '../', // represents ../
-        '%2e%2e%2f', // represents ../
-        '%2e%2e/', // represents ../
-        '..%2f', // represents ../
-        '..\\', // represents ..\
-        '%2e%2e%5c', // represents ..\
-        '%2e%2e\\', // represents ..\
-        '..%5c', // represents ..\
-        '%252e%252e%255c', // represents ..\
-        '..%255c', // represents ..\
-        '..%5c', // represents ..\
-        '%252e%252e%255c', // represents ..\
-        '..%255c', // represents ..\
-      ],
-      search => String.includes(search)(request.url),
+    const isRequestSuspicious = pipe(
+      decodeRepeatedly(request.url, 3),
+      Option.map(String.replaceAll('\\', '/')),
+      Option.map(String.includes('../')),
+      Option.getOrElse(() => true),
     )
 
-    if (Option.isSome(isRequestSuspicious)) {
+    if (isRequestSuspicious) {
       return HttpServerResponse.empty({ status: StatusCodes.NotFound })
     }
 
     return yield* app
   }),
 )
+
+const decode = Option.liftThrowable(decodeURIComponent)
+
+const decodeRepeatedly = (url: string, times: number): Option.Option<string> => {
+  const decoded = decode(url)
+
+  if (Option.isNone(decoded) || decoded.value === url) {
+    return Option.some(url)
+  }
+
+  if (times === 0) {
+    return Option.none()
+  }
+
+  return decodeRepeatedly(decoded.value, times - 1)
+}
 
 export const logStopped = Layer.effectDiscard(Effect.addFinalizer(() => Effect.logInfo('Server stopped')))
 

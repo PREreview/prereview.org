@@ -71,6 +71,15 @@ describe('stopSuspiciousRequests', () => {
     ['/%252e%252e%255cetc%255cpasswd'],
     ['/..%255cetc%255cpasswd'],
     ['/search?q=../etc/passwd'],
+    ['/%2E%2E%2Fetc/passwd'],
+    ['/..%2F..%2Fpackage.json'],
+    ['/..%5Cetc%5Cpasswd'],
+    ['/.%2e/etc/passwd'],
+    ['/%2e./etc/passwd'],
+    ['/%252e%252e%252fetc%252fpasswd'],
+    ['/%25252e%25252e%25252fetc%25252fpasswd'],
+    ['/%2525252e%2525252e%2525252fetc%2525252fpasswd'],
+    ['/%25252561'],
   ])('returns a 404 for %s', ([url]) =>
     Effect.gen(function* () {
       const actual = yield* _.stopSuspiciousRequests(app)
@@ -79,14 +88,20 @@ describe('stopSuspiciousRequests', () => {
     }).pipe(Effect.provide([requestLayer(url)])),
   )
 
-  it.effect.each<[string]>([['/'], ['/reviews'], ['/file.AbCd-12_.js'], ['/a..b'], ['/100%25'], ['/search?q=a..b']])(
-    'passes the request on for %s',
-    ([url]) =>
-      Effect.gen(function* () {
-        const actual = yield* _.stopSuspiciousRequests(app)
+  it.effect.each<[string]>([
+    ['/'],
+    ['/reviews'],
+    ['/file.AbCd-12_.js'],
+    ['/a..b'],
+    ['/100%25'],
+    ['/%zz'],
+    ['/search?q=a..b'],
+  ])('passes the request on for %s', ([url]) =>
+    Effect.gen(function* () {
+      const actual = yield* _.stopSuspiciousRequests(app)
 
-        expect(actual.body).toStrictEqual(HttpBody.text('app'))
-      }).pipe(Effect.provide([requestLayer(url)])),
+      expect(actual.body).toStrictEqual(HttpBody.text('app'))
+    }).pipe(Effect.provide([requestLayer(url)])),
   )
 })
 
