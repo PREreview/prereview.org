@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Struct } from 'effect'
+import { Effect, Redacted, Struct } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -209,7 +209,11 @@ describe('connectSlackCode', () => {
           location: format(myDetailsMatch.formatter, {}),
         })
         expect(popFromSession).toHaveBeenCalledWith('slack-state')
-        expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, { accessToken, scopes, userId })
+        expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, {
+          accessToken: Redacted.make(accessToken),
+          scopes,
+          userId,
+        })
       }),
   )
 

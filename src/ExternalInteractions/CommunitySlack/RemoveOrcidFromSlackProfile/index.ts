@@ -1,4 +1,4 @@
-import { Data, Effect, Redacted } from 'effect'
+import { Data, Effect } from 'effect'
 import { Slack } from '../../../ExternalApis/index.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
 import { shouldUpdateCommunitySlack } from '../ShouldUpdateCommunitySlack.ts'
@@ -13,10 +13,7 @@ export const RemoveOrcidFromSlackProfile = Effect.fnUntraced(
       return
     }
 
-    yield* Slack.usersProfileSet(
-      { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-      Redacted.make(user.accessToken),
-    )
+    yield* Slack.usersProfileSet({ profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } }, user.accessToken)
 
     yield* Slack.chatPostMessage({
       channel: user.userId,

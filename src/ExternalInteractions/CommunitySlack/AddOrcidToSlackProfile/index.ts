@@ -1,4 +1,4 @@
-import { Data, Effect, Redacted } from 'effect'
+import { Data, Effect } from 'effect'
 import { Slack } from '../../../ExternalApis/index.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
 import { type OrcidId, toUrl } from '../../../types/OrcidId.ts'
@@ -16,7 +16,7 @@ export const AddOrcidToSlackProfile = Effect.fnUntraced(
 
     yield* Slack.usersProfileSet(
       { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-      Redacted.make(user.accessToken),
+      user.accessToken,
     )
 
     yield* Slack.chatPostMessage({

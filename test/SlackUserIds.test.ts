@@ -1,5 +1,5 @@
 import { describe, expect, it } from './vitest.ts'
-import { Effect, Layer, Result } from 'effect'
+import { Effect, Layer, Redacted, Result } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { IsOpenForRequestsStore } from '../src/Prereviewers/index.ts'
 import * as _ from '../src/SlackUserIds.ts'
@@ -21,7 +21,14 @@ describe('get', () => {
   it.effect.prop('when there is a Slack user ID', [fc.orcidId(), fc.slackUserId()], ([orcid, slackUserId]) =>
     Effect.gen(function* () {
       const store = yield* KeyValueStore.KeyValueStore
-      yield* store.set(orcid, JSON.stringify({ ...slackUserId, scopes: [...slackUserId.scopes] }))
+      yield* store.set(
+        orcid,
+        JSON.stringify({
+          ...slackUserId,
+          accessToken: Redacted.value(slackUserId.accessToken),
+          scopes: [...slackUserId.scopes],
+        }),
+      )
 
       const actual = yield* _.get(orcid)
 
@@ -66,6 +73,17 @@ describe('save', () => {
 
       expect(actual).toStrictEqual(slackUserId)
     }).pipe(Effect.provide(_.layerInMemory)),
+  )
+
+  it.effect.prop('stores the access token unredacted', [fc.orcidId(), fc.slackUserId()], ([orcid, slackUserId]) =>
+    Effect.gen(function* () {
+      yield* _.save(orcid, slackUserId)
+
+      const store = yield* KeyValueStore.KeyValueStore
+      const actual = yield* store.get(orcid)
+
+      expect(JSON.parse(actual ?? '')).toMatchObject({ accessToken: Redacted.value(slackUserId.accessToken) })
+    }).pipe(Effect.provide(Layer.provideMerge(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
   it.effect.prop('when the store is unavailable', [fc.orcidId(), fc.slackUserId()], ([orcid, slackUserId]) =>

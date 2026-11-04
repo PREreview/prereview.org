@@ -1,5 +1,5 @@
 import { UrlParams } from 'effect/http'
-import { HashSet, String, Struct, flow, identity, pipe } from 'effect'
+import { HashSet, Redacted, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -199,7 +199,7 @@ export const connectSlackCode = ({
     RTE.chainFirstW(({ user, slackUser }) =>
       saveSlackUserId(user.orcid, {
         userId: slackUser.authed_user.id,
-        accessToken: slackUser.authed_user.access_token,
+        accessToken: Redacted.make(slackUser.authed_user.access_token),
         scopes: slackUser.authed_user.scope,
       }),
     ),

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from '../../../vitest.ts'
-import { Effect, Layer, pipe, Redacted } from 'effect'
+import { Effect, Layer, pipe } from 'effect'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
 import { SlackError } from '../../../../src/ExternalApis/Slack/Types.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/RemoveOrcidFromSlackProfile/index.ts'
@@ -26,7 +26,7 @@ describe('RemoveOrcidFromSlackProfile', () => {
 
         expect(usersProfileSet).toHaveBeenCalledExactlyOnceWith(
           { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-          Redacted.make(user.accessToken),
+          user.accessToken,
         )
         expect(chatPostMessage).toHaveBeenCalledExactlyOnceWith({
           channel: user.userId,

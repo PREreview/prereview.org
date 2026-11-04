@@ -1,13 +1,12 @@
-import { HashSet, pipe } from 'effect'
+import { type HashSet, pipe, type Redacted } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import * as C from 'io-ts/lib/Codec.js'
-import { Slack } from './ExternalApis/index.ts'
-import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.ts'
+import type { Slack } from './ExternalApis/index.ts'
+import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 
 export interface SlackUserId {
-  readonly accessToken: NonEmptyString
+  readonly accessToken: Redacted.Redacted<NonEmptyString>
   readonly scopes: HashSet.HashSet<NonEmptyString>
   readonly userId: Slack.UserId
 }
@@ -23,24 +22,6 @@ export interface EditSlackUserIdEnv {
 export interface DeleteSlackUserIdEnv {
   deleteSlackUserId: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
 }
-
-const HashSetC = <O, A>(item: C.Codec<unknown, O, A>) =>
-  pipe(
-    C.array(item),
-    C.imap(
-      items => HashSet.fromIterable(items),
-      set => globalThis.Array.from(set),
-    ),
-  )
-
-export const SlackUserIdC = C.struct({
-  accessToken: NonEmptyStringC,
-  scopes: HashSetC(NonEmptyStringC),
-  userId: pipe(
-    NonEmptyStringC,
-    C.imap(string => Slack.UserId.make(string), NonEmptyString),
-  ),
-}) satisfies C.Codec<unknown, unknown, SlackUserId>
 
 export const getSlackUserId = (orcid: OrcidId) =>
   pipe(

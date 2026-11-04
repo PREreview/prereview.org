@@ -6,7 +6,7 @@ import type { SlackUserId } from './slack-user-id.ts'
 import { NonEmptyString, type OrcidId } from './types/index.ts'
 
 const SlackUserIdSchema = Schema.Struct({
-  accessToken: NonEmptyString.NonEmptyStringSchema,
+  accessToken: Schema.RedactedFromValue(NonEmptyString.NonEmptyStringSchema),
   scopes: Schema.HashSet(NonEmptyString.NonEmptyStringSchema),
   userId: Slack.UserId.check(Schema.isNonEmpty()),
 }) satisfies Schema.Codec<SlackUserId, unknown>

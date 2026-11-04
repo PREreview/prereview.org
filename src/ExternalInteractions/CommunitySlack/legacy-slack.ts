@@ -1,4 +1,4 @@
-import { Boolean, flow, Function, pipe } from 'effect'
+import { Boolean, flow, Function, pipe, Redacted } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -62,7 +62,7 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: OrcidId) =>
               JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } }),
               'application/json',
             ),
-            F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
+            F.setHeader('Authorization', `Bearer ${Redacted.value(userId.accessToken)}`),
             F.send,
             RTE.mapLeft(() => 'network-error' as const),
             RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
@@ -97,7 +97,7 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
               JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } }),
               'application/json',
             ),
-            F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
+            F.setHeader('Authorization', `Bearer ${Redacted.value(userId.accessToken)}`),
             F.send,
             RTE.mapLeft(() => 'network-error' as const),
             RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),

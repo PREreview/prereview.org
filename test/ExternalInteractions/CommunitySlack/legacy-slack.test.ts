@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { SystemClock } from 'clock-ts'
-import { Effect } from 'effect'
+import { Effect, Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
@@ -22,7 +22,7 @@ describe('addOrcidToSlackProfile', () => {
             .postOnce({
               url: 'https://slack.com/api/users.profile.set',
               body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-              headers: { Authorization: `Bearer ${userId.accessToken}` },
+              headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
               response: { body: { ok: true } },
             })
             .postOnce({
@@ -61,7 +61,7 @@ describe('addOrcidToSlackProfile', () => {
           const fetch = fetchMock.createInstance().postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response,
           })
 
@@ -91,7 +91,7 @@ describe('addOrcidToSlackProfile', () => {
           const fetch = fetchMock.createInstance().postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response: { body: { ok: false, error } },
           })
 
@@ -126,7 +126,7 @@ describe('addOrcidToSlackProfile', () => {
           const fetch = fetchMock.createInstance().postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response: { status },
           })
 
@@ -203,7 +203,7 @@ describe('removeOrcidFromSlackProfile', () => {
           .postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response: { body: { ok: true } },
           })
           .postOnce({
@@ -239,7 +239,7 @@ describe('removeOrcidFromSlackProfile', () => {
           const fetch = fetchMock.createInstance().postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response,
           })
 
@@ -266,7 +266,7 @@ describe('removeOrcidFromSlackProfile', () => {
           const fetch = fetchMock.createInstance().postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response: { body: { ok: false, error } },
           })
 
@@ -293,7 +293,7 @@ describe('removeOrcidFromSlackProfile', () => {
           const fetch = fetchMock.createInstance().postOnce({
             url: 'https://slack.com/api/users.profile.set',
             body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            headers: { Authorization: `Bearer ${Redacted.value(userId.accessToken)}` },
             response: { status },
           })
 

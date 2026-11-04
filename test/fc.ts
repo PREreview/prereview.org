@@ -1382,7 +1382,7 @@ export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: name()
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
   fc.record({
     userId: nonEmptyString().map(id => Slack.UserId.make(id)),
-    accessToken: nonEmptyString(),
+    accessToken: redacted(nonEmptyString()),
     scopes: hashSet(nonEmptyString()),
   })
 
