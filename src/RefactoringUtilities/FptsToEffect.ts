@@ -1,6 +1,5 @@
-import { type Array, Effect, Result, type Equivalence, flow, identity, Option } from 'effect'
+import { type Array, Effect, Result, flow, identity, Option } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import type { Eq } from 'fp-ts/lib/Eq.js'
 import * as O from 'fp-ts/lib/Option.js'
 import type { Reader } from 'fp-ts/lib/Reader.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -21,8 +20,6 @@ export const option: <A>(value: O.Option<A>) => Option.Option<A> = O.match(Optio
 export const optionK: <A extends ReadonlyArray<unknown>, B>(
   f: (...a: A) => O.Option<B>,
 ) => (...a: A) => Option.Option<B> = f => flow(f, option)
-
-export const eq = <A>(value: Eq<A>): Equivalence.Equivalence<A> => value.equals
 
 export const task: <A>(value: T.Task<A>) => Effect.Effect<A> = Effect.promise
 

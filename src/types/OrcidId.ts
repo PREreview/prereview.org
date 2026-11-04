@@ -26,6 +26,6 @@ export const parse: (string: string) => Option.Option<OrcidId> = FptsToEffect.op
 
 export const toUrl: (orcid: OrcidId) => URL = OrcidIdTs.toUrl
 
-export const OrcidIdEquivalence: Equivalence.Equivalence<OrcidId> = FptsToEffect.eq(OrcidIdTs.Eq)
+export const OrcidIdEquivalence: Equivalence.Equivalence<OrcidId> = OrcidIdTs.Eq.equals
 
 export const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))

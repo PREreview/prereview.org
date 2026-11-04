@@ -24,7 +24,7 @@ export const DoiFromUrlSchema: Schema.Codec<Doi.Doi, string> = Schema.URLFromStr
 
 export const parse = FptsToEffect.optionK(Doi.parse)
 
-export const DoiEquivalence: Equivalence.Equivalence<Doi.Doi> = FptsToEffect.eq(Doi.Eq)
+export const DoiEquivalence: Equivalence.Equivalence<Doi.Doi> = Doi.Eq.equals
 
 export type Registrant<D extends Doi.Doi> = D extends Doi.Doi<infer R> ? R : never
 
