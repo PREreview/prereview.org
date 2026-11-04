@@ -2,7 +2,6 @@ import { Array, Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
 import type { OpenAuthorInvite } from '../../../author-invite.ts'
@@ -17,7 +16,6 @@ import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
-import { generateUuidIO } from '../../../types/Uuid.ts'
 import type * as Response from '../../Response/index.ts'
 import {
   writeReview,
@@ -411,17 +409,10 @@ export const WriteReviewRouter = pipe(
         ),
         publicUrl: env.publicUrl,
         publishPrereview: withEnv(publishPrereview, {
-          createAuthorInvite: withEnv(
+          createAuthorInvite: EffectToFpts.toTaskEitherK(
             (authorInvite: OpenAuthorInvite) =>
-              pipe(
-                RTE.rightReaderIO(generateUuidIO),
-                RTE.chainFirstW(uuid => EffectToFpts.toReaderTaskEither(AuthorInviteStore.save(uuid, authorInvite))),
-              ),
-            {
-              generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
-              runtime: env.runtime,
-              ...env.logger,
-            },
+              Effect.tap(Uuid.v4(), uuid => AuthorInviteStore.save(uuid, authorInvite)),
+            env.runtime,
           ),
           fetch: env.fetch,
           getPreprintSubjects: EffectToFpts.toTaskK(
