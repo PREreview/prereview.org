@@ -38,10 +38,13 @@ export const removeTrailingSlashes = HttpMiddleware.make(app =>
 export const serveStaticFiles = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const request = yield* HttpServerRequest.HttpServerRequest
+    const publicUrl = yield* PublicUrl
 
     const path = yield* Path.Path
 
-    const filePath = path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets', request.url.slice(1))
+    const urlPath = Array.headNonEmpty(String.split(request.url, '?'))
+
+    const filePath = path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets', urlPath.slice(1))
 
     if (
       !filePath.startsWith(path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets')) ||
@@ -50,7 +53,11 @@ export const serveStaticFiles = HttpMiddleware.make(app =>
       return yield* app
     }
 
-    const response = yield* HttpServerResponse.file(filePath, {})
+    const response = HttpServerResponse.setHeader(
+      yield* HttpServerResponse.file(filePath, {}),
+      'Link',
+      `<${publicUrl.origin}${urlPath}>; rel="canonical"`,
+    )
 
     if (!hasContentHash(filePath)) {
       return response

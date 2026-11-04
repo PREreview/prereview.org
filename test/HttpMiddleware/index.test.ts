@@ -3,6 +3,7 @@ import { describe, expect, it } from '../vitest.ts'
 import { ByteSize, Effect, FileSystem, Layer, Path, PlatformError } from 'effect'
 import path from 'node:path'
 import * as _ from '../../src/HttpMiddleware/index.ts'
+import { PublicUrl } from '../../src/public-url.ts'
 
 const assetsDirectory = new URL('../../dist/assets/', import.meta.url).pathname
 
@@ -12,6 +13,7 @@ describe('serveStaticFiles', () => {
       const actual = yield* _.serveStaticFiles(app)
 
       expect(actual.body).toStrictEqual(HttpBody.text(`${assetsDirectory}file.txt`))
+      expect(actual.headers['link']).toStrictEqual('<https://prereview.test/file.txt>; rel="canonical"')
       expect(actual.headers['cache-control']).toBeUndefined()
     }).pipe(Effect.provide([layer('/file.txt', ['/file.txt'])])),
   )
@@ -21,8 +23,19 @@ describe('serveStaticFiles', () => {
       const actual = yield* _.serveStaticFiles(app)
 
       expect(actual.body).toStrictEqual(HttpBody.text(`${assetsDirectory}file.AbCd-12_.js`))
+      expect(actual.headers['link']).toStrictEqual('<https://prereview.test/file.AbCd-12_.js>; rel="canonical"')
       expect(actual.headers['cache-control']).toStrictEqual('public, max-age=31536000, immutable')
     }).pipe(Effect.provide([layer('/file.AbCd-12_.js', ['/file.AbCd-12_.js'])])),
+  )
+
+  it.effect('ignores the query string', () =>
+    Effect.gen(function* () {
+      const actual = yield* _.serveStaticFiles(app)
+
+      expect(actual.body).toStrictEqual(HttpBody.text(`${assetsDirectory}file.AbCd-12_.js`))
+      expect(actual.headers['link']).toStrictEqual('<https://prereview.test/file.AbCd-12_.js>; rel="canonical"')
+      expect(actual.headers['cache-control']).toStrictEqual('public, max-age=31536000, immutable')
+    }).pipe(Effect.provide([layer('/file.AbCd-12_.js?v=1', ['/file.AbCd-12_.js'])])),
   )
 
   it.effect('passes the request on when the file does not exist', () =>
@@ -52,6 +65,7 @@ const layer = (url: string, files: ReadonlyArray<string>) =>
       HttpServerRequest.HttpServerRequest,
       HttpServerRequest.fromWeb(new Request('http://example.com')).modify({ url }),
     ),
+    Layer.succeed(PublicUrl, new URL('https://prereview.test')),
     Path.layer,
     FileSystem.layerNoop({
       stat: filePath =>
