@@ -25,7 +25,7 @@ export function transformJatsToHtml(jats: string): Html {
         if (
           attribs['ext-link-type'] !== 'uri' ||
           typeof attribs['xlink:href'] !== 'string' ||
-          !/^[A-z][A-z0-9+\-.]*:/.test(attribs['xlink:href'])
+          !/^[A-Za-z][A-Za-z0-9+\-.]*:/.test(attribs['xlink:href'])
         ) {
           return { tagName: 'a', attribs }
         }
@@ -41,7 +41,7 @@ export function transformJatsToHtml(jats: string): Html {
         if (
           attribs['ext-link-type'] !== 'uri' ||
           typeof attribs['xlink:href'] !== 'string' ||
-          !/^[A-z][A-z0-9+\-.]*:/.test(attribs['xlink:href'])
+          !/^[A-Za-z][A-Za-z0-9+\-.]*:/.test(attribs['xlink:href'])
         ) {
           return { tagName: 'a', attribs }
         }

@@ -197,7 +197,7 @@ export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = f
     },
     transformTags: {
       a: (tagName, attribs) => {
-        if (typeof attribs['href'] === 'string' && !/^[A-z][A-z0-9+\-.]*:/.test(attribs['href'])) {
+        if (typeof attribs['href'] === 'string' && !/^[A-Za-z][A-Za-z0-9+\-.]*:/.test(attribs['href'])) {
           attribs['href'] = ''
         }
 
