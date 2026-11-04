@@ -25,13 +25,20 @@ const EmbeddingResponse = Schema.Struct({
   }),
 })
 
-export const generateEmbeddings = <T extends TitleAndAbstract>(
+export const generateEmbeddings: <T extends TitleAndAbstract>(
   papers: ReadonlyArray<T>,
   apiKey: Redacted.Redacted,
   httpClient: HttpClient.HttpClient,
   tokenizer: Tokenizer,
-): Effect.Effect<ReadonlyArray<T & { embedding: Embedding }>, UnableToGetSurveyPapers> =>
-  Effect.gen(function* () {
+) => Effect.Effect<ReadonlyArray<T & { embedding: Embedding }>, UnableToGetSurveyPapers> = Effect.fn(
+  'Embeddings.generateEmbeddings',
+)(
+  function* <T extends TitleAndAbstract>(
+    papers: ReadonlyArray<T>,
+    apiKey: Redacted.Redacted,
+    httpClient: HttpClient.HttpClient,
+    tokenizer: Tokenizer,
+  ) {
     const inputGroups = pipe(papers, Array.chunksOf(200))
 
     return yield* Effect.forEach(
@@ -58,22 +65,22 @@ export const generateEmbeddings = <T extends TitleAndAbstract>(
         }))
       }),
     ).pipe(Effect.map(Array.flatten))
-  }).pipe(
-    Effect.tapError(
-      Effect.fnUntraced(function* (error) {
-        yield* Effect.annotateLogsScoped({ error })
+  },
+  Effect.tapError(
+    Effect.fnUntraced(function* (error) {
+      yield* Effect.annotateLogsScoped({ error })
 
-        if (error._tag === 'HttpClientError' && error.reason._tag === 'StatusCodeError') {
-          yield* Effect.ignore(
-            Effect.andThen(error.reason.response.json, responseBody => Effect.annotateLogsScoped({ responseBody })),
-          )
-        }
+      if (error._tag === 'HttpClientError' && error.reason._tag === 'StatusCodeError') {
+        yield* Effect.ignore(
+          Effect.andThen(error.reason.response.json, responseBody => Effect.annotateLogsScoped({ responseBody })),
+        )
+      }
 
-        yield* Effect.logError('Failed to generate embeddings')
-      }, Effect.scoped),
-    ),
-    Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
-  )
+      yield* Effect.logError('Failed to generate embeddings')
+    }, Effect.scoped),
+  ),
+  Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
+)
 
 const specialTokensChargedByEndpoint = 2
 

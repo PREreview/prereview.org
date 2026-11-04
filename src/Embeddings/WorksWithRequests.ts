@@ -29,37 +29,38 @@ const decodePreprintId = Schema.decodeUnknownEffect(IndeterminatePreprintIdFromS
 // Chunking keeps each query's parameter list well under that limit.
 const FIND_EXISTING_DOIS_CHUNK_SIZE = 5000
 
-export const findExistingWorks = (
+export const findExistingWorks: (
   preprintIds: ReadonlyArray<IndeterminatePreprintId>,
   sql: SqlClient.SqlClient,
-): Effect.Effect<Set<IndeterminatePreprintId>, UnableToAddWorksWithRequests> =>
-  Effect.gen(function* () {
-    if (preprintIds.length === 0) return new Set<IndeterminatePreprintId>()
+) => Effect.Effect<Set<IndeterminatePreprintId>, UnableToAddWorksWithRequests> = Effect.fn(
+  'Embeddings.findExistingWorks',
+)(function* (preprintIds, sql) {
+  if (preprintIds.length === 0) return new Set<IndeterminatePreprintId>()
 
-    const normalized = preprintIds.map(encodePreprintId)
+  const normalized = preprintIds.map(encodePreprintId)
 
-    const rows = yield* pipe(
-      Array.chunksOf(normalized, FIND_EXISTING_DOIS_CHUNK_SIZE),
-      Effect.forEach(
-        chunk => sql<{ preprint_id: string }>`
-          SELECT
-            preprint_id
-          FROM
-            request_embeddings
-          WHERE
-            ${sql.in('preprint_id', chunk)}
-        `,
-        { concurrency: 4 },
-      ),
-      Effect.map(Array.flatten),
-      Effect.andThen(Effect.forEach(row => decodePreprintId(row.preprint_id))),
-      Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })),
-    )
+  const rows = yield* pipe(
+    Array.chunksOf(normalized, FIND_EXISTING_DOIS_CHUNK_SIZE),
+    Effect.forEach(
+      chunk => sql<{ preprint_id: string }>`
+        SELECT
+          preprint_id
+        FROM
+          request_embeddings
+        WHERE
+          ${sql.in('preprint_id', chunk)}
+      `,
+      { concurrency: 4 },
+    ),
+    Effect.map(Array.flatten),
+    Effect.andThen(Effect.forEach(row => decodePreprintId(row.preprint_id))),
+    Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })),
+  )
 
-    return new Set(rows)
-  })
+  return new Set(rows)
+})
 
-export const storeEmbeddings = (
+export const storeEmbeddings: (
   rows: ReadonlyArray<{
     preprintId: IndeterminatePreprintId
     language: LanguageCode
@@ -67,8 +68,8 @@ export const storeEmbeddings = (
     embedding: Embedding
   }>,
   sql: SqlClient.SqlClient,
-): Effect.Effect<void, UnableToAddWorksWithRequests> =>
-  Effect.gen(function* () {
+) => Effect.Effect<void, UnableToAddWorksWithRequests> = Effect.fn('Embeddings.storeEmbeddings')(
+  function* (rows, sql) {
     if (rows.length === 0) return
 
     const values = rows.map(row => {
@@ -90,7 +91,9 @@ export const storeEmbeddings = (
         ${sql.join(',', false)(values)}
       ON CONFLICT (preprint_id) DO NOTHING
     `
-  }).pipe(Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })))
+  },
+  Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })),
+)
 
 export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.Effect<void, SqlError.SqlError> =>
   Effect.all([
@@ -154,40 +157,38 @@ export const getMatches =
         Effect.mapError(cause => new UnableToQuery({ cause })),
       )
 
-export const createMissingEmbeddings =
-  (
-    apiKey: Redacted.Redacted,
-    httpClient: HttpClient.HttpClient,
-    sql: SqlClient.SqlClient,
-    tokenizer: Tokenizer,
-    languageDetection: typeof LanguageDetection.Service,
-  ) =>
-  (inputPapers: ReadonlyArray<WorkWithRequest>) =>
-    Effect.gen(function* () {
-      const existing = yield* findExistingWorks(
-        inputPapers.map(paper => paper.preprintId),
-        sql,
-      )
+export const createMissingEmbeddings = (
+  apiKey: Redacted.Redacted,
+  httpClient: HttpClient.HttpClient,
+  sql: SqlClient.SqlClient,
+  tokenizer: Tokenizer,
+  languageDetection: typeof LanguageDetection.Service,
+) =>
+  Effect.fn('Embeddings.createMissingEmbeddings')(function* (inputPapers: ReadonlyArray<WorkWithRequest>) {
+    const existing = yield* findExistingWorks(
+      inputPapers.map(paper => paper.preprintId),
+      sql,
+    )
 
-      const existingKeys = new Set(Array.map([...existing], encodePreprintId))
+    const existingKeys = new Set(Array.map([...existing], encodePreprintId))
 
-      const papersWithoutEmbeddings = inputPapers.filter(paper => !existingKeys.has(encodePreprintId(paper.preprintId)))
+    const papersWithoutEmbeddings = inputPapers.filter(paper => !existingKeys.has(encodePreprintId(paper.preprintId)))
 
-      const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding }> =
-        papersWithoutEmbeddings.length > 0
-          ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer).pipe(
-              Effect.catchTag('UnableToGetSurveyPapers', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
-            )
-          : []
+    const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding }> =
+      papersWithoutEmbeddings.length > 0
+        ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer).pipe(
+            Effect.catchTag('UnableToGetSurveyPapers', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
+          )
+        : []
 
-      const generatedWithLanguage = yield* pipe(
-        generated,
-        Effect.forEach(
-          w => languageDetection.detectLanguage(w.title).pipe(Effect.map(language => ({ ...w, language }))),
-          { concurrency: 4 },
-        ),
-        Effect.catchTag('UnableToDetectLanguage', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
-      )
+    const generatedWithLanguage = yield* pipe(
+      generated,
+      Effect.forEach(
+        w => languageDetection.detectLanguage(w.title).pipe(Effect.map(language => ({ ...w, language }))),
+        { concurrency: 4 },
+      ),
+      Effect.catchTag('UnableToDetectLanguage', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
+    )
 
-      yield* storeEmbeddings(generatedWithLanguage, sql)
-    })
+    yield* storeEmbeddings(generatedWithLanguage, sql)
+  })

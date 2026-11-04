@@ -19,11 +19,11 @@ const EmbeddingRow = Schema.Struct({
   embedding: PgVector,
 })
 
-const getStoredEmbedding = (
+const getStoredEmbedding: (
   doi: Doi,
   sql: SqlClient.SqlClient,
-): Effect.Effect<Option.Option<Embedding>, UnableToGetSurveyPapers> =>
-  Effect.gen(function* () {
+) => Effect.Effect<Option.Option<Embedding>, UnableToGetSurveyPapers> = Effect.fnUntraced(
+  function* (doi, sql) {
     const rows = yield* sql`
       SELECT
         embedding
@@ -38,14 +38,16 @@ const getStoredEmbedding = (
     const decoded = yield* Schema.decodeUnknownEffect(EmbeddingRow.mapFields(Struct.pick(['embedding'])))(rows[0])
 
     return Option.some(decoded.embedding)
-  }).pipe(Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })))
+  },
+  Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
+)
 
-const storeEmbedding = (
+const storeEmbedding: (
   doi: Doi,
   embedding: Embedding,
   sql: SqlClient.SqlClient,
-): Effect.Effect<void, UnableToGetSurveyPapers> =>
-  Effect.gen(function* () {
+) => Effect.Effect<void, UnableToGetSurveyPapers> = Effect.fnUntraced(
+  function* (doi, embedding, sql) {
     const encoded = Schema.encodeSync(PgVector)(embedding)
     yield* sql`
       INSERT INTO
@@ -56,7 +58,9 @@ const storeEmbedding = (
           ${encoded}::halfvec
         )
     `
-  }).pipe(Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })))
+  },
+  Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
+)
 
 export const ensureMatchmakingInputWorksTable = (
   sql: SqlClient.SqlClient,
@@ -64,34 +68,35 @@ export const ensureMatchmakingInputWorksTable = (
   CREATE TABLE IF NOT EXISTS matchmaking_input_works (doi VARCHAR PRIMARY KEY, embedding HALFVEC (1024))
 `
 
-export const getEmbeddingsGeneratingAsNeeded =
-  (apiKey: Redacted.Redacted, httpClient: HttpClient.HttpClient, sql: SqlClient.SqlClient, tokenizer: Tokenizer) =>
-  (inputPapers: ReadonlyArray<MatchmakingInputWork>) =>
-    Effect.gen(function* () {
-      const papersWithExistingEmbeddings = yield* pipe(
-        inputPapers,
-        Effect.forEach(paper =>
-          getStoredEmbedding(paper.doi, sql).pipe(Effect.map(embedding => ({ paper, embedding }))),
-        ),
-      )
+export const getEmbeddingsGeneratingAsNeeded = (
+  apiKey: Redacted.Redacted,
+  httpClient: HttpClient.HttpClient,
+  sql: SqlClient.SqlClient,
+  tokenizer: Tokenizer,
+) =>
+  Effect.fn('Embeddings.getEmbeddingsGeneratingAsNeeded')(function* (inputPapers: ReadonlyArray<MatchmakingInputWork>) {
+    const papersWithExistingEmbeddings = yield* pipe(
+      inputPapers,
+      Effect.forEach(paper => getStoredEmbedding(paper.doi, sql).pipe(Effect.map(embedding => ({ paper, embedding })))),
+    )
 
-      const papersWithoutEmbeddings = papersWithExistingEmbeddings.flatMap(({ paper, embedding }) =>
-        Option.isNone(embedding) ? [paper] : [],
-      )
+    const papersWithoutEmbeddings = papersWithExistingEmbeddings.flatMap(({ paper, embedding }) =>
+      Option.isNone(embedding) ? [paper] : [],
+    )
 
-      const generated: ReadonlyArray<MatchmakingInputWork & { embedding: Embedding }> =
-        papersWithoutEmbeddings.length > 0
-          ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer)
-          : []
+    const generated: ReadonlyArray<MatchmakingInputWork & { embedding: Embedding }> =
+      papersWithoutEmbeddings.length > 0
+        ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer)
+        : []
 
-      yield* Effect.forEach(generated, p => storeEmbedding(p.doi, p.embedding, sql))
+    yield* Effect.forEach(generated, p => storeEmbedding(p.doi, p.embedding, sql))
 
-      const generatedByDoi = new Map(generated.map(p => [p.doi, p.embedding]))
-      const allEmbeddings = papersWithExistingEmbeddings.flatMap(({ paper, embedding }) => {
-        if (Option.isSome(embedding)) return [embedding.value]
-        const e = generatedByDoi.get(paper.doi)
-        return e !== undefined ? [e] : []
-      })
-
-      return allEmbeddings
+    const generatedByDoi = new Map(generated.map(p => [p.doi, p.embedding]))
+    const allEmbeddings = papersWithExistingEmbeddings.flatMap(({ paper, embedding }) => {
+      if (Option.isSome(embedding)) return [embedding.value]
+      const e = generatedByDoi.get(paper.doi)
+      return e !== undefined ? [e] : []
     })
+
+    return allEmbeddings
+  })
