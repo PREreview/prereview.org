@@ -4,7 +4,7 @@ import type { Uuid } from '../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 
-export const UseZenodoRecordDoi = Effect.fn(
+export const UseZenodoRecordDoi = Effect.fn('DatasetReviews.useZenodoRecordDoi')(
   function* (datasetReviewId: Uuid.Uuid, recordId: number) {
     const doi = yield* ZenodoRecords.getDoiForDatasetReviewRecord(recordId)
 

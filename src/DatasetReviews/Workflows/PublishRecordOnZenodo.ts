@@ -5,7 +5,7 @@ import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 
-export const PublishRecordOnZenodo = Effect.fn(
+export const PublishRecordOnZenodo = Effect.fn('DatasetReviews.publishRecordOnZenodo')(
   function* (datasetReviewId: Uuid.Uuid) {
     const recordId = yield* Queries.getZenodoRecordId(datasetReviewId)
 

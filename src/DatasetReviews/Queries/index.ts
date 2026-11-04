@@ -414,7 +414,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       CheckIfUserCanDeclareFollowingCodeOfConduct.query,
     ),
     areThereMultipleAuthorsOnAReview: yield* Queries.makeOnDemandQuery(AreThereMultipleAuthorsOnAReview),
-    findInProgressReviewForADataset: Effect.fn(
+    findInProgressReviewForADataset: Effect.fn('DatasetReviewQueries.findInProgressReviewForADataset')(
       function* (...args) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
@@ -429,7 +429,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),
-    findPublishedReviewsForADataset: Effect.fn(
+    findPublishedReviewsForADataset: Effect.fn('DatasetReviewQueries.findPublishedReviewsForADataset')(
       function* (...args) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
@@ -444,7 +444,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),
-    getAuthor: Effect.fn(
+    getAuthor: Effect.fn('DatasetReviewQueries.getAuthor')(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
@@ -464,6 +464,8 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.provide(context),
     ),
     getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
+      'DatasetReviewQueries.getNextExpectedCommandForAUserOnADatasetReview',
+    )(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
@@ -485,7 +487,7 @@ const makeDatasetReviewQueries: Effect.Effect<
     getListOfInvitationsToAppearOnADatasetReview: yield* Queries.makeOnDemandQuery(
       GetListOfInvitationsToAppearOnADatasetReview,
     ),
-    getPreviewForAReviewReadyToBePublished: Effect.fn(
+    getPreviewForAReviewReadyToBePublished: Effect.fn('DatasetReviewQueries.getPreviewForAReviewReadyToBePublished')(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
@@ -505,7 +507,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.provide(context),
     ),
     getPublishedReview: yield* Queries.makeOnDemandQuery(GetPublishedReview),
-    getPublishedReviewDetails: Effect.fn(
+    getPublishedReviewDetails: Effect.fn('DatasetReviewQueries.getPublishedReviewDetails')(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
@@ -525,7 +527,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.provide(context),
     ),
     getDataForZenodoRecord: yield* Queries.makeOnDemandQuery(GetDataForZenodoRecord),
-    getZenodoRecordId: Effect.fn(
+    getZenodoRecordId: Effect.fn('DatasetReviewQueries.getZenodoRecordId')(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({

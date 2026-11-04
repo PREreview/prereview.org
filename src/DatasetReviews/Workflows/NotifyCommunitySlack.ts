@@ -7,7 +7,7 @@ import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 
-export const NotifyCommunitySlack = Effect.fn(
+export const NotifyCommunitySlack = Effect.fn('DatasetReviews.notifyCommunitySlack')(
   function* (datasetReviewId: Uuid.Uuid) {
     const datasetReview = yield* Queries.getPublishedReview(datasetReviewId)
 
