@@ -93,6 +93,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       Command extends { reviewRequestId: Uuid.Uuid },
       Error,
     >(
+      name: string,
       createFilter: (reviewRequestId: Uuid.Uuid) => Filter,
       foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, reviewRequestId: Uuid.Uuid) => State,
       decide: (
@@ -101,7 +102,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         state: State,
       ) => Option.Option<Events.ReviewRequestEvent> | Result.Result<Option.Option<Events.ReviewRequestEvent>, Error>,
     ): CommandHandler<Command, Error> =>
-      Effect.fn(
+      Effect.fn(name)(
         function* (command) {
           const filter = createFilter(command.reviewRequestId)
 
@@ -137,27 +138,32 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       choosePersona: yield* Commands.makeCommand(ChoosePersona),
       publishReviewRequest: yield* Commands.makeCommand(PublishReviewRequest),
       receiveReviewRequest: handleCommand(
+        'ReviewRequestCommands.receiveReviewRequest',
         ReceiveReviewRequest.createFilter,
         ReceiveReviewRequest.foldState,
         ReceiveReviewRequest.decide,
       ),
       acceptReviewRequest: handleCommand(
+        'ReviewRequestCommands.acceptReviewRequest',
         AcceptReviewRequest.createFilter,
         AcceptReviewRequest.foldState,
         AcceptReviewRequest.decide,
       ),
       rejectReviewRequest: handleCommand(
+        'ReviewRequestCommands.rejectReviewRequest',
         RejectReviewRequest.createFilter,
         RejectReviewRequest.foldState,
         RejectReviewRequest.decide,
       ),
       withdrawReviewRequest: yield* Commands.makeCommand(WithdrawReviewRequest),
       categorizeReviewRequest: handleCommand(
+        'ReviewRequestCommands.categorizeReviewRequest',
         CategorizeReviewRequest.createFilter,
         CategorizeReviewRequest.foldState,
         CategorizeReviewRequest.decide,
       ),
       recordReviewRequestSharedOnTheCommunitySlack: handleCommand(
+        'ReviewRequestCommands.recordReviewRequestSharedOnTheCommunitySlack',
         RecordReviewRequestSharedOnTheCommunitySlack.createFilter,
         RecordReviewRequestSharedOnTheCommunitySlack.foldState,
         RecordReviewRequestSharedOnTheCommunitySlack.decide,
