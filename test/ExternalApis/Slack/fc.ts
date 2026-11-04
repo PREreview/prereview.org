@@ -2,6 +2,7 @@ import type { Slack } from '../../../src/ExternalApis/index.ts'
 import type { ChatDeleteInput } from '../../../src/ExternalApis/Slack/ChatDelete/ChatDeleteInput.ts'
 import type { ChatPostMessageInput } from '../../../src/ExternalApis/Slack/ChatPostMessage/ChatPostMessageInput.ts'
 import { ChannelId, Timestamp, UserId } from '../../../src/ExternalApis/Slack/Types.ts'
+import type { UsersProfileSetInput } from '../../../src/ExternalApis/Slack/UsersProfileSet/UsersProfileSetInput.ts'
 import * as fc from '../../fc.ts'
 
 export * from '../../fc.ts'
@@ -69,3 +70,10 @@ export const chatPostMessageInput = (): fc.Arbitrary<ChatPostMessageInput> =>
     },
     { requiredKeys: ['channel', 'blocks'] },
   )
+
+export const usersProfileSetInput = (): fc.Arbitrary<UsersProfileSetInput> =>
+  fc.record({
+    profile: fc.record({
+      fields: fc.dictionary(fc.string(), fc.record({ value: fc.string(), alt: fc.string() })),
+    }),
+  })

@@ -4,12 +4,14 @@ import { ChatDelete } from './ChatDelete/index.ts'
 import { ChatPostMessage } from './ChatPostMessage/index.ts'
 import type { SlackApi } from './SlackApi.ts'
 import { UsersProfileGet } from './UsersProfileGet/index.ts'
+import { UsersProfileSet } from './UsersProfileSet/index.ts'
 
 export type { ChatDeleteInput } from './ChatDelete/index.ts'
 export type { ChatPostMessageInput } from './ChatPostMessage/index.ts'
 export { SlackApi } from './SlackApi.ts'
 export { ChannelId, Timestamp, UserId } from './Types.ts'
 export type { UsersProfileGetResponse } from './UsersProfileGet/index.ts'
+export type { UsersProfileSetInput } from './UsersProfileSet/index.ts'
 
 export class Slack extends Context.Service<
   Slack,
@@ -29,6 +31,12 @@ export class Slack extends Context.Service<
       Effect.Success<ReturnType<typeof UsersProfileGet>>,
       Effect.Error<ReturnType<typeof UsersProfileGet>>
     >
+    usersProfileSet: (
+      ...args: Parameters<typeof UsersProfileSet>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof UsersProfileSet>>,
+      Effect.Error<ReturnType<typeof UsersProfileSet>>
+    >
   }
 >()('Slack') {}
 
@@ -41,6 +49,9 @@ export const chatPostMessage = (...args: Parameters<(typeof Slack.Service)['chat
 export const usersProfileGet = (...args: Parameters<(typeof Slack.Service)['usersProfileGet']>) =>
   Slack.use(service => service.usersProfileGet(...args))
 
+export const usersProfileSet = (...args: Parameters<(typeof Slack.Service)['usersProfileSet']>) =>
+  Slack.use(service => service.usersProfileSet(...args))
+
 const make: Effect.Effect<typeof Slack.Service, never, HttpClient.HttpClient | SlackApi> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | SlackApi>(), Context.omit(Scope.Scope))
 
@@ -48,6 +59,7 @@ const make: Effect.Effect<typeof Slack.Service, never, HttpClient.HttpClient | S
     chatDelete: flow(ChatDelete, Effect.provide(context)),
     chatPostMessage: flow(ChatPostMessage, Effect.provide(context)),
     usersProfileGet: flow(UsersProfileGet, Effect.provide(context)),
+    usersProfileSet: flow(UsersProfileSet, Effect.provide(context)),
   }
 })
 
