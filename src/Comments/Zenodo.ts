@@ -34,56 +34,55 @@ const createRecordOnZenodoForComment = Layer.effect(
       zenodoUrl: zenodoApi.origin,
     }
 
-    return comment =>
-      Effect.gen(function* () {
-        const prereview = yield* pipe(
-          Prereviews.getPrereview(comment.prereviewId),
-          Effect.mapError(
-            Match.valueTags({
-              PrereviewIsNotFound: error => new UnableToAssignADoi({ cause: error }),
-              PrereviewIsUnavailable: error => new UnableToAssignADoi({ cause: error }),
-              PrereviewWasRemoved: error => new UnableToAssignADoi({ cause: error }),
-            }),
+    return Effect.fn('CreateRecordOnZenodoForComment')(function* (comment) {
+      const prereview = yield* pipe(
+        Prereviews.getPrereview(comment.prereviewId),
+        Effect.mapError(
+          Match.valueTags({
+            PrereviewIsNotFound: error => new UnableToAssignADoi({ cause: error }),
+            PrereviewIsUnavailable: error => new UnableToAssignADoi({ cause: error }),
+            PrereviewWasRemoved: error => new UnableToAssignADoi({ cause: error }),
+          }),
+        ),
+      )
+
+      const author = yield* Effect.catchTag(
+        Prereviewers.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
+        'UnableToGetPersona',
+        error => new UnableToAssignADoi({ cause: error }),
+      )
+
+      const text = html`${comment.comment}
+
+        <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
+
+        <p>
+          ${Option.getOrElse(comment.competingInterests, () =>
+            translate(DefaultLocale, 'write-comment-flow', 'noCompetingInterests')(),
+          )}
+        </p>`
+
+      const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+      return yield* pipe(
+        FptsToEffect.readerTaskEither(
+          ZenodoRecords.createCommentOnZenodo({
+            ...comment,
+            comment: text,
+            author,
+            prereview,
+          }),
+          { ...env, ...loggerEnv },
+        ),
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('unavailable', () => new UnableToAssignADoi({})),
+            Match.exhaustive,
           ),
-        )
-
-        const author = yield* Effect.catchTag(
-          Prereviewers.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
-          'UnableToGetPersona',
-          error => new UnableToAssignADoi({ cause: error }),
-        )
-
-        const text = html`${comment.comment}
-
-          <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
-
-          <p>
-            ${Option.getOrElse(comment.competingInterests, () =>
-              translate(DefaultLocale, 'write-comment-flow', 'noCompetingInterests')(),
-            )}
-          </p>`
-
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* pipe(
-          FptsToEffect.readerTaskEither(
-            ZenodoRecords.createCommentOnZenodo({
-              ...comment,
-              comment: text,
-              author,
-              prereview,
-            }),
-            { ...env, ...loggerEnv },
-          ),
-          Effect.mapError(
-            flow(
-              Match.value,
-              Match.when('unavailable', () => new UnableToAssignADoi({})),
-              Match.exhaustive,
-            ),
-          ),
-        )
-      }).pipe(Effect.provide(context))
+        ),
+      )
+    }, Effect.provide(context))
   }),
 )
 
@@ -93,7 +92,7 @@ const publishCommentOnZenodo = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const zenodoApi = yield* Zenodo.ZenodoApi
 
-    return Effect.fn(
+    return Effect.fn('PublishCommentOnZenodo')(
       function* (comment) {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
