@@ -51,22 +51,26 @@ export function formKey(user: OrcidId, preprint: PreprintId) {
     .exhaustive()
 }
 
+export const loadForm = (
+  user: OrcidId,
+  preprint: PreprintId,
+): Effect.Effect<Form, 'no-form' | 'form-unavailable', FormStore.Store> =>
+  Effect.gen(function* () {
+    const formStore = yield* FormStore.Store
+
+    const form = yield* Effect.mapError(formStore.get(formKey(user, preprint)), () => 'form-unavailable' as const)
+
+    return yield* Effect.mapError(
+      Effect.fromResult(FptsToEffect.either(FormC.decode(Option.getOrUndefined(form)))),
+      () => 'no-form' as const,
+    )
+  })
+
 export function getForm(
   user: OrcidId,
   preprint: PreprintId,
 ): ReaderTaskEither<EffectToFpts.EffectEnv<FormStore.Store>, 'no-form' | 'form-unavailable', Form> {
-  return EffectToFpts.toReaderTaskEither(
-    Effect.gen(function* () {
-      const formStore = yield* FormStore.Store
-
-      const form = yield* Effect.mapError(formStore.get(formKey(user, preprint)), () => 'form-unavailable' as const)
-
-      return yield* Effect.mapError(
-        Effect.fromResult(FptsToEffect.either(FormC.decode(Option.getOrUndefined(form)))),
-        () => 'no-form' as const,
-      )
-    }),
-  )
+  return EffectToFpts.toReaderTaskEither(loadForm(user, preprint))
 }
 
 export function createForm(): Form {
@@ -77,21 +81,25 @@ export function updateForm(originalForm: Form): (newForm: Form) => Form {
   return newForm => getAssignSemigroup<Form>().concat(originalForm, newForm)
 }
 
+export const storeForm = (
+  user: OrcidId,
+  preprint: PreprintId,
+  form: Form,
+): Effect.Effect<void, 'form-unavailable', FormStore.Store> =>
+  Effect.gen(function* () {
+    const formStore = yield* FormStore.Store
+
+    yield* Effect.mapError(
+      formStore.set(formKey(user, preprint), FormC.encode(form)),
+      () => 'form-unavailable' as const,
+    )
+  })
+
 export function saveForm(
   user: OrcidId,
   preprint: PreprintId,
 ): (form: Form) => ReaderTaskEither<EffectToFpts.EffectEnv<FormStore.Store>, 'form-unavailable', void> {
-  return form =>
-    EffectToFpts.toReaderTaskEither(
-      Effect.gen(function* () {
-        const formStore = yield* FormStore.Store
-
-        yield* Effect.mapError(
-          formStore.set(formKey(user, preprint), FormC.encode(form)),
-          () => 'form-unavailable' as const,
-        )
-      }),
-    )
+  return form => EffectToFpts.toReaderTaskEither(storeForm(user, preprint, form))
 }
 
 export function deleteForm(
