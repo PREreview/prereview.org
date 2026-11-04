@@ -23,8 +23,14 @@
   "filterFieldLabel": {
     "message": "Área"
   },
+  "filterServerLabel": {
+    "message": "Servidor de preprints"
+  },
   "filterFieldAny": {
     "message": "Qualquer área"
+  },
+  "filterServerAny": {
+    "message": "Qualquer"
   },
   "filterButton": {
     "message": "Filtrar resultados"
