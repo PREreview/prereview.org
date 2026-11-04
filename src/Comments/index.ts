@@ -29,6 +29,7 @@ export * from './Events.ts'
 export * from './Evolve.ts'
 export * from './ExpectedCommand.ts'
 export * from './State.ts'
+export { layerZenodo } from './Zenodo.ts'
 
 export const makeHandleCommentCommand: Effect.Effect<
   typeof HandleCommentCommand.Service,

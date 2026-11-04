@@ -1,4 +1,4 @@
-import { Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
+import { Layer, pipe } from 'effect'
 import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Clubs from './Clubs/index.ts'
@@ -6,7 +6,6 @@ import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
-import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
@@ -35,119 +34,16 @@ import {
   ZenodoRecords,
 } from './ExternalInteractions/index.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
-import { html } from './html.ts'
-import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
-import { PublicUrl } from './public-url.ts'
-import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
-
-const createRecordOnZenodoForComment = Layer.effect(
-  Comments.CreateRecordOnZenodoForComment,
-  Effect.gen(function* () {
-    const context = yield* Effect.map(
-      Effect.context<Prereviewers.Prereviewers | Prereviews.Prereviews>(),
-      Context.omit(Scope.Scope),
-    )
-    const fetch = yield* FetchHttpClient.Fetch
-    const publicUrl = yield* PublicUrl
-    const zenodoApi = yield* Zenodo.ZenodoApi
-
-    const env = {
-      fetch,
-      publicUrl,
-      zenodoApiKey: Redacted.value(zenodoApi.key),
-      zenodoUrl: zenodoApi.origin,
-    }
-
-    return comment =>
-      Effect.gen(function* () {
-        const prereview = yield* pipe(
-          Prereviews.getPrereview(comment.prereviewId),
-          Effect.mapError(
-            Match.valueTags({
-              PrereviewIsNotFound: error => new Comments.UnableToAssignADoi({ cause: error }),
-              PrereviewIsUnavailable: error => new Comments.UnableToAssignADoi({ cause: error }),
-              PrereviewWasRemoved: error => new Comments.UnableToAssignADoi({ cause: error }),
-            }),
-          ),
-        )
-
-        const author = yield* Effect.catchTag(
-          Prereviewers.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
-          'UnableToGetPersona',
-          error => new Comments.UnableToAssignADoi({ cause: error }),
-        )
-
-        const text = html`${comment.comment}
-
-          <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
-
-          <p>
-            ${Option.getOrElse(comment.competingInterests, () =>
-              translate(DefaultLocale, 'write-comment-flow', 'noCompetingInterests')(),
-            )}
-          </p>`
-
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* pipe(
-          FptsToEffect.readerTaskEither(
-            ZenodoRecords.createCommentOnZenodo({
-              ...comment,
-              comment: text,
-              author,
-              prereview,
-            }),
-            { ...env, ...loggerEnv },
-          ),
-          Effect.mapError(
-            flow(
-              Match.value,
-              Match.when('unavailable', () => new Comments.UnableToAssignADoi({})),
-              Match.exhaustive,
-            ),
-          ),
-        )
-      }).pipe(Effect.provide(context))
-  }),
-)
-
-const publishComment = Layer.effect(
-  Comments.PublishCommentOnZenodo,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const zenodoApi = yield* Zenodo.ZenodoApi
-
-    return Effect.fn(
-      function* (comment) {
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.publishDepositionOnZenodo(comment), {
-          fetch,
-          zenodoApiKey: Redacted.value(zenodoApi.key),
-          zenodoUrl: zenodoApi.origin,
-          ...loggerEnv,
-        })
-      },
-      Effect.mapError(
-        flow(
-          Match.value,
-          Match.when('unavailable', () => new Comments.UnableToPublishComment({})),
-          Match.exhaustive,
-        ),
-      ),
-    )
-  }),
-)
 
 export const Program = pipe(
   Layer.mergeAll(
@@ -160,7 +56,7 @@ export const Program = pipe(
     EventDispatcher.worker,
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
-  Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
+  Layer.provide([PreprintReviews.workflowsLayer, Comments.layerZenodo]),
   Layer.provide([AuthorInvites.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer]),
   Layer.provide(DatasetReviews.layer),
   Layer.provide(Prereviewers.layer),
