@@ -59,6 +59,53 @@ describe('HandleResponse', () => {
 
   describe('with another status code', () => {
     it.effect.prop(
+      'returns an error with the Contentful error',
+      [
+        fc
+          .record({
+            sys: fc.record({ type: fc.constant('Error'), id: fc.string() }),
+            message: fc.string(),
+            requestId: fc.string(),
+          })
+          .chain(errorResponse =>
+            fc.tuple(
+              fc.constant(errorResponse),
+              fc.httpClientResponse({
+                json: fc.constant(errorResponse),
+                status: fc.statusCode().filter(status => status >= 400),
+              }),
+            ),
+          ),
+      ],
+      ([[errorResponse, response]]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
+
+          expect(actual._tag).toStrictEqual('ContentfulIsUnavailable')
+          expect(actual.cause).toMatchObject({ _tag: 'HttpClientError', reason: { _tag: 'StatusCodeError', response } })
+          expect(actual.response).toStrictEqual(errorResponse)
+        }),
+    )
+
+    it.effect.prop(
+      'returns an error without the Contentful error when the body cannot be decoded',
+      [
+        fc.oneof(
+          fc.httpClientResponse({ json: fc.json(), status: fc.statusCode().filter(status => status >= 400) }),
+          fc.httpClientResponse({ body: fc.lorem(), status: fc.statusCode().filter(status => status >= 400) }),
+        ),
+      ],
+      ([response]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
+
+          expect(actual._tag).toStrictEqual('ContentfulIsUnavailable')
+          expect(actual.cause).toMatchObject({ _tag: 'HttpClientError', reason: { _tag: 'StatusCodeError', response } })
+          expect(actual.response).toBeUndefined()
+        }),
+    )
+
+    it.effect.prop(
       'returns an error',
       [fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.OK) })],
       ([response]) =>

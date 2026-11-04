@@ -4,7 +4,7 @@ import { Effect, Equal, flow, Option, Schema } from 'effect'
 import { configure } from 'safe-stable-stringify'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { ContentfulIsUnavailable } from '../Errors.ts'
-import { Entries } from '../Types.ts'
+import { ContentfulErrorResponse, Entries } from '../Types.ts'
 
 const ResolveEntries = Effect.fnUntraced(function* (response: HttpClientResponse.HttpClientResponse) {
   const body = yield* response.json
@@ -23,5 +23,19 @@ export const HandleResponse = flow(
   Effect.andThen(ResolveEntries),
   Effect.map(configure({ circularValue: '[Circular]' })),
   Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
-  Effect.catchTag(['HttpClientError', 'SchemaError'], error => new ContentfulIsUnavailable({ cause: error })),
+  Effect.catchTag(
+    'HttpClientError',
+    Effect.fnUntraced(function* (error) {
+      if (error.reason._tag !== 'StatusCodeError') {
+        return yield* new ContentfulIsUnavailable({ cause: error })
+      }
+
+      const response = yield* Effect.option(
+        HttpClientResponse.schemaBodyJson(ContentfulErrorResponse)(error.reason.response),
+      )
+
+      return yield* new ContentfulIsUnavailable({ cause: error, response: Option.getOrUndefined(response) })
+    }),
+  ),
+  Effect.catchTag('SchemaError', error => new ContentfulIsUnavailable({ cause: error })),
 )

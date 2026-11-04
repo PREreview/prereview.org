@@ -309,3 +309,12 @@ export class Entries extends Schema.Class<Entries>('Entries')({
   total: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
   items: Schema.Array(Entry),
 }) {}
+
+export type ContentfulErrorResponse = typeof ContentfulErrorResponse.Type
+
+export const ContentfulErrorResponse = Schema.Struct({
+  sys: Schema.Struct({ type: Schema.Literal('Error'), id: Schema.String }),
+  message: Schema.String,
+  details: Schema.optional(Schema.Unknown),
+  requestId: Schema.optional(Schema.String),
+})
