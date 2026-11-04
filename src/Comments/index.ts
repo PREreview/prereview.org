@@ -20,6 +20,7 @@ import { EvolveComment } from './Evolve.ts'
 import * as Queries from './Queries.ts'
 import * as React from './React.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
+import { layerZenodo } from './Zenodo.ts'
 
 export * from './Commands.ts'
 export * from './Context.ts'
@@ -29,7 +30,6 @@ export * from './Events.ts'
 export * from './Evolve.ts'
 export * from './ExpectedCommand.ts'
 export * from './State.ts'
-export { layerZenodo } from './Zenodo.ts'
 
 export const makeHandleCommentCommand: Effect.Effect<
   typeof HandleCommentCommand.Service,
@@ -168,7 +168,7 @@ const AssignADoiToCommentsInNeedOfOne = Singleton.make(
   ),
 )
 
-export const ReactToCommentEvents: Layer.Layer<
+const ReactToCommentEventsNoDeps: Layer.Layer<
   never,
   never,
   | Events.Events
@@ -231,3 +231,5 @@ export const ReactToCommentEvents: Layer.Layer<
     )
   }),
 ).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne))
+
+export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)

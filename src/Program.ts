@@ -56,7 +56,7 @@ export const Program = pipe(
     EventDispatcher.worker,
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
-  Layer.provide([PreprintReviews.workflowsLayer, Comments.layerZenodo]),
+  Layer.provide(PreprintReviews.workflowsLayer),
   Layer.provide([AuthorInvites.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer]),
   Layer.provide(DatasetReviews.layer),
   Layer.provide(Prereviewers.layer),
