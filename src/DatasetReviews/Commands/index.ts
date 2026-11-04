@@ -240,12 +240,13 @@ const makeDatasetReviewCommands: Effect.Effect<
     Command extends { datasetReviewId: Uuid.Uuid },
     Error,
   >(
+    name: string,
     createFilter: (datasetReviewId: Uuid.Uuid) => Filter,
     foldState: (events: ReadonlyArray<Events.EventsForFilter<Filter>>, datasetReviewId: Uuid.Uuid) => State,
     authorize: (command: Command) => (state: State) => boolean,
     decide: (command: Command) => (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>,
   ): CommandHandler<Command, Error> =>
-    Effect.fn(
+    Effect.fn(name)(
       function* (command) {
         const filter = createFilter(command.datasetReviewId)
 
@@ -276,84 +277,98 @@ const makeDatasetReviewCommands: Effect.Effect<
 
   return {
     startDatasetReview: handleCommand(
+      'DatasetReviews.startDatasetReview',
       allDatasetReviewEvents,
       StartDatasetReview.foldState,
       () => () => true,
       StartDatasetReview.decide,
     ),
     rateTheQuality: handleCommand(
+      'DatasetReviews.rateTheQuality',
       RateTheQuality.createFilter,
       RateTheQuality.foldState,
       RateTheQuality.authorize,
       RateTheQuality.decide,
     ),
     answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
+      'DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples',
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.authorize,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
     ),
     answerIfTheDatasetHasDataCensoredOrDeleted: handleCommand(
+      'DatasetReviews.answerIfTheDatasetHasDataCensoredOrDeleted',
       AnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter,
       AnswerIfTheDatasetHasDataCensoredOrDeleted.foldState,
       AnswerIfTheDatasetHasDataCensoredOrDeleted.authorize,
       AnswerIfTheDatasetHasDataCensoredOrDeleted.decide,
     ),
     answerIfTheDatasetHasEnoughMetadata: handleCommand(
+      'DatasetReviews.answerIfTheDatasetHasEnoughMetadata',
       AnswerIfTheDatasetHasEnoughMetadata.createFilter,
       AnswerIfTheDatasetHasEnoughMetadata.foldState,
       AnswerIfTheDatasetHasEnoughMetadata.authorize,
       AnswerIfTheDatasetHasEnoughMetadata.decide,
     ),
     answerIfTheDatasetHasTrackedChanges: handleCommand(
+      'DatasetReviews.answerIfTheDatasetHasTrackedChanges',
       AnswerIfTheDatasetHasTrackedChanges.createFilter,
       AnswerIfTheDatasetHasTrackedChanges.foldState,
       AnswerIfTheDatasetHasTrackedChanges.authorize,
       AnswerIfTheDatasetHasTrackedChanges.decide,
     ),
     answerIfTheDatasetIsAppropriateForThisKindOfResearch: handleCommand(
+      'DatasetReviews.answerIfTheDatasetIsAppropriateForThisKindOfResearch',
       AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.createFilter,
       AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.foldState,
       AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.authorize,
       AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.decide,
     ),
     answerIfTheDatasetSupportsRelatedConclusions: handleCommand(
+      'DatasetReviews.answerIfTheDatasetSupportsRelatedConclusions',
       AnswerIfTheDatasetSupportsRelatedConclusions.createFilter,
       AnswerIfTheDatasetSupportsRelatedConclusions.foldState,
       AnswerIfTheDatasetSupportsRelatedConclusions.authorize,
       AnswerIfTheDatasetSupportsRelatedConclusions.decide,
     ),
     answerIfTheDatasetIsDetailedEnough: handleCommand(
+      'DatasetReviews.answerIfTheDatasetIsDetailedEnough',
       AnswerIfTheDatasetIsDetailedEnough.createFilter,
       AnswerIfTheDatasetIsDetailedEnough.foldState,
       AnswerIfTheDatasetIsDetailedEnough.authorize,
       AnswerIfTheDatasetIsDetailedEnough.decide,
     ),
     answerIfTheDatasetIsErrorFree: handleCommand(
+      'DatasetReviews.answerIfTheDatasetIsErrorFree',
       AnswerIfTheDatasetIsErrorFree.createFilter,
       AnswerIfTheDatasetIsErrorFree.foldState,
       AnswerIfTheDatasetIsErrorFree.authorize,
       AnswerIfTheDatasetIsErrorFree.decide,
     ),
     answerIfTheDatasetMattersToItsAudience: handleCommand(
+      'DatasetReviews.answerIfTheDatasetMattersToItsAudience',
       AnswerIfTheDatasetMattersToItsAudience.createFilter,
       AnswerIfTheDatasetMattersToItsAudience.foldState,
       AnswerIfTheDatasetMattersToItsAudience.authorize,
       AnswerIfTheDatasetMattersToItsAudience.decide,
     ),
     answerIfTheDatasetIsReadyToBeShared: handleCommand(
+      'DatasetReviews.answerIfTheDatasetIsReadyToBeShared',
       AnswerIfTheDatasetIsReadyToBeShared.createFilter,
       AnswerIfTheDatasetIsReadyToBeShared.foldState,
       AnswerIfTheDatasetIsReadyToBeShared.authorize,
       AnswerIfTheDatasetIsReadyToBeShared.decide,
     ),
     answerIfTheDatasetIsMissingAnything: handleCommand(
+      'DatasetReviews.answerIfTheDatasetIsMissingAnything',
       AnswerIfTheDatasetIsMissingAnything.createFilter,
       AnswerIfTheDatasetIsMissingAnything.foldState,
       AnswerIfTheDatasetIsMissingAnything.authorize,
       AnswerIfTheDatasetIsMissingAnything.decide,
     ),
     choosePersona: handleCommand(
+      'DatasetReviews.choosePersona',
       ChoosePersona.createFilter,
       ChoosePersona.foldState,
       ChoosePersona.authorize,
@@ -364,36 +379,42 @@ const makeDatasetReviewCommands: Effect.Effect<
     removeInvitationToAppearFromTheList: yield* Commands.makeCommand(RemoveInvitationToAppearFromTheList),
     declareIfAiWasUsedToGenerateNewIdeas: yield* Commands.makeCommand(DeclareIfAiWasUsedToGenerateNewIdeas),
     declareCompetingInterests: handleCommand(
+      'DatasetReviews.declareCompetingInterests',
       DeclareCompetingInterests.createFilter,
       DeclareCompetingInterests.foldState,
       DeclareCompetingInterests.authorize,
       DeclareCompetingInterests.decide,
     ),
     declareFollowingCodeOfConduct: handleCommand(
+      'DatasetReviews.declareFollowingCodeOfConduct',
       DeclareFollowingCodeOfConduct.createFilter,
       DeclareFollowingCodeOfConduct.foldState,
       DeclareFollowingCodeOfConduct.authorize,
       DeclareFollowingCodeOfConduct.decide,
     ),
     markRecordCreatedOnZenodo: handleCommand(
+      'DatasetReviews.markRecordCreatedOnZenodo',
       allDatasetReviewEvents,
       MarkRecordCreatedOnZenodo.foldState,
       () => () => true,
       MarkRecordCreatedOnZenodo.decide,
     ),
     markRecordAsPublishedOnZenodo: handleCommand(
+      'DatasetReviews.markRecordAsPublishedOnZenodo',
       allDatasetReviewEvents,
       MarkRecordAsPublishedOnZenodo.foldState,
       () => () => true,
       MarkRecordAsPublishedOnZenodo.decide,
     ),
     markDoiAsAssigned: handleCommand(
+      'DatasetReviews.markDoiAsAssigned',
       allDatasetReviewEvents,
       MarkDoiAsAssigned.foldState,
       () => () => true,
       MarkDoiAsAssigned.decide,
     ),
     markDoiAsActivated: handleCommand(
+      'DatasetReviews.markDoiAsActivated',
       allDatasetReviewEvents,
       MarkDoiAsActivated.foldState,
       () => () => true,
@@ -401,12 +422,14 @@ const makeDatasetReviewCommands: Effect.Effect<
     ),
     addReviewToAClub: yield* Commands.makeCommand(AddReviewToAClub(clubIds)),
     publishDatasetReview: handleCommand(
+      'DatasetReviews.publishDatasetReview',
       allDatasetReviewEvents,
       PublishDatasetReview.foldState,
       () => () => true,
       PublishDatasetReview.decide,
     ),
     markDatasetReviewAsPublished: handleCommand(
+      'DatasetReviews.markDatasetReviewAsPublished',
       allDatasetReviewEvents,
       MarkDatasetReviewAsPublished.foldState,
       () => () => true,
