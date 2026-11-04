@@ -38,8 +38,8 @@ export const makeHandleCommentCommand: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  return command =>
-    Effect.gen(function* () {
+  return Effect.fn('HandleCommentCommand')(
+    function* (command) {
       const { events, lastKnownPosition } = yield* pipe(
         EventStore.query({
           types: CommentEventTypes,
@@ -68,21 +68,21 @@ export const makeHandleCommentCommand: Effect.Effect<
           }),
         ),
       )
-    }).pipe(
-      Effect.catchTag(
-        ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
-        cause => new UnableToHandleCommand({ cause }),
-      ),
-      Effect.provide(context),
-    )
+    },
+    Effect.catchTag(
+      ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
+      cause => new UnableToHandleCommand({ cause }),
+    ),
+    Effect.provide(context),
+  )
 })
 
 export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore.EventStore> = Effect.gen(
   function* () {
     const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    return commentId =>
-      Effect.gen(function* () {
+    return Effect.fn('GetComment')(
+      function* (commentId) {
         const events = yield* pipe(
           EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
           Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
@@ -91,10 +91,10 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
         return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
           EvolveComment(state)(event),
         )
-      }).pipe(
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      )
+      },
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.provide(context),
+    )
   },
 )
 
@@ -105,18 +105,18 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  return ({ authorId, prereviewId }) =>
-    Effect.gen(function* () {
+  return Effect.fn('GetNextExpectedCommandForUser')(
+    function* ({ authorId, prereviewId }) {
       const events = yield* pipe(
         EventStore.query({ types: CommentEventTypes }),
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
       return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
-    }).pipe(
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-      Effect.provide(context),
-    )
+    },
+    Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    Effect.provide(context),
+  )
 })
 
 export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
@@ -126,18 +126,18 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  return commentId =>
-    Effect.gen(function* () {
+  return Effect.fn('GetNextExpectedCommandForUserOnAComment')(
+    function* (commentId) {
       const events = yield* pipe(
         EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
       return Queries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
-    }).pipe(
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-      Effect.provide(context),
-    )
+    },
+    Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    Effect.provide(context),
+  )
 })
 
 export const layer = Layer.mergeAll(
