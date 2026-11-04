@@ -6,12 +6,12 @@ import * as EventStore from '../EventStore.ts'
 import { UnableToQuery } from '../Queries.ts'
 import * as ReviewPage from '../WebApp/review-page/index.ts'
 import {
+  GetComment,
+  GetNextExpectedCommandForUser,
+  GetNextExpectedCommandForUserOnAComment,
+  HandleCommentCommand,
   UnableToHandleCommand,
   type CreateRecordOnZenodoForComment,
-  type GetComment,
-  type GetNextExpectedCommandForUser,
-  type GetNextExpectedCommandForUserOnAComment,
-  type HandleCommentCommand,
   type PublishCommentOnZenodo,
 } from './Context.ts'
 import { DecideComment } from './Decide.ts'
@@ -138,6 +138,13 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
       Effect.provide(context),
     )
 })
+
+export const layer = Layer.mergeAll(
+  Layer.effect(HandleCommentCommand, makeHandleCommentCommand),
+  Layer.effect(GetNextExpectedCommandForUser, makeGetNextExpectedCommandForUser),
+  Layer.effect(GetNextExpectedCommandForUserOnAComment, makeGetNextExpectedCommandForUserOnAComment),
+  Layer.effect(GetComment, makeGetComment),
+)
 
 const AssignADoiToCommentsInNeedOfOne = Singleton.make(
   'Comments/AssignADoiToCommentsInNeedOfOne',
