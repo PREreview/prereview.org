@@ -16,6 +16,7 @@ import { forceLogIn } from './ForceLogIn.ts'
 import * as LocaleCookie from './LocaleCookie.ts'
 import * as LocaleInPath from './LocaleInPath.ts'
 import { securityHeaders } from './SecurityHeaders.ts'
+import { hasContentHash } from './StaticFiles.ts'
 
 export const { logger, make, withLoggerDisabled } = HttpMiddleware
 
@@ -51,7 +52,7 @@ export const serveStaticFiles = HttpMiddleware.make(app =>
 
     const response = yield* HttpServerResponse.file(filePath, {})
 
-    if (!/\.[A-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.test(filePath)) {
+    if (!hasContentHash(filePath)) {
       return response
     }
 
