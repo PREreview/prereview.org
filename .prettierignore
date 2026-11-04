@@ -2,6 +2,7 @@
 /.dev/*.ts.hbs
 /.idea/
 /.vscode/
+/backup/
 /data/
 /dist/
 /integration-results/
