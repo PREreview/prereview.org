@@ -8,7 +8,7 @@ export interface File {
   readonly content: string
 }
 
-export const CreateRequest = Effect.fn(function* (deposition: UnsubmittedDeposition, upload: File) {
+export const CreateRequest = Effect.fnUntraced(function* (deposition: UnsubmittedDeposition, upload: File) {
   const api = yield* ZenodoApi
 
   return pipe(

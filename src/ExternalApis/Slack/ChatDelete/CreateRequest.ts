@@ -3,7 +3,7 @@ import { Effect, pipe } from 'effect'
 import { SlackApi } from '../SlackApi.ts'
 import { ChatDeleteInput } from './ChatDeleteInput.ts'
 
-export const CreateRequest = Effect.fn(function* (input: ChatDeleteInput) {
+export const CreateRequest = Effect.fnUntraced(function* (input: ChatDeleteInput) {
   const api = yield* SlackApi
 
   return yield* pipe(

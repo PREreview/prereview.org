@@ -3,7 +3,7 @@ import { Effect, pipe } from 'effect'
 import { SlackApi } from '../SlackApi.ts'
 import { ChatPostMessageInput } from './ChatPostMessageInput.ts'
 
-export const CreateRequest = Effect.fn(function* (message: ChatPostMessageInput) {
+export const CreateRequest = Effect.fnUntraced(function* (message: ChatPostMessageInput) {
   const api = yield* SlackApi
 
   return yield* pipe(

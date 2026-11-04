@@ -3,7 +3,7 @@ import { Effect, pipe } from 'effect'
 import type { UnsubmittedDeposition } from '../Deposition.ts'
 import { ZenodoApi } from '../ZenodoApi.ts'
 
-export const CreateRequest = Effect.fn(function* (deposition: UnsubmittedDeposition) {
+export const CreateRequest = Effect.fnUntraced(function* (deposition: UnsubmittedDeposition) {
   const api = yield* ZenodoApi
 
   return pipe(

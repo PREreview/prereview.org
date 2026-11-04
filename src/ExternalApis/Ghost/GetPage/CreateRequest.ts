@@ -2,7 +2,7 @@ import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe, Redacted } from 'effect'
 import { GhostApi } from '../GhostApi.ts'
 
-export const CreateRequest = Effect.fn(function* (id: string) {
+export const CreateRequest = Effect.fnUntraced(function* (id: string) {
   const ghostApi = yield* GhostApi
 
   return pipe(

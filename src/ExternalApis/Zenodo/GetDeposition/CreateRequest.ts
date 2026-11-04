@@ -2,7 +2,7 @@ import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe } from 'effect'
 import { ZenodoApi } from '../ZenodoApi.ts'
 
-export const CreateRequest = Effect.fn(function* (recordId: number) {
+export const CreateRequest = Effect.fnUntraced(function* (recordId: number) {
   const api = yield* ZenodoApi
 
   return pipe(

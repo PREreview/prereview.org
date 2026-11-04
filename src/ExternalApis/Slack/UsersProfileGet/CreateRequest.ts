@@ -3,7 +3,7 @@ import { Effect, pipe } from 'effect'
 import { SlackApi } from '../SlackApi.ts'
 import type { UserId } from '../Types.ts'
 
-export const CreateRequest = Effect.fn(function* (userId: UserId) {
+export const CreateRequest = Effect.fnUntraced(function* (userId: UserId) {
   const api = yield* SlackApi
 
   return pipe(

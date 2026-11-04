@@ -3,7 +3,7 @@ import { Effect, identity, Option, pipe } from 'effect'
 import type { OrcidId } from '../../../types/index.ts'
 import { OrcidApi } from '../OrcidApi.ts'
 
-export const CreateRequest = Effect.fn(function* (orcidId: OrcidId.OrcidId) {
+export const CreateRequest = Effect.fnUntraced(function* (orcidId: OrcidId.OrcidId) {
   const api = yield* OrcidApi
 
   return pipe(
