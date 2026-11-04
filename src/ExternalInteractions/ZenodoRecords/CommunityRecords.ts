@@ -10,7 +10,7 @@ const RecordsSchema = Schema.Struct({
   }),
 })
 
-export const getCommunityRecords = Effect.fn(function* (url: URL) {
+export const getCommunityRecords = Effect.fn('ZenodoRecords.getCommunityRecords')(function* (url: URL) {
   const zenodoApi = yield* Zenodo.ZenodoApi
 
   return yield* pipe(

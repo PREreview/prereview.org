@@ -170,7 +170,7 @@ export const layerCommentsForReview = Layer.effect(
   }),
 ).pipe(Layer.provide(CachingHttpClient.layer('10 minutes')))
 
-const invalidateCacheEntry = Effect.fn(function* (url: URL) {
+const invalidateCacheEntry = Effect.fnUntraced(function* (url: URL) {
   const httpCache = yield* CachingHttpClient.HttpCache
 
   yield* httpCache.delete(url)

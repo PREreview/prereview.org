@@ -5,7 +5,7 @@ export class FailedToGetRecordForDatasetReview extends Data.TaggedError('FailedT
   cause?: unknown
 }> {}
 
-export const GetDoiForDatasetReviewRecord = Effect.fn(
+export const GetDoiForDatasetReviewRecord = Effect.fn('ZenodoRecords.getDoiForDatasetReviewRecord')(
   function* (recordId: number) {
     const deposition = yield* Zenodo.getDeposition(recordId)
 

@@ -5,7 +5,7 @@ export class FailedToPublishRecord extends Data.TaggedError('FailedToPublishReco
   cause?: unknown
 }> {}
 
-export const PublishRecord = Effect.fn(
+export const PublishRecord = Effect.fn('ZenodoRecords.publishRecord')(
   function* (recordId: number) {
     const deposition = yield* Zenodo.getDeposition(recordId)
 

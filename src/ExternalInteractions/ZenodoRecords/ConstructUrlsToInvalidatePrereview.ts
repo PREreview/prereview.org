@@ -26,43 +26,42 @@ export const constructUrlsToInvalidatePrereview = ({
     },
   )
 
-const constructUrlToRecord = (prereviewId: number): Effect.Effect<URL, never, Zenodo.ZenodoApi> =>
-  Effect.gen(function* () {
-    const zenodoApi = yield* Zenodo.ZenodoApi
+const constructUrlToRecord = Effect.fnUntraced(function* (
+  prereviewId: number,
+): Effect.fn.Return<URL, never, Zenodo.ZenodoApi> {
+  const zenodoApi = yield* Zenodo.ZenodoApi
 
-    return new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
-  })
+  return new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
+})
 
-const constructUrlToListOfPrereviewsByUser = (user: {
+const constructUrlToListOfPrereviewsByUser = Effect.fnUntraced(function* (user: {
   orcidId: OrcidId.OrcidId
   pseudonym: Pseudonym.Pseudonym
-}): Effect.Effect<URL, never, Zenodo.ZenodoApi | PublicUrl> =>
-  Effect.gen(function* () {
-    const publicUrl = yield* PublicUrl
-    const zenodoApi = yield* Zenodo.ZenodoApi
-    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
-    const params = UrlParams.fromInput({
-      q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcidId} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-peerreview',
-      access_status: 'open',
-    })
-    return Url.setUrlParams(zenodoCommunityRecordsApiUrl, params)
+}): Effect.fn.Return<URL, never, Zenodo.ZenodoApi | PublicUrl> {
+  const publicUrl = yield* PublicUrl
+  const zenodoApi = yield* Zenodo.ZenodoApi
+  const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
+  const params = UrlParams.fromInput({
+    q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcidId} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
+    size: '100',
+    sort: 'publication-desc',
+    resource_type: 'publication::publication-peerreview',
+    access_status: 'open',
   })
+  return Url.setUrlParams(zenodoCommunityRecordsApiUrl, params)
+})
 
-const constructUrlToListOfPrereviewsForPreprint = (
+const constructUrlToListOfPrereviewsForPreprint = Effect.fnUntraced(function* (
   preprintId: PreprintId,
-): Effect.Effect<URL, never, Zenodo.ZenodoApi> =>
-  Effect.gen(function* () {
-    const zenodoApi = yield* Zenodo.ZenodoApi
-    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
-    const params = UrlParams.fromInput({
-      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${toExternalIdentifier(preprintId).identifier}"`,
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-peerreview',
-      access_status: 'open',
-    })
-    return Url.setUrlParams(zenodoCommunityRecordsApiUrl, params)
+): Effect.fn.Return<URL, never, Zenodo.ZenodoApi> {
+  const zenodoApi = yield* Zenodo.ZenodoApi
+  const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
+  const params = UrlParams.fromInput({
+    q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${toExternalIdentifier(preprintId).identifier}"`,
+    size: '100',
+    sort: 'publication-desc',
+    resource_type: 'publication::publication-peerreview',
+    access_status: 'open',
   })
+  return Url.setUrlParams(zenodoCommunityRecordsApiUrl, params)
+})

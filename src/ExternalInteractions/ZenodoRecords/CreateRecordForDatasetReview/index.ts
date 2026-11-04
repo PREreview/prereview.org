@@ -7,7 +7,7 @@ export class FailedToCreateRecordForDatasetReview extends Data.TaggedError('Fail
   cause?: unknown
 }> {}
 
-export const CreateRecordForDatasetReview = Effect.fn(
+export const CreateRecordForDatasetReview = Effect.fn('ZenodoRecords.createRecordForDatasetReview')(
   function* (datasetReview: DatasetReview) {
     const depositMetadata = DatasetReviewToDepositMetadata(datasetReview)
 

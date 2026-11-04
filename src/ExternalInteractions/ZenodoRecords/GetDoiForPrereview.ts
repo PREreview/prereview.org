@@ -9,16 +9,15 @@ const RecordSchema = Schema.Struct({
   }),
 })
 
-export const getDoiForPrereview = (prereviewId: number) =>
-  Effect.gen(function* () {
-    const zenodoApi = yield* Zenodo.ZenodoApi
-    const url = new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
+export const getDoiForPrereview = Effect.fn('ZenodoRecords.getDoiForPrereview')(function* (prereviewId: number) {
+  const zenodoApi = yield* Zenodo.ZenodoApi
+  const url = new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
 
-    return yield* pipe(
-      HttpClientRequest.get(url),
-      HttpClientRequest.bearerToken(zenodoApi.key),
-      HttpClient.execute,
-      Effect.andThen(HttpClientResponse.schemaBodyJson(RecordSchema)),
-      Effect.map(record => record.metadata.doi),
-    )
-  })
+  return yield* pipe(
+    HttpClientRequest.get(url),
+    HttpClientRequest.bearerToken(zenodoApi.key),
+    HttpClient.execute,
+    Effect.andThen(HttpClientResponse.schemaBodyJson(RecordSchema)),
+    Effect.map(record => record.metadata.doi),
+  )
+})
