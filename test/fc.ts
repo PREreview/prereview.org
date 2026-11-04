@@ -1627,7 +1627,7 @@ export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...IS
 export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
 
 export const contentfulId = (): fc.Arbitrary<ContentfulId> =>
-  fc.stringMatching(/^[A-z0-9]+$/).map(id => ContentfulId.make(id))
+  fc.stringMatching(/^[A-Za-z0-9_-]+$/).map(id => ContentfulId.make(id))
 
 export const contentfulConfig = (): fc.Arbitrary<typeof ContentfulConfig.Service> =>
   fc.record({

@@ -8,7 +8,7 @@ const ProtocolRelativeUrl = Schema.String.pipe(
     Schema.URLFromString,
     SchemaTransformation.transform({
       decode: value => `https:${value}`,
-      encode: url => url.replace(/^[A-z][A-z0-9+.-]*:\/\//, '//'),
+      encode: url => url.replace(/^[A-Za-z][A-Za-z0-9+.-]*:\/\//, '//'),
     }),
   ),
 )
@@ -16,7 +16,7 @@ const ProtocolRelativeUrl = Schema.String.pipe(
 export type ContentfulId = typeof ContentfulId.Type
 
 export const ContentfulId = Schema.String.pipe(
-  Schema.check(Schema.isPattern(/^[A-z0-9]+$/)),
+  Schema.check(Schema.isPattern(/^[A-Za-z0-9_-]+$/)),
   Schema.brand('ContentfulId'),
 )
 
