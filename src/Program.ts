@@ -45,57 +45,75 @@ import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
 
-export const Program = pipe(
-  Layer.mergeAll(
-    WebApp.layer,
-    AuthorInvites.reactionsWorker,
-    DatasetReviews.reactionsWorker,
-    ReviewRequests.reactionsWorker,
-    Comments.ReactToCommentEvents,
-    CachingHttpClient.layerRevalidationWorker,
-    EventDispatcher.worker,
+const Workers = Layer.mergeAll(
+  AuthorInvites.reactionsWorker,
+  DatasetReviews.reactionsWorker,
+  ReviewRequests.reactionsWorker,
+  Comments.ReactToCommentEvents,
+  CachingHttpClient.layerRevalidationWorker,
+  EventDispatcher.worker,
+)
+
+const Domain = pipe(
+  PreprintReviews.workflowsLayer,
+  Layer.provideMerge(
+    Layer.mergeAll(AuthorInvites.layer, Comments.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer),
   ),
-  Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
-  Layer.provide(PreprintReviews.workflowsLayer),
-  Layer.provide([AuthorInvites.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer]),
-  Layer.provide(DatasetReviews.layer),
-  Layer.provide(Prereviewers.layer),
-  Layer.provide(ContactEmailAddresses.layer),
-  Layer.provide([
+  Layer.provideMerge(DatasetReviews.layer),
+  Layer.provideMerge(Prereviewers.layer),
+  Layer.provideMerge(ContactEmailAddresses.layer),
+)
+
+const ExternalInteractions = pipe(
+  Layer.mergeAll(
     DatasetData.layer,
     PreprintData.layer,
     OpenAlexWorks.layer,
     OrcidRecords.layer,
     ZenodoRecords.layerCommentsForReview,
-    Comments.layer,
     GhostPage.layer,
     CommunitySlack.layer,
     ZenodoRecords.layer,
-  ]),
+  ),
+  Layer.provideMerge(Layer.mergeAll(Email.layer, LanguageDetection.layerCld)),
+)
+
+const ExternalApis = Layer.mergeAll(
+  CoarNotify.layer,
+  Layer.provide(Contentful.layer, CachingHttpClient.layer('10 seconds')),
+  Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
+  Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
+  Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
+  Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
+  Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
+  Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
+  Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
+  Slack.layer,
+  Zenodo.layer,
+  Nodemailer.layer,
+)
+
+const Infrastructure = pipe(
+  Layer.mergeAll(FetchHttpClient.layer, RequestCollapsingHttpClient.layer),
+  Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provideMerge(SqlSensitiveDataStore.layer),
+  Layer.provideMerge(
+    Layer.mergeAll(
+      Events.layer,
+      EventDispatcher.EventDispatcherLayer,
+      Uuid.layer,
+      CachingHttpClient.layerRevalidationQueue,
+      CookieSignature.layer,
+    ),
+  ),
+)
+
+export const Program = pipe(
+  Layer.mergeAll(WebApp.layer, Workers),
+  Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
+  Layer.provide(Domain),
+  Layer.provide(ExternalInteractions),
   Layer.provide(Clubs.layer),
-  Layer.provide([Email.layer, LanguageDetection.layerCld]),
-  Layer.provide([
-    CoarNotify.layer,
-    Layer.provide(Contentful.layer, CachingHttpClient.layer('10 seconds')),
-    Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
-    Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
-    Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
-    Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
-    Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
-    Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
-    Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
-    Slack.layer,
-    Zenodo.layer,
-    Nodemailer.layer,
-  ]),
-  Layer.provide([FetchHttpClient.layer, RequestCollapsingHttpClient.layer]),
-  Layer.provide([SqlEventStore.layer, LoggingHttpClient.layer]),
-  Layer.provide(SqlSensitiveDataStore.layer),
-  Layer.provide([
-    Events.layer,
-    EventDispatcher.EventDispatcherLayer,
-    Uuid.layer,
-    CachingHttpClient.layerRevalidationQueue,
-    CookieSignature.layer,
-  ]),
+  Layer.provide(ExternalApis),
+  Layer.provide(Infrastructure),
 )
