@@ -46,7 +46,7 @@ describe('serveStaticFiles', () => {
     }).pipe(Effect.provide([layer('/file.txt', [])])),
   )
 
-  it.effect.each<[string]>([['/../../package.json'], ['//etc/passwd']])(
+  it.effect.each<[string]>([['/../../package.json'], ['/../assets.json'], ['//etc/passwd']])(
     'passes the request on when %s is outside the assets directory',
     ([url]) =>
       Effect.gen(function* () {

@@ -44,12 +44,11 @@ export const serveStaticFiles = HttpMiddleware.make(app =>
 
     const urlPath = Array.headNonEmpty(String.split(request.url, '?'))
 
-    const filePath = path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets', urlPath.slice(1))
+    const filePath = Option.getOrUndefined(
+      path.resolveWithin(path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets'), urlPath.slice(1)),
+    )
 
-    if (
-      !filePath.startsWith(path.resolve(import.meta.dirname, '..', '..', 'dist', 'assets')) ||
-      !(yield* isFile(filePath))
-    ) {
+    if (filePath === undefined || !(yield* isFile(filePath))) {
       return yield* app
     }
 
