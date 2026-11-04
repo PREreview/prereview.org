@@ -257,12 +257,12 @@ export const MyDetailsRouter = pipe(
   P.map(
     handler => (env: Env) =>
       handler(env)({
-        addToSession: withEnv(
+        addToSession: EffectToFpts.toTaskEitherK(
           (key: string, value: Json) =>
             typeof env.sessionId === 'string'
-              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.addToSession(env.sessionId, key, value))
-              : RTE.left('unavailable' as const),
-          { runtime: env.runtime },
+              ? LegacySessionStore.addToSession(env.sessionId, key, value)
+              : Effect.fail('unavailable' as const),
+          env.runtime,
         ),
         deleteAvatar: withEnv(Cloudinary.removeAvatarFromCloudinary, {
           cloudinaryApi: {
@@ -345,12 +345,12 @@ export const MyDetailsRouter = pipe(
           revokeUrl: env.orcidOauth.revokeUrl,
           tokenUrl: env.orcidOauth.tokenUrl,
         },
-        popFromSession: withEnv(
+        popFromSession: EffectToFpts.toTaskEitherK(
           (key: string) =>
             typeof env.sessionId === 'string'
-              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.popFromSession(env.sessionId, key))
-              : RTE.left('unavailable' as const),
-          { runtime: env.runtime },
+              ? LegacySessionStore.popFromSession(env.sessionId, key)
+              : Effect.fail('unavailable' as const),
+          env.runtime,
         ),
         publicUrl: env.publicUrl,
         runtime: env.runtime,

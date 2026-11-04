@@ -2,7 +2,7 @@ import { HttpServerResponse } from 'effect/http'
 import { Array, Effect, flow, Option, pipe, Record, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { Clubs } from '../../../Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -58,40 +58,32 @@ export const DataRouter = pipe(
             zenodoUrl: env.zenodoApiConfig.origin,
             ...env.logger,
           }),
-          getUsers: withEnv(
-            () =>
+          getUsers: () =>
+            EffectToFpts.toTaskEither(
               pipe(
-                RTE.Do,
-                RTE.apS(
-                  'users',
-                  EffectToFpts.toReaderTaskEither(
-                    Effect.catchTag(Prereviewers.listAllPrereviewersForStats(), 'UnableToQuery', () =>
-                      Effect.fail('unavailable' as const),
-                    ),
-                  ),
+                Effect.all(
+                  {
+                    users: Prereviewers.listAllPrereviewersForStats(),
+                    careerStages: Prereviewers.CareerStages.getAll(),
+                    locations: Prereviewers.Locations.getAll(),
+                    orcidTokens: OrcidTokens.getAll(),
+                  },
+                  { concurrency: 'unbounded' },
                 ),
-                RTE.apSW('careerStages', EffectToFpts.toReaderTaskEither(Prereviewers.CareerStages.getAll())),
-                RTE.apSW('locations', EffectToFpts.toReaderTaskEither(Prereviewers.Locations.getAll())),
-                RTE.apSW('orcidTokens', EffectToFpts.toReaderTaskEither(OrcidTokens.getAll())),
-                RTE.map(({ users, careerStages, locations, orcidTokens }) =>
-                  pipe(
-                    users,
-                    Array.map(user => ({
-                      orcid: user.orcidId,
-                      timestamp: user.registeredAt,
-                      requestNotifications: user.requestNotifications,
-                      orcidRecordConnected: Record.has(orcidTokens, user.orcidId),
-                      careerStage: careerStages[user.orcidId]?.value,
-                      location: locations[user.orcidId]?.value,
-                    })),
-                  ),
+                Effect.map(({ users, careerStages, locations, orcidTokens }) =>
+                  Array.map(users, user => ({
+                    orcid: user.orcidId,
+                    timestamp: user.registeredAt,
+                    requestNotifications: user.requestNotifications,
+                    orcidRecordConnected: Record.has(orcidTokens, user.orcidId),
+                    careerStage: careerStages[user.orcidId]?.value,
+                    location: locations[user.orcidId]?.value,
+                  })),
                 ),
+                Effect.catchTag('UnableToQuery', () => Effect.fail('unavailable' as const)),
               ),
-            {
-              runtime: env.runtime,
-              ...env.logger,
-            },
-          ),
+              env.runtime,
+            ),
         })
 
         return HttpServerResponse.raw(json, { status: StatusCodes.OK, contentType: 'application/json' })

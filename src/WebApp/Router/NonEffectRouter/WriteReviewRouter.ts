@@ -395,19 +395,19 @@ export const WriteReviewRouter = pipe(
   P.map(
     handler => (env: Env) =>
       handler(env)({
-        addToSession: withEnv(
+        addToSession: EffectToFpts.toTaskEitherK(
           (key: string, value: Json) =>
             typeof env.sessionId === 'string'
-              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.addToSession(env.sessionId, key, value))
-              : RTE.left('unavailable' as const),
-          { runtime: env.runtime },
+              ? LegacySessionStore.addToSession(env.sessionId, key, value)
+              : Effect.fail('unavailable' as const),
+          env.runtime,
         ),
-        popFromSession: withEnv(
+        popFromSession: EffectToFpts.toTaskEitherK(
           (key: string) =>
             typeof env.sessionId === 'string'
-              ? EffectToFpts.toReaderTaskEither(LegacySessionStore.popFromSession(env.sessionId, key))
-              : RTE.left('unavailable' as const),
-          { runtime: env.runtime },
+              ? LegacySessionStore.popFromSession(env.sessionId, key)
+              : Effect.fail('unavailable' as const),
+          env.runtime,
         ),
         publicUrl: env.publicUrl,
         publishPrereview: withEnv(publishPrereview, {
@@ -424,18 +424,18 @@ export const WriteReviewRouter = pipe(
             },
           ),
           fetch: env.fetch,
-          getPreprintSubjects: withEnv(
+          getPreprintSubjects: EffectToFpts.toTaskK(
             (id: PreprintId) =>
               pipe(
                 match(id)
-                  .with({ _tag: 'PhilsciPreprintId' }, () => RTE.of([]))
-                  .otherwise(EffectToFpts.toReaderTaskEitherK(id => OpenAlexWorks.getCategories(id.value))),
-                RTE.match(
-                  () => [],
-                  Array.map(category => ({ id: category.id, name: category.display_name })),
-                ),
+                  .with({ _tag: 'PhilsciPreprintId' }, () => Effect.succeed([]))
+                  .otherwise(id => OpenAlexWorks.getCategories(id.value)),
+                Effect.match({
+                  onFailure: () => [],
+                  onSuccess: Array.map(category => ({ id: category.id, name: category.display_name })),
+                }),
               ),
-            { runtime: env.runtime },
+            env.runtime,
           ),
           isReviewRequested: EffectToFpts.toTaskEitherK(
             flow(
