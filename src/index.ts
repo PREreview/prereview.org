@@ -6,7 +6,7 @@ import { PgClient } from '@effect/sql-pg'
 import { Temporal } from '@js-temporal/polyfill'
 import { Boolean, Config, Effect, flow, Layer, Logger, Match, Option, pipe, Redacted, References } from 'effect'
 import { FetchHttpClient } from 'effect/http'
-import { OtlpSerialization, OtlpTracer } from 'effect/observability'
+import { OtlpLogger, OtlpSerialization, OtlpTracer } from 'effect/observability'
 import { createServer } from 'node:http'
 import * as AppConfig from './AppConfig.ts'
 import * as AuthorInviteStore from './AuthorInviteStore.ts'
@@ -65,10 +65,10 @@ const OpenTelemetry = Layer.unwrap(
     Config.withDefault(Config.Boolean('ENABLE_OPENTELEMETRY'), false),
     Boolean.match({
       onTrue: () =>
-        OtlpTracer.layer({
-          url: 'http://localhost:4318/v1/traces',
-          resource: { serviceName: 'prereview' },
-        }).pipe(Layer.provide(OtlpSerialization.layerJson), Layer.provide(FetchHttpClient.layer)),
+        Layer.mergeAll(
+          OtlpTracer.layer({ url: 'http://localhost:4318/v1/traces', resource: { serviceName: 'prereview' } }),
+          OtlpLogger.layer({ url: 'http://localhost:4318/v1/logs', resource: { serviceName: 'prereview' } }),
+        ).pipe(Layer.provide(OtlpSerialization.layerJson), Layer.provide(FetchHttpClient.layer)),
       onFalse: () => Layer.empty,
     }),
   ),
