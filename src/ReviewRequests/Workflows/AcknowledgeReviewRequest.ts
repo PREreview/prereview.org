@@ -6,7 +6,7 @@ import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 
-export const AcknowledgeReviewRequest = Effect.fn(
+export const AcknowledgeReviewRequest = Effect.fn('ReviewRequests.acknowledgeReviewRequest')(
   function* (reviewRequestId: Uuid.Uuid) {
     const reviewRequest = yield* Queries.getReviewRequestToAcknowledge({ reviewRequestId })
     const preprint = yield* Preprints.getPreprintTitle(reviewRequest.preprintId)

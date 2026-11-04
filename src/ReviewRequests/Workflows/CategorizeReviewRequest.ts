@@ -6,7 +6,7 @@ import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 
-export const CategorizeReviewRequest = Effect.fn(
+export const CategorizeReviewRequest = Effect.fn('ReviewRequests.categorizeReviewRequest')(
   function* (reviewRequestId: Uuid.Uuid) {
     const reviewRequest = yield* Queries.getPublishedReviewRequest({ reviewRequestId })
 

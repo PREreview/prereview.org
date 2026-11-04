@@ -71,8 +71,8 @@ export const workflowsLayer = Layer.mergeAll(
         }),
       ),
       Activity.retry({ times: 48 }),
-      Effect.tapError(error =>
-        Effect.gen(function* () {
+      Effect.tapError(
+        Effect.fnUntraced(function* (error) {
           const failedAt = yield* Temporal.currentInstant
           const failureMessage = Inspectable.toStringUnknown(error.cause)
 
@@ -116,8 +116,9 @@ export const workflowsLayer = Layer.mergeAll(
         }),
       ),
       Activity.retry({ times: 10 }),
-      Effect.catchTag('PreprintIsNotFound', () =>
-        Effect.gen(function* () {
+      Effect.catchTag(
+        'PreprintIsNotFound',
+        Effect.fnUntraced(function* () {
           const rejectedAt = yield* Temporal.currentInstant
 
           yield* pipe(

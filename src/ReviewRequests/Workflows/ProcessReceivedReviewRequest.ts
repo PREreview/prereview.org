@@ -5,7 +5,7 @@ import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 
-export const ProcessReceivedReviewRequest = Effect.fn(
+export const ProcessReceivedReviewRequest = Effect.fn('ReviewRequests.processReceivedReviewRequest')(
   function* (reviewRequestId: Uuid.Uuid) {
     const reviewRequest = yield* Queries.getReceivedReviewRequest({ reviewRequestId })
 
@@ -20,8 +20,9 @@ export const ProcessReceivedReviewRequest = Effect.fn(
           reviewRequestId: reviewRequest.id,
         })
       }),
-      Effect.catchTag('NotAPreprint', () =>
-        Effect.gen(function* () {
+      Effect.catchTag(
+        'NotAPreprint',
+        Effect.fnUntraced(function* () {
           const rejectedAt = yield* Temporal.currentInstant
 
           yield* Commands.rejectReviewRequest({

@@ -172,16 +172,15 @@ const makeReviewRequestQueries: Effect.Effect<
       return yield* Match.valueTags(contactAddress, {
         NoContactAddress: () => new ReviewRequestNotReadyToBePublished({ missing: ['ContactAddressVerified'] }),
         UnverifiedContactAddress: () => new ReviewRequestNotReadyToBePublished({ missing: ['ContactAddressVerified'] }),
-        VerifiedContactAddress: () =>
-          Effect.gen(function* () {
-            const needsNotificationsDecision = yield* Fiber.join(needsNotificationsDecisionFiber)
+        VerifiedContactAddress: Effect.fnUntraced(function* () {
+          const needsNotificationsDecision = yield* Fiber.join(needsNotificationsDecisionFiber)
 
-            if (needsNotificationsDecision) {
-              return yield* new ReviewRequestNotReadyToBePublished({ missing: ['DecisionOnReviewNotifications'] })
-            }
+          if (needsNotificationsDecision) {
+            return yield* new ReviewRequestNotReadyToBePublished({ missing: ['DecisionOnReviewNotifications'] })
+          }
 
-            return reviewRequest
-          }),
+          return reviewRequest
+        }),
       })
     }),
     getPersonaChoice: yield* Queries.makeStatefulQuery(GetPersonaChoice),

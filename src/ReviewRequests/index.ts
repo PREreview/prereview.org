@@ -93,16 +93,15 @@ export const layer = pipe(
           Queries.getFiveMostRecentReviewRequests(),
           Effect.andThen(
             Effect.partition(
-              reviewRequest =>
-                Effect.gen(function* () {
-                  return {
-                    ...reviewRequest,
-                    published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
-                    preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
-                    fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
-                    subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
-                  }
-                }),
+              Effect.fnUntraced(function* (reviewRequest) {
+                return {
+                  ...reviewRequest,
+                  published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
+                  preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
+                  fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
+                  subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
+                }
+              }),
               { concurrency: 'unbounded' },
             ),
           ),
@@ -140,16 +139,15 @@ export const layer = pipe(
             pipe(
               pageOfReviewRequests.reviewRequests,
               Effect.partition(
-                reviewRequest =>
-                  Effect.gen(function* () {
-                    return {
-                      ...reviewRequest,
-                      published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
-                      preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
-                      fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
-                      subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
-                    }
-                  }),
+                Effect.fnUntraced(function* (reviewRequest) {
+                  return {
+                    ...reviewRequest,
+                    published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
+                    preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
+                    fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
+                    subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
+                  }
+                }),
                 { concurrency: 'unbounded' },
               ),
               Effect.map(Tuple.get(0)),

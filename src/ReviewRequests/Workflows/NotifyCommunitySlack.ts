@@ -7,7 +7,7 @@ import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 
-export const NotifyCommunitySlack = Effect.fn(
+export const NotifyCommunitySlack = Effect.fn('ReviewRequests.notifyCommunitySlack')(
   function* (reviewRequestId: Uuid.Uuid) {
     const reviewRequest = yield* Queries.getPublishedReviewRequest({ reviewRequestId })
 
