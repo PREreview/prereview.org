@@ -35,7 +35,6 @@ import {
   PreprintData,
   ZenodoRecords,
 } from './ExternalInteractions/index.ts'
-import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
@@ -168,16 +167,6 @@ const commentsForReview = Layer.effect(
   }),
 )
 
-const setUpFetch = Layer.effect(
-  FetchHttpClient.Fetch,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.makeFetch
-    const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-    return pipe({ fetch, ...loggerEnv }, collapseRequests()).fetch
-  }),
-).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
-
 export const Program = pipe(
   Layer.mergeAll(
     WebApp.layer,
@@ -221,7 +210,7 @@ export const Program = pipe(
     Zenodo.layer,
     Nodemailer.layer,
   ]),
-  Layer.provide([setUpFetch, RequestCollapsingHttpClient.layer]),
+  Layer.provide([FetchHttpClient.layer, RequestCollapsingHttpClient.layer]),
   Layer.provide([SqlEventStore.layer, LoggingHttpClient.layer]),
   Layer.provide(SqlSensitiveDataStore.layer),
   Layer.provide([

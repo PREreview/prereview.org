@@ -7,7 +7,10 @@ import {
   type HttpClientResponse,
   HttpMethod,
 } from 'effect/http'
-import { Effect, identity, pipe, Result } from 'effect'
+import { Effect, identity, Layer, pipe, Result } from 'effect'
+import * as CachingHttpClient from './CachingHttpClient/index.ts'
+import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
+import { collapseRequests } from './fetch.ts'
 
 export const Fetch = FetchHttpClient.Fetch
 
@@ -29,6 +32,16 @@ export const makeFetch: Effect.Effect<typeof globalThis.fetch, never, HttpClient
       { signal: init?.signal ?? undefined },
     ).then(Result.getOrThrowWith(identity))
 })
+
+export const layer = Layer.effect(
+  Fetch,
+  Effect.gen(function* () {
+    const fetch = yield* makeFetch
+    const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+    return pipe({ fetch, ...loggerEnv }, collapseRequests()).fetch
+  }),
+).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
 
 const convertRequest = (
   input: string | URL | globalThis.Request,
