@@ -43,9 +43,6 @@ updates:
       ibm-plex:
         patterns:
           - '@ibm/plex-*'
-      opentelemetry:
-        patterns:
-          - '@opentelemetry/*'
       stylelint:
         patterns:
           - 'stylelint'

@@ -1,13 +1,12 @@
 import { OpenAiClient, OpenAiLanguageModel } from '@effect/ai-openai'
 import { embeddingsLayer } from './Embeddings/index.ts'
 import { ClusterWorkflowEngine, RunnerAddress } from 'effect/cluster'
-import * as NodeSdk from '@effect/opentelemetry/NodeSdk'
 import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { Temporal } from '@js-temporal/polyfill'
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { Boolean, Config, Effect, flow, Layer, Logger, Match, Option, pipe, Redacted, References } from 'effect'
+import { FetchHttpClient } from 'effect/http'
+import { OtlpSerialization, OtlpTracer } from 'effect/observability'
 import { createServer } from 'node:http'
 import * as AppConfig from './AppConfig.ts'
 import * as AuthorInviteStore from './AuthorInviteStore.ts'
@@ -66,10 +65,10 @@ const OpenTelemetry = Layer.unwrap(
     Config.withDefault(Config.Boolean('ENABLE_OPENTELEMETRY'), false),
     Boolean.match({
       onTrue: () =>
-        NodeSdk.layer(() => ({
+        OtlpTracer.layer({
+          url: 'http://localhost:4318/v1/traces',
           resource: { serviceName: 'prereview' },
-          spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
-        })),
+        }).pipe(Layer.provide(OtlpSerialization.layerJson), Layer.provide(FetchHttpClient.layer)),
       onFalse: () => Layer.empty,
     }),
   ),
