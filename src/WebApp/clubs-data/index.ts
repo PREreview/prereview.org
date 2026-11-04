@@ -47,4 +47,5 @@ export const ClubsData = pipe(
   Effect.catchTags({
     HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
+  Effect.withSpan('ClubsData'),
 )

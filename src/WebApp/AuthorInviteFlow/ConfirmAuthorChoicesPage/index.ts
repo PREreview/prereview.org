@@ -11,12 +11,12 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import { renderConfirmAuthorChoicesPage } from './ConfirmAuthorChoicesPage.ts'
 
-export const ConfirmAuthorChoicesPage = ({
-  reviewId,
-}: {
+export const ConfirmAuthorChoicesPage: (input: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Prereviewers | AuthorInvites> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers.Prereviewers | AuthorInvites> = Effect.fn(
+  'AuthorInviteFlow.ConfirmAuthorChoicesPage',
+)(
+  function* ({ reviewId }) {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
     const user = yield* LoggedInUser
@@ -26,8 +26,9 @@ export const ConfirmAuthorChoicesPage = ({
     const persona = yield* Prereviewers.getPersona({ orcidId: user.orcid, persona: choices.persona })
 
     return renderConfirmAuthorChoicesPage({ reviewId, persona, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { reviewId }) =>
+    Effect.catchTags(effect, {
       ChoicesHaveBeenConfirmed: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })),
       PersonaHasNotBeenChosen: () =>
@@ -36,14 +37,14 @@ export const ConfirmAuthorChoicesPage = ({
       UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const ConfirmAuthorChoicesSubmission = ({
-  reviewId,
-}: {
+export const ConfirmAuthorChoicesSubmission: (input: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | AuthorInvites> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response, never, Locale | LoggedInUser | AuthorInvites> = Effect.fn(
+  'AuthorInviteFlow.ConfirmAuthorChoicesSubmission',
+)(
+  function* ({ reviewId }) {
     const authorInvites = yield* AuthorInvites
     const user = yield* LoggedInUser
     const confirmedAt = yield* Temporal.currentInstant
@@ -51,11 +52,12 @@ export const ConfirmAuthorChoicesSubmission = ({
     yield* authorInvites.confirmAuthorChoices({ orcidId: user.orcid, reviewId, confirmedAt })
 
     return RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { reviewId }) =>
+    Effect.catchTags(effect, {
       ChoicesCannotBeChanged: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })),
       ChoicesDoNotNeedToBeConfirmed: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
     }),
-  )
+)

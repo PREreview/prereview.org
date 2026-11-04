@@ -13,12 +13,14 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm') {}
 
-export const fromBody = (body: unknown) =>
-  Effect.gen(function* () {
+export const fromBody = Effect.fnUntraced(
+  function* (body: unknown) {
     yield* Schema.decodeUnknownEffect(AgreeFieldSchema)(body)
 
     return new CompletedForm()
-  }).pipe(Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ agree: Result.fail(new Missing()) }))))
+  },
+  Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ agree: Result.fail(new Missing()) }))),
+)
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),

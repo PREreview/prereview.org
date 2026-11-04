@@ -11,12 +11,12 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import { type Response, RedirectResponse } from '../../Response/index.ts'
 import { RouteForCommand } from '../RouteForCommand.ts'
 
-export const AcceptInvite = ({
-  invitationId,
-}: {
+export const AcceptInvite: (input: {
   invitationId: Uuid
-}): Effect.Effect<Response, never, AuthorInvites | LoggedInUser | Locale> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response, never, AuthorInvites | LoggedInUser | Locale> = Effect.fn(
+  'AuthorInviteFlow.AcceptInvite',
+)(
+  function* ({ invitationId }) {
     const authorInvites = yield* AuthorInvites
     const user = yield* LoggedInUser
     const acceptedAt = yield* Temporal.currentInstant
@@ -31,20 +31,23 @@ export const AcceptInvite = ({
     })
 
     return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ reviewId }) })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { invitationId }) =>
+    Effect.catchTags(effect, {
       InvitationNotFound: () => PageNotFound,
       InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer: () => NoPermissionPage,
-      NothingToDo: () =>
-        Effect.gen(function* () {
+      NothingToDo: Effect.fnUntraced(
+        function* () {
           const authorInvites = yield* AuthorInvites
 
           const reviewId = yield* authorInvites.getReviewIdForInvitation(invitationId)
 
           return RedirectResponse({ location: Routes.AuthorInvitePublished.href({ reviewId }) })
-        }).pipe(Effect.catch(() => HavingProblemsPage)),
+        },
+        Effect.catch(() => HavingProblemsPage),
+      ),
       PrereviewerIsNotListedOnTheReview: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)

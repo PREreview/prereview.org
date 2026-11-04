@@ -100,18 +100,17 @@ export const ChooseYourPersonaSubmission: ({
 
         return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
       }),
-      InvalidForm: form =>
-        Effect.gen(function* () {
-          const { publicPersona, pseudonymPersona } = yield* Effect.all(
-            {
-              publicPersona: Prereviewers.getPublicPersona(user.orcid),
-              pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
-            },
-            { concurrency: 'unbounded' },
-          )
+      InvalidForm: Effect.fnUntraced(function* (form) {
+        const { publicPersona, pseudonymPersona } = yield* Effect.all(
+          {
+            publicPersona: Prereviewers.getPublicPersona(user.orcid),
+            pseudonymPersona: Prereviewers.getPseudonymPersona(user.orcid),
+          },
+          { concurrency: 'unbounded' },
+        )
 
-          return MakeResponse({ form, preprint: preprint.id, publicPersona, pseudonymPersona, locale })
-        }),
+        return MakeResponse({ form, preprint: preprint.id, publicPersona, pseudonymPersona, locale })
+      }),
     })
   },
   (error, { preprintId }) =>

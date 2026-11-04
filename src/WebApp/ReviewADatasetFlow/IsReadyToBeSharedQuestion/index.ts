@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as IsReadyToBeSharedForm from './IsReadyToBeSharedForm.ts'
 import { IsReadyToBeSharedQuestion as MakeResponse } from './IsReadyToBeSharedQuestion.ts'
 
-export const IsReadyToBeSharedQuestion = ({
-  datasetReviewId,
-}: {
+export const IsReadyToBeSharedQuestion: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.IsReadyToBeSharedQuestion',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const IsReadyToBeSharedQuestion = ({
     const form = IsReadyToBeSharedForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,52 +44,48 @@ export const IsReadyToBeSharedQuestion = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const IsReadyToBeSharedSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const IsReadyToBeSharedSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.IsReadyToBeSharedSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* IsReadyToBeSharedForm.fromBody(body)
+  const form = yield* IsReadyToBeSharedForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: IsReadyToBeSharedForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetIsReadyToBeShared({
-            answer: form.isReadyToBeShared,
-            detail: pipe(
-              Match.value(form.isReadyToBeShared),
-              Match.when('yes', () => form.isReadyToBeSharedYesDetail),
-              Match.when('no', () => form.isReadyToBeSharedNoDetail),
-              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
-              Match.exhaustive,
-            ),
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: IsReadyToBeSharedForm.CompletedForm) {
+        yield* DatasetReviews.answerIfTheDatasetIsReadyToBeShared({
+          answer: form.isReadyToBeShared,
+          detail: pipe(
+            Match.value(form.isReadyToBeShared),
+            Match.when('yes', () => form.isReadyToBeSharedYesDetail),
+            Match.when('no', () => form.isReadyToBeSharedNoDetail),
+            Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+            Match.exhaustive,
+          ),
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
   })
+})

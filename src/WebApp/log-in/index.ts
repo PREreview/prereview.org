@@ -58,7 +58,7 @@ export const LogOut = Effect.gen(function* () {
       Cookies.makeCookieUnsafe(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
     ]),
   })
-})
+}).pipe(Effect.withSpan('LogOut'))
 
 const OrcidUserC = C.struct({
   name: C.string,
@@ -75,7 +75,7 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
   })
 }
 
-export const authenticate = Effect.fn(
+export const authenticate = Effect.fn('authenticate')(
   function* (code: string, state: string) {
     const { cookie, store } = yield* SessionStore
     const isUserBlocked = yield* IsUserBlocked

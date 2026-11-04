@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   isErrorFreeNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const isErrorFreeYesDetail = yield* pipe(
     Schema.decodeEffect(IsErrorFreeYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('isErrorFreeYesDetail'), Effect.fromOption)),

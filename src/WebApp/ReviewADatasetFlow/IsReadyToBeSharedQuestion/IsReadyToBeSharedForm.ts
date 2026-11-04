@@ -20,7 +20,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   isReadyToBeSharedNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const isReadyToBeSharedYesDetail = yield* pipe(
     Schema.decodeEffect(IsReadyToBeSharedYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('isReadyToBeSharedYesDetail'), Effect.fromOption)),

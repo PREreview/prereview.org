@@ -18,7 +18,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   competingInterestsDetails: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(
+export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
     const { declareCompetingInterests } = yield* Schema.decodeEffect(DeclareCompetingInterestsFieldSchema)(body)
 

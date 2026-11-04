@@ -148,7 +148,7 @@ export const toHttpServerResponse = (
   })
 }
 
-export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogInResponse) {
+export const handleForceLogInResponse = Effect.fnUntraced(function* (response: ForceLogInResponse) {
   const { cookie, store } = yield* SessionStore
 
   const sessionId = yield* Uuid.v4()

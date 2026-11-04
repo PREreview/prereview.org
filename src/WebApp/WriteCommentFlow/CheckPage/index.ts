@@ -10,16 +10,14 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import { CheckPage as MakeResponse } from './CheckPage.ts'
 
-export const CheckPage = ({
-  commentId,
-}: {
+export const CheckPage: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Prereviewers.Prereviewers | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.CheckPage')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -49,25 +47,24 @@ export const CheckPage = ({
       CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
     }),
-  )
+)
 
-export const CheckPageSubmission = ({
-  commentId,
-}: {
+export const CheckPageSubmission: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Comments.HandleCommentCommand | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.CheckPageSubmission')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -80,30 +77,30 @@ export const CheckPageSubmission = ({
 
     return yield* Match.valueTags(comment, {
       CommentInProgress: () => PageNotFound,
-      CommentReadyForPublishing: () =>
-        Effect.gen(function* () {
-          const handleCommand = yield* Comments.HandleCommentCommand
+      CommentReadyForPublishing: Effect.fnUntraced(function* () {
+        const handleCommand = yield* Comments.HandleCommentCommand
 
-          yield* pipe(
-            handleCommand(new Comments.PublishComment({ commentId })),
-            Effect.catchIf(
-              cause => cause._tag !== 'UnableToHandleCommand',
-              cause => new Comments.UnableToHandleCommand({ cause }),
-            ),
-          )
+        yield* pipe(
+          handleCommand(new Comments.PublishComment({ commentId })),
+          Effect.catchIf(
+            cause => cause._tag !== 'UnableToHandleCommand',
+            cause => new Comments.UnableToHandleCommand({ cause }),
+          ),
+        )
 
-          return Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })
-        }),
+        return Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })
+      }),
       CommentBeingPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       UnableToQuery: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
     }),
-  )
+)

@@ -139,4 +139,5 @@ export const RequestsData = pipe(
     HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
     UnableToQuery: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
+  Effect.withSpan('RequestsData'),
 )

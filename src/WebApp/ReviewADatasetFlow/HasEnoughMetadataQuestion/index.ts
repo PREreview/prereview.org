@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as HasEnoughMetadataForm from './HasEnoughMetadataForm.ts'
 import { HasEnoughMetadataQuestion as MakeResponse } from './HasEnoughMetadataQuestion.ts'
 
-export const HasEnoughMetadataQuestion = ({
-  datasetReviewId,
-}: {
+export const HasEnoughMetadataQuestion: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.HasEnoughMetadataQuestion',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const HasEnoughMetadataQuestion = ({
     const form = HasEnoughMetadataForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,53 +44,49 @@ export const HasEnoughMetadataQuestion = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const HasEnoughMetadataSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const HasEnoughMetadataSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.HasEnoughMetadataSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* HasEnoughMetadataForm.fromBody(body)
+  const form = yield* HasEnoughMetadataForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: HasEnoughMetadataForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetHasEnoughMetadata({
-            answer: form.hasEnoughMetadata,
-            detail: pipe(
-              Match.value(form.hasEnoughMetadata),
-              Match.when('yes', () => form.hasEnoughMetadataYesDetail),
-              Match.when('partly', () => form.hasEnoughMetadataPartlyDetail),
-              Match.when('no', () => form.hasEnoughMetadataNoDetail),
-              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
-              Match.exhaustive,
-            ),
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: HasEnoughMetadataForm.CompletedForm) {
+        yield* DatasetReviews.answerIfTheDatasetHasEnoughMetadata({
+          answer: form.hasEnoughMetadata,
+          detail: pipe(
+            Match.value(form.hasEnoughMetadata),
+            Match.when('yes', () => form.hasEnoughMetadataYesDetail),
+            Match.when('partly', () => form.hasEnoughMetadataPartlyDetail),
+            Match.when('no', () => form.hasEnoughMetadataNoDetail),
+            Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+            Match.exhaustive,
+          ),
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
   })
+})

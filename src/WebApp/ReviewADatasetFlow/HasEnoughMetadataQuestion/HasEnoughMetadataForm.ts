@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   hasEnoughMetadataNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const hasEnoughMetadataYesDetail = yield* pipe(
     Schema.decodeEffect(HasEnoughMetadataYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('hasEnoughMetadataYesDetail'), Effect.fromOption)),

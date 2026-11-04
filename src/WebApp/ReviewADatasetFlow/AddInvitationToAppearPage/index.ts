@@ -11,12 +11,12 @@ import * as Response from '../../Response/index.ts'
 import * as AddInvitationToAppearForm from './AddInvitationToAppearForm.ts'
 import { AddInvitationToAppearPage as createAddInvitationToAppearPage } from './AddInvitationToAppearPage.ts'
 
-export const AddInvitationToAppearPage = ({
-  datasetReviewId,
-}: {
+export const AddInvitationToAppearPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.AddInvitationToAppearPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -36,8 +36,9 @@ export const AddInvitationToAppearPage = ({
       locale,
       otherAuthors,
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewDoesNotNeedInvitationsToAppear: () =>
         Effect.succeed(
           Response.RedirectResponse({
@@ -56,52 +57,48 @@ export const AddInvitationToAppearPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const AddInvitationToAppearSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const AddInvitationToAppearSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Uuid.GenerateUuid
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.AddInvitationToAppearSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = AddInvitationToAppearForm.fromBody(body)
+  const form = AddInvitationToAppearForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fnUntraced(
-        function* (form: AddInvitationToAppearForm.CompletedForm) {
-          yield* DatasetReviews.addInvitationToAppearToTheList({
-            datasetReviewId,
-            name: form.name,
-            emailAddress: form.emailAddress,
-            invitationId: yield* Uuid.v4(),
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: AddInvitationToAppearForm.CompletedForm) {
+        yield* DatasetReviews.addInvitationToAppearToTheList({
+          datasetReviewId,
+          name: form.name,
+          emailAddress: form.emailAddress,
+          invitationId: yield* Uuid.v4(),
+          userId: user.orcid,
+        })
 
-          return Response.RedirectResponse({
-            location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: Effect.fnUntraced(
-        function* (form: AddInvitationToAppearForm.InvalidForm) {
-          const otherAuthors = yield* Effect.map(
-            DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId }),
-            Array.isReadonlyArrayNonEmpty,
-          )
+        return Response.RedirectResponse({
+          location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: Effect.fnUntraced(
+      function* (form: AddInvitationToAppearForm.InvalidForm) {
+        const otherAuthors = yield* Effect.map(
+          DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId }),
+          Array.isReadonlyArrayNonEmpty,
+        )
 
-          return createAddInvitationToAppearPage({ datasetReviewId, form, locale, otherAuthors })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-    })
+        return createAddInvitationToAppearPage({ datasetReviewId, form, locale, otherAuthors })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
   })
+})

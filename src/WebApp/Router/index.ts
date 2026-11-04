@@ -508,8 +508,9 @@ const WriteCommentFlowRouter = [
     Routes.WriteCommentEnterComment,
     flow(
       Effect.succeed,
-      Effect.bind('body', () =>
-        Effect.gen(function* () {
+      Effect.bind(
+        'body',
+        Effect.fnUntraced(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
           const form = yield* request.urlParamsBody
 
@@ -525,8 +526,9 @@ const WriteCommentFlowRouter = [
     Routes.WriteCommentChoosePersona,
     flow(
       Effect.succeed,
-      Effect.bind('body', () =>
-        Effect.gen(function* () {
+      Effect.bind(
+        'body',
+        Effect.fnUntraced(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
           const form = yield* request.urlParamsBody
 
@@ -542,8 +544,9 @@ const WriteCommentFlowRouter = [
     Routes.WriteCommentCompetingInterests,
     flow(
       Effect.succeed,
-      Effect.bind('body', () =>
-        Effect.gen(function* () {
+      Effect.bind(
+        'body',
+        Effect.fnUntraced(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
           const form = yield* request.urlParamsBody
 
@@ -559,8 +562,9 @@ const WriteCommentFlowRouter = [
     Routes.WriteCommentCodeOfConduct,
     flow(
       Effect.succeed,
-      Effect.bind('body', () =>
-        Effect.gen(function* () {
+      Effect.bind(
+        'body',
+        Effect.fnUntraced(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
           const form = yield* request.urlParamsBody
 
@@ -576,8 +580,9 @@ const WriteCommentFlowRouter = [
     Routes.WriteCommentEnterEmailAddress,
     flow(
       Effect.succeed,
-      Effect.bind('body', () =>
-        Effect.gen(function* () {
+      Effect.bind(
+        'body',
+        Effect.fnUntraced(function* () {
           const request = yield* HttpServerRequest.HttpServerRequest
           const form = yield* request.urlParamsBody
 

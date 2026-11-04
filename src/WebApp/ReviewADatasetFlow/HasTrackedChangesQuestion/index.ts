@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as HasTrackedChangesForm from './HasTrackedChangesForm.ts'
 import { HasTrackedChangesQuestion as MakeResponse } from './HasTrackedChangesQuestion.ts'
 
-export const HasTrackedChangesQuestion = ({
-  datasetReviewId,
-}: {
+export const HasTrackedChangesQuestion: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.HasTrackedChangesQuestion',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const HasTrackedChangesQuestion = ({
     const form = HasTrackedChangesForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,53 +44,49 @@ export const HasTrackedChangesQuestion = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const HasTrackedChangesSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const HasTrackedChangesSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.HasTrackedChangesSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* HasTrackedChangesForm.fromBody(body)
+  const form = yield* HasTrackedChangesForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: HasTrackedChangesForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetHasTrackedChanges({
-            answer: form.hasTrackedChanges,
-            detail: pipe(
-              Match.value(form.hasTrackedChanges),
-              Match.when('yes', () => form.hasTrackedChangesYesDetail),
-              Match.when('partly', () => form.hasTrackedChangesPartlyDetail),
-              Match.when('no', () => form.hasTrackedChangesNoDetail),
-              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
-              Match.exhaustive,
-            ),
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: HasTrackedChangesForm.CompletedForm) {
+        yield* DatasetReviews.answerIfTheDatasetHasTrackedChanges({
+          answer: form.hasTrackedChanges,
+          detail: pipe(
+            Match.value(form.hasTrackedChanges),
+            Match.when('yes', () => form.hasTrackedChangesYesDetail),
+            Match.when('partly', () => form.hasTrackedChangesPartlyDetail),
+            Match.when('no', () => form.hasTrackedChangesNoDetail),
+            Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+            Match.exhaustive,
+          ),
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
   })
+})

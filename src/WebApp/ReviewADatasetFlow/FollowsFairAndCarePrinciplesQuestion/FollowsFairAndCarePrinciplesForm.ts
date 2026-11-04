@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   followsFairAndCarePrinciplesNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const followsFairAndCarePrinciplesYesDetail = yield* pipe(
     Schema.decodeEffect(FollowsFairAndCarePrinciplesYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('followsFairAndCarePrinciplesYesDetail'), Effect.fromOption)),

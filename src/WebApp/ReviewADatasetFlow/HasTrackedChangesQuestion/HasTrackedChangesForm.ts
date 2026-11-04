@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   hasTrackedChangesNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const hasTrackedChangesYesDetail = yield* pipe(
     Schema.decodeEffect(HasTrackedChangesYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('hasTrackedChangesYesDetail'), Effect.fromOption)),

@@ -8,7 +8,7 @@ import { Slug } from '../types/Slug.ts'
 import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 import { PageResponse } from './Response/index.ts'
 
-export const CmsPage = Effect.fnUntraced(
+export const CmsPage = Effect.fn('CmsPage')(
   function* ({
     canonical,
     current,

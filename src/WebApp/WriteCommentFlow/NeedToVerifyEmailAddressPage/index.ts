@@ -12,11 +12,9 @@ import * as Response from '../../Response/index.ts'
 import { RouteForCommand } from '../Routes.ts'
 import { NeedToVerifyEmailAddressPage as MakeResponse } from './NeedToVerifyEmailAddressPage.ts'
 
-export const NeedToVerifyEmailAddressPage = ({
-  commentId,
-}: {
+export const NeedToVerifyEmailAddressPage: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Comments.GetComment
@@ -24,8 +22,8 @@ export const NeedToVerifyEmailAddressPage = ({
   | Comments.HandleCommentCommand
   | ContactEmailAddresses
   | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.NeedToVerifyEmailAddressPage')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -39,55 +37,55 @@ export const NeedToVerifyEmailAddressPage = ({
     const locale = yield* Locale
 
     return yield* Match.valueTags(comment, {
-      CommentInProgress: comment =>
-        Effect.gen(function* () {
-          if (comment.verifiedEmailAddressExists) {
-            const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
-            const nextCommand = yield* Effect.flatMap(
-              getNextExpectedCommandForUserOnAComment(commentId),
-              Effect.fromResult,
-            )
-
-            return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
-          }
-
-          const contactEmailAddresses = yield* ContactEmailAddresses
-
-          return yield* pipe(
-            contactEmailAddresses.getContactEmailAddress(comment.authorId),
-            Effect.andThen(
-              pipe(
-                Match.type<ContactEmailAddress.ContactEmailAddress>(),
-                Match.tag('VerifiedContactEmailAddress', () =>
-                  Effect.gen(function* () {
-                    const handleCommand = yield* Comments.HandleCommentCommand
-
-                    yield* pipe(
-                      handleCommand(new Comments.ConfirmExistenceOfVerifiedEmailAddress({ commentId })),
-                      Effect.catchIf(
-                        cause => cause._tag !== 'UnableToHandleCommand',
-                        cause => new Comments.UnableToHandleCommand({ cause }),
-                      ),
-                    )
-
-                    const getNextExpectedCommandForUserOnAComment =
-                      yield* Comments.GetNextExpectedCommandForUserOnAComment
-                    const nextCommand = yield* Effect.flatMap(
-                      getNextExpectedCommandForUserOnAComment(commentId),
-                      Effect.fromResult,
-                    )
-
-                    return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
-                  }),
-                ),
-                Match.tag('UnverifiedContactEmailAddress', contactEmailAddress =>
-                  Effect.succeed(MakeResponse({ commentId, emailAddress: contactEmailAddress.value, locale })),
-                ),
-                Match.exhaustive,
-              ),
-            ),
+      CommentInProgress: Effect.fnUntraced(function* (comment) {
+        if (comment.verifiedEmailAddressExists) {
+          const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+          const nextCommand = yield* Effect.flatMap(
+            getNextExpectedCommandForUserOnAComment(commentId),
+            Effect.fromResult,
           )
-        }),
+
+          return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+        }
+
+        const contactEmailAddresses = yield* ContactEmailAddresses
+
+        return yield* pipe(
+          contactEmailAddresses.getContactEmailAddress(comment.authorId),
+          Effect.andThen(
+            pipe(
+              Match.type<ContactEmailAddress.ContactEmailAddress>(),
+              Match.tag(
+                'VerifiedContactEmailAddress',
+                Effect.fnUntraced(function* () {
+                  const handleCommand = yield* Comments.HandleCommentCommand
+
+                  yield* pipe(
+                    handleCommand(new Comments.ConfirmExistenceOfVerifiedEmailAddress({ commentId })),
+                    Effect.catchIf(
+                      cause => cause._tag !== 'UnableToHandleCommand',
+                      cause => new Comments.UnableToHandleCommand({ cause }),
+                    ),
+                  )
+
+                  const getNextExpectedCommandForUserOnAComment =
+                    yield* Comments.GetNextExpectedCommandForUserOnAComment
+                  const nextCommand = yield* Effect.flatMap(
+                    getNextExpectedCommandForUserOnAComment(commentId),
+                    Effect.fromResult,
+                  )
+
+                  return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+                }),
+              ),
+              Match.tag('UnverifiedContactEmailAddress', contactEmailAddress =>
+                Effect.succeed(MakeResponse({ commentId, emailAddress: contactEmailAddress.value, locale })),
+              ),
+              Match.exhaustive,
+            ),
+          ),
+        )
+      }),
       CommentReadyForPublishing: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
       CommentBeingPublished: () =>
@@ -95,8 +93,9 @@ export const NeedToVerifyEmailAddressPage = ({
       CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
@@ -108,4 +107,4 @@ export const NeedToVerifyEmailAddressPage = ({
           Response.LogInResponse({ location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }) }),
         ),
     }),
-  )
+)

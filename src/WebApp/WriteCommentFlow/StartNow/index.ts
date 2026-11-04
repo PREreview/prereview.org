@@ -11,11 +11,9 @@ import * as Response from '../../Response/index.ts'
 import { RouteForCommand } from '../Routes.ts'
 import { CarryOnPage } from './CarryOnPage.ts'
 
-export const StartNow = ({
-  id,
-}: {
+export const StartNow: (input: {
   id: number
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Uuid.GenerateUuid
@@ -24,8 +22,8 @@ export const StartNow = ({
   | Comments.GetNextExpectedCommandForUser
   | Comments.GetNextExpectedCommandForUserOnAComment
   | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.StartNow')(
+  function* ({ id }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const prereview = yield* Prereviews.getPrereview(id)
@@ -39,8 +37,9 @@ export const StartNow = ({
 
     return yield* pipe(
       Match.value(nextCommand),
-      Match.tag('ExpectedToStartAComment', () =>
-        Effect.gen(function* () {
+      Match.tag(
+        'ExpectedToStartAComment',
+        Effect.fnUntraced(function* () {
           const commentId = yield* Uuid.v4()
 
           const handleCommand = yield* Comments.HandleCommentCommand
@@ -71,13 +70,14 @@ export const StartNow = ({
         }),
       ),
     )
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { id }) =>
+    Effect.catchTags(effect, {
       PrereviewIsNotFound: () => PageNotFound,
       PrereviewIsUnavailable: () => HavingProblemsPage,
       PrereviewWasRemoved: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentStartNow.href({ id }) })),
     }),
-    Effect.catch(() => HavingProblemsPage),
-  )
+  Effect.catch(() => HavingProblemsPage),
+)

@@ -15,7 +15,7 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
   qualityRatingPoorDetail: Result.Result<Option.Option<NonEmptyString.NonEmptyString>>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const qualityRatingExcellentDetail = yield* pipe(
     Schema.decodeEffect(QualityRatingExcellentDetailSchema)(body),
     Effect.andThen(flow(Struct.get('qualityRatingExcellentDetail'), Effect.fromOption)),

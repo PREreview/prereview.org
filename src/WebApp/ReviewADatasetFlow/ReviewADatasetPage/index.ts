@@ -14,38 +14,37 @@ import { UnsupportedUrlPage } from './UnsupportedUrlPage.ts'
 
 export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Locale.useSync(
   locale => MakeResponse({ form: new ReviewADatasetForm.EmptyForm(), locale }),
-)
+).pipe(Effect.withSpan('ReviewADatasetFlow.ReviewADatasetPage'))
 
-export const ReviewADatasetSubmission = ({
-  body,
-}: {
+export const ReviewADatasetSubmission: (input: {
   body: UrlParams.UrlParams
-}): Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> =>
-  Effect.gen(function* () {
-    const locale = yield* Locale
+}) => Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.fn(
+  'ReviewADatasetFlow.ReviewADatasetSubmission',
+)(function* ({ body }) {
+  const locale = yield* Locale
 
-    const form = yield* ReviewADatasetForm.fromBody(body)
+  const form = yield* ReviewADatasetForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: ReviewADatasetForm.CompletedForm) {
-          const datasetId = yield* Effect.andThen(
-            Effect.fromResult(Datasets.parseDatasetIdInput(form.whichDataset)),
-            Datasets.resolveDatasetId,
-          )
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: ReviewADatasetForm.CompletedForm) {
+        const datasetId = yield* Effect.andThen(
+          Effect.fromResult(Datasets.parseDatasetIdInput(form.whichDataset)),
+          Datasets.resolveDatasetId,
+        )
 
-          return Response.RedirectResponse({
-            location: Routes.ReviewThisDataset.href({ datasetId }),
-          })
-        },
-        Effect.catchTags({
-          DatasetIsNotFound: error => Effect.succeed(UnknownDatasetPage({ dataset: error.datasetId, locale })),
-          DatasetIsUnavailable: () => HavingProblemsPage,
-          UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage({ locale })),
-          UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage({ locale })),
-          NotADataset: () => Effect.succeed(NotADatasetPage({ locale })),
-        }),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: Routes.ReviewThisDataset.href({ datasetId }),
+        })
+      },
+      Effect.catchTags({
+        DatasetIsNotFound: error => Effect.succeed(UnknownDatasetPage({ dataset: error.datasetId, locale })),
+        DatasetIsUnavailable: () => HavingProblemsPage,
+        UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage({ locale })),
+        UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage({ locale })),
+        NotADataset: () => Effect.succeed(NotADatasetPage({ locale })),
+      }),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ form, locale })),
   })
+})

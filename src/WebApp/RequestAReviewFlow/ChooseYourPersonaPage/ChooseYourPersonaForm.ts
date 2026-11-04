@@ -15,7 +15,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   chooseYourPersona: 'public' | 'pseudonym'
 }> {}
 
-export const fromBody = Effect.fn(
+export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
     const { chooseYourPersona } = yield* Schema.decodeEffect(ChooseYourPersonaFieldSchema)(body)
 

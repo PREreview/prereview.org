@@ -11,16 +11,14 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import { CheckYourReviewPage as MakeResponse } from './CheckYourReviewPage.ts'
 
-export const CheckYourReviewPage = ({
-  datasetReviewId,
-}: {
+export const CheckYourReviewPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale | LoggedInUser | Prereviewers.Prereviewers
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('ReviewADatasetFlow.CheckYourReviewPage')(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
     const locale = yield* Locale
@@ -36,8 +34,9 @@ export const CheckYourReviewPage = ({
     })
 
     return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona, dataset }, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetIsNotFound: () => HavingProblemsPage,
       DatasetIsUnavailable: () => HavingProblemsPage,
       DatasetReviewHasBeenPublished: () =>
@@ -58,18 +57,16 @@ export const CheckYourReviewPage = ({
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),
-  )
+)
 
-export const CheckYourReviewSubmission = ({
-  datasetReviewId,
-}: {
+export const CheckYourReviewSubmission: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('ReviewADatasetFlow.CheckYourReviewSubmission')(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
 
@@ -93,12 +90,12 @@ export const CheckYourReviewSubmission = ({
       ),
       Effect.catch(() => HavingProblemsPage),
     )
-  }).pipe(
-    Effect.catchTags({
-      UnableToQuery: () => HavingProblemsPage,
-      UnknownDatasetReview: () => PageNotFound,
-    }),
-  )
+  },
+  Effect.catchTags({
+    UnableToQuery: () => HavingProblemsPage,
+    UnknownDatasetReview: () => PageNotFound,
+  }),
+)
 
 const routeForMissing = {
   RatedTheQualityOfTheDataset: Routes.ReviewADatasetRateTheQuality,

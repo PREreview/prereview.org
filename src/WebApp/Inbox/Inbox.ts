@@ -13,23 +13,25 @@ export const Inbox = Effect.gen(function* () {
   yield* ProcessCoarNotifyMessage({ message, receivedAt, messageId })
 
   return HttpServerResponse.empty({ status: StatusCodes.Accepted })
-}).pipe(
-  Effect.tapError(error =>
-    Effect.gen(function* () {
-      const request = yield* HttpServerRequest.HttpServerRequest
+})
+  .pipe(Effect.withSpan('Inbox'))
+  .pipe(
+    Effect.tapError(
+      Effect.fnUntraced(function* (error) {
+        const request = yield* HttpServerRequest.HttpServerRequest
 
-      yield* Effect.logInfo('Failed to process COAR Notify message').pipe(
-        Effect.annotateLogs({ error, 'http.body': yield* request.text }),
-      )
+        yield* Effect.logInfo('Failed to process COAR Notify message').pipe(
+          Effect.annotateLogs({ error, 'http.body': yield* request.text }),
+        )
+      }),
+    ),
+    Effect.catchTags({
+      SchemaError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
+      HttpServerError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
+      RejectedRequestReview: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
+      FailedToProcessRequestReview: () =>
+        Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
     }),
-  ),
-  Effect.catchTags({
-    SchemaError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
-    HttpServerError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
-    RejectedRequestReview: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.BadRequest })),
-    FailedToProcessRequestReview: () =>
-      Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
-  }),
-)
+  )
 
 const InboxUuidNamespace = Uuid.Uuid('2931c749-586f-43e5-a01a-7d70555c1983')

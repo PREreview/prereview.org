@@ -10,7 +10,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   isMissingAnything: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(
+export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
     const { isMissingAnything } = yield* Schema.decodeEffect(IsMissingAnythingSchema)(body)
 

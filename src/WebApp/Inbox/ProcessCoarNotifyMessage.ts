@@ -6,7 +6,7 @@ import type { Temporal, Uuid } from '../../types/index.ts'
 import { ActorToRequester } from './ActorToRequester.ts'
 import * as Errors from './Errors.ts'
 
-export const ProcessCoarNotifyMessage = Effect.fn(
+export const ProcessCoarNotifyMessage = Effect.fn('Inbox.ProcessCoarNotifyMessage')(
   function* ({
     message,
     messageId,

@@ -15,7 +15,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   followingCodeOfConduct: 'yes'
 }> {}
 
-export const fromBody = Effect.fn(
+export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
     const { followingCodeOfConduct } = yield* Schema.decodeEffect(FollowingCodeOfConductFieldSchema)(body)
 

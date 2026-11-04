@@ -9,12 +9,12 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import { renderPublishedPage } from './PublishedPage.ts'
 
-export const PublishedPage = ({
-  reviewId,
-}: {
+export const PublishedPage: (input: {
   reviewId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | AuthorInvites> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response, never, Locale | LoggedInUser | AuthorInvites> = Effect.fn(
+  'AuthorInviteFlow.PublishedPage',
+)(
+  function* ({ reviewId }) {
     const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
     const user = yield* LoggedInUser
@@ -29,9 +29,9 @@ export const PublishedPage = ({
     }
 
     return renderPublishedPage({ reviewId, locale })
-  }).pipe(
-    Effect.catchTags({
-      PrereviewerIsNotListedOnTheReview: () => PageNotFound,
-      UnableToQuery: () => HavingProblemsPage,
-    }),
-  )
+  },
+  Effect.catchTags({
+    PrereviewerIsNotListedOnTheReview: () => PageNotFound,
+    UnableToQuery: () => HavingProblemsPage,
+  }),
+)

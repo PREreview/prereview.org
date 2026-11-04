@@ -18,14 +18,14 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   comment: Html
 }> {}
 
-export const fromBody = (body: unknown) =>
-  Effect.gen(function* () {
+export const fromBody = Effect.fnUntraced(
+  function* (body: unknown) {
     const { comment } = yield* Schema.decodeUnknownEffect(CommentFieldSchema)(body)
 
     return new CompletedForm({ comment })
-  }).pipe(
-    Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ comment: Result.fail(new Missing()) }))),
-  )
+  },
+  Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ comment: Result.fail(new Missing()) }))),
+)
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),

@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as HasDataCensoredOrDeletedForm from './HasDataCensoredOrDeletedForm.ts'
 import { HasDataCensoredOrDeletedQuestion as MakeResponse } from './HasDataCensoredOrDeletedQuestion.ts'
 
-export const HasDataCensoredOrDeletedQuestion = ({
-  datasetReviewId,
-}: {
+export const HasDataCensoredOrDeletedQuestion: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.HasDataCensoredOrDeletedQuestion',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const HasDataCensoredOrDeletedQuestion = ({
     const form = HasDataCensoredOrDeletedForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,53 +44,49 @@ export const HasDataCensoredOrDeletedQuestion = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const HasDataCensoredOrDeletedSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const HasDataCensoredOrDeletedSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.HasDataCensoredOrDeletedSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* HasDataCensoredOrDeletedForm.fromBody(body)
+  const form = yield* HasDataCensoredOrDeletedForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: HasDataCensoredOrDeletedForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetHasDataCensoredOrDeleted({
-            answer: form.hasDataCensoredOrDeleted,
-            detail: pipe(
-              Match.value(form.hasDataCensoredOrDeleted),
-              Match.when('yes', () => form.hasDataCensoredOrDeletedYesDetail),
-              Match.when('partly', () => form.hasDataCensoredOrDeletedPartlyDetail),
-              Match.when('no', () => form.hasDataCensoredOrDeletedNoDetail),
-              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
-              Match.exhaustive,
-            ),
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: HasDataCensoredOrDeletedForm.CompletedForm) {
+        yield* DatasetReviews.answerIfTheDatasetHasDataCensoredOrDeleted({
+          answer: form.hasDataCensoredOrDeleted,
+          detail: pipe(
+            Match.value(form.hasDataCensoredOrDeleted),
+            Match.when('yes', () => form.hasDataCensoredOrDeletedYesDetail),
+            Match.when('partly', () => form.hasDataCensoredOrDeletedPartlyDetail),
+            Match.when('no', () => form.hasDataCensoredOrDeletedNoDetail),
+            Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+            Match.exhaustive,
+          ),
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
   })
+})

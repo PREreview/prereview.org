@@ -9,7 +9,7 @@ import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createDatasetReviewPage } from './DatasetReviewPage.ts'
 
-export const DatasetReviewPage = Effect.fn(
+export const DatasetReviewPage = Effect.fn('DatasetReviewPage')(
   function* ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) {
     const clubs = yield* Clubs
     const locale = yield* Locale

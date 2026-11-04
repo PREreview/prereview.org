@@ -13,16 +13,14 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 import { ChooseYourPersonaPage as MakeResponse } from './ChooseYourPersonaPage.ts'
 
-export const ChooseYourPersonaPage = ({
-  datasetReviewId,
-}: {
+export const ChooseYourPersonaPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Prereviewers.Prereviewers
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('ReviewADatasetFlow.ChooseYourPersonaPage')(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -37,8 +35,9 @@ export const ChooseYourPersonaPage = ({
     const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
 
     return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -52,15 +51,12 @@ export const ChooseYourPersonaPage = ({
       UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const ChooseYourPersonaSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const ChooseYourPersonaSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   | DatasetReviews.DatasetReviewCommands
@@ -68,41 +64,40 @@ export const ChooseYourPersonaSubmission = ({
   | Locale
   | LoggedInUser
   | Prereviewers.Prereviewers
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.ChooseYourPersonaSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* ChooseYourPersonaForm.fromBody(body)
+  const form = yield* ChooseYourPersonaForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: ChooseYourPersonaForm.CompletedForm) {
-          yield* DatasetReviews.choosePersona({
-            persona: form.chooseYourPersona,
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: ChooseYourPersonaForm.CompletedForm) {
+        yield* DatasetReviews.choosePersona({
+          persona: form.chooseYourPersona,
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: Effect.fn(
-        function* (form: ChooseYourPersonaForm.InvalidForm) {
-          const publicPersona = yield* Prereviewers.getPublicPersona(user.orcid)
-          const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: Effect.fnUntraced(
+      function* (form: ChooseYourPersonaForm.InvalidForm) {
+        const publicPersona = yield* Prereviewers.getPublicPersona(user.orcid)
+        const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(user.orcid)
 
-          return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
-        },
-        Effect.catchTag('UnableToGetPersona', () => HavingProblemsPage),
-      ),
-    })
+        return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
+      },
+      Effect.catchTag('UnableToGetPersona', () => HavingProblemsPage),
+    ),
   })
+})

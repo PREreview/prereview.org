@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   whichDataset: Doi.Doi | URL
 }> {}
 
-export const fromBody = Effect.fn(
+export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
     const { whichDataset } = yield* Schema.decodeEffect(WhichDatasetSchema)(body)
 

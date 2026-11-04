@@ -11,16 +11,14 @@ import { RouteForCommand } from '../Routes.ts'
 import * as CompetingInterestsForm from './CompetingInterestsForm.ts'
 import { CompetingInterestsPage as MakeResponse } from './CompetingInterestsPage.ts'
 
-export const CompetingInterestsPage = ({
-  commentId,
-}: {
+export const CompetingInterestsPage: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.CompetingInterestsPage')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -50,26 +48,24 @@ export const CompetingInterestsPage = ({
         Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       CommentPublished: () => Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId }) })),
     }),
-  )
+)
 
-export const CompetingInterestsSubmission = ({
-  body,
-  commentId,
-}: {
+export const CompetingInterestsSubmission: (input: {
   body: unknown
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUserOnAComment | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.CompetingInterestsSubmission')(
+  function* ({ body, commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -84,58 +80,56 @@ export const CompetingInterestsSubmission = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentInProgress', 'CommentReadyForPublishing', () =>
-        Effect.gen(function* () {
+      Match.tag(
+        'CommentInProgress',
+        'CommentReadyForPublishing',
+        Effect.fnUntraced(function* () {
           const form = yield* CompetingInterestsForm.fromBody(body)
 
           return yield* Match.valueTags(form, {
-            CompletedFormYes: form =>
-              Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleCommentCommand
+            CompletedFormYes: Effect.fnUntraced(function* (form) {
+              const handleCommand = yield* Comments.HandleCommentCommand
 
-                yield* pipe(
-                  handleCommand(
-                    new Comments.DeclareCompetingInterests({
-                      commentId,
-                      competingInterests: Option.some(form.competingInterestsDetails),
-                    }),
-                  ),
-                  Effect.catchIf(
-                    cause => cause._tag !== 'UnableToHandleCommand',
-                    cause => new Comments.UnableToHandleCommand({ cause }),
-                  ),
-                )
+              yield* pipe(
+                handleCommand(
+                  new Comments.DeclareCompetingInterests({
+                    commentId,
+                    competingInterests: Option.some(form.competingInterestsDetails),
+                  }),
+                ),
+                Effect.catchIf(
+                  cause => cause._tag !== 'UnableToHandleCommand',
+                  cause => new Comments.UnableToHandleCommand({ cause }),
+                ),
+              )
 
-                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
-                const nextCommand = yield* Effect.flatMap(
-                  getNextExpectedCommandForUserOnAComment(commentId),
-                  Effect.fromResult,
-                )
+              const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+              const nextCommand = yield* Effect.flatMap(
+                getNextExpectedCommandForUserOnAComment(commentId),
+                Effect.fromResult,
+              )
 
-                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
-              }),
-            CompletedFormNo: () =>
-              Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleCommentCommand
+              return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+            }),
+            CompletedFormNo: Effect.fnUntraced(function* () {
+              const handleCommand = yield* Comments.HandleCommentCommand
 
-                yield* pipe(
-                  handleCommand(
-                    new Comments.DeclareCompetingInterests({ commentId, competingInterests: Option.none() }),
-                  ),
-                  Effect.catchIf(
-                    cause => cause._tag !== 'UnableToHandleCommand',
-                    cause => new Comments.UnableToHandleCommand({ cause }),
-                  ),
-                )
+              yield* pipe(
+                handleCommand(new Comments.DeclareCompetingInterests({ commentId, competingInterests: Option.none() })),
+                Effect.catchIf(
+                  cause => cause._tag !== 'UnableToHandleCommand',
+                  cause => new Comments.UnableToHandleCommand({ cause }),
+                ),
+              )
 
-                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
-                const nextCommand = yield* Effect.flatMap(
-                  getNextExpectedCommandForUserOnAComment(commentId),
-                  Effect.fromResult,
-                )
+              const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+              const nextCommand = yield* Effect.flatMap(
+                getNextExpectedCommandForUserOnAComment(commentId),
+                Effect.fromResult,
+              )
 
-                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
-              }),
+              return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+            }),
             InvalidForm: form =>
               Effect.succeed(
                 MakeResponse({
@@ -155,8 +149,9 @@ export const CompetingInterestsSubmission = ({
       ),
       Match.exhaustive,
     )
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
@@ -165,4 +160,4 @@ export const CompetingInterestsSubmission = ({
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCompetingInterests.href({ commentId }) })),
     }),
-  )
+)

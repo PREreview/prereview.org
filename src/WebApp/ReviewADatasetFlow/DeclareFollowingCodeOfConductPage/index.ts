@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as DeclareFollowingCodeOfConductForm from './DeclareFollowingCodeOfConductForm.ts'
 import { DeclareFollowingCodeOfConductPage as MakeResponse } from './DeclareFollowingCodeOfConductPage.ts'
 
-export const DeclareFollowingCodeOfConductPage = ({
-  datasetReviewId,
-}: {
+export const DeclareFollowingCodeOfConductPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.DeclareFollowingCodeOfConductPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const DeclareFollowingCodeOfConductPage = ({
     const form = DeclareFollowingCodeOfConductForm.fromHasBeenDeclared(hasBeenDeclared)
 
     return MakeResponse({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,45 +44,41 @@ export const DeclareFollowingCodeOfConductPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const DeclareFollowingCodeOfConductSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const DeclareFollowingCodeOfConductSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.DeclareFollowingCodeOfConductSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* DeclareFollowingCodeOfConductForm.fromBody(body)
+  const form = yield* DeclareFollowingCodeOfConductForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* () {
-          yield* DatasetReviews.declareFollowingCodeOfConduct({
-            timestamp: yield* Temporal.currentInstant,
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* () {
+        yield* DatasetReviews.declareFollowingCodeOfConduct({
+          timestamp: yield* Temporal.currentInstant,
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
   })
+})

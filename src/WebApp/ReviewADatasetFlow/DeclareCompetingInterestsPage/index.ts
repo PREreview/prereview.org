@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as DeclareCompetingInterestsForm from './DeclareCompetingInterestsForm.ts'
 import { DeclareCompetingInterestsPage as MakeResponse } from './DeclareCompetingInterestsPage.ts'
 
-export const DeclareCompetingInterestsPage = ({
-  datasetReviewId,
-}: {
+export const DeclareCompetingInterestsPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.DeclareCompetingInterestsPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -36,8 +36,9 @@ export const DeclareCompetingInterestsPage = ({
       locale,
       otherAuthors,
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -50,58 +51,53 @@ export const DeclareCompetingInterestsPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const DeclareCompetingInterestsSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const DeclareCompetingInterestsSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.DeclareCompetingInterestsSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* DeclareCompetingInterestsForm.fromBody(body)
+  const form = yield* DeclareCompetingInterestsForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: DeclareCompetingInterestsForm.CompletedForm) {
-          yield* DatasetReviews.declareCompetingInterests({
-            competingInterests:
-              form.declareCompetingInterests === 'yes' ? form.competingInterestsDetails : Option.none(),
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: DeclareCompetingInterestsForm.CompletedForm) {
+        yield* DatasetReviews.declareCompetingInterests({
+          competingInterests: form.declareCompetingInterests === 'yes' ? form.competingInterestsDetails : Option.none(),
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: Effect.fnUntraced(
-        function* (form: DeclareCompetingInterestsForm.InvalidForm) {
-          const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: Effect.fnUntraced(
+      function* (form: DeclareCompetingInterestsForm.InvalidForm) {
+        const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
 
-          return MakeResponse({
-            datasetReviewId,
-            form,
-            locale,
-            otherAuthors,
-          })
-        },
-        Effect.catchTag('UnableToQuery', () => HavingProblemsPage),
-      ),
-    })
+        return MakeResponse({
+          datasetReviewId,
+          form,
+          locale,
+          otherAuthors,
+        })
+      },
+      Effect.catchTag('UnableToQuery', () => HavingProblemsPage),
+    ),
   })
+})

@@ -9,12 +9,12 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import { ReviewBeingPublishedPage as MakeResponse } from './ReviewBeingPublishedPage.ts'
 
-export const ReviewBeingPublishedPage = ({
-  datasetReviewId,
-}: {
+export const ReviewBeingPublishedPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.ReviewBeingPublishedPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -26,8 +26,9 @@ export const ReviewBeingPublishedPage = ({
     yield* DatasetReviews.checkIfReviewIsBeingPublished(datasetReviewId)
 
     return MakeResponse({ datasetReviewId, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
           Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
@@ -36,4 +37,4 @@ export const ReviewBeingPublishedPage = ({
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),
-  )
+)

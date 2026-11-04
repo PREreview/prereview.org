@@ -39,7 +39,7 @@ export const DataRouter = pipe(
     >(),
   ),
   P.map(handler =>
-    Effect.fn(
+    Effect.fnUntraced(
       function* (env: Env) {
         const json = yield* FptsToEffect.readerTaskEither(handler(env.authorizationHeader ?? ''), {
           scietyListToken: Redacted.value(env.scietyListToken),

@@ -24,8 +24,8 @@ export class CompletedFormYes extends Data.TaggedClass('CompletedFormYes')<{
   competingInterestsDetails: NonEmptyString.NonEmptyString
 }> {}
 
-export const fromBody = (body: unknown) =>
-  Effect.gen(function* () {
+export const fromBody = Effect.fnUntraced(
+  function* (body: unknown) {
     const { competingInterests, competingInterestsDetails } = yield* Schema.decodeUnknownEffect(
       CompetingInterestsFieldsSchema,
       { errors: 'all' },
@@ -43,16 +43,16 @@ export const fromBody = (body: unknown) =>
     }
 
     return new CompletedFormYes({ competingInterests, competingInterestsDetails })
-  }).pipe(
-    Effect.catchTag('SchemaError', () =>
-      Effect.succeed(
-        new InvalidForm({
-          competingInterests: Result.fail(new Missing()),
-          competingInterestsDetails: Result.succeed(''),
-        }),
-      ),
+  },
+  Effect.catchTag('SchemaError', () =>
+    Effect.succeed(
+      new InvalidForm({
+        competingInterests: Result.fail(new Missing()),
+        competingInterestsDetails: Result.succeed(''),
+      }),
     ),
-  )
+  ),
+)
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),

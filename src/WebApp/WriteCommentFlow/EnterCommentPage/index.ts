@@ -11,16 +11,14 @@ import { RouteForCommand } from '../Routes.ts'
 import * as EnterCommentForm from './EnterCommentForm.ts'
 import { EnterCommentPage as MakeResponse } from './EnterCommentPage.ts'
 
-export const EnterCommentPage = ({
-  commentId,
-}: {
+export const EnterCommentPage: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.EnterCommentPage')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -52,26 +50,24 @@ export const EnterCommentPage = ({
         Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
       CommentPublished: () => Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId }) })),
     }),
-  )
+)
 
-export const EnterCommentSubmission = ({
-  body,
-  commentId,
-}: {
+export const EnterCommentSubmission: (input: {
   body: unknown
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUserOnAComment | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.EnterCommentSubmission')(
+  function* ({ body, commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -91,26 +87,25 @@ export const EnterCommentSubmission = ({
           const form = yield* EnterCommentForm.fromBody(body)
 
           return yield* Match.valueTags(form, {
-            CompletedForm: form =>
-              Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleCommentCommand
+            CompletedForm: Effect.fnUntraced(function* (form) {
+              const handleCommand = yield* Comments.HandleCommentCommand
 
-                yield* pipe(
-                  handleCommand(new Comments.EnterComment({ commentId, comment: form.comment })),
-                  Effect.catchIf(
-                    cause => cause._tag !== 'UnableToHandleCommand',
-                    cause => new Comments.UnableToHandleCommand({ cause }),
-                  ),
-                )
+              yield* pipe(
+                handleCommand(new Comments.EnterComment({ commentId, comment: form.comment })),
+                Effect.catchIf(
+                  cause => cause._tag !== 'UnableToHandleCommand',
+                  cause => new Comments.UnableToHandleCommand({ cause }),
+                ),
+              )
 
-                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
-                const nextCommand = yield* Effect.flatMap(
-                  getNextExpectedCommandForUserOnAComment(commentId),
-                  Effect.fromResult,
-                )
+              const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+              const nextCommand = yield* Effect.flatMap(
+                getNextExpectedCommandForUserOnAComment(commentId),
+                Effect.fromResult,
+              )
 
-                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
-              }),
+              return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+            }),
             InvalidForm: form =>
               Effect.succeed(
                 MakeResponse({
@@ -131,8 +126,9 @@ export const EnterCommentSubmission = ({
       ),
       Match.exhaustive,
     )
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
@@ -141,4 +137,4 @@ export const EnterCommentSubmission = ({
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentEnterComment.href({ commentId }) })),
     }),
-  )
+)

@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as OthersNeedToBeListedForm from './OthersNeedToBeListedForm.ts'
 import { OthersNeedToBeListedPage } from './OthersNeedToBeListedPage.ts'
 
-export const OthersNeedToBeListedOnTheReviewPage = ({
-  datasetReviewId,
-}: {
+export const OthersNeedToBeListedOnTheReviewPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const OthersNeedToBeListedOnTheReviewPage = ({
     const form = OthersNeedToBeListedForm.fromAnswer(answer)
 
     return OthersNeedToBeListedPage({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,54 +44,50 @@ export const OthersNeedToBeListedOnTheReviewPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const OthersNeedToBeListedOnTheReviewSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const OthersNeedToBeListedOnTheReviewSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* OthersNeedToBeListedForm.fromBody(body)
+  const form = yield* OthersNeedToBeListedForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fnUntraced(
-        function* (form: OthersNeedToBeListedForm.CompletedForm) {
-          yield* DatasetReviews.answerIfOthersNeedToBeListedOnTheReview({
-            answer: form.othersNeedToBeListed,
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: OthersNeedToBeListedForm.CompletedForm) {
+        yield* DatasetReviews.answerIfOthersNeedToBeListedOnTheReview({
+          answer: form.othersNeedToBeListed,
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          if (
-            form.othersNeedToBeListed === 'yes' &&
-            nextExpectedCommand !== 'AddInvitationToAppearOnADatasetReviewToTheList'
-          ) {
-            return Response.RedirectResponse({
-              location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
-            })
-          }
-
+        if (
+          form.othersNeedToBeListed === 'yes' &&
+          nextExpectedCommand !== 'AddInvitationToAppearOnADatasetReviewToTheList'
+        ) {
           return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+            location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
           })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(OthersNeedToBeListedPage({ datasetReviewId, form, locale })),
-    })
+        }
+
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(OthersNeedToBeListedPage({ datasetReviewId, form, locale })),
   })
+})

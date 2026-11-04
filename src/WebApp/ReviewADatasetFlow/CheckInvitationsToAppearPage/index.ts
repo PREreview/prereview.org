@@ -11,12 +11,12 @@ import { RedirectResponse } from '../../Response/index.ts'
 import { RouteForCommand } from '../RouteForCommand.ts'
 import { CheckInvitationsToAppearPage as createCheckInvitationsToAppearPage } from './CheckInvitationsToAppearPage.ts'
 
-export const CheckInvitationsToAppearPage = ({
-  datasetReviewId,
-}: {
+export const CheckInvitationsToAppearPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.CheckInvitationsToAppearPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -32,8 +32,9 @@ export const CheckInvitationsToAppearPage = ({
     }
 
     return createCheckInvitationsToAppearPage({ datasetReviewId, authors, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewDoesNotNeedInvitationsToAppear: () =>
         Effect.succeed(
           RedirectResponse({
@@ -50,14 +51,14 @@ export const CheckInvitationsToAppearPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const CheckInvitationsToAppearSubmission = ({
-  datasetReviewId,
-}: {
+export const CheckInvitationsToAppearSubmission: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.CheckInvitationsToAppearSubmission',
+)(
+  function* ({ datasetReviewId }) {
     const nextExpectedCommand = yield* Effect.flatMap(
       DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
       Effect.fromOption,
@@ -66,4 +67,6 @@ export const CheckInvitationsToAppearSubmission = ({
     return RedirectResponse({
       location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
     })
-  }).pipe(Effect.catch(() => HavingProblemsPage))
+  },
+  Effect.catch(() => HavingProblemsPage),
+)

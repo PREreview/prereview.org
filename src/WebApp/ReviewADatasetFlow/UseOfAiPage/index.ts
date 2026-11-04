@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as UseOfAiForm from './UseOfAiForm.ts'
 import { UseOfAiPage as MakeResponse } from './UseOfAiPage.ts'
 
-export const UseOfAiPage = ({
-  datasetReviewId,
-}: {
+export const UseOfAiPage: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.UseOfAiPage',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -36,8 +36,9 @@ export const UseOfAiPage = ({
       locale,
       otherAuthors,
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -50,57 +51,53 @@ export const UseOfAiPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const UseOfAiSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const UseOfAiSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.UseOfAiSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = UseOfAiForm.fromBody(body)
+  const form = UseOfAiForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: UseOfAiForm.CompletedForm) {
-          yield* DatasetReviews.declareIfAiWasUsedToGenerateNewIdeas(
-            form.generativeAiIdeas === 'yes'
-              ? { answer: 'yes', detail: form.generativeAiIdeasDetails, datasetReviewId, userId: user.orcid }
-              : { answer: 'no', datasetReviewId, userId: user.orcid },
-          )
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: UseOfAiForm.CompletedForm) {
+        yield* DatasetReviews.declareIfAiWasUsedToGenerateNewIdeas(
+          form.generativeAiIdeas === 'yes'
+            ? { answer: 'yes', detail: form.generativeAiIdeasDetails, datasetReviewId, userId: user.orcid }
+            : { answer: 'no', datasetReviewId, userId: user.orcid },
+        )
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: Effect.fnUntraced(
-        function* (form: UseOfAiForm.InvalidForm) {
-          const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: Effect.fnUntraced(
+      function* (form: UseOfAiForm.InvalidForm) {
+        const otherAuthors = yield* DatasetReviews.areThereMultipleAuthorsOnAReview(datasetReviewId)
 
-          return MakeResponse({
-            datasetReviewId,
-            form,
-            locale,
-            otherAuthors,
-          })
-        },
-        Effect.catchTag('UnableToQuery', () => HavingProblemsPage),
-      ),
-    })
+        return MakeResponse({
+          datasetReviewId,
+          form,
+          locale,
+          otherAuthors,
+        })
+      },
+      Effect.catchTag('UnableToQuery', () => HavingProblemsPage),
+    ),
   })
+})

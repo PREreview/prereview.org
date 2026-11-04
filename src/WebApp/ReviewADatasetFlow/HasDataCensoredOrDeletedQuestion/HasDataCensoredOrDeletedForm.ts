@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   hasDataCensoredOrDeletedNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const hasDataCensoredOrDeletedYesDetail = yield* pipe(
     Schema.decodeEffect(HasDataCensoredOrDeletedYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('hasDataCensoredOrDeletedYesDetail'), Effect.fromOption)),

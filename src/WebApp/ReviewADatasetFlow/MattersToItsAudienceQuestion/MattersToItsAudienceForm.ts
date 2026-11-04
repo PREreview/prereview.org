@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   mattersToItsAudienceNotConsequentialDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const mattersToItsAudienceVeryConsequentialDetail = yield* pipe(
     Schema.decodeEffect(MattersToItsAudienceVeryConsequentialDetailSchema)(body),
     Effect.andThen(flow(Struct.get('mattersToItsAudienceVeryConsequentialDetail'), Effect.fromOption)),

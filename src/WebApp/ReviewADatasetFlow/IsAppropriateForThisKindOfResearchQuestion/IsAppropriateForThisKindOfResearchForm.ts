@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   isAppropriateForThisKindOfResearchNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const isAppropriateForThisKindOfResearchYesDetail = yield* pipe(
     Schema.decodeEffect(IsAppropriateForThisKindOfResearchYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('isAppropriateForThisKindOfResearchYesDetail'), Effect.fromOption)),

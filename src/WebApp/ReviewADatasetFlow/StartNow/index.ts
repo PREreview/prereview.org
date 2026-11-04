@@ -23,7 +23,7 @@ export const StartNow: ({
   | Locale
   | LoggedInUser
   | Uuid.GenerateUuid
-> = Effect.fn(
+> = Effect.fn('ReviewADatasetFlow.StartNow')(
   function* ({ datasetId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
@@ -34,7 +34,7 @@ export const StartNow: ({
     })
 
     return yield* Option.match(reviewId, {
-      onNone: Effect.fn(
+      onNone: Effect.fnUntraced(
         function* () {
           const reviewId = yield* Uuid.v4()
 
@@ -51,7 +51,7 @@ export const StartNow: ({
         },
         Effect.catchTag(['UnknownDatasetReview', 'NoSuchElementError'], () => HavingProblemsPage),
       ),
-      onSome: Effect.fn(
+      onSome: Effect.fnUntraced(
         function* (datasetReviewId) {
           const nextExpectedCommand = yield* Effect.flatMap(
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),

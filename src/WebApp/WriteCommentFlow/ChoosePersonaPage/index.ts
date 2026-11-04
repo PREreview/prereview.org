@@ -12,16 +12,14 @@ import { RouteForCommand } from '../Routes.ts'
 import * as ChoosePersonaForm from './ChoosePersonaForm.ts'
 import { ChoosePersonaPage as MakeResponse } from './ChoosePersonaPage.ts'
 
-export const ChoosePersonaPage = ({
-  commentId,
-}: {
+export const ChoosePersonaPage: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Prereviewers.Prereviewers | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.ChoosePersonaPage')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -76,22 +74,20 @@ export const ChoosePersonaPage = ({
       CommentPublished: () =>
         Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId }) })),
     }),
-  )
+)
 
-export const ChoosePersonaSubmission = ({
-  body,
-  commentId,
-}: {
+export const ChoosePersonaSubmission: (input: {
   body: unknown
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Comments.GetComment
@@ -99,8 +95,8 @@ export const ChoosePersonaSubmission = ({
   | Comments.GetNextExpectedCommandForUserOnAComment
   | Prereviewers.Prereviewers
   | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.ChoosePersonaSubmission')(
+  function* ({ body, commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -115,31 +111,32 @@ export const ChoosePersonaSubmission = ({
 
     return yield* pipe(
       Match.value(comment),
-      Match.tag('CommentInProgress', 'CommentReadyForPublishing', () =>
-        Effect.gen(function* () {
+      Match.tag(
+        'CommentInProgress',
+        'CommentReadyForPublishing',
+        Effect.fnUntraced(function* () {
           const form = yield* ChoosePersonaForm.fromBody(body)
 
           return yield* Match.valueTags(form, {
-            CompletedForm: form =>
-              Effect.gen(function* () {
-                const handleCommand = yield* Comments.HandleCommentCommand
-                const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
+            CompletedForm: Effect.fnUntraced(function* (form) {
+              const handleCommand = yield* Comments.HandleCommentCommand
+              const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
 
-                yield* pipe(
-                  handleCommand(new Comments.ChoosePersona({ commentId, persona: form.persona })),
-                  Effect.catchIf(
-                    cause => cause._tag !== 'UnableToHandleCommand',
-                    cause => new Comments.UnableToHandleCommand({ cause }),
-                  ),
-                )
+              yield* pipe(
+                handleCommand(new Comments.ChoosePersona({ commentId, persona: form.persona })),
+                Effect.catchIf(
+                  cause => cause._tag !== 'UnableToHandleCommand',
+                  cause => new Comments.UnableToHandleCommand({ cause }),
+                ),
+              )
 
-                const nextCommand = yield* Effect.flatMap(
-                  getNextExpectedCommandForUserOnAComment(commentId),
-                  Effect.fromResult,
-                )
+              const nextCommand = yield* Effect.flatMap(
+                getNextExpectedCommandForUserOnAComment(commentId),
+                Effect.fromResult,
+              )
 
-                return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
-              }),
+              return Response.RedirectResponse({ location: RouteForCommand(nextCommand).href({ commentId }) })
+            }),
             InvalidForm: form =>
               Effect.map(
                 Effect.all(
@@ -169,8 +166,9 @@ export const ChoosePersonaSubmission = ({
       ),
       Match.exhaustive,
     )
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
@@ -180,4 +178,4 @@ export const ChoosePersonaSubmission = ({
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId }) })),
     }),
-  )
+)

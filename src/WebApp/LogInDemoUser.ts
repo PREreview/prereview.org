@@ -29,7 +29,9 @@ export const LogInDemoUser: Effect.Effect<
   )
 
   return Response.ForceLogInResponse({ user: { orcid: demoUserOrcid } })
-}).pipe(
-  Effect.catchTag('CannotLogInAsDemoUser', () => PageNotFound),
-  Effect.catchTag(['UnableToHandleCommand', 'UnableToQuery'], () => HavingProblemsPage),
-)
+})
+  .pipe(Effect.withSpan('LogInDemoUser'))
+  .pipe(
+    Effect.catchTag('CannotLogInAsDemoUser', () => PageNotFound),
+    Effect.catchTag(['UnableToHandleCommand', 'UnableToQuery'], () => HavingProblemsPage),
+  )

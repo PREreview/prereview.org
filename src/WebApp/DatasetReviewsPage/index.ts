@@ -8,7 +8,7 @@ import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createDatasetReviewsPage } from './DatasetReviewsPage.ts'
 
-export const DatasetReviewsPage = Effect.fn(
+export const DatasetReviewsPage = Effect.fn('DatasetReviewsPage')(
   function* ({ datasetId }: { datasetId: Datasets.DatasetId }) {
     const clubs = yield* Clubs
     const locale = yield* Locale
@@ -19,7 +19,7 @@ export const DatasetReviewsPage = Effect.fn(
         datasetReviews: Effect.andThen(
           DatasetReviews.findPublishedReviewsForADataset(datasetId),
           Effect.forEach(
-            Effect.fn(function* (datasetReviewId) {
+            Effect.fnUntraced(function* (datasetReviewId) {
               const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
 
               const { author, otherAuthors, club } = yield* Effect.all(

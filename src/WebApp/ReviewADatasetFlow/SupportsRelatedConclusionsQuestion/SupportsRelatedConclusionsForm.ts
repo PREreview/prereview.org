@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   supportsRelatedConclusionsNoDetail: Option.Option<NonEmptyString.NonEmptyString>
 }> {}
 
-export const fromBody = Effect.fn(function* (body: UrlParams.UrlParams) {
+export const fromBody = Effect.fnUntraced(function* (body: UrlParams.UrlParams) {
   const supportsRelatedConclusionsYesDetail = yield* pipe(
     Schema.decodeEffect(SupportsRelatedConclusionsYesDetailSchema)(body),
     Effect.andThen(flow(Struct.get('supportsRelatedConclusionsYesDetail'), Effect.fromOption)),

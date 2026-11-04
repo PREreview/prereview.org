@@ -37,8 +37,8 @@ export const StartNow: ({
     })
 
     return yield* Option.match(reviewRequestId, {
-      onNone: () =>
-        Effect.gen(function* () {
+      onNone: Effect.fnUntraced(
+        function* () {
           const startedAt = yield* Temporal.currentInstant
           const reviewRequestId = yield* Uuid.v4()
 
@@ -54,20 +54,24 @@ export const StartNow: ({
           })
 
           return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
-        }).pipe(Effect.catchTag(['UnknownReviewRequest', 'ReviewRequestHasBeenPublished'], () => HavingProblemsPage)),
+        },
+        Effect.catchTag(['UnknownReviewRequest', 'ReviewRequestHasBeenPublished'], () => HavingProblemsPage),
+      ),
       onSome: Match.valueTags({
         PublishedReviewRequest: () =>
           Effect.succeed(
             RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint.id }) }),
           ),
-        ReviewRequestPendingPublication: reviewRequest =>
-          Effect.gen(function* () {
+        ReviewRequestPendingPublication: Effect.fnUntraced(
+          function* (reviewRequest) {
             const nextExpectedCommand = yield* ReviewRequests.getNextExpectedCommandForAUserOnAReviewRequest({
               reviewRequestId: reviewRequest.id,
             })
 
             return CarryOnPage(locale, preprint.id, RouteForCommand(nextExpectedCommand))
-          }).pipe(Effect.catchTag(['UnknownReviewRequest', 'ReviewRequestHasBeenPublished'], () => HavingProblemsPage)),
+          },
+          Effect.catchTag(['UnknownReviewRequest', 'ReviewRequestHasBeenPublished'], () => HavingProblemsPage),
+        ),
       }),
     })
   },

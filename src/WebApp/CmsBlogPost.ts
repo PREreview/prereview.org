@@ -11,7 +11,7 @@ import type { Slug } from '../types/Slug.ts'
 import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 import { PageResponse } from './Response/index.ts'
 
-export const CmsBlogPostPage = Effect.fnUntraced(
+export const CmsBlogPostPage = Effect.fn('CmsBlogPostPage')(
   function* ({ slug, preview = false }: { slug: Slug; preview?: boolean }) {
     const cmsContent = yield* CmsContent
     const locale = yield* Locale

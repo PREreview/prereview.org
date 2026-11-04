@@ -7,4 +7,4 @@ export const ChooseLocalePage = Effect.gen(function* () {
   const enabledLocales = yield* EnabledLocales
 
   return createChooseLocalePage({ locale, enabledLocales })
-})
+}).pipe(Effect.withSpan('ChooseLocalePage'))

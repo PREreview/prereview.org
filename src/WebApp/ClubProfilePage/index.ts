@@ -8,7 +8,7 @@ import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { createPage } from './ClubProfilePage.ts'
 
-export const ClubProfilePage = Effect.fn(
+export const ClubProfilePage = Effect.fn('ClubProfilePage')(
   function* ({ slug }: { slug: Slug }) {
     const prereviewers = yield* Prereviewers
     const clubs = yield* Clubs

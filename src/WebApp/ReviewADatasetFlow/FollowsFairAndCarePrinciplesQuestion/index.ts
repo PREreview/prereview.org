@@ -12,12 +12,12 @@ import { RouteForCommand } from '../RouteForCommand.ts'
 import * as FollowsFairAndCarePrinciplesForm from './FollowsFairAndCarePrinciplesForm.ts'
 import { FollowsFairAndCarePrinciplesQuestion as MakeResponse } from './FollowsFairAndCarePrinciplesQuestion.ts'
 
-export const FollowsFairAndCarePrinciplesQuestion = ({
-  datasetReviewId,
-}: {
+export const FollowsFairAndCarePrinciplesQuestion: (input: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.FollowsFairAndCarePrinciplesQuestion',
+)(
+  function* ({ datasetReviewId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -29,8 +29,9 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
     const form = FollowsFairAndCarePrinciplesForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
@@ -43,53 +44,49 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const FollowsFairAndCarePrinciplesSubmission = ({
-  body,
-  datasetReviewId,
-}: {
+export const FollowsFairAndCarePrinciplesSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.FollowsFairAndCarePrinciplesSubmission')(function* ({ body, datasetReviewId }) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* FollowsFairAndCarePrinciplesForm.fromBody(body)
+  const form = yield* FollowsFairAndCarePrinciplesForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fn(
-        function* (form: FollowsFairAndCarePrinciplesForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples({
-            answer: form.followsFairAndCarePrinciples,
-            detail: pipe(
-              Match.value(form.followsFairAndCarePrinciples),
-              Match.when('yes', () => form.followsFairAndCarePrinciplesYesDetail),
-              Match.when('partly', () => form.followsFairAndCarePrinciplesPartlyDetail),
-              Match.when('no', () => form.followsFairAndCarePrinciplesNoDetail),
-              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
-              Match.exhaustive,
-            ),
-            datasetReviewId,
-            userId: user.orcid,
-          })
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: FollowsFairAndCarePrinciplesForm.CompletedForm) {
+        yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples({
+          answer: form.followsFairAndCarePrinciples,
+          detail: pipe(
+            Match.value(form.followsFairAndCarePrinciples),
+            Match.when('yes', () => form.followsFairAndCarePrinciplesYesDetail),
+            Match.when('partly', () => form.followsFairAndCarePrinciplesPartlyDetail),
+            Match.when('no', () => form.followsFairAndCarePrinciplesNoDetail),
+            Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+            Match.exhaustive,
+          ),
+          datasetReviewId,
+          userId: user.orcid,
+        })
 
-          const nextExpectedCommand = yield* Effect.flatMap(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-            Effect.fromOption,
-          )
+        const nextExpectedCommand = yield* Effect.flatMap(
+          DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          Effect.fromOption,
+        )
 
-          return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
-    })
+        return Response.RedirectResponse({
+          location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
   })
+})

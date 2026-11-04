@@ -9,16 +9,14 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import { PublishingPage as MakeResponse } from './PublishingPage.ts'
 
-export const PublishingPage = ({
-  commentId,
-}: {
+export const PublishingPage: (input: {
   commentId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   Comments.GetComment | Locale
-> =>
-  Effect.gen(function* () {
+> = Effect.fn('WriteCommentFlow.PublishingPage')(
+  function* ({ commentId }) {
     const user = yield* EnsureUserIsLoggedIn
 
     const getComment = yield* Comments.GetComment
@@ -39,10 +37,11 @@ export const PublishingPage = ({
     const locale = yield* Locale
 
     return MakeResponse({ commentId, locale })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { commentId }) =>
+    Effect.catchTags(effect, {
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
     }),
-  )
+)

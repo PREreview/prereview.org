@@ -7,12 +7,12 @@ import { PageNotFound } from '../../PageNotFound/index.ts'
 import type * as Response from '../../Response/index.ts'
 import { WriteCommentPage as MakeResponse } from './WriteCommentPage.ts'
 
-export const WriteCommentPage = ({
-  id,
-}: {
+export const WriteCommentPage: (input: {
   id: number
-}): Effect.Effect<Response.PageResponse, never, Prereviews.Prereviews | Locale> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.PageResponse, never, Prereviews.Prereviews | Locale> = Effect.fn(
+  'WriteCommentFlow.WriteCommentPage',
+)(
+  function* ({ id }) {
     const user = yield* Effect.serviceOption(LoggedInUser)
 
     const locale = yield* Locale
@@ -20,10 +20,10 @@ export const WriteCommentPage = ({
     const prereview = yield* Prereviews.getPrereview(id)
 
     return MakeResponse({ prereview, locale, isLoggedIn: Option.isSome(user) })
-  }).pipe(
-    Effect.catchTags({
-      PrereviewIsNotFound: () => PageNotFound,
-      PrereviewIsUnavailable: () => HavingProblemsPage,
-      PrereviewWasRemoved: () => PageNotFound,
-    }),
-  )
+  },
+  Effect.catchTags({
+    PrereviewIsNotFound: () => PageNotFound,
+    PrereviewIsUnavailable: () => HavingProblemsPage,
+    PrereviewWasRemoved: () => PageNotFound,
+  }),
+)

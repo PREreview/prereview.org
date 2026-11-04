@@ -11,14 +11,13 @@ import * as Response from '../../Response/index.ts'
 import * as RemoveInvitationToAppearForm from './RemoveInvitationToAppearForm.ts'
 import { RemoveInvitationToAppearPage as createRemoveInvitationToAppearPage } from './RemoveInvitationToAppearPage.ts'
 
-export const RemoveInvitationToAppearPage = ({
-  datasetReviewId,
-  invitationId,
-}: {
+export const RemoveInvitationToAppearPage: (input: {
   datasetReviewId: Uuid.Uuid
   invitationId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  Effect.gen(function* () {
+}) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
+  'ReviewADatasetFlow.RemoveInvitationToAppearPage',
+)(
+  function* ({ datasetReviewId, invitationId }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
@@ -35,8 +34,9 @@ export const RemoveInvitationToAppearPage = ({
       form: new RemoveInvitationToAppearForm.EmptyForm(),
       locale,
     })
-  }).pipe(
-    Effect.catchTags({
+  },
+  (effect, { datasetReviewId }) =>
+    Effect.catchTags(effect, {
       DatasetReviewDoesNotNeedInvitationsToAppear: () =>
         Effect.succeed(
           Response.RedirectResponse({
@@ -61,55 +61,54 @@ export const RemoveInvitationToAppearPage = ({
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
     }),
-  )
+)
 
-export const RemoveInvitationToAppearSubmission = ({
-  body,
-  datasetReviewId,
-  invitationId,
-}: {
+export const RemoveInvitationToAppearSubmission: (input: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
   invitationId: Uuid.Uuid
-}): Effect.Effect<
+}) => Effect.Effect<
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> =>
-  Effect.gen(function* () {
-    const user = yield* LoggedInUser
-    const locale = yield* Locale
+> = Effect.fn('ReviewADatasetFlow.RemoveInvitationToAppearSubmission')(function* ({
+  body,
+  datasetReviewId,
+  invitationId,
+}) {
+  const user = yield* LoggedInUser
+  const locale = yield* Locale
 
-    const form = yield* RemoveInvitationToAppearForm.fromBody(body)
+  const form = yield* RemoveInvitationToAppearForm.fromBody(body)
 
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fnUntraced(
-        function* (form: RemoveInvitationToAppearForm.CompletedForm) {
-          if (form.removeAuthor === 'yes') {
-            yield* DatasetReviews.removeInvitationToAppearFromTheList({
-              datasetReviewId,
-              invitationId,
-              userId: user.orcid,
-            })
-          }
-
-          return Response.RedirectResponse({
-            location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
-          })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-      InvalidForm: Effect.fnUntraced(
-        function* () {
-          const authorName = yield* DatasetReviews.checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList({
+  return yield* Match.valueTags(form, {
+    CompletedForm: Effect.fnUntraced(
+      function* (form: RemoveInvitationToAppearForm.CompletedForm) {
+        if (form.removeAuthor === 'yes') {
+          yield* DatasetReviews.removeInvitationToAppearFromTheList({
             datasetReviewId,
             invitationId,
-            authorId: user.orcid,
+            userId: user.orcid,
           })
+        }
 
-          return createRemoveInvitationToAppearPage({ authorName, datasetReviewId, invitationId, form, locale })
-        },
-        Effect.catch(() => HavingProblemsPage),
-      ),
-    })
+        return Response.RedirectResponse({
+          location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
+        })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
+    InvalidForm: Effect.fnUntraced(
+      function* () {
+        const authorName = yield* DatasetReviews.checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList({
+          datasetReviewId,
+          invitationId,
+          authorId: user.orcid,
+        })
+
+        return createRemoveInvitationToAppearPage({ authorName, datasetReviewId, invitationId, form, locale })
+      },
+      Effect.catch(() => HavingProblemsPage),
+    ),
   })
+})

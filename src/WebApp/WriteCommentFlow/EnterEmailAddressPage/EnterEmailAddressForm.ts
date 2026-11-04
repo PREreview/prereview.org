@@ -17,20 +17,19 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   emailAddress: EmailAddress.EmailAddress
 }> {}
 
-export const fromBody = (body: unknown) =>
-  Effect.gen(function* () {
-    const base = yield* Effect.mapError(
-      Schema.decodeUnknownEffect(EmailAddressBaseFieldSchema)(body),
-      () => new InvalidForm({ emailAddress: Result.fail(new Missing()) }),
-    )
+export const fromBody = Effect.fnUntraced(function* (body: unknown) {
+  const base = yield* Effect.mapError(
+    Schema.decodeUnknownEffect(EmailAddressBaseFieldSchema)(body),
+    () => new InvalidForm({ emailAddress: Result.fail(new Missing()) }),
+  )
 
-    const { emailAddress } = yield* Effect.mapError(
-      Schema.decodeUnknownEffect(EmailAddressFieldSchema)(body),
-      () => new InvalidForm({ emailAddress: Result.fail(new Invalid({ value: base.emailAddress })) }),
-    )
+  const { emailAddress } = yield* Effect.mapError(
+    Schema.decodeUnknownEffect(EmailAddressFieldSchema)(body),
+    () => new InvalidForm({ emailAddress: Result.fail(new Invalid({ value: base.emailAddress })) }),
+  )
 
-    return new CompletedForm({ emailAddress })
-  }).pipe(Effect.catch(Effect.succeed))
+  return new CompletedForm({ emailAddress })
+}, Effect.catch(Effect.succeed))
 
 const EmailAddressBaseFieldSchema = Schema.Struct({
   emailAddress: NonEmptyString.NonEmptyStringSchema,

@@ -8,9 +8,11 @@ import { Embeddings } from '../../Embeddings/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 
-export const MatchmakingPage = Effect.succeed(createMatchmakingPage(Option.none(), []))
+export const MatchmakingPage = Effect.succeed(createMatchmakingPage(Option.none(), [])).pipe(
+  Effect.withSpan('MatchmakingPage'),
+)
 
-export const MatchmakingSubmission = Effect.fn(
+export const MatchmakingSubmission = Effect.fn('MatchmakingSubmission')(
   function* (input: UrlParams.UrlParams) {
     const embeddings = yield* Embeddings
     const preprints = yield* Preprints

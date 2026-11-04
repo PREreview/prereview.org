@@ -12,4 +12,4 @@ export const MenuPage = Effect.gen(function* () {
   const canLogInAsDemoUser = yield* FeatureFlags.canLogInAsDemoUser
 
   return createMenuPage({ canLogInAsDemoUser, locale, isLoggedIn: Option.isSome(user), userOnboarding })
-})
+}).pipe(Effect.withSpan('MenuPage'))

@@ -12,6 +12,8 @@ export const ReviewThisDatasetPage: ({
 }: {
   datasetId: Datasets.DatasetId
 }) => Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.fn(
+  'ReviewADatasetFlow.ReviewThisDatasetPage',
+)(
   function* ({ datasetId }) {
     const user = yield* Effect.serviceOption(LoggedInUser)
     const locale = yield* Locale

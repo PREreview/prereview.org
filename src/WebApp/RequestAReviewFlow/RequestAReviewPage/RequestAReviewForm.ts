@@ -22,7 +22,7 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   whichPreprint: Doi.Doi | URL
 }> {}
 
-export const fromBody = Effect.fn(
+export const fromBody = Effect.fnUntraced(
   function* (body: UrlParams.UrlParams) {
     const { whichPreprint } = yield* Schema.decodeEffect(WhichPreprintSchema)(body)
 

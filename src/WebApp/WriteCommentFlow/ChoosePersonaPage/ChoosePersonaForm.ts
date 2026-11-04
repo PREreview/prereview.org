@@ -15,14 +15,14 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   persona: 'public' | 'pseudonym'
 }> {}
 
-export const fromBody = (body: unknown) =>
-  Effect.gen(function* () {
+export const fromBody = Effect.fnUntraced(
+  function* (body: unknown) {
     const { persona } = yield* Schema.decodeUnknownEffect(PersonaFieldSchema)(body)
 
     return new CompletedForm({ persona })
-  }).pipe(
-    Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ persona: Result.fail(new Missing()) }))),
-  )
+  },
+  Effect.catchTag('SchemaError', () => Effect.succeed(new InvalidForm({ persona: Result.fail(new Missing()) }))),
+)
 
 export const fromComment = pipe(
   Match.type<Comments.CommentInProgress | Comments.CommentReadyForPublishing>(),

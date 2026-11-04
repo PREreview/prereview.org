@@ -23,4 +23,5 @@ export const HomePage: Effect.Effect<
   ),
   Effect.let('statistics', () => ({ prereviews: 2400, servers: ServerNames.length, users: 5001 })),
   Effect.map(createPage),
+  Effect.withSpan('HomePage'),
 )

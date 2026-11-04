@@ -170,7 +170,7 @@ export const nonEffectRouter: Effect.Effect<
     handler(env),
     HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' }),
   )
-})
+}).pipe(Effect.withSpan('NonEffectRouter'))
 
 export interface Env {
   authorizationHeader?: string
