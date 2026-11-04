@@ -33,7 +33,7 @@ import type { Clubs } from '../../../Clubs/index.ts'
 import type { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { type EnabledLocales, Locale, ScietyListToken, type SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
-import { Cloudinary, Slack, Zenodo } from '../../../ExternalApis/index.ts'
+import { Cloudinary, Zenodo } from '../../../ExternalApis/index.ts'
 import {
   CommunitySlack,
   type Email,
@@ -80,8 +80,6 @@ export const nonEffectRouter: Effect.Effect<
   | CommentsForReview
   | SlackOauth
   | PreprintReviews.FormStore.Store
-  | Slack.SlackApi
-  | CommunitySlack.ShouldUpdateCommunitySlack
   | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
@@ -119,8 +117,6 @@ export const nonEffectRouter: Effect.Effect<
   const sessionId = yield* Effect.serviceOption(SessionId)
 
   const scietyListToken = yield* ScietyListToken
-  const slackApiConfig = yield* Slack.SlackApi
-  const shouldUpdateCommunitySlack = yield* CommunitySlack.shouldUpdateCommunitySlack
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const orcidOauth = yield* OrcidOauth
   const slackOauth = yield* SlackOauth
@@ -160,8 +156,6 @@ export const nonEffectRouter: Effect.Effect<
     orcidOauth,
     slackOauth,
     scietyListToken,
-    slackApiConfig,
-    shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
   } satisfies Env
@@ -228,8 +222,6 @@ export interface Env {
   scietyListToken: typeof ScietyListToken.Service
   slackOauth: typeof SlackOauth.Service
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
-  slackApiConfig: typeof Slack.SlackApi.Service
-  shouldUpdateCommunitySlack: typeof CommunitySlack.ShouldUpdateCommunitySlack.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   fetch: typeof globalThis.fetch
 }
