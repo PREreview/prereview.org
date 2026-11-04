@@ -1,8 +1,6 @@
-import { type Context, Effect, type Equivalence, type Order, pipe, Result } from 'effect'
+import { type Context, Effect, pipe, Result } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as Eq from 'fp-ts/lib/Eq.js'
 import type * as IO from 'fp-ts/lib/IO.js'
-import * as Ord from 'fp-ts/lib/Ord.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -20,10 +18,6 @@ export const either: <R, L>(either: Result.Result<R, L>) => E.Either<L, R> = Res
   onFailure: E.left,
   onSuccess: E.right,
 })
-
-export const ord = <A>(order: Order.Order<A>): Ord.Ord<A> => Ord.fromCompare(order)
-
-export const eq = <A>(equivalence: Equivalence.Equivalence<A>): Eq.Eq<A> => Eq.fromEquals(equivalence)
 
 export const toReaderTaskEitherK =
   <A extends ReadonlyArray<unknown>, B, E, R>(
@@ -92,15 +86,6 @@ export const toIO =
   <A, R>(effect: Effect.Effect<A, never, R>, runtime: Context.Context<R>): IO.IO<A> =>
   () =>
     Effect.runSyncWith(runtime)(effect)
-
-export const makeTaskEitherK = <A extends ReadonlyArray<unknown>, B, E, R>(
-  f: (...a: A) => Effect.Effect<B, E, R>,
-): Effect.Effect<(...a: A) => TE.TaskEither<E, B>, never, R> =>
-  Effect.gen(function* () {
-    const runtime = yield* Effect.context<R>()
-
-    return withEnv(toReaderTaskEitherK(f), { runtime })
-  })
 
 export const makeTaskK = <A extends ReadonlyArray<unknown>, B, R>(
   f: (...a: A) => Effect.Effect<B, never, R>,
