@@ -7,7 +7,7 @@ import type { PreprintReviewRequest, Thread } from './GenerateThread.ts'
 
 export type PreprintReviewRequestWithThread = PreprintReviewRequest & { thread: Thread }
 
-export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* ({
+export const PreprintReviewRequestToChatPostMessageInputs = Effect.fnUntraced(function* ({
   preprint,
   thread,
 }: PreprintReviewRequestWithThread): Effect.fn.Return<

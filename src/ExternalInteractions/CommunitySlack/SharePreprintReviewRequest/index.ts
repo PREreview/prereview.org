@@ -10,7 +10,7 @@ export class FailedToSharePreprintReviewRequest extends Data.TaggedError('Failed
   cause?: unknown
 }> {}
 
-export const SharePreprintReviewRequest = Effect.fn(
+export const SharePreprintReviewRequest = Effect.fn('CommunitySlack.sharePreprintReviewRequest')(
   function* (reviewRequest: PreprintReviewRequest) {
     const [post, ...replies] = yield* pipe(
       Effect.succeed(reviewRequest),

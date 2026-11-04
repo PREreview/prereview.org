@@ -64,35 +64,34 @@ const determineCrossrefPreprintId = (
     return yield* Result.fail(new Preprints.PreprintIsUnavailable({ cause: doi }))
   })
 
-export const workToPreprint = (
+export const workToPreprint: (
   work: Crossref.Work,
-): Effect.Effect<
+) => Effect.Effect<
   Preprints.Preprint,
   Preprints.NotAPreprint | Preprints.PreprintIsUnavailable,
   LanguageDetection.LanguageDetection
-> =>
-  Effect.gen(function* () {
-    yield* Effect.fromResult(ensureIsAPreprint(work))
+> = Effect.fnUntraced(function* (work) {
+  yield* Effect.fromResult(ensureIsAPreprint(work))
 
-    const id = yield* Effect.fromResult(determineCrossrefPreprintId(work))
+  const id = yield* Effect.fromResult(determineCrossrefPreprintId(work))
 
-    const workLanguage = Iso639.isIso6391(work.language) ? work.language : undefined
+  const workLanguage = Iso639.isIso6391(work.language) ? work.language : undefined
 
-    const authors = yield* Effect.fromResult(getAuthors(work.author))
+  const authors = yield* Effect.fromResult(getAuthors(work.author))
 
-    const title = yield* getTitle(work.title, id, workLanguage)
+  const title = yield* getTitle(work.title, id, workLanguage)
 
-    const abstract = yield* getAbstract(work.abstract, id, workLanguage)
+  const abstract = yield* getAbstract(work.abstract, id, workLanguage)
 
-    return Preprints.Preprint({
-      authors,
-      id,
-      posted: work.published,
-      title,
-      abstract,
-      url: Url.setProtocol(work.resource.primary.URL, 'https'),
-    })
+  return Preprints.Preprint({
+    authors,
+    id,
+    posted: work.published,
+    title,
+    abstract,
+    url: Url.setProtocol(work.resource.primary.URL, 'https'),
   })
+})
 
 const ensureIsAPreprint = (work: Crossref.Work): Result.Result<void, Preprints.NotAPreprint> =>
   work.type === 'posted-content' && work.subtype === 'preprint'

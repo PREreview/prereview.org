@@ -8,7 +8,7 @@ import * as Routes from '../../routes.ts'
 import { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
-export const NotifyPreprintServer = Effect.fn(
+export const NotifyPreprintServer = Effect.fn('PreprintReviews.notifyPreprintServer')(
   function* (reviewId: number) {
     const sendCoarNotifyMessages = yield* FeatureFlags.sendCoarNotifyMessages
 

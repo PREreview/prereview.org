@@ -19,37 +19,36 @@ import { Name } from '../../../types/Name.ts'
 import * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.ts'
 
-export const recordToPreprint = (
+export const recordToPreprint: (
   record: Datacite.Record,
-): Effect.Effect<
+) => Effect.Effect<
   Preprints.Preprint,
   Preprints.NotAPreprint | Preprints.PreprintIsUnavailable,
   LanguageDetection.LanguageDetection
-> =>
-  Effect.gen(function* () {
-    const id = yield* Effect.fromResult(determineDatacitePreprintId(record))
+> = Effect.fnUntraced(function* (record) {
+  const id = yield* Effect.fromResult(determineDatacitePreprintId(record))
 
-    yield* Effect.fromResult(ensureIsAPreprint(record.types, id))
+  yield* Effect.fromResult(ensureIsAPreprint(record.types, id))
 
-    const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
+  const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
 
-    const authors = yield* Effect.fromResult(getAuthors(record.creators))
+  const authors = yield* Effect.fromResult(getAuthors(record.creators))
 
-    const title = yield* getTitle(record.titles, id, recordLanguage)
+  const title = yield* getTitle(record.titles, id, recordLanguage)
 
-    const abstract = yield* getAbstract(record.descriptions, id, recordLanguage)
+  const abstract = yield* getAbstract(record.descriptions, id, recordLanguage)
 
-    const posted = yield* Effect.fromResult(getPostedDate(record.dates))
+  const posted = yield* Effect.fromResult(getPostedDate(record.dates))
 
-    return Preprints.Preprint({
-      abstract,
-      authors,
-      id,
-      posted,
-      title,
-      url: Url.setProtocol(record.url, 'https'),
-    })
+  return Preprints.Preprint({
+    abstract,
+    authors,
+    id,
+    posted,
+    title,
+    url: Url.setProtocol(record.url, 'https'),
   })
+})
 
 const determineDatacitePreprintId = (
   record: Datacite.Record,
@@ -155,12 +154,12 @@ const getAuthors = (
       ),
   })
 
-const getTitle = (
+const getTitle: (
   titles: Datacite.Record['titles'],
   id: DatacitePreprintId,
   recordLanguage?: LanguageCode,
-): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable, LanguageDetection.LanguageDetection> =>
-  Effect.gen(function* () {
+) => Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable, LanguageDetection.LanguageDetection> =
+  Effect.fnUntraced(function* (titles, id, recordLanguage) {
     const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
     const language = yield* Effect.catchTag(
@@ -175,12 +174,12 @@ const getTitle = (
     }
   })
 
-const getAbstract = (
+const getAbstract: (
   descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
   recordLanguage?: LanguageCode,
-): Effect.Effect<Preprints.Preprint['abstract'], never, LanguageDetection.LanguageDetection> =>
-  Effect.gen(function* () {
+) => Effect.Effect<Preprints.Preprint['abstract'], never, LanguageDetection.LanguageDetection> = Effect.fnUntraced(
+  function* (descriptions, id, recordLanguage) {
     const abstract = Option.getOrUndefined(
       Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
     )
@@ -201,7 +200,8 @@ const getAbstract = (
       onSuccess: language => ({ language, text }),
       onFailure: () => undefined,
     })
-  })
+  },
+)
 
 const detectLanguageForServer = ({
   id,

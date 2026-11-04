@@ -12,7 +12,7 @@ export class FailedToSendAuthorInviteEmails extends Schema.TaggedError<FailedToS
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
 
-export const SendAuthorInviteEmails = Effect.fn(
+export const SendAuthorInviteEmails = Effect.fn('AuthorInvites.sendAuthorInviteEmails')(
   function* (reviewId: Uuid) {
     const authorInvites = yield* AuthorInvites
     const datasetReviewQueries = yield* DatasetReviewQueries

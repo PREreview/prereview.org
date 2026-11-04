@@ -21,83 +21,84 @@ export class RevalidationQueue extends Context.Service<
   Queue.Queue<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.Input }>
 >()('RevalidationQueue') {}
 
-export const CachingHttpClient = (
+export const CachingHttpClient: (
   timeToStale: Duration.Input,
-  requestTimeout: Duration.Input = '2 seconds',
-): Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient | RevalidationQueue> =>
-  Effect.gen(function* () {
+  requestTimeout?: Duration.Input,
+) => Effect.Effect<HttpClient.HttpClient, never, HttpCache.HttpCache | HttpClient.HttpClient | RevalidationQueue> =
+  Effect.fnUntraced(function* (timeToStale, requestTimeout = '2 seconds') {
     const httpClient = yield* HttpClient.HttpClient
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* RevalidationQueue
 
-    const cachingBehavior = (
+    const cachingBehavior: (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
-    ): Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError> =>
-      Effect.gen(function* () {
-        const timestamp = yield* DateTime.now
-        const req = yield* request
+    ) => Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError> = Effect.fn(
+      'CachingHttpClient',
+    )(function* (request) {
+      const timestamp = yield* DateTime.now
+      const req = yield* request
 
-        if (req.method !== 'GET' || Equal.equals(Headers.get(req.headers, 'Cache-Control'), Option.some('no-store'))) {
-          return yield* httpClient.execute(req)
+      if (req.method !== 'GET' || Equal.equals(Headers.get(req.headers, 'Cache-Control'), Option.some('no-store'))) {
+        return yield* httpClient.execute(req)
+      }
+
+      const response = yield* pipe(
+        cache.get(req),
+        Effect.map(Option.getOrUndefined),
+        Effect.timeout(CacheTimeout),
+        Effect.tapErrorTag('InternalHttpCacheFailure', error =>
+          Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),
+        ),
+        Effect.tapErrorTag('TimeoutError', error =>
+          Effect.logWarning('Reading from HttpCache timed out').pipe(Effect.annotateLogs({ error })),
+        ),
+        Effect.orElseSucceed(Function.constUndefined),
+      )
+
+      const logAnnotations = {
+        url: req.url,
+        urlParams: UrlParams.toString(req.urlParams),
+        method: req.method,
+      }
+
+      if (response) {
+        if (DateTime.isLessThan(timestamp, response.staleAt)) {
+          yield* Effect.logDebug('Cache hit').pipe(Effect.annotateLogs(logAnnotations))
+        } else {
+          yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
+          yield* Queue.offer(revalidationQueue, { request: req, timeToStale })
         }
+        return response.response
+      }
 
-        const response = yield* pipe(
-          cache.get(req),
-          Effect.map(Option.getOrUndefined),
-          Effect.timeout(CacheTimeout),
-          Effect.tapErrorTag('InternalHttpCacheFailure', error =>
-            Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),
-          ),
-          Effect.tapErrorTag('TimeoutError', error =>
-            Effect.logWarning('Reading from HttpCache timed out').pipe(Effect.annotateLogs({ error })),
-          ),
-          Effect.orElseSucceed(Function.constUndefined),
-        )
+      yield* Effect.logDebug('Cache miss').pipe(Effect.annotateLogs(logAnnotations))
 
-        const logAnnotations = {
-          url: req.url,
-          urlParams: UrlParams.toString(req.urlParams),
-          method: req.method,
-        }
-
-        if (response) {
-          if (DateTime.isLessThan(timestamp, response.staleAt)) {
-            yield* Effect.logDebug('Cache hit').pipe(Effect.annotateLogs(logAnnotations))
-          } else {
-            yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
-            yield* Queue.offer(revalidationQueue, { request: req, timeToStale })
-          }
-          return response.response
-        }
-
-        yield* Effect.logDebug('Cache miss').pipe(Effect.annotateLogs(logAnnotations))
-
-        return yield* pipe(
-          req,
-          httpClient.execute,
-          Effect.timeout(requestTimeout),
-          Effect.catchTag(
-            'TimeoutError',
-            error =>
-              new HttpClientError.HttpClientError({
-                reason: new HttpClientError.TransportError({ request: req, cause: error }),
-              }),
-          ),
-          Effect.tap(
-            HttpClientResponse.matchStatus({
-              [StatusCodes.OK]: response =>
-                pipe(
-                  cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
-                  Effect.tapErrorTag('InternalHttpCacheFailure', error =>
-                    Effect.logError('Unable to cache the response').pipe(Effect.annotateLogs({ error })),
-                  ),
-                  Effect.ignore,
-                ),
-              orElse: () => Effect.void,
+      return yield* pipe(
+        req,
+        httpClient.execute,
+        Effect.timeout(requestTimeout),
+        Effect.catchTag(
+          'TimeoutError',
+          error =>
+            new HttpClientError.HttpClientError({
+              reason: new HttpClientError.TransportError({ request: req, cause: error }),
             }),
-          ),
-        )
-      }).pipe(Effect.withSpan('CachingHttpClient'))
+        ),
+        Effect.tap(
+          HttpClientResponse.matchStatus({
+            [StatusCodes.OK]: response =>
+              pipe(
+                cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+                Effect.tapErrorTag('InternalHttpCacheFailure', error =>
+                  Effect.logError('Unable to cache the response').pipe(Effect.annotateLogs({ error })),
+                ),
+                Effect.ignore,
+              ),
+            orElse: () => Effect.void,
+          }),
+        ),
+      )
+    })
 
     return HttpClient.makeWith(cachingBehavior, Effect.succeed)
   })
@@ -118,8 +119,8 @@ const revalidationWorker = Effect.gen(function* () {
       ),
     ),
     Effect.bind('response', ({ request }) => httpClient.execute(request)),
-    Effect.tap(({ response, timeToStale }) =>
-      Effect.gen(function* () {
+    Effect.tap(
+      Effect.fnUntraced(function* ({ response, timeToStale }) {
         const timestamp = yield* DateTime.now
         return yield* HttpClientResponse.matchStatus(response, {
           [StatusCodes.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),

@@ -23,7 +23,7 @@ export type Error = ContactEmailAddressHasAlreadyBeenVerified | Commands.UnableT
 export const StartVerificationOfContactEmailAddress: (
   input: Input,
 ) => Effect.Effect<void, Error, Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords | Uuid.GenerateUuid> =
-  Effect.fn(
+  Effect.fn('ContactEmailAddresses.startVerificationOfContactEmailAddress')(
     function* (input) {
       const email = yield* Email.Email
       const orcidRecords = yield* OrcidRecords.OrcidRecords

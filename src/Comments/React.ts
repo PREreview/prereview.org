@@ -16,67 +16,68 @@ import type { CommentWasAssignedADoi } from './Events.ts'
 
 type ToDo = unknown
 
-export const CheckIfUserHasAVerifiedEmailAddress = (
+export const CheckIfUserHasAVerifiedEmailAddress: (
   commentId: Uuid.Uuid,
-): Effect.Effect<void, ToDo, GetComment | ContactEmailAddresses | HandleCommentCommand> =>
-  Effect.gen(function* () {
-    const getComment = yield* GetComment
-    const handleCommand = yield* HandleCommentCommand
-    const contactEmailAddresses = yield* ContactEmailAddresses
+) => Effect.Effect<void, ToDo, GetComment | ContactEmailAddresses | HandleCommentCommand> = Effect.fn(
+  'Comments.checkIfUserHasAVerifiedEmailAddress',
+)(function* (commentId) {
+  const getComment = yield* GetComment
+  const handleCommand = yield* HandleCommentCommand
+  const contactEmailAddresses = yield* ContactEmailAddresses
 
-    const comment = yield* getComment(commentId)
+  const comment = yield* getComment(commentId)
 
-    if (comment._tag !== 'CommentInProgress' || comment.verifiedEmailAddressExists) {
-      return
-    }
+  if (comment._tag !== 'CommentInProgress' || comment.verifiedEmailAddressExists) {
+    return
+  }
 
-    const userHasAVerifiedEmailAddress = yield* pipe(
-      contactEmailAddresses.getContactEmailAddress(comment.authorId),
-      Effect.map(emailAddress => emailAddress._tag === 'VerifiedContactEmailAddress'),
-      Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(false)),
-    )
+  const userHasAVerifiedEmailAddress = yield* pipe(
+    contactEmailAddresses.getContactEmailAddress(comment.authorId),
+    Effect.map(emailAddress => emailAddress._tag === 'VerifiedContactEmailAddress'),
+    Effect.catchTag('ContactEmailAddressIsNotFound', () => Effect.succeed(false)),
+  )
 
-    if (!userHasAVerifiedEmailAddress) {
-      return
-    }
+  if (!userHasAVerifiedEmailAddress) {
+    return
+  }
 
-    yield* Effect.mapError(handleCommand(new ConfirmExistenceOfVerifiedEmailAddress({ commentId })), error =>
-      error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
-    )
-  })
+  yield* Effect.mapError(handleCommand(new ConfirmExistenceOfVerifiedEmailAddress({ commentId })), error =>
+    error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
+  )
+})
 
-export const AssignCommentADoiWhenPublicationWasRequested = ({
-  commentId,
-  inputForCommentZenodoRecord,
-}: {
+export const AssignCommentADoiWhenPublicationWasRequested: (input: {
   commentId: Uuid.Uuid
   inputForCommentZenodoRecord: InputForCommentZenodoRecord
-}): Effect.Effect<
+}) => Effect.Effect<
   void,
   UnableToHandleCommand | CommentError | UnableToAssignADoi,
   HandleCommentCommand | CreateRecordOnZenodoForComment
-> =>
-  Effect.gen(function* () {
-    const handleCommand = yield* HandleCommentCommand
-    const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
+> = Effect.fn('Comments.assignCommentADoiWhenPublicationWasRequested')(function* ({
+  commentId,
+  inputForCommentZenodoRecord,
+}) {
+  const handleCommand = yield* HandleCommentCommand
+  const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
-    yield* pipe(
-      inputForCommentZenodoRecord,
-      createRecordOnZenodoForComment,
-      Effect.andThen(([doi, id]) => handleCommand(new MarkDoiAsAssigned({ commentId, doi, id }))),
-    )
-  })
+  yield* pipe(
+    inputForCommentZenodoRecord,
+    createRecordOnZenodoForComment,
+    Effect.andThen(([doi, id]) => handleCommand(new MarkDoiAsAssigned({ commentId, doi, id }))),
+  )
+})
 
-export const PublishCommentWhenCommentWasAssignedADoi = (
+export const PublishCommentWhenCommentWasAssignedADoi: (
   event: CommentWasAssignedADoi,
-): Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentOnZenodo> =>
-  Effect.gen(function* () {
-    const handleCommand = yield* HandleCommentCommand
-    const publishCommentOnZenodo = yield* PublishCommentOnZenodo
+) => Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentOnZenodo> = Effect.fn(
+  'Comments.publishCommentWhenCommentWasAssignedADoi',
+)(function* (event) {
+  const handleCommand = yield* HandleCommentCommand
+  const publishCommentOnZenodo = yield* PublishCommentOnZenodo
 
-    yield* publishCommentOnZenodo(event.id)
+  yield* publishCommentOnZenodo(event.id)
 
-    yield* Effect.mapError(handleCommand(new MarkCommentAsPublished({ commentId: event.commentId })), error =>
-      error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
-    )
-  })
+  yield* Effect.mapError(handleCommand(new MarkCommentAsPublished({ commentId: event.commentId })), error =>
+    error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
+  )
+})

@@ -47,7 +47,7 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
     )
 
     return HttpClient.makeWith(
-      Effect.fn(function* (req: Effect.Effect<HttpClientRequest.HttpClientRequest>) {
+      Effect.fnUntraced(function* (req: Effect.Effect<HttpClientRequest.HttpClientRequest>) {
         const request = yield* req
 
         return yield* pipe(

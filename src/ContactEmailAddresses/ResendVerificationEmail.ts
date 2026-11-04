@@ -21,6 +21,8 @@ export type Error =
 export const ResendVerificationEmail: (
   input: Input,
 ) => Effect.Effect<void, Error, Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords> = Effect.fn(
+  'ContactEmailAddresses.resendVerificationEmail',
+)(
   function* (input) {
     const email = yield* Email.Email
     const orcidRecords = yield* OrcidRecords.OrcidRecords

@@ -17,7 +17,7 @@ export const requestCollapsingHttpClient = Effect.gen(function* () {
   >()
 
   return HttpClient.makeWith(
-    Effect.fn(function* (req: Effect.Effect<HttpClientRequest.HttpClientRequest>) {
+    Effect.fnUntraced(function* (req: Effect.Effect<HttpClientRequest.HttpClientRequest>) {
       const request = yield* req
 
       if (request.method !== 'GET') {

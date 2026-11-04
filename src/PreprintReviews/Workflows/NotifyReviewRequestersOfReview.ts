@@ -7,7 +7,7 @@ import { Temporal } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as PreprintReviews from '../PreprintReviews.ts'
 
-export const NotifyReviewRequestersOfReview = Effect.fn(
+export const NotifyReviewRequestersOfReview = Effect.fn('PreprintReviews.notifyReviewRequestersOfReview')(
   function* (reviewId: number) {
     const prereview = yield* Prereviews.getPrereview(reviewId)
 

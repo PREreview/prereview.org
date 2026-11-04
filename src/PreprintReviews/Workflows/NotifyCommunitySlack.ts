@@ -5,7 +5,7 @@ import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
 import * as Errors from '../Errors.ts'
 
-export const NotifyCommunitySlack = Effect.fn(
+export const NotifyCommunitySlack = Effect.fn('PreprintReviews.notifyCommunitySlack')(
   function* (reviewId: number) {
     const prereview = yield* Prereviews.getPrereview(reviewId)
 

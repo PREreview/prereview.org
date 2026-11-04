@@ -34,53 +34,48 @@ export const make = Effect.fnUntraced(function* (
   )
 
   return KeyValueStore.makeStringOnly({
-    get: key =>
-      Effect.gen(function* () {
-        const raw = yield* send('get', key)<string | null>('GET', keyFor(key))
+    get: Effect.fnUntraced(function* (key) {
+      const raw = yield* send('get', key)<string | null>('GET', keyFor(key))
 
-        if (raw === null) {
-          return undefined
-        }
+      if (raw === null) {
+        return undefined
+      }
 
-        const envelope = yield* pipe(
-          Effect.try({
-            try: () => JSON.parse(raw, unescapeKeyvString) as unknown,
-            catch: cause =>
-              new KeyValueStore.KeyValueStoreError({ message: 'Unable to parse', method: 'get', key, cause }),
-          }),
-          Effect.flatMap(Schema.decodeUnknownEffect(KeyvEnvelopeSchema)),
-          Effect.mapError(
-            cause => new KeyValueStore.KeyValueStoreError({ message: 'Unable to decode', method: 'get', key, cause }),
-          ),
-        )
-
-        if (typeof envelope.expires === 'number' && (yield* Clock.currentTimeMillis) > envelope.expires) {
-          return undefined
-        }
-
-        return JSON.stringify(envelope.value)
-      }),
-    set: (key, value) =>
-      Effect.gen(function* () {
-        const now = yield* Clock.currentTimeMillis
-        const expires = Option.map(timeToLive, timeToLive => now + Duration.toMillis(timeToLive))
-
-        const envelope = yield* Effect.try({
-          try: () =>
-            JSON.stringify(
-              { value: JSON.parse(value) as unknown, expires: Option.getOrNull(expires) },
-              escapeKeyvString,
-            ),
+      const envelope = yield* pipe(
+        Effect.try({
+          try: () => JSON.parse(raw, unescapeKeyvString) as unknown,
           catch: cause =>
-            new KeyValueStore.KeyValueStoreError({ message: 'Unable to encode', method: 'set', key, cause }),
-        })
+            new KeyValueStore.KeyValueStoreError({ message: 'Unable to parse', method: 'get', key, cause }),
+        }),
+        Effect.flatMap(Schema.decodeUnknownEffect(KeyvEnvelopeSchema)),
+        Effect.mapError(
+          cause => new KeyValueStore.KeyValueStoreError({ message: 'Unable to decode', method: 'get', key, cause }),
+        ),
+      )
 
-        yield* Option.match(timeToLive, {
-          onNone: () => send('set', key)('SET', keyFor(key), envelope),
-          onSome: timeToLive =>
-            send('set', key)('SET', keyFor(key), envelope, 'PX', Duration.toMillis(timeToLive).toString()),
-        })
-      }),
+      if (typeof envelope.expires === 'number' && (yield* Clock.currentTimeMillis) > envelope.expires) {
+        return undefined
+      }
+
+      return JSON.stringify(envelope.value)
+    }),
+    set: Effect.fnUntraced(function* (key, value) {
+      const now = yield* Clock.currentTimeMillis
+      const expires = Option.map(timeToLive, timeToLive => now + Duration.toMillis(timeToLive))
+
+      const envelope = yield* Effect.try({
+        try: () =>
+          JSON.stringify({ value: JSON.parse(value) as unknown, expires: Option.getOrNull(expires) }, escapeKeyvString),
+        catch: cause =>
+          new KeyValueStore.KeyValueStoreError({ message: 'Unable to encode', method: 'set', key, cause }),
+      })
+
+      yield* Option.match(timeToLive, {
+        onNone: () => send('set', key)('SET', keyFor(key), envelope),
+        onSome: timeToLive =>
+          send('set', key)('SET', keyFor(key), envelope, 'PX', Duration.toMillis(timeToLive).toString()),
+      })
+    }),
     remove: key => Effect.asVoid(send('remove', key)('UNLINK', keyFor(key))),
     clear: pipe(
       keys,

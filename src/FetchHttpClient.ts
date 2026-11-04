@@ -43,29 +43,28 @@ export const layer = Layer.effect(
   }),
 ).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
 
-const convertRequest = (
+const convertRequest: (
   input: string | URL | globalThis.Request,
   init?: RequestInit,
-): Effect.Effect<HttpClientRequest.HttpClientRequest, Error> =>
-  Effect.gen(function* () {
-    const request = new Request(input, init)
-    const method = request.method
+) => Effect.Effect<HttpClientRequest.HttpClientRequest, Error> = Effect.fnUntraced(function* (input, init) {
+  const request = new Request(input, init)
+  const method = request.method
 
-    if (!HttpMethod.isHttpMethod(method)) {
-      return yield* Effect.fail(new Error('Unsupported method'))
-    }
+  if (!HttpMethod.isHttpMethod(method)) {
+    return yield* Effect.fail(new Error('Unsupported method'))
+  }
 
-    if (!HttpMethod.hasBody(method)) {
-      return HttpClientRequest.make(method)(request.url, { headers: request.headers })
-    }
+  if (!HttpMethod.hasBody(method)) {
+    return HttpClientRequest.make(method)(request.url, { headers: request.headers })
+  }
 
-    const body = yield* Effect.tryPromise({
-      try: () => request.text().then(text => HttpBody.text(text, request.headers.get('Content-Type') ?? undefined)),
-      catch: () => new Error('Unable to read body'),
-    })
-
-    return HttpClientRequest.make(method)(request.url, { headers: request.headers, body })
+  const body = yield* Effect.tryPromise({
+    try: () => request.text().then(text => HttpBody.text(text, request.headers.get('Content-Type') ?? undefined)),
+    catch: () => new Error('Unable to read body'),
   })
+
+  return HttpClientRequest.make(method)(request.url, { headers: request.headers, body })
+})
 
 const convertResponse = (
   response: HttpClientResponse.HttpClientResponse,

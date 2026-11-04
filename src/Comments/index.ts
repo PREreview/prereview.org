@@ -209,8 +209,8 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
               EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
               Effect.flatMap(Effect.fromOption),
               Effect.andThen(eventsForComment => Effect.fromOption(Queries.GetPrereviewId(eventsForComment.events))),
-              Effect.andThen(prereviewId =>
-                Effect.gen(function* () {
+              Effect.andThen(
+                Effect.fnUntraced(function* (prereviewId) {
                   const commentsForReview = yield* ReviewPage.CommentsForReview
 
                   yield* commentsForReview.invalidate(prereviewId)

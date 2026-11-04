@@ -55,7 +55,7 @@ export const append = (...args: Parameters<(typeof EventStore.Service)['append']
 export const appendIf = (...args: Parameters<(typeof EventStore.Service)['appendIf']>) =>
   EventStore.use(service => service.appendIf(...args))
 
-export const query = Effect.fn(function* <Filter extends EventFilter>(filter: Filter) {
+export const query = Effect.fnUntraced(function* <Filter extends EventFilter>(filter: Filter) {
   const eventStore = yield* EventStore
 
   return yield* eventStore.query(filter)

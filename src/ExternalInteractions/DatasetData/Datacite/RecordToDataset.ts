@@ -13,63 +13,61 @@ export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported
   cause?: unknown
 }> {}
 
-export const RecordToDataset = (
+export const RecordToDataset: (
   record: Datacite.Record,
-): Effect.Effect<
+) => Effect.Effect<
   Datasets.Dataset,
   Datasets.NotADataset | Datasets.DatasetIsUnavailable | RecordIsNotSupported,
   LanguageDetection.LanguageDetection
-> =>
-  Effect.gen(function* () {
-    const datasetId = yield* Effect.fromResult(determineDataciteDatasetId(record))
+> = Effect.fnUntraced(function* (record) {
+  const datasetId = yield* Effect.fromResult(determineDataciteDatasetId(record))
 
-    if (
-      record.types.resourceType?.toLowerCase() !== 'dataset' &&
-      record.types.resourceTypeGeneral?.toLowerCase() !== 'dataset'
-    ) {
-      return yield* new Datasets.NotADataset({ cause: record.types, datasetId })
-    }
+  if (
+    record.types.resourceType?.toLowerCase() !== 'dataset' &&
+    record.types.resourceTypeGeneral?.toLowerCase() !== 'dataset'
+  ) {
+    return yield* new Datasets.NotADataset({ cause: record.types, datasetId })
+  }
 
-    const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
+  const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
 
-    const authors = yield* Array.match(record.creators, {
-      onEmpty: () =>
-        Effect.fail(new Datasets.DatasetIsUnavailable({ cause: { creators: record.creators }, datasetId })),
-      onNonEmpty: creators =>
-        Effect.succeed(
-          Array.map(
-            creators,
-            flow(
-              Match.value,
-              Match.when({ name: Match.string }, creator => ({ name: Name(creator.name), orcid: findOrcid(creator) })),
-              Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
-                name: Name(`${creator.givenName} ${creator.familyName}`),
-                orcid: findOrcid(creator),
-              })),
-              Match.exhaustive,
-            ),
+  const authors = yield* Array.match(record.creators, {
+    onEmpty: () => Effect.fail(new Datasets.DatasetIsUnavailable({ cause: { creators: record.creators }, datasetId })),
+    onNonEmpty: creators =>
+      Effect.succeed(
+        Array.map(
+          creators,
+          flow(
+            Match.value,
+            Match.when({ name: Match.string }, creator => ({ name: Name(creator.name), orcid: findOrcid(creator) })),
+            Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
+              name: Name(`${creator.givenName} ${creator.familyName}`),
+              orcid: findOrcid(creator),
+            })),
+            Match.exhaustive,
           ),
         ),
-    })
-
-    const title = yield* getTitle(record.titles, datasetId, recordLanguage)
-
-    const abstract = yield* getAbstract(record.descriptions, datasetId, recordLanguage)
-
-    const posted = yield* Effect.fromOption(
-      findPublishedDate(record.dates),
-      () => new Datasets.DatasetIsUnavailable({ cause: { dates: record.dates }, datasetId }),
-    )
-
-    return new Datasets.Dataset({
-      abstract,
-      authors,
-      id: datasetId,
-      posted,
-      title,
-      url: record.url,
-    })
+      ),
   })
+
+  const title = yield* getTitle(record.titles, datasetId, recordLanguage)
+
+  const abstract = yield* getAbstract(record.descriptions, datasetId, recordLanguage)
+
+  const posted = yield* Effect.fromOption(
+    findPublishedDate(record.dates),
+    () => new Datasets.DatasetIsUnavailable({ cause: { dates: record.dates }, datasetId }),
+  )
+
+  return new Datasets.Dataset({
+    abstract,
+    authors,
+    id: datasetId,
+    posted,
+    title,
+    url: record.url,
+  })
+})
 
 const determineDataciteDatasetId = (
   record: Datacite.Record,

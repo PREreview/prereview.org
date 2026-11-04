@@ -353,7 +353,7 @@ export const layer = Layer.effect(
   }),
 )
 
-const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
+const getRecentDatasetPrereview = Effect.fn('Prereviews.getRecentDatasetPrereview')(function* (id: Uuid.Uuid) {
   const clubs = yield* Clubs
 
   const datasetReview = yield* DatasetReviews.getPublishedReview(id)

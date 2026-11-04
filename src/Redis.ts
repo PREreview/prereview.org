@@ -2,52 +2,51 @@ import { Config, Context, Deferred, Duration, Effect, flow, Inspectable, Layer, 
 import { Redis } from 'effect/persistence'
 import { Redis as IoRedis } from 'ioredis'
 
-const makeRedis = (url: Redacted.Redacted<URL>) =>
-  Effect.gen(function* () {
-    const runtime = yield* Effect.context()
-    const redis = new IoRedis(Redacted.value(url).href, {
-      commandTimeout: Duration.toMillis('2 seconds'),
-      enableAutoPipelining: true,
-    })
-
-    const runSync = Effect.runSyncWith(runtime)
-
-    redis.on('connect', () =>
-      runSync(
-        pipe(
-          Effect.logDebug('Redis connected'),
-          Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
-        ),
-      ),
-    )
-    redis.on('close', () =>
-      runSync(
-        pipe(
-          Effect.logDebug('Redis connection closed'),
-          Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
-        ),
-      ),
-    )
-    redis.on('reconnecting', () =>
-      runSync(
-        pipe(
-          Effect.logInfo('Redis reconnecting'),
-          Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
-        ),
-      ),
-    )
-    redis.removeAllListeners('error')
-    redis.on('error', error =>
-      runSync(
-        pipe(
-          Effect.logError('Redis connection error'),
-          Effect.annotateLogs({ error: error.message, host: redis.options.host, port: redis.options.port }),
-        ),
-      ),
-    )
-
-    return redis
+const makeRedis = Effect.fnUntraced(function* (url: Redacted.Redacted<URL>) {
+  const runtime = yield* Effect.context()
+  const redis = new IoRedis(Redacted.value(url).href, {
+    commandTimeout: Duration.toMillis('2 seconds'),
+    enableAutoPipelining: true,
   })
+
+  const runSync = Effect.runSyncWith(runtime)
+
+  redis.on('connect', () =>
+    runSync(
+      pipe(
+        Effect.logDebug('Redis connected'),
+        Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
+      ),
+    ),
+  )
+  redis.on('close', () =>
+    runSync(
+      pipe(
+        Effect.logDebug('Redis connection closed'),
+        Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
+      ),
+    ),
+  )
+  redis.on('reconnecting', () =>
+    runSync(
+      pipe(
+        Effect.logInfo('Redis reconnecting'),
+        Effect.annotateLogs({ host: redis.options.host, port: redis.options.port }),
+      ),
+    ),
+  )
+  redis.removeAllListeners('error')
+  redis.on('error', error =>
+    runSync(
+      pipe(
+        Effect.logError('Redis connection error'),
+        Effect.annotateLogs({ error: error.message, host: redis.options.host, port: redis.options.port }),
+      ),
+    ),
+  )
+
+  return redis
+})
 
 const teardownRedis = (redis: IoRedis) =>
   pipe(

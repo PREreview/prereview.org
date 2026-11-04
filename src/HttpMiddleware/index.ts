@@ -176,19 +176,18 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
 
     return yield* Option.match(Option.all({ session, sessionId }), {
       onNone: () => app,
-      onSome: ({ session: { user }, sessionId }) =>
-        Effect.gen(function* () {
-          const userOnboarding = yield* Effect.orElseSucceed(UserOnboardingStore.get(user.orcid), () => ({
-            seenMyDetailsPage: false,
-          }))
+      onSome: Effect.fnUntraced(function* ({ session: { user }, sessionId }) {
+        const userOnboarding = yield* Effect.orElseSucceed(UserOnboardingStore.get(user.orcid), () => ({
+          seenMyDetailsPage: false,
+        }))
 
-          return yield* pipe(
-            app,
-            Effect.provideService(SessionId, sessionId),
-            Effect.provideService(LoggedInUser, user),
-            Effect.provideService(UserOnboardingService, userOnboarding),
-          )
-        }),
+        return yield* pipe(
+          app,
+          Effect.provideService(SessionId, sessionId),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provideService(UserOnboardingService, userOnboarding),
+        )
+      }),
     })
   }),
 )

@@ -25,7 +25,7 @@ export class FailedToGenerateThreadForAPreprintReviewRequest extends Data.Tagged
   cause?: unknown
 }> {}
 
-export const GenerateThread = Effect.fn(
+export const GenerateThread = Effect.fn('CommunitySlack.generateThread')(
   function* ({ author, preprint }: PreprintReviewRequest) {
     const hasAbstract = Option.isSome(Option.fromNullishOr(preprint.abstract))
 
