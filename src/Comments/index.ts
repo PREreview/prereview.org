@@ -38,7 +38,7 @@ export const makeHandleCommentCommand: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  return Effect.fn('HandleCommentCommand')(
+  return Effect.fn('Comments.handleCommentCommand')(
     function* (command) {
       const { events, lastKnownPosition } = yield* pipe(
         EventStore.query({
@@ -81,7 +81,7 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
   function* () {
     const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    return Effect.fn('GetComment')(
+    return Effect.fn('Comments.getComment')(
       function* (commentId) {
         const events = yield* pipe(
           EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
@@ -105,7 +105,7 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  return Effect.fn('GetNextExpectedCommandForUser')(
+  return Effect.fn('Comments.getNextExpectedCommandForUser')(
     function* ({ authorId, prereviewId }) {
       const events = yield* pipe(
         EventStore.query({ types: CommentEventTypes }),
@@ -126,7 +126,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  return Effect.fn('GetNextExpectedCommandForUserOnAComment')(
+  return Effect.fn('Comments.getNextExpectedCommandForUserOnAComment')(
     function* (commentId) {
       const events = yield* pipe(
         EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),

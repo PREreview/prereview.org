@@ -34,7 +34,7 @@ const createRecordOnZenodoForComment = Layer.effect(
       zenodoUrl: zenodoApi.origin,
     }
 
-    return Effect.fn('CreateRecordOnZenodoForComment')(function* (comment) {
+    return Effect.fn('Comments.createRecordOnZenodoForComment')(function* (comment) {
       const prereview = yield* pipe(
         Prereviews.getPrereview(comment.prereviewId),
         Effect.mapError(
@@ -92,7 +92,7 @@ const publishCommentOnZenodo = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const zenodoApi = yield* Zenodo.ZenodoApi
 
-    return Effect.fn('PublishCommentOnZenodo')(
+    return Effect.fn('Comments.publishCommentOnZenodo')(
       function* (comment) {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
