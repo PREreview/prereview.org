@@ -155,6 +155,21 @@ export const invalidateCommentsForPrereview = (
     }),
   )
 
+export const layerCommentsForReview = Layer.effect(
+  ReviewPage.CommentsForReview,
+  Effect.gen(function* () {
+    const context = yield* Effect.map(
+      Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | ZenodoApi.ZenodoApi>(),
+      Context.omit(Scope.Scope),
+    )
+
+    return {
+      get: reviewDoi => pipe(getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
+      invalidate: prereviewId => pipe(invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
+    }
+  }),
+).pipe(Layer.provide(CachingHttpClient.layer('10 minutes')))
+
 const invalidateCacheEntry = Effect.fn(function* (url: URL) {
   const httpCache = yield* CachingHttpClient.HttpCache
 

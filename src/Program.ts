@@ -1,4 +1,3 @@
-import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
 import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
@@ -50,7 +49,6 @@ import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
-import * as ReviewPage from './WebApp/review-page/index.ts'
 
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
@@ -151,22 +149,6 @@ const publishComment = Layer.effect(
   }),
 )
 
-const commentsForReview = Layer.effect(
-  ReviewPage.CommentsForReview,
-  Effect.gen(function* () {
-    const context = yield* Effect.map(
-      Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoApi>(),
-      Context.omit(Scope.Scope),
-    )
-
-    return {
-      get: reviewDoi => pipe(ZenodoRecords.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
-      invalidate: prereviewId =>
-        pipe(ZenodoRecords.invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
-    }
-  }),
-)
-
 export const Program = pipe(
   Layer.mergeAll(
     WebApp.layer,
@@ -188,7 +170,7 @@ export const Program = pipe(
     PreprintData.layer,
     OpenAlexWorks.layer,
     OrcidRecords.layer,
-    Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
+    ZenodoRecords.layerCommentsForReview,
     Comments.layer,
     GhostPage.layer,
     CommunitySlack.layer,
