@@ -4,6 +4,7 @@ import { ByteSize, Effect, FileSystem, Layer, Path, PlatformError } from 'effect
 import path from 'node:path'
 import * as _ from '../../src/HttpMiddleware/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
 
 const assetsDirectory = new URL('../../dist/assets/', import.meta.url).pathname
 
@@ -57,14 +58,49 @@ describe('serveStaticFiles', () => {
   )
 })
 
+describe('stopSuspiciousRequests', () => {
+  it.effect.each<[string]>([
+    ['/../etc/passwd'],
+    ['/%2e%2e%2fetc/passwd'],
+    ['/%2e%2e/etc/passwd'],
+    ['/..%2fetc/passwd'],
+    ['/..\\etc\\passwd'],
+    ['/%2e%2e%5cetc%5cpasswd'],
+    ['/%2e%2e\\etc\\passwd'],
+    ['/..%5cetc%5cpasswd'],
+    ['/%252e%252e%255cetc%255cpasswd'],
+    ['/..%255cetc%255cpasswd'],
+    ['/search?q=../etc/passwd'],
+  ])('returns a 404 for %s', ([url]) =>
+    Effect.gen(function* () {
+      const actual = yield* _.stopSuspiciousRequests(app)
+
+      expect(actual).toStrictEqual(HttpServerResponse.empty({ status: StatusCodes.NotFound }))
+    }).pipe(Effect.provide([requestLayer(url)])),
+  )
+
+  it.effect.each<[string]>([['/'], ['/reviews'], ['/file.AbCd-12_.js'], ['/a..b'], ['/100%25'], ['/search?q=a..b']])(
+    'passes the request on for %s',
+    ([url]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.stopSuspiciousRequests(app)
+
+        expect(actual.body).toStrictEqual(HttpBody.text('app'))
+      }).pipe(Effect.provide([requestLayer(url)])),
+  )
+})
+
 const app = Effect.sync(() => HttpServerResponse.text('app'))
+
+const requestLayer = (url: string) =>
+  Layer.succeed(
+    HttpServerRequest.HttpServerRequest,
+    HttpServerRequest.fromWeb(new Request('http://example.com')).modify({ url }),
+  )
 
 const layer = (url: string, files: ReadonlyArray<string>) =>
   Layer.mergeAll(
-    Layer.succeed(
-      HttpServerRequest.HttpServerRequest,
-      HttpServerRequest.fromWeb(new Request('http://example.com')).modify({ url }),
-    ),
+    requestLayer(url),
     Layer.succeed(PublicUrl, new URL('https://prereview.test')),
     Path.layer,
     FileSystem.layerNoop({
