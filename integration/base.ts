@@ -2734,7 +2734,10 @@ export const isASlackUser: Fixtures<NoFixtures, NoFixtures, Pick<AppFixtures, 'f
 
     fetch.post('https://slack.com/api/users.profile.set', { status: StatusCodes.OK, body: { ok: true } })
 
-    fetch.post('https://slack.com/api/chat.postMessage', { status: StatusCodes.OK, body: { ok: true } })
+    fetch.post('https://slack.com/api/chat.postMessage', {
+      status: StatusCodes.OK,
+      body: { ok: true, channel: 'D0JM', ts: '1503435956.000247' },
+    })
 
     fetch.get('https://slack.com/api/users.profile.get?user=U0JM', {
       body: {

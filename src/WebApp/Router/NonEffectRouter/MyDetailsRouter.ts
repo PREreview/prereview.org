@@ -4,7 +4,6 @@ import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
@@ -280,26 +279,17 @@ export const MyDetailsRouter = pipe(
         deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
         deleteOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.remove, env.runtime),
         deleteResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.remove, env.runtime),
-        deleteSlackUserId: withEnv(
-          (orcid: OrcidId) =>
-            pipe(
-              RTE.of(orcid),
-              RTE.chainFirst(
-                flow(
-                  EffectToFpts.toReaderTaskEitherK(SlackUserIds.get),
-                  RTE.chainW(CommunitySlack.removeOrcidFromSlackProfile),
-                  RTE.orElseW(() => RTE.right(undefined)),
-                ),
-              ),
-              RTE.chainW(EffectToFpts.toReaderTaskEitherK(SlackUserIds.remove)),
-            ),
-          {
-            fetch: env.fetch,
-            runtime: env.runtime,
-            slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-            slackApiUpdate: env.shouldUpdateCommunitySlack,
-            ...env.logger,
-          },
+        deleteSlackUserId: EffectToFpts.toTaskEitherK(
+          Effect.fnUntraced(function* (orcid: OrcidId) {
+            yield* pipe(
+              SlackUserIds.get(orcid),
+              Effect.andThen(CommunitySlack.removeOrcidFromSlackProfile),
+              Effect.ignore({ log: 'Error', message: 'Failed to remove ORCID iD from Slack profile' }),
+            )
+
+            yield* SlackUserIds.remove(orcid)
+          }),
+          env.runtime,
         ),
         fetch: env.fetch,
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
@@ -373,19 +363,17 @@ export const MyDetailsRouter = pipe(
         saveOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.save, env.runtime),
         saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
         saveResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.save, env.runtime),
-        saveSlackUserId: withEnv(
-          (orcid: OrcidId, slackUser: SlackUserId) =>
-            pipe(
-              EffectToFpts.toReaderTaskEither(SlackUserIds.save(orcid, slackUser)),
-              RTE.chainFirstW(() => CommunitySlack.addOrcidToSlackProfile(slackUser, orcid)),
-            ),
-          {
-            fetch: env.fetch,
-            runtime: env.runtime,
-            slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-            slackApiUpdate: env.shouldUpdateCommunitySlack,
-            ...env.logger,
-          },
+        saveSlackUserId: EffectToFpts.toTaskEitherK(
+          Effect.fnUntraced(function* (orcid: OrcidId, slackUser: SlackUserId) {
+            yield* SlackUserIds.save(orcid, slackUser)
+
+            yield* pipe(
+              CommunitySlack.addOrcidToSlackProfile(slackUser, orcid),
+              Effect.tapCause(cause => Effect.logError('Failed to add ORCID iD to Slack profile', cause)),
+              Effect.mapError(() => 'unavailable' as const),
+            )
+          }),
+          env.runtime,
         ),
         saveUserOnboarding: EffectToFpts.toTaskEitherK(UserOnboardingStore.save, env.runtime),
         slackOauth: {

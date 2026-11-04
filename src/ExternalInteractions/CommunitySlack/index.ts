@@ -13,7 +13,6 @@ import type { ShouldUpdateCommunitySlack } from './ShouldUpdateCommunitySlack.ts
 
 export { FailedToAddOrcidToSlackProfile } from './AddOrcidToSlackProfile/index.ts'
 export * from './ChannelIds.ts'
-export * from './legacy-slack.ts'
 export { FailedToRemoveOrcidFromSlackProfile } from './RemoveOrcidFromSlackProfile/index.ts'
 export { FailedToShareDatasetReview, type DatasetReview } from './ShareDatasetReview/index.ts'
 export { FailedToSharePreprintReview, type PreprintReview } from './SharePreprintReview/index.ts'
@@ -60,8 +59,16 @@ export class CommunitySlack extends Context.Service<
   }
 >()('CommunitySlack') {}
 
+export const addOrcidToSlackProfile = (
+  ...args: Parameters<(typeof CommunitySlack.Service)['addOrcidToSlackProfile']>
+) => CommunitySlack.use(service => service.addOrcidToSlackProfile(...args))
+
 export const getSlackUser = (...args: Parameters<(typeof CommunitySlack.Service)['getSlackUser']>) =>
   CommunitySlack.use(service => service.getSlackUser(...args))
+
+export const removeOrcidFromSlackProfile = (
+  ...args: Parameters<(typeof CommunitySlack.Service)['removeOrcidFromSlackProfile']>
+) => CommunitySlack.use(service => service.removeOrcidFromSlackProfile(...args))
 
 export const shareDatasetReview = (...args: Parameters<(typeof CommunitySlack.Service)['shareDatasetReview']>) =>
   CommunitySlack.use(service => service.shareDatasetReview(...args))
