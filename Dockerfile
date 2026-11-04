@@ -93,7 +93,7 @@ ENTRYPOINT ["npx", "playwright", "test"]
 #
 # Stage: Build Redis
 #
-FROM redis:8.10.2 AS redis
+FROM redis:8.10.3 AS redis
 
 #
 # Stage: Production environment
