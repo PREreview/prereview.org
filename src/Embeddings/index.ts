@@ -30,8 +30,6 @@ interface Match {
   preprintId: IndeterminatePreprintId
   distance: number
   latestRequest: Temporal.Instant
-  rank: number
-  window: string
 }
 
 export class Embeddings extends Context.Service<
@@ -41,7 +39,7 @@ export class Embeddings extends Context.Service<
       input: Array.NonEmptyReadonlyArray<MatchmakingInputWork>,
       inputOrcidId: OrcidId,
       languages: Array.NonEmptyReadonlyArray<LanguageCode>,
-    ) => Effect.Effect<{ picks: Array.NonEmptyReadonlyArray<Match>; candidateCount: number }, UnableToGetMatches>
+    ) => Effect.Effect<ReadonlyArray<Match>, UnableToGetMatches>
     addRequests: (input: ReadonlyArray<WorkWithRequest>) => Effect.Effect<void, UnableToAddWorksWithRequests>
     existingWorks: (
       input: ReadonlyArray<IndeterminatePreprintId>,
@@ -134,22 +132,13 @@ export const embeddingsLayer = Layer.effect(
     return {
       getMatches: Effect.fnUntraced(
         function* (inputPapers, inputOrcidId, languages) {
-          const { picks, candidateCount } = yield* pipe(
+          return yield* pipe(
             inputPapers,
             getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
             Effect.map(calcFloat32ArrayMean),
-            Effect.andThen(getMatches(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
+            Effect.andThen(getMatches(5, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
             Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetMatches({ cause })),
-            Effect.andThen(pickSurveyPapers),
           )
-
-          if (!Array.isReadonlyArrayNonEmpty(picks)) {
-            return yield* new UnableToGetMatches({
-              cause: 'no candidates found',
-            })
-          }
-
-          return { picks, candidateCount }
         },
         Effect.tapError(error =>
           Effect.logError('Unable to get matches').pipe(Effect.annotateLogs({ error: error.cause })),
