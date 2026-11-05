@@ -126,7 +126,7 @@ export const getMatches =
         Effect.gen(function* () {
           const encoded = Schema.encodeSync(PgVector)(mean)
 
-          return yield* sql<{ preprint_id: string; distance: number }>`
+          return yield* sql`
             SELECT
               preprint_id,
               embedding <=> ${encoded}::halfvec AS distance
@@ -149,6 +149,7 @@ export const getMatches =
         }),
       )
       .pipe(
+        Effect.andThen(Schema.decodeUnknownEffect(RequestEmbeddingsSelect)),
         Effect.andThen(
           Effect.forEach(row =>
             Effect.map(decodePreprintId(row.preprint_id), preprintId => ({ preprintId, distance: row.distance })),
@@ -156,6 +157,13 @@ export const getMatches =
         ),
         Effect.mapError(cause => new UnableToQuery({ cause })),
       )
+
+const RequestEmbeddingsSelect = Schema.Array(
+  Schema.Struct({
+    preprint_id: Schema.String,
+    distance: Schema.Number,
+  }),
+)
 
 export const createMissingEmbeddings = (
   apiKey: Redacted.Redacted,
