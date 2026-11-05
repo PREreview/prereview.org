@@ -1,4 +1,4 @@
-import { HttpClient } from 'effect/http'
+import { OpenRouterClient } from '@effect/ai-openrouter'
 import { Array, Config, Context, Effect, Layer, pipe, Struct } from 'effect'
 import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
@@ -48,45 +48,47 @@ export class Embeddings extends Context.Service<
   }
 >()('Embeddings') {}
 
-export const embeddingsLayer = Layer.effect(
-  Embeddings,
-  Effect.gen(function* () {
-    const sql = yield* PgClient.PgClient
-    const httpClient = yield* HttpClient.HttpClient
-    const apiKey = yield* Config.Redacted('OPENROUTER_API_KEY')
-    const languageDetection = yield* LanguageDetection
+export const embeddingsLayer = pipe(
+  Layer.effect(
+    Embeddings,
+    Effect.gen(function* () {
+      const sql = yield* PgClient.PgClient
+      const openRouter = yield* OpenRouterClient.OpenRouterClient
+      const languageDetection = yield* LanguageDetection
 
-    yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
+      yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
 
-    const tokenizer = new Tokenizer(tokenizerJson, tokenizerConfig)
+      const tokenizer = new Tokenizer(tokenizerJson, tokenizerConfig)
 
-    yield* Effect.all([ensureRequestEmbeddingsTable(sql), ensureMatchmakingInputWorksTable(sql)], {
-      concurrency: 'unbounded',
-    })
+      yield* Effect.all([ensureRequestEmbeddingsTable(sql), ensureMatchmakingInputWorksTable(sql)], {
+        concurrency: 'unbounded',
+      })
 
-    return {
-      getMatches: Effect.fnUntraced(
-        function* (inputPapers, inputOrcidId, languages) {
-          return yield* pipe(
-            inputPapers,
-            Effect.forEach(getEmbeddingGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer), {
-              concurrency: 'unbounded',
-            }),
-            Effect.map(calcFloat32ArrayMean),
-            Effect.andThen(getMatches(5, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
-            Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetMatches({ cause })),
-          )
-        },
-        Effect.tapError(error =>
-          Effect.logError('Unable to get matches').pipe(Effect.annotateLogs({ error: error.cause })),
+      return {
+        getMatches: Effect.fnUntraced(
+          function* (inputPapers, inputOrcidId, languages) {
+            return yield* pipe(
+              inputPapers,
+              Effect.forEach(getEmbeddingGeneratingAsNeeded(openRouter, sql, tokenizer), {
+                concurrency: 'unbounded',
+              }),
+              Effect.map(calcFloat32ArrayMean),
+              Effect.andThen(getMatches(5, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
+              Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetMatches({ cause })),
+            )
+          },
+          Effect.tapError(error =>
+            Effect.logError('Unable to get matches').pipe(Effect.annotateLogs({ error: error.cause })),
+          ),
         ),
-      ),
-      addRequests: (inputPapers: ReadonlyArray<WorkWithRequest>) =>
-        pipe(
-          createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection)(inputPapers),
-          Effect.andThen(updateLatestRequestDate(sql)(inputPapers)),
-        ),
-      existingWorks: preprintIds => findExistingWorks(preprintIds, sql),
-    }
-  }),
+        addRequests: (inputPapers: ReadonlyArray<WorkWithRequest>) =>
+          pipe(
+            createMissingEmbeddings(openRouter, sql, tokenizer, languageDetection)(inputPapers),
+            Effect.andThen(updateLatestRequestDate(sql)(inputPapers)),
+          ),
+        existingWorks: preprintIds => findExistingWorks(preprintIds, sql),
+      }
+    }),
+  ),
+  Layer.provide(OpenRouterClient.layerConfig({ apiKey: Config.Redacted('OPENROUTER_API_KEY') })),
 )

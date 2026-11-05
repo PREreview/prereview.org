@@ -1,5 +1,5 @@
-import { HttpClientRequest, HttpClientResponse, type HttpClient } from 'effect/http'
-import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
+import type { OpenRouterClient } from '@effect/ai-openrouter'
+import { Array, Effect, pipe, Schema } from 'effect'
 import { UnableToGetMatches, type Embedding } from './Shared.ts'
 import { Float32ArraySchema } from './Float32Array.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
@@ -9,34 +9,16 @@ interface TitleAndAbstract {
   abstract: string
 }
 
-const EmbeddingResponse = Schema.Struct({
-  data: Schema.Array(
-    Schema.Struct({
-      embedding: Float32ArraySchema,
-      index: Schema.Number,
-      object: Schema.Literal('embedding'),
-    }),
-  ),
-  model: Schema.String,
-  object: Schema.Literal('list'),
-  usage: Schema.Struct({
-    prompt_tokens: Schema.Number,
-    total_tokens: Schema.Number,
-  }),
-})
-
 export const generateEmbeddings: <T extends TitleAndAbstract>(
   papers: ReadonlyArray<T>,
-  apiKey: Redacted.Redacted,
-  httpClient: HttpClient.HttpClient,
+  openRouter: OpenRouterClient.Service,
   tokenizer: Tokenizer,
 ) => Effect.Effect<ReadonlyArray<T & { embedding: Embedding }>, UnableToGetMatches> = Effect.fn(
   'Embeddings.generateEmbeddings',
 )(
   function* <T extends TitleAndAbstract>(
     papers: ReadonlyArray<T>,
-    apiKey: Redacted.Redacted,
-    httpClient: HttpClient.HttpClient,
+    openRouter: OpenRouterClient.Service,
     tokenizer: Tokenizer,
   ) {
     const inputGroups = pipe(papers, Array.chunksOf(200))
@@ -44,41 +26,25 @@ export const generateEmbeddings: <T extends TitleAndAbstract>(
     return yield* Effect.forEach(
       inputGroups,
       Effect.fnUntraced(function* (papers) {
-        const request = yield* pipe(
-          HttpClientRequest.post('https://openrouter.ai/api/v1/embeddings'),
-          HttpClientRequest.bearerToken(apiKey),
-          HttpClientRequest.bodyJson({
+        const response = yield* openRouter.client.createEmbeddings({
+          payload: {
             model: 'thenlper/gte-large',
+            encoding_format: 'float',
             input: papers.map(paper => truncateToModelLimit(`${paper.title}\n\n${paper.abstract}`, 512, tokenizer)),
-          }),
+          },
+        })
+
+        return yield* Effect.forEach(response.data, (item, position) =>
+          Effect.map(Schema.decodeUnknownEffect(Float32ArraySchema)(item.embedding), embedding => ({
+            // oxlint-disable-next-line typescript/no-non-null-assertion
+            ...papers[item.index ?? position]!,
+            embedding,
+          })),
         )
-
-        const response = yield* httpClient.execute(request)
-        yield* HttpClientResponse.filterStatusOk(response)
-
-        const parsed = yield* HttpClientResponse.schemaBodyJson(EmbeddingResponse)(response)
-
-        return parsed.data.map(item => ({
-          // oxlint-disable-next-line typescript/no-non-null-assertion
-          ...papers[item.index]!,
-          embedding: item.embedding,
-        }))
       }),
     ).pipe(Effect.map(Array.flatten))
   },
-  Effect.tapError(
-    Effect.fnUntraced(function* (error) {
-      yield* Effect.annotateLogsScoped({ error })
-
-      if (error._tag === 'HttpClientError' && error.reason._tag === 'StatusCodeError') {
-        yield* Effect.ignore(
-          Effect.andThen(error.reason.response.json, responseBody => Effect.annotateLogsScoped({ responseBody })),
-        )
-      }
-
-      yield* Effect.logError('Failed to generate embeddings')
-    }, Effect.scoped),
-  ),
+  Effect.tapError(error => Effect.logError('Failed to generate embeddings').pipe(Effect.annotateLogs({ error }))),
   Effect.mapError(cause => new UnableToGetMatches({ cause })),
 )
 

@@ -18,6 +18,9 @@ importers:
       '@effect/ai-openai':
         specifier: ^4.1.2
         version: 4.1.2(effect@4.1.2)
+      '@effect/ai-openrouter':
+        specifier: ^4.1.2
+        version: 4.1.2(effect@4.1.2)
       '@effect/platform-node':
         specifier: ^4.1.2
         version: 4.1.2(effect@4.1.2)(redis@6.3.1(@opentelemetry/api@1.9.1))
@@ -684,6 +687,11 @@ packages:
 
   '@effect/ai-openai@4.1.2':
     resolution: {integrity: sha512-u2RkBOj718eQQmZan3mJh0PJDLzhbZ4qFmMc/uSJhS0jmUoiaQI8SsCzENpNk0TRkt8lxEK4urohpeV5/xDWBQ==}
+    peerDependencies:
+      effect: ^4.1.2
+
+  '@effect/ai-openrouter@4.1.2':
+    resolution: {integrity: sha512-iWNUPM4I8t6PZIDj7biJHZF7GUaVyevIiXNOyrd7vhZ4eYeuMyIimuELH+qwPt0AKnpU72mkY11ngBranM7/Lw==}
     peerDependencies:
       effect: ^4.1.2
 
@@ -4718,6 +4726,10 @@ snapshots:
       postcss: 8.5.32
 
   '@effect/ai-openai@4.1.2(effect@4.1.2)':
+    dependencies:
+      effect: 4.1.2
+
+  '@effect/ai-openrouter@4.1.2(effect@4.1.2)':
     dependencies:
       effect: 4.1.2
 

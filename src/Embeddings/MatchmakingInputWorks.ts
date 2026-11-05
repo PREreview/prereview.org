@@ -1,6 +1,6 @@
-import type { HttpClient } from 'effect/http'
+import type { OpenRouterClient } from '@effect/ai-openrouter'
 import type { SqlClient, SqlError } from 'effect/sql'
-import { Effect, Array, Option, type Redacted, Schema, Struct } from 'effect'
+import { Effect, Array, Option, Schema, Struct } from 'effect'
 import { generateEmbeddings } from './OpenRouter.ts'
 import { PgVector, UnableToGetMatches, type Embedding } from './Shared.ts'
 import type { Doi } from '../types/Doi.ts'
@@ -69,8 +69,7 @@ export const ensureMatchmakingInputWorksTable = (
 `
 
 export const getEmbeddingGeneratingAsNeeded = (
-  apiKey: Redacted.Redacted,
-  httpClient: HttpClient.HttpClient,
+  openRouter: OpenRouterClient.Service,
   sql: SqlClient.SqlClient,
   tokenizer: Tokenizer,
 ) =>
@@ -81,7 +80,7 @@ export const getEmbeddingGeneratingAsNeeded = (
       return existing.value
     }
 
-    const generated = yield* generateEmbeddings([inputPaper], apiKey, httpClient, tokenizer).pipe(
+    const generated = yield* generateEmbeddings([inputPaper], openRouter, tokenizer).pipe(
       Effect.map(Array.head),
       Effect.map(Option.getOrThrow),
     )

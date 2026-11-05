@@ -1,8 +1,8 @@
 // oxlint-disable no-comments/disallowComments
-import { Array, Effect, Order, pipe, type Redacted, Record, Schema } from 'effect'
+import { Array, Effect, Order, pipe, Record, Schema } from 'effect'
 import { PgVector, UnableToAddWorksWithRequests, UnableToQuery, type Embedding } from './Shared.ts'
 import type { SqlClient, SqlError } from 'effect/sql'
-import type { HttpClient } from 'effect/http'
+import type { OpenRouterClient } from '@effect/ai-openrouter'
 import { generateEmbeddings } from './OpenRouter.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { Doi } from '../types/Doi.ts'
@@ -218,8 +218,7 @@ export const updateLatestRequestDate = (sql: SqlClient.SqlClient) =>
   )
 
 export const createMissingEmbeddings = (
-  apiKey: Redacted.Redacted,
-  httpClient: HttpClient.HttpClient,
+  openRouter: OpenRouterClient.Service,
   sql: SqlClient.SqlClient,
   tokenizer: Tokenizer,
   languageDetection: typeof LanguageDetection.Service,
@@ -244,7 +243,7 @@ export const createMissingEmbeddings = (
 
     const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding; latestRequest: Temporal.Instant }> =
       onlyLatest.length > 0
-        ? yield* generateEmbeddings(onlyLatest, apiKey, httpClient, tokenizer).pipe(
+        ? yield* generateEmbeddings(onlyLatest, openRouter, tokenizer).pipe(
             Effect.catchTag('UnableToGetMatches', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
           )
         : []
