@@ -267,7 +267,16 @@ const routerWithoutHyperTs = pipe(
         ({ profile: id }) =>
           (env: Env) =>
             profile({ locale: env.locale, profile: id })({
-              getAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
+              getAvatar: EffectToFpts.toTaskEitherK(
+                flow(
+                  Prereviewers.Avatars.get,
+                  Effect.catchTags({
+                    AvatarNotFound: () => Effect.fail('not-found' as const),
+                    AvatarUnavailable: () => Effect.fail('unavailable' as const),
+                  }),
+                ),
+                env.runtime,
+              ),
               getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
               getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
               getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),

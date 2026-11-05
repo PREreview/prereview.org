@@ -260,7 +260,13 @@ export const MyDetailsRouter = pipe(
               : Effect.fail('unavailable' as const),
           env.runtime,
         ),
-        deleteAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.remove, env.runtime),
+        deleteAvatar: EffectToFpts.toTaskEitherK(
+          flow(
+            Prereviewers.Avatars.remove,
+            Effect.mapError(() => 'unavailable' as const),
+          ),
+          env.runtime,
+        ),
         deleteCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.remove, env.runtime),
         deleteLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.remove, env.runtime),
         deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
@@ -282,7 +288,16 @@ export const MyDetailsRouter = pipe(
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getUserOnboarding: EffectToFpts.toTaskEitherK(UserOnboardingStore.get, env.runtime),
         getOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.get, env.runtime),
-        getAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
+        getAvatar: EffectToFpts.toTaskEitherK(
+          flow(
+            Prereviewers.Avatars.get,
+            Effect.catchTags({
+              AvatarNotFound: () => Effect.fail('not-found' as const),
+              AvatarUnavailable: () => Effect.fail('unavailable' as const),
+            }),
+          ),
+          env.runtime,
+        ),
         getSlackUser: EffectToFpts.toTaskEitherK(
           flow(
             SlackUserIds.get,
@@ -324,7 +339,13 @@ export const MyDetailsRouter = pipe(
         ),
         publicUrl: env.publicUrl,
         runtime: env.runtime,
-        saveAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.save, env.runtime),
+        saveAvatar: EffectToFpts.toTaskEitherK(
+          flow(
+            Prereviewers.Avatars.save,
+            Effect.mapError(() => 'unavailable' as const),
+          ),
+          env.runtime,
+        ),
         saveCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.save, env.runtime),
         saveLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.save, env.runtime),
         saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),

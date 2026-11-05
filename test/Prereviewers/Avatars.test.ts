@@ -72,7 +72,7 @@ describe('get', () => {
           Effect.flip,
         )
 
-        expect(actual).toStrictEqual('not-found')
+        expect(actual._tag).toStrictEqual('AvatarNotFound')
       }),
   )
 
@@ -87,7 +87,7 @@ describe('get', () => {
         Effect.flip,
       )
 
-      expect(actual).toStrictEqual('not-found')
+      expect(actual._tag).toStrictEqual('AvatarNotFound')
     }),
   )
 
@@ -102,7 +102,7 @@ describe('get', () => {
         Effect.flip,
       )
 
-      expect(actual).toStrictEqual('unavailable')
+      expect(actual._tag).toStrictEqual('AvatarUnavailable')
     }),
   )
 })
@@ -209,7 +209,7 @@ describe('save', () => {
           Effect.flip,
         )
 
-        expect(actual).toStrictEqual('unavailable')
+        expect(actual._tag).toStrictEqual('AvatarUnavailable')
         expect(set).toHaveBeenCalledExactlyOnceWith(orcid, JSON.stringify(avatarId))
       }),
   )
@@ -231,7 +231,7 @@ describe('save', () => {
           Effect.flip,
         )
 
-        expect(actual).toStrictEqual('unavailable')
+        expect(actual._tag).toStrictEqual('AvatarUnavailable')
       }),
   )
 
@@ -259,7 +259,7 @@ describe('save', () => {
           ]),
         )
 
-        expect(actual.result).toStrictEqual('unavailable')
+        expect(actual.result._tag).toStrictEqual('AvatarUnavailable')
         expect(actual.stored).toStrictEqual(existing === undefined ? Option.none() : Option.some(existing))
       }),
   )
@@ -323,7 +323,7 @@ describe('remove', () => {
         Effect.flip,
       )
 
-      expect(actual).toStrictEqual('unavailable')
+      expect(actual._tag).toStrictEqual('AvatarUnavailable')
     }),
   )
 
@@ -338,7 +338,7 @@ describe('remove', () => {
         Effect.flip,
       )
 
-      expect(actual).toStrictEqual('unavailable')
+      expect(actual._tag).toStrictEqual('AvatarUnavailable')
     }),
   )
 

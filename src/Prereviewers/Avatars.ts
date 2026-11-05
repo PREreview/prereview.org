@@ -1,8 +1,12 @@
-import { Context, Effect, Layer, Option, pipe } from 'effect'
+import { Context, Data, Effect, Layer, Option, pipe } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { CloudinaryAvatars } from '../ExternalInteractions/index.ts'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import { NonEmptyString, type OrcidId } from '../types/index.ts'
+
+export class AvatarNotFound extends Data.TaggedError('AvatarNotFound') {}
+
+export class AvatarUnavailable extends Data.TaggedError('AvatarUnavailable')<{ cause?: unknown }> {}
 
 const AvatarIdSchema = NonEmptyString.NonEmptyStringSchema
 
@@ -43,7 +47,7 @@ export const save = Effect.fn('Avatars.save')(
       yield* destroyInBackground(existing.value)
     }
   },
-  Effect.mapError(() => 'unavailable' as const),
+  Effect.catchTag('FailedToUploadAvatar', error => new AvatarUnavailable({ cause: error })),
 )
 
 export const remove = Effect.fn('Avatars.remove')(
@@ -54,10 +58,7 @@ export const remove = Effect.fn('Avatars.remove')(
 
     yield* destroyInBackground(avatarId)
   },
-  Effect.catchIf(
-    error => error === 'not-found',
-    () => Effect.void,
-  ),
+  Effect.catchTag('AvatarNotFound', () => Effect.void),
 )
 
 const destroyInBackground = (avatarId: NonEmptyString.NonEmptyString) =>
@@ -67,10 +68,7 @@ const maybeGetExistingAvatar = (orcid: OrcidId.OrcidId) =>
   pipe(
     getAvatarId(orcid),
     Effect.map(Option.some),
-    Effect.catchIf(
-      error => error === 'not-found',
-      () => Effect.succeedNone,
-    ),
+    Effect.catchTag('AvatarNotFound', () => Effect.succeedNone),
   )
 
 const getAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId) {
@@ -78,9 +76,9 @@ const getAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId) {
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new AvatarNotFound()), onSome: Effect.succeed })),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
+      SchemaError: () => new AvatarNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -92,7 +90,7 @@ const saveAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId, avatar
   return yield* pipe(
     store.set(orcid, avatarId),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new AvatarUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -108,5 +106,5 @@ const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
     Effect.logError('Unable to access avatars'),
     Effect.annotateLogs({ error: error.message, method: error.method, key: error.key }),
-    Effect.andThen(Effect.fail('unavailable' as const)),
+    Effect.andThen(Effect.fail(new AvatarUnavailable({ cause: error }))),
   )
