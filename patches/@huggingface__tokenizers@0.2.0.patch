@@ -1,14 +1,53 @@
 diff --git a/types/core/Decoder.d.ts b/types/core/Decoder.d.ts
-index 51b2d9026ee961dc193607981140bd35e123dc14..5da8b6052c6dcb783ce429448196840493238fc9 100644
+index 2f8dd0bc6e5cd91818402a26b69eb47ab87ef6d5..69776bfcc69ce83ba5237cecdb56e7c86046e5af 100644
 --- a/types/core/Decoder.d.ts
 +++ b/types/core/Decoder.d.ts
-@@ -1,5 +1,5 @@
- import { Callable } from "@utils";
+@@ -1,6 +1,6 @@
+-import { Callable } from "../utils/index";
 -import type AddedToken from "./AddedToken";
+-import type { TokenizerConfigDecoder } from "../static/tokenizer";
++import { Callable } from "../utils/index.js";
 +import type AddedToken from "./AddedToken.js";
- import type { TokenizerConfigDecoder } from "@static/tokenizer";
++import type { TokenizerConfigDecoder } from "../static/tokenizer.js";
  /**
   * The base class for token decoders.
+  */
+diff --git a/types/core/Normalizer.d.ts b/types/core/Normalizer.d.ts
+index d62dcbf126da6b9005413e8130e0d10424f45643..923ca5b04e8470e1f6eec1b8ea1c723dcc6c0c75 100644
+--- a/types/core/Normalizer.d.ts
++++ b/types/core/Normalizer.d.ts
+@@ -1,5 +1,5 @@
+-import { Callable } from "../utils/index";
+-import type { TokenizerConfigNormalizer } from "../static/tokenizer";
++import { Callable } from "../utils/index.js";
++import type { TokenizerConfigNormalizer } from "../static/tokenizer.js";
+ /**
+  * A base class for text normalization.
+  */
+diff --git a/types/core/PostProcessor.d.ts b/types/core/PostProcessor.d.ts
+index 59001443cda357ab38f38ffd1cdb83fd02e7b62a..3ff92913acf228e44ed25c4172c6be9fc5bb39ea 100644
+--- a/types/core/PostProcessor.d.ts
++++ b/types/core/PostProcessor.d.ts
+@@ -1,5 +1,5 @@
+-import { Callable } from "../utils/index";
+-import type { TokenizerConfigPostProcessor } from "../static/tokenizer";
++import { Callable } from "../utils/index.js";
++import type { TokenizerConfigPostProcessor } from "../static/tokenizer.js";
+ export interface PostProcessedOutput {
+     tokens: string[];
+     tokens_pair?: string[];
+diff --git a/types/core/PreTokenizer.d.ts b/types/core/PreTokenizer.d.ts
+index d4c6a4137c887a077936e214527e0ab145550f46..af49288ab4793b1dbb357963a52a7721e2e4c351 100644
+--- a/types/core/PreTokenizer.d.ts
++++ b/types/core/PreTokenizer.d.ts
+@@ -1,5 +1,5 @@
+-import { Callable } from "../utils/index";
+-import type { PreTokenizeTextOptions } from "../static/tokenizer";
++import { Callable } from "../utils/index.js";
++import type { PreTokenizeTextOptions } from "../static/tokenizer.js";
+ /**
+  * A callable class representing a pre-tokenizer used in tokenization. Subclasses
+  * should implement the `pre_tokenize_text` method to define the specific pre-tokenization logic.
 diff --git a/types/core/Tokenizer.d.ts b/types/core/Tokenizer.d.ts
 index ab7c7aaf6860fc17cd42d28c8f51531abacd35f5..650eb784261f5340598f33e9f12dd6f791eeca99 100644
 --- a/types/core/Tokenizer.d.ts
@@ -31,46 +70,66 @@ index ab7c7aaf6860fc17cd42d28c8f51531abacd35f5..650eb784261f5340598f33e9f12dd6f7
  interface EncodeOptions {
      text_pair?: string | null;
      add_special_tokens?: boolean;
+diff --git a/types/core/TokenizerModel.d.ts b/types/core/TokenizerModel.d.ts
+index 23bf43d0997ef669e38d1a415f40f3489365d8af..32b33cfef6fd96b1ac13d405b199ff0f806cf88c 100644
+--- a/types/core/TokenizerModel.d.ts
++++ b/types/core/TokenizerModel.d.ts
+@@ -1,5 +1,5 @@
+-import { Callable } from "../utils/index";
+-import type { TokenizerModelConfig } from "../static/tokenizer";
++import { Callable } from "../utils/index.js";
++import type { TokenizerModelConfig } from "../static/tokenizer.js";
+ /**
+  * Abstract base class for tokenizer models.
+  */
 diff --git a/types/core/decoder/BPE.d.ts b/types/core/decoder/BPE.d.ts
-index 00af7d7d7cd26b2486facd7a6efc3a5946b83656..8be8692a5a80aaaffe880b27451c2ec841779fb6 100644
+index ff62c4c6f487f3c48b8f5c5e17d8c429da8c3ad0..c40df25aff296ab761abb02a55d3af7fdb49433a 100644
 --- a/types/core/decoder/BPE.d.ts
 +++ b/types/core/decoder/BPE.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import type { TokenizerConfigDecoderBPE } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import type { TokenizerConfigDecoderBPE } from "@static/tokenizer";
++import type { TokenizerConfigDecoderBPE } from "../../static/tokenizer.js";
  declare class BPE extends Decoder {
      suffix: string;
+     constructor(config: TokenizerConfigDecoderBPE);
 diff --git a/types/core/decoder/ByteFallback.d.ts b/types/core/decoder/ByteFallback.d.ts
-index 579860d1bc1fac4313b187a61404ab19f743b0d6..0198c02472fbc5d420fe6414999fe0565c1cf84a 100644
+index a0cf0028f9e52dedd65bbe99fda6df155582771f..dfdd03d4ea6552acdd950e3700baef6f3532f6bb 100644
 --- a/types/core/decoder/ByteFallback.d.ts
 +++ b/types/core/decoder/ByteFallback.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import type { TokenizerConfigDecoderByteFallback } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import type { TokenizerConfigDecoderByteFallback } from "@static/tokenizer";
++import type { TokenizerConfigDecoderByteFallback } from "../../static/tokenizer.js";
  declare class ByteFallback extends Decoder {
      text_decoder: TextDecoder;
+     constructor(config: TokenizerConfigDecoderByteFallback);
 diff --git a/types/core/decoder/ByteLevel.d.ts b/types/core/decoder/ByteLevel.d.ts
-index 1c3bfe8ad55fe08955b8132693d52a65e5903f7d..362828e19147f3d6e7b856151f18e0194eba68e7 100644
+index 12e6c72d23e4171fd03cb1cbe8935aa91ceea128..49f943b8044721cd39147e58a9a4a59c5d4f9755 100644
 --- a/types/core/decoder/ByteLevel.d.ts
 +++ b/types/core/decoder/ByteLevel.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import type { TokenizerConfigDecoderByteLevel } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import type { TokenizerConfigDecoderByteLevel } from "@static/tokenizer";
++import type { TokenizerConfigDecoderByteLevel } from "../../static/tokenizer.js";
  /**
   * Byte-level decoder for tokenization output. Inherits from the `Decoder` class.
+  */
 diff --git a/types/core/decoder/CTC.d.ts b/types/core/decoder/CTC.d.ts
-index 00bbea46ec343a4718545ed3cb7b3aaeaa0457c1..92a17683a076712a3362c83b5b262cb69877ee7d 100644
+index 9bc5d275308afadc9de347c23690f23bb63a0ad8..3caa308c27d7132e5540a839d582fb4f372d86e4 100644
 --- a/types/core/decoder/CTC.d.ts
 +++ b/types/core/decoder/CTC.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import { TokenizerConfigDecoderCTC } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import { TokenizerConfigDecoderCTC } from "@static/tokenizer";
++import { TokenizerConfigDecoderCTC } from "../../static/tokenizer.js";
  /**
   * The CTC (Connectionist Temporal Classification) decoder.
+  * See https://github.com/huggingface/tokenizers/blob/bb38f390a61883fc2f29d659af696f428d1cda6b/tokenizers/src/decoders/ctc.rs
 diff --git a/types/core/decoder/Fuse.d.ts b/types/core/decoder/Fuse.d.ts
 index 9992799866ba587e377f16f9a494c54017b9ba8a..0c31a70c7f3b5cdc081a71ad0b049208239979cb 100644
 --- a/types/core/decoder/Fuse.d.ts
@@ -82,85 +141,100 @@ index 9992799866ba587e377f16f9a494c54017b9ba8a..0c31a70c7f3b5cdc081a71ad0b049208
   * Fuse simply fuses all tokens into one big string.
   * It's usually the last decoding step anyway, but this decoder
 diff --git a/types/core/decoder/Metaspace.d.ts b/types/core/decoder/Metaspace.d.ts
-index 87f18f74bb5d18691d53930514174840ee2e3551..5f4bc7d49f216dc424b72315db36bd308123a2de 100644
+index b3136feef6652e5d149572355dfd792c9f9a2bde..7fe4ac7ccf8eda74851d32406767b1442771b89b 100644
 --- a/types/core/decoder/Metaspace.d.ts
 +++ b/types/core/decoder/Metaspace.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import { TokenizerConfigDecoderMetaspace } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import { TokenizerConfigDecoderMetaspace } from "@static/tokenizer";
++import { TokenizerConfigDecoderMetaspace } from "../../static/tokenizer.js";
  /**
   * MetaspaceDecoder class extends the Decoder class and decodes Metaspace tokenization.
+  */
 diff --git a/types/core/decoder/Replace.d.ts b/types/core/decoder/Replace.d.ts
-index 7c47eb09cf5e6b6b41bed4f50c32bff54d5eaa23..753b6c4be5ef5e47426b509b4bc3cd56b54677b6 100644
+index 27a525feddc2063660204ade696b7c4d7ae2f491..96edaf6aca355edbfd65471cf54dff907f298c41 100644
 --- a/types/core/decoder/Replace.d.ts
 +++ b/types/core/decoder/Replace.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import { TokenizerConfigDecoderReplace } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import { TokenizerConfigDecoderReplace } from "@static/tokenizer";
++import { TokenizerConfigDecoderReplace } from "../../static/tokenizer.js";
  declare class Replace extends Decoder {
      config: TokenizerConfigDecoderReplace;
+     pattern: RegExp | null;
 diff --git a/types/core/decoder/Sequence.d.ts b/types/core/decoder/Sequence.d.ts
-index 0f5d2b41990febb8ee7142ac319c2d2a3d27bbbe..fdd9699c95531d3427ab6ccfa80e8407e7c6606e 100644
+index 7c658c6a1ae0a04bf84f212e8ed7994add952f50..c8e5a84698906e2d89461d135f5803c0ca8b574c 100644
 --- a/types/core/decoder/Sequence.d.ts
 +++ b/types/core/decoder/Sequence.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import { TokenizerConfigDecoderSequence } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import { TokenizerConfigDecoderSequence } from "@static/tokenizer";
++import { TokenizerConfigDecoderSequence } from "../../static/tokenizer.js";
  /**
   * Apply a sequence of decoders.
+  */
 diff --git a/types/core/decoder/Strip.d.ts b/types/core/decoder/Strip.d.ts
-index f284775219133fe042b5cd428b17a45e779d028a..89b6a47bb2cef2ff9da2c70e7711768a30c95717 100644
+index 6e1835a4e37ac2ed4746b06d4310d87f6d8d0902..3e0a30bdfe2cf00541cb52c0d642d54364e4167e 100644
 --- a/types/core/decoder/Strip.d.ts
 +++ b/types/core/decoder/Strip.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import { TokenizerConfigDecoderStrip } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import { TokenizerConfigDecoderStrip } from "@static/tokenizer";
++import { TokenizerConfigDecoderStrip } from "../../static/tokenizer.js";
  declare class Strip extends Decoder {
      content: string;
+     start: number;
 diff --git a/types/core/decoder/WordPiece.d.ts b/types/core/decoder/WordPiece.d.ts
-index a5982711ce0a25763febcd5e783d678ca01dc13a..6bd084f732994dc84d4e3247bcba3447dfa46e5e 100644
+index 81a96beb2c63b9322d86dda0dbe7df61e6dfa0a0..4bf79c993811fbf542f8fa23543d4190a96a9a0a 100644
 --- a/types/core/decoder/WordPiece.d.ts
 +++ b/types/core/decoder/WordPiece.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Decoder from "../Decoder";
+-import { TokenizerConfigDecoderWordPiece } from "../../static/tokenizer";
 +import Decoder from "../Decoder.js";
- import { TokenizerConfigDecoderWordPiece } from "@static/tokenizer";
++import { TokenizerConfigDecoderWordPiece } from "../../static/tokenizer.js";
  /**
   * A decoder that decodes a list of WordPiece tokens into a single string.
+  */
 diff --git a/types/core/decoder/create_decoder.d.ts b/types/core/decoder/create_decoder.d.ts
-index 39ce51652cc36602fef0fd2e97e220170ac5bdf6..b9fb79ee5ee2b57c7f6ddac86d2602d661ace2ee 100644
+index e82fc920888637965a08d99b53b5fb00c3307f62..c16c20bf8c1f2cfb43bb1407d3f18092551a1be3 100644
 --- a/types/core/decoder/create_decoder.d.ts
 +++ b/types/core/decoder/create_decoder.d.ts
 @@ -1,4 +1,4 @@
 -import type Decoder from "../Decoder";
+-import type { TokenizerConfigDecoder } from "../../static/tokenizer";
 +import type Decoder from "../Decoder.js";
- import type { TokenizerConfigDecoder } from "@static/tokenizer";
++import type { TokenizerConfigDecoder } from "../../static/tokenizer.js";
  declare function create_decoder(config: TokenizerConfigDecoder): Decoder | null;
  export default create_decoder;
 diff --git a/types/core/normalizer/BertNormalizer.d.ts b/types/core/normalizer/BertNormalizer.d.ts
-index 184229425a459a8ba045756175abf342d08b1392..d10aaa5268e44251290da230522c68d8ba0772bb 100644
+index a0393a178bc5d642a04a498a3924e5636b9801ba..c23e02ccd6d95247f645f370afc44b91addcbd11 100644
 --- a/types/core/normalizer/BertNormalizer.d.ts
 +++ b/types/core/normalizer/BertNormalizer.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerBert } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerBert } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerBert } from "../../static/tokenizer.js";
  /**
   * A class representing a normalizer used in BERT tokenization.
+  */
 diff --git a/types/core/normalizer/Lowercase.d.ts b/types/core/normalizer/Lowercase.d.ts
-index a9f1d50b8161659c3ee5fb38fa2b578d5ef6d532..4cb7d770e4c7b7548b1a144c52e7a78c3d6f4fea 100644
+index 27d874f8a8c8ed9ee6ae54a00aa4d639ec7e4afb..2294019800272d7b18aca68e266d98dcfe5e0a18 100644
 --- a/types/core/normalizer/Lowercase.d.ts
 +++ b/types/core/normalizer/Lowercase.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerLowercase } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerLowercase } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerLowercase } from "../../static/tokenizer.js";
  /**
   * A Normalizer that lowercases the input string.
+  */
 diff --git a/types/core/normalizer/NFC.d.ts b/types/core/normalizer/NFC.d.ts
 index 83ab5af64eeba18a7e856c2c2f282d99e5869688..fdcbdf21aae170121a0102dafdf08419a943e92d 100644
 --- a/types/core/normalizer/NFC.d.ts
@@ -202,65 +276,77 @@ index 4a7e831a3a1eec9027f7cbceaebde84bc4474b96..38bf304afe59669d001833415e0acc70
   * A normalizer that applies Unicode normalization form KD (NFKD) to the input text.
   * Compatibility Decomposition.
 diff --git a/types/core/normalizer/Precompiled.d.ts b/types/core/normalizer/Precompiled.d.ts
-index 4c887a65d63a037cae4cba7aa970cae7d084e037..34a25e012a072ab7808d8f482ecd97448f692396 100644
+index de2b97136db626381ee4881edea985c8285d1b60..329066a53a5a27cfec021fc4899d53d910cf586c 100644
 --- a/types/core/normalizer/Precompiled.d.ts
 +++ b/types/core/normalizer/Precompiled.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerPrecompiled } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerPrecompiled } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerPrecompiled } from "../../static/tokenizer.js";
  /**
   * A normalizer that applies a precompiled charsmap.
+  * This is useful for applying complex normalizations in C++ and exposing them to JavaScript.
 diff --git a/types/core/normalizer/Prepend.d.ts b/types/core/normalizer/Prepend.d.ts
-index d0f96a60af608e2845239b9246c162afad53b951..6a18f5b1fc8bf9a19a780f81ef31e2e1a20f65fa 100644
+index cdf7667672afcc25600c1ab9c2aa50d889c3daa6..ea2858008486d2094287faad996956d221d6e5ea 100644
 --- a/types/core/normalizer/Prepend.d.ts
 +++ b/types/core/normalizer/Prepend.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerPrepend } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerPrepend } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerPrepend } from "../../static/tokenizer.js";
  /**
   * A Normalizer that prepends a string to the input string.
+  */
 diff --git a/types/core/normalizer/Replace.d.ts b/types/core/normalizer/Replace.d.ts
-index d78bad0060670f3c102f3aad83a13bdf3fe302bb..ef83d667485ae6af7d284ebe1b33235d50532e8e 100644
+index f3a0028a3260b05ce4e35e96eb29dd4a3cc05fbb..dd7f97172032955cb6b3d6260970130b7accee22 100644
 --- a/types/core/normalizer/Replace.d.ts
 +++ b/types/core/normalizer/Replace.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerReplace } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerReplace } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerReplace } from "../../static/tokenizer.js";
  /**
   * Replace normalizer that replaces occurrences of a pattern with a given string or regular expression.
+  */
 diff --git a/types/core/normalizer/Sequence.d.ts b/types/core/normalizer/Sequence.d.ts
-index 74df4e366b01a507b9e9d7a918a280925f587663..a541ed0e604cb83144b1e008c77859c7031e9871 100644
+index bfb7f1dcf5f7def630c7cc7bfe7ff8ff7d9092a1..cfde6c2bb923941ef67b0126f38fd031bfd05ad8 100644
 --- a/types/core/normalizer/Sequence.d.ts
 +++ b/types/core/normalizer/Sequence.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerSequence } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerSequence } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerSequence } from "../../static/tokenizer.js";
  /**
   * A Normalizer that applies a sequence of Normalizers.
+  */
 diff --git a/types/core/normalizer/Strip.d.ts b/types/core/normalizer/Strip.d.ts
-index c7eb894309e7b7bde34b077ea99716621c475622..1b33b82faf99b7e7d50f9f7783d66ce3cc839a79 100644
+index 4e21ecdbb1412cdf965116fdc3f7696aa0d43bf5..84e10e6c85ffcb22ee0712c75ac251b0732725f6 100644
 --- a/types/core/normalizer/Strip.d.ts
 +++ b/types/core/normalizer/Strip.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerStrip } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerStrip } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerStrip } from "../../static/tokenizer.js";
  /**
   * A normalizer that strips leading and/or trailing whitespace from the input text.
+  */
 diff --git a/types/core/normalizer/StripAccents.d.ts b/types/core/normalizer/StripAccents.d.ts
-index 593c5625d51b2c95c3f6f593c68b1d08ecbfcdf9..ce1045db4df8711c54a7663eb0efd897bfbf7d97 100644
+index 0df8c02e532387a0aea3aa9725656446525f9845..9961c70dbe1b05e7223e482e8f1ceda597f198e4 100644
 --- a/types/core/normalizer/StripAccents.d.ts
 +++ b/types/core/normalizer/StripAccents.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import Normalizer from "../Normalizer";
+-import type { TokenizerConfigNormalizerStripAccents } from "../../static/tokenizer";
 +import Normalizer from "../Normalizer.js";
- import type { TokenizerConfigNormalizerStripAccents } from "@static/tokenizer";
++import type { TokenizerConfigNormalizerStripAccents } from "../../static/tokenizer.js";
  /**
   * StripAccents normalizer removes all accents from the text.
+  */
 diff --git a/types/core/normalizer/UnicodeNormalizer.d.ts b/types/core/normalizer/UnicodeNormalizer.d.ts
 index 2dd59ee407997f48ac13e84c82afcf5795ff810b..5e22fc8224b0559e0ce1e97513ade8a7aca837b6 100644
 --- a/types/core/normalizer/UnicodeNormalizer.d.ts
@@ -272,25 +358,28 @@ index 2dd59ee407997f48ac13e84c82afcf5795ff810b..5e22fc8224b0559e0ce1e97513ade8a7
   * A normalizer that applies Unicode normalization to the input text.
   */
 diff --git a/types/core/normalizer/create_normalizer.d.ts b/types/core/normalizer/create_normalizer.d.ts
-index d6cd7dbbd7e21b11505ae81428f1c077716f7532..6723e89208f5ad77bed1bc52ede56efcd0a79107 100644
+index 9fac808e7dbacf2cde7fc1656b7607ddf633fd6c..9c8ddfb1026f4fffd48a4b686302774fb5e46141 100644
 --- a/types/core/normalizer/create_normalizer.d.ts
 +++ b/types/core/normalizer/create_normalizer.d.ts
 @@ -1,4 +1,4 @@
- import type { TokenizerConfigNormalizer } from "@static/tokenizer";
+-import type { TokenizerConfigNormalizer } from "../../static/tokenizer";
 -import type Normalizer from "../Normalizer";
++import type { TokenizerConfigNormalizer } from "../../static/tokenizer.js";
 +import type Normalizer from "../Normalizer.js";
  declare function create_normalizer(config: TokenizerConfigNormalizer): Normalizer | null;
  export default create_normalizer;
 diff --git a/types/core/postProcessor/BertProcessing.d.ts b/types/core/postProcessor/BertProcessing.d.ts
-index 92924b5edb2b5618f9c2289758f08b84341c1d5c..0f97b51c2c1467e184fab4ec79396d826e953a7b 100644
+index 721f433e5801716d0999bc92a95dea2a4a28ebde..c45e7ad56c978b130f9ea5a8faa4da232048e776 100644
 --- a/types/core/postProcessor/BertProcessing.d.ts
 +++ b/types/core/postProcessor/BertProcessing.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PostProcessor, { type PostProcessedOutput } from "../PostProcessor";
+-import type { TokenizerConfigPostProcessorBert } from "../../static/tokenizer";
 +import PostProcessor, { type PostProcessedOutput } from "../PostProcessor.js";
- import type { TokenizerConfigPostProcessorBert } from "@static/tokenizer";
++import type { TokenizerConfigPostProcessorBert } from "../../static/tokenizer.js";
  /**
   * A post-processor that adds special tokens to the beginning and end of the input.
+  */
 diff --git a/types/core/postProcessor/ByteLevel.d.ts b/types/core/postProcessor/ByteLevel.d.ts
 index 1990a91390825a9038af7e5e8e2408e5119428cc..497a9b7ddf0e2540269038fe3592a591606a4c31 100644
 --- a/types/core/postProcessor/ByteLevel.d.ts
@@ -302,43 +391,50 @@ index 1990a91390825a9038af7e5e8e2408e5119428cc..497a9b7ddf0e2540269038fe3592a591
   * A PostProcessor that returns the given tokens as is.
   */
 diff --git a/types/core/postProcessor/RobertaProcessing.d.ts b/types/core/postProcessor/RobertaProcessing.d.ts
-index ad388ca5dcfa8e4c0f1e9aa32adae009e5f54b5f..81c3b5308d1a49c10c889721337903337e01a6de 100644
+index b5a07eefc5966688f5fc7d9f96de2632e7e4aabe..b761098933b541dc7a68f8bce8b038a5014e6684 100644
 --- a/types/core/postProcessor/RobertaProcessing.d.ts
 +++ b/types/core/postProcessor/RobertaProcessing.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PostProcessor, { type PostProcessedOutput } from "../PostProcessor";
+-import type { TokenizerConfigPostProcessorRoberta } from "../../static/tokenizer";
 +import PostProcessor, { type PostProcessedOutput } from "../PostProcessor.js";
- import type { TokenizerConfigPostProcessorRoberta } from "@static/tokenizer";
++import type { TokenizerConfigPostProcessorRoberta } from "../../static/tokenizer.js";
  /**
   * A post-processor that adds special tokens to the beginning and end of the input.
+  */
 diff --git a/types/core/postProcessor/Sequence.d.ts b/types/core/postProcessor/Sequence.d.ts
-index 7154c15b88dc31487d213a7d04f35deba9701a27..12b655c748815bd97875f8b085eb36ecadf5e109 100644
+index ce98b26d36325aaf30b3762bb68bb83114d5211b..17ab413dee2bdd259c4581c91c61d1aa1ef7a98d 100644
 --- a/types/core/postProcessor/Sequence.d.ts
 +++ b/types/core/postProcessor/Sequence.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PostProcessor, { type PostProcessedOutput } from "../PostProcessor";
+-import type { TokenizerConfigPostProcessorSequence } from "../../static/tokenizer";
 +import PostProcessor, { type PostProcessedOutput } from "../PostProcessor.js";
- import type { TokenizerConfigPostProcessorSequence } from "@static/tokenizer";
++import type { TokenizerConfigPostProcessorSequence } from "../../static/tokenizer.js";
  /**
   * A post-processor that applies multiple post-processors in sequence.
+  */
 diff --git a/types/core/postProcessor/TemplateProcessing.d.ts b/types/core/postProcessor/TemplateProcessing.d.ts
-index 39fcb1eef28df10a2ec2a3d835993ee351521fc0..781b0140b4ad23b626c0595dfbced95d8c12ba36 100644
+index a431ce4c5c2e5dc12e99e0b48628f9260986b175..679f7b5da5721b849697af96542d5fd06c79a28d 100644
 --- a/types/core/postProcessor/TemplateProcessing.d.ts
 +++ b/types/core/postProcessor/TemplateProcessing.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PostProcessor, { type PostProcessedOutput } from "../PostProcessor";
+-import type { TokenizerConfigPostProcessorTemplateProcessing } from "../../static/tokenizer";
 +import PostProcessor, { type PostProcessedOutput } from "../PostProcessor.js";
- import type { TokenizerConfigPostProcessorTemplateProcessing } from "@static/tokenizer";
++import type { TokenizerConfigPostProcessorTemplateProcessing } from "../../static/tokenizer.js";
  /**
   * Post processor that replaces special tokens in a template with actual tokens.
+  */
 diff --git a/types/core/postProcessor/create_post_processor.d.ts b/types/core/postProcessor/create_post_processor.d.ts
-index 67c583cb09f7d4a13be848891ac62c97968fc84f..710633a4159c76127731e3be9f08ccf2ed41181e 100644
+index bd065cf4088df6c02ec7f25204ef25233bb2cda9..7d79116577b440e11b2fb4aa82c7c649fc4ffa43 100644
 --- a/types/core/postProcessor/create_post_processor.d.ts
 +++ b/types/core/postProcessor/create_post_processor.d.ts
 @@ -1,4 +1,4 @@
 -import type PostProcessor from "../PostProcessor";
+-import type { TokenizerConfigPostProcessor } from "../../static/tokenizer";
 +import type PostProcessor from "../PostProcessor.js";
- import type { TokenizerConfigPostProcessor } from "@static/tokenizer";
++import type { TokenizerConfigPostProcessor } from "../../static/tokenizer.js";
  declare function create_post_processor(config: TokenizerConfigPostProcessor): PostProcessor | null;
  export default create_post_processor;
 diff --git a/types/core/preTokenizer/BertPreTokenizer.d.ts b/types/core/preTokenizer/BertPreTokenizer.d.ts
@@ -352,85 +448,101 @@ index 6da64a5ba9523464f04bcadc59c1988bad6c571f..878c84630b067bed3826d3016ac39ee5
   * A PreTokenizer that splits text into wordpieces using a basic tokenization scheme
   * similar to that used in the original implementation of BERT.
 diff --git a/types/core/preTokenizer/ByteLevel.d.ts b/types/core/preTokenizer/ByteLevel.d.ts
-index 6fbe24483de35354a2647e57879fe1af5a55ceca..746e921f248318a60477475d408823ec4b235624 100644
+index 81a1463c82e1540e305f3b4b1a9b22dc9dc313bf..a3504b88eebe42537f5dc0d9e630ab2143f2d579 100644
 --- a/types/core/preTokenizer/ByteLevel.d.ts
 +++ b/types/core/preTokenizer/ByteLevel.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerByteLevel } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerByteLevel } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerByteLevel } from "../../static/tokenizer.js";
  /**
   * A pre-tokenizer that splits text into Byte-Pair-Encoding (BPE) subwords.
+  */
 diff --git a/types/core/preTokenizer/Digits.d.ts b/types/core/preTokenizer/Digits.d.ts
-index 98e4179131da1b867ff147f530e7d8be92e01d40..c0db31f67d3f8b3022cd3ebf253607cc379f63e7 100644
+index a8bb2e9e27e6c11e404b08ef9e4e71a990eaa4a5..fad0bb3b7363b20a335f03114859fdebd0e7c689 100644
 --- a/types/core/preTokenizer/Digits.d.ts
 +++ b/types/core/preTokenizer/Digits.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerDigits } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerDigits } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerDigits } from "../../static/tokenizer.js";
  /**
   * Splits text based on digits.
+  */
 diff --git a/types/core/preTokenizer/FixedLength.d.ts b/types/core/preTokenizer/FixedLength.d.ts
-index 16c32f915da3147a80cebca9415d445bb3fa0c83..398a17e29fe6e3a178bacdd03742df6d41f9ef2f 100644
+index 0f270d3ca77b3f3264abbb05bf6dcf08d98e82a8..d04757cfd9890b2b2df4e94e3be90a249b661495 100644
 --- a/types/core/preTokenizer/FixedLength.d.ts
 +++ b/types/core/preTokenizer/FixedLength.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerFixedLength } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerFixedLength } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerFixedLength } from "../../static/tokenizer.js";
  /**
   * Splits into fixed-length tokens.
+  */
 diff --git a/types/core/preTokenizer/Metaspace.d.ts b/types/core/preTokenizer/Metaspace.d.ts
-index 771ba8a379011ad3ae74ef237b008551ec7e0dc4..3b00c123e8d87e7ef2159ba7e92df0fc7bc7e4ec 100644
+index 026b57c95175feb9d610a62b8246bdd559f3a5f4..18cb9e53b22c5617243646a711b95181f7828e11 100644
 --- a/types/core/preTokenizer/Metaspace.d.ts
 +++ b/types/core/preTokenizer/Metaspace.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerMetaspace, PrependScheme, PreTokenizeTextOptions } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerMetaspace, PrependScheme, PreTokenizeTextOptions } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerMetaspace, PrependScheme, PreTokenizeTextOptions } from "../../static/tokenizer.js";
  /**
   * This PreTokenizer replaces spaces with the given replacement character, adds a prefix space if requested,
+  * and returns a list of tokens.
 diff --git a/types/core/preTokenizer/Punctuation.d.ts b/types/core/preTokenizer/Punctuation.d.ts
-index 8baffd55f1076357993cedcf1f35473dc7ba3dca..47db947425a64fe3c85e64257e898666f5fb58bd 100644
+index 59b54199b89ac27a568a8ab77de9dfd65dabe71c..5caf07c4e3760e2a3a1498a46ee62ba66a865b15 100644
 --- a/types/core/preTokenizer/Punctuation.d.ts
 +++ b/types/core/preTokenizer/Punctuation.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerPunctuation } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerPunctuation } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerPunctuation } from "../../static/tokenizer.js";
  /**
   * Splits text based on punctuation.
+  */
 diff --git a/types/core/preTokenizer/Replace.d.ts b/types/core/preTokenizer/Replace.d.ts
-index 71423cea8ed89b314ac26fdd2087b96ee0b67b1d..86eda92dc5ccc207beadb55ef137c0fad01cf463 100644
+index 4b810aab0210977bb5376e50ebcacc8644c4eb1a..fa98265a4c14f5790c258cdb4dc5486acd3b7617 100644
 --- a/types/core/preTokenizer/Replace.d.ts
 +++ b/types/core/preTokenizer/Replace.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerReplace } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerReplace } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerReplace } from "../../static/tokenizer.js";
  declare class Replace extends PreTokenizer {
      config: TokenizerConfigPreTokenizerReplace;
+     pattern: RegExp | null;
 diff --git a/types/core/preTokenizer/Sequence.d.ts b/types/core/preTokenizer/Sequence.d.ts
-index 4f59101335057486f95e3430ab6f216bafe81f70..226e31f9f43439516fe994d059a4f517cec31661 100644
+index c0e537fce5a08490e2d30a430bb4de9a4295dda6..c001b56681b0b1d051130ccd3d632200d70a1b98 100644
 --- a/types/core/preTokenizer/Sequence.d.ts
 +++ b/types/core/preTokenizer/Sequence.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerSequence } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerSequence } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerSequence } from "../../static/tokenizer.js";
  /**
   * A pre-tokenizer that applies a sequence of pre-tokenizers to the input text.
+  */
 diff --git a/types/core/preTokenizer/Split.d.ts b/types/core/preTokenizer/Split.d.ts
-index 2cad615245804680f3bdf6f121b09db59c0cab68..9ad20432daebaba77eaee43c2457c7014fe427c1 100644
+index 34e8988f887fbc3ec1fa901df776fa717b47f08a..9c14ceba1ad8e44c30092d8191bac67bfa2beaef 100644
 --- a/types/core/preTokenizer/Split.d.ts
 +++ b/types/core/preTokenizer/Split.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizerSplit } from "../../static/tokenizer";
 +import PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizerSplit } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizerSplit } from "../../static/tokenizer.js";
  /**
   * Splits text using a given pattern.
+  */
 diff --git a/types/core/preTokenizer/Whitespace.d.ts b/types/core/preTokenizer/Whitespace.d.ts
 index 059f381b2d6969edd916dba5fdde39046f62bc3d..5858fb47d4adeebd3a05c6757d8666684ad7bafd 100644
 --- a/types/core/preTokenizer/Whitespace.d.ts
@@ -452,69 +564,79 @@ index 7d1943830a72649a787ed405359cae1e5e76ea58..30ed4810a90eb47312b514c345f7d1a1
   * Splits a string of text by whitespace characters into individual tokens.
   */
 diff --git a/types/core/preTokenizer/create_pre_tokenizer.d.ts b/types/core/preTokenizer/create_pre_tokenizer.d.ts
-index d5c3407f551e8e73bb7f229d5264aa126437d295..8d9eb4bf1982652b4680f48714698034d576fea4 100644
+index 9b1fc99c34e4798575dd3171dc4d9141b4c6244f..504b8dcc222527c95d6e7face7d5051a69f936be 100644
 --- a/types/core/preTokenizer/create_pre_tokenizer.d.ts
 +++ b/types/core/preTokenizer/create_pre_tokenizer.d.ts
 @@ -1,4 +1,4 @@
 -import type PreTokenizer from "../PreTokenizer";
+-import type { TokenizerConfigPreTokenizer } from "../../static/tokenizer";
 +import type PreTokenizer from "../PreTokenizer.js";
- import type { TokenizerConfigPreTokenizer } from "@static/tokenizer";
++import type { TokenizerConfigPreTokenizer } from "../../static/tokenizer.js";
  declare function create_pre_tokenizer(config: TokenizerConfigPreTokenizer): PreTokenizer | null;
  export default create_pre_tokenizer;
 diff --git a/types/core/tokenizerModelImplementations/BPE.d.ts b/types/core/tokenizerModelImplementations/BPE.d.ts
-index af066e6392e126ddc9486c3fb08773ddc4567788..1c3221955f229da2c04ab3999b4e025e830a9e38 100644
+index 6e40e1c53400485982d6ec57af84236f6da4f808..47b86d74a74de3f7d1f688d2302dbee638f8c307 100644
 --- a/types/core/tokenizerModelImplementations/BPE.d.ts
 +++ b/types/core/tokenizerModelImplementations/BPE.d.ts
-@@ -1,5 +1,5 @@
+@@ -1,6 +1,6 @@
 -import TokenizerModel from "../TokenizerModel";
 -import LRUCache from "../../utils/data-structures/LRUCache";
+-import type { TokenizerConfigBPEModel } from "../../static/tokenizer";
 +import TokenizerModel from "../TokenizerModel.js";
 +import LRUCache from "../../utils/data-structures/LRUCache.js";
- import type { TokenizerConfigBPEModel } from "@static/tokenizer";
++import type { TokenizerConfigBPEModel } from "../../static/tokenizer.js";
  declare class BPE extends TokenizerModel {
      config: TokenizerConfigBPEModel;
+     /** An array of BPE merges as strings. */
 diff --git a/types/core/tokenizerModelImplementations/Legacy.d.ts b/types/core/tokenizerModelImplementations/Legacy.d.ts
-index f8e4e647dfc8d3752750a243656a038f63d4cf00..7480a2564ae421190f0fc6d0605c9772ebf3a87b 100644
+index 355e41150c73b67d1b1879c7f4ef2fc7f2d41519..ba121905a2315005391b648beb3f782f88f15773 100644
 --- a/types/core/tokenizerModelImplementations/Legacy.d.ts
 +++ b/types/core/tokenizerModelImplementations/Legacy.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import TokenizerModel from "../TokenizerModel";
+-import type { TokenizerModelConfigLegacy } from "../../static/tokenizer";
 +import TokenizerModel from "../TokenizerModel.js";
- import type { TokenizerModelConfigLegacy } from "@static/tokenizer";
++import type { TokenizerModelConfigLegacy } from "../../static/tokenizer.js";
  /**
   * Legacy tokenizer class for tokenizers with only a vocabulary.
+  */
 diff --git a/types/core/tokenizerModelImplementations/Unigram.d.ts b/types/core/tokenizerModelImplementations/Unigram.d.ts
-index 7e715e16a1908b0a415011620be5ca83bb515d6f..591175a7915a811e8dc53b904a81b73d9601529e 100644
+index b67a4b77c10be58fd3ac6d1a6f824b3b855a1f93..568946369ae0f1f47dcb6d0368a349391965d105 100644
 --- a/types/core/tokenizerModelImplementations/Unigram.d.ts
 +++ b/types/core/tokenizerModelImplementations/Unigram.d.ts
-@@ -1,6 +1,6 @@
+@@ -1,7 +1,7 @@
 -import TokenizerModel from "../TokenizerModel";
 -import CharTrie from "../../utils/data-structures/CharTrie";
 -import TokenLattice from "../../utils/data-structures/TokenLattice";
+-import type { TokenizerConfigUnigramModel } from "../../static/tokenizer";
 +import TokenizerModel from "../TokenizerModel.js";
 +import CharTrie from "../../utils/data-structures/CharTrie.js";
 +import TokenLattice from "../../utils/data-structures/TokenLattice.js";
- import type { TokenizerConfigUnigramModel } from "@static/tokenizer";
++import type { TokenizerConfigUnigramModel } from "../../static/tokenizer.js";
  /**
   * Class representing a Unigram tokenizer model.
+  */
 diff --git a/types/core/tokenizerModelImplementations/WordPiece.d.ts b/types/core/tokenizerModelImplementations/WordPiece.d.ts
-index 0569e2b9516ddc04d13a6b652da83432eddbbe8d..2130327fc9d54fb5dcc4127e06976e8072e46ef3 100644
+index 81bd4d80a9114cfadba7ed537eaa5fc190199f21..e5203ae8bb65ecfee0cbd2da7bdb29982c76e05a 100644
 --- a/types/core/tokenizerModelImplementations/WordPiece.d.ts
 +++ b/types/core/tokenizerModelImplementations/WordPiece.d.ts
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
 -import TokenizerModel from "../TokenizerModel";
+-import { TokenizerConfigWordPieceModel } from "../../static/tokenizer";
 +import TokenizerModel from "../TokenizerModel.js";
- import { TokenizerConfigWordPieceModel } from "@static/tokenizer";
++import { TokenizerConfigWordPieceModel } from "../../static/tokenizer.js";
  /**
   * A subclass of TokenizerModel that uses WordPiece encoding to encode tokens.
+  */
 diff --git a/types/core/tokenizerModelImplementations/create_tokenizer_model.d.ts b/types/core/tokenizerModelImplementations/create_tokenizer_model.d.ts
-index d100fb5bf0b04534492cc261cde0eb7acb9a129e..6e8ca080b58ee38599c7c2c7aac32e468c069c08 100644
+index 6d661ed89b321b103bb1fdca54890ea8ee41871e..53d91a8934bad209a29585532bfbee7fcae375b6 100644
 --- a/types/core/tokenizerModelImplementations/create_tokenizer_model.d.ts
 +++ b/types/core/tokenizerModelImplementations/create_tokenizer_model.d.ts
 @@ -1,4 +1,4 @@
 -import type TokenizerModel from "../TokenizerModel";
+-import type { TokenizerModelConfig, TokenizerConfig } from "../../static/tokenizer";
 +import type TokenizerModel from "../TokenizerModel.js";
- import type { TokenizerModelConfig, TokenizerConfig } from "@static/tokenizer";
++import type { TokenizerModelConfig, TokenizerConfig } from "../../static/tokenizer.js";
  declare function create_tokenizer_model(model_config: TokenizerModelConfig, config: TokenizerConfig): TokenizerModel;
  export default create_tokenizer_model;
 diff --git a/types/decoders.d.ts b/types/decoders.d.ts
@@ -655,6 +777,16 @@ index d817d81db24e23de93f2a86c53d9a56e6f57df42..1f7c0fb0398d90306610e3cba0216587
 +export { default as SplitPreTokenizer } from "./core/preTokenizer/Split.js";
 +export { default as WhitespacePreTokenizer } from "./core/preTokenizer/Whitespace.js";
 +export { default as WhitespaceSplitPreTokenizer } from "./core/preTokenizer/WhitespaceSplit.js";
+diff --git a/types/utils/core.d.ts b/types/utils/core.d.ts
+index 4ff67a2fdd6475b95b9de2471892bd540f99c5f9..6771e863b3664de5c318675fc22448cc9fb2df1e 100644
+--- a/types/utils/core.d.ts
++++ b/types/utils/core.d.ts
+@@ -1,4 +1,4 @@
+-import { ReplacePattern } from "../static/tokenizer";
++import { ReplacePattern } from "../static/tokenizer.js";
+ /**
+  * Clean up a list of simple English tokenization artifacts like spaces before punctuations and abbreviated forms.
+  * @param text The text to clean up.
 diff --git a/types/utils/index.d.ts b/types/utils/index.d.ts
 index e157b7b43e562700685a82c5a439e5c238c0b606..0203a6b149931284e438129447d5345a1c7a921c 100644
 --- a/types/utils/index.d.ts
