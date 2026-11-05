@@ -14,6 +14,7 @@ import {
   type WorkWithRequest,
 } from './WorksWithRequests.ts'
 import { PgClient } from '@effect/sql-pg'
+import type { Temporal } from '@js-temporal/polyfill'
 import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { OrcidId } from '../types/OrcidId.ts'

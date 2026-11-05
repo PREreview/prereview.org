@@ -25,6 +25,7 @@ const program = Effect.fnUntraced(function* () {
           preprint.authors,
           Filter.fromPredicateOption(author => Option.fromNullishOr(author.orcid)),
         ),
+        latestRequest: reviewRequest.published,
       }
     }),
   )

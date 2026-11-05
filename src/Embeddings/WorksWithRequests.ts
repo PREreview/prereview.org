@@ -7,6 +7,7 @@ import { generateEmbeddings } from './OpenRouter.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import { Temporal } from '@js-temporal/polyfill'
 import type { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
 import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../Preprints/index.ts'
@@ -16,6 +17,7 @@ export interface WorkWithRequest {
   title: string
   abstract: string
   authors: ReadonlyArray<OrcidId>
+  latestRequest: Temporal.Instant
 }
 
 // DOIs are case-insensitive, so the stored form is lowercased to make lookups and conflicts work regardless of case.
