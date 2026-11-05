@@ -1,5 +1,5 @@
 import { OpenRouterClient } from '@effect/ai-openrouter'
-import { Array, Config, Context, Effect, Layer, pipe, Struct } from 'effect'
+import { Array, Context, Effect, Layer, pipe, Struct } from 'effect'
 import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
   ensureMatchmakingInputWorksTable,
@@ -90,5 +90,4 @@ export const embeddingsLayer = pipe(
       }
     }),
   ),
-  Layer.provide(OpenRouterClient.layerConfig({ apiKey: Config.Redacted('OPENROUTER_API_KEY') })),
 )

@@ -27,6 +27,7 @@ import { Name } from './types/Name.ts'
 import { Slug } from './types/Slug.ts'
 import { Uuid } from './types/Uuid.ts'
 import { PrereviewTeam } from './user.ts'
+import { OpenRouterClient } from '@effect/ai-openrouter'
 
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({
@@ -108,12 +109,13 @@ pipe(
   Layer.provide(LanguageDetection.layerCld),
   Layer.provide(ClubsData),
   Layer.provide(OpenAiLanguageModel.model('gpt-5.6-sol')),
-  Layer.provide(
+  Layer.provide([
     OpenAiClient.layerConfig({
       apiKey: Config.Redacted('OPENAI_API_KEY'),
       organizationId: Config.Redacted('OPENAI_ORGANIZATION').pipe(Config.withDefault(undefined)),
     }),
-  ),
+    OpenRouterClient.layerConfig({ apiKey: Config.Redacted('OPENROUTER_API_KEY') }),
+  ]),
   Layer.provide([
     NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
     NodeHttpClient.layerNodeHttp,

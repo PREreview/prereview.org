@@ -20,6 +20,7 @@ import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
+import { OpenRouterClient } from '@effect/ai-openrouter'
 
 pipe(
   Cli(process.argv.slice(2)),
@@ -56,6 +57,7 @@ pipe(
         OpenAlex.layer,
         Orcid.layer,
         Philsci.layer,
+        OpenRouterClient.layerConfig({ apiKey: Config.Redacted('OPENROUTER_API_KEY') }),
       ]),
       Layer.provideMerge(
         Layer.mergeAll(
