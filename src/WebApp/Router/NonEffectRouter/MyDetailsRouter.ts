@@ -27,16 +27,11 @@ import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
 import {
   changeAvatar,
   changeCareerStage,
-  changeCareerStageVisibility,
   changeContactEmailAddress,
   changeLanguages,
-  changeLanguagesVisibility,
   changeLocation,
-  changeLocationVisibility,
   changeOpenForRequests,
-  changeOpenForRequestsVisibility,
   changeResearchInterests,
-  changeResearchInterestsVisibility,
   myDetails,
 } from '../../my-details-page/index.ts'
 import type * as Response from '../../Response/index.ts'
@@ -125,18 +120,6 @@ export const MyDetailsRouter = pipe(
       ),
     ),
     pipe(
-      Routes.changeCareerStageVisibilityMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeCareerStageVisibility({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
       Routes.changeOpenForRequestsMatch.parser,
       P.map(
         () => (env: Env) =>
@@ -149,34 +132,10 @@ export const MyDetailsRouter = pipe(
       ),
     ),
     pipe(
-      Routes.changeOpenForRequestsVisibilityMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeOpenForRequestsVisibility({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
       Routes.changeResearchInterestsMatch.parser,
       P.map(
         () => (env: Env) =>
           changeResearchInterests({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
-      Routes.changeResearchInterestsVisibilityMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeResearchInterestsVisibility({
             body: env.body,
             locale: env.locale,
             method: env.method,
@@ -201,30 +160,6 @@ export const MyDetailsRouter = pipe(
       P.map(
         () => (env: Env) =>
           changeLanguages({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
-      Routes.changeLocationVisibilityMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeLocationVisibility({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
-      Routes.changeLanguagesVisibilityMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeLanguagesVisibility({
             body: env.body,
             locale: env.locale,
             method: env.method,

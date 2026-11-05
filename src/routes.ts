@@ -745,21 +745,9 @@ export const changeCareerStageMatch = pipe(
   P.andThen(P.end),
 )
 
-export const changeCareerStageVisibilityMatch = pipe(
-  P.lit('my-details'),
-  P.andThen(P.lit('change-career-stage-visibility')),
-  P.andThen(P.end),
-)
-
 export const changeOpenForRequestsMatch = pipe(
   P.lit('my-details'),
   P.andThen(P.lit('change-open-for-requests')),
-  P.andThen(P.end),
-)
-
-export const changeOpenForRequestsVisibilityMatch = pipe(
-  P.lit('my-details'),
-  P.andThen(P.lit('change-open-for-requests-visibility')),
   P.andThen(P.end),
 )
 
@@ -769,27 +757,9 @@ export const changeResearchInterestsMatch = pipe(
   P.andThen(P.end),
 )
 
-export const changeResearchInterestsVisibilityMatch = pipe(
-  P.lit('my-details'),
-  P.andThen(P.lit('change-research-interests-visibility')),
-  P.andThen(P.end),
-)
-
 export const changeLocationMatch = pipe(P.lit('my-details'), P.andThen(P.lit('change-location')), P.andThen(P.end))
 
-export const changeLocationVisibilityMatch = pipe(
-  P.lit('my-details'),
-  P.andThen(P.lit('change-location-visibility')),
-  P.andThen(P.end),
-)
-
 export const changeLanguagesMatch = pipe(P.lit('my-details'), P.andThen(P.lit('change-languages')), P.andThen(P.end))
-
-export const changeLanguagesVisibilityMatch = pipe(
-  P.lit('my-details'),
-  P.andThen(P.lit('change-languages-visibility')),
-  P.andThen(P.end),
-)
 
 export const changeContactEmailAddressMatch = pipe(
   P.lit('my-details'),
