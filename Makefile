@@ -129,6 +129,10 @@ cli-local: .env node_modules start-services
 	POSTGRES_URL=postgres://postgres:password@$(shell docker compose port postgres 5432) \
 	node --env-file .env src/cli.ts --wizard
 
+.PHONY: cli-sandbox
+cli-sandbox:
+	flyctl --config fly.sandbox.toml ssh console --region iad --pty --command "node dist/cli.js --wizard"
+
 .PHONY: cli-prod
 cli-prod:
 	flyctl --config fly.prod.toml ssh console --region iad --pty --command "node dist/cli.js --wizard"
