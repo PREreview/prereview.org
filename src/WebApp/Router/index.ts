@@ -601,6 +601,8 @@ const WriteCommentFlowRouter = [
 
 const MyDetailsRouter = useMiddleware(
   [
+    MakeStaticRoute('GET', Routes.RemoveAvatar, MyDetails.RemoveAvatarPage),
+    MakeStaticRoute('POST', Routes.RemoveAvatar, MyDetails.RemoveAvatarSubmission),
     MakeStaticRoute('GET', Routes.ChangeRequestedReviewNotifications, MyDetails.RequestedReviewNotificationsPage),
     MakeStaticRoute(
       'POST',

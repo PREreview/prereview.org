@@ -109,6 +109,7 @@ export const ClubsData = '/clubs-data'
 export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
 export const ChangeRequestedReviewNotifications = '/my-details/change-requested-review-notifications'
+export const RemoveAvatar = '/my-details/remove-avatar'
 export const Matchmaking = '/matchmaking'
 
 const stringStartsWith =

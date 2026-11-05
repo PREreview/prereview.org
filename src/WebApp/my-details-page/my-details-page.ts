@@ -33,7 +33,6 @@ import {
   disconnectSlackMatch,
   myDetailsMatch,
   profileMatch,
-  removeAvatarMatch,
 } from '../../routes.ts'
 import type { SlackUser } from '../../slack-user.ts'
 import { ProfileId } from '../../types/index.ts'
@@ -166,7 +165,7 @@ export function createPage({
                       <a href="${format(changeAvatarMatch.formatter, {})}">${t('changeAvatar')(visuallyHidden)}</a>
                     </li>
                     <li>
-                      <a href="${format(removeAvatarMatch.formatter, {})}">${t('removeAvatar')(visuallyHidden)}</a>
+                      <a href="${Routes.RemoveAvatar}">${t('removeAvatar')(visuallyHidden)}</a>
                     </li>
                   </ul>
                 </dd>
