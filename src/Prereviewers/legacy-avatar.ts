@@ -8,13 +8,6 @@ export interface GetAvatarEnv {
   getAvatar: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', URL>
 }
 
-export interface SaveAvatarEnv {
-  saveAvatar: (
-    orcid: OrcidId,
-    file: { path: string; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
-  ) => TE.TaskEither<'unavailable', void>
-}
-
 export const getAvatar = (orcid: OrcidId) =>
   pipe(
     RTE.ask<GetAvatarEnv>(),
@@ -30,12 +23,3 @@ export const maybeGetAvatar = flow(
       .exhaustive(),
   ),
 )
-
-export const saveAvatar = (
-  orcid: OrcidId,
-  file: { path: string; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
-) =>
-  pipe(
-    RTE.ask<SaveAvatarEnv>(),
-    RTE.chainTaskEitherK(({ saveAvatar }) => saveAvatar(orcid, file)),
-  )

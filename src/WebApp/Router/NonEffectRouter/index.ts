@@ -7,21 +7,7 @@ import {
   HttpServerRequest,
   HttpServerResponse,
 } from 'effect/http'
-import {
-  type FileSystem,
-  type Path,
-  Effect,
-  flow,
-  Match,
-  Option,
-  pipe,
-  Record,
-  type Context,
-  type Scope,
-  String,
-  Struct,
-  Tuple,
-} from 'effect'
+import { Effect, flow, Match, Option, pipe, Record, type Context, String, Struct, Tuple } from 'effect'
 import type { WorkflowEngine } from 'effect/workflow'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -83,9 +69,6 @@ export const nonEffectRouter: Effect.Effect<
   | ScietyListToken
   | SessionStore
   | EffectToFpts.ContextServices<Env['runtime']>
-  | FileSystem.FileSystem
-  | Path.Path
-  | Scope.Scope
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -128,7 +111,6 @@ export const nonEffectRouter: Effect.Effect<
           Match.when(String.includes('application/x-www-form-urlencoded'), () =>
             Effect.map(request.urlParamsBody, Record.fromEntries),
           ),
-          Match.when(String.includes('multipart/form-data'), () => Effect.result(request.multipart)),
           Match.orElse(() => Effect.void),
         )
       : Effect.void,

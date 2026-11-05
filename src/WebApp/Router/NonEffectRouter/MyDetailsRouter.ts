@@ -24,7 +24,7 @@ import {
 } from '../../connect-orcid/index.ts'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
 import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
-import { changeAvatar, changeContactEmailAddress, myDetails } from '../../my-details-page/index.ts'
+import { changeContactEmailAddress, myDetails } from '../../my-details-page/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
 import { withLegacyReadErrors } from './LegacyStoreErrors.ts'
@@ -90,18 +90,6 @@ export const MyDetailsRouter = pipe(
     pipe(
       Routes.disconnectSlackMatch.parser,
       P.map(() => (env: Env) => disconnectSlack({ locale: env.locale, method: env.method, user: env.loggedInUser })),
-    ),
-    pipe(
-      Routes.changeAvatarMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeAvatar({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
     ),
     pipe(
       Routes.changeContactEmailAddressMatch.parser,
@@ -201,13 +189,6 @@ export const MyDetailsRouter = pipe(
         ),
         publicUrl: env.publicUrl,
         runtime: env.runtime,
-        saveAvatar: EffectToFpts.toTaskEitherK(
-          flow(
-            Prereviewers.Avatars.save,
-            Effect.mapError(() => 'unavailable' as const),
-          ),
-          env.runtime,
-        ),
         saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
         saveSlackUserId: EffectToFpts.toTaskEitherK(
           Effect.fnUntraced(function* (orcid: OrcidId, slackUser: SlackUserId) {

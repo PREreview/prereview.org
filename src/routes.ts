@@ -743,8 +743,6 @@ export const myPrereviewsMatch = pipe(P.lit('my-prereviews'), P.andThen(P.end))
 
 export const myDetailsMatch = pipe(P.lit('my-details'), P.andThen(P.end))
 
-export const changeAvatarMatch = pipe(P.lit('my-details'), P.andThen(P.lit('change-avatar')), P.andThen(P.end))
-
 export const changeContactEmailAddressMatch = pipe(
   P.lit('my-details'),
   P.andThen(P.lit('change-email-address')),
