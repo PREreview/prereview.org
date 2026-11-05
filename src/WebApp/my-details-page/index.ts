@@ -1,8 +1,3 @@
 export { changeAvatar } from './change-avatar.ts'
-export { changeCareerStage } from './change-career-stage.ts'
 export { changeContactEmailAddress } from './change-contact-email-address.ts'
-export { changeLanguages } from './change-languages.ts'
-export { changeLocation } from './change-location.ts'
-export { changeOpenForRequests } from './change-open-for-requests.ts'
-export { changeResearchInterests } from './change-research-interests.ts'
 export { myDetails } from './my-details.ts'

@@ -15,11 +15,6 @@ export interface GetLocationEnv {
   getLocation: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', Location>
 }
 
-export interface EditLocationEnv extends GetLocationEnv {
-  deleteLocation: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
-  saveLocation: (orcid: OrcidId, location: Location) => TE.TaskEither<'unavailable', void>
-}
-
 export const LocationC = C.struct({
   value: NonEmptyStringC,
   visibility: C.literal('public', 'restricted'),
@@ -39,12 +34,3 @@ export const maybeGetLocation = flow(
       .exhaustive(),
   ),
 )
-
-export const deleteLocation = (orcid: OrcidId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteLocation }: EditLocationEnv) => deleteLocation(orcid)))
-
-export const saveLocation = (
-  orcid: OrcidId,
-  location: Location,
-): RTE.ReaderTaskEither<EditLocationEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveLocation }) => saveLocation(orcid, location)))

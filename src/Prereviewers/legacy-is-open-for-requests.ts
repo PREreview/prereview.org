@@ -20,10 +20,6 @@ export interface IsOpenForRequestsEnv {
   isOpenForRequests: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', IsOpenForRequests>
 }
 
-export interface EditOpenForRequestsEnv extends IsOpenForRequestsEnv {
-  saveOpenForRequests: (orcid: OrcidId, isOpenForRequests: IsOpenForRequests) => TE.TaskEither<'unavailable', void>
-}
-
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
 // Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
 export const IsOpenForRequestsC = C.make(
@@ -54,11 +50,3 @@ export const maybeIsOpenForRequests = flow(
       .exhaustive(),
   ),
 )
-
-export const saveOpenForRequests = (
-  orcid: OrcidId,
-  isOpenForRequests: IsOpenForRequests,
-): RTE.ReaderTaskEither<EditOpenForRequestsEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ saveOpenForRequests }) => saveOpenForRequests(orcid, isOpenForRequests)),
-  )

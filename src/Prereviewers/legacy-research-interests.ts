@@ -15,11 +15,6 @@ export interface GetResearchInterestsEnv {
   getResearchInterests: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', ResearchInterests>
 }
 
-export interface EditResearchInterestsEnv extends GetResearchInterestsEnv {
-  deleteResearchInterests: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
-  saveResearchInterests: (orcid: OrcidId, researchInterests: ResearchInterests) => TE.TaskEither<'unavailable', void>
-}
-
 export const ResearchInterestsC = C.struct({
   value: NonEmptyStringC,
   visibility: C.literal('public', 'restricted'),
@@ -39,16 +34,3 @@ export const maybeGetResearchInterests = flow(
       .exhaustive(),
   ),
 )
-
-export const deleteResearchInterests = (orcid: OrcidId) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ deleteResearchInterests }: EditResearchInterestsEnv) => deleteResearchInterests(orcid)),
-  )
-
-export const saveResearchInterests = (
-  orcid: OrcidId,
-  researchInterests: ResearchInterests,
-): RTE.ReaderTaskEither<EditResearchInterestsEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ saveResearchInterests }) => saveResearchInterests(orcid, researchInterests)),
-  )

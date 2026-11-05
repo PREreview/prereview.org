@@ -15,11 +15,6 @@ export interface GetLanguagesEnv {
   getLanguages: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', Languages>
 }
 
-export interface EditLanguagesEnv extends GetLanguagesEnv {
-  deleteLanguages: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
-  saveLanguages: (orcid: OrcidId, languages: Languages) => TE.TaskEither<'unavailable', void>
-}
-
 export const LanguagesC = C.struct({
   value: NonEmptyStringC,
   visibility: C.literal('public', 'restricted'),
@@ -39,12 +34,3 @@ export const maybeGetLanguages = flow(
       .exhaustive(),
   ),
 )
-
-export const deleteLanguages = (orcid: OrcidId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteLanguages }: EditLanguagesEnv) => deleteLanguages(orcid)))
-
-export const saveLanguages = (
-  orcid: OrcidId,
-  languages: Languages,
-): RTE.ReaderTaskEither<EditLanguagesEnv, 'unavailable', void> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveLanguages }) => saveLanguages(orcid, languages)))

@@ -24,32 +24,16 @@ import {
 } from '../../connect-orcid/index.ts'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
 import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
-import {
-  changeAvatar,
-  changeCareerStage,
-  changeContactEmailAddress,
-  changeLanguages,
-  changeLocation,
-  changeOpenForRequests,
-  changeResearchInterests,
-  myDetails,
-} from '../../my-details-page/index.ts'
+import { changeAvatar, changeContactEmailAddress, myDetails } from '../../my-details-page/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
-import { withLegacyReadErrors, withLegacyWriteErrors } from './LegacyStoreErrors.ts'
+import { withLegacyReadErrors } from './LegacyStoreErrors.ts'
 
 export const MyDetailsRouter = pipe(
   [
     pipe(
       Routes.myDetailsMatch.parser,
       P.map(() => (env: Env) => myDetails({ locale: env.locale, user: env.loggedInUser })),
-    ),
-    pipe(
-      Routes.changeCareerStageMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeCareerStage({ body: env.body, method: env.method, locale: env.locale, user: env.loggedInUser }),
-      ),
     ),
     pipe(
       Routes.connectOrcidMatch.parser,
@@ -120,54 +104,6 @@ export const MyDetailsRouter = pipe(
       ),
     ),
     pipe(
-      Routes.changeOpenForRequestsMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeOpenForRequests({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
-      Routes.changeResearchInterestsMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeResearchInterests({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
-      Routes.changeLocationMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeLocation({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
-      Routes.changeLanguagesMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          changeLanguages({
-            body: env.body,
-            locale: env.locale,
-            method: env.method,
-            user: env.loggedInUser,
-          }),
-      ),
-    ),
-    pipe(
       Routes.changeContactEmailAddressMatch.parser,
       P.map(
         () => (env: Env) =>
@@ -191,20 +127,7 @@ export const MyDetailsRouter = pipe(
               : Effect.fail('unavailable' as const),
           env.runtime,
         ),
-        deleteCareerStage: EffectToFpts.toTaskEitherK(
-          withLegacyWriteErrors(Prereviewers.CareerStages.remove),
-          env.runtime,
-        ),
-        deleteLanguages: EffectToFpts.toTaskEitherK(
-          withLegacyWriteErrors(Prereviewers.LanguagesStore.remove),
-          env.runtime,
-        ),
-        deleteLocation: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.Locations.remove), env.runtime),
         deleteOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.remove, env.runtime),
-        deleteResearchInterests: EffectToFpts.toTaskEitherK(
-          withLegacyWriteErrors(Prereviewers.ResearchInterestsStore.remove),
-          env.runtime,
-        ),
         deleteSlackUserId: EffectToFpts.toTaskEitherK(
           Effect.fnUntraced(function* (orcid: OrcidId) {
             yield* pipe(
@@ -285,18 +208,7 @@ export const MyDetailsRouter = pipe(
           ),
           env.runtime,
         ),
-        saveCareerStage: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.CareerStages.save), env.runtime),
-        saveLanguages: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.LanguagesStore.save), env.runtime),
-        saveLocation: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.Locations.save), env.runtime),
-        saveOpenForRequests: EffectToFpts.toTaskEitherK(
-          withLegacyWriteErrors(Prereviewers.IsOpenForRequestsStore.save),
-          env.runtime,
-        ),
         saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
-        saveResearchInterests: EffectToFpts.toTaskEitherK(
-          withLegacyWriteErrors(Prereviewers.ResearchInterestsStore.save),
-          env.runtime,
-        ),
         saveSlackUserId: EffectToFpts.toTaskEitherK(
           Effect.fnUntraced(function* (orcid: OrcidId, slackUser: SlackUserId) {
             yield* SlackUserIds.save(orcid, slackUser)
