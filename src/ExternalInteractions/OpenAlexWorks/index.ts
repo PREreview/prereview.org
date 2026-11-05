@@ -2,6 +2,7 @@ import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { OpenAlex } from '../../ExternalApis/index.ts'
 import { GetCategories } from './GetCategories/index.ts'
 import { GetCategoriesForAReviewRequest } from './GetCategoriesForAReviewRequest/index.ts'
+import { GetFrontmatter } from './GetFrontmatter/index.ts'
 
 export { CategoriesAreNotAvailable, type CategoriesForAReviewRequest } from './GetCategoriesForAReviewRequest/index.ts'
 
@@ -16,6 +17,12 @@ export class OpenAlexWorks extends Context.Service<
     ) => Effect.Effect<
       Effect.Success<ReturnType<typeof GetCategoriesForAReviewRequest>>,
       Effect.Error<ReturnType<typeof GetCategoriesForAReviewRequest>>
+    >
+    getFrontmatter: (
+      ...args: Parameters<typeof GetFrontmatter>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof GetFrontmatter>>,
+      Effect.Error<ReturnType<typeof GetFrontmatter>>
     >
   }
 >()('OpenAlexWorks') {}
@@ -33,6 +40,7 @@ const make: Effect.Effect<typeof OpenAlexWorks.Service, never, OpenAlex.OpenAlex
   return {
     getCategories: flow(GetCategories, Effect.provide(context)),
     getCategoriesForAReviewRequest: flow(GetCategoriesForAReviewRequest, Effect.provide(context)),
+    getFrontmatter: flow(GetFrontmatter, Effect.provide(context)),
   }
 })
 
