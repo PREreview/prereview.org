@@ -16,12 +16,7 @@ import type {
 import * as Routes from '../../routes.ts'
 import {
   changeAvatarMatch,
-  changeCareerStageMatch,
   changeContactEmailAddressMatch,
-  changeLanguagesMatch,
-  changeLocationMatch,
-  changeOpenForRequestsMatch,
-  changeResearchInterestsMatch,
   connectOrcidMatch,
   connectSlackMatch,
   disconnectOrcidMatch,
@@ -279,9 +274,7 @@ export function createPage({
                     Option.isNone,
                     () => html`
                       <dd>
-                        <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                          >${t('enterPreferenceReviewRequests')()}</a
-                        >
+                        <a href="${Routes.ChangeOpenForRequests}">${t('enterPreferenceReviewRequests')()}</a>
                       </dd>
                     `,
                   )
@@ -311,7 +304,7 @@ export function createPage({
                             () => html`
                               <ul>
                                 <li>
-                                  <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                                  <a href="${Routes.ChangeOpenForRequests}"
                                     >${t('changePreferenceReviewRequests')(visuallyHidden)}</a
                                   >
                                 </li>
@@ -326,7 +319,7 @@ export function createPage({
                           .with(
                             { value: false },
                             () => html`
-                              <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                              <a href="${Routes.ChangeOpenForRequests}"
                                 >${t('changePreferenceReviewRequests')(visuallyHidden)}</a
                               >
                             `,
@@ -348,7 +341,7 @@ export function createPage({
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeCareerStageMatch.formatter, {})}">${t('enterCareerStage')()}</a>
+                  <a href="${Routes.ChangeCareerStage}">${t('enterCareerStage')()}</a>
                 </dd>
               `,
             )
@@ -367,9 +360,7 @@ export function createPage({
                 <dd>
                   <ul>
                     <li>
-                      <a href="${format(changeCareerStageMatch.formatter, {})}"
-                        >${t('changeCareerStage')(visuallyHidden)}</a
-                      >
+                      <a href="${Routes.ChangeCareerStage}">${t('changeCareerStage')(visuallyHidden)}</a>
                     </li>
                     <li>
                       <a href="${Routes.ChangeCareerStageVisibility}"
@@ -390,7 +381,7 @@ export function createPage({
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeResearchInterestsMatch.formatter, {})}">${t('enterResearchInterests')()}</a>
+                  <a href="${Routes.ChangeResearchInterests}">${t('enterResearchInterests')()}</a>
                 </dd>
               `,
             )
@@ -409,9 +400,7 @@ export function createPage({
                 <dd>
                   <ul>
                     <li>
-                      <a href="${format(changeResearchInterestsMatch.formatter, {})}"
-                        >${t('changeResearchInterests')(visuallyHidden)}</a
-                      >
+                      <a href="${Routes.ChangeResearchInterests}">${t('changeResearchInterests')(visuallyHidden)}</a>
                     </li>
                     <li>
                       <a href="${Routes.ChangeResearchInterestsVisibility}"
@@ -432,7 +421,7 @@ export function createPage({
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeLocationMatch.formatter, {})}">${t('enterLocation')()}</a>
+                  <a href="${Routes.ChangeLocation}">${t('enterLocation')()}</a>
                 </dd>
               `,
             )
@@ -451,7 +440,7 @@ export function createPage({
                 <dd>
                   <ul>
                     <li>
-                      <a href="${format(changeLocationMatch.formatter, {})}">${t('changeLocation')(visuallyHidden)}</a>
+                      <a href="${Routes.ChangeLocation}">${t('changeLocation')(visuallyHidden)}</a>
                     </li>
                     <li>
                       <a href="${Routes.ChangeLocationVisibility}">${t('setLocationVisibility')(visuallyHidden)}</a>
@@ -470,7 +459,7 @@ export function createPage({
               Option.isNone,
               () => html`
                 <dd>
-                  <a href="${format(changeLanguagesMatch.formatter, {})}">${t('enterLanguages')()}</a>
+                  <a href="${Routes.ChangeLanguages}">${t('enterLanguages')()}</a>
                 </dd>
               `,
             )
@@ -489,9 +478,7 @@ export function createPage({
                 <dd>
                   <ul>
                     <li>
-                      <a href="${format(changeLanguagesMatch.formatter, {})}"
-                        >${t('changeLanguages')(visuallyHidden)}</a
-                      >
+                      <a href="${Routes.ChangeLanguages}">${t('changeLanguages')(visuallyHidden)}</a>
                     </li>
                     <li>
                       <a href="${Routes.ChangeLanguagesVisibility}">${t('setLanguagesVisibility')(visuallyHidden)}</a>

@@ -603,6 +603,51 @@ const MyDetailsRouter = useMiddleware(
   [
     MakeStaticRoute('GET', Routes.RemoveAvatar, MyDetails.RemoveAvatarPage),
     MakeStaticRoute('POST', Routes.RemoveAvatar, MyDetails.RemoveAvatarSubmission),
+    MakeStaticRoute('GET', Routes.ChangeLanguages, MyDetails.LanguagesPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeLanguages,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.LanguagesSubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeLocation, MyDetails.LocationPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeLocation,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.LocationSubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeResearchInterests, MyDetails.ResearchInterestsPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeResearchInterests,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.ResearchInterestsSubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeCareerStage, MyDetails.CareerStagePage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeCareerStage,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.CareerStageSubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeOpenForRequests, MyDetails.OpenForRequestsPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeOpenForRequests,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.OpenForRequestsSubmission),
+      ),
+    ),
     MakeStaticRoute('GET', Routes.ChangeCareerStageVisibility, MyDetails.CareerStageVisibilityPage),
     MakeStaticRoute(
       'POST',
