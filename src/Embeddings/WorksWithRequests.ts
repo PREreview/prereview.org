@@ -1,5 +1,5 @@
 // oxlint-disable no-comments/disallowComments
-import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
+import { Array, Effect, Order, pipe, type Redacted, Record, Schema } from 'effect'
 import { PgVector, UnableToAddWorksWithRequests, UnableToQuery, type Embedding } from './Shared.ts'
 import type { SqlClient, SqlError } from 'effect/sql'
 import type { HttpClient } from 'effect/http'
@@ -7,6 +7,7 @@ import { generateEmbeddings } from './OpenRouter.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
+import { OrderInstant } from '../types/Temporal.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import type { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
@@ -17,7 +18,7 @@ export interface WorkWithRequest {
   title: string
   abstract: string
   authors: ReadonlyArray<OrcidId>
-  latestRequest: Temporal.Instant
+  requestedAt: Temporal.Instant
 }
 
 // DOIs are case-insensitive, so the stored form is lowercased to make lookups and conflicts work regardless of case.
@@ -200,9 +201,17 @@ export const createMissingEmbeddings = (
 
     const papersWithoutEmbeddings = inputPapers.filter(paper => !existingKeys.has(encodePreprintId(paper.preprintId)))
 
-    const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding }> =
-      papersWithoutEmbeddings.length > 0
-        ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer).pipe(
+    const onlyLatest = pipe(
+      papersWithoutEmbeddings,
+      Array.groupBy(paper => encodePreprintId(paper.preprintId)),
+      Record.values,
+      Array.map(Array.max(Order.mapInput(OrderInstant, (paper: WorkWithRequest) => paper.requestedAt))),
+      Array.map(paper => ({ ...paper, latestRequest: paper.requestedAt })),
+    )
+
+    const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding; latestRequest: Temporal.Instant }> =
+      onlyLatest.length > 0
+        ? yield* generateEmbeddings(onlyLatest, apiKey, httpClient, tokenizer).pipe(
             Effect.catchTag('UnableToGetMatches', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
           )
         : []
