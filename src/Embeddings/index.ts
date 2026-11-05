@@ -3,7 +3,7 @@ import { Array, Config, Context, Effect, Layer, pipe, Struct } from 'effect'
 import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
   ensureMatchmakingInputWorksTable,
-  getEmbeddingsGeneratingAsNeeded,
+  getEmbeddingGeneratingAsNeeded,
   type MatchmakingInputWork,
 } from './MatchmakingInputWorks.ts'
 import {
@@ -69,7 +69,9 @@ export const embeddingsLayer = Layer.effect(
         function* (inputPapers, inputOrcidId, languages) {
           return yield* pipe(
             inputPapers,
-            getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
+            Effect.forEach(getEmbeddingGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer), {
+              concurrency: 'unbounded',
+            }),
             Effect.map(calcFloat32ArrayMean),
             Effect.andThen(getMatches(5, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
             Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetMatches({ cause })),
