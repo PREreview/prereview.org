@@ -11,6 +11,7 @@ import {
   ensureRequestEmbeddingsTable,
   findExistingWorks,
   getMatches,
+  updateLatestRequestDate,
   type WorkWithRequest,
 } from './WorksWithRequests.ts'
 import { PgClient } from '@effect/sql-pg'
@@ -78,7 +79,11 @@ export const embeddingsLayer = Layer.effect(
           Effect.logError('Unable to get matches').pipe(Effect.annotateLogs({ error: error.cause })),
         ),
       ),
-      addRequests: createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection),
+      addRequests: (inputPapers: ReadonlyArray<WorkWithRequest>) =>
+        pipe(
+          createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection)(inputPapers),
+          Effect.andThen(updateLatestRequestDate(sql)(inputPapers)),
+        ),
       existingWorks: preprintIds => findExistingWorks(preprintIds, sql),
     }
   }),

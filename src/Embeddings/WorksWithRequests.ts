@@ -179,6 +179,10 @@ const RequestEmbeddingsSelect = Schema.Array(
   }),
 )
 
+// oxlint-disable-next-line no-unused-vars
+export const updateLatestRequestDate = (sql: SqlClient.SqlClient) => (inputPapers: ReadonlyArray<WorkWithRequest>) =>
+  Effect.void
+
 export const createMissingEmbeddings = (
   apiKey: Redacted.Redacted,
   httpClient: HttpClient.HttpClient,
