@@ -62,10 +62,17 @@ const DEPTH_WINDOWS: ReadonlyArray<readonly [number, number]> = [
 
 const windowLabel = ([start, end]: readonly [number, number]): string => `${start}-${end}`
 
-const pickFromWindow = (
-  candidates: ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number }>,
+const pickFromWindow = <T>(
+  candidates: ReadonlyArray<T>,
   [start, end]: readonly [number, number],
-): Effect.Effect<Option.Option<Match>> => {
+): Effect.Effect<
+  Option.Option<
+    T & {
+      rank: number
+      window: string
+    }
+  >
+> => {
   const slice = candidates.slice(start, end)
   if (!Array.isReadonlyArrayNonEmpty(slice)) return Effect.succeed(Option.none())
 
@@ -82,9 +89,7 @@ const pickFromWindow = (
   )
 }
 
-export const pickSurveyPapers = Effect.fnUntraced(function* (
-  candidates: ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number }>,
-) {
+export const pickSurveyPapers = Effect.fnUntraced(function* <T>(candidates: ReadonlyArray<T>) {
   const top = candidates.slice(...TOP_WINDOW).map((pick, rank) => ({
     ...pick,
     rank,
