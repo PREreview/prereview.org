@@ -5,4 +5,9 @@ import { HandleResponse } from './HandleResponse.ts'
 
 export type { UsersProfileSetInput } from './UsersProfileSetInput.ts'
 
-export const UsersProfileSet = flow(CreateRequest, Effect.andThen(HttpClient.execute), Effect.andThen(HandleResponse))
+export const UsersProfileSet = flow(
+  CreateRequest,
+  Effect.andThen(HttpClient.execute),
+  Effect.andThen(HandleResponse),
+  Effect.withSpan('Slack.usersProfileSet'),
+)

@@ -9,4 +9,5 @@ export const GetCategories = (doi: Doi.Doi) =>
     Effect.timeout('2 seconds'),
     Effect.map(CategoriesFromWork),
     Effect.catchTag('TimeoutError', error => new OpenAlex.WorkIsUnavailable({ cause: error })),
+    Effect.withSpan('OpenAlexWorks.getCategories', { attributes: { doi } }),
   )

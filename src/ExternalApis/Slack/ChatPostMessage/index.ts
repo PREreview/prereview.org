@@ -5,4 +5,9 @@ import { HandleResponse } from './HandleResponse.ts'
 
 export type { ChatPostMessageInput } from './ChatPostMessageInput.ts'
 
-export const ChatPostMessage = flow(CreateRequest, Effect.andThen(HttpClient.execute), Effect.andThen(HandleResponse))
+export const ChatPostMessage = flow(
+  CreateRequest,
+  Effect.andThen(HttpClient.execute),
+  Effect.andThen(HandleResponse),
+  Effect.withSpan('Slack.chatPostMessage'),
+)

@@ -9,4 +9,5 @@ export const GetPersonalDetails = flow(
   Effect.andThen(HttpClient.execute),
   Effect.andThen(HandleResponse),
   Effect.catchTag('HttpClientError', error => new PersonalDetailsAreUnavailable({ cause: error })),
+  Effect.withSpan('Orcid.getPersonalDetails'),
 )

@@ -5,4 +5,9 @@ import { HandleResponse } from './HandleResponse.ts'
 
 export type { ChatDeleteInput } from './ChatDeleteInput.ts'
 
-export const ChatDelete = flow(CreateRequest, Effect.andThen(HttpClient.execute), Effect.andThen(HandleResponse))
+export const ChatDelete = flow(
+  CreateRequest,
+  Effect.andThen(HttpClient.execute),
+  Effect.andThen(HandleResponse),
+  Effect.withSpan('Slack.chatDelete'),
+)

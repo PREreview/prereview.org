@@ -11,4 +11,5 @@ export const GetPage = flow(
   Effect.andThen(HttpClient.execute),
   Effect.andThen(HandleResponse),
   Effect.catchTag('HttpClientError', error => new GhostPageUnavailable({ cause: error })),
+  Effect.withSpan('Ghost.getPage'),
 )

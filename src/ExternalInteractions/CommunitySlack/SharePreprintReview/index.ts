@@ -16,4 +16,5 @@ export const SharePreprintReview = flow(
   Effect.andThen(Slack.chatPostMessage),
   Effect.catch(error => new FailedToSharePreprintReview({ cause: error })),
   Effect.asVoid,
+  Effect.withSpan('CommunitySlack.sharePreprintReview'),
 )

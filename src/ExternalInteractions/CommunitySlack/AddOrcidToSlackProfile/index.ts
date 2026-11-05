@@ -8,7 +8,7 @@ export class FailedToAddOrcidToSlackProfile extends Data.TaggedError('FailedToAd
   cause?: unknown
 }> {}
 
-export const AddOrcidToSlackProfile = Effect.fnUntraced(
+export const AddOrcidToSlackProfile = Effect.fn('CommunitySlack.addOrcidToSlackProfile')(
   function* (user: SlackUserId, orcid: OrcidId) {
     if (!(yield* shouldUpdateCommunitySlack)) {
       return

@@ -3,4 +3,9 @@ import { Effect, flow } from 'effect'
 import { CreateRequest } from './CreateRequest.ts'
 import { HandleResponse } from './HandleResponse.ts'
 
-export const PublishDeposition = flow(CreateRequest, Effect.andThen(HttpClient.execute), Effect.andThen(HandleResponse))
+export const PublishDeposition = flow(
+  CreateRequest,
+  Effect.andThen(HttpClient.execute),
+  Effect.andThen(HandleResponse),
+  Effect.withSpan('Zenodo.publishDeposition'),
+)

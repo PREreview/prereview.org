@@ -10,4 +10,5 @@ export const GetName = flow(
   Orcid.getPersonalDetails,
   Effect.map(GetNameFromOrcidPersonalDetails),
   Effect.mapError(error => new NameIsNotAvailable({ cause: error })),
+  Effect.withSpan('OrcidRecords.getName'),
 )

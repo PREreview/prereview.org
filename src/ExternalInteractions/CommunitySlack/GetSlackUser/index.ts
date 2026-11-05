@@ -11,4 +11,5 @@ export const GetSlackUser = (userId: Slack.UserId) =>
     Slack.usersProfileGet(userId),
     Effect.map(response => UsersProfileGetResponseToSlackUser(response, userId)),
     Effect.catch(error => new FailedToGetSlackUser({ cause: error })),
+    Effect.withSpan('CommunitySlack.getSlackUser', { attributes: { userId } }),
   )

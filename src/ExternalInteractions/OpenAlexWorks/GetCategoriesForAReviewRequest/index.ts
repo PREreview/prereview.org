@@ -32,4 +32,5 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
         }) satisfies CategoriesForAReviewRequest,
     ),
     Effect.catch(error => new CategoriesAreNotAvailable({ cause: error })),
+    Effect.withSpan('OpenAlexWorks.getCategoriesForAReviewRequest', { attributes: { preprintId } }),
   )

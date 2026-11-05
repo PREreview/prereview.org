@@ -7,7 +7,7 @@ export class FailedToRemoveOrcidFromSlackProfile extends Data.TaggedError('Faile
   cause?: unknown
 }> {}
 
-export const RemoveOrcidFromSlackProfile = Effect.fnUntraced(
+export const RemoveOrcidFromSlackProfile = Effect.fn('CommunitySlack.removeOrcidFromSlackProfile')(
   function* (user: SlackUserId) {
     if (!(yield* shouldUpdateCommunitySlack)) {
       return

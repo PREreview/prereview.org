@@ -41,6 +41,7 @@ export const layer = Layer.effect(
         ['GhostPageNotFound', 'GhostPageUnavailable', 'NoSuchElementError'],
         () => new PageIsUnavailable(),
       ),
+      Effect.withSpan('GhostPage.getPageFromGhost'),
       Effect.provide(context),
     )
   }),

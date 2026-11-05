@@ -34,4 +34,5 @@ export const GetFrontmatter = (
       WorkIsUnavailable: error => new WorkUnavailable({ cause: error }),
       TimeoutError: error => new WorkUnavailable({ cause: error }),
     }),
+    Effect.withSpan('OpenAlexWorks.getFrontmatter', { attributes: { doi } }),
   )

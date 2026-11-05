@@ -14,4 +14,5 @@ export const GetWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | Work
     Effect.tapErrorTag('WorkIsUnavailable', error =>
       Effect.logError('Failed to get work from OpenAlex').pipe(Effect.annotateLogs({ doi, error })),
     ),
+    Effect.withSpan('OpenAlex.getWork', { attributes: { doi } }),
   )

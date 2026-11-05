@@ -12,4 +12,5 @@ export const SendMessage = flow(
   Effect.andThen(HttpClient.execute),
   Effect.andThen(HandleResponse),
   Effect.catch(error => new UnableToSendCoarNotifyMessage({ cause: error })),
+  Effect.withSpan('CoarNotify.sendMessage'),
 )

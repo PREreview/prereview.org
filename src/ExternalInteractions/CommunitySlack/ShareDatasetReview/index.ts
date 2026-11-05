@@ -16,4 +16,5 @@ export const ShareDatasetReview = flow(
   Effect.andThen(Slack.chatPostMessage),
   Effect.catch(error => new FailedToShareDatasetReview({ cause: error })),
   Effect.asVoid,
+  Effect.withSpan('CommunitySlack.shareDatasetReview'),
 )

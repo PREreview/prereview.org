@@ -5,4 +5,9 @@ import { HandleResponse } from './HandleResponse.ts'
 
 export type { File } from './CreateRequest.ts'
 
-export const UploadFile = flow(CreateRequest, Effect.andThen(HttpClient.execute), Effect.andThen(HandleResponse))
+export const UploadFile = flow(
+  CreateRequest,
+  Effect.andThen(HttpClient.execute),
+  Effect.andThen(HandleResponse),
+  Effect.withSpan('Zenodo.uploadFile'),
+)
