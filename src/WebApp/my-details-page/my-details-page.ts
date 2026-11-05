@@ -15,7 +15,6 @@ import type {
 } from '../../Prereviewers/index.ts'
 import * as Routes from '../../routes.ts'
 import {
-  changeAvatarMatch,
   changeContactEmailAddressMatch,
   connectOrcidMatch,
   connectSlackMatch,
@@ -138,7 +137,7 @@ export function createPage({
               <div>
                 <dt>${t('avatar')()}</dt>
                 <dd>
-                  <a href="${format(changeAvatarMatch.formatter, {})}">${t('uploadAvatar')()}</a>
+                  <a href="${Routes.ChangeAvatar}">${t('uploadAvatar')()}</a>
                 </dd>
               </div>
             `,
@@ -152,7 +151,7 @@ export function createPage({
                 <dd>
                   <ul>
                     <li>
-                      <a href="${format(changeAvatarMatch.formatter, {})}">${t('changeAvatar')(visuallyHidden)}</a>
+                      <a href="${Routes.ChangeAvatar}">${t('changeAvatar')(visuallyHidden)}</a>
                     </li>
                     <li>
                       <a href="${Routes.RemoveAvatar}">${t('removeAvatar')(visuallyHidden)}</a>

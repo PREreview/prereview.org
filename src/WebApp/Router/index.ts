@@ -601,6 +601,15 @@ const WriteCommentFlowRouter = [
 
 const MyDetailsRouter = useMiddleware(
   [
+    MakeStaticRoute('GET', Routes.ChangeAvatar, MyDetails.AvatarPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeAvatar,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(request => Effect.result(request.multipart)),
+        Effect.andThen(MyDetails.AvatarSubmission),
+      ),
+    ),
     MakeStaticRoute('GET', Routes.RemoveAvatar, MyDetails.RemoveAvatarPage),
     MakeStaticRoute('POST', Routes.RemoveAvatar, MyDetails.RemoveAvatarSubmission),
     MakeStaticRoute('GET', Routes.ChangeLanguages, MyDetails.LanguagesPage),

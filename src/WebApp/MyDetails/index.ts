@@ -1,3 +1,4 @@
+export * from './AvatarPage/index.ts'
 export * from './CareerStagePage/index.ts'
 export * from './CareerStageVisibilityPage/index.ts'
 export * from './LanguagesPage/index.ts'
