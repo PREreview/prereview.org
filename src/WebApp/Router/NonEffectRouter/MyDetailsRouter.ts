@@ -38,7 +38,6 @@ import {
   changeResearchInterests,
   changeResearchInterestsVisibility,
   myDetails,
-  removeAvatar,
 } from '../../my-details-page/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
@@ -123,10 +122,6 @@ export const MyDetailsRouter = pipe(
             user: env.loggedInUser,
           }),
       ),
-    ),
-    pipe(
-      Routes.removeAvatarMatch.parser,
-      P.map(() => (env: Env) => removeAvatar({ locale: env.locale, method: env.method, user: env.loggedInUser })),
     ),
     pipe(
       Routes.changeCareerStageVisibilityMatch.parser,
@@ -258,13 +253,6 @@ export const MyDetailsRouter = pipe(
             typeof env.sessionId === 'string'
               ? LegacySessionStore.addToSession(env.sessionId, key, value)
               : Effect.fail('unavailable' as const),
-          env.runtime,
-        ),
-        deleteAvatar: EffectToFpts.toTaskEitherK(
-          flow(
-            Prereviewers.Avatars.remove,
-            Effect.mapError(() => 'unavailable' as const),
-          ),
           env.runtime,
         ),
         deleteCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.remove, env.runtime),

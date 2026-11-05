@@ -15,10 +15,6 @@ export interface SaveAvatarEnv {
   ) => TE.TaskEither<'unavailable', void>
 }
 
-export interface DeleteAvatarEnv {
-  deleteAvatar: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
-}
-
 export const getAvatar = (orcid: OrcidId) =>
   pipe(
     RTE.ask<GetAvatarEnv>(),
@@ -42,10 +38,4 @@ export const saveAvatar = (
   pipe(
     RTE.ask<SaveAvatarEnv>(),
     RTE.chainTaskEitherK(({ saveAvatar }) => saveAvatar(orcid, file)),
-  )
-
-export const deleteAvatar = (orcid: OrcidId) =>
-  pipe(
-    RTE.ask<DeleteAvatarEnv>(),
-    RTE.chainTaskEitherK(({ deleteAvatar }) => deleteAvatar(orcid)),
   )
