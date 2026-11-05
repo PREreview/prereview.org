@@ -385,13 +385,10 @@ function supportsPopoverHint(): boolean {
   div.popover = 'hint'
   supportsPopoverHintResult = div.popover === 'hint'
 
-  console.log('supportsPopoverHint', supportsPopoverHintResult)
   return supportsPopoverHintResult
 }
 
 const supportsInterestFor = CSS.supports('interest-delay', '0s')
-
-console.log('supportsInterestFor', supportsInterestFor)
 
 async function createButton(
   label: HTMLSpanElement,
