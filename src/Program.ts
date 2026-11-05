@@ -10,6 +10,7 @@ import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
+  Cloudinary,
   CoarNotify,
   Crossref,
   Datacite,
@@ -23,6 +24,7 @@ import {
   Zenodo,
 } from './ExternalApis/index.ts'
 import {
+  CloudinaryAvatars,
   CommunitySlack,
   DatasetData,
   Email,
@@ -72,6 +74,7 @@ const ExternalInteractions = pipe(
     OrcidRecords.layer,
     ZenodoRecords.layerCommentsForReview,
     GhostPage.layer,
+    CloudinaryAvatars.layer,
     CommunitySlack.layer,
     ZenodoRecords.layer,
   ),
@@ -79,6 +82,7 @@ const ExternalInteractions = pipe(
 )
 
 const ExternalApis = Layer.mergeAll(
+  Cloudinary.layer,
   CoarNotify.layer,
   Layer.provide(Contentful.layer, CachingHttpClient.layer('10 seconds')),
   Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
