@@ -126,24 +126,29 @@ export const embeddingsLayer = Layer.effect(
     })
 
     return {
-      getMatches: Effect.fnUntraced(function* (inputPapers, inputOrcidId, languages) {
-        const { picks, candidateCount } = yield* pipe(
-          inputPapers,
-          getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
-          Effect.map(calcFloat32ArrayMean),
-          Effect.andThen(getMatches(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
-          Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetSurveyPapers({ cause })),
-          Effect.andThen(pickSurveyPapers),
-        )
+      getMatches: Effect.fnUntraced(
+        function* (inputPapers, inputOrcidId, languages) {
+          const { picks, candidateCount } = yield* pipe(
+            inputPapers,
+            getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
+            Effect.map(calcFloat32ArrayMean),
+            Effect.andThen(getMatches(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
+            Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetSurveyPapers({ cause })),
+            Effect.andThen(pickSurveyPapers),
+          )
 
-        if (!Array.isReadonlyArrayNonEmpty(picks)) {
-          return yield* new UnableToGetSurveyPapers({
-            cause: 'no candidates found',
-          })
-        }
+          if (!Array.isReadonlyArrayNonEmpty(picks)) {
+            return yield* new UnableToGetSurveyPapers({
+              cause: 'no candidates found',
+            })
+          }
 
-        return { picks, candidateCount }
-      }),
+          return { picks, candidateCount }
+        },
+        Effect.tapError(error =>
+          Effect.logError('Unable to get matches').pipe(Effect.annotateLogs({ error: error.cause })),
+        ),
+      ),
       addPreprints: createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection),
       existingWorks: preprintIds => findExistingWorks(preprintIds, sql),
     }
