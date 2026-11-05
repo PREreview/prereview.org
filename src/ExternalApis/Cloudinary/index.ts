@@ -6,7 +6,6 @@ import { ImageUrl } from './ImageUrl/index.ts'
 import { UploadImage } from './UploadImage/index.ts'
 
 export { CloudinaryApi } from './CloudinaryApi.ts'
-export * from './legacy-cloudinary.ts'
 export type { UploadImageInput } from './UploadImage/index.ts'
 
 export class Cloudinary extends Context.Service<
