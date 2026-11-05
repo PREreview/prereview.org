@@ -26,6 +26,7 @@ const program = Effect.fnUntraced(function* () {
           Filter.fromPredicateOption(author => Option.fromNullishOr(author.orcid)),
         ),
         requestedAt: reviewRequest.published,
+        language: reviewRequest.language ?? preprint.title.language,
       }
     }),
   )

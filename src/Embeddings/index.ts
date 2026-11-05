@@ -20,7 +20,6 @@ import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
-import { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import { Tokenizer } from '@huggingface/tokenizers'
 import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
 import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
@@ -54,7 +53,6 @@ export const embeddingsLayer = pipe(
     Effect.gen(function* () {
       const sql = yield* PgClient.PgClient
       const openRouter = yield* OpenRouterClient.OpenRouterClient
-      const languageDetection = yield* LanguageDetection
 
       yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
 
@@ -83,7 +81,7 @@ export const embeddingsLayer = pipe(
         ),
         addRequests: (inputPapers: ReadonlyArray<WorkWithRequest>) =>
           pipe(
-            createMissingEmbeddings(openRouter, sql, tokenizer, languageDetection)(inputPapers),
+            createMissingEmbeddings(openRouter, sql, tokenizer)(inputPapers),
             Effect.andThen(updateLatestRequestDate(sql)(inputPapers)),
           ),
         existingWorks: preprintIds => findExistingWorks(preprintIds, sql),

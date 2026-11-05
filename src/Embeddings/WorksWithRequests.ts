@@ -9,7 +9,6 @@ import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { OrderInstant } from '../types/Temporal.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import type { LanguageDetection } from '../ExternalInteractions/LanguageDetection/index.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
 import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../Preprints/index.ts'
 
@@ -19,6 +18,7 @@ export interface WorkWithRequest {
   abstract: string
   authors: ReadonlyArray<OrcidId>
   requestedAt: Temporal.Instant
+  language: LanguageCode
 }
 
 // DOIs are case-insensitive, so the stored form is lowercased to make lookups and conflicts work regardless of case.
@@ -221,7 +221,6 @@ export const createMissingEmbeddings = (
   openRouter: OpenRouterClient.Service,
   sql: SqlClient.SqlClient,
   tokenizer: Tokenizer,
-  languageDetection: typeof LanguageDetection.Service,
 ) =>
   Effect.fn('Embeddings.createMissingEmbeddings')(function* (inputPapers: ReadonlyArray<WorkWithRequest>) {
     const existing = yield* findExistingWorks(
@@ -248,14 +247,5 @@ export const createMissingEmbeddings = (
           )
         : []
 
-    const generatedWithLanguage = yield* pipe(
-      generated,
-      Effect.forEach(
-        w => languageDetection.detectLanguage(w.title).pipe(Effect.map(language => ({ ...w, language }))),
-        { concurrency: 4 },
-      ),
-      Effect.catchTag('UnableToDetectLanguage', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
-    )
-
-    yield* storeEmbeddings(generatedWithLanguage, sql)
+    yield* storeEmbeddings(generated, sql)
   })
