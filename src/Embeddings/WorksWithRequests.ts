@@ -181,8 +181,41 @@ const RequestEmbeddingsSelect = Schema.Array(
 )
 
 // oxlint-disable-next-line no-unused-vars
-export const updateLatestRequestDate = (sql: SqlClient.SqlClient) => (inputPapers: ReadonlyArray<WorkWithRequest>) =>
-  Effect.void
+export const updateLatestRequestDate = (sql: SqlClient.SqlClient) =>
+  Effect.fn('Embeddings.updateLatestRequestDate')(
+    function* (inputPapers: ReadonlyArray<WorkWithRequest>) {
+      const onlyLatest = pipe(
+        inputPapers,
+        Array.groupBy(paper => encodePreprintId(paper.preprintId)),
+        Record.values,
+        Array.map(Array.max(Order.mapInput(OrderInstant, (paper: WorkWithRequest) => paper.requestedAt))),
+        Array.map(
+          paper => sql`
+            (
+              ${encodePreprintId(paper.preprintId)},
+              ${paper.requestedAt.toString()}::timestamptz
+            )
+          `,
+        ),
+      )
+
+      if (onlyLatest.length === 0) return
+
+      yield* sql`
+        UPDATE request_embeddings
+        SET
+          latest_request = data.latest_request
+        FROM
+          (
+            VALUES
+              ${sql.join(',', false)(onlyLatest)}
+          ) AS data (preprint_id, latest_request)
+        WHERE
+          request_embeddings.preprint_id = data.preprint_id
+      `
+    },
+    Effect.mapError(cause => new UnableToAddWorksWithRequests({ cause })),
+  )
 
 export const createMissingEmbeddings = (
   apiKey: Redacted.Redacted,
