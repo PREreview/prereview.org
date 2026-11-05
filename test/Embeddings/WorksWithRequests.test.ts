@@ -11,6 +11,7 @@ import {
   type IndeterminatePreprintId,
   PhilsciPreprintId,
 } from '../../src/Preprints/index.ts'
+import { Temporal } from '@js-temporal/polyfill'
 
 const biorxiv = (doi: `10.1101/${string}`) => new BiorxivOrMedrxivPreprintId({ value: Doi(doi) })
 
@@ -96,6 +97,7 @@ describe('storeEmbeddings', () => {
     preprintId: IndeterminatePreprintId
     language: LanguageCode
     authors: ReadonlyArray<OrcidId>
+    latestRequest: Temporal.Instant
     embedding: Embedding
   }
 
@@ -107,6 +109,7 @@ describe('storeEmbeddings', () => {
     preprintId,
     language,
     authors,
+    latestRequest: Temporal.Instant.from('2025-01-02T06:00:00Z'),
     embedding: new Float32Array([1, 2, 3]),
   })
 
@@ -118,9 +121,13 @@ describe('storeEmbeddings', () => {
     )
 
     const insert = queries.at(-1)!
-    expect(insert.sql).toContain('INSERT INTO request_embeddings (preprint_id, language, authors, embedding)')
-    expect(insert.sql).toContain('(doi:10.1101/a, en, [0000-0002-1825-0097], [1,2,3]::halfvec)')
-    expect(insert.sql).toContain('(https://philsci-archive.pitt.edu/123/, en, [0000-0002-1825-0097], [1,2,3]::halfvec)')
+    expect(insert.sql).toContain(
+      'INSERT INTO request_embeddings (preprint_id, language, authors, latest_request, embedding)',
+    )
+    expect(insert.sql).toContain('(doi:10.1101/a, en, [0000-0002-1825-0097], 2025-01-02T06:00:00Z, [1,2,3]::halfvec)')
+    expect(insert.sql).toContain(
+      '(https://philsci-archive.pitt.edu/123/, en, [0000-0002-1825-0097], 2025-01-02T06:00:00Z, [1,2,3]::halfvec)',
+    )
     expect(insert.sql).toContain('ON CONFLICT (preprint_id) DO NOTHING')
   })
 

@@ -67,6 +67,7 @@ export const storeEmbeddings: (
     preprintId: IndeterminatePreprintId
     language: LanguageCode
     authors: ReadonlyArray<OrcidId>
+    latestRequest: Temporal.Instant
     embedding: Embedding
   }>,
   sql: SqlClient.SqlClient,
@@ -81,6 +82,7 @@ export const storeEmbeddings: (
           ${encodePreprintId(row.preprintId)},
           ${row.language},
           ${row.authors},
+          ${row.latestRequest.toString()},
           ${encoded}::halfvec
         )
       `
@@ -88,7 +90,13 @@ export const storeEmbeddings: (
 
     yield* sql`
       INSERT INTO
-        request_embeddings (preprint_id, language, authors, embedding)
+        request_embeddings (
+          preprint_id,
+          language,
+          authors,
+          latest_request,
+          embedding
+        )
       VALUES
         ${sql.join(',', false)(values)}
       ON CONFLICT (preprint_id) DO NOTHING
@@ -104,6 +112,7 @@ export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.E
         preprint_id VARCHAR PRIMARY KEY,
         language CHAR(2) NOT NULL,
         authors CHAR(19) [] NOT NULL,
+        latest_request TIMESTAMPTZ NOT NULL,
         embedding HALFVEC (1024)
       )
     `,
