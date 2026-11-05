@@ -1,5 +1,6 @@
 import { Context, Effect, Layer, Option, pipe } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
+import { CloudinaryAvatars } from '../ExternalInteractions/index.ts'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import { NonEmptyString, type OrcidId } from '../types/index.ts'
 
@@ -24,6 +25,55 @@ export const layer = Layer.provide(
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
 export const get = Effect.fn('Avatars.get')(function* (orcid: OrcidId.OrcidId) {
+  const avatarId = yield* getAvatarId(orcid)
+
+  return yield* CloudinaryAvatars.avatarUrl(avatarId)
+})
+
+export const save = Effect.fn('Avatars.save')(
+  function* (orcid: OrcidId.OrcidId, avatar: CloudinaryAvatars.AvatarFile) {
+    const { avatarId, existing } = yield* Effect.all(
+      { avatarId: CloudinaryAvatars.uploadAvatar(orcid, avatar), existing: maybeGetExistingAvatar(orcid) },
+      { concurrency: 'unbounded' },
+    )
+
+    yield* saveAvatarId(orcid, avatarId)
+
+    if (Option.isSome(existing)) {
+      yield* destroyInBackground(existing.value)
+    }
+  },
+  Effect.mapError(() => 'unavailable' as const),
+)
+
+export const remove = Effect.fn('Avatars.remove')(
+  function* (orcid: OrcidId.OrcidId) {
+    const avatarId = yield* getAvatarId(orcid)
+
+    yield* removeAvatarId(orcid)
+
+    yield* destroyInBackground(avatarId)
+  },
+  Effect.catchIf(
+    error => error === 'not-found',
+    () => Effect.void,
+  ),
+)
+
+const destroyInBackground = (avatarId: NonEmptyString.NonEmptyString) =>
+  pipe(CloudinaryAvatars.destroyAvatar(avatarId), Effect.ignore, Effect.forkDetach, Effect.asVoid)
+
+const maybeGetExistingAvatar = (orcid: OrcidId.OrcidId) =>
+  pipe(
+    getAvatarId(orcid),
+    Effect.map(Option.some),
+    Effect.catchIf(
+      error => error === 'not-found',
+      () => Effect.succeedNone,
+    ),
+  )
+
+const getAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId) {
   const store = yield* Store
 
   return yield* pipe(
@@ -36,10 +86,7 @@ export const get = Effect.fn('Avatars.get')(function* (orcid: OrcidId.OrcidId) {
   )
 })
 
-export const save = Effect.fn('Avatars.save')(function* (
-  orcid: OrcidId.OrcidId,
-  avatarId: NonEmptyString.NonEmptyString,
-) {
+const saveAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId, avatarId: NonEmptyString.NonEmptyString) {
   const store = yield* Store
 
   return yield* pipe(
@@ -51,7 +98,7 @@ export const save = Effect.fn('Avatars.save')(function* (
   )
 })
 
-export const remove = Effect.fn('Avatars.remove')(function* (orcid: OrcidId.OrcidId) {
+const removeAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId) {
   const store = yield* Store
 
   return yield* pipe(store.remove(orcid), Effect.asVoid, Effect.catchTag('KeyValueStoreError', unavailable))

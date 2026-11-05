@@ -8,7 +8,7 @@ import {
   HttpServerResponse,
 } from 'effect/http'
 import {
-  FileSystem,
+  type FileSystem,
   type Path,
   Effect,
   flow,
@@ -16,7 +16,6 @@ import {
   Option,
   pipe,
   Record,
-  Redacted,
   type Context,
   type Scope,
   String,
@@ -33,15 +32,15 @@ import type { Clubs } from '../../../Clubs/index.ts'
 import type { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { type EnabledLocales, Locale, ScietyListToken, type SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
-import { Cloudinary, Zenodo } from '../../../ExternalApis/index.ts'
+import { Zenodo } from '../../../ExternalApis/index.ts'
 import {
+  type CloudinaryAvatars,
   CommunitySlack,
   type Email,
   type LanguageDetection,
   type OpenAlexWorks,
 } from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
-import { withEnv } from '../../../Fpts.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import type * as OrcidTokens from '../../../OrcidTokens.ts'
@@ -80,7 +79,6 @@ export const nonEffectRouter: Effect.Effect<
   | CommentsForReview
   | SlackOauth
   | PreprintReviews.FormStore.Store
-  | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
   | EffectToFpts.ContextServices<Env['runtime']>
@@ -110,14 +108,12 @@ export const nonEffectRouter: Effect.Effect<
   const runtime = yield* Effect.context<EffectToFpts.ContextServices<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
-  const fileSystem = yield* FileSystem.FileSystem
 
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
   const sessionId = yield* Effect.serviceOption(SessionId)
 
   const scietyListToken = yield* ScietyListToken
-  const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const orcidOauth = yield* OrcidOauth
   const slackOauth = yield* SlackOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
@@ -148,7 +144,6 @@ export const nonEffectRouter: Effect.Effect<
     sessionId: Option.getOrUndefined(sessionId),
     featureFlags,
     method: request.method as HttpMethod.HttpMethod,
-    fileSystem,
     runtime,
     logger: loggerEnv,
     fetch,
@@ -156,7 +151,6 @@ export const nonEffectRouter: Effect.Effect<
     orcidOauth,
     slackOauth,
     scietyListToken,
-    cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
   } satisfies Env
 
@@ -176,10 +170,10 @@ export interface Env {
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
-  fileSystem: FileSystem.FileSystem
   runtime: Context.Context<
     | Clubs
     | CachingHttpClient.HttpCache
+    | CloudinaryAvatars.CloudinaryAvatars
     | CommunitySlack.CommunitySlack
     | ContactEmailAddresses
     | GenerateUuid
@@ -221,7 +215,6 @@ export interface Env {
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
   slackOauth: typeof SlackOauth.Service
-  cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   fetch: typeof globalThis.fetch
 }
@@ -274,14 +267,7 @@ const routerWithoutHyperTs = pipe(
         ({ profile: id }) =>
           (env: Env) =>
             profile({ locale: env.locale, profile: id })({
-              getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
-                getCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
-                cloudinaryApi: {
-                  cloudName: env.cloudinaryApiConfig.cloudName,
-                  key: Redacted.value(env.cloudinaryApiConfig.key),
-                  secret: Redacted.value(env.cloudinaryApiConfig.secret),
-                },
-              }),
+              getAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
               getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
               getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
               getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),

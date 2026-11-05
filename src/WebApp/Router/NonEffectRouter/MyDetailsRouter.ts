@@ -1,13 +1,10 @@
-import { NodeStream } from '@effect/platform-node'
 import { Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
-import { withEnv } from '../../../Fpts.ts'
 import * as LegacySessionStore from '../../../legacy-session-store.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as SlackUserIds from '../../../SlackUserIds.ts'
@@ -263,17 +260,7 @@ export const MyDetailsRouter = pipe(
               : Effect.fail('unavailable' as const),
           env.runtime,
         ),
-        deleteAvatar: withEnv(Cloudinary.removeAvatarFromCloudinary, {
-          cloudinaryApi: {
-            cloudName: env.cloudinaryApiConfig.cloudName,
-            key: Redacted.value(env.cloudinaryApiConfig.key),
-            secret: Redacted.value(env.cloudinaryApiConfig.secret),
-          },
-          deleteCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.remove, env.runtime),
-          fetch: env.fetch,
-          getCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
-          ...env.logger,
-        }),
+        deleteAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.remove, env.runtime),
         deleteCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.remove, env.runtime),
         deleteLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.remove, env.runtime),
         deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
@@ -295,14 +282,7 @@ export const MyDetailsRouter = pipe(
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getUserOnboarding: EffectToFpts.toTaskEitherK(UserOnboardingStore.get, env.runtime),
         getOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.get, env.runtime),
-        getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
-          getCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
-          cloudinaryApi: {
-            cloudName: env.cloudinaryApiConfig.cloudName,
-            key: Redacted.value(env.cloudinaryApiConfig.key),
-            secret: Redacted.value(env.cloudinaryApiConfig.secret),
-          },
-        }),
+        getAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
         getSlackUser: EffectToFpts.toTaskEitherK(
           flow(
             SlackUserIds.get,
@@ -344,19 +324,7 @@ export const MyDetailsRouter = pipe(
         ),
         publicUrl: env.publicUrl,
         runtime: env.runtime,
-        saveAvatar: withEnv(Cloudinary.saveAvatarOnCloudinary, {
-          cloudinaryApi: {
-            cloudName: env.cloudinaryApiConfig.cloudName,
-            key: Redacted.value(env.cloudinaryApiConfig.key),
-            secret: Redacted.value(env.cloudinaryApiConfig.secret),
-          },
-          fetch: env.fetch,
-          getCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.get, env.runtime),
-          readFile: flow(env.fileSystem.stream, NodeStream.toReadableNever),
-          saveCloudinaryAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.save, env.runtime),
-          publicUrl: env.publicUrl,
-          ...env.logger,
-        }),
+        saveAvatar: EffectToFpts.toTaskEitherK(Prereviewers.Avatars.save, env.runtime),
         saveCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.save, env.runtime),
         saveLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.save, env.runtime),
         saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),
