@@ -116,9 +116,7 @@ export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.E
         embedding HALFVEC (1024)
       )
     `,
-    sql`
-      CREATE INDEX IF NOT EXISTS request_embeddings_idx ON request_embeddings USING hnsw (embedding halfvec_cosine_ops)
-    `,
+    sql`DROP INDEX IF EXISTS request_embeddings_idx`,
   ])
 
 export const getMatches =
@@ -135,47 +133,43 @@ export const getMatches =
     ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number; latestRequest: Temporal.Instant }>,
     UnableToQuery
   > =>
-    sql
-      .withTransaction(
-        Effect.gen(function* () {
-          const encoded = Schema.encodeSync(PgVector)(mean)
+    Effect.gen(function* () {
+      const encoded = Schema.encodeSync(PgVector)(mean)
 
-          return yield* sql`
-            SELECT
-              preprint_id,
-              latest_request,
-              embedding <=> ${encoded}::halfvec AS distance
-            FROM
-              request_embeddings
-            WHERE
-              ${sql.in('language', languages)}
-              AND NOT (
-                ${inputOrcidId} = ANY (authors)
-              )
-              AND NOT ${sql.in(
-                'preprint_id',
-                inputDois.map(doi => `doi:${doi.toLowerCase()}`),
-              )}
-            ORDER BY
-              embedding <=> ${encoded}::halfvec
-            LIMIT
-              ${limit}
-          `
-        }),
-      )
-      .pipe(
-        Effect.andThen(Schema.decodeUnknownEffect(RequestEmbeddingsSelect)),
-        Effect.andThen(
-          Effect.forEach(row =>
-            Effect.map(decodePreprintId(row.preprint_id), preprintId => ({
-              preprintId,
-              distance: row.distance,
-              latestRequest: Temporal.Instant.from(row.latest_request.toISOString()),
-            })),
-          ),
+      return yield* sql`
+        SELECT
+          preprint_id,
+          latest_request,
+          embedding <=> ${encoded}::halfvec AS distance
+        FROM
+          request_embeddings
+        WHERE
+          ${sql.in('language', languages)}
+          AND NOT (
+            ${inputOrcidId} = ANY (authors)
+          )
+          AND NOT ${sql.in(
+            'preprint_id',
+            inputDois.map(doi => `doi:${doi.toLowerCase()}`),
+          )}
+        ORDER BY
+          embedding <=> ${encoded}::halfvec
+        LIMIT
+          ${limit}
+      `
+    }).pipe(
+      Effect.andThen(Schema.decodeUnknownEffect(RequestEmbeddingsSelect)),
+      Effect.andThen(
+        Effect.forEach(row =>
+          Effect.map(decodePreprintId(row.preprint_id), preprintId => ({
+            preprintId,
+            distance: row.distance,
+            latestRequest: Temporal.Instant.from(row.latest_request.toISOString()),
+          })),
         ),
-        Effect.mapError(cause => new UnableToQuery({ cause })),
-      )
+      ),
+      Effect.mapError(cause => new UnableToQuery({ cause })),
+    )
 
 const RequestEmbeddingsSelect = Schema.Array(
   Schema.Struct({
