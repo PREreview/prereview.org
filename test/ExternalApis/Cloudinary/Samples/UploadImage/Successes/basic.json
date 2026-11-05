@@ -1,0 +1,22 @@
+{
+  "asset_id": "b5e6d2b39ba3e0869d67141ba7dba6cf",
+  "public_id": "some-folder/eneivicys42bq5f2jpn2",
+  "version": 1719307544,
+  "version_id": "7d2cc533bee9ff39f7da7414b61fce7e",
+  "signature": "d0b1009e3271a942836c25756ce3e04d205bf754",
+  "width": 1920,
+  "height": 1441,
+  "format": "jpg",
+  "resource_type": "image",
+  "created_at": "2024-06-25T09:25:44Z",
+  "tags": [],
+  "bytes": 896838,
+  "type": "upload",
+  "etag": "2a2df1d2d2c3b675521e866599273083",
+  "placeholder": false,
+  "url": "http://res.cloudinary.com/demo/image/upload/v1719307544/some-folder/eneivicys42bq5f2jpn2.jpg",
+  "secure_url": "https://res.cloudinary.com/demo/image/upload/v1719307544/some-folder/eneivicys42bq5f2jpn2.jpg",
+  "folder": "some-folder",
+  "context": { "custom": { "key": "value" } },
+  "api_key": "614335564976464"
+}
