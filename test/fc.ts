@@ -661,11 +661,26 @@ export const coarNotifyMessage = (): fc.Arbitrary<CoarNotify.Message> =>
   fc.oneof(coarNotifyAnnounceReview(), coarNotifyRequestReview())
 
 export const openAlexWork = ({
+  abstract_inverted_index,
+  authorships,
   topics,
-}: { topics?: fc.Arbitrary<OpenAlex.Work['topics']> } = {}): fc.Arbitrary<OpenAlex.Work> =>
+}: {
+  abstract_inverted_index?: fc.Arbitrary<OpenAlex.Work['abstract_inverted_index']>
+  authorships?: fc.Arbitrary<OpenAlex.Work['authorships']>
+  topics?: fc.Arbitrary<OpenAlex.Work['topics']>
+} = {}): fc.Arbitrary<OpenAlex.Work> =>
   fc.record(
     {
       title: fc.string(),
+      abstract_inverted_index: abstract_inverted_index ?? maybe(fc.dictionary(fc.string(), fc.array(fc.nat()))),
+      authorships:
+        authorships ??
+        fc.array(
+          fc.record({
+            author: fc.record({ display_name: maybe(name()), orcid: maybe(orcidId()) }),
+            raw_author_name: name(),
+          }),
+        ),
       language: languageCode(),
       keywords: fc.array(
         fc.record({
@@ -685,7 +700,7 @@ export const openAlexWork = ({
           }),
         ),
     },
-    { requiredKeys: ['keywords', 'topics'] },
+    { requiredKeys: ['title', 'abstract_inverted_index', 'authorships', 'keywords', 'topics'] },
   )
 
 export const doiRegistrant = (): fc.Arbitrary<string> =>
