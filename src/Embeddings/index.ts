@@ -23,6 +23,8 @@ import { Tokenizer } from '@huggingface/tokenizers'
 import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
 import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
 
+export type { MatchmakingInputWork } from './MatchmakingInputWorks.ts'
+
 interface SurveyPick {
   preprintId: IndeterminatePreprintId
   distance: number

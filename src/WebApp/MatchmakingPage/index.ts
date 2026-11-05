@@ -1,10 +1,11 @@
-import { Array, Struct, Effect, Option, pipe } from 'effect'
+import { Array, Struct, Effect, Option, pipe, Filter } from 'effect'
+import { type MatchmakingInputWork, Embeddings } from '../../Embeddings/index.ts'
+import { OpenAlexWorks } from '../../ExternalInteractions/OpenAlexWorks/index.ts'
 import { createMatchmakingPage } from './MatchmakingPage.ts'
 import { UrlParams } from 'effect/http'
 import * as Doi from '../../types/Doi.ts'
 import { PlainDate } from '../../types/Temporal.ts'
 import { Preprints } from '../../Preprints/index.ts'
-import { Embeddings } from '../../Embeddings/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 
@@ -16,6 +17,7 @@ export const MatchmakingSubmission = Effect.fn('MatchmakingSubmission')(
   function* (input: UrlParams.UrlParams) {
     const embeddings = yield* Embeddings
     const preprints = yield* Preprints
+    const openAlexWorks = yield* OpenAlexWorks
     const user = yield* LoggedInUser
 
     const doi = pipe(input, UrlParams.getLast('doi'), Option.andThen(Doi.parse))
@@ -24,12 +26,14 @@ export const MatchmakingSubmission = Effect.fn('MatchmakingSubmission')(
       return createMatchmakingPage(doi, [])
     }
 
+    const frontmatter = yield* openAlexWorks.getFrontmatter(doi.value)
+
     const work = {
       doi: doi.value,
-      title: 'Title',
-      abstract: 'Abstract',
-      authors: [],
-    }
+      title: frontmatter.title.value,
+      abstract: Option.match(frontmatter.abstract, { onNone: () => '', onSome: abstract => abstract.value }),
+      authors: Array.filterMap(frontmatter.authors, Filter.fromPredicateOption(Struct.get('orcidId'))),
+    } satisfies MatchmakingInputWork
 
     const matches = yield* embeddings.getMatches([work], user.orcid, ['en'])
 
@@ -49,5 +53,7 @@ export const MatchmakingSubmission = Effect.fn('MatchmakingSubmission')(
     PreprintIsNotFound: () => HavingProblemsPage,
     PreprintIsUnavailable: () => HavingProblemsPage,
     UnableToGetSurveyPapers: () => HavingProblemsPage,
+    WorkNotFound: () => HavingProblemsPage,
+    WorkUnavailable: () => HavingProblemsPage,
   }),
 )
