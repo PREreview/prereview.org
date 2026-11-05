@@ -2,7 +2,7 @@ import type { HttpClient } from 'effect/http'
 import type { SqlClient, SqlError } from 'effect/sql'
 import { Effect, Option, pipe, type Redacted, Schema, Struct } from 'effect'
 import { generateEmbeddings } from './OpenRouter.ts'
-import { PgVector, UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
+import { PgVector, UnableToGetMatches, type Embedding } from './Shared.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
@@ -22,7 +22,7 @@ const EmbeddingRow = Schema.Struct({
 const getStoredEmbedding: (
   doi: Doi,
   sql: SqlClient.SqlClient,
-) => Effect.Effect<Option.Option<Embedding>, UnableToGetSurveyPapers> = Effect.fnUntraced(
+) => Effect.Effect<Option.Option<Embedding>, UnableToGetMatches> = Effect.fnUntraced(
   function* (doi, sql) {
     const rows = yield* sql`
       SELECT
@@ -31,7 +31,7 @@ const getStoredEmbedding: (
         matchmaking_input_works
       WHERE
         doi = ${doi}
-    `.pipe(Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })))
+    `.pipe(Effect.mapError(cause => new UnableToGetMatches({ cause })))
 
     if (rows.length === 0) return Option.none()
 
@@ -39,14 +39,14 @@ const getStoredEmbedding: (
 
     return Option.some(decoded.embedding)
   },
-  Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
+  Effect.mapError(cause => new UnableToGetMatches({ cause })),
 )
 
 const storeEmbedding: (
   doi: Doi,
   embedding: Embedding,
   sql: SqlClient.SqlClient,
-) => Effect.Effect<void, UnableToGetSurveyPapers> = Effect.fnUntraced(
+) => Effect.Effect<void, UnableToGetMatches> = Effect.fnUntraced(
   function* (doi, embedding, sql) {
     const encoded = Schema.encodeSync(PgVector)(embedding)
     yield* sql`
@@ -59,7 +59,7 @@ const storeEmbedding: (
         )
     `
   },
-  Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
+  Effect.mapError(cause => new UnableToGetMatches({ cause })),
 )
 
 export const ensureMatchmakingInputWorksTable = (

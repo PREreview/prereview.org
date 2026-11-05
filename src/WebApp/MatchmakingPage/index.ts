@@ -52,7 +52,7 @@ export const MatchmakingSubmission = Effect.fn('MatchmakingSubmission')(
   Effect.catchTags({
     PreprintIsNotFound: () => HavingProblemsPage,
     PreprintIsUnavailable: () => HavingProblemsPage,
-    UnableToGetSurveyPapers: () => HavingProblemsPage,
+    UnableToGetMatches: () => HavingProblemsPage,
     WorkNotFound: () => HavingProblemsPage,
     WorkUnavailable: () => HavingProblemsPage,
   }),

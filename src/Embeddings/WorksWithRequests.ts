@@ -177,7 +177,7 @@ export const createMissingEmbeddings = (
     const generated: ReadonlyArray<WorkWithRequest & { embedding: Embedding }> =
       papersWithoutEmbeddings.length > 0
         ? yield* generateEmbeddings(papersWithoutEmbeddings, apiKey, httpClient, tokenizer).pipe(
-            Effect.catchTag('UnableToGetSurveyPapers', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
+            Effect.catchTag('UnableToGetMatches', ({ cause }) => new UnableToAddWorksWithRequests({ cause })),
           )
         : []
 

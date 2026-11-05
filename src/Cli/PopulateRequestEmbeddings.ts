@@ -29,7 +29,7 @@ const program = Effect.fnUntraced(function* () {
     }),
   )
 
-  yield* embeddings.addPreprints(worksWithRequests)
+  yield* embeddings.addRequests(worksWithRequests)
 })
 
 export const PopulateRequestEmbeddings = Command.make('populate-request-embeddings', {}, program)

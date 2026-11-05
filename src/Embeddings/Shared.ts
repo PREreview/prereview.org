@@ -13,7 +13,7 @@ const NumberFromStringSchema = Schema.String.pipe(
   }),
 )
 
-export class UnableToGetSurveyPapers extends Data.TaggedError('UnableToGetSurveyPapers')<{
+export class UnableToGetMatches extends Data.TaggedError('UnableToGetMatches')<{
   cause?: unknown
 }> {}
 

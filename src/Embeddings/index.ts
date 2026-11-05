@@ -1,6 +1,6 @@
 import { HttpClient } from 'effect/http'
 import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
-import { UnableToGetSurveyPapers, type UnableToAddWorksWithRequests } from './Shared.ts'
+import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
   ensureMatchmakingInputWorksTable,
   getEmbeddingsGeneratingAsNeeded,
@@ -25,7 +25,7 @@ import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
 
 export type { MatchmakingInputWork } from './MatchmakingInputWorks.ts'
 
-interface SurveyPick {
+interface Match {
   preprintId: IndeterminatePreprintId
   distance: number
   rank: number
@@ -39,11 +39,8 @@ export class Embeddings extends Context.Service<
       input: Array.NonEmptyReadonlyArray<MatchmakingInputWork>,
       inputOrcidId: OrcidId,
       languages: Array.NonEmptyReadonlyArray<LanguageCode>,
-    ) => Effect.Effect<
-      { picks: Array.NonEmptyReadonlyArray<SurveyPick>; candidateCount: number },
-      UnableToGetSurveyPapers
-    >
-    addPreprints: (input: ReadonlyArray<WorkWithRequest>) => Effect.Effect<void, UnableToAddWorksWithRequests>
+    ) => Effect.Effect<{ picks: Array.NonEmptyReadonlyArray<Match>; candidateCount: number }, UnableToGetMatches>
+    addRequests: (input: ReadonlyArray<WorkWithRequest>) => Effect.Effect<void, UnableToAddWorksWithRequests>
     existingWorks: (
       input: ReadonlyArray<IndeterminatePreprintId>,
     ) => Effect.Effect<Set<IndeterminatePreprintId>, UnableToAddWorksWithRequests>
@@ -68,7 +65,7 @@ const windowLabel = ([start, end]: readonly [number, number]): string => `${star
 const pickFromWindow = (
   candidates: ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number }>,
   [start, end]: readonly [number, number],
-): Effect.Effect<Option.Option<SurveyPick>> => {
+): Effect.Effect<Option.Option<Match>> => {
   const slice = candidates.slice(start, end)
   if (!Array.isReadonlyArrayNonEmpty(slice)) return Effect.succeed(Option.none())
 
@@ -135,12 +132,12 @@ export const embeddingsLayer = Layer.effect(
             getEmbeddingsGeneratingAsNeeded(apiKey, httpClient, sql, tokenizer),
             Effect.map(calcFloat32ArrayMean),
             Effect.andThen(getMatches(5000, sql, languages, inputOrcidId, Array.map(inputPapers, Struct.get('doi')))),
-            Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetSurveyPapers({ cause })),
+            Effect.catchTag('UnableToQuery', ({ cause }) => new UnableToGetMatches({ cause })),
             Effect.andThen(pickSurveyPapers),
           )
 
           if (!Array.isReadonlyArrayNonEmpty(picks)) {
-            return yield* new UnableToGetSurveyPapers({
+            return yield* new UnableToGetMatches({
               cause: 'no candidates found',
             })
           }
@@ -151,7 +148,7 @@ export const embeddingsLayer = Layer.effect(
           Effect.logError('Unable to get matches').pipe(Effect.annotateLogs({ error: error.cause })),
         ),
       ),
-      addPreprints: createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection),
+      addRequests: createMissingEmbeddings(apiKey, httpClient, sql, tokenizer, languageDetection),
       existingWorks: preprintIds => findExistingWorks(preprintIds, sql),
     }
   }),

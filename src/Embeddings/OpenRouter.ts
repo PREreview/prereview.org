@@ -1,6 +1,6 @@
 import { HttpClientRequest, HttpClientResponse, type HttpClient } from 'effect/http'
 import { Array, Effect, pipe, type Redacted, Schema } from 'effect'
-import { UnableToGetSurveyPapers, type Embedding } from './Shared.ts'
+import { UnableToGetMatches, type Embedding } from './Shared.ts'
 import { Float32ArraySchema } from './Float32Array.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
 
@@ -30,7 +30,7 @@ export const generateEmbeddings: <T extends TitleAndAbstract>(
   apiKey: Redacted.Redacted,
   httpClient: HttpClient.HttpClient,
   tokenizer: Tokenizer,
-) => Effect.Effect<ReadonlyArray<T & { embedding: Embedding }>, UnableToGetSurveyPapers> = Effect.fn(
+) => Effect.Effect<ReadonlyArray<T & { embedding: Embedding }>, UnableToGetMatches> = Effect.fn(
   'Embeddings.generateEmbeddings',
 )(
   function* <T extends TitleAndAbstract>(
@@ -79,7 +79,7 @@ export const generateEmbeddings: <T extends TitleAndAbstract>(
       yield* Effect.logError('Failed to generate embeddings')
     }, Effect.scoped),
   ),
-  Effect.mapError(cause => new UnableToGetSurveyPapers({ cause })),
+  Effect.mapError(cause => new UnableToGetMatches({ cause })),
 )
 
 const specialTokensChargedByEndpoint = 2
