@@ -1,0 +1,73 @@
+import { format } from 'fp-ts-routing'
+import { match } from 'ts-pattern'
+import { html, plainText } from '../../../html.ts'
+import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import type { IsOpenForRequests } from '../../../Prereviewers/index.ts'
+import * as Routes from '../../../routes.ts'
+import { PageResponse } from '../../Response/index.ts'
+
+export const OpenForRequestsVisibilityPage = ({
+  locale,
+  openForRequests,
+}: {
+  locale: SupportedLocale
+  openForRequests: Extract<IsOpenForRequests, { value: true }>
+}) =>
+  PageResponse({
+    title: plainText(translate(locale, 'my-details', 'seeHappyTakeRequests')()),
+    nav: html`<a href="${format(Routes.myDetailsMatch.formatter, {})}" class="back"
+      >${translate(locale, 'forms', 'backLink')()}</a
+    >`,
+    main: html`
+      <form method="post" action="${Routes.ChangeOpenForRequestsVisibility}" novalidate>
+        <fieldset role="group">
+          <legend>
+            <h1>${translate(locale, 'my-details', 'seeHappyTakeRequests')()}</h1>
+          </legend>
+
+          <ol>
+            <li>
+              <label>
+                <input
+                  name="openForRequestsVisibility"
+                  id="open-for-requests-visibility-public"
+                  type="radio"
+                  value="public"
+                  aria-describedby="open-for-requests-visibility-tip-public"
+                  ${match(openForRequests.visibility)
+                    .with('public', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                ${translate(locale, 'my-details', 'everyone')()}
+              </label>
+              <p id="open-for-requests-visibility-tip-public" role="note">
+                ${translate(locale, 'my-details', 'everyoneOpenForRequestsTip')()}
+              </p>
+            </li>
+            <li>
+              <label>
+                <input
+                  name="openForRequestsVisibility"
+                  id="open-for-requests-visibility-restricted"
+                  type="radio"
+                  value="restricted"
+                  aria-describedby="open-for-requests-visibility-tip-restricted"
+                  ${match(openForRequests.visibility)
+                    .with('restricted', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                ${translate(locale, 'my-details', 'onlyPrereview')()}
+              </label>
+              <p id="open-for-requests-visibility-tip-restricted" role="note">
+                ${translate(locale, 'my-details', 'onlyPrereviewOpenForRequestsTip')()}
+              </p>
+            </li>
+          </ol>
+        </fieldset>
+
+        <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
+      </form>
+    `,
+    skipToLabel: 'form',
+    canonical: Routes.ChangeOpenForRequestsVisibility,
+  })

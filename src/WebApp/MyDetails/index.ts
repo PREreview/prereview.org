@@ -1,2 +1,7 @@
+export * from './CareerStageVisibilityPage/index.ts'
+export * from './LanguagesVisibilityPage/index.ts'
+export * from './LocationVisibilityPage/index.ts'
+export * from './OpenForRequestsVisibilityPage/index.ts'
 export * from './RemoveAvatarPage/index.ts'
 export * from './RequestedReviewNotificationsPage/index.ts'
+export * from './ResearchInterestsVisibilityPage/index.ts'

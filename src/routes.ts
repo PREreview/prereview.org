@@ -110,6 +110,11 @@ export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
 export const ChangeRequestedReviewNotifications = '/my-details/change-requested-review-notifications'
 export const RemoveAvatar = '/my-details/remove-avatar'
+export const ChangeCareerStageVisibility = '/my-details/change-career-stage-visibility'
+export const ChangeLanguagesVisibility = '/my-details/change-languages-visibility'
+export const ChangeLocationVisibility = '/my-details/change-location-visibility'
+export const ChangeResearchInterestsVisibility = '/my-details/change-research-interests-visibility'
+export const ChangeOpenForRequestsVisibility = '/my-details/change-open-for-requests-visibility'
 export const Matchmaking = '/matchmaking'
 
 const stringStartsWith =

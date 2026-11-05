@@ -17,16 +17,11 @@ import * as Routes from '../../routes.ts'
 import {
   changeAvatarMatch,
   changeCareerStageMatch,
-  changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
   changeLanguagesMatch,
-  changeLanguagesVisibilityMatch,
   changeLocationMatch,
-  changeLocationVisibilityMatch,
   changeOpenForRequestsMatch,
-  changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
-  changeResearchInterestsVisibilityMatch,
   connectOrcidMatch,
   connectSlackMatch,
   disconnectOrcidMatch,
@@ -321,7 +316,7 @@ export function createPage({
                                   >
                                 </li>
                                 <li>
-                                  <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
+                                  <a href="${Routes.ChangeOpenForRequestsVisibility}"
                                     >${t('setPreferenceReviewRequestsVisibility')(visuallyHidden)}</a
                                   >
                                 </li>
@@ -377,7 +372,7 @@ export function createPage({
                       >
                     </li>
                     <li>
-                      <a href="${format(changeCareerStageVisibilityMatch.formatter, {})}"
+                      <a href="${Routes.ChangeCareerStageVisibility}"
                         >${t('setCareerStageVisibility')(visuallyHidden)}</a
                       >
                     </li>
@@ -419,7 +414,7 @@ export function createPage({
                       >
                     </li>
                     <li>
-                      <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
+                      <a href="${Routes.ChangeResearchInterestsVisibility}"
                         >${t('setResearchInterestsVisibility')(visuallyHidden)}</a
                       >
                     </li>
@@ -459,9 +454,7 @@ export function createPage({
                       <a href="${format(changeLocationMatch.formatter, {})}">${t('changeLocation')(visuallyHidden)}</a>
                     </li>
                     <li>
-                      <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
-                        >${t('setLocationVisibility')(visuallyHidden)}</a
-                      >
+                      <a href="${Routes.ChangeLocationVisibility}">${t('setLocationVisibility')(visuallyHidden)}</a>
                     </li>
                   </ul>
                 </dd>
@@ -501,9 +494,7 @@ export function createPage({
                       >
                     </li>
                     <li>
-                      <a href="${format(changeLanguagesVisibilityMatch.formatter, {})}"
-                        >${t('setLanguagesVisibility')(visuallyHidden)}</a
-                      >
+                      <a href="${Routes.ChangeLanguagesVisibility}">${t('setLanguagesVisibility')(visuallyHidden)}</a>
                     </li>
                   </ul>
                 </dd>

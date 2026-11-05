@@ -603,6 +603,51 @@ const MyDetailsRouter = useMiddleware(
   [
     MakeStaticRoute('GET', Routes.RemoveAvatar, MyDetails.RemoveAvatarPage),
     MakeStaticRoute('POST', Routes.RemoveAvatar, MyDetails.RemoveAvatarSubmission),
+    MakeStaticRoute('GET', Routes.ChangeCareerStageVisibility, MyDetails.CareerStageVisibilityPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeCareerStageVisibility,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.CareerStageVisibilitySubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeLanguagesVisibility, MyDetails.LanguagesVisibilityPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeLanguagesVisibility,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.LanguagesVisibilitySubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeLocationVisibility, MyDetails.LocationVisibilityPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeLocationVisibility,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.LocationVisibilitySubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeResearchInterestsVisibility, MyDetails.ResearchInterestsVisibilityPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeResearchInterestsVisibility,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.ResearchInterestsVisibilitySubmission),
+      ),
+    ),
+    MakeStaticRoute('GET', Routes.ChangeOpenForRequestsVisibility, MyDetails.OpenForRequestsVisibilityPage),
+    MakeStaticRoute(
+      'POST',
+      Routes.ChangeOpenForRequestsVisibility,
+      pipe(
+        HttpServerRequest.HttpServerRequest.use(Struct.get('urlParamsBody')),
+        Effect.andThen(MyDetails.OpenForRequestsVisibilitySubmission),
+      ),
+    ),
     MakeStaticRoute('GET', Routes.ChangeRequestedReviewNotifications, MyDetails.RequestedReviewNotificationsPage),
     MakeStaticRoute(
       'POST',
