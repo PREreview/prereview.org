@@ -37,13 +37,11 @@ export const MatchmakingSubmission = Effect.fn('MatchmakingSubmission')(
 
     const matches = yield* embeddings.getMatches([work], user.orcid, ['en'])
 
-    const preprintIds = Array.map(matches.picks, Struct.get('preprintId'))
-
     const matchedWorks = yield* Effect.forEach(
-      preprintIds,
-      Effect.fnUntraced(function* (preprintId) {
-        const preprint = yield* preprints.getPreprint(preprintId)
-        return { ...preprint, requested: PlainDate.from('2024-06-06') }
+      matches.picks,
+      Effect.fnUntraced(function* (match) {
+        const preprint = yield* preprints.getPreprint(match.preprintId)
+        return { ...preprint, requested: PlainDate.from(match.latestRequest.toZonedDateTimeISO('UTC').toPlainDate()) }
       }),
     )
 

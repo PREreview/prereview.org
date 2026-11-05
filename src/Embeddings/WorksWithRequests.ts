@@ -120,7 +120,10 @@ export const getMatches =
   ) =>
   (
     mean: Embedding,
-  ): Effect.Effect<ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number }>, UnableToQuery> =>
+  ): Effect.Effect<
+    ReadonlyArray<{ preprintId: IndeterminatePreprintId; distance: number; latestRequest: Temporal.Instant }>,
+    UnableToQuery
+  > =>
     sql
       .withTransaction(
         Effect.gen(function* () {
@@ -152,7 +155,11 @@ export const getMatches =
         Effect.andThen(Schema.decodeUnknownEffect(RequestEmbeddingsSelect)),
         Effect.andThen(
           Effect.forEach(row =>
-            Effect.map(decodePreprintId(row.preprint_id), preprintId => ({ preprintId, distance: row.distance })),
+            Effect.map(decodePreprintId(row.preprint_id), preprintId => ({
+              preprintId,
+              distance: row.distance,
+              latestRequest: Temporal.Instant.from('2026-01-01'),
+            })),
           ),
         ),
         Effect.mapError(cause => new UnableToQuery({ cause })),

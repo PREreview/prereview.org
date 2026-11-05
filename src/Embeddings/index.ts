@@ -28,6 +28,7 @@ export type { MatchmakingInputWork } from './MatchmakingInputWorks.ts'
 interface Match {
   preprintId: IndeterminatePreprintId
   distance: number
+  latestRequest: Temporal.Instant
   rank: number
   window: string
 }
