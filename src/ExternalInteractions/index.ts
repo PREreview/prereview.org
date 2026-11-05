@@ -1,3 +1,4 @@
+export * as CloudinaryAvatars from './CloudinaryAvatars/index.ts'
 export * as CommunitySlack from './CommunitySlack/index.ts'
 export * as DatasetData from './DatasetData/index.ts'
 export * as Email from './Email/index.ts'
