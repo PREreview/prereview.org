@@ -13,7 +13,6 @@ import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Clubs from './Clubs/index.ts'
 import { Nodemailer } from './ExternalApis/index.ts'
-import { LanguageDetection } from './ExternalInteractions/index.ts'
 import { html } from './html.ts'
 import * as OrcidTokens from './OrcidTokens.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
@@ -106,7 +105,6 @@ const ClubsData = Layer.unwrap(
 pipe(
   Program,
   Layer.provide(embeddingsLayer),
-  Layer.provide(LanguageDetection.layerCld),
   Layer.provide(ClubsData),
   Layer.provide(OpenAiLanguageModel.model('gpt-5.6-sol')),
   Layer.provide([
