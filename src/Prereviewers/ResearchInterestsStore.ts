@@ -1,8 +1,14 @@
-import { Context, Effect, Layer, Option, pipe, Schema, SchemaTransformation, Struct } from 'effect'
+import { Context, Data, Effect, Layer, Option, pipe, Schema, SchemaTransformation, Struct } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import { NonEmptyString, type OrcidId } from '../types/index.ts'
 import type { ResearchInterests } from './legacy-research-interests.ts'
+
+export class ResearchInterestsNotFound extends Data.TaggedError('ResearchInterestsNotFound') {}
+
+export class ResearchInterestsUnavailable extends Data.TaggedError('ResearchInterestsUnavailable')<{
+  cause?: unknown
+}> {}
 
 const ResearchInterestsSchema = Schema.Struct({
   value: NonEmptyString.NonEmptyStringSchema,
@@ -54,9 +60,11 @@ export const get = Effect.fn('ResearchInterestsStore.get')(function* (orcid: Orc
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+    Effect.flatMap(
+      Option.match({ onNone: () => Effect.fail(new ResearchInterestsNotFound()), onSome: Effect.succeed }),
+    ),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
+      SchemaError: () => new ResearchInterestsNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -71,7 +79,7 @@ export const save = Effect.fn('ResearchInterestsStore.save')(function* (
   return yield* pipe(
     store.set(orcid, researchInterests),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new ResearchInterestsUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -87,5 +95,5 @@ const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
     Effect.logError('Unable to access research interests'),
     Effect.annotateLogs({ error: error.message, method: error.method, key: error.key }),
-    Effect.andThen(Effect.fail('unavailable' as const)),
+    Effect.andThen(Effect.fail(new ResearchInterestsUnavailable({ cause: error }))),
   )

@@ -35,7 +35,7 @@ describe('get', () => {
 
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('not-found'))
+      expect(actual).toStrictEqual(Result.fail(new _.IsOpenForRequestsNotFound()))
     }).pipe(Effect.provide(Layer.provideMerge(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
@@ -43,7 +43,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('not-found'))
+      expect(actual).toStrictEqual(Result.fail(new _.IsOpenForRequestsNotFound()))
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -51,7 +51,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.IsOpenForRequestsUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
@@ -74,7 +74,7 @@ describe('save', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.result(_.save(orcid, isOpenForRequests))
 
-        expect(actual).toStrictEqual(Result.fail('unavailable'))
+        expect(actual).toStrictEqual(Result.fail(expect.any(_.IsOpenForRequestsUnavailable)))
       }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })

@@ -1,8 +1,14 @@
-import { Context, Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Context, Data, Effect, Layer, Option, pipe, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import type { OrcidId } from '../types/index.ts'
 import type { IsOpenForRequests } from './legacy-is-open-for-requests.ts'
+
+export class IsOpenForRequestsNotFound extends Data.TaggedError('IsOpenForRequestsNotFound') {}
+
+export class IsOpenForRequestsUnavailable extends Data.TaggedError('IsOpenForRequestsUnavailable')<{
+  cause?: unknown
+}> {}
 
 const IsOpenForRequestsSchema = Schema.Union([
   Schema.Struct({ value: Schema.Literal(false) }),
@@ -32,9 +38,11 @@ export const get = Effect.fn('IsOpenForRequestsStore.get')(function* (orcid: Orc
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+    Effect.flatMap(
+      Option.match({ onNone: () => Effect.fail(new IsOpenForRequestsNotFound()), onSome: Effect.succeed }),
+    ),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
+      SchemaError: () => new IsOpenForRequestsNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -49,7 +57,7 @@ export const save = Effect.fn('IsOpenForRequestsStore.save')(function* (
   return yield* pipe(
     store.set(orcid, isOpenForRequests),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new IsOpenForRequestsUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -59,5 +67,5 @@ const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
     Effect.logError('Unable to access is-open-for-requests'),
     Effect.annotateLogs({ error: error.message, method: error.method, key: error.key }),
-    Effect.andThen(Effect.fail('unavailable' as const)),
+    Effect.andThen(Effect.fail(new IsOpenForRequestsUnavailable({ cause: error }))),
   )

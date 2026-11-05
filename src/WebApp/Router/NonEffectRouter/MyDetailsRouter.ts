@@ -41,6 +41,7 @@ import {
 } from '../../my-details-page/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
+import { withLegacyReadErrors, withLegacyWriteErrors } from './LegacyStoreErrors.ts'
 
 export const MyDetailsRouter = pipe(
   [
@@ -255,11 +256,20 @@ export const MyDetailsRouter = pipe(
               : Effect.fail('unavailable' as const),
           env.runtime,
         ),
-        deleteCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.remove, env.runtime),
-        deleteLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.remove, env.runtime),
-        deleteLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.remove, env.runtime),
+        deleteCareerStage: EffectToFpts.toTaskEitherK(
+          withLegacyWriteErrors(Prereviewers.CareerStages.remove),
+          env.runtime,
+        ),
+        deleteLanguages: EffectToFpts.toTaskEitherK(
+          withLegacyWriteErrors(Prereviewers.LanguagesStore.remove),
+          env.runtime,
+        ),
+        deleteLocation: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.Locations.remove), env.runtime),
         deleteOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.remove, env.runtime),
-        deleteResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.remove, env.runtime),
+        deleteResearchInterests: EffectToFpts.toTaskEitherK(
+          withLegacyWriteErrors(Prereviewers.ResearchInterestsStore.remove),
+          env.runtime,
+        ),
         deleteSlackUserId: EffectToFpts.toTaskEitherK(
           Effect.fnUntraced(function* (orcid: OrcidId) {
             yield* pipe(
@@ -295,11 +305,17 @@ export const MyDetailsRouter = pipe(
           ),
           env.runtime,
         ),
-        isOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.get, env.runtime),
-        getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
-        getResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.get, env.runtime),
-        getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
-        getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
+        isOpenForRequests: EffectToFpts.toTaskEitherK(
+          withLegacyReadErrors(Prereviewers.IsOpenForRequestsStore.get),
+          env.runtime,
+        ),
+        getCareerStage: EffectToFpts.toTaskEitherK(withLegacyReadErrors(Prereviewers.CareerStages.get), env.runtime),
+        getResearchInterests: EffectToFpts.toTaskEitherK(
+          withLegacyReadErrors(Prereviewers.ResearchInterestsStore.get),
+          env.runtime,
+        ),
+        getLocation: EffectToFpts.toTaskEitherK(withLegacyReadErrors(Prereviewers.Locations.get), env.runtime),
+        getLanguages: EffectToFpts.toTaskEitherK(withLegacyReadErrors(Prereviewers.LanguagesStore.get), env.runtime),
         isSlackUser: EffectToFpts.toTaskEitherK(
           flow(
             SlackUserIds.get,
@@ -334,12 +350,18 @@ export const MyDetailsRouter = pipe(
           ),
           env.runtime,
         ),
-        saveCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.save, env.runtime),
-        saveLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.save, env.runtime),
-        saveLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.save, env.runtime),
-        saveOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.save, env.runtime),
+        saveCareerStage: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.CareerStages.save), env.runtime),
+        saveLanguages: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.LanguagesStore.save), env.runtime),
+        saveLocation: EffectToFpts.toTaskEitherK(withLegacyWriteErrors(Prereviewers.Locations.save), env.runtime),
+        saveOpenForRequests: EffectToFpts.toTaskEitherK(
+          withLegacyWriteErrors(Prereviewers.IsOpenForRequestsStore.save),
+          env.runtime,
+        ),
         saveOrcidToken: EffectToFpts.toTaskEitherK(OrcidTokens.save, env.runtime),
-        saveResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.save, env.runtime),
+        saveResearchInterests: EffectToFpts.toTaskEitherK(
+          withLegacyWriteErrors(Prereviewers.ResearchInterestsStore.save),
+          env.runtime,
+        ),
         saveSlackUserId: EffectToFpts.toTaskEitherK(
           Effect.fnUntraced(function* (orcid: OrcidId, slackUser: SlackUserId) {
             yield* SlackUserIds.save(orcid, slackUser)

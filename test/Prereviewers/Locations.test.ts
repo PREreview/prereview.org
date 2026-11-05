@@ -35,7 +35,7 @@ describe('get', () => {
 
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('not-found'))
+      expect(actual).toStrictEqual(Result.fail(new _.LocationNotFound()))
     }).pipe(Effect.provide(Layer.provideMerge(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
@@ -43,7 +43,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('not-found'))
+      expect(actual).toStrictEqual(Result.fail(new _.LocationNotFound()))
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -51,7 +51,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.LocationUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
@@ -74,7 +74,7 @@ describe('getAll', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.getAll())
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.LocationUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
@@ -94,7 +94,7 @@ describe('save', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.save(orcid, location))
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.LocationUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
@@ -108,7 +108,7 @@ describe('remove', () => {
 
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('not-found'))
+      expect(actual).toStrictEqual(Result.fail(new _.LocationNotFound()))
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -124,7 +124,7 @@ describe('remove', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.remove(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.LocationUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })

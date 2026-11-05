@@ -1,8 +1,12 @@
-import { Array, Context, Effect, Layer, Option, pipe, Record, Schema } from 'effect'
+import { Array, Context, Data, Effect, Layer, Option, pipe, Record, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import { NonEmptyString, OrcidId } from '../types/index.ts'
 import type { Location } from './legacy-location.ts'
+
+export class LocationNotFound extends Data.TaggedError('LocationNotFound') {}
+
+export class LocationUnavailable extends Data.TaggedError('LocationUnavailable')<{ cause?: unknown }> {}
 
 const LocationSchema = Schema.Struct({
   value: NonEmptyString.NonEmptyStringSchema,
@@ -32,9 +36,9 @@ export const get = Effect.fn('Locations.get')(function* (orcid: OrcidId.OrcidId)
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new LocationNotFound()), onSome: Effect.succeed })),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
+      SchemaError: () => new LocationNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -58,7 +62,7 @@ export const getAll = Effect.fn('Locations.getAll')(function* () {
     ),
     Effect.map(entries => Record.fromEntries(Array.getSomes(entries))),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new LocationUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -70,7 +74,7 @@ export const save = Effect.fn('Locations.save')(function* (orcid: OrcidId.OrcidI
   return yield* pipe(
     store.set(orcid, location),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new LocationUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -86,5 +90,5 @@ const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
     Effect.logError('Unable to access locations'),
     Effect.annotateLogs({ error: error.message, method: error.method, key: error.key }),
-    Effect.andThen(Effect.fail('unavailable' as const)),
+    Effect.andThen(Effect.fail(new LocationUnavailable({ cause: error }))),
   )

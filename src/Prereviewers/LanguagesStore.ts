@@ -1,8 +1,12 @@
-import { Context, Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Context, Data, Effect, Layer, Option, pipe, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import { NonEmptyString, type OrcidId } from '../types/index.ts'
 import type { Languages } from './legacy-languages.ts'
+
+export class LanguagesNotFound extends Data.TaggedError('LanguagesNotFound') {}
+
+export class LanguagesUnavailable extends Data.TaggedError('LanguagesUnavailable')<{ cause?: unknown }> {}
 
 const LanguagesSchema = Schema.Struct({
   value: NonEmptyString.NonEmptyStringSchema,
@@ -32,9 +36,9 @@ export const get = Effect.fn('LanguagesStore.get')(function* (orcid: OrcidId.Orc
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new LanguagesNotFound()), onSome: Effect.succeed })),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
+      SchemaError: () => new LanguagesNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -46,7 +50,7 @@ export const save = Effect.fn('LanguagesStore.save')(function* (orcid: OrcidId.O
   return yield* pipe(
     store.set(orcid, languages),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new LanguagesUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -62,5 +66,5 @@ const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
     Effect.logError('Unable to access languages'),
     Effect.annotateLogs({ error: error.message, method: error.method, key: error.key }),
-    Effect.andThen(Effect.fail('unavailable' as const)),
+    Effect.andThen(Effect.fail(new LanguagesUnavailable({ cause: error }))),
   )

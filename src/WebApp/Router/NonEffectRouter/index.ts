@@ -68,6 +68,7 @@ import { reviewsPage } from '../../reviews-page/index.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
 import { DataRouter } from './DataRouter.ts'
+import { withLegacyReadErrors } from './LegacyStoreErrors.ts'
 import { MyDetailsRouter } from './MyDetailsRouter.ts'
 import { WriteReviewRouter } from './WriteReviewRouter.ts'
 
@@ -277,9 +278,15 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
-              getCareerStage: EffectToFpts.toTaskEitherK(Prereviewers.CareerStages.get, env.runtime),
-              getLanguages: EffectToFpts.toTaskEitherK(Prereviewers.LanguagesStore.get, env.runtime),
-              getLocation: EffectToFpts.toTaskEitherK(Prereviewers.Locations.get, env.runtime),
+              getCareerStage: EffectToFpts.toTaskEitherK(
+                withLegacyReadErrors(Prereviewers.CareerStages.get),
+                env.runtime,
+              ),
+              getLanguages: EffectToFpts.toTaskEitherK(
+                withLegacyReadErrors(Prereviewers.LanguagesStore.get),
+                env.runtime,
+              ),
+              getLocation: EffectToFpts.toTaskEitherK(withLegacyReadErrors(Prereviewers.Locations.get), env.runtime),
               getName: EffectToFpts.toTaskEitherK(
                 flow(
                   Prereviewers.getPublicPersona,
@@ -296,7 +303,10 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
-              getResearchInterests: EffectToFpts.toTaskEitherK(Prereviewers.ResearchInterestsStore.get, env.runtime),
+              getResearchInterests: EffectToFpts.toTaskEitherK(
+                withLegacyReadErrors(Prereviewers.ResearchInterestsStore.get),
+                env.runtime,
+              ),
               getSlackUser: EffectToFpts.toTaskEitherK(
                 flow(
                   SlackUserIds.get,
@@ -306,7 +316,10 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
-              isOpenForRequests: EffectToFpts.toTaskEitherK(Prereviewers.IsOpenForRequestsStore.get, env.runtime),
+              isOpenForRequests: EffectToFpts.toTaskEitherK(
+                withLegacyReadErrors(Prereviewers.IsOpenForRequestsStore.get),
+                env.runtime,
+              ),
               runtime: env.runtime,
             }),
       ),

@@ -1,8 +1,12 @@
-import { Array, Context, Effect, Layer, Option, pipe, Record, Schema, SchemaTransformation, Struct } from 'effect'
+import { Array, Context, Data, Effect, Layer, Option, pipe, Record, Schema, SchemaTransformation, Struct } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../RedisKeyValueStore.ts'
 import { OrcidId } from '../types/index.ts'
 import type { CareerStage } from './legacy-career-stage.ts'
+
+export class CareerStageNotFound extends Data.TaggedError('CareerStageNotFound') {}
+
+export class CareerStageUnavailable extends Data.TaggedError('CareerStageUnavailable')<{ cause?: unknown }> {}
 
 const CareerStageValueSchema = Schema.Literals(['early', 'mid', 'late'])
 
@@ -47,9 +51,9 @@ export const get = Effect.fn('CareerStages.get')(function* (orcid: OrcidId.Orcid
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new CareerStageNotFound()), onSome: Effect.succeed })),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
+      SchemaError: () => new CareerStageNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -73,7 +77,7 @@ export const getAll = Effect.fn('CareerStages.getAll')(function* () {
     ),
     Effect.map(entries => Record.fromEntries(Array.getSomes(entries))),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new CareerStageUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -85,7 +89,7 @@ export const save = Effect.fn('CareerStages.save')(function* (orcid: OrcidId.Orc
   return yield* pipe(
     store.set(orcid, careerStage),
     Effect.catchTags({
-      SchemaError: () => Effect.fail('unavailable' as const),
+      SchemaError: error => new CareerStageUnavailable({ cause: error }),
       KeyValueStoreError: unavailable,
     }),
   )
@@ -101,5 +105,5 @@ const unavailable = (error: KeyValueStore.KeyValueStoreError) =>
   pipe(
     Effect.logError('Unable to access career stages'),
     Effect.annotateLogs({ error: error.message, method: error.method, key: error.key }),
-    Effect.andThen(Effect.fail('unavailable' as const)),
+    Effect.andThen(Effect.fail(new CareerStageUnavailable({ cause: error }))),
   )

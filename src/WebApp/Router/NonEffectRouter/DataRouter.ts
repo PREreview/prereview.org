@@ -80,7 +80,7 @@ export const DataRouter = pipe(
                     location: locations[user.orcidId]?.value,
                   })),
                 ),
-                Effect.catchTag('UnableToQuery', () => Effect.fail('unavailable' as const)),
+                Effect.mapError(() => 'unavailable' as const),
               ),
               env.runtime,
             ),

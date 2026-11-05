@@ -76,7 +76,7 @@ describe('get', () => {
 
         const actual = yield* Effect.result(_.get(orcid))
 
-        expect(actual).toStrictEqual(Result.fail('not-found'))
+        expect(actual).toStrictEqual(Result.fail(new _.ResearchInterestsNotFound()))
       }).pipe(Effect.provide(Layer.provideMerge(_.layerKeyValueStore, KeyValueStore.layerMemory))),
   )
 
@@ -84,7 +84,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('not-found'))
+      expect(actual).toStrictEqual(Result.fail(new _.ResearchInterestsNotFound()))
     }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -92,7 +92,7 @@ describe('get', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.get(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.ResearchInterestsUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
@@ -118,7 +118,7 @@ describe('save', () => {
       Effect.gen(function* () {
         const actual = yield* Effect.result(_.save(orcid, researchInterests))
 
-        expect(actual).toStrictEqual(Result.fail('unavailable'))
+        expect(actual).toStrictEqual(Result.fail(expect.any(_.ResearchInterestsUnavailable)))
       }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
@@ -135,7 +135,7 @@ describe('remove', () => {
 
         const actual = yield* Effect.result(_.get(orcid))
 
-        expect(actual).toStrictEqual(Result.fail('not-found'))
+        expect(actual).toStrictEqual(Result.fail(new _.ResearchInterestsNotFound()))
       }).pipe(Effect.provide(_.layerInMemory)),
   )
 
@@ -151,7 +151,7 @@ describe('remove', () => {
     Effect.gen(function* () {
       const actual = yield* Effect.result(_.remove(orcid))
 
-      expect(actual).toStrictEqual(Result.fail('unavailable'))
+      expect(actual).toStrictEqual(Result.fail(expect.any(_.ResearchInterestsUnavailable)))
     }).pipe(Effect.provide(Layer.provide(_.layerKeyValueStore, unavailableStore))),
   )
 })
