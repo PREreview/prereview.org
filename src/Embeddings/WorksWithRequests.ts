@@ -143,6 +143,7 @@ export const getMatches =
           return yield* sql`
             SELECT
               preprint_id,
+              latest_request,
               embedding <=> ${encoded}::halfvec AS distance
             FROM
               request_embeddings
@@ -169,7 +170,7 @@ export const getMatches =
             Effect.map(decodePreprintId(row.preprint_id), preprintId => ({
               preprintId,
               distance: row.distance,
-              latestRequest: Temporal.Instant.from('2026-01-01'),
+              latestRequest: Temporal.Instant.from(row.latest_request.toISOString()),
             })),
           ),
         ),
@@ -179,6 +180,7 @@ export const getMatches =
 const RequestEmbeddingsSelect = Schema.Array(
   Schema.Struct({
     preprint_id: Schema.String,
+    latest_request: Schema.Date,
     distance: Schema.Number,
   }),
 )
