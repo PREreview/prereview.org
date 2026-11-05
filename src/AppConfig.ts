@@ -11,7 +11,7 @@ import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
 import * as SlackOauth from './SlackOauth.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
-import { isPrereviewTeam } from './user.ts'
+import { isPrereviewTeam, type User } from './user.ts'
 import * as WebApp from './WebApp/index.ts'
 import { IsUserBlocked } from './WebApp/log-in/index.ts'
 
@@ -41,8 +41,8 @@ export const layer = Layer.mergeAll(
     canPreviewContentFromContentful: Config.withDefault(Config.Boolean('CAN_PREVIEW_CONTENT_FROM_CONTENTFUL'), false),
     canUseMatchmaking: pipe(
       Config.Boolean('CAN_USE_MATCHMAKING'),
-      Config.map(value => {
-        return () => value
+      Config.map(canUseMatchmaking => {
+        return (user?: User) => canUseMatchmaking && isPrereviewTeam(user)
       }),
       Config.withDefault(() => false),
     ),
