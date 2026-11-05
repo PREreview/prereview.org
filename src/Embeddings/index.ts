@@ -1,5 +1,5 @@
 import { HttpClient } from 'effect/http'
-import { Array, Config, Context, Effect, Layer, Option, pipe, Random, Struct } from 'effect'
+import { Array, Config, Context, Effect, Layer, pipe, Struct } from 'effect'
 import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
   ensureMatchmakingInputWorksTable,
@@ -46,72 +46,6 @@ export class Embeddings extends Context.Service<
     ) => Effect.Effect<Set<IndeterminatePreprintId>, UnableToAddWorksWithRequests>
   }
 >()('Embeddings') {}
-
-const TOP_WINDOW: readonly [number, number] = [0, 7]
-
-const DEPTH_WINDOWS: ReadonlyArray<readonly [number, number]> = [
-  [7, 17],
-  [17, 39],
-  [39, 88],
-  [88, 199],
-  [199, 446],
-  [446, 999],
-  [999, 2235],
-  [2235, 5000],
-]
-
-const windowLabel = ([start, end]: readonly [number, number]): string => `${start}-${end}`
-
-const pickFromWindow = <T>(
-  candidates: ReadonlyArray<T>,
-  [start, end]: readonly [number, number],
-): Effect.Effect<
-  Option.Option<
-    T & {
-      rank: number
-      window: string
-    }
-  >
-> => {
-  const slice = candidates.slice(start, end)
-  if (!Array.isReadonlyArrayNonEmpty(slice)) return Effect.succeed(Option.none())
-
-  return pipe(
-    Random.nextIntBetween(0, slice.length),
-    Effect.map(relativeIndex =>
-      Option.some({
-        // oxlint-disable-next-line typescript/no-non-null-assertion
-        ...slice[relativeIndex]!,
-        rank: start + relativeIndex,
-        window: windowLabel([start, end]),
-      }),
-    ),
-  )
-}
-
-export const pickSurveyPapers = Effect.fnUntraced(function* <T>(candidates: ReadonlyArray<T>) {
-  const top = candidates.slice(...TOP_WINDOW).map((pick, rank) => ({
-    ...pick,
-    rank,
-    window: windowLabel(TOP_WINDOW),
-  }))
-
-  const depthPicks = yield* pipe(
-    DEPTH_WINDOWS,
-    Effect.forEach(window => pickFromWindow(candidates, window)),
-    Effect.map(Array.getSomes),
-  )
-
-  yield* Effect.logInfo('Selected survey papers').pipe(
-    Effect.annotateLogs({
-      candidates: candidates.length,
-      top: top.length,
-      depth: depthPicks.length,
-    }),
-  )
-
-  return { picks: [...top, ...depthPicks], candidateCount: candidates.length }
-})
 
 export const embeddingsLayer = Layer.effect(
   Embeddings,
