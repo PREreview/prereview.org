@@ -26,7 +26,7 @@ const getStoredEmbedding: (
   function* (doi, sql) {
     const rows = yield* sql`
       SELECT
-        embedding
+        embedding::text AS embedding
       FROM
         matchmaking_input_works
       WHERE
