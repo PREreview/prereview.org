@@ -1,4 +1,4 @@
-import { SqlClient, type SqlError, type Statement } from 'effect/sql'
+import type { SqlError } from 'effect/sql'
 import { PgClient } from '@effect/sql-pg'
 import {
   Array,
@@ -26,45 +26,30 @@ class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
 export const make: Effect.Effect<
   EventStore.EventStore,
   SqlError.SqlError,
-  Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore
+  Events.Events | PgClient.PgClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
 
-  const sql = yield* SqlClient.SqlClient
+  const sql = yield* PgClient.PgClient
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
   const events = yield* Events.Events
 
-  yield* sql.onDialectOrElse({
-    pg: () => sql`
-      CREATE TABLE IF NOT EXISTS events (
-        id TEXT NOT NULL PRIMARY KEY,
-        type TEXT NOT NULL,
-        timestamp TIMESTAMPTZ DEFAULT (now() AT TIME ZONE 'utc'),
-        payload JSONB NOT NULL,
-        position SERIAL,
-        UNIQUE (position)
-      )
-    `,
-    orElse: () => sql`
-      CREATE TABLE IF NOT EXISTS events (
-        id TEXT NOT NULL,
-        type TEXT NOT NULL,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        payload JSONB NOT NULL,
-        position INTEGER PRIMARY KEY AUTOINCREMENT
-      )
-    `,
-  })
+  yield* sql`
+    CREATE TABLE IF NOT EXISTS events (
+      id TEXT NOT NULL PRIMARY KEY,
+      type TEXT NOT NULL,
+      timestamp TIMESTAMPTZ DEFAULT (now() AT TIME ZONE 'utc'),
+      payload JSONB NOT NULL,
+      position SERIAL,
+      UNIQUE (position)
+    )
+  `
 
-  yield* sql.onDialectOrElse({
-    pg: () =>
-      Effect.all([
-        sql`CREATE INDEX IF NOT EXISTS idx_events_type ON events (type)`,
-        sql`CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp)`,
-        sql`CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload)`,
-      ]),
-    orElse: () => Effect.void,
-  })
+  yield* Effect.all([
+    sql`CREATE INDEX IF NOT EXISTS idx_events_type ON events (type)`,
+    sql`CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp)`,
+    sql`CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload)`,
+  ])
 
   const buildFilterCondition = (filter: Events.EventFilter) =>
     sql.or(
@@ -86,18 +71,7 @@ export const make: Effect.Effect<
           filter.predicates,
         ) as Record.ReadonlyRecord<string, string | number>
 
-        return sql.and([
-          sql.in('type', filter.types),
-          ...sql.onDialectOrElse({
-            pg: () => [
-              sql`payload @> ${isPgClient(sql) ? sql.json(encodedPredicates) : JSON.stringify(encodedPredicates)}`,
-            ],
-            orElse: () =>
-              Record.reduce(encodedPredicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-                typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
-              ),
-          }),
-        ])
+        return sql.and([sql.in('type', filter.types), sql`payload @> ${sql.json(encodedPredicates)}`])
       }),
     )
 
@@ -232,7 +206,7 @@ export const make: Effect.Effect<
           SELECT
             ${encoded.id},
             ${encoded.type},
-            ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
+            ${sql.json(encoded.payload)}
         `.raw,
         Effect.andThen(Schema.decodeUnknownEffect(SqlQueryResults)),
       )
@@ -285,7 +259,7 @@ export const make: Effect.Effect<
           SELECT
             ${encoded.id},
             ${encoded.type},
-            ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
+            ${sql.json(encoded.payload)}
           WHERE
             (${condition})
         `.raw,
@@ -310,10 +284,7 @@ export const layer = Layer.effect(EventStore.EventStore, make)
 const EventsTableInsert = Schema.Struct({
   id: Uuid.UuidSchema,
   type: Schema.String,
-  payload: Schema.Union([
-    Schema.Record(Schema.String, Schema.Unknown),
-    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
-  ]),
+  payload: Schema.Record(Schema.String, Schema.Unknown),
 }).pipe(
   Schema.decodeTo(
     Schema.toType(
@@ -345,10 +316,7 @@ const EventsTableSelect = Schema.Struct({
   id: Uuid.UuidSchema,
   position: EventStore.Position,
   type: Schema.String,
-  payload: Schema.Union([
-    Schema.Record(Schema.String, Schema.Unknown),
-    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
-  ]),
+  payload: Schema.Record(Schema.String, Schema.Unknown),
 }).pipe(
   Schema.decodeTo(
     Schema.toType(
@@ -377,10 +345,6 @@ const EventsTableSelect = Schema.Struct({
   ),
 )
 
-const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient => PgClient.TypeId in sql
-
-const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
-
-const PgResults = Schema.Struct({ rowsAffected: Schema.Number }).pipe(Schema.encodeKeys({ rowsAffected: 'rowCount' }))
-
-const SqlQueryResults = Schema.Union([LibsqlResults, PgResults])
+const SqlQueryResults = Schema.Struct({ rowsAffected: Schema.Number }).pipe(
+  Schema.encodeKeys({ rowsAffected: 'rowCount' }),
+)

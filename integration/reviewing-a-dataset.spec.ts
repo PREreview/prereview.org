@@ -1,8 +1,6 @@
 import { Duration } from 'effect'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { areLoggedIn, test as baseTest, canLogIn, expect, usePostgresDB, willPublishADatasetReview } from './base.ts'
-
-const test = baseTest.extend(usePostgresDB)
+import { areLoggedIn, canLogIn, expect, test, willPublishADatasetReview } from './base.ts'
 
 test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', async ({ javaScriptEnabled, page }) => {
   await page.goto('/', { waitUntil: 'commit' })

@@ -1,4 +1,3 @@
-import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '../vitest.ts'
 import { Array, Effect, Result, Layer, Option, pipe, Struct, PubSub } from 'effect'
 import * as AuthorInviteStore from '../../src/AuthorInviteStore.ts'
@@ -10,6 +9,7 @@ import { layer as sqlSensitiveDataStoreLayer } from '../../src/SqlSensitiveDataS
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Uuid, layer as uuidLayer } from '../../src/types/Uuid.ts'
+import * as TestPgClient from '../TestPgClient.ts'
 
 const openInvitationId = Uuid('72ec8ae8-7f4f-4efa-9693-53e2772437be')
 const acceptedInvitationId = Uuid('47c7ab91-0935-4b5c-9c50-b260047315b0')
@@ -104,7 +104,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
       AuthorInviteStore.layerInMemory,
       uuidLayer,
       Layer.effect(Events, PubSub.unbounded()),
-      LibsqlClient.layer({ url: ':memory:' }),
+      TestPgClient.layer,
     ]),
   ),
 )

@@ -4,18 +4,15 @@ import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import {
   areLoggedIn,
-  test as baseTest,
   canLogIn,
   expect,
   hasAnUnverifiedEmailAddress,
   hasAVerifiedEmailAddress,
-  usePostgresDB,
+  test,
   waitForEditor,
   waitForProseMirrorFocus,
   willPublishAComment,
 } from './base.ts'
-
-const test = baseTest.extend(usePostgresDB)
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAComment)(
   'can write a comment on a PREreview',

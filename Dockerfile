@@ -85,6 +85,7 @@ COPY --from=pnpm-dev /app/ .
 COPY --from=build-prod /app/dist/assets/ dist/assets/
 COPY --from=build-prod /app/src/ src/
 COPY integration/ integration/
+COPY test/TestPgClient.ts test/
 COPY visual-regression/ visual-regression/
 COPY playwright.config.ts .
 

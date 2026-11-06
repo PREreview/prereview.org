@@ -302,17 +302,6 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5]
 
-    services:
-      postgres:
-        image: pgvector/pgvector:pg17
-        env:
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v7.0.1
@@ -352,8 +341,6 @@ jobs:
       - name: 'Run integration tests'
         id: 'playwright'
         uses: docker://mcr.microsoft.com/playwright:v1.58.2-jammy
-        env:
-          POSTGRES_URL: postgres://postgres:password@postgres:5432
         with:
           args: env HOME=/root npx playwright test integration --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 

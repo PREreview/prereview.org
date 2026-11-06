@@ -1,10 +1,9 @@
-import { FileSystem, Effect, Layer, Option } from 'effect'
-import { NodeFileSystem } from '@effect/platform-node'
-import { LibsqlClient } from '@effect/sql-libsql'
+import { Effect, Option } from 'effect'
 import { expect, it } from './vitest.ts'
 import * as _ from '../src/SqlSensitiveDataStore.ts'
 import { Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
+import * as TestPgClient from './TestPgClient.ts'
 
 it.effect.prop('might not find a value', [fc.uuid()], ([id]) =>
   Effect.gen(function* () {
@@ -13,7 +12,7 @@ it.effect.prop('might not find a value', [fc.uuid()], ([id]) =>
     const value = yield* sensitiveDataStore.get(id)
 
     expect(value).toStrictEqual(Option.none())
-  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient])),
+  }).pipe(Effect.provide([Uuid.layer, TestPgClient.layer])),
 )
 
 it.effect.prop('can add and retrieve a value', [fc.string()], ([input]) =>
@@ -25,7 +24,7 @@ it.effect.prop('can add and retrieve a value', [fc.string()], ([input]) =>
     const value = yield* sensitiveDataStore.get(id)
 
     expect(value).toStrictEqual(Option.some(input))
-  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient])),
+  }).pipe(Effect.provide([Uuid.layer, TestPgClient.layer])),
 )
 
 it.effect.prop(
@@ -47,14 +46,5 @@ it.effect.prop(
         [id2]: input2,
         [id3]: input3,
       })
-    }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient])),
+    }).pipe(Effect.provide([Uuid.layer, TestPgClient.layer])),
 )
-
-const TestLibsqlClient = Layer.unwrap(
-  Effect.gen(function* () {
-    const fs = yield* FileSystem.FileSystem
-    const file = yield* fs.makeTempFileScoped()
-
-    return LibsqlClient.layer({ url: `file:${file}` })
-  }),
-).pipe(Layer.provide(NodeFileSystem.layer))
