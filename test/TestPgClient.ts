@@ -78,29 +78,45 @@ const pgliteStream = (db: PGlite): Duplex => {
   return duplex
 }
 
-// Creating PGlite is slow, so each worker shares one instance, and each client resets it and has exclusive use.
+// Creating PGlite is slow, but cloning one is relatively quick.
+let template: Promise<PGlite> | undefined
+
+export const makePGlite = async (): Promise<PGlite> => {
+  template ??= PGlite.create()
+
+  return (await template).clone() as Promise<PGlite>
+}
+
+export const layerFor = (db: PGlite): Layer.Layer<PgClient.PgClient | SqlClient.SqlClient> =>
+  PgClient.layerFrom(
+    Effect.gen(function* () {
+      // A previous client could have left a transaction or prepared statements behind.
+      yield* Effect.promise(async () => {
+        await db.exec('ROLLBACK')
+        await db.exec('DISCARD ALL')
+      })
+
+      return yield* PgClient.makeClient({ stream: () => pgliteStream(db), username: 'postgres' })
+    }),
+  ).pipe(Layer.orDie)
+
+// Even cloning is too slow for property-based tests, so each worker shares one instance, and each client resets it and has exclusive use.
 let shared: Promise<PGlite> | undefined
 const lock = Semaphore.makeUnsafe(1)
 
-const reset = async (db: PGlite) => {
-  await db.exec('ROLLBACK')
-  await db.exec('DISCARD ALL')
-  await db.exec('DROP SCHEMA public CASCADE')
-  await db.exec('CREATE SCHEMA public')
-}
-
-export const layer: Layer.Layer<PgClient.PgClient | SqlClient.SqlClient> = PgClient.layerFrom(
+export const layer: Layer.Layer<PgClient.PgClient | SqlClient.SqlClient> = Layer.unwrap(
   Effect.gen(function* () {
     yield* Semaphore.takeScoped(lock, 1)
 
     const db = yield* Effect.promise(async () => {
       shared ??= PGlite.create()
       const db = await shared
-      await reset(db)
+      await db.exec('DROP SCHEMA public CASCADE')
+      await db.exec('CREATE SCHEMA public')
 
       return db
     })
 
-    return yield* PgClient.makeClient({ stream: () => pgliteStream(db) })
+    return layerFor(db)
   }),
-).pipe(Layer.orDie)
+)

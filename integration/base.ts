@@ -3,7 +3,6 @@ import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from 'effect/htt
 import { Config, Effect, Fiber, Layer, Logger, Option, pipe, Redacted, References, Schedule } from 'effect'
 import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from 'effect/sql'
-import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
 import { TestRunner } from 'effect/cluster'
 import { WorkflowEngine } from 'effect/workflow'
@@ -73,6 +72,7 @@ import * as UserOnboardingStore from '../src/UserOnboardingStore.ts'
 import * as WebApp from '../src/WebApp/index.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
 import { Embeddings } from '../src/Embeddings/index.ts'
+import * as TestPgClient from '../test/TestPgClient.ts'
 
 export { expect } from '@playwright/test'
 
@@ -2566,8 +2566,12 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   showSpotlight: async ({}, use) => {
     await use(false)
   },
-  sqlClientLayer: async ({}, use, testInfo) => {
-    await use(LibsqlClient.layer({ url: `file:${testInfo.outputPath('database.db')}` }))
+  sqlClientLayer: async ({}, use) => {
+    const db = await TestPgClient.makePGlite()
+
+    await use(TestPgClient.layerFor(db))
+
+    await db.close()
   },
   userOnboardingStore: async ({}, use) => {
     await use(
