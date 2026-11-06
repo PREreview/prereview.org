@@ -54,6 +54,7 @@
     "@effect/language-service": "^0.87.5",
     "@effect/sql-libsql": "^4.1.2",
     "@effect/vitest": "^4.1.2",
+    "@electric-sql/pglite": "^0.5.15",
     "@fullhuman/postcss-purgecss": "^8.0.0",
     "@ibm/plex-mono": "^2.5.0",
     "@ibm/plex-sans": "^1.1.0",
