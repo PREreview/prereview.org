@@ -1,4 +1,3 @@
-import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it, vi } from '../vitest.ts'
 import { Array, Effect, Result, Layer, Option, Struct, pipe, PubSub } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/index.ts'
@@ -14,6 +13,7 @@ import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Uuid } from '../../src/types/index.ts'
 import { Name } from '../../src/types/Name.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import * as TestPgClient from '../TestPgClient.ts'
 
 const orcidIdWithNoEmailAddress = OrcidId('0000-0002-1825-0097')
 const orcidIdWithUnverified = OrcidId('0000-0002-6109-0367')
@@ -124,7 +124,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, boolean, Readonly
       Layer.succeed(Locale, DefaultLocale),
       Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
       Layer.effect(Events, PubSub.unbounded()),
-      LibsqlClient.layer({ url: ':memory:' }),
+      TestPgClient.layer,
       Uuid.layer,
     ]),
   ),
