@@ -3,6 +3,7 @@ import { FetchHttpClient, HttpClient, HttpClientResponse } from 'effect/http'
 import { Effect, Fiber, Layer, Logger, Option, pipe, Redacted, References, Schedule } from 'effect'
 import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from 'effect/sql'
+import type { PgClient } from '@effect/sql-pg'
 import { TestRunner } from 'effect/cluster'
 import { WorkflowEngine } from 'effect/workflow'
 import { Temporal } from '@js-temporal/polyfill'
@@ -78,7 +79,7 @@ type NoFixtures = object
 
 interface AppFixtures {
   baseURL: string
-  sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
+  sqlClientLayer: Layer.Layer<PgClient.PgClient | SqlClient.SqlClient, unknown>
   fetch: FetchMock
   oauthServer: OAuth2Server
   port: number
