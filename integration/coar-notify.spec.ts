@@ -1,6 +1,4 @@
-import { test as baseTest, canLogIn, expect, usePostgresDB } from './base.ts'
-
-const test = baseTest.extend(usePostgresDB)
+import { canLogIn, expect, test } from './base.ts'
 
 test.extend(canLogIn)('can request a review', async ({ baseURL, page, request }) => {
   await request.post('/inbox', {

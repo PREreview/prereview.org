@@ -1,9 +1,8 @@
 import { LanguageModel } from 'effect/ai'
-import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from 'effect/http'
-import { Config, Effect, Fiber, Layer, Logger, Option, pipe, Redacted, References, Schedule } from 'effect'
+import { FetchHttpClient, HttpClient, HttpClientResponse } from 'effect/http'
+import { Effect, Fiber, Layer, Logger, Option, pipe, Redacted, References, Schedule } from 'effect'
 import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from 'effect/sql'
-import { PgClient } from '@effect/sql-pg'
 import { TestRunner } from 'effect/cluster'
 import { WorkflowEngine } from 'effect/workflow'
 import { Temporal } from '@js-temporal/polyfill'
@@ -22,7 +21,6 @@ import http from 'node:http'
 import { URL } from 'node:url'
 import { createTransport, type SendMailOptions } from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
-import { v4 } from 'uuid'
 import {
   EmptyDepositionC,
   InProgressDepositionC,
@@ -2587,30 +2585,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
   },
   wasPrereviewRemoved: async ({}, use) => {
     await use(() => false)
-  },
-}
-
-export const usePostgresDB: Fixtures<{ postgresUrl: URL }, NoFixtures, Pick<AppFixtures, 'sqlClientLayer'>> = {
-  postgresUrl: async ({}, use) => {
-    const postgresConnection = await pipe(
-      Effect.gen(function* () {
-        const pgClient = yield* PgClient.PgClient
-
-        const databaseName = `test${v4().slice(0, 8)}`
-
-        yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
-
-        // oxlint-disable-next-line typescript/no-non-null-assertion
-        return Url.setPathname(new URL(Redacted.value(pgClient.config.url!)), databaseName)
-      }),
-      Effect.provide(PgClient.layerConfig({ url: Config.Redacted('POSTGRES_URL') })),
-      Effect.runPromise,
-    )
-
-    await use(postgresConnection)
-  },
-  sqlClientLayer: async ({ postgresUrl }, use) => {
-    await use(PgClient.layer({ url: Redacted.make(postgresUrl.href) }))
   },
 }
 

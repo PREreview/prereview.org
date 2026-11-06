@@ -108,8 +108,7 @@ test-watch: node_modules src/manifest.json
 
 .PHONY: test-integration
 test-integration: test-integration-image
-	docker compose up postgres --wait
-	docker run --rm --env "POSTGRES_URL=postgres://postgres:password@host.docker.internal:5432" --add-host="host.docker.internal:host-gateway" --volume "$$(pwd)"/integration-results:/app/integration-results --volume "$$(pwd)"/visual-regression/snapshots:/app/visual-regression/snapshots ${INTEGRATION_TEST_IMAGE_TAG} ${TEST} ${ARGS}
+	docker run --rm --volume "$$(pwd)"/integration-results:/app/integration-results --volume "$$(pwd)"/visual-regression/snapshots:/app/visual-regression/snapshots ${INTEGRATION_TEST_IMAGE_TAG} ${TEST} ${ARGS}
 
 .PHONY: test-integration-chrome
 test-integration-chrome: ARGS=--project 'Desktop Chrome'
