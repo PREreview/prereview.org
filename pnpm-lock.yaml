@@ -154,6 +154,9 @@ importers:
       '@electric-sql/pglite':
         specifier: ^0.5.15
         version: 0.5.15
+      '@electric-sql/pglite-pgvector':
+        specifier: ^0.0.16
+        version: 0.0.16(@electric-sql/pglite@0.5.15)
       '@fullhuman/postcss-purgecss':
         specifier: ^8.0.0
         version: 8.0.0(postcss@8.5.32)
@@ -730,6 +733,11 @@ packages:
     peerDependencies:
       effect: ^4.1.2
       vitest: '>=5.0.0 <6.0.0'
+
+  '@electric-sql/pglite-pgvector@0.0.16':
+    resolution: {integrity: sha512-3usbMM/Zkn0h7wpSft1rsa8lcXz77Q+rGdTpm7UORwtISg4CSGprinmu5qnF23GE0FHLH0LxEyKoPPteHuZPIg==}
+    peerDependencies:
+      '@electric-sql/pglite': 0.5.15
 
   '@electric-sql/pglite@0.5.15':
     resolution: {integrity: sha512-ERZWgaRTxueGV4cvL1tfpAOzFCWTXoUtbCBqnf2FhHDVs/so9eAKaanvrwWF9Dntx7BYsmFQujVQ0/B4S8Mmiw==}
@@ -4776,6 +4784,10 @@ snapshots:
     dependencies:
       effect: 4.1.2
       vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+
+  '@electric-sql/pglite-pgvector@0.0.16(@electric-sql/pglite@0.5.15)':
+    dependencies:
+      '@electric-sql/pglite': 0.5.15
 
   '@electric-sql/pglite@0.5.15': {}
 

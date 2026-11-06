@@ -1,4 +1,5 @@
 import { PGlite } from '@electric-sql/pglite'
+import { vector } from '@electric-sql/pglite-pgvector'
 import { PgClient } from '@effect/sql-pg'
 import { Effect, Layer, Semaphore } from 'effect'
 import type { SqlClient } from 'effect/sql'
@@ -78,11 +79,13 @@ const pgliteStream = (db: PGlite): Duplex => {
   return duplex
 }
 
+const createPGlite = () => PGlite.create({ extensions: { vector } })
+
 // Creating PGlite is slow, but cloning one is relatively quick.
 let template: Promise<PGlite> | undefined
 
 export const makePGlite = async (): Promise<PGlite> => {
-  template ??= PGlite.create()
+  template ??= createPGlite()
 
   return (await template).clone() as Promise<PGlite>
 }
@@ -109,7 +112,7 @@ export const layer: Layer.Layer<PgClient.PgClient | SqlClient.SqlClient> = Layer
     yield* Semaphore.takeScoped(lock, 1)
 
     const db = yield* Effect.promise(async () => {
-      shared ??= PGlite.create()
+      shared ??= createPGlite()
       const db = await shared
       await db.exec('DROP SCHEMA public CASCADE')
       await db.exec('CREATE SCHEMA public')

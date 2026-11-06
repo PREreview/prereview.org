@@ -1,67 +1,71 @@
-import { Effect } from 'effect'
-import type { SqlClient } from 'effect/sql'
-import { describe, expect, it } from 'vitest'
-import { findExistingWorks, storeEmbeddings } from '../../src/Embeddings/WorksWithRequests.ts'
-import type { Embedding } from '../../src/Embeddings/Shared.ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { Effect, pipe, Schema } from 'effect'
+import { SqlClient } from 'effect/sql'
 import type { LanguageCode } from 'iso-639-1'
-import { Doi } from '../../src/types/Doi.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
+import { type Embedding, PgVector } from '../../src/Embeddings/Shared.ts'
+import {
+  ensureRequestEmbeddingsTable,
+  findExistingWorks,
+  storeEmbeddings,
+} from '../../src/Embeddings/WorksWithRequests.ts'
 import {
   BiorxivOrMedrxivPreprintId,
   type IndeterminatePreprintId,
   PhilsciPreprintId,
 } from '../../src/Preprints/index.ts'
-import { Temporal } from '@js-temporal/polyfill'
+import { Doi } from '../../src/types/Doi.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import * as TestPgClient from '../TestPgClient.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 const biorxiv = (doi: `10.1101/${string}`) => new BiorxivOrMedrxivPreprintId({ value: Doi(doi) })
 
-const makeFakeSql = (rows: ReadonlyArray<Record<string, unknown>> = []) => {
-  const queries: Array<{ sql: string; params: ReadonlyArray<unknown> }> = []
+const embedding = (...values: ReadonlyArray<number>): Embedding =>
+  Float32Array.from({ length: 1024 }, (_, index) => values[index] ?? 0)
 
-  const render = (value: unknown): string => {
-    if (value !== null && typeof value === 'object' && '__text' in value) {
-      return (value as { __text: string }).__text
-    }
-    if (Array.isArray(value)) return `[${value.map(render).join(', ')}]`
-    return String(value)
-  }
+const row = (
+  preprintId: IndeterminatePreprintId,
+  {
+    language = 'en',
+    authors = [OrcidId('0000-0002-1825-0097')],
+    latestRequest = Temporal.Instant.from('2025-01-02T06:00:00Z'),
+    embedding: rowEmbedding = embedding(1, 2, 3),
+  }: {
+    language?: LanguageCode
+    authors?: ReadonlyArray<OrcidId>
+    latestRequest?: Temporal.Instant
+    embedding?: Embedding
+  } = {},
+) => ({ preprintId, language, authors, latestRequest, embedding: rowEmbedding })
 
-  const statement = (strings: TemplateStringsArray, ...args: Array<unknown>) => {
-    const text = strings
-      .reduce((acc, part, i) => acc + part + (i < args.length ? render(args[i]) : ''), '')
-      .replaceAll(/\s+/g, ' ')
-      .replaceAll('( ', '(')
-      .replaceAll(' )', ')')
-      .trim()
-    queries.push({ sql: text, params: args })
-    return Object.assign(Effect.succeed(rows), { __text: text })
-  }
+const StoredRow = Schema.Struct({
+  preprint_id: Schema.String,
+  language: Schema.String,
+  authors: Schema.Array(Schema.String),
+  latest_request: Schema.Date,
+  embedding: PgVector,
+})
 
-  const sql = Object.assign(statement as unknown as SqlClient.SqlClient, {
-    in: (column: string, values: ReadonlyArray<unknown>) => ({
-      __text: `${column} IN (${values.map(render).join(', ')})`,
-    }),
-    join:
-      (separator: string, addParens = true) =>
-      (clauses: ReadonlyArray<unknown>) => {
-        const joined = clauses.map(render).join(separator)
-        return { __text: addParens ? `(${joined})` : joined }
-      },
-  })
+const setUp = Effect.gen(function* () {
+  const sql = yield* SqlClient.SqlClient
 
-  return { sql, queries }
-}
+  yield* sql`CREATE EXTENSION IF NOT EXISTS vector`
+  yield* ensureRequestEmbeddingsTable(sql)
+
+  return sql
+})
 
 describe('findExistingWorks', () => {
-  it('returns the preprint IDs already present in one batched query', async () => {
-    const { sql, queries } = makeFakeSql([
-      { preprint_id: 'doi:10.1101/already' },
-      { preprint_id: 'doi:10.1101/stored' },
-      { preprint_id: 'https://philsci-archive.pitt.edu/123/' },
-    ])
+  it.effect('returns the preprint IDs already stored, ignoring the case of DOIs', () =>
+    Effect.gen(function* () {
+      const sql = yield* setUp
 
-    const result = await Effect.runPromise(
-      findExistingWorks(
+      yield* storeEmbeddings(
+        [row(biorxiv('10.1101/already')), row(biorxiv('10.1101/stored')), row(new PhilsciPreprintId({ value: 123 }))],
+        sql,
+      )
+
+      const actual = yield* findExistingWorks(
         [
           biorxiv('10.1101/already'),
           biorxiv('10.1101/missing'),
@@ -69,73 +73,113 @@ describe('findExistingWorks', () => {
           new PhilsciPreprintId({ value: 123 }),
         ],
         sql,
-      ),
-    )
+      )
 
-    expect(result).toEqual(
-      new Set([biorxiv('10.1101/already'), biorxiv('10.1101/stored'), new PhilsciPreprintId({ value: 123 })]),
-    )
-    expect(queries).toHaveLength(1)
-    expect(queries[0]!.sql).toContain('SELECT preprint_id FROM request_embeddings')
-    expect(queries[0]!.sql).toContain(
-      'WHERE preprint_id IN (doi:10.1101/already, doi:10.1101/missing, doi:10.1101/stored, https://philsci-archive.pitt.edu/123/)',
-    )
-  })
+      expect(actual).toStrictEqual(
+        new Set([biorxiv('10.1101/already'), biorxiv('10.1101/stored'), new PhilsciPreprintId({ value: 123 })]),
+      )
+    }).pipe(Effect.provide(TestPgClient.layer)),
+  )
 
-  it('returns an empty set without querying when given no preprint IDs', async () => {
-    const { sql, queries } = makeFakeSql()
+  it.effect('returns an empty set when given no preprint IDs', () =>
+    Effect.gen(function* () {
+      const sql = yield* setUp
 
-    const result = await Effect.runPromise(findExistingWorks([], sql))
+      yield* storeEmbeddings([row(biorxiv('10.1101/stored'))], sql)
 
-    expect(result.size).toBe(0)
-    expect(queries).toHaveLength(0)
-  })
+      const actual = yield* findExistingWorks([], sql)
+
+      expect(actual).toStrictEqual(new Set())
+    }).pipe(Effect.provide(TestPgClient.layer)),
+  )
 })
 
 describe('storeEmbeddings', () => {
-  interface EmbeddingRow {
-    preprintId: IndeterminatePreprintId
-    language: LanguageCode
-    authors: ReadonlyArray<OrcidId>
-    latestRequest: Temporal.Instant
-    embedding: Embedding
-  }
+  it.effect('stores the rows with lowercased DOIs', () =>
+    Effect.gen(function* () {
+      const sql = yield* setUp
 
-  const row = (
-    preprintId: IndeterminatePreprintId,
-    language: LanguageCode = 'en',
-    authors: ReadonlyArray<OrcidId> = [OrcidId('0000-0002-1825-0097')],
-  ): EmbeddingRow => ({
-    preprintId,
-    language,
-    authors,
-    latestRequest: Temporal.Instant.from('2025-01-02T06:00:00Z'),
-    embedding: new Float32Array([1, 2, 3]),
-  })
+      yield* storeEmbeddings(
+        [
+          row(biorxiv('10.1101/A')),
+          row(new PhilsciPreprintId({ value: 123 }), {
+            language: 'es',
+            authors: [OrcidId('0000-0002-6109-0367'), OrcidId('0000-0003-4921-6155')],
+            latestRequest: Temporal.Instant.from('2025-03-04T05:06:07Z'),
+            embedding: embedding(0.5, -0.25),
+          }),
+        ],
+        sql,
+      )
 
-  it('inserts all rows in one multi-row statement with lowercased preprint IDs', async () => {
-    const { sql, queries } = makeFakeSql()
+      const actual = yield* pipe(
+        sql`
+          SELECT
+            preprint_id,
+            language,
+            authors,
+            latest_request,
+            embedding::text AS embedding
+          FROM
+            request_embeddings
+          ORDER BY
+            preprint_id
+        `,
+        Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(StoredRow))),
+      )
 
-    await Effect.runPromise(
-      storeEmbeddings([row(biorxiv('10.1101/A')), row(new PhilsciPreprintId({ value: 123 }))], sql),
-    )
+      expect(actual).toStrictEqual([
+        {
+          preprint_id: 'doi:10.1101/a',
+          language: 'en',
+          authors: ['0000-0002-1825-0097'],
+          latest_request: new Date('2025-01-02T06:00:00Z'),
+          embedding: embedding(1, 2, 3),
+        },
+        {
+          preprint_id: 'https://philsci-archive.pitt.edu/123/',
+          language: 'es',
+          authors: ['0000-0002-6109-0367', '0000-0003-4921-6155'],
+          latest_request: new Date('2025-03-04T05:06:07Z'),
+          embedding: embedding(0.5, -0.25),
+        },
+      ])
+    }).pipe(Effect.provide(TestPgClient.layer)),
+  )
 
-    const insert = queries.at(-1)!
-    expect(insert.sql).toContain(
-      'INSERT INTO request_embeddings (preprint_id, language, authors, latest_request, embedding)',
-    )
-    expect(insert.sql).toContain('(doi:10.1101/a, en, [0000-0002-1825-0097], 2025-01-02T06:00:00Z, [1,2,3]::halfvec)')
-    expect(insert.sql).toContain(
-      '(https://philsci-archive.pitt.edu/123/, en, [0000-0002-1825-0097], 2025-01-02T06:00:00Z, [1,2,3]::halfvec)',
-    )
-    expect(insert.sql).toContain('ON CONFLICT (preprint_id) DO NOTHING')
-  })
+  it.effect('keeps existing rows', () =>
+    Effect.gen(function* () {
+      const sql = yield* setUp
 
-  it('does nothing for an empty list', async () => {
-    const { sql, queries } = makeFakeSql()
+      yield* storeEmbeddings([row(biorxiv('10.1101/a'), { language: 'en' })], sql)
+      yield* storeEmbeddings([row(biorxiv('10.1101/A'), { language: 'es' })], sql)
 
-    await Effect.runPromise(storeEmbeddings([], sql))
+      const actual = yield* sql`
+        SELECT
+          preprint_id,
+          language
+        FROM
+          request_embeddings
+      `
 
-    expect(queries).toHaveLength(0)
-  })
+      expect(actual).toStrictEqual([{ preprint_id: 'doi:10.1101/a', language: 'en' }])
+    }).pipe(Effect.provide(TestPgClient.layer)),
+  )
+
+  it.effect('does nothing for an empty list', () =>
+    Effect.gen(function* () {
+      const sql = yield* setUp
+
+      yield* storeEmbeddings([], sql)
+
+      const actual = yield* sql`
+        SELECT
+          COUNT(*)::int AS count
+        FROM
+          request_embeddings
+      `
+
+      expect(actual).toStrictEqual([{ count: 0 }])
+    }).pipe(Effect.provide(TestPgClient.layer)),
+  )
 })
