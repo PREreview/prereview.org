@@ -1,6 +1,4 @@
-import { FileSystem, Effect, Array, Duration, Layer, Option, PubSub } from 'effect'
-import { NodeFileSystem } from '@effect/platform-node'
-import { LibsqlClient } from '@effect/sql-libsql'
+import { Effect, Array, Duration, Layer, Option, PubSub } from 'effect'
 import { describe, expect, it } from './vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import * as Events from '../src/Events.ts'
@@ -10,6 +8,7 @@ import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
 import * as _ from '../src/SqlEventStore.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
+import * as TestPgClient from './TestPgClient.ts'
 
 const now = Temporal.Now.instant()
 
@@ -48,7 +47,7 @@ it.effect.prop(
       Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestPgClient.layer),
     ),
   { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
@@ -102,7 +101,7 @@ describe('when the last known position is none', () => {
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestPgClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -140,7 +139,7 @@ describe('when the last known position has not changed', () => {
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestPgClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -177,7 +176,7 @@ describe('when the last known position has changed', () => {
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestPgClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -427,7 +426,7 @@ it.effect.each<[string, Events.EventFilter, Array.NonEmptyReadonlyArray<Events.E
       Effect.provide(Uuid.layer),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestPgClient.layer),
     ),
   { timeout: Duration.toMillis('60 seconds') },
 )
@@ -452,16 +451,7 @@ it.effect.prop(
       Effect.provide(Uuid.layer),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestPgClient.layer),
     ),
   { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
-
-const TestLibsqlClient = Layer.unwrap(
-  Effect.gen(function* () {
-    const fs = yield* FileSystem.FileSystem
-    const file = yield* fs.makeTempFileScoped()
-
-    return LibsqlClient.layer({ url: `file:${file}` })
-  }),
-).pipe(Layer.provide(NodeFileSystem.layer))
