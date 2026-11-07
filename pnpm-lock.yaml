@@ -251,8 +251,8 @@ importers:
         specifier: ^3.9.6
         version: 3.9.6
       prettier-plugin-embed:
-        specifier: ^0.8.1
-        version: 0.8.1
+        specifier: ^0.8.2
+        version: 0.8.2
       prettier-plugin-organize-imports:
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.9.6)(typescript@7.0.2)
@@ -3665,8 +3665,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-plugin-embed@0.8.1:
-    resolution: {integrity: sha512-iQdZAAnd7J4B+xzamBEEm6latWYmmKFuoo3KMdq4fi4w1KL//T+vf/5uHTIdcGFe1XtdpGKW+FgsMdOWhDCfXg==}
+  prettier-plugin-embed@0.8.2:
+    resolution: {integrity: sha512-ctzFzw8PWLgv5umnSbaouB+/qTZkR/tyjZX26LsDlTGdmu9CCh4idMOJJt9dv/8clDfuFD9p2Y3AUQ8iWHNUJA==}
 
   prettier-plugin-organize-imports@4.3.0:
     resolution: {integrity: sha512-FxFz0qFhyBsGdIsb697f/EkvHzi5SZOhWAjxcx2dLt+Q532bAlhswcXGYB1yzjZ69kW8UoadFBw7TyNwlq96Iw==}
@@ -7752,7 +7752,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-embed@0.8.1:
+  prettier-plugin-embed@0.8.2:
     dependencies:
       '@types/estree': 1.0.9
       tiny-jsonc: 1.0.2
