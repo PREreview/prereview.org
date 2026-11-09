@@ -39,7 +39,7 @@ const samePrereviewerSameReviewDifferentData = new Events.AuthorChoicesForARevie
   confirmedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Events.Event]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Events.Event]>([
   ['no events', [], input, new Events.AuthorChoicesForAReviewImported(input)],
   [
     'another PREreviewer already imported on same review',
