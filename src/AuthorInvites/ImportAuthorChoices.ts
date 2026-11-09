@@ -1,4 +1,3 @@
-import type { Result, Option } from 'effect'
 import * as Commands from '../Commands.ts'
 import type * as Events from '../Events.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -11,19 +10,9 @@ export interface Input {
   readonly confirmedAt: Instant
 }
 
-export type Error = unknown
+declare const decide: (input: Input) => Events.Event
 
-type State = unknown
-
-declare const createFilter: (input: Input) => Events.EventFilter
-
-declare const foldState: (events: ReadonlyArray<Events.Event>, input: Input) => State
-
-declare const decide: (state: State, input: Input) => Result.Result<Option.Option<Events.Event>, Error>
-
-export const ImportAuthorChoices = Commands.Command({
+export const ImportAuthorChoices = Commands.StatelessCommand({
   name: 'AuthorInvites.importAuthorChoices',
-  createFilter,
-  foldState,
   decide,
 })

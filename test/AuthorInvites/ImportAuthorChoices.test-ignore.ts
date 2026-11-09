@@ -1,6 +1,5 @@
 import { expect, test } from '../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Result, type Option } from 'effect'
 import * as Events from '../../src/Events.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import * as _ from '../../src/AuthorInvites/ImportAuthorChoices.ts'
@@ -40,38 +39,35 @@ const samePrereviewerSameReviewDifferentData = new Events.AuthorChoicesForARevie
   confirmedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Result.succeedSome(new Events.AuthorChoicesForAReviewImported(input))],
+test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Events.Event]>([
+  ['no events', [], input, new Events.AuthorChoicesForAReviewImported(input)],
   [
     'another PREreviewer already imported on same review',
     [differentPrereviewerSameReview],
     input,
-    Result.succeedSome(new Events.AuthorChoicesForAReviewImported(input)),
+    new Events.AuthorChoicesForAReviewImported(input),
   ],
   [
     'PREreviewer already imported on different review',
     [samePrereviewerDifferentReview],
     input,
-    Result.succeedSome(new Events.AuthorChoicesForAReviewImported(input)),
+    new Events.AuthorChoicesForAReviewImported(input),
   ],
   [
     'already imported with same data',
     [samePrereviewerSameReviewSameData],
     input,
-    Result.succeedSome(new Events.AuthorChoicesForAReviewImported(input)),
+    new Events.AuthorChoicesForAReviewImported(input),
   ],
   [
     'already imported with different data',
     [samePrereviewerSameReviewDifferentData],
     input,
-    Result.succeedSome(new Events.AuthorChoicesForAReviewImported(input)),
+    new Events.AuthorChoicesForAReviewImported(input),
   ],
 ])('%s', (_name, events, input, expected) => {
-  const { foldState, decide } = _.ImportAuthorChoices
-
-  const state = foldState(events, input)
-
-  const actual = decide(state, input)
+  const { decide } = _.ImportAuthorChoices
+  const actual = decide(input)
 
   expect(actual).toStrictEqual(expected)
 })
