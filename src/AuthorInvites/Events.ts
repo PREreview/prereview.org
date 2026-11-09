@@ -28,9 +28,20 @@ export class AuthorChoicesForAReviewConfirmed extends Schema.TaggedClass<AuthorC
   },
 ) {}
 
+export class AuthorChoicesForAReviewImported extends Schema.TaggedClass<AuthorChoicesForAReviewImported>()(
+  'AuthorChoicesForAReviewImported',
+  {
+    reviewId: Schema.Int,
+    orcidId: OrcidId.OrcidIdSchema,
+    persona: Schema.Literals(['public', 'pseudonym']),
+    confirmedAt: Temporal.InstantSchema,
+  },
+) {}
+
 export const AuthorInviteEvent = Schema.Union([
   EmailToInviteAuthorSent,
   AuthorInviteAccepted,
   PersonaForAReviewChosen,
+  AuthorChoicesForAReviewImported,
   AuthorChoicesForAReviewConfirmed,
 ])

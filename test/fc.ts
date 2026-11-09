@@ -10,7 +10,6 @@ import {
 import { Temporal } from '@js-temporal/polyfill'
 import { mod11_2 } from 'cdigit'
 import {
-  type Arbitrary,
   Array,
   DateTime,
   Duration,
@@ -2774,6 +2773,16 @@ export const AuthorChoicesForAReviewConfirmed = (): fc.Arbitrary<Events.AuthorCh
       confirmedAt: instant(),
     })
     .map(args => new Events.AuthorChoicesForAReviewConfirmed(args))
+
+export const AuthorChoicesForAReviewImported = (): fc.Arbitrary<Events.AuthorChoicesForAReviewImported> =>
+  fc
+    .record({
+      reviewId: fc.integer(),
+      orcidId: orcidId(),
+      persona: constantFrom('public', 'pseudonym'),
+      confirmedAt: instant(),
+    })
+    .map(args => new Events.AuthorChoicesForAReviewImported(args))
 
 export const event = (): fc.Arbitrary<Events.Event> =>
   fc.oneof(
