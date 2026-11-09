@@ -3,6 +3,7 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import { Temporal } from '@js-temporal/polyfill'
 import * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -21,6 +22,8 @@ import {
 } from '../../author-invite-flow/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
+import { AuthorInvites } from '../../../AuthorInvites/index.ts'
+import { matchPersona } from '../../../Prereviewers/index.ts'
 
 export const AuthorInviteFlowRouter = pipe(
   [
@@ -109,6 +112,22 @@ export const AuthorInviteFlowRouter = pipe(
           (id, user, persona) =>
             pipe(
               ZenodoRecords.addAuthorToRecordOnZenodo(id, persona),
+              RTE.chainFirstTaskEitherKW(() =>
+                EffectToFpts.toTaskEither(
+                  AuthorInvites.use(authorInvites =>
+                    authorInvites.importAuthorChoices({
+                      reviewId: id,
+                      orcidId: user.orcidId,
+                      persona: matchPersona(persona, {
+                        onPublic: () => 'public',
+                        onPseudonym: () => 'pseudonym',
+                      }),
+                      confirmedAt: Temporal.Now.instant(),
+                    }),
+                  ).pipe(Effect.ignore({ log: true, message: 'Unable to import author choices' })),
+                  env.runtime,
+                ),
+              ),
               RTE.chainFirstTaskEitherKW(() =>
                 EffectToFpts.toTaskEither(
                   ZenodoRecords.invalidatePrereviewInCache({ prereviewId: id, user }),

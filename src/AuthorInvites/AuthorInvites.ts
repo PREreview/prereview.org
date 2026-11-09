@@ -11,6 +11,7 @@ import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 import { HasAnEmailToInviteAuthorBeenSent } from './HasAnEmailToInviteAuthorBeenSent.ts'
 import { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
 import { RecordEmailSentToInviteAuthor } from './RecordEmailSentToInviteAuthor.ts'
+import { ImportAuthorChoices } from './ImportAuthorChoices.ts'
 
 export class AuthorInvites extends Context.Service<
   AuthorInvites,
@@ -31,6 +32,7 @@ export class AuthorInvites extends Context.Service<
     >
     hasAnEmailToInviteAuthorBeenSent: Queries.FromOnDemandQuery<typeof HasAnEmailToInviteAuthorBeenSent>
     recordEmailSentToInviteAuthor: Commands.FromStatelessCommand<typeof RecordEmailSentToInviteAuthor>
+    importAuthorChoices: Commands.FromStatelessCommand<typeof ImportAuthorChoices>
   }
 >()('AuthorInvites') {}
 
@@ -62,6 +64,7 @@ export const authorInvitesLayer = Layer.effect(
       ),
       hasAnEmailToInviteAuthorBeenSent: yield* Queries.makeOnDemandQuery(HasAnEmailToInviteAuthorBeenSent),
       recordEmailSentToInviteAuthor: yield* Commands.makeStatelessCommand(RecordEmailSentToInviteAuthor),
+      importAuthorChoices: yield* Commands.makeStatelessCommand(ImportAuthorChoices),
     }
   }),
 )

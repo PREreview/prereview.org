@@ -57,6 +57,7 @@ import { DataRouter } from './DataRouter.ts'
 import { withLegacyReadErrors } from './LegacyStoreErrors.ts'
 import { MyDetailsRouter } from './MyDetailsRouter.ts'
 import { WriteReviewRouter } from './WriteReviewRouter.ts'
+import type { AuthorInvites } from '../../../AuthorInvites/index.ts'
 
 export const nonEffectRouter: Effect.Effect<
   HttpServerResponse.HttpServerResponse,
@@ -154,6 +155,7 @@ export interface Env {
   publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
   runtime: Context.Context<
+    | AuthorInvites
     | Clubs
     | CachingHttpClient.HttpCache
     | CloudinaryAvatars.CloudinaryAvatars
