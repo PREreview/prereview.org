@@ -6,7 +6,7 @@ import { UuidSchema } from '../types/Uuid.ts'
 import { DoiSchema } from '../types/Doi.ts'
 import { IndeterminatePreprintId } from '../Preprints/index.ts'
 import { Iso6391Schema } from '../types/iso639.ts'
-import { InstantSchema } from '../types/Temporal.ts'
+import { PlainDateSchema } from '../types/Temporal.ts'
 import { NameSchema } from '../types/Name.ts'
 import { SensitiveData } from '../SensitiveData.ts'
 
@@ -37,11 +37,50 @@ export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImp
   }),
 }) {}
 
-const StructuredPrereviewSchema = Schema.Struct({
-  question1: Schema.Struct({
-    answer: Schema.Literals(['yes', 'unsure', 'not applicable', 'no']),
+const StructuredAnswerSchema = <const Answers extends ReadonlyArray<string>>(answers: Answers) =>
+  Schema.Struct({
+    answer: Schema.Literals(answers),
     comment: Schema.OptionFromOptional(NonEmptyString.NonEmptyStringSchema),
-  }),
+  })
+
+export const StructuredPrereviewSchema = Schema.Struct({
+  introductionMatches: StructuredAnswerSchema(['yes', 'partly', 'no', 'skip']),
+  methodsAppropriate: StructuredAnswerSchema([
+    'highly-appropriate',
+    'somewhat-appropriate',
+    'neither',
+    'somewhat-inappropriate',
+    'highly-inappropriate',
+    'skip',
+  ]),
+  conclusionsSupported: StructuredAnswerSchema([
+    'highly-supported',
+    'somewhat-supported',
+    'neither',
+    'somewhat-unsupported',
+    'highly-unsupported',
+    'skip',
+  ]),
+  dataPresentation: StructuredAnswerSchema([
+    'highly-appropriate-and-clear',
+    'somewhat-appropriate-and-clear',
+    'neither',
+    'somewhat-inappropriate-or-unclear',
+    'highly-inappropriate-or-unclear',
+    'skip',
+  ]),
+  findingsNextSteps: StructuredAnswerSchema([
+    'very-clearly',
+    'somewhat-clearly',
+    'neither',
+    'somewhat-unclearly',
+    'very-unclearly',
+    'skip',
+  ]),
+  advancingKnowledge: StructuredAnswerSchema(['highly', 'somewhat', 'moderately', 'not', 'not-at-all', 'skip']),
+  languageEditing: StructuredAnswerSchema(['no', 'yes']),
+  wouldRecommend: StructuredAnswerSchema(['yes', 'yes-but', 'no']),
+  readyForAttention: StructuredAnswerSchema(['yes-as-is', 'yes-needs-minor-changes', 'no-need-major-revision']),
 })
 
 export class PrereviewImported extends Schema.TaggedClass<PrereviewImported>()('PrereviewImported', {
@@ -58,14 +97,19 @@ export class PrereviewImported extends Schema.TaggedClass<PrereviewImported>()('
   doi: DoiSchema,
   id: Schema.Int,
   license: Schema.Literals(['CC0-1.0', 'CC-BY-4.0']),
-  published: InstantSchema,
+  published: PlainDateSchema,
   preprint: IndeterminatePreprintId,
   live: Schema.Boolean,
   useOfAi: Schema.TaggedUnion({
     Yes: { comment: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema) },
     No: {},
+    NotAnswered: {},
   }),
-  competingInterests: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema),
+  competingInterests: Schema.TaggedUnion({
+    Yes: { comment: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema) },
+    No: {},
+    NotAnswered: {},
+  }),
   language: Iso6391Schema,
   content: Schema.TaggedUnion({
     Structured: StructuredPrereviewSchema.fields,
