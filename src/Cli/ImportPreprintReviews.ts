@@ -1,11 +1,25 @@
 import { Command } from 'effect/cli'
-import { Array, Console, Effect, Schema, SchemaTransformation, Stdio, Stream, Struct } from 'effect'
+import {
+  Array,
+  Console,
+  Effect,
+  Match,
+  Option,
+  pipe,
+  type Result,
+  Schema,
+  SchemaTransformation,
+  Stdio,
+  Stream,
+  Struct,
+} from 'effect'
 import { PreprintReviewImported, StructuredPrereviewSchema } from '../Events.ts'
 import { Html, HtmlFromSelfSchema } from '../html.ts'
 import { NameSchema } from '../types/Name.ts'
 import * as OrcidId from '../types/OrcidId.ts'
-import { PseudonymSchema } from '../types/Pseudonym.ts'
+import { type Pseudonym, PseudonymSchema } from '../types/Pseudonym.ts'
 import { PreprintReviews } from '../PreprintReviews/index.ts'
+import { Prereviewers } from '../Prereviewers/index.ts'
 
 const NaiveHtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
   Schema.decodeTo(
@@ -29,9 +43,29 @@ const PrereviewToImportSchema = Schema.Struct({
   }),
 })
 
+type AuthorToImport = (typeof PrereviewToImportSchema.Type)['authors'][number]
+
+type ImportedAuthor = (typeof PreprintReviewImported.Type)['authors'][number]
+
+const resolveAuthor = <E1, E2>(
+  author: AuthorToImport,
+  getOrcidIdFromPseudonym: (pseudonym: Pseudonym) => Effect.Effect<Result.Result<OrcidId.OrcidId, E1>, E2>,
+): Effect.Effect<ImportedAuthor, E1 | E2> =>
+  Match.valueTags(author, {
+    PublicPersona: ({ name, orcidId }) =>
+      Effect.succeed({ _tag: 'PublicPersona', name: Option.some(name), orcidId } as const),
+    PseudonymPersona: ({ pseudonym }) =>
+      pipe(
+        getOrcidIdFromPseudonym(pseudonym),
+        Effect.flatMap(Effect.fromResult),
+        Effect.map(orcidId => ({ _tag: 'PseudonymPersona', orcidId }) as const),
+      ),
+    Unknown: ({ name }) => Effect.succeed({ _tag: 'Unknown', name: Option.some(name) } as const),
+  })
+
 const program = Effect.fnUntraced(function* () {
-  // oxlint-disable-next-line no-unused-vars
   const preprintReviews = yield* PreprintReviews
+  const prereviewers = yield* Prereviewers
 
   const stdio = yield* Stdio.Stdio
 
@@ -40,6 +74,17 @@ const program = Effect.fnUntraced(function* () {
   const items = yield* Schema.decodeEffect(Schema.fromJsonString(Schema.Array(PrereviewToImportSchema)))(input)
 
   yield* Console.log(`importing ${Array.length(items)} preprint reviews`)
+
+  yield* Effect.forEach(items, item =>
+    pipe(
+      Effect.forEach(item.authors, author => resolveAuthor(author, prereviewers.getOrcidIdFromPseudonym)),
+      Effect.flatMap(authors =>
+        Array.isArrayNonEmpty(authors)
+          ? preprintReviews.importPreprintReview({ ...item, authors })
+          : Effect.die('Authors unexpectedly empty'),
+      ),
+    ),
+  )
 })
 
 export const ImportPreprintReviews = Command.make('import-preprint-reviews', {}, program)
