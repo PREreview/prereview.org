@@ -433,7 +433,16 @@ const getLanguage = (record: ZenodoRecord) =>
     Effect.mapError(() => new CannotConvertRecord({ reason: 'unknown language', detail: record.metadata.language })),
   )
 
-const getPublished = (record: ZenodoRecord) => Temporal.PlainDate.from(record.metadata.publication_date)
+const getPublished = (record: ZenodoRecord) => {
+  const published = Temporal.PlainDate.from(record.metadata.publication_date)
+  const created = Temporal.Instant.from(record.created)
+
+  if (!created.toZonedDateTimeISO('UTC').toPlainDate().equals(published)) {
+    return published
+  }
+
+  return created
+}
 
 const convertRecord = ({ record, html }: typeof InputFileSchema.Type) =>
   Effect.gen(function* () {

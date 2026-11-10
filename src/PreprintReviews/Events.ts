@@ -6,7 +6,7 @@ import { UuidSchema } from '../types/Uuid.ts'
 import { DoiSchema } from '../types/Doi.ts'
 import { IndeterminatePreprintId } from '../Preprints/index.ts'
 import { Iso6391Schema } from '../types/iso639.ts'
-import { PlainDateSchema } from '../types/Temporal.ts'
+import { InstantSchema, PlainDateSchema } from '../types/Temporal.ts'
 import { NameSchema } from '../types/Name.ts'
 import { SensitiveData } from '../SensitiveData.ts'
 
@@ -97,7 +97,7 @@ export class PrereviewImported extends Schema.TaggedClass<PrereviewImported>()('
   doi: DoiSchema,
   id: Schema.Int,
   license: Schema.Literals(['CC0-1.0', 'CC-BY-4.0']),
-  published: PlainDateSchema,
+  published: Schema.Union([InstantSchema, PlainDateSchema]),
   preprint: IndeterminatePreprintId,
   live: Schema.Boolean,
   useOfAi: Schema.TaggedUnion({
