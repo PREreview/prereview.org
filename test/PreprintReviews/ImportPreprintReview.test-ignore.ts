@@ -19,7 +19,7 @@ const input = {
   id: 12345,
   license: 'CC-BY-4.0',
   published: Temporal.Now.instant(),
-  preprint: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1011/abcde') }),
+  preprint: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abcde') }),
   live: false,
   useOfAi: { _tag: 'No' },
   competingInterests: { _tag: 'No' },
@@ -34,7 +34,7 @@ const inputWithDifferentClub = {
 
 const inputWithDeterminatePreprintId = {
   ...input,
-  preprint: new BiorxivPreprintId({ value: Doi('10.1011/abcde') }),
+  preprint: new BiorxivPreprintId({ value: Doi('10.1101/abcde') }),
 } satisfies _.Input
 
 const inputWithDifferentAuthorList = {

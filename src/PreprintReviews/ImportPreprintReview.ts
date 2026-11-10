@@ -4,7 +4,7 @@ import type * as Events from '../Events.ts'
 
 export type Input = Omit<typeof Events.PreprintReviewImported.Type, '_tag'>
 
-export class UnexpectedPreviousImport extends Data.TaggedError('UnableToGetMatches')<{
+export class UnexpectedPreviousImport extends Data.TaggedError('UnexpectedPreviousImport')<{
   difference: keyof Input
 }> {}
 
