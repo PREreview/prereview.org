@@ -17,6 +17,7 @@ import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './O
 import { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
+import { GetOrcidIdForPseudonym } from './GetOrcidIdForPseudonym.ts'
 
 export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{ cause?: unknown }> {}
 
@@ -28,6 +29,7 @@ export class Prereviewers extends Context.Service<
     getPublicPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PublicPersona, UnableToGetPersona>
     getPseudonymPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PseudonymPersona, UnableToGetPersona>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
+    getOrcidIdFromPseudonym: Queries.FromStatefulQuery<typeof GetOrcidIdForPseudonym>
     isPseudonymInUse: Queries.FromStatefulQuery<typeof IsPseudonymInUse>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
@@ -142,6 +144,7 @@ export const layer = Layer.effect(
           Effect.map(pseudonym => new PseudonymPersona({ pseudonym })),
         ),
       getPseudonym,
+      getOrcidIdFromPseudonym: yield* Queries.makeStatefulQuery(GetOrcidIdForPseudonym),
       isPseudonymInUse: yield* Queries.makeStatefulQuery(IsPseudonymInUse),
       countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
