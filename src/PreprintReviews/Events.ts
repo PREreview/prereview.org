@@ -83,7 +83,7 @@ export const StructuredPrereviewSchema = Schema.Struct({
   readyForAttention: StructuredAnswerSchema(['yes-as-is', 'yes-needs-minor-changes', 'no-need-major-revision']),
 })
 
-export class PrereviewImported extends Schema.TaggedClass<PrereviewImported>()('PrereviewImported', {
+export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImported>()('PreprintReviewImported', {
   addendum: Schema.optional(HtmlSchema),
   authors: Schema.NonEmptyArray(
     Schema.TaggedUnion({

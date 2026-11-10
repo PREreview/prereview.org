@@ -22,7 +22,7 @@ import { match, P } from 'ts-pattern'
 import { GetClubByName } from '../src/Clubs/GetClubByName.ts'
 import { DefaultClubs } from '../src/Clubs/ClubDetails.ts'
 import { translate, SupportedLocales, type SupportedLocale } from '../src/locales/index.ts'
-import { PrereviewImported, type StructuredPrereviewSchema } from '../src/PreprintReviews/Events.ts'
+import { PreprintReviewImported, type StructuredPrereviewSchema } from '../src/PreprintReviews/Events.ts'
 import { Html } from '../src/html.ts'
 import { fromUrl, parsePreprintDoi } from '../src/Preprints/index.ts'
 import { Doi, OrcidId } from '../src/types/index.ts'
@@ -65,7 +65,7 @@ type ZenodoRecord = typeof ZenodoRecordSchema.Type
 const InputFileSchema = Schema.fromJsonString(Schema.Struct({ record: ZenodoRecordSchema, html: Schema.String }))
 
 const PrereviewToImportSchema = Schema.Struct({
-  ...Struct.omit(PrereviewImported.fields, ['_tag']),
+  ...Struct.omit(PreprintReviewImported.fields, ['_tag']),
   authors: Schema.NonEmptyArray(
     Schema.TaggedUnion({
       PublicPersona: { name: NameSchema, orcidId: OrcidId.OrcidIdSchema },
