@@ -5,6 +5,7 @@ import { PopulateRequestEmbeddings } from './PopulateRequestEmbeddings.ts'
 import { CategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { PrintStatus } from './PrintStatus.ts'
 import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
+import { ImportPreprintReviews } from './ImportPreprintReviews.ts';
 
 const app = pipe(
   Command.make('prereview', {}),
@@ -14,6 +15,7 @@ const app = pipe(
     CategorizeReviewRequest,
     AddDatasetReviewToClub,
     PopulateRequestEmbeddings,
+    ImportPreprintReviews,
   ]),
 )
 
