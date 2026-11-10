@@ -4,7 +4,7 @@ import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
 
-class PseudonymNotInUse extends Data.TaggedError('PseudonymNotInUse') {}
+export class PseudonymNotInUse extends Data.TaggedError('PseudonymNotInUse') {}
 
 export type Result = Result.Result<OrcidId, PseudonymNotInUse>
 
