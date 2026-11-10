@@ -5,6 +5,7 @@ import { Html, HtmlFromSelfSchema } from '../html.ts'
 import { NameSchema } from '../types/Name.ts'
 import * as OrcidId from '../types/OrcidId.ts'
 import { PseudonymSchema } from '../types/Pseudonym.ts'
+import { PreprintReviews } from '../PreprintReviews/index.ts'
 
 const NaiveHtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
   Schema.decodeTo(
@@ -29,6 +30,9 @@ const PrereviewToImportSchema = Schema.Struct({
 })
 
 const program = Effect.fnUntraced(function* () {
+  // oxlint-disable-next-line no-unused-vars
+  const preprintReviews = yield* PreprintReviews
+
   const stdio = yield* Stdio.Stdio
 
   const input = yield* Stream.mkString(Stream.decodeText(stdio.stdin))

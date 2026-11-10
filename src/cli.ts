@@ -4,6 +4,7 @@ import { Config, Effect, Layer, pipe, Redacted } from 'effect'
 import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Clubs/index.ts'
+import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
@@ -12,7 +13,6 @@ import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from '.
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
-import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Redis from './Redis.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
@@ -27,6 +27,7 @@ pipe(
   Effect.provide(
     pipe(
       Layer.effectDiscard(EventDispatcher.replayExistingEvents),
+      Layer.provideMerge(PreprintReviews.layer),
       Layer.provideMerge(
         Layer.mergeAll(
           DatasetReviews.commandsLayer,
