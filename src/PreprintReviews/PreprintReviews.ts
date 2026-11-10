@@ -14,7 +14,7 @@ import * as GetUseOfAiDetails from './GetUseOfAiDetails.ts'
 import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
-import type { ImportPreprintReview } from './ImportPreprintReview.ts'
+import { ImportPreprintReview } from './ImportPreprintReview.ts'
 
 export interface RapidPrereview {
   readonly author: Prereviewers.Persona
@@ -124,7 +124,7 @@ export const layer = Layer.effect(
       addReviewToAClub: AddReviewToAClub(formStore, clubIds),
       markReviewAsNotInAClub: MarkReviewAsNotInAClub(formStore),
       declareUseOfAi: DeclareUseOfAi(formStore),
-      importPreprintReview: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      importPreprintReview: yield* Commands.makeCommand(ImportPreprintReview),
     }
   }),
 )
