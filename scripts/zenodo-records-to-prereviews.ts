@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
+import sanitize from 'sanitize-html'
 import { NodeFileSystem } from '@effect/platform-node'
 import {
   Array,
@@ -22,7 +23,7 @@ import { GetClubByName } from '../src/Clubs/GetClubByName.ts'
 import { DefaultClubs } from '../src/Clubs/ClubDetails.ts'
 import { translate, SupportedLocales, type SupportedLocale } from '../src/locales/index.ts'
 import { PrereviewImported, type StructuredPrereviewSchema } from '../src/PreprintReviews/Events.ts'
-import { type Html, rawHtml } from '../src/html.ts'
+import { Html } from '../src/html.ts'
 import { fromUrl, parsePreprintDoi } from '../src/Preprints/index.ts'
 import { Doi, OrcidId } from '../src/types/index.ts'
 import { iso6393To1, iso6393Validate } from '../src/types/iso639.ts'
@@ -321,16 +322,218 @@ const getStructuredContent = (body: ReadonlyArray<Node>) =>
     return { _tag: 'Structured' as const, ...(content as typeof StructuredPrereviewSchema.Type) }
   })
 
+export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = false } = {}) {
+  return sanitize(html, {
+    allowedTags: [
+      ...(allowBlockLevel ? ['dd', 'dl', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'] : []),
+      'a',
+      'b',
+      'br',
+      'div',
+      'span',
+      'i',
+      'sub',
+      'sup',
+      'math',
+      'mi',
+      'mn',
+      'mo',
+      'ms',
+      'mspace',
+      'mtext',
+      'merror',
+      'mfrac',
+      'mpadded',
+      'mphantom',
+      'mroot',
+      'mrow',
+      'msqrt',
+      'mmultiscripts',
+      'mover',
+      'mprescripts',
+      'msub',
+      'msubsup',
+      'msup',
+      'munder',
+      'munderover',
+      'mtable',
+      'mtd',
+      'mtr',
+      'annotation',
+      'semantics',
+      ...(trusted ? ['img', 'span', 'table', 'colgroup', 'col', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
+    ],
+    allowedAttributes: {
+      '*': ['dir', 'displaystyle', 'lang', 'mathvariant', ...(trusted ? ['id'] : [])],
+      a: ['href'],
+      annotation: ['encoding'],
+      col: ['span'],
+      img: ['alt', 'height', 'src', 'width'],
+      math: allowBlockLevel ? ['display'] : [],
+      mo: [
+        'fence',
+        'largeop',
+        'lspace',
+        'maxsize',
+        'minsize',
+        'movablelimits',
+        'rspace',
+        'separator',
+        'stretchy',
+        'symmetric',
+      ],
+      mover: ['accent'],
+      mfrac: ['linethickness'],
+      mpadded: ['depth', 'height', 'lspace', 'voffset', 'width'],
+      munder: ['accentunder'],
+      munderover: ['accent', 'accentunder'],
+      mspace: ['depth', 'height', 'width'],
+      mtd: ['columnspan', 'rowspan'],
+      td: ['colspan', 'rowspan'],
+      th: ['colspan', 'rowspan'],
+    },
+    allowedClasses: {
+      a: trusted ? ['button'] : [],
+      td: trusted ? ['numeric'] : [],
+    },
+    transformTags: {
+      a: (tagName, attribs) => {
+        if (typeof attribs['href'] === 'string' && !/^[A-Za-z][A-Za-z0-9+\-.]*:/.test(attribs['href'])) {
+          attribs['href'] = ''
+        }
+
+        if (trusted && typeof attribs['class'] === 'string' && attribs['class'].includes('kg-btn')) {
+          attribs['class'] = 'button'
+        }
+
+        return {
+          tagName,
+          attribs,
+        }
+      },
+      em: 'i',
+      strong: 'b',
+    },
+    exclusiveFilter: frame =>
+      ['a', 'b', 'em', 'i', 'strong', 'sub', 'sup'].includes(frame.tag) && frame.text.trim() === ''
+        ? 'excludeTag'
+        : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
+    nonTextTags: ['style', 'script', 'textarea', 'option', 'annotation-xml'],
+  })
+}
+
+const isEditorGarbage = (element: Element) =>
+  element.name === 'input' ||
+  element.name === 'grammarly-extension' ||
+  element.name === 'deepl-inline-translate' ||
+  element.name.startsWith('pwa') ||
+  /\bql-(clipboard|tooltip|cursors)\b/.test(element.attribs['class'] ?? '')
+
+const isEditorWrapper = (element: Element) => /\bql-editor\b/.test(element.attribs['class'] ?? '')
+
+const blockElements = /^(address|article|aside|blockquote|dd|div|dl|dt|figure|h[1-6]|hr|li|ol|p|pre|section|table|ul)$/
+
+const isBlock = (node: Node) => isElement(node, blockElements)
+
+const unwrap = (element: Element) => {
+  for (const child of element.children.slice()) {
+    DomUtils.prepend(element, child)
+  }
+
+  DomUtils.removeElement(element)
+}
+
+const wrapInlineRunsInParagraphs = (div: Element) => {
+  const runs: Array<Array<Node>> = [[]]
+
+  for (const child of div.children) {
+    if (isBlock(child) || isElement(child, /^br$/)) {
+      runs.push([])
+    } else {
+      runs.at(-1)?.push(child)
+    }
+  }
+
+  for (const run of runs) {
+    const [first] = run
+
+    if (first === undefined || textOf(run) === '') {
+      continue
+    }
+
+    const paragraph = parseDocument('<p></p>').children[0] as Element
+    DomUtils.prepend(first, paragraph)
+
+    for (const node of run) {
+      DomUtils.appendChild(paragraph, node)
+    }
+  }
+}
+
+const isInFlowContent = (element: Element): boolean => {
+  const parent = DomUtils.getParent(element)
+
+  return (
+    parent === null ||
+    parent.type === ElementType.Root ||
+    (isElement(parent, /^(blockquote|dd|div|li|ol|ul)$/) && isInFlowContent(parent))
+  )
+}
+
+const isEmpty = (element: Element) =>
+  textOf(element) === '' && DomUtils.findOne(child => /^(br|math)$/.test(child.name), element.children) === null
+
+const onlyContainsBlocks = (element: Element) =>
+  element.children.every(child => isBlock(child) || (child.type === ElementType.Text && textOf(child) === ''))
+
+const hasLanguageOrDirection = (element: Element) => 'lang' in element.attribs || 'dir' in element.attribs
+
+const tidyUp = (html: string) => {
+  const document = parseDocument(html)
+  const elements = DomUtils.findAll(() => true, document.children) as ReadonlyArray<Element>
+
+  for (const element of elements) {
+    if (isEditorGarbage(element)) {
+      DomUtils.removeElement(element)
+    } else if (isEditorWrapper(element)) {
+      unwrap(element)
+    }
+  }
+
+  for (const div of DomUtils.getElementsByTagName('div', document.children).toReversed()) {
+    if (!isInFlowContent(div)) {
+      unwrap(div)
+    } else if (DomUtils.getElementsByTagName('p', div.children).length === 0) {
+      wrapInlineRunsInParagraphs(div)
+    }
+  }
+
+  for (const element of DomUtils.findAll(
+    element => /^(div|span)$/.test(element.name),
+    document.children,
+  ).toReversed()) {
+    if (isEmpty(element)) {
+      DomUtils.removeElement(element)
+    } else if (element.name === 'div' ? onlyContainsBlocks(element) : !hasLanguageOrDirection(element)) {
+      unwrap(element)
+    }
+  }
+
+  return sanitizeHtml(DomUtils.getOuterHTML(document.children))
+}
+
 const getContent = (record: ZenodoRecord, body: ReadonlyArray<Node>, text: string) => {
   if (record.metadata.keywords?.includes('Structured PREreview') === true) {
     return getStructuredContent(body)
   }
 
-  if (text === '') {
+  const tidied = tidyUp(text).trim()
+
+  if (tidied === '') {
     return Effect.fail(new CannotConvertRecord({ reason: 'empty review' }))
   }
 
-  return Effect.succeed({ _tag: 'FreeText' as const, text: rawHtml(text) })
+  return Effect.succeed({ _tag: 'FreeText' as const, text: new Html({ value: tidied }) })
 }
 
 const getAuthors = (record: ZenodoRecord) => {
@@ -451,7 +654,11 @@ const convertRecord = ({ record, html }: typeof InputFileSchema.Type) =>
     const { authors, otherAuthors } = yield* getAuthors(record)
 
     return {
-      addendum: pipe(Option.fromNullishOr(record.metadata.notes), Option.map(rawHtml), Option.getOrUndefined),
+      addendum: pipe(
+        Option.fromNullishOr(record.metadata.notes),
+        Option.map(value => new Html({ value })),
+        Option.getOrUndefined,
+      ),
       authors,
       otherAuthors,
       club: yield* getClub(record),
