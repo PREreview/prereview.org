@@ -6,7 +6,7 @@ import {
   Match,
   Option,
   pipe,
-  type Result,
+  Result,
   Schema,
   SchemaTransformation,
   Stdio,
@@ -75,7 +75,7 @@ const program = Effect.fnUntraced(function* () {
 
   yield* Console.log(`importing ${Array.length(items)} preprint reviews`)
 
-  yield* Effect.forEach(items, item =>
+  const results = yield* Effect.forEach(items, item =>
     pipe(
       Effect.forEach(item.authors, author => resolveAuthor(author, prereviewers.getOrcidIdFromPseudonym)),
       Effect.flatMap(authors =>
@@ -83,8 +83,23 @@ const program = Effect.fnUntraced(function* () {
           ? preprintReviews.importPreprintReview({ ...item, authors })
           : Effect.die('Authors unexpectedly empty'),
       ),
+      Effect.result,
+      Effect.map(Result.mapError(error => ({ id: item.id, error }))),
     ),
   )
+
+  const [successes, failures] = Array.separate(results)
+
+  yield* Console.log(`successfully processed ${Array.length(successes)} preprint reviews`)
+
+  if (Array.isArrayNonEmpty(failures)) {
+    yield* Console.error(`failed to import ${Array.length(failures)} preprint reviews:`)
+    yield* Effect.forEach(failures, ({ id, error }) =>
+      Console.error(
+        `  ${id}: ${error._tag === 'UnexpectedPreviousImport' ? `${error._tag} (${error.difference} differs)` : error._tag}`,
+      ),
+    )
+  }
 })
 
 export const ImportPreprintReviews = Command.make('import-preprint-reviews', {}, program)
