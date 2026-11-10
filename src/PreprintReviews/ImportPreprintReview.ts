@@ -1,10 +1,14 @@
-import type { Result, Option } from 'effect'
+import { type Result, type Option, Data } from 'effect'
 import * as Commands from '../Commands.ts'
 import type * as Events from '../Events.ts'
 
-export type Input = unknown
+export type Input = Omit<typeof Events.PreprintReviewImported.Type, '_tag'>
 
-export type Error = unknown
+export class UnexpectedPreviousImport extends Data.TaggedError('UnableToGetMatches')<{
+  difference: keyof Input
+}> {}
+
+export type Error = UnexpectedPreviousImport
 
 type State = unknown
 
