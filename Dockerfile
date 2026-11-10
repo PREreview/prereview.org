@@ -78,7 +78,7 @@ RUN npx vite build && npx tsc --project tsconfig.build.json
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.58.2-jammy AS test-integration
+FROM mcr.microsoft.com/playwright:v1.65.0-jammy AS test-integration
 WORKDIR /app
 
 COPY --from=pnpm-dev /app/ .

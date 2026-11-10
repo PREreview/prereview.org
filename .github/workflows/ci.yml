@@ -351,7 +351,7 @@ jobs:
 
       - name: 'Run integration tests'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.58.2-jammy
+        uses: docker://mcr.microsoft.com/playwright:v1.65.0-jammy
         env:
           POSTGRES_URL: postgres://postgres:password@postgres:5432
         with:
@@ -462,7 +462,7 @@ jobs:
 
       - name: 'Run Playwright'
         id: 'playwright'
-        uses: docker://mcr.microsoft.com/playwright:v1.58.2-jammy
+        uses: docker://mcr.microsoft.com/playwright:v1.65.0-jammy
         with:
           args: env HOME=/root npx playwright test visual-regression --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
