@@ -10,18 +10,16 @@ export const GetBlogPost: (
   slug: Slug,
   preview?: boolean,
 ) => Effect.Effect<BlogPost, UnableToQuery, Contentful | Prereviews> = Effect.fn('ContentfulPages.getBlogPost')(
-  function* (slug, preview = false) {
+  function* (slug) {
     yield* Effect.annotateCurrentSpan({ slug })
 
     const contentful = yield* Contentful
 
-    const { items } = yield* contentful
-      .getEntries({
-        content_type: 'blogPost',
-        limit: 1,
-        'fields.slug': slug,
-      })
-      .pipe(Effect.provideService(UsePreviewApi, preview))
+    const { items } = yield* contentful.getEntries({
+      content_type: 'blogPost',
+      limit: 1,
+      'fields.slug': slug,
+    })
 
     if (!Array.isReadonlyArrayNonEmpty(items)) {
       return yield* new ContentfulIsUnavailable({ cause: 'blog post is not found' })
@@ -29,6 +27,7 @@ export const GetBlogPost: (
 
     return yield* EntryToContentfulBlogPost(items[0])
   },
+  (effect, _slug, preview = false) => Effect.provideService(effect, UsePreviewApi, preview),
   Effect.catchTag(
     ['ContentfulIsUnavailable', 'PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', 'SchemaError'],
     error =>
