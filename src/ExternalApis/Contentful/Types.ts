@@ -70,11 +70,19 @@ class Hyperlink extends Schema.Class<Hyperlink>('Hyperlink')({
 
 const HyperlinkSchema = Hyperlink.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
-class EntryLink extends Schema.Class<EntryLink>('EntryLink')({
+export class EntryLink extends Schema.Class<EntryLink>('EntryLink')({
   sys: Schema.Struct({
     id: ContentfulId,
     type: Schema.Literal('Link'),
     linkType: Schema.Literal('Entry'),
+  }),
+}) {}
+
+export class AssetLink extends Schema.Class<AssetLink>('AssetLink')({
+  sys: Schema.Struct({
+    id: ContentfulId,
+    type: Schema.Literal('Link'),
+    linkType: Schema.Literal('Asset'),
   }),
 }) {}
 
