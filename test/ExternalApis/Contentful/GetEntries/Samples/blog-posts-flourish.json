@@ -1,0 +1,609 @@
+{
+  "sys": { "type": "Array" },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": { "tags": [], "concepts": [] },
+      "sys": {
+        "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+        "id": "KDPxbCjaMbUYqYC4MIfD2",
+        "type": "Entry",
+        "createdAt": "2026-10-08T12:49:29.627Z",
+        "updatedAt": "2026-11-11T15:48:56.086Z",
+        "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+        "publishedVersion": 4,
+        "revision": 2,
+        "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "blogPost" } }
+      },
+      "fields": {
+        "title": { "en-US": "Announcing our 2026 PREreview Champions!" },
+        "slug": { "en-US": "announcing-2026-prereview-champions" },
+        "authors": { "en-US": [{ "sys": { "type": "Link", "linkType": "Entry", "id": "6blthqBejTTl0vIP9GST6T" } }] },
+        "channel": { "en-US": "blog" },
+        "tags": { "en-US": ["champions-program"] },
+        "heroImage": { "en-US": { "sys": { "type": "Link", "linkType": "Entry", "id": "2tRLLKcDVp8z9dHUuZMmAX" } } },
+        "content": {
+          "en-US": {
+            "nodeType": "document",
+            "data": {},
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "The ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "PREreview Champions Program",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " is designed to equip community members with the resources, skills, and support to facilitate the adaptation and adoption of open and equitable peer review practices within their local communities. The program runs on an annual basis and was piloted in 2024.",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "We've learned a lot from our past Champions, many of whom are now PREreview experts, and we've adapted the training, processes, and resources to incorporate those learnings. From the 2026 iteration onwards, we have implemented a mentorship component to the program. This means PREreview Champion Alums have the opportunity to stay engaged by working with us on supporting their mentees through the process of designing, building, and facilitating Champions’ final engagement project(s).",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "This year, we received 39 applications from 24 countries, which you can see visualized in the map below. Read more about the program’s goals, expectations, and benefits, while staying tuned for the next cohort’s applications opening in the ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://prereview.org/champions-program" },
+                    "content": [{ "nodeType": "text", "value": "Champions Program page", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Location of 2026 Champions Applications", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2Ps7Ww1hct7XGIhcIwnbLb", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "What motivated our Champions to apply?", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "As our team read through those applications, we were humbled by the echoed commitment to fostering ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": "equity, accessibility and diversity",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": " in scholarship:", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      { "nodeType": "text", "value": "“", "marks": [{ "type": "italic" }], "data": {} },
+                      {
+                        "nodeType": "text",
+                        "value": "I want to be a PREreview Champion because I strongly believe in research that is collaborative and accessible to all, and not restricted by geography, privilege, or career stage.\"",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "\"I want to be a PREreview Champion because I am deeply committed to advancing a culture of openness, equity, and constructive feedback in research, especially within communities where formal peer review skills and open scholarship practices are still limited. Over the years, I have seen how early-career researchers, particularly in low- and middle-income countries, hesitate to engage with preprints or open peer review due to inadequate level of training, confidence, or mentorship.",
+                        "marks": [],
+                        "data": {}
+                      },
+                      { "nodeType": "text", "value": "”", "marks": [{ "type": "italic" }], "data": {} }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "Many shared their motivation to ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "broaden the participation",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " in research assessment, to include the voices of often overlooked groups and stakeholders:",
+                    "marks": [],
+                    "data": {}
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      { "nodeType": "text", "value": "“", "marks": [{ "type": "italic" }], "data": {} },
+                      {
+                        "nodeType": "text",
+                        "value": "PREreview made me feel like I belonged in a space I didn’t think I had access to. Now I want to help others feel that same shift.  Especially people who think they’re ‘not academic enough’ to contribute. I believe in open, human conversations around research, and in making space for lived experience, not just technical expertise.",
+                        "marks": [],
+                        "data": {}
+                      },
+                      { "nodeType": "text", "value": "”", "marks": [{ "type": "italic" }], "data": {} }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "“I hope to inspire and mentor young Africans, especially women who may have not seen many female reviewers as role models, to not shy away from joining this inclusive community.”",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "And others were invested in ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "text",
+                    "value": "community-building and knowledge-sharing",
+                    "marks": [{ "type": "bold" }],
+                    "data": {}
+                  },
+                  { "nodeType": "text", "value": ":", "marks": [], "data": {} }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "“What I admire about PREreview is that it is not only making peer reviews open; it is also trying to build a community of reviewers who care about their disciplines and the researchers behind the preprints.”",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "“Being part of the PREreview Slack community has shown me how enthusiastic, supportive, and mission-driven this community is. I truly value the collaborative spirit and would be elated to contribute meaningfully to it.”",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "nodeType": "blockquote",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      { "nodeType": "text", "value": "“", "marks": [{ "type": "italic" }], "data": {} },
+                      {
+                        "nodeType": "text",
+                        "value": "Ultimately, my goal is to build a culture of shared learning where feedback improves both the quality of research and the confidence of early career scientists to publish and engage openly.”",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Meet our 2026 Champions Cohort!", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "5CWDyDXsC6H5KCX8b4aDHd", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "embedded-entry-block",
+                "data": {
+                  "target": { "sys": { "id": "2boq4gEbv0pY1mTHhVMxMS", "type": "Link", "linkType": "Entry" } }
+                },
+                "content": []
+              },
+              {
+                "nodeType": "heading-3",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "Stay connected", "marks": [], "data": {} }]
+              },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [
+                  { "nodeType": "text", "value": "You can follow us on ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://mas.to/@prereview" },
+                    "content": [{ "nodeType": "text", "value": "Mastodon", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ", ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://bsky.app/profile/prereview.bsky.social" },
+                    "content": [{ "nodeType": "text", "value": "BlueSky", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ", ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://www.linkedin.com/company/prereview" },
+                    "content": [{ "nodeType": "text", "value": "LinkedIn", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ", and ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://youtube.com/@prereview7336?si=XJkOWtTou9V5Zg2k" },
+                    "content": [{ "nodeType": "text", "value": "YouTube", "marks": [], "data": {} }]
+                  },
+                  {
+                    "nodeType": "text",
+                    "value": " to see the incredible things our Champions are up to. Keep up with all the latest news at PREreview by ",
+                    "marks": [],
+                    "data": {}
+                  },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://bit.ly/PREreview-newsletter" },
+                    "content": [
+                      { "nodeType": "text", "value": "subscribing to our newsletter", "marks": [], "data": {} }
+                    ]
+                  },
+                  { "nodeType": "text", "value": " and ", "marks": [], "data": {} },
+                  {
+                    "nodeType": "hyperlink",
+                    "data": { "uri": "https://bit.ly/PREreview-Slack" },
+                    "content": [{ "nodeType": "text", "value": "joining our Slack community", "marks": [], "data": {} }]
+                  },
+                  { "nodeType": "text", "value": ".", "marks": [], "data": {} }
+                ]
+              },
+              { "nodeType": "hr", "data": {}, "content": [] },
+              {
+                "nodeType": "paragraph",
+                "data": {},
+                "content": [{ "nodeType": "text", "value": "", "marks": [], "data": {} }]
+              }
+            ]
+          }
+        },
+        "firstPublishedAtOverride": { "en-US": "2026-02-26T14:18:24.000+00:00" },
+        "publishedAtOverride": { "en-US": "2026-02-26T14:19:32.000+00:00" }
+      }
+    }
+  ],
+  "includes": {
+    "Entry": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "2Ps7Ww1hct7XGIhcIwnbLb",
+          "type": "Entry",
+          "createdAt": "2026-11-11T15:48:56.125Z",
+          "updatedAt": "2026-11-11T15:48:56.125Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 4,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "flourish" } }
+        },
+        "fields": {
+          "title": { "en-US": "PREreview 2026 Champions map" },
+          "url": { "en-US": "https://public.flourish.studio/visualisation/27393193/" },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "text",
+                      "value": "Map of 2026 PREreview Champions applications",
+                      "marks": [],
+                      "data": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "2boq4gEbv0pY1mTHhVMxMS",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:43:42.711Z",
+          "updatedAt": "2026-10-08T12:43:42.711Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Champions-bios-2.png" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "45QGt4O39uVUO7cNdW1aJG" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "2tRLLKcDVp8z9dHUuZMmAX",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:35:47.276Z",
+          "updatedAt": "2026-10-08T12:35:47.276Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "heroImage" } }
+        },
+        "fields": {
+          "title": { "en-US": "Announcing our 2026 PREreview Champions!" },
+          "image": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "2fq12Z4RR5PWPjyYfGwwfv" } } },
+          "altText": {
+            "en-US": "Eight hands with different skin tones, accessories, and clothes creating a heart shape around the PREreview logo"
+          },
+          "caption": {
+            "en-US": {
+              "nodeType": "document",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "paragraph",
+                  "data": {},
+                  "content": [
+                    {
+                      "nodeType": "text",
+                      "value": "“Diverse Hands Making Heart” by Vectorfair Y. Canva Pro licenced content.",
+                      "marks": [],
+                      "data": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5CWDyDXsC6H5KCX8b4aDHd",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:43:42.487Z",
+          "updatedAt": "2026-10-08T12:43:42.487Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "media" } }
+        },
+        "fields": {
+          "title": { "en-US": "Champions-bios-1.png" },
+          "file": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "30TRm62okpKuztXB7j6HSq" } } }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "6blthqBejTTl0vIP9GST6T",
+          "type": "Entry",
+          "createdAt": "2026-10-08T12:33:52.568Z",
+          "updatedAt": "2026-10-08T12:33:52.568Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 1,
+          "revision": 1,
+          "contentType": { "sys": { "type": "Link", "linkType": "ContentType", "id": "author" } }
+        },
+        "fields": {
+          "name": { "en-US": "Pia Tavella" },
+          "picture": { "en-US": { "sys": { "type": "Link", "linkType": "Asset", "id": "5iwEPn9fO5TMbS2PoT4whF" } } }
+        }
+      }
+    ],
+    "Asset": [
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "2fq12Z4RR5PWPjyYfGwwfv",
+          "type": "Asset",
+          "createdAt": "2026-10-08T12:54:22.949Z",
+          "updatedAt": "2026-10-08T12:54:22.949Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Champions-Featured-image-blog-1200x675-px.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/2fq12Z4RR5PWPjyYfGwwfv/fd5ce7f53adb0f22433d38aca0084b8c/Champions-Featured-image-blog-1200x675-px.png",
+              "details": { "size": 93878, "image": { "width": 1200, "height": 675 } },
+              "fileName": "Champions-Featured-image-blog-1200x675-px.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "30TRm62okpKuztXB7j6HSq",
+          "type": "Asset",
+          "createdAt": "2026-10-08T12:36:52.678Z",
+          "updatedAt": "2026-10-08T12:36:52.678Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Champions-bios-1.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/30TRm62okpKuztXB7j6HSq/0a553d2c244260032bd423075ebc68f0/Champions-bios-1.png",
+              "details": { "size": 797708, "image": { "width": 1200, "height": 1800 } },
+              "fileName": "Champions-bios-1.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "45QGt4O39uVUO7cNdW1aJG",
+          "type": "Asset",
+          "createdAt": "2026-10-08T12:36:52.716Z",
+          "updatedAt": "2026-10-08T12:36:52.716Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Champions-bios-2.png" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/45QGt4O39uVUO7cNdW1aJG/cad8e1b9a68e29a2611e87c32d840181/Champions-bios-2.png",
+              "details": { "size": 371725, "image": { "width": 1228, "height": 786 } },
+              "fileName": "Champions-bios-2.png",
+              "contentType": "image/png"
+            }
+          }
+        }
+      },
+      {
+        "metadata": { "tags": [], "concepts": [] },
+        "sys": {
+          "space": { "sys": { "type": "Link", "linkType": "Space", "id": "66hjlpng9xzg" } },
+          "id": "5iwEPn9fO5TMbS2PoT4whF",
+          "type": "Asset",
+          "createdAt": "2026-10-08T12:54:29.469Z",
+          "updatedAt": "2026-10-08T12:54:29.469Z",
+          "environment": { "sys": { "id": "master", "type": "Link", "linkType": "Environment" } },
+          "publishedVersion": 2,
+          "revision": 1
+        },
+        "fields": {
+          "title": { "en-US": "Pia Tavella profile picture" },
+          "file": {
+            "en-US": {
+              "url": "//images.ctfassets.net/66hjlpng9xzg/5iwEPn9fO5TMbS2PoT4whF/42bcd9ac3f39147bdf3f7821463b5702/Pia-bw-1.jpg",
+              "details": { "size": 279126, "image": { "width": 2000, "height": 2000 } },
+              "fileName": "Pia-bw-1.jpg",
+              "contentType": "image/jpeg"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

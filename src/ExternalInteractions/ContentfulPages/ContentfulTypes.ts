@@ -95,6 +95,21 @@ export const ReviewListEntry = Schema.Struct({
   }),
 }).mapFields(fields => ({ ...fields, _tag: Schema.tagDefaultOmit('ReviewListEntry') }))
 
+export const FlourishEntry = Schema.Struct({
+  sys: Schema.Struct({
+    id: ContentfulId,
+    contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('flourish')) }) }),
+  }),
+  fields: Schema.Struct({
+    title: Schema.Record(
+      Schema.Trimmed.check(Schema.isNonEmpty()),
+      Schema.String.pipe(Schema.decodeTo(Schema.NonEmptyString, SchemaTransformation.trim())),
+    ),
+    url: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.URLFromString),
+    caption: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toType(Document))),
+  }),
+}).mapFields(fields => ({ ...fields, _tag: Schema.tagDefaultOmit('FlourishEntry') }))
+
 export const YouTubeEntry = Schema.Struct({
   sys: Schema.Struct({
     id: ContentfulId,

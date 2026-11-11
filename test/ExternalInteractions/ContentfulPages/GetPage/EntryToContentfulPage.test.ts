@@ -1168,6 +1168,7 @@ it.effect.each<{
 
 it.effect.each([
   'banners',
+  'blog-posts-flourish',
   'blog-posts-media-gallery',
   'blog-posts-multiple-authors',
   'blog-posts-newsletter',

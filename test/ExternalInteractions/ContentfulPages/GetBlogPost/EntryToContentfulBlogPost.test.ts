@@ -1979,6 +1979,218 @@ it.effect.each<{
       js: HashSet.empty(),
     }),
   },
+  {
+    response: 'blog-posts-flourish',
+    index: 0,
+    expected: new ContentfulBlogPost({
+      title: html`Announcing our 2026 PREreview Champions!`,
+      channel: 'blog',
+      authors: [new Author({ name: Name('Pia Tavella') })],
+      publishedAt: Instant.from('2026-02-26T14:18:24Z'),
+      heroImage: {
+        url: {
+          avif: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/2fq12Z4RR5PWPjyYfGwwfv/fd5ce7f53adb0f22433d38aca0084b8c/Champions-Featured-image-blog-1200x675-px.png?fm=avif',
+          ),
+          webp: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/2fq12Z4RR5PWPjyYfGwwfv/fd5ce7f53adb0f22433d38aca0084b8c/Champions-Featured-image-blog-1200x675-px.png?fm=webp',
+          ),
+          default: new URL(
+            'https://images.ctfassets.net/66hjlpng9xzg/2fq12Z4RR5PWPjyYfGwwfv/fd5ce7f53adb0f22433d38aca0084b8c/Champions-Featured-image-blog-1200x675-px.png',
+          ),
+        },
+        width: 1200,
+        height: 675,
+        altText:
+          'Eight hands with different skin tones, accessories, and clothes creating a heart shape around the PREreview logo',
+        caption: html`<p><span>“Diverse Hands Making Heart” by Vectorfair Y. Canva Pro licenced content.</span></p>`,
+      },
+      excerpt: undefined,
+      html: html`<p>
+          <span
+            >The <b>PREreview Champions Program</b> is designed to equip community members with the resources, skills,
+            and support to facilitate the adaptation and adoption of open and equitable peer review practices within
+            their local communities. The program runs on an annual basis and was piloted in 2024.</span
+          >
+        </p>
+        <p>
+          <span
+            >We&apos;ve learned a lot from our past Champions, many of whom are now PREreview experts, and we&apos;ve
+            adapted the training, processes, and resources to incorporate those learnings. From the 2026 iteration
+            onwards, we have implemented a mentorship component to the program. This means PREreview Champion Alums have
+            the opportunity to stay engaged by working with us on supporting their mentees through the process of
+            designing, building, and facilitating Champions’ final engagement project(s).</span
+          >
+        </p>
+        <p>
+          <span
+            >This year, we received 39 applications from 24 countries, which you can see visualized in the map below.
+            Read more about the program’s goals, expectations, and benefits, while staying tuned for the next cohort’s
+            applications opening in the <a href="/champions-program">Champions Program page</a>.</span
+          >
+        </p>
+        <h3 id="location-of-2026-champions-applications"><span>Location of 2026 Champions Applications</span></h3>
+        <figure>
+          <a
+            href="https://public.flourish.studio/visualisation/27393193/"
+            aria-describedby="flourish-caption-2Ps7Ww1hct7XGIhcIwnbLb"
+          >
+            <img
+              src="https://public.flourish.studio/visualisation/27393193/thumbnail"
+              width="1020"
+              alt=""
+              loading="lazy"
+            />
+            <span lang="en" dir="ltr"
+              >View <cite class="visually-hidden">PREreview 2026 Champions map</cite> on Flourish</span
+            >
+          </a>
+
+          <figcaption id="flourish-caption-2Ps7Ww1hct7XGIhcIwnbLb">
+            <p><span>Map of 2026 PREreview Champions applications</span></p>
+          </figcaption>
+        </figure>
+        <h3 id="what-motivated-our-champions-to-apply"><span>What motivated our Champions to apply?</span></h3>
+        <p>
+          <span
+            >As our team read through those applications, we were humbled by the echoed commitment to fostering
+            <b>equity, accessibility and diversity</b> in scholarship:</span
+          >
+        </p>
+        <blockquote>
+          <p>
+            <span
+              ><i>“</i>I want to be a PREreview Champion because I strongly believe in research that is collaborative
+              and accessible to all, and not restricted by geography, privilege, or career stage.&quot;</span
+            >
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span
+              >&quot;I want to be a PREreview Champion because I am deeply committed to advancing a culture of openness,
+              equity, and constructive feedback in research, especially within communities where formal peer review
+              skills and open scholarship practices are still limited. Over the years, I have seen how early-career
+              researchers, particularly in low- and middle-income countries, hesitate to engage with preprints or open
+              peer review due to inadequate level of training, confidence, or mentorship.<i>”</i></span
+            >
+          </p>
+        </blockquote>
+        <p>
+          <span
+            >Many shared their motivation to <b>broaden the participation</b> in research assessment, to include the
+            voices of often overlooked groups and stakeholders:</span
+          >
+        </p>
+        <blockquote>
+          <p>
+            <span
+              ><i>“</i>PREreview made me feel like I belonged in a space I didn’t think I had access to. Now I want to
+              help others feel that same shift. Especially people who think they’re ‘not academic enough’ to contribute.
+              I believe in open, human conversations around research, and in making space for lived experience, not just
+              technical expertise.<i>”</i></span
+            >
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span
+              >“I hope to inspire and mentor young Africans, especially women who may have not seen many female
+              reviewers as role models, to not shy away from joining this inclusive community.”</span
+            >
+          </p>
+        </blockquote>
+        <p>
+          <span>And others were invested in <b>community-building and knowledge-sharing</b>:</span>
+        </p>
+        <blockquote>
+          <p>
+            <span
+              >“What I admire about PREreview is that it is not only making peer reviews open; it is also trying to
+              build a community of reviewers who care about their disciplines and the researchers behind the
+              preprints.”</span
+            >
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span
+              >“Being part of the PREreview Slack community has shown me how enthusiastic, supportive, and
+              mission-driven this community is. I truly value the collaborative spirit and would be elated to contribute
+              meaningfully to it.”</span
+            >
+          </p>
+        </blockquote>
+        <blockquote>
+          <p>
+            <span
+              ><i>“</i>Ultimately, my goal is to build a culture of shared learning where feedback improves both the
+              quality of research and the confidence of early career scientists to publish and engage openly.”</span
+            >
+          </p>
+        </blockquote>
+        <hr />
+        <h3 id="meet-our-2026-champions-cohort"><span>Meet our 2026 Champions Cohort!</span></h3>
+        <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/66hjlpng9xzg/30TRm62okpKuztXB7j6HSq/0a553d2c244260032bd423075ebc68f0/Champions-bios-1.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/66hjlpng9xzg/30TRm62okpKuztXB7j6HSq/0a553d2c244260032bd423075ebc68f0/Champions-bios-1.png?fm=webp
+            "
+            type="image/webp"
+          />
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/30TRm62okpKuztXB7j6HSq/0a553d2c244260032bd423075ebc68f0/Champions-bios-1.png"
+            width="1200"
+            height="1800"
+            alt=""
+            loading="lazy"
+          />
+        </picture>
+
+        <picture>
+          <source
+            srcset="
+              https://images.ctfassets.net/66hjlpng9xzg/45QGt4O39uVUO7cNdW1aJG/cad8e1b9a68e29a2611e87c32d840181/Champions-bios-2.png?fm=avif
+            "
+            type="image/avif"
+          />
+          <source
+            srcset="
+              https://images.ctfassets.net/66hjlpng9xzg/45QGt4O39uVUO7cNdW1aJG/cad8e1b9a68e29a2611e87c32d840181/Champions-bios-2.png?fm=webp
+            "
+            type="image/webp"
+          />
+          <img
+            src="https://images.ctfassets.net/66hjlpng9xzg/45QGt4O39uVUO7cNdW1aJG/cad8e1b9a68e29a2611e87c32d840181/Champions-bios-2.png"
+            width="1228"
+            height="786"
+            alt=""
+            loading="lazy"
+          />
+        </picture>
+        <h3 id="stay-connected"><span>Stay connected</span></h3>
+        <p>
+          <span
+            >You can follow us on <a href="https://mas.to/@prereview">Mastodon</a>,
+            <a href="https://bsky.app/profile/prereview.bsky.social">BlueSky</a>,
+            <a href="https://www.linkedin.com/company/prereview">LinkedIn</a>, and
+            <a href="https://youtube.com/@prereview7336?si=XJkOWtTou9V5Zg2k">YouTube</a> to see the incredible things
+            our Champions are up to. Keep up with all the latest news at PREreview by
+            <a href="https://bit.ly/PREreview-newsletter">subscribing to our newsletter</a> and
+            <a href="https://bit.ly/PREreview-Slack">joining our Slack community</a>.</span
+          >
+        </p>
+        <hr />`,
+      locale: DefaultLocale,
+      js: HashSet.empty(),
+    }),
+  },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

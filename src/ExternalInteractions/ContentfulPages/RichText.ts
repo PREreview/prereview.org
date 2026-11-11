@@ -49,6 +49,7 @@ import { getSubfieldName } from '../../types/subfield.ts'
 import {
   CallToActionEntry,
   DynamicEmbedEntry,
+  FlourishEntry,
   MediaEntry,
   MediaGalleryEntry,
   PageEntry,
@@ -56,11 +57,20 @@ import {
   YouTubeEntry,
 } from './ContentfulTypes.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
+import * as FlourishVisualizationId from './FlourishVisualizationId.ts'
 import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
 const EmbeddedEntry = LinkedEntry(
-  Schema.Union([CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, ReviewListEntry, YouTubeEntry]),
+  Schema.Union([
+    CallToActionEntry,
+    DynamicEmbedEntry,
+    FlourishEntry,
+    MediaEntry,
+    MediaGalleryEntry,
+    ReviewListEntry,
+    YouTubeEntry,
+  ]),
 )
 
 const EmbeddedAsset = LinkedAsset(Schema.toType(Asset))
@@ -281,6 +291,26 @@ const EmbeddedEntryToHtml = Match.typeTags<
       </ol>
     `
   }),
+  FlourishEntry: Effect.fnUntraced(function* (flourish) {
+    const url = getValueForDefaultLocale(flourish.fields.url)
+    const title = getValueForDefaultLocale(flourish.fields.title)
+    const caption = yield* flourish.fields.caption
+      ? BlockContentToHtml(getValueForDefaultLocale(flourish.fields.caption))
+      : Effect.succeedNone
+
+    if (Option.isNone(caption)) {
+      return FlourishLink({ url, title })
+    }
+
+    const captionId = `flourish-caption-${flourish.sys.id}`
+
+    return html`
+      <figure>
+        ${FlourishLink({ url, title, describedBy: captionId })}
+        <figcaption id="${captionId}">${caption.value}</figcaption>
+      </figure>
+    `
+  }),
   YouTubeEntry: Effect.fnUntraced(function* (youTube) {
     const url = getValueForDefaultLocale(youTube.fields.url)
     const title = getValueForDefaultLocale(youTube.fields.title)
@@ -364,6 +394,29 @@ const YouTubeLink = Effect.fnUntraced(function* ({
     </youtube-embed>
   `
 })
+
+const FlourishLink = ({ url, title, describedBy }: { url: URL; title: string; describedBy?: string }): Html => {
+  const describedByAttribute = describedBy === undefined ? '' : html`aria-describedby="${describedBy}"`
+  const visualizationId = FlourishVisualizationId.fromUrl(url)
+
+  if (Option.isNone(visualizationId)) {
+    return html`<a href="${url.href}" ${describedByAttribute}>
+      <span ${languageAttributesFor('en')}>View <cite>${title}</cite> on Flourish</span></a
+    > `
+  }
+
+  return html`
+    <a href="${url.href}" ${describedByAttribute}>
+      <img
+        src="${FlourishVisualizationId.thumbnailUrl(visualizationId.value).href}"
+        width="1020"
+        alt=""
+        loading="lazy"
+      />
+      <span ${languageAttributesFor('en')}>View <cite class="visually-hidden">${title}</cite> on Flourish</span>
+    </a>
+  `
+}
 
 const AssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) =>
   Match.valueTags(asset, {
