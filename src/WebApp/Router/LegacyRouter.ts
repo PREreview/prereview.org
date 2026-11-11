@@ -69,6 +69,7 @@ const PreprintIdSchema = Schema.Union([PreprintIdWithDoiSchema, PhilsciPreprintI
 
 const BlogPostRoutes = Array.map(
   [
+    '2026-q3-prereview-advisory-committee-meeting-minutes',
     'prereview-platform-news-30-october-2026',
     'navigating-the-use-of-ai-in-prereviews',
     'prereview-joins-the-publish-review-curate-alliance-as-implementer-organization',
