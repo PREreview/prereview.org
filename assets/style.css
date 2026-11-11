@@ -639,6 +639,51 @@ figcaption {
   }
 }
 
+.flourish-visualization {
+  display: grid;
+  inline-size: 100%;
+  outline-offset: 0;
+  text-decoration-line: none;
+  place-items: center;
+
+  @media (forced-colors: active) {
+    outline-offset: var(--space-3xs);
+  }
+
+  & > * {
+    grid-area: 1 / 1;
+  }
+
+  & > img {
+    inline-size: 100%;
+  }
+
+  & > span {
+    padding-block: var(--space-3xs);
+    padding-inline: var(--space-2xs);
+    background-color: rgb(0 0 0 / 75%);
+    color: var(--color-white);
+
+    @media (forced-colors: active) {
+      background-color: Canvas;
+      color: LinkText;
+    }
+  }
+
+  &:hover > span,
+  &:focus-visible > span {
+    background-color: var(--color-red-600);
+
+    @media (forced-colors: active) {
+      text-decoration-line: underline;
+      text-decoration-thickness: max(3px, 0.1875rem, 0.12em);
+      text-underline-offset: 0.1em;
+      text-decoration-skip-ink: none;
+      text-decoration-skip: none;
+    }
+  }
+}
+
 youtube-embed {
   display: block;
 

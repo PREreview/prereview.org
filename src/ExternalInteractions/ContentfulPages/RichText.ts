@@ -406,7 +406,7 @@ const FlourishLink = ({ url, title, describedBy }: { url: URL; title: string; de
   }
 
   return html`
-    <a href="${url.href}" ${describedByAttribute}>
+    <a href="${url.href}" class="flourish-visualization" ${describedByAttribute}>
       <img
         src="${FlourishVisualizationId.thumbnailUrl(visualizationId.value).href}"
         width="1020"

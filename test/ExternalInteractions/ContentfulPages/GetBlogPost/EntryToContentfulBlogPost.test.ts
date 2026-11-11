@@ -2033,6 +2033,7 @@ it.effect.each<{
         <figure>
           <a
             href="https://public.flourish.studio/visualisation/27393193/"
+            class="flourish-visualization"
             aria-describedby="flourish-caption-2Ps7Ww1hct7XGIhcIwnbLb"
           >
             <img
