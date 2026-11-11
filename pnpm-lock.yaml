@@ -152,8 +152,8 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2(effect@4.1.2)(vitest@5.1.0(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.6(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       '@fullhuman/postcss-purgecss':
-        specifier: ^8.0.0
-        version: 8.0.0(postcss@8.5.32)
+        specifier: ^9.1.0
+        version: 9.1.0(postcss@8.5.32)
       '@ibm/plex-mono':
         specifier: ^2.5.0
         version: 2.5.0
@@ -914,8 +914,9 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fullhuman/postcss-purgecss@8.0.0':
-    resolution: {integrity: sha512-fSRaBGf6+DYdfQMxedWfnIW8FSYE1LBpgy16jpK1L2vNb1HgeBRRZ+UX4UokNmW7YEAwPdvwkKdYtlkYpH+Aqg==}
+  '@fullhuman/postcss-purgecss@9.1.0':
+    resolution: {integrity: sha512-x3LtKP0P0CDrrENkcdCkMt8DsIjRd4YIT1hNdJgyCt/qTv1Ay0a8uWNWnrrwv+EAw9KBEKwbU4uumSy3BL0DyA==}
+    engines: {node: '>=22.12.0'}
     peerDependencies:
       postcss: ^8.0.0
 
@@ -3704,6 +3705,11 @@ packages:
     resolution: {integrity: sha512-QFJyps9y5oHeXnNA3Ql1EaAqWBivNwQn19Pw1lt9RxfB+4e+bIyqCyuombk79D6Fxe+lPXggVfI1WtRGEBwgbQ==}
     hasBin: true
 
+  purgecss@9.1.0:
+    resolution: {integrity: sha512-KUuJWwloltnB1NhRFAjpkC9URvAenZWpKwUjpg/+cYPQGtVj65Iw7XpiF9NkPGBEPhJu9Rw5DbCn7NFlIAg8OQ==}
+    engines: {node: '>=22.12.0'}
+    hasBin: true
+
   qified@0.10.1:
     resolution: {integrity: sha512-+Owyggi9IxT1ePKGafcI87ubSmxol6smwJ+RAHDQlx9+9cPwFWDiKFFCPuWhr9ignlGpZ9vDQLw67N4dcTVFEA==}
     engines: {node: '>=20'}
@@ -4763,10 +4769,11 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fullhuman/postcss-purgecss@8.0.0(postcss@8.5.32)':
+  '@fullhuman/postcss-purgecss@9.1.0(postcss@8.5.32)':
     dependencies:
+      fast-glob: 3.3.3
       postcss: 8.5.32
-      purgecss: 8.0.0
+      purgecss: 9.1.0
 
   '@hapi/address@5.1.1':
     dependencies:
@@ -7717,6 +7724,14 @@ snapshots:
   purgecss@8.0.0:
     dependencies:
       commander: 12.1.0
+      fast-glob: 3.3.3
+      postcss: 8.5.32
+      postcss-selector-parser: 7.1.7
+    optional: true
+
+  purgecss@9.1.0:
+    dependencies:
+      commander: 15.0.0
       fast-glob: 3.3.3
       postcss: 8.5.32
       postcss-selector-parser: 7.1.7
