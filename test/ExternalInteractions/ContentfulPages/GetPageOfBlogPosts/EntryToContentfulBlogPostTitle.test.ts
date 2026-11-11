@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import resolveResponse from 'contentful-resolve-response'
 import { Locale } from '../../../../src/Context.ts'
-import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
+import { Contentful, Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetPageOfBlogPosts/EntryToContentfulBlogPostTitle.ts'
 import { ContentfulBlogPostTitle } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html } from '../../../../src/html.ts'
@@ -147,7 +147,7 @@ it.effect.each<{
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
+  }).pipe(Effect.provide([Layer.mock(Contentful, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
 )
 
 it.effect.each([
@@ -174,7 +174,7 @@ it.effect.each([
     actual.forEach(result => {
       expect(result).toMatchObject({ _tag: 'Failure' })
     })
-  }).pipe(Effect.provide([Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
+  }).pipe(Effect.provide([Layer.mock(Contentful, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer])),
 )
 
 const ResolveEntries = (response: string) => {

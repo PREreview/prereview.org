@@ -19,17 +19,18 @@ import { format } from 'fp-ts-routing'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import * as Datasets from '../../Datasets/index.ts'
-import type {
+import {
   Asset,
-  Block,
-  Heading1,
-  Heading2,
-  Heading3,
-  ImageAsset,
-  Inline,
-  Mark,
-  Text,
-  VideoAsset,
+  type Block,
+  type Heading1,
+  type Heading2,
+  type Heading3,
+  type ImageAsset,
+  type Contentful,
+  type Inline,
+  type Mark,
+  type Text,
+  type VideoAsset,
 } from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -49,6 +50,8 @@ import {
   MediaEntry,
   MediaGalleryEntry,
   PageEntry,
+  ResolvedOrLinkedAsset,
+  ResolvedOrLinkedEntry,
   ReviewListEntry,
   YouTubeEntry,
 } from './ContentfulTypes.ts'
@@ -56,14 +59,13 @@ import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
-const EmbeddedEntry = Schema.Union([
-  CallToActionEntry,
-  DynamicEmbedEntry,
-  MediaEntry,
-  MediaGalleryEntry,
-  ReviewListEntry,
-  YouTubeEntry,
-])
+const EmbeddedEntry = ResolvedOrLinkedEntry(
+  Schema.Union([CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, ReviewListEntry, YouTubeEntry]),
+)
+
+const EmbeddedAsset = ResolvedOrLinkedAsset(Schema.toType(Asset))
+
+const HyperlinkTarget = ResolvedOrLinkedEntry(PageEntry)
 
 export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>()(
   'RequiredJs',
@@ -77,7 +79,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
     | Prereviews.PrereviewIsNotFound
     | Prereviews.PrereviewIsUnavailable
     | Prereviews.PrereviewWasRemoved,
-    DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+    Contentful | DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
   >
 >()({
   CallToActionEntry: Effect.fnUntraced(function* (callToAction) {
@@ -418,7 +420,7 @@ const BlockElementToHtml = Match.typeTags<
     | Prereviews.PrereviewIsNotFound
     | Prereviews.PrereviewIsUnavailable
     | Prereviews.PrereviewWasRemoved,
-    DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+    Contentful | DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
   >
 >()({
   BlockQuote: blockQuote =>
@@ -428,7 +430,10 @@ const BlockElementToHtml = Match.typeTags<
     ),
   Document: document => BlockContentToHtml(document),
   EmbeddedAssetBlock: embeddedAssetBlock =>
-    Effect.succeedSome(AssetToHtml({ asset: embeddedAssetBlock.data.target, altText: '' })),
+    pipe(
+      Schema.decodeUnknownEffect(EmbeddedAsset)(embeddedAssetBlock.data.target),
+      Effect.map(asset => Option.some(AssetToHtml({ asset, altText: '' }))),
+    ),
   EmbeddedEntryBlock: embeddedEntryBlock =>
     pipe(
       Schema.decodeUnknownEffect(EmbeddedEntry)(embeddedEntryBlock.data.target),
@@ -529,7 +534,7 @@ export const BlockContentToHtml = (
   | Prereviews.PrereviewIsNotFound
   | Prereviews.PrereviewIsUnavailable
   | Prereviews.PrereviewWasRemoved,
-  DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+  Contentful | DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
 > =>
   Effect.forEach(
     block.content,
@@ -539,7 +544,7 @@ export const BlockContentToHtml = (
       }
 
       if (element._tag === 'EntryHyperlink' || element._tag === 'Hyperlink') {
-        return Effect.succeed(InlineElementToHtml(element))
+        return InlineElementToHtml(element)
       }
 
       return BlockElementToHtml(element)
@@ -559,7 +564,7 @@ const BlockContentToHtmlSkippingOverSingleParagraph = (
   | Prereviews.PrereviewIsNotFound
   | Prereviews.PrereviewIsUnavailable
   | Prereviews.PrereviewWasRemoved,
-  DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
+  Contentful | DynamicEmbedder | Locale | Prereviews.Prereviews | RequiredJs
 > => {
   if (block.content.length === 1 && block.content[0]._tag === 'Paragraph') {
     return BlockContentToHtml(block.content[0])
@@ -568,16 +573,18 @@ const BlockContentToHtmlSkippingOverSingleParagraph = (
   return BlockContentToHtml(block)
 }
 
-const InlineElementToHtml = Match.typeTags<Inline, Option.Option<Html>>()({
-  EntryHyperlink: hyperlink => {
-    const target = Schema.decodeUnknownSync(PageEntry)(hyperlink.data.target)
-
-    return Option.some(
-      html`<a href="/${getValueForDefaultLocale(target.fields.slug)}">${InlineContentToHtml(hyperlink)}</a>`,
-    )
-  },
+const InlineElementToHtml = Match.typeTags<
+  Inline,
+  Effect.Effect<Option.Option<Html>, Schema.SchemaError, Contentful>
+>()({
+  EntryHyperlink: hyperlink =>
+    Effect.map(Schema.decodeUnknownEffect(HyperlinkTarget)(hyperlink.data.target), target =>
+      Option.some(
+        html`<a href="/${getValueForDefaultLocale(target.fields.slug)}">${InlineContentToHtml(hyperlink)}</a>`,
+      ),
+    ),
   Hyperlink: hyperlink =>
-    Option.some(
+    Effect.succeedSome(
       html`<a href="${hyperlink.data.uri.replace(/^https?:\/\/prereview\.org(?:\/|$)/, '/')}"
         >${InlineContentToHtml(hyperlink)}</a
       >`,

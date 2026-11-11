@@ -5,7 +5,7 @@ import { expect, it } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
 import resolveResponse from 'contentful-resolve-response'
 import { Locale } from '../../../../src/Context.ts'
-import { Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
+import { Contentful, Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlogPost/EntryToContentfulBlogPost.ts'
 import { Author, ContentfulBlogPost } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html, rawHtml } from '../../../../src/html.ts'
@@ -1996,6 +1996,7 @@ it.effect.each<{
     assertEquals(actual.html, expected.html)
   }).pipe(
     Effect.provide([
+      Layer.mock(Contentful, {}),
       Layer.mock(Prereviews.Prereviews, {
         getPrereviewSummary: id =>
           typeof id === 'number'
@@ -2047,7 +2048,12 @@ it.effect.each([
       expect(result).toMatchObject({ _tag: 'Failure' })
     })
   }).pipe(
-    Effect.provide([Layer.mock(Prereviews.Prereviews, {}), Layer.succeed(Locale, DefaultLocale), NodeFileSystem.layer]),
+    Effect.provide([
+      Layer.mock(Contentful, {}),
+      Layer.mock(Prereviews.Prereviews, {}),
+      Layer.succeed(Locale, DefaultLocale),
+      NodeFileSystem.layer,
+    ]),
   ),
 )
 

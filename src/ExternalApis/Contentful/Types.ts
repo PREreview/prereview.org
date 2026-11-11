@@ -221,7 +221,7 @@ export const Asset = Schema.Union([ImageAsset, VideoAsset])
 
 class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAssetBlock')({
   _tag: Schema.Literal('embedded-asset-block').transform('EmbeddedAssetBlock'),
-  data: Schema.Struct({ target: Asset }),
+  data: Schema.Struct({ target: Schema.Union([Asset, AssetLink]) }),
 }) {}
 
 const EmbeddedAssetBlockSchema = EmbeddedAssetBlock.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
@@ -294,8 +294,10 @@ export class Entry extends Schema.Class<Entry>('Entry')({
           | NonEmptyString
           | Document
           | Asset
+          | AssetLink
           | Entry
-          | Array.NonEmptyReadonlyArray<Entry>
+          | EntryLink
+          | Array.NonEmptyReadonlyArray<Entry | EntryLink>
           | Array.NonEmptyReadonlyArray<NonEmptyString>,
           unknown
         > =>
@@ -304,8 +306,10 @@ export class Entry extends Schema.Class<Entry>('Entry')({
             NonEmptyStringSchema,
             DocumentSchema,
             Asset,
+            AssetLink,
             Entry,
-            Schema.NonEmptyArray(Entry),
+            EntryLink,
+            Schema.NonEmptyArray(Schema.Union([Entry, EntryLink])),
             Schema.NonEmptyArray(NonEmptyStringSchema),
           ]) as never,
       ),

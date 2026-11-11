@@ -1,6 +1,6 @@
 import { Array, Effect, flow, HashSet, Layer, Option, pipe, Predicate, Record, Ref, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
-import { ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
+import { type Contentful, ContentfulId, Document, type Entry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import type {
@@ -11,7 +11,7 @@ import type {
 } from '../../../Prereviews/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantFromSelfSchema } from '../../../types/Temporal.ts'
-import { HeroImageEntry } from '../ContentfulTypes.ts'
+import { HeroImageEntry, ResolvedOrLinkedEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
 import * as ImageUrl from '../ImageUrl.ts'
 import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
@@ -27,13 +27,18 @@ const BlogPostEntry = Schema.Struct({
     createdAt: InstantFromSelfSchema,
   }),
   fields: Schema.Struct({
-    authors: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyArray(AuthorEntry)),
+    authors: Schema.Record(
+      Schema.Trimmed.check(Schema.isNonEmpty()),
+      Schema.NonEmptyArray(ResolvedOrLinkedEntry(AuthorEntry)),
+    ),
     channel: Schema.Record(
       Schema.Trimmed.check(Schema.isNonEmpty()),
       Schema.Literals(['blog', 'newsletter', 'weeknote']),
     ),
     title: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.Trimmed.check(Schema.isNonEmpty())),
-    heroImage: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), HeroImageEntry)),
+    heroImage: Schema.optional(
+      Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), ResolvedOrLinkedEntry(HeroImageEntry)),
+    ),
     excerpt: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyString)),
     content: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toType(Document)),
     firstPublishedAtOverride: Schema.optional(
@@ -97,7 +102,7 @@ export const EntryToContentfulBlogPost: (
 ) => Effect.Effect<
   ContentfulBlogPost,
   Schema.SchemaError | PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved,
-  Prereviews
+  Contentful | Prereviews
 > = flow(
   Schema.decodeUnknownEffect(BlogPostEntry),
   Effect.andThen(BlogPostEntryToContentfulBlogPost),
