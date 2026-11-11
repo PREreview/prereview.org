@@ -32,6 +32,7 @@ import {
   LinkedEntry,
   type Mark,
   type Text,
+  UsePreviewApi,
   type VideoAsset,
 } from '../../ExternalApis/Contentful/index.ts'
 import { type Html, html, rawHtml } from '../../html.ts'
@@ -59,6 +60,7 @@ import {
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import * as FlourishVisualizationId from './FlourishVisualizationId.ts'
 import * as ImageUrl from './ImageUrl.ts'
+import { PrereviewIdFromUrl } from './PrereviewId.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
 const EmbeddedEntry = LinkedEntry(
@@ -154,12 +156,25 @@ const EmbeddedEntryToHtml = Match.typeTags<
   }),
   ReviewListEntry: Effect.fnUntraced(function* (reviewList) {
     const locale = yield* Locale
+    const usePreviewApi = yield* UsePreviewApi
+    const ids = getValueForDefaultLocale(reviewList.fields.reviews)
 
-    const prereviews = yield* Effect.forEach(
-      getValueForDefaultLocale(reviewList.fields.reviews),
-      id => Prereviews.getPrereviewSummary(id),
-      { concurrency: 'unbounded' },
-    )
+    if (usePreviewApi) {
+      return html`
+        <p><span ${languageAttributesFor('en')}>PREreviews in this list:</span></p>
+        <ul>
+          ${ids.map(id => {
+            const url = Schema.encodeSync(PrereviewIdFromUrl)(id)
+
+            return html`<li><a href="${url}">${url}</a></li>`
+          })}
+        </ul>
+      `
+    }
+
+    const prereviews = yield* Effect.forEach(ids, id => Prereviews.getPrereviewSummary(id), {
+      concurrency: 'unbounded',
+    })
 
     return html`
       <ol class="cards">

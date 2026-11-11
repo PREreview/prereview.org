@@ -4,7 +4,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
 import { Locale } from '../../../../src/Context.ts'
-import { Contentful, Entries, LinkContext } from '../../../../src/ExternalApis/Contentful/index.ts'
+import { Contentful, Entries, LinkContext, UsePreviewApi } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlogPost/EntryToContentfulBlogPost.ts'
 import { Author, ContentfulBlogPost } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html, rawHtml } from '../../../../src/html.ts'
@@ -2235,6 +2235,39 @@ it.effect.each<{
             : new Prereviews.PrereviewIsNotFound(),
       }),
       Layer.succeed(Locale, DefaultLocale),
+      NodeFileSystem.layer,
+    ]),
+  ),
+)
+
+it.effect('lists the reviews in a review list when previewing', () =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs =>
+        fs.readFileString('test/ExternalApis/Contentful/GetEntries/Samples/blog-posts-review-list.json'),
+      ),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
+      Effect.andThen(entries =>
+        pipe(
+          Array.get(entries.items, 0),
+          Effect.fromOption,
+          Effect.andThen(_.EntryToContentfulBlogPost),
+          Effect.provideService(LinkContext, entries),
+        ),
+      ),
+    )
+
+    expect(actual.html.toString()).not.toContain('class="cards"')
+    expect(actual.html.toString()).toContain(
+      '<li><a href="https://prereview.org/reviews/8199476">https://prereview.org/reviews/8199476</a></li>',
+    )
+  }).pipe(
+    Effect.provide([
+      Layer.mock(Contentful, {}),
+      Layer.mock(Prereviews.Prereviews, {}),
+      Layer.succeed(Locale, DefaultLocale),
+      Layer.succeed(UsePreviewApi, true),
       NodeFileSystem.layer,
     ]),
   ),
