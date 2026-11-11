@@ -10,7 +10,7 @@ import type {
   Prereviews,
 } from '../../../Prereviews/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
-import { InstantSchema } from '../../../types/Temporal.ts'
+import { InstantFromSelfSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'
 import { DynamicEmbedder } from '../DynamicEmbedder.ts'
 import * as ImageUrl from '../ImageUrl.ts'
@@ -24,7 +24,7 @@ const AuthorEntry = Schema.Struct({
 const BlogPostEntry = Schema.Struct({
   sys: Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('blogPost')) }) }),
-    createdAt: InstantSchema,
+    createdAt: InstantFromSelfSchema,
   }),
   fields: Schema.Struct({
     authors: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyArray(AuthorEntry)),
@@ -33,12 +33,12 @@ const BlogPostEntry = Schema.Struct({
       Schema.Literals(['blog', 'newsletter', 'weeknote']),
     ),
     title: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.Trimmed.check(Schema.isNonEmpty())),
-    heroImage: Schema.optional(
-      Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toEncoded(HeroImageEntry)),
-    ),
+    heroImage: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), HeroImageEntry)),
     excerpt: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyString)),
     content: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toType(Document)),
-    firstPublishedAtOverride: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), InstantSchema)),
+    firstPublishedAtOverride: Schema.optional(
+      Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), InstantFromSelfSchema),
+    ),
   }),
 })
 
@@ -99,7 +99,7 @@ export const EntryToContentfulBlogPost: (
   Schema.SchemaError | PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved,
   Prereviews
 > = flow(
-  Schema.decodeUnknownEffect(Schema.toType(BlogPostEntry)),
+  Schema.decodeUnknownEffect(BlogPostEntry),
   Effect.andThen(BlogPostEntryToContentfulBlogPost),
   Effect.provide([Layer.mock(DynamicEmbedder, {}), Layer.succeed(Locale, DefaultLocale)]),
 )
