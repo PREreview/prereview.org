@@ -154,15 +154,13 @@ it.effect.each<{
 )
 
 it.effect.each([
-  [
-    'banners',
-    'pages-assets',
-    'pages-cta-dynamic-embed',
-    'pages-marks',
-    'pages-media-profile-images',
-    'pages-unordered-list-table',
-  ],
-])("can't parse a record (%s)", ([response]) =>
+  'banners',
+  'pages-assets',
+  'pages-cta-dynamic-embed',
+  'pages-marks',
+  'pages-media-profile-images',
+  'pages-unordered-list-table',
+])("can't parse a record (%s)", response =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,

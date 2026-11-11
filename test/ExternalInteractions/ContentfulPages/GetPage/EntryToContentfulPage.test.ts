@@ -1167,16 +1167,14 @@ it.effect.each<{
 )
 
 it.effect.each([
-  [
-    'banners',
-    'blog-posts-media-gallery',
-    'blog-posts-multiple-authors',
-    'blog-posts-newsletter',
-    'blog-posts-large-hero-image',
-    'blog-posts-review-list',
-    'blog-posts-video',
-  ],
-])("can't parse a record (%s)", ([response]) =>
+  'banners',
+  'blog-posts-media-gallery',
+  'blog-posts-multiple-authors',
+  'blog-posts-newsletter',
+  'blog-posts-large-hero-image',
+  'blog-posts-review-list',
+  'blog-posts-video',
+])("can't parse a record (%s)", response =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
