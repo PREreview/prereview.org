@@ -1,5 +1,5 @@
 import { Array, Effect, pipe } from 'effect'
-import { Contentful } from '../../../ExternalApis/Contentful/index.ts'
+import { Contentful, LinkContext } from '../../../ExternalApis/Contentful/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
 import { PageNotFound } from '../Errors.ts'
 import type { ContentfulPageOfBlogPosts } from '../index.ts'
@@ -19,7 +19,7 @@ export const GetPageOfBlogPosts: (
     const batchIndex = Math.floor((page - 1) / (50 / 5))
     const pageIndexInBatch = (page - 1) % (50 / 5)
 
-    const { items: batchedItems, total } = yield* contentful.getEntries({
+    const entries = yield* contentful.getEntries({
       content_type: 'blogPost',
       'fields.channel': channel,
       limit: 50,
@@ -31,7 +31,7 @@ export const GetPageOfBlogPosts: (
       ),
     })
 
-    const items = batchedItems.slice(pageIndexInBatch * 5, (pageIndexInBatch + 1) * 5)
+    const items = entries.items.slice(pageIndexInBatch * 5, (pageIndexInBatch + 1) * 5)
 
     if (!Array.isReadonlyArrayNonEmpty(items)) {
       return yield* new PageNotFound({})
@@ -39,8 +39,12 @@ export const GetPageOfBlogPosts: (
 
     return {
       currentPage: page,
-      totalPages: Math.ceil(total / 5),
-      blogPosts: yield* Effect.forEach(items, EntryToContentfulBlogPostTitle, { concurrency: 'unbounded' }),
+      totalPages: Math.ceil(entries.total / 5),
+      blogPosts: yield* Effect.provideService(
+        Effect.forEach(items, EntryToContentfulBlogPostTitle, { concurrency: 'unbounded' }),
+        LinkContext,
+        entries,
+      ),
     }
   },
   Effect.catchTag(['ContentfulIsUnavailable', 'SchemaError'], error =>

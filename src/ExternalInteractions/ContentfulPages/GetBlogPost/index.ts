@@ -1,6 +1,11 @@
 import { Array, Effect, pipe } from 'effect'
 import type { BlogPost } from '../../../CmsContent/index.ts'
-import { Contentful, ContentfulIsUnavailable, UsePreviewApi } from '../../../ExternalApis/Contentful/index.ts'
+import {
+  Contentful,
+  ContentfulIsUnavailable,
+  LinkContext,
+  UsePreviewApi,
+} from '../../../ExternalApis/Contentful/index.ts'
 import type { Prereviews } from '../../../Prereviews/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
 import type { Slug } from '../../../types/Slug.ts'
@@ -15,17 +20,17 @@ export const GetBlogPost: (
 
     const contentful = yield* Contentful
 
-    const { items } = yield* contentful.getEntries({
+    const entries = yield* contentful.getEntries({
       content_type: 'blogPost',
       limit: 1,
       'fields.slug': slug,
     })
 
-    if (!Array.isReadonlyArrayNonEmpty(items)) {
+    if (!Array.isReadonlyArrayNonEmpty(entries.items)) {
       return yield* new ContentfulIsUnavailable({ cause: 'blog post is not found' })
     }
 
-    return yield* EntryToContentfulBlogPost(items[0])
+    return yield* Effect.provideService(EntryToContentfulBlogPost(entries.items[0]), LinkContext, entries)
   },
   (effect, _slug, preview = false) => Effect.provideService(effect, UsePreviewApi, preview),
   Effect.catchTag(
