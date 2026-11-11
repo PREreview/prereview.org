@@ -28,6 +28,8 @@ import {
   type ImageAsset,
   type Contentful,
   type Inline,
+  LinkedAsset,
+  LinkedEntry,
   type Mark,
   type Text,
   type VideoAsset,
@@ -50,8 +52,6 @@ import {
   MediaEntry,
   MediaGalleryEntry,
   PageEntry,
-  ResolvedOrLinkedAsset,
-  ResolvedOrLinkedEntry,
   ReviewListEntry,
   YouTubeEntry,
 } from './ContentfulTypes.ts'
@@ -59,13 +59,13 @@ import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import * as ImageUrl from './ImageUrl.ts'
 import * as YouTubeVideoId from './YouTubeVideoId.ts'
 
-const EmbeddedEntry = ResolvedOrLinkedEntry(
+const EmbeddedEntry = LinkedEntry(
   Schema.Union([CallToActionEntry, DynamicEmbedEntry, MediaEntry, MediaGalleryEntry, ReviewListEntry, YouTubeEntry]),
 )
 
-const EmbeddedAsset = ResolvedOrLinkedAsset(Schema.toType(Asset))
+const EmbeddedAsset = LinkedAsset(Schema.toType(Asset))
 
-const HyperlinkTarget = ResolvedOrLinkedEntry(PageEntry)
+const HyperlinkTarget = LinkedEntry(PageEntry)
 
 export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>()(
   'RequiredJs',

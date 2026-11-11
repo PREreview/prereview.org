@@ -1,11 +1,11 @@
 import { Effect, flow, Layer, Option, pipe, Predicate, Record, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
-import { type Contentful, ContentfulId, type Entry } from '../../../ExternalApis/Contentful/index.ts'
+import { type Contentful, ContentfulId, type Entry, LinkedEntry } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
 import { SlugSchema } from '../../../types/Slug.ts'
 import { InstantFromSelfSchema } from '../../../types/Temporal.ts'
-import { HeroImageEntry, ResolvedOrLinkedEntry } from '../ContentfulTypes.ts'
+import { HeroImageEntry } from '../ContentfulTypes.ts'
 import * as ImageUrl from '../ImageUrl.ts'
 import { ContentfulBlogPostTitle } from '../Types.ts'
 
@@ -17,9 +17,7 @@ export const BlogPostEntry = Schema.Struct({
   fields: Schema.Struct({
     title: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.Trimmed.check(Schema.isNonEmpty())),
     slug: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), SlugSchema),
-    heroImage: Schema.optional(
-      Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), ResolvedOrLinkedEntry(HeroImageEntry)),
-    ),
+    heroImage: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), LinkedEntry(HeroImageEntry))),
     excerpt: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyString)),
     firstPublishedAtOverride: Schema.optional(
       Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), InstantFromSelfSchema),

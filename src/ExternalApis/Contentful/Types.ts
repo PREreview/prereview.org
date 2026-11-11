@@ -1,6 +1,6 @@
-import { type Array, Schema, SchemaTransformation } from 'effect'
-import { type NonEmptyString, NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
-import { type Instant, InstantSchema } from '../../types/Temporal.ts'
+import { Schema, SchemaTransformation } from 'effect'
+import { NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
+import { InstantSchema } from '../../types/Temporal.ts'
 
 const ProtocolRelativeUrl = Schema.String.pipe(
   Schema.check(Schema.isPattern(/^\/\//)),
@@ -88,12 +88,7 @@ export class AssetLink extends Schema.Class<AssetLink>('AssetLink')({
 
 class EntryHyperlink extends Schema.Class<EntryHyperlink>('EntryHyperlink')({
   _tag: Schema.Literal('entry-hyperlink').transform('EntryHyperlink'),
-  data: Schema.Struct({
-    target: Schema.suspend(
-      (): Schema.Codec<Entry | EntryLink | '[Circular]'> =>
-        Schema.Union([Entry, EntryLink, Schema.Literal('[Circular]')]) as never,
-    ),
-  }),
+  data: Schema.Struct({ target: EntryLink }),
   content: Schema.NonEmptyArray(TextSchema),
 }) {}
 
@@ -221,19 +216,14 @@ export const Asset = Schema.Union([ImageAsset, VideoAsset])
 
 class EmbeddedAssetBlock extends Schema.Class<EmbeddedAssetBlock>('EmbeddedAssetBlock')({
   _tag: Schema.Literal('embedded-asset-block').transform('EmbeddedAssetBlock'),
-  data: Schema.Struct({ target: Schema.Union([Asset, AssetLink]) }),
+  data: Schema.Struct({ target: AssetLink }),
 }) {}
 
 const EmbeddedAssetBlockSchema = EmbeddedAssetBlock.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
 
 class EmbeddedEntryBlock extends Schema.Class<EmbeddedEntryBlock>('EmbeddedEntryBlock')({
   _tag: Schema.Literal('embedded-entry-block').transform('EmbeddedEntryBlock'),
-  data: Schema.Struct({
-    target: Schema.suspend(
-      (): Schema.Codec<Entry | EntryLink | '[Circular]'> =>
-        Schema.Union([Entry, EntryLink, Schema.Literal('[Circular]')]) as never,
-    ),
-  }),
+  data: Schema.Struct({ target: EntryLink }),
 }) {}
 
 const EmbeddedEntryBlockSchema = EmbeddedEntryBlock.pipe(Schema.encodeKeys({ _tag: 'nodeType' }))
@@ -288,31 +278,15 @@ export class Entry extends Schema.Class<Entry>('Entry')({
     ContentfulId,
     Schema.Record(
       NonEmptyStringSchema,
-      Schema.suspend(
-        (): Schema.Codec<
-          | Instant
-          | NonEmptyString
-          | Document
-          | Asset
-          | AssetLink
-          | Entry
-          | EntryLink
-          | Array.NonEmptyReadonlyArray<Entry | EntryLink>
-          | Array.NonEmptyReadonlyArray<NonEmptyString>,
-          unknown
-        > =>
-          Schema.Union([
-            InstantSchema,
-            NonEmptyStringSchema,
-            DocumentSchema,
-            Asset,
-            AssetLink,
-            Entry,
-            EntryLink,
-            Schema.NonEmptyArray(Schema.Union([Entry, EntryLink])),
-            Schema.NonEmptyArray(NonEmptyStringSchema),
-          ]) as never,
-      ),
+      Schema.Union([
+        InstantSchema,
+        NonEmptyStringSchema,
+        DocumentSchema,
+        AssetLink,
+        EntryLink,
+        Schema.NonEmptyArray(EntryLink),
+        Schema.NonEmptyArray(NonEmptyStringSchema),
+      ]),
     ),
   ),
 }) {}

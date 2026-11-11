@@ -11,10 +11,6 @@ import { SlugSchema } from '../../types/Slug.ts'
 import { DynamicEmbed } from './DynamicEmbedder.ts'
 import { PrereviewIdFromUrl } from './PrereviewId.ts'
 
-export const ResolvedOrLinkedEntry = <S extends Schema.Top>(schema: S) => Schema.Union([schema, LinkedEntry(schema)])
-
-export const ResolvedOrLinkedAsset = <S extends Schema.Top>(schema: S) => Schema.Union([schema, LinkedAsset(schema)])
-
 export const PageEntry = Schema.Struct({
   sys: Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('page')) }) }),
@@ -54,7 +50,7 @@ export const MediaEntry = Schema.Struct({
     caption: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toType(Document))),
     file: Schema.Record(
       Schema.Trimmed.check(Schema.isNonEmpty()),
-      ResolvedOrLinkedAsset(Schema.toType(Schema.Union([ImageAsset, VideoAsset]))),
+      LinkedAsset(Schema.toType(Schema.Union([ImageAsset, VideoAsset]))),
     ),
     altText: Schema.optional(
       Schema.Record(
@@ -70,10 +66,7 @@ export const MediaGalleryEntry = Schema.Struct({
     contentType: Schema.Struct({ sys: Schema.Struct({ id: Schema.Literal(ContentfulId.make('mediaGallery')) }) }),
   }),
   fields: Schema.Struct({
-    items: Schema.Record(
-      Schema.Trimmed.check(Schema.isNonEmpty()),
-      Schema.NonEmptyArray(ResolvedOrLinkedEntry(MediaEntry)),
-    ),
+    items: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.NonEmptyArray(LinkedEntry(MediaEntry))),
   }),
 }).mapFields(fields => ({ ...fields, _tag: Schema.tagDefaultOmit('MediaGalleryEntry') }))
 
@@ -83,7 +76,7 @@ export const HeroImageEntry = Schema.Struct({
   }),
   fields: Schema.Struct({
     caption: Schema.optional(Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), Schema.toType(Document))),
-    image: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), ResolvedOrLinkedAsset(Schema.toType(ImageAsset))),
+    image: Schema.Record(Schema.Trimmed.check(Schema.isNonEmpty()), LinkedAsset(Schema.toType(ImageAsset))),
     altText: Schema.optional(
       Schema.Record(
         Schema.Trimmed.check(Schema.isNonEmpty()),
