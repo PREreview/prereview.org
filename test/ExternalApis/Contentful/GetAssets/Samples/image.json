@@ -1,0 +1,60 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "dapbmjoaf8gb"
+          }
+        },
+        "id": "2gbaQwBtDXqAoBay23YNmy",
+        "type": "Asset",
+        "createdAt": "2026-09-14T13:15:44.974Z",
+        "updatedAt": "2026-09-14T13:15:44.974Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 4,
+        "revision": 1
+      },
+      "fields": {
+        "title": {
+          "en-US": "How PREreview works"
+        },
+        "description": {
+          "en-US": ""
+        },
+        "file": {
+          "en-US": {
+            "url": "//images.ctfassets.net/dapbmjoaf8gb/2gbaQwBtDXqAoBay23YNmy/bdb98f3908fe8430dfcb22169d6cf9f3/how-prereview-works-1.png",
+            "details": {
+              "size": 102029,
+              "image": {
+                "width": 960,
+                "height": 540
+              }
+            },
+            "fileName": "how-prereview-works-1.png",
+            "contentType": "image/png"
+          }
+        }
+      }
+    }
+  ]
+}

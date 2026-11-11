@@ -310,6 +310,11 @@ export class Entries extends Schema.Class<Entries>('Entries')({
   items: Schema.Array(Entry),
 }) {}
 
+export class Assets extends Schema.Class<Assets>('Assets')({
+  total: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
+  items: Schema.Array(Asset),
+}) {}
+
 export type ContentfulErrorResponse = typeof ContentfulErrorResponse.Type
 
 export const ContentfulErrorResponse = Schema.Struct({
