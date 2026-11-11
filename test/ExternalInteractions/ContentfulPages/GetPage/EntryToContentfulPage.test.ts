@@ -1,15 +1,14 @@
-import { FileSystem, Effect, flow, Array, HashSet, Layer, pipe, Schema, Struct } from 'effect'
+import { FileSystem, Effect, Array, HashSet, Layer, pipe, Schema, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
 import { Locale } from '../../../../src/Context.ts'
-import { Contentful, Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
+import { Contentful, Entries, LinkContext } from '../../../../src/ExternalApis/Contentful/index.ts'
 import { DynamicEmbedder } from '../../../../src/ExternalInteractions/ContentfulPages/DynamicEmbedder.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetPage/EntryToContentfulPage.ts'
 import { ContentfulPage } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
-import { LookUpInSample } from '../LookUpInSample.ts'
 
 it.effect.each<{
   response: string
@@ -1142,16 +1141,21 @@ it.effect.each<{
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
-      Effect.map(Struct.get('items')),
-      Effect.andThen(flow(Array.get(index), Effect.fromOption)),
-      Effect.andThen(_.EntryToContentfulPage),
+      Effect.andThen(entries =>
+        pipe(
+          Array.get(entries.items, index),
+          Effect.fromOption,
+          Effect.andThen(_.EntryToContentfulPage),
+          Effect.provideService(LinkContext, entries),
+        ),
+      ),
     )
 
     expect(Struct.omit(actual, ['html'])).toStrictEqual(Struct.omit(expected, ['html']))
     assertEquals(actual.html, expected.html)
   }).pipe(
     Effect.provide([
-      LookUpInSample(response),
+      Layer.mock(Contentful, {}),
       Layer.mock(DynamicEmbedder, {
         listOfActiveClubs: Effect.succeed(html`{{list-of-active-clubs}}`),
         listOfInactiveClubs: Effect.succeed(html`{{list-of-inactive-clubs}}`),
@@ -1178,9 +1182,15 @@ it.effect.each([
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
-      Effect.map(Struct.get('items')),
-      Effect.map(Array.map(item => _.EntryToContentfulPage(item))),
-      Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'result' })),
+      Effect.andThen(entries =>
+        pipe(
+          Effect.all(
+            Array.map(entries.items, item => _.EntryToContentfulPage(item)),
+            { concurrency: 'unbounded', mode: 'result' },
+          ),
+          Effect.provideService(LinkContext, entries),
+        ),
+      ),
     )
 
     actual.forEach(result => {
