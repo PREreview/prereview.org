@@ -21,7 +21,7 @@ services:
     ports:
       - 3000:3000
   mailpit:
-    image: axllent/mailpit:v1.33.0
+    image: axllent/mailpit:v1.33.1
     ports:
       - 1080:8025
       - 1025:1025
