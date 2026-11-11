@@ -3,7 +3,6 @@ import { FileSystem, Effect, flow, Array, HashSet, Layer, pipe, Schema, Struct }
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
-import resolveResponse from 'contentful-resolve-response'
 import { Locale } from '../../../../src/Context.ts'
 import { Contentful, Entries } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlogPost/EntryToContentfulBlogPost.ts'
@@ -15,6 +14,7 @@ import * as Prereviews from '../../../../src/Prereviews/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { Instant } from '../../../../src/types/Temporal.ts'
+import { LookUpInSample } from '../LookUpInSample.ts'
 
 it.effect.each<{
   response: string
@@ -1985,8 +1985,7 @@ it.effect.each<{
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
       Effect.map(Struct.get('items')),
       Effect.andThen(flow(Array.get(index), Effect.fromOption)),
       Effect.andThen(_.EntryToContentfulBlogPost),
@@ -1996,7 +1995,7 @@ it.effect.each<{
     assertEquals(actual.html, expected.html)
   }).pipe(
     Effect.provide([
-      Layer.mock(Contentful, {}),
+      LookUpInSample(response),
       Layer.mock(Prereviews.Prereviews, {
         getPrereviewSummary: id =>
           typeof id === 'number'
@@ -2037,8 +2036,7 @@ it.effect.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
       Effect.map(Struct.get('items')),
       Effect.map(Array.map(item => _.EntryToContentfulBlogPost(item))),
       Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'result' })),
@@ -2056,9 +2054,3 @@ it.effect.each([
     ]),
   ),
 )
-
-const ResolveEntries = (response: string) => {
-  const body = JSON.parse(response)
-
-  return { ...body, items: resolveResponse(body) }
-}

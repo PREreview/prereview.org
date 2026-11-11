@@ -1,7 +1,6 @@
 import { FileSystem, Effect, flow, Array, Layer, pipe, Schema, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { expect, it } from '../vitest.ts'
-import resolveResponse from 'contentful-resolve-response'
 import { URL } from 'node:url'
 import { Locale } from '../../src/Context.ts'
 import { Entries } from '../../src/ExternalApis/Contentful/index.ts'
@@ -70,8 +69,7 @@ it.effect.each<{
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
       Effect.map(Struct.get('items')),
       Effect.andThen(flow(Array.get(index), Effect.fromOption)),
       Effect.andThen(Schema.decodeUnknownEffect(_.EntryToSpotlightBanner)),
@@ -86,8 +84,7 @@ it.effect.each([['pages-assets']])("can't parse a record (%s)", ([response]) =>
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Contentful/GetEntries/Samples/${response}.json`)),
-      Effect.map(ResolveEntries),
-      Effect.andThen(Schema.decodeUnknownEffect(Entries)),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.fromJsonString(Entries))),
       Effect.map(Struct.get('items')),
       Effect.map(Array.map(item => Schema.decodeUnknownEffect(_.EntryToSpotlightBanner)(item))),
       Effect.andThen(effects => Effect.all(effects, { concurrency: 'unbounded', mode: 'result' })),
@@ -98,9 +95,3 @@ it.effect.each([['pages-assets']])("can't parse a record (%s)", ([response]) =>
     })
   }).pipe(Effect.provide([NodeFileSystem.layer, Layer.succeed(Locale, DefaultLocale)])),
 )
-
-const ResolveEntries = (response: string) => {
-  const body = JSON.parse(response)
-
-  return { ...body, items: resolveResponse(body) }
-}
