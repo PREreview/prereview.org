@@ -21,6 +21,7 @@ const imgSrc = [
   'cdn.usefathom.com',
   'content.prereview.org',
   'https://i.ytimg.com/vi/',
+  'https://public.flourish.studio/',
   'images.ctfassets.net',
   'res.cloudinary.com',
   'secure.gravatar.com',
