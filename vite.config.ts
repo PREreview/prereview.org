@@ -66,7 +66,7 @@ export default defineConfig(({ mode }) => ({
         // oxlint-disable-next-line no-comments/disallowComments
         // @ts-expect-error https://github.com/FullHuman/purgecss/issues/1263
         postcssPurgecss({
-          content: [...globSync('assets/**/*.ts'), ...globSync('src/**/*.ts')],
+          content: ['assets/**/*.ts', 'src/**/*.ts'],
           safelist: ['contenteditable', /^crowdin_/, 'dir', /^jipt-/, /^:/],
           variables: true,
         }),
