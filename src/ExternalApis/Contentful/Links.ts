@@ -1,12 +1,26 @@
-import { Array, Effect, Schema, SchemaGetter, SchemaIssue } from 'effect'
+import { Array, Context, Effect, Option, Schema, SchemaGetter, SchemaIssue } from 'effect'
 import { Contentful } from './Contentful.ts'
-import { AssetLink, EntryLink } from './Types.ts'
+import { AssetLink, Entries, EntryLink } from './Types.ts'
+
+export const LinkContext = Context.Reference<Entries>('ContentfulLinkContext', {
+  defaultValue: () => new Entries({ total: 0, items: [], includes: { Entry: [], Asset: [] } }),
+})
 
 export const LinkedEntry = <S extends Schema.Top>(schema: S) =>
   Schema.toType(EntryLink).pipe(
     Schema.decodeTo(schema, {
       decode: SchemaGetter.transformEffect(
         Effect.fnUntraced(function* (link) {
+          const context = yield* LinkContext
+          const included = Array.findFirst(
+            Array.appendAll(context.items, context.includes.Entry),
+            entry => entry.sys.id === link.sys.id,
+          )
+
+          if (Option.isSome(included)) {
+            return included.value
+          }
+
           const contentful = yield* Contentful
           const entries = yield* Effect.mapError(
             contentful.getEntries({ 'sys.id': link.sys.id, limit: 1 }),
@@ -29,6 +43,13 @@ export const LinkedAsset = <S extends Schema.Top>(schema: S) =>
     Schema.decodeTo(schema, {
       decode: SchemaGetter.transformEffect(
         Effect.fnUntraced(function* (link) {
+          const context = yield* LinkContext
+          const included = Array.findFirst(context.includes.Asset, asset => asset.sys.id === link.sys.id)
+
+          if (Option.isSome(included)) {
+            return included.value
+          }
+
           const contentful = yield* Contentful
           const assets = yield* Effect.mapError(
             contentful.getAssets({ 'sys.id': link.sys.id, limit: 1 }),

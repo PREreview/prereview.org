@@ -11,8 +11,25 @@ import {
   EntryLink,
   ImageAsset,
 } from '../../../src/ExternalApis/Contentful/index.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('LinkedEntry', () => {
+  it.effect.each<{ id: string; slug: string }>([
+    { id: 'an-item', slug: 'item-slug' },
+    { id: 'an-include', slug: 'include-slug' },
+  ])('when it is in the response ($id)', ({ id, slug }) =>
+    Effect.gen(function* () {
+      const actual = yield* Schema.decodeUnknownEffect(_.LinkedEntry(SlugEntry))(entryLink(id))
+
+      expect(actual).toStrictEqual({ fields: { slug: { 'en-US': slug } } })
+    }).pipe(
+      Effect.provide([
+        Layer.succeed(_.LinkContext, entries),
+        Layer.mock(Contentful, { getEntries: shouldNotBeCalled }),
+      ]),
+    ),
+  )
+
   it.effect('looks it up', () =>
     Effect.gen(function* () {
       const getEntries = vi.fn<typeof Contentful.Service.getEntries>(() =>
@@ -57,6 +74,19 @@ describe('LinkedEntry', () => {
 })
 
 describe('LinkedAsset', () => {
+  it.effect('when it is in the response', () =>
+    Effect.gen(function* () {
+      const actual = yield* Schema.decodeUnknownEffect(_.LinkedAsset(Schema.toType(ImageAsset)))(
+        assetLink('an-include'),
+      )
+
+      expect(actual).toBeInstanceOf(ImageAsset)
+      expect(actual.sys.id).toStrictEqual('an-include')
+    }).pipe(
+      Effect.provide([Layer.succeed(_.LinkContext, entries), Layer.mock(Contentful, { getAssets: shouldNotBeCalled })]),
+    ),
+  )
+
   it.effect('looks it up', () =>
     Effect.gen(function* () {
       const getAssets = vi.fn<typeof Contentful.Service.getAssets>(() =>
@@ -128,3 +158,12 @@ const rawAsset = (id: string) => ({
 })
 
 const SlugEntry = Schema.Struct({ fields: Schema.Struct({ slug: Schema.Record(Schema.String, Schema.String) }) })
+
+const entries = Schema.decodeUnknownSync(Entries)({
+  total: 1,
+  items: [rawEntry('an-item', { slug: { 'en-US': 'item-slug' } })],
+  includes: {
+    Entry: [rawEntry('an-include', { slug: { 'en-US': 'include-slug' } })],
+    Asset: [rawAsset('an-include')],
+  },
+})
