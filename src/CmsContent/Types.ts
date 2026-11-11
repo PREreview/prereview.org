@@ -5,7 +5,7 @@ import { NameSchema } from '../types/Name.ts'
 import { SlugSchema } from '../types/Slug.ts'
 import { InstantSchema } from '../types/Temporal.ts'
 
-const RequiredJsSchema = Schema.HashSet(Schema.Literal('youtube-embed.js'))
+const RequiredJsSchema = Schema.HashSet(Schema.Literals(['flourish-embed.js', 'youtube-embed.js']))
 
 const InlineHtmlSchema = SanitizeHtmlSchema({ allowBlockLevel: false, trusted: true })
 

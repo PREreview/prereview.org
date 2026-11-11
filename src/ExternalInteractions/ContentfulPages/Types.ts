@@ -34,7 +34,7 @@ export class ContentfulBlogPost extends Schema.Class<ContentfulBlogPost>('Conten
   html: BlockHtmlSchema,
   locale: Schema.Literals([...SupportedLocales]),
   publishedAt: InstantSchema,
-  js: Schema.HashSet(Schema.Literal('youtube-embed.js')),
+  js: Schema.HashSet(Schema.Literals(['flourish-embed.js', 'youtube-embed.js'])),
 }) {}
 
 export class ContentfulBlogPostTitle extends Schema.Class<ContentfulBlogPostTitle>('ContentfulBlogPostTitle')({
@@ -66,5 +66,5 @@ export class ContentfulPage extends Schema.Class<ContentfulPage>('ContentfulPage
   title: InlineHtmlSchema,
   html: BlockHtmlSchema,
   locale: Schema.Literals([...SupportedLocales]),
-  js: Schema.HashSet(Schema.Literal('youtube-embed.js')),
+  js: Schema.HashSet(Schema.Literals(['flourish-embed.js', 'youtube-embed.js'])),
 }) {}

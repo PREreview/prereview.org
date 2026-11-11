@@ -2031,21 +2031,23 @@ it.effect.each<{
         </p>
         <h3 id="location-of-2026-champions-applications"><span>Location of 2026 Champions Applications</span></h3>
         <figure>
-          <a
-            href="https://public.flourish.studio/visualisation/27393193/"
-            class="flourish-visualization"
-            aria-describedby="flourish-caption-2Ps7Ww1hct7XGIhcIwnbLb"
-          >
-            <img
-              src="https://public.flourish.studio/visualisation/27393193/thumbnail"
-              width="1020"
-              alt=""
-              loading="lazy"
-            />
-            <span lang="en" dir="ltr"
-              >View <cite class="visually-hidden">PREreview 2026 Champions map</cite> on Flourish</span
+          <flourish-embed data-visualization-id="27393193" data-title="PREreview 2026 Champions map">
+            <a
+              href="https://public.flourish.studio/visualisation/27393193/"
+              class="flourish-visualization"
+              aria-describedby="flourish-caption-2Ps7Ww1hct7XGIhcIwnbLb"
             >
-          </a>
+              <img
+                src="https://public.flourish.studio/visualisation/27393193/thumbnail"
+                width="1020"
+                alt=""
+                loading="lazy"
+              />
+              <span lang="en" dir="ltr"
+                >View <cite class="visually-hidden">PREreview 2026 Champions map</cite> on Flourish</span
+              >
+            </a>
+          </flourish-embed>
 
           <figcaption id="flourish-caption-2Ps7Ww1hct7XGIhcIwnbLb">
             <p><span>Map of 2026 PREreview Champions applications</span></p>
@@ -2189,7 +2191,7 @@ it.effect.each<{
         </p>
         <hr />`,
       locale: DefaultLocale,
-      js: HashSet.empty(),
+      js: HashSet.make('flourish-embed.js' as const),
     }),
   },
 ])('can parse a record ($response $index)', ({ response, index, expected }) =>

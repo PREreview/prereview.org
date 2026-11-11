@@ -77,9 +77,10 @@ const EmbeddedAsset = LinkedAsset(Schema.toType(Asset))
 
 const HyperlinkTarget = LinkedEntry(PageEntry)
 
-export class RequiredJs extends Context.Service<RequiredJs, Ref.Ref<HashSet.HashSet<'youtube-embed.js'>>>()(
-  'RequiredJs',
-) {}
+export class RequiredJs extends Context.Service<
+  RequiredJs,
+  Ref.Ref<HashSet.HashSet<'flourish-embed.js' | 'youtube-embed.js'>>
+>()('RequiredJs') {}
 
 const EmbeddedEntryToHtml = Match.typeTags<
   typeof EmbeddedEntry.Type,
@@ -299,14 +300,14 @@ const EmbeddedEntryToHtml = Match.typeTags<
       : Effect.succeedNone
 
     if (Option.isNone(caption)) {
-      return FlourishLink({ url, title })
+      return yield* FlourishLink({ url, title })
     }
 
     const captionId = `flourish-caption-${flourish.sys.id}`
 
     return html`
       <figure>
-        ${FlourishLink({ url, title, describedBy: captionId })}
+        ${yield* FlourishLink({ url, title, describedBy: captionId })}
         <figcaption id="${captionId}">${caption.value}</figcaption>
       </figure>
     `
@@ -383,7 +384,7 @@ const YouTubeLink = Effect.fnUntraced(function* ({
     > `
   }
 
-  yield* Ref.update(requiredJs, HashSet.add('youtube-embed.js'))
+  yield* Ref.update(requiredJs, set => HashSet.add(set, 'youtube-embed.js'))
 
   return html`
     <youtube-embed data-video-id="${videoId.value}" data-title="${title}">
@@ -395,7 +396,17 @@ const YouTubeLink = Effect.fnUntraced(function* ({
   `
 })
 
-const FlourishLink = ({ url, title, describedBy }: { url: URL; title: string; describedBy?: string }): Html => {
+const FlourishLink = Effect.fnUntraced(function* ({
+  url,
+  title,
+  describedBy,
+}: {
+  url: URL
+  title: string
+  describedBy?: string
+}): Effect.fn.Return<Html, never, RequiredJs> {
+  const requiredJs = yield* RequiredJs
+
   const describedByAttribute = describedBy === undefined ? '' : html`aria-describedby="${describedBy}"`
   const visualizationId = FlourishVisualizationId.fromUrl(url)
 
@@ -405,18 +416,22 @@ const FlourishLink = ({ url, title, describedBy }: { url: URL; title: string; de
     > `
   }
 
+  yield* Ref.update(requiredJs, set => HashSet.add(set, 'flourish-embed.js'))
+
   return html`
-    <a href="${url.href}" class="flourish-visualization" ${describedByAttribute}>
-      <img
-        src="${FlourishVisualizationId.thumbnailUrl(visualizationId.value).href}"
-        width="1020"
-        alt=""
-        loading="lazy"
-      />
-      <span ${languageAttributesFor('en')}>View <cite class="visually-hidden">${title}</cite> on Flourish</span>
-    </a>
+    <flourish-embed data-visualization-id="${visualizationId.value}" data-title="${title}">
+      <a href="${url.href}" class="flourish-visualization" ${describedByAttribute}>
+        <img
+          src="${FlourishVisualizationId.thumbnailUrl(visualizationId.value).href}"
+          width="1020"
+          alt=""
+          loading="lazy"
+        />
+        <span ${languageAttributesFor('en')}>View <cite class="visually-hidden">${title}</cite> on Flourish</span>
+      </a>
+    </flourish-embed>
   `
-}
+})
 
 const AssetToHtml = ({ asset, altText }: { asset: Asset; altText: string }) =>
   Match.valueTags(asset, {

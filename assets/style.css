@@ -639,6 +639,10 @@ figcaption {
   }
 }
 
+flourish-embed {
+  display: block;
+}
+
 .flourish-visualization {
   display: grid;
   inline-size: 100%;

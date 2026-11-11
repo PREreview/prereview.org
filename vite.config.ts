@@ -22,6 +22,7 @@ const entries = {
   'error-summary': path.resolve('assets', 'error-summary.ts'),
   'expander-button': path.resolve('assets', 'expander-button.ts'),
   'favicon.ico': path.resolve('assets', 'favicon.ico'),
+  'flourish-embed': path.resolve('assets', 'flourish-embed.ts'),
   'favicon.svg': path.resolve('assets', 'favicon.svg'),
   'html-editor': path.resolve('assets', 'html-editor.ts'),
   'notification-banner': path.resolve('assets', 'notification-banner.ts'),
