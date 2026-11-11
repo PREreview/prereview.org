@@ -1,4 +1,4 @@
-import { Schema, SchemaTransformation } from 'effect'
+import { Array, Effect, Schema, SchemaTransformation } from 'effect'
 import { NonEmptyStringSchema } from '../../types/NonEmptyString.ts'
 import { InstantSchema } from '../../types/Temporal.ts'
 
@@ -294,6 +294,10 @@ export class Entry extends Schema.Class<Entry>('Entry')({
 export class Entries extends Schema.Class<Entries>('Entries')({
   total: Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
   items: Schema.Array(Entry),
+  includes: Schema.Struct({
+    Entry: Schema.Array(Entry).pipe(Schema.withDecodingDefaultType(Effect.sync(Array.empty))),
+    Asset: Schema.Array(Asset).pipe(Schema.withDecodingDefaultType(Effect.sync(Array.empty))),
+  }).pipe(Schema.withDecodingDefaultType(Effect.sync(() => ({ Entry: Array.empty(), Asset: Array.empty() })))),
 }) {}
 
 export class Assets extends Schema.Class<Assets>('Assets')({
