@@ -67,7 +67,7 @@ export default defineConfig(({ mode }) => ({
         // @ts-expect-error https://github.com/FullHuman/purgecss/issues/1263
         postcssPurgecss({
           content: ['assets/**/*.ts', 'src/**/*.ts'],
-          safelist: ['contenteditable', /^crowdin_/, 'dir', /^jipt-/, /^:/],
+          safelist: ['contenteditable', /^crowdin_/, 'dir', /^jipt-/],
           variables: true,
         }),
       ],
