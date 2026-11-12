@@ -36,7 +36,7 @@ const createRecordOnZenodoForComment = Layer.effect(
 
     return Effect.fn('Comments.createRecordOnZenodoForComment')(function* (comment) {
       const prereview = yield* pipe(
-        Prereviews.getPrereview(comment.prereviewId),
+        Prereviews.getPreprintReview(comment.prereviewId),
         Effect.mapError(
           Match.valueTags({
             PrereviewIsNotFound: error => new UnableToAssignADoi({ cause: error }),

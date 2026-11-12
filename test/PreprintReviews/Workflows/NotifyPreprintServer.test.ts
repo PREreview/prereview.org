@@ -47,7 +47,7 @@ describe('NotifyPreprintServer', () => {
           }).pipe(
             Effect.provide([
               FeatureFlags.layer({ sendCoarNotifyMessages: true }),
-              Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+              Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
               Layer.succeed(PublicUrl.PublicUrl, publicUrl),
               Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
             ]),
@@ -92,7 +92,7 @@ describe('NotifyPreprintServer', () => {
           }).pipe(
             Effect.provide([
               FeatureFlags.layer({ sendCoarNotifyMessages: 'sandbox' }),
-              Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+              Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
               Layer.succeed(PublicUrl.PublicUrl, publicUrl),
               Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
             ]),
@@ -112,7 +112,7 @@ describe('NotifyPreprintServer', () => {
           Effect.provide([
             Layer.mock(CoarNotify.CoarNotify, {}),
             FeatureFlags.layer({ sendCoarNotifyMessages: true }),
-            Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
             Layer.succeed(PublicUrl.PublicUrl, publicUrl),
             Layer.mock(Uuid.GenerateUuid, {}),
           ]),
@@ -140,7 +140,7 @@ describe('NotifyPreprintServer', () => {
           Effect.provide([
             Layer.mock(CoarNotify.CoarNotify, { sendMessage: () => error }),
             FeatureFlags.layer({ sendCoarNotifyMessages }),
-            Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
             Layer.succeed(PublicUrl.PublicUrl, publicUrl),
             Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
           ]),
@@ -169,7 +169,7 @@ describe('NotifyPreprintServer', () => {
         Effect.provide([
           Layer.mock(CoarNotify.CoarNotify, {}),
           FeatureFlags.layer({ sendCoarNotifyMessages }),
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
+          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => error }),
           Layer.succeed(PublicUrl.PublicUrl, publicUrl),
           Layer.mock(Uuid.GenerateUuid, {}),
         ]),

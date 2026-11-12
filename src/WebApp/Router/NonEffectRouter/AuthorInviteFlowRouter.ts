@@ -143,7 +143,7 @@ export const AuthorInviteFlowRouter = pipe(
         ),
         getPrereview: EffectToFpts.toTaskEitherK(
           flow(
-            Prereviews.getPrereview,
+            Prereviews.getPreprintReview,
             Effect.catchTag(['PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved'], () =>
               Effect.fail('unavailable' as const),
             ),

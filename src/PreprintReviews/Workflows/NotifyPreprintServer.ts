@@ -16,7 +16,7 @@ export const NotifyPreprintServer = Effect.fn('PreprintReviews.notifyPreprintSer
       return
     }
 
-    const prereview = yield* Prereviews.getPrereview(reviewId)
+    const prereview = yield* Prereviews.getPreprintReview(reviewId)
 
     const target = pipe(
       Match.value(sendCoarNotifyMessages),

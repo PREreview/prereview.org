@@ -9,7 +9,7 @@ import * as PreprintReviews from '../PreprintReviews.ts'
 
 export const NotifyReviewRequestersOfReview = Effect.fn('PreprintReviews.notifyReviewRequestersOfReview')(
   function* (reviewId: number) {
-    const prereview = yield* Prereviews.getPrereview(reviewId)
+    const prereview = yield* Prereviews.getPreprintReview(reviewId)
 
     const requestersNeedingNotification = yield* pipe(
       ReviewRequests.listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications(prereview.preprint.id),

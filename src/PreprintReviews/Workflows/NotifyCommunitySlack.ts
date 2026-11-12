@@ -7,7 +7,7 @@ import * as Errors from '../Errors.ts'
 
 export const NotifyCommunitySlack = Effect.fn('PreprintReviews.notifyCommunitySlack')(
   function* (reviewId: number) {
-    const prereview = yield* Prereviews.getPrereview(reviewId)
+    const prereview = yield* Prereviews.getPreprintReview(reviewId)
 
     const author = Array.headNonEmpty(prereview.authors.named).name
     const url = yield* PublicUrl.forRoute(Routes.reviewMatch.formatter, { id: prereview.id })

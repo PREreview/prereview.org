@@ -26,7 +26,7 @@ export const StartNow: (input: {
   function* ({ id }) {
     const user = yield* EnsureUserIsLoggedIn
 
-    const prereview = yield* Prereviews.getPrereview(id)
+    const prereview = yield* Prereviews.getPreprintReview(id)
 
     const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 

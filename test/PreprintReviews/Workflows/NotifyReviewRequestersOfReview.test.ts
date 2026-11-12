@@ -53,7 +53,7 @@ describe('NotifyReviewRequestersOfReview', () => {
             expect(recordEmailSentToNotifyPrereviewerOfAPrereview).toHaveBeenCalledTimes(HashSet.size(requesters))
           }).pipe(
             Effect.provide([
-              Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+              Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
               Layer.mock(ReviewRequests.ReviewRequestQueries, {
                 listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
                   Effect.succeed(requesters),
@@ -78,7 +78,7 @@ describe('NotifyReviewRequestersOfReview', () => {
               hasAPrereviewerBeenNotifiedOfAReview: () => Effect.succeed(true),
             }),
             Layer.mock(Prereviewers.Prereviewers, {}),
-            Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
               listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
                 Effect.succeed(requesters),
@@ -108,7 +108,7 @@ describe('NotifyReviewRequestersOfReview', () => {
           Layer.mock(Email.Email, {}),
           Layer.mock(PreprintReviews.PreprintReviews, {}),
           Layer.mock(Prereviewers.Prereviewers, {}),
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
+          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => error }),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
         ]),
       ),

@@ -17,7 +17,7 @@ export const WriteCommentPage: (input: {
 
     const locale = yield* Locale
 
-    const prereview = yield* Prereviews.getPrereview(id)
+    const prereview = yield* Prereviews.getPreprintReview(id)
 
     return MakeResponse({ prereview, locale, isLoggedIn: Option.isSome(user) })
   },

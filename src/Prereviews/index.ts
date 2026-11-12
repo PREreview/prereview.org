@@ -45,7 +45,7 @@ export class Prereviews extends Context.Service<
     getForUser: (
       user: OrcidId.OrcidId,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
-    getPrereview: (
+    getPreprintReview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
     getPrereviewSummary: (
@@ -81,8 +81,8 @@ export const getForProfile = (...args: Parameters<(typeof Prereviews.Service)['g
 export const getForUser = (...args: Parameters<(typeof Prereviews.Service)['getForUser']>) =>
   Prereviews.use(service => service.getForUser(...args))
 
-export const getPrereview = (...args: Parameters<(typeof Prereviews.Service)['getPrereview']>) =>
-  Prereviews.use(service => service.getPrereview(...args))
+export const getPreprintReview = (...args: Parameters<(typeof Prereviews.Service)['getPreprintReview']>) =>
+  Prereviews.use(service => service.getPreprintReview(...args))
 
 export const getPrereviewSummary = (...args: Parameters<(typeof Prereviews.Service)['getPrereviewSummary']>) =>
   Prereviews.use(service => service.getPrereviewSummary(...args))
@@ -115,9 +115,9 @@ export const layer = Layer.effect(
     )
 
     // oxlint-disable-next-line unicorn/consistent-function-scoping
-    const getPrereview = () => new PrereviewIsUnavailable()
+    const getPreprintReview = () => new PrereviewIsUnavailable()
 
-    const getPrereviewFromZenodo = Effect.fn('Prereviews.getPrereview')(function* (id: number) {
+    const getPreprintReviewFromZenodo = Effect.fn('Prereviews.getPreprintReviewFromZenodo')(function* (id: number) {
       yield* Effect.annotateCurrentSpan({ id })
 
       const loggerEnv = yield* MakeDeprecatedLoggerEnv
@@ -280,7 +280,7 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getPrereview: featureFlags.useEventsForPreprintReviews ? getPrereview : getPrereviewFromZenodo,
+      getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
       getPrereviewSummary: Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
         yield* Effect.annotateCurrentSpan({ id })
 

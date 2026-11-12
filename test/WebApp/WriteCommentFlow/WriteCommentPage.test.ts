@@ -29,7 +29,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -53,7 +53,7 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
         ),
     )
   })
@@ -75,7 +75,9 @@ describe('WriteCommentPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereviews.PrereviewWasRemoved() })),
+        Effect.provide(
+          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewWasRemoved() }),
+        ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),
   )
@@ -97,7 +99,9 @@ describe('WriteCommentPage', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereviews.PrereviewIsNotFound() })),
+        Effect.provide(
+          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsNotFound() }),
+        ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),
   )
@@ -120,7 +124,7 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereviews.PrereviewIsUnavailable() }),
+          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable() }),
         ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),
