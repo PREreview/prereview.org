@@ -23,7 +23,7 @@ done > "$WORK_DIR/redis.jsonl"
 
 # EVENTS BACKUP
 echo 'COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);' \
-  | fly mpg connect nvwq9oz78qe03kl1 -u readonly -d "$APP" \
+  | fly mpg connect 1zvn90k1e5vrkpew -u readonly -d "$APP" \
     > "$WORK_DIR/events.csv"
 
 # CREATE TARBALL

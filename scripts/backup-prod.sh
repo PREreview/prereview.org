@@ -22,12 +22,12 @@ done > "$WORK_DIR/redis.jsonl"
 
 # EVENTS BACKUP
 echo 'COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);' \
-  | fly mpg connect nvwq9oz78qe03kl1 -u readonly -d "prereview-prod" \
+  | fly mpg connect 1zvn90k1e5vrkpew -u readonly -d "prereview-prod" \
     > "$WORK_DIR/events.csv"
 
 # SENSITIVE DATA BACKUP
 echo 'COPY (SELECT * FROM sensitive_data) TO STDOUT WITH (FORMAT CSV, HEADER);' \
-  | fly mpg connect nvwq9oz78qe03kl1 -u readonly -d "prereview-prod" \
+  | fly mpg connect 1zvn90k1e5vrkpew -u readonly -d "prereview-prod" \
     > "$WORK_DIR/sensitive_data.csv"
 
 # CREATE TARBALL
