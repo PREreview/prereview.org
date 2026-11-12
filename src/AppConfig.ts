@@ -46,6 +46,7 @@ export const layer = Layer.mergeAll(
       }),
       Config.withDefault(() => false),
     ),
+    useEventsForPreprintReviews: Config.withDefault(Config.Boolean('USE_EVENTS_FOR_PREPRINT_REVIEWS'), false),
     loadBlogFromContentful: Config.withDefault(Config.Boolean('LOAD_BLOG_FROM_CONTENTFUL'), false),
     loadPagesFromContentful: Config.withDefault(Config.Boolean('LOAD_PAGES_FROM_CONTENTFUL'), false),
     sendCoarNotifyMessages: Config.withDefault(
