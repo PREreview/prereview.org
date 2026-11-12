@@ -6,6 +6,7 @@ import { Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import { type Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from './Prereview.ts'
+import type { Pseudonym } from '../types/Pseudonym.ts'
 
 export type Input = number
 
@@ -13,7 +14,9 @@ export type Result = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'au
   clubId?: Uuid
   preprintId: IndeterminatePreprintId
   authors: {
-    named: ReadonlyArray<{ orcidId: OrcidId; persona: 'public' | 'pseudonym' }>
+    named: ReadonlyArray<
+      { orcidId: OrcidId; persona: 'public' } | { orcidId: OrcidId; persona: 'pseudonym'; pseudonym: Pseudonym }
+    >
     anonymous: number
   }
 }
@@ -61,13 +64,13 @@ const query =
         Structured: () => Result.fail(new PrereviewIsUnavailable()),
       })
 
+      const importedAuthors = yield* Result.all(Array.map(imported.authors, toNamedAuthors))
+      const chosenAuthors = yield* Result.all(Array.map(authorChoices, toNamedAuthor))
+
       return {
         ...(imported.addendum !== undefined ? { addendum: imported.addendum } : {}),
         authors: {
-          named: Array.appendAll(
-            Array.flatMap(imported.authors, toNamedAuthors),
-            Array.map(authorChoices, ({ orcidId, persona }) => ({ orcidId, persona })),
-          ),
+          named: Array.appendAll(Array.flatten(importedAuthors), chosenAuthors),
           anonymous:
             imported.otherAuthors +
             Array.length(Array.filter(imported.authors, author => author._tag === 'Unknown')) -
@@ -92,12 +95,26 @@ const query =
 
 const toNamedAuthors = (
   author: Events.PreprintReviewImported['authors'][number],
-): ReadonlyArray<Result['authors']['named'][number]> => {
+): Result.Result<ReadonlyArray<Result['authors']['named'][number]>, PrereviewIsUnavailable> => {
   if (author._tag === 'Unknown') {
-    return []
+    return Result.succeed([])
   }
 
-  return [{ orcidId: author.orcidId, persona: author._tag === 'PublicPersona' ? 'public' : 'pseudonym' }]
+  if (author._tag === 'PseudonymPersona') {
+    return Result.fail(new PrereviewIsUnavailable())
+  }
+
+  return Result.succeed([{ orcidId: author.orcidId, persona: 'public' }])
+}
+
+const toNamedAuthor = (
+  authorChoice: Events.AuthorChoicesForAReviewImported,
+): Result.Result<Result['authors']['named'][number], PrereviewIsUnavailable> => {
+  if (authorChoice.persona === 'pseudonym') {
+    return Result.fail(new PrereviewIsUnavailable())
+  }
+
+  return Result.succeed({ orcidId: authorChoice.orcidId, persona: 'public' })
 }
 
 export const GetPublishedPreprintReview = (removedPreprintReviewIds: ReadonlyArray<number>) =>
