@@ -42,7 +42,7 @@ const reviewImported = new Events.PreprintReviewImported({
   doi: prereview.doi,
   id: prereview.id,
   license: prereview.license,
-  published: prereview.published.toZonedDateTime('14:25Z').toInstant(),
+  published: prereview.published.toZonedDateTime({ timeZone: 'UTC', plainTime: '14:25' }).toInstant(),
   preprint: prereview.preprintId,
   live: prereview.live,
   useOfAi: { _tag: 'No' },
