@@ -27,6 +27,7 @@ import {
   type RecentPreprintPrereview,
   type RecentPrereviews,
 } from './Prereview.ts'
+import { FeatureFlags } from '../FeatureFlags.ts'
 
 export * from './Prereview.ts'
 
@@ -99,6 +100,7 @@ export const layer = Layer.effect(
       Context.omit(Scope.Scope),
     )
     const clubs = yield* Clubs
+    const featureFlags = yield* FeatureFlags
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const publicUrl = yield* PublicUrl
@@ -111,6 +113,9 @@ export const layer = Layer.effect(
         Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
       ),
     )
+
+    // oxlint-disable-next-line unicorn/consistent-function-scoping
+    const getPrereview = () => new PrereviewIsUnavailable()
 
     const getPrereviewFromZenodo = Effect.fn('Prereviews.getPrereview')(function* (id: number) {
       yield* Effect.annotateCurrentSpan({ id })
@@ -275,7 +280,7 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getPrereview: getPrereviewFromZenodo,
+      getPrereview: featureFlags.useEventsForPreprintReviews ? getPrereview : getPrereviewFromZenodo,
       getPrereviewSummary: Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
         yield* Effect.annotateCurrentSpan({ id })
 
