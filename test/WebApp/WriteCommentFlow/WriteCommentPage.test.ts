@@ -124,7 +124,7 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable() }),
+          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}) }),
         ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),

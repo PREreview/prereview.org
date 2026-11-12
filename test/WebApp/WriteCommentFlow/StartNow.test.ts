@@ -232,7 +232,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
-            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable() }),
+            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}) }),
           ),
           Effect.provideService(LoggedInUser, user),
         ),

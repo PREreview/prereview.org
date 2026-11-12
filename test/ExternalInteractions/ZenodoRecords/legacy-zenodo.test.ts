@@ -975,7 +975,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
+        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
@@ -1000,7 +1000,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
       )
 
-      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
+      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
       expect(fetch.callHistory.done()).toBeTruthy()
     }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
@@ -1076,7 +1076,7 @@ describe('getPrereviewFromZenodo', () => {
           E.left(
             error._tag === 'PreprintIsNotFound'
               ? new Prereviews.PrereviewIsNotFound()
-              : new Prereviews.PrereviewIsUnavailable(),
+              : new Prereviews.PrereviewIsUnavailable({}),
           ),
         )
         expect(fetch.callHistory.done()).toBeTruthy()
@@ -1373,7 +1373,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
+        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
@@ -1709,7 +1709,7 @@ describe('getPrereviewSummaryFromZenodo', () => {
         }),
       )
 
-      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
+      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
       expect(fetch.callHistory.done()).toBeTruthy()
     }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
@@ -1784,7 +1784,7 @@ describe('getPrereviewSummaryFromZenodo', () => {
           E.left(
             error._tag === 'PreprintIsNotFound'
               ? new Prereviews.PrereviewIsNotFound()
-              : new Prereviews.PrereviewIsUnavailable(),
+              : new Prereviews.PrereviewIsUnavailable({}),
           ),
         )
       }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprintTitle: () => error }))),

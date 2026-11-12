@@ -61,7 +61,7 @@ const query =
 
       const text = yield* Match.valueTags(imported.content, {
         FreeText: ({ text }) => Result.succeed(text),
-        Structured: () => Result.fail(new PrereviewIsUnavailable()),
+        Structured: () => Result.fail(new PrereviewIsUnavailable({ cause: 'structured review not implemented' })),
       })
 
       const importedAuthors = yield* Result.all(Array.map(imported.authors, toNamedAuthors))
@@ -101,7 +101,7 @@ const toNamedAuthors = (
   }
 
   if (author._tag === 'PseudonymPersona') {
-    return Result.fail(new PrereviewIsUnavailable())
+    return Result.fail(new PrereviewIsUnavailable({ cause: 'pseudonym authors not implemented' }))
   }
 
   return Result.succeed([{ orcidId: author.orcidId, persona: 'public' }])
@@ -111,7 +111,7 @@ const toNamedAuthor = (
   authorChoice: Events.AuthorChoicesForAReviewImported,
 ): Result.Result<Result['authors']['named'][number], PrereviewIsUnavailable> => {
   if (authorChoice.persona === 'pseudonym') {
-    return Result.fail(new PrereviewIsUnavailable())
+    return Result.fail(new PrereviewIsUnavailable({ cause: 'pseudonym authors not implemented' }))
   }
 
   return Result.succeed({ orcidId: authorChoice.orcidId, persona: 'public' })

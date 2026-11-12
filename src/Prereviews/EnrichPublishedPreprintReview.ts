@@ -26,7 +26,7 @@ export const EnrichPublishedPreprintReview = Effect.fn('Prereviews.enrichPublish
   )
 
   if (!Array.isArrayNonEmpty(namedAuthors)) {
-    return yield* new PrereviewIsUnavailable()
+    return yield* new PrereviewIsUnavailable({ cause: 'no named authors' })
   }
 
   return new Prereview({

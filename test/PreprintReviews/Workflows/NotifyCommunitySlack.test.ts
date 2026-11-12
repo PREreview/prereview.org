@@ -54,7 +54,7 @@ describe('NotifyCommunitySlack', () => {
       fc.origin(),
       fc.constantFrom(
         new Prereviews.PrereviewIsNotFound(),
-        new Prereviews.PrereviewIsUnavailable(),
+        new Prereviews.PrereviewIsUnavailable({}),
         new Prereviews.PrereviewWasRemoved(),
       ),
     ],

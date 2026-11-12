@@ -84,7 +84,7 @@ export interface PreprintPrereview {
 
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
 
-export class PrereviewIsUnavailable extends Data.TaggedError('PrereviewIsUnavailable') {}
+export class PrereviewIsUnavailable extends Data.TaggedError('PrereviewIsUnavailable')<{ cause?: unknown }> {}
 
 export class PrereviewWasRemoved extends Data.TaggedError('PrereviewWasRemoved') {}
 

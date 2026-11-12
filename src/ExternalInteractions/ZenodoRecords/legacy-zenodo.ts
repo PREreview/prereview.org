@@ -328,7 +328,7 @@ export const getPrereviewFromZenodo = (id: number) =>
           { status: P.union(StatusCodes.NotFound, StatusCodes.Gone) },
           () => new Prereview.PrereviewIsNotFound(),
         )
-        .otherwise(() => new Prereview.PrereviewIsUnavailable()),
+        .otherwise(error => new Prereview.PrereviewIsUnavailable({ cause: error })),
     ),
   )
 
@@ -377,7 +377,7 @@ export const getPrereviewSummaryFromZenodo = (id: number) =>
           { status: P.union(StatusCodes.NotFound, StatusCodes.Gone) },
           () => new Prereview.PrereviewIsNotFound(),
         )
-        .otherwise(() => new Prereview.PrereviewIsUnavailable()),
+        .otherwise(error => new Prereview.PrereviewIsUnavailable({ cause: error })),
     ),
   )
 
