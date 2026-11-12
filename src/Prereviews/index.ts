@@ -112,6 +112,24 @@ export const layer = Layer.effect(
       ),
     )
 
+    const getPrereviewFromZenodo = Effect.fn('Prereviews.getPrereview')(function* (id: number) {
+      yield* Effect.annotateCurrentSpan({ id })
+
+      const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+      const runtime = yield* Effect.context<Preprints>()
+
+      return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
+        fetch,
+        getClubByName,
+        runtime,
+        wasPrereviewRemoved,
+        zenodoApiKey: Redacted.value(zenodoApi.key),
+        zenodoUrl: zenodoApi.origin,
+        ...loggerEnv,
+      })
+    }, Effect.provide(context))
+
     return {
       getFiveMostRecent: Effect.gen(function* () {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
@@ -257,23 +275,7 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getPrereview: Effect.fn('Prereviews.getPrereview')(function* (id) {
-        yield* Effect.annotateCurrentSpan({ id })
-
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        const runtime = yield* Effect.context<Preprints>()
-
-        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
-          fetch,
-          getClubByName,
-          runtime,
-          wasPrereviewRemoved,
-          zenodoApiKey: Redacted.value(zenodoApi.key),
-          zenodoUrl: zenodoApi.origin,
-          ...loggerEnv,
-        })
-      }, Effect.provide(context)),
+      getPrereview: getPrereviewFromZenodo,
       getPrereviewSummary: Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
         yield* Effect.annotateCurrentSpan({ id })
 
