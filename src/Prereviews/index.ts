@@ -1,4 +1,5 @@
 import { FetchHttpClient } from 'effect/http'
+import * as Queries from '../Queries.ts'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
@@ -28,6 +29,8 @@ import {
   type RecentPrereviews,
 } from './Prereview.ts'
 import { FeatureFlags } from '../FeatureFlags.ts'
+import { GetPublishedPreprintReview } from './GetPublishedPreprintReview.ts'
+import { EnrichPublishedPreprintReview } from './EnrichPublishedPreprintReview.ts'
 
 export * from './Prereview.ts'
 
@@ -114,8 +117,19 @@ export const layer = Layer.effect(
       ),
     )
 
-    // oxlint-disable-next-line unicorn/consistent-function-scoping
-    const getPreprintReview = () => new PrereviewIsUnavailable()
+    const query = yield* Queries.makeOnDemandQuery(GetPublishedPreprintReview([]))
+
+    const getPreprintReview = (reviewId: number) =>
+      pipe(
+        reviewId,
+        query,
+        Effect.andThen(EnrichPublishedPreprintReview),
+        Effect.catchTag(
+          ['UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
+          () => new PrereviewIsUnavailable(),
+        ),
+        Effect.provideContext(context),
+      )
 
     const getPreprintReviewFromZenodo = Effect.fn('Prereviews.getPreprintReviewFromZenodo')(function* (id: number) {
       yield* Effect.annotateCurrentSpan({ id })
