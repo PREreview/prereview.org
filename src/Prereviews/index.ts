@@ -125,7 +125,7 @@ export const layer = Layer.effect(
         query,
         Effect.andThen(EnrichPublishedPreprintReview),
         Effect.catchTag(
-          ['UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
+          ['ClubNotFound', 'UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
           error => new PrereviewIsUnavailable({ cause: error }),
         ),
         Effect.provideContext(context),
