@@ -5,6 +5,6 @@ export type Result = Prereview
 
 export type Error = PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved
 
-export declare const GetPublishedPreprintReviews: (
+export declare const GetPublishedPreprintReview: (
   removedPreprintReviewIds: ReadonlyArray<number>,
 ) => Queries.OnDemandQuery<[number], Result, Error>
