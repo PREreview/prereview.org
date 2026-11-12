@@ -21,7 +21,7 @@ export const EnrichPublishedPreprintReview = Effect.fn('Prereviews.enrichPublish
 
       const publicPersona = yield* prereviewers.getPublicPersona(author.orcidId)
 
-      return { name: publicPersona.displayName, orcidId: author.orcidId }
+      return { name: publicPersona.displayName, orcid: author.orcidId }
     }),
   )
 
