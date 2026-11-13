@@ -5,7 +5,6 @@ import type { ClubName } from '../Clubs/index.ts'
 import type * as Datasets from '../Datasets/index.ts'
 import type { Html } from '../../html.ts'
 import type * as Preprints from '../Preprints/index.ts'
-import type { PreprintId } from '../Preprints/index.ts'
 import type * as Prereviewers from '../Prereviewers/index.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { FieldId } from '../../types/field.ts'
@@ -13,30 +12,6 @@ import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
-
-export class Prereview extends Data.TaggedClass('Prereview')<{
-  addendum?: Html
-  authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
-    anonymous: number
-  }
-  club?: ClubName
-  doi: Doi
-  id: number
-  language?: LanguageCode
-  license: 'CC0-1.0' | 'CC-BY-4.0'
-  published: Temporal.PlainDate
-  preprint: {
-    id: PreprintId
-    language: LanguageCode
-    title: Html
-    url: URL
-  }
-  live: boolean
-  requested: boolean
-  structured: boolean
-  text: Html
-}> {}
 
 export interface RecentPrereviews {
   readonly currentPage: number
