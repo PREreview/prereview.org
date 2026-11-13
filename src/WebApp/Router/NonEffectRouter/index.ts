@@ -230,7 +230,7 @@ const routerWithoutHyperTs = pipe(
             preprintReviews({ id, locale: env.locale })({
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  Prereviews.getForPreprint,
+                  PreprintReviews.getForPreprint,
                   Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
