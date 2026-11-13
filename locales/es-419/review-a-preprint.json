@@ -101,6 +101,9 @@
   "doiCouldBePsycharchives": {
     "message": "Creemos que el DOI {doi} podría ser un preprint de PsychArchives, pero no podemos encontrar detalles."
   },
+  "doiCouldBeRadial": {
+    "message": "Creemos que el DOI {doi} podría ser un preprint de Radial, pero no encontramos más información."
+  },
   "doiCouldBeResearchSquare": {
     "message": "Creemos que el DOI {doi} podría ser un preprint de Research Square, pero no podemos encontrar detalles."
   },
@@ -151,6 +154,9 @@
   },
   "urlIsCorrect": {
     "message": "Si la URL es correcta, favor de <contact>contactarnos</contact>."
+  },
+  "supportPreprintsFrom": {
+    "message": "Aceptamos preprints de {servers}."
   },
   "isAPreprint": {
     "message": "Si esto es un preprint, favor de <contact>contactarnos</contact>."
