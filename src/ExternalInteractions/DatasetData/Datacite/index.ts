@@ -1,5 +1,5 @@
 import { Effect, pipe } from 'effect'
-import * as Datasets from '../../../Datasets/index.ts'
+import * as Datasets from '../../../Domain/Datasets/index.ts'
 import { Datacite } from '../../../ExternalApis/index.ts'
 import type * as LanguageDetection from '../../LanguageDetection/index.ts'
 import type { DataciteDatasetId } from './DatasetId.ts'

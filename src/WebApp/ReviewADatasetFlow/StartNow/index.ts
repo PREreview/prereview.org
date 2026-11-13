@@ -1,7 +1,7 @@
 import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../Domain/DatasetReviews/index.ts'
-import * as Datasets from '../../../Datasets/index.ts'
+import * as Datasets from '../../../Domain/Datasets/index.ts'
 import { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'

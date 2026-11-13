@@ -1,6 +1,6 @@
 import { Array, flow, identity, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as Datasets from '../../Datasets/index.ts'
+import * as Datasets from '../../Domain/Datasets/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'

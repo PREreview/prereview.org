@@ -1,5 +1,5 @@
 import { Array, Boolean, Data, Result, flow, Function, Match, Option, Predicate } from 'effect'
-import type * as Datasets from '../../../Datasets/index.ts'
+import type * as Datasets from '../../Datasets/index.ts'
 import type { OrcidId, Uuid } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'

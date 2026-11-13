@@ -1,9 +1,9 @@
-import { describe, expect, it } from '../vitest.ts'
+import { describe, expect, it } from '../../vitest.ts'
 import { Option, Tuple } from 'effect'
-import * as _ from '../../src/Datasets/DatasetId.ts'
-import * as Datasets from '../../src/Datasets/index.ts'
-import { Doi } from '../../src/types/index.ts'
-import * as fc from '../fc.ts'
+import * as _ from '../../../src/Domain/Datasets/DatasetId.ts'
+import * as Datasets from '../../../src/Domain/Datasets/index.ts'
+import { Doi } from '../../../src/types/index.ts'
+import * as fc from '../../fc.ts'
 
 describe('isDatasetDoi', () => {
   it.prop('with a dataset DOI', [fc.datasetDoi()], ([doi]) => {

@@ -1,5 +1,5 @@
 import { Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
-import * as Datasets from '../../Datasets/index.ts'
+import * as Datasets from '../../Domain/Datasets/index.ts'
 import type { Datacite } from '../../ExternalApis/index.ts'
 import type * as LanguageDetection from '../LanguageDetection/index.ts'
 import { GetDatasetFromDatacite, IsDataciteDatasetId } from './Datacite/index.ts'

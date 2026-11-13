@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
-import * as Datasets from '../../src/Datasets/index.ts'
+import * as Datasets from '../../src/Domain/Datasets/index.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'

@@ -12,7 +12,7 @@ import {
   Tuple,
   SchemaTransformation,
 } from 'effect'
-import { Doi } from '../types/index.ts'
+import { Doi } from '../../types/index.ts'
 
 export type DatasetId = typeof DatasetId.Type
 

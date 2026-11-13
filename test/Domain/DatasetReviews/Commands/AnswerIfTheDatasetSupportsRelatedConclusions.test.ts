@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Result, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/AnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
-import * as Datasets from '../../../../src/Datasets/index.ts'
+import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 

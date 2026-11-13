@@ -1,5 +1,5 @@
 import { Array, Equal, Order, pipe, Tuple, type Types } from 'effect'
-import type * as Datasets from '../../../Datasets/index.ts'
+import type * as Datasets from '../../Datasets/index.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import type * as Events from '../Events.ts'
 

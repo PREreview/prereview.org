@@ -18,7 +18,7 @@ import {
 import { format } from 'fp-ts-routing'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
-import * as Datasets from '../../Datasets/index.ts'
+import * as Datasets from '../../Domain/Datasets/index.ts'
 import {
   Asset,
   type Block,

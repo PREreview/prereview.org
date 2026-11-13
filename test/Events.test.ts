@@ -1,7 +1,7 @@
 import { describe, expect, it } from './vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Tuple } from 'effect'
-import * as Datasets from '../src/Datasets/index.ts'
+import * as Datasets from '../src/Domain/Datasets/index.ts'
 import * as _ from '../src/Events.ts'
 import * as Preprints from '../src/Preprints/index.ts'
 import { Doi, OrcidId, Uuid } from '../src/types/index.ts'

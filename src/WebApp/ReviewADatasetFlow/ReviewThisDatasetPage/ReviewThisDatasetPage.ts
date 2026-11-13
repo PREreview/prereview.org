@@ -1,5 +1,5 @@
 import { Array, Boolean, flow, pipe, Struct } from 'effect'
-import * as Datasets from '../../../Datasets/index.ts'
+import * as Datasets from '../../../Domain/Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'

@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Queries/FindInProgressReviewForADataset.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
-import * as Datasets from '../../../../src/Datasets/index.ts'
+import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')

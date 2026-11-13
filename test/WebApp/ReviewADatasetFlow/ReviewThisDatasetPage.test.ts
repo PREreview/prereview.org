@@ -1,7 +1,7 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
-import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Datasets from '../../../src/Domain/Datasets/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'

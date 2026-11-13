@@ -1,7 +1,7 @@
 import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { DatasetReviewQueries } from '../../../Domain/DatasetReviews/index.ts'
-import { Datasets } from '../../../Datasets/index.ts'
+import { Datasets } from '../../../Domain/Datasets/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'

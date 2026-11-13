@@ -1,4 +1,4 @@
-import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Datasets from '../../../src/Domain/Datasets/index.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/UnknownDatasetPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Doi } from '../../../src/types/index.ts'

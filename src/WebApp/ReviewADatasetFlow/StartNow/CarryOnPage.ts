@@ -1,4 +1,4 @@
-import type * as Datasets from '../../../Datasets/index.ts'
+import type * as Datasets from '../../../Domain/Datasets/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'

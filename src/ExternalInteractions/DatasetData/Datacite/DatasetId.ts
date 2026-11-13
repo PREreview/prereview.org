@@ -1,5 +1,5 @@
 import type { Array } from 'effect'
-import type * as Datasets from '../../../Datasets/index.ts'
+import type * as Datasets from '../../../Domain/Datasets/index.ts'
 import { Doi } from '../../../types/index.ts'
 
 const dataciteDoiPrefixes = [

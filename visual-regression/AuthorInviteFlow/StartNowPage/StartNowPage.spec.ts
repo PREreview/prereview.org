@@ -1,5 +1,5 @@
 import { Option } from 'effect'
-import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Datasets from '../../../src/Domain/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { PseudonymPersona, PublicPersona } from '../../../src/Domain/Prereviewers/index.ts'

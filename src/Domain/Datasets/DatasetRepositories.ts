@@ -1,6 +1,6 @@
 import { Array, Record } from 'effect'
 import type { DatasetId } from '../Datasets/index.ts'
-import { NonEmptyString } from '../types/NonEmptyString.ts'
+import { NonEmptyString } from '../../types/NonEmptyString.ts'
 
 const repositoryNames: Record<DatasetId['_tag'], NonEmptyString> = Record.map(
   {

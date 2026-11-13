@@ -1,7 +1,7 @@
 import { expect, test } from '../../../vitest.ts'
 import { assertEquals } from '@effect/vitest/utils'
 import { Option, Struct } from 'effect'
-import * as Datasets from '../../../../src/Datasets/index.ts'
+import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
 import type { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ZenodoRecords/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
 import { html, plainText } from '../../../../src/html.ts'

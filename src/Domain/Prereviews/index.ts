@@ -4,7 +4,7 @@ import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Sco
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
-import * as Datasets from '../../Datasets/index.ts'
+import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import { ZenodoRecords } from '../../ExternalInteractions/index.ts'

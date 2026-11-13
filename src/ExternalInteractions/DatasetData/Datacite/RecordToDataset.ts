@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Effect, Result, flow, Match, Option, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import * as Datasets from '../../../Datasets/index.ts'
+import * as Datasets from '../../../Domain/Datasets/index.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml, type Html } from '../../../html.ts'
 import { Iso639, OrcidId } from '../../../types/index.ts'

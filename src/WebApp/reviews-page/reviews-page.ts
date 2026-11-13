@@ -1,7 +1,7 @@
 import { Array, flow, Match, Number, Order, pipe, String, Struct, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
-import * as Datasets from '../../Datasets/index.ts'
+import * as Datasets from '../../Domain/Datasets/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'

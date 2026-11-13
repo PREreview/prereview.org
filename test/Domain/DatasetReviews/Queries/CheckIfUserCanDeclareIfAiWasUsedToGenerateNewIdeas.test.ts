@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Result, Option } from 'effect'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../../src/Domain/DatasetReviews/Queries/CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIdeas.ts'
-import * as Datasets from '../../../../src/Datasets/index.ts'
+import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
 import * as Events from '../../../../src/Events.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../../src/types/index.ts'
 

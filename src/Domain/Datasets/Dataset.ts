@@ -1,8 +1,8 @@
 import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.ts'
-import type { PartialDate } from '../time.ts'
-import type { Name, OrcidId } from '../types/index.ts'
+import type { Html } from '../../html.ts'
+import type { PartialDate } from '../../time.ts'
+import type { Name, OrcidId } from '../../types/index.ts'
 import type { DatasetId } from './DatasetId.ts'
 
 export class Dataset extends Data.Class<{

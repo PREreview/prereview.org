@@ -1,5 +1,5 @@
 import { Array, Schema } from 'effect'
-import * as Datasets from '../../Datasets/index.ts'
+import * as Datasets from '../Datasets/index.ts'
 import { SensitiveData } from '../../SensitiveData.ts'
 import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 
