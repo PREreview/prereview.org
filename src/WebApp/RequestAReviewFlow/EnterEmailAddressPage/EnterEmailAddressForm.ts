@@ -1,6 +1,6 @@
 import type { UrlParams } from 'effect/http'
 import { Data, Result, identity, Match, pipe, Schema, String, Struct, SchemaTransformation, flow } from 'effect'
-import type { ContactAddress } from '../../../ReviewRequests/index.ts'
+import type { ContactAddress } from '../../../Domain/ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
 import { NonEmptyStringSchema } from '../../../types/NonEmptyString.ts'
 

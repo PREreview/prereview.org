@@ -1,6 +1,6 @@
 import { html } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import type * as ReviewRequests from '../../ReviewRequests/index.ts'
+import type * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 import { form, title } from './Page.ts'

@@ -1,6 +1,6 @@
 import { Array, Effect } from 'effect'
 import { Locale } from '../../Context.ts'
-import * as ReviewRequests from '../../ReviewRequests/index.ts'
+import * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import type { PageResponse } from '../Response/index.ts'

@@ -4,7 +4,7 @@ import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { DefaultLocale, getLocaleForLanguage, isUserSelectableLanguage, translate } from '../../../locales/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
-import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
+import type * as ReviewRequests from '../../../Domain/ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
 
 export type ReviewRequest = Omit<ReviewRequests.ReviewRequestToAcknowledge, 'preprintId'> & {

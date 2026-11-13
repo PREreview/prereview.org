@@ -1,7 +1,7 @@
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Preprints from '../../src/Preprints/index.ts'
-import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
+import type * as ReviewRequests from '../../src/Domain/ReviewRequests/index.ts'
 import { Doi, Temporal } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/MyReviewRequestsPage/ListOfReviewRequestsPage.ts'
 import { expect, test } from '../base.ts'

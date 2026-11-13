@@ -3,7 +3,7 @@ import { Locale } from '../../Context.ts'
 import { ServerNames } from '../../Preprints/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import { PublicUrl } from '../../public-url.ts'
-import * as ReviewRequests from '../../ReviewRequests/index.ts'
+import * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import type { PageResponse } from '../Response/index.ts'
 import { createPage } from './HomePage.ts'
 

@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Locale } from '../../Context.ts'
-import * as ReviewRequests from '../../ReviewRequests/index.ts'
+import * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import type { FieldId } from '../../types/field.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'

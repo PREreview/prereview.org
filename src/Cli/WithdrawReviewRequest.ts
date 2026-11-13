@@ -1,6 +1,6 @@
 import { Argument, Command } from 'effect/cli'
 import { Effect, pipe } from 'effect'
-import * as ReviewRequests from '../ReviewRequests/index.ts'
+import * as ReviewRequests from '../Domain/ReviewRequests/index.ts'
 import { Temporal, Uuid } from '../types/index.ts'
 
 const reviewRequestId = pipe(Argument.String('reviewRequestId'), Argument.withSchema(Uuid.UuidSchema))

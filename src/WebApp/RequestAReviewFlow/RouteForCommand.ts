@@ -1,5 +1,5 @@
 import type * as Preprints from '../../Preprints/index.ts'
-import type * as ReviewRequests from '../../ReviewRequests/index.ts'
+import type * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 
 export const RouteForCommand = (

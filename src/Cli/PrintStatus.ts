@@ -2,7 +2,7 @@ import { Command } from 'effect/cli'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Console, Effect, flow, pipe } from 'effect'
 import * as Prereviewers from '../Domain/Prereviewers/index.ts'
-import * as ReviewRequests from '../ReviewRequests/index.ts'
+import * as ReviewRequests from '../Domain/ReviewRequests/index.ts'
 
 const program = pipe(
   Effect.void,

@@ -1,0 +1,87 @@
+import { expect, test } from '../../../vitest.ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { Result, Option } from 'effect'
+import * as Preprints from '../../../../src/Preprints/index.ts'
+import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
+import * as _ from '../../../../src/Domain/ReviewRequests/Queries/FindReviewRequestsNeedingCategorization.ts'
+import { Doi, Name, OrcidId, Uuid } from '../../../../src/types/index.ts'
+
+const requester1 = { name: Name.Name('Josiah Carberry') }
+
+const request1Id = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
+const request2Id = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
+const request3Id = Uuid.Uuid('33389df7-6e3d-4507-a59e-3215d82e2375')
+const request4Id = Uuid.Uuid('452eb59b-5f3a-45b1-9822-40e86d27ef3f')
+
+const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67890') })
+
+const now = Temporal.Now.instant()
+
+const request1Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+  publishedAt: now.subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId1,
+  requester: Option.some(requester1),
+  reviewRequestId: request1Id,
+})
+const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+  language: 'es',
+  keywords: ['bc372b08bff50a48358e', 'd164de1eaf4ecfbd8833'],
+  topics: ['13741', '12422'],
+  reviewRequestId: request1Id,
+})
+const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: now.subtract({ minutes: 10 }),
+  reviewRequestId: request1Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
+})
+const request2Published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now.subtract({ hours: 1 }),
+  reviewRequestId: request2Id,
+})
+const request2Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: now.subtract({ minutes: 10 }),
+  reviewRequestId: request2Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
+})
+const request3Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: now.subtract({ minutes: 30 }),
+  preprintId: preprintId2,
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
+  reviewRequestId: request3Id,
+})
+const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+  acceptedAt: now.subtract({ hours: 4 }),
+  reviewRequestId: request4Id,
+})
+
+test('FindReviewRequestsNeedingCategorization', () => {
+  const actual = _.FindReviewRequestsNeedingCategorization.query([request1Imported, request1Categorized])
+
+  expect(actual).toStrictEqual(Result.succeed([]))
+})
+
+test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
+  ['single not categorized', [request1Imported], [{ id: request1Id, publishedAt: request1Imported.publishedAt }]],
+  [
+    'four not categorized',
+    [request1Imported, request2Published, request3Imported, request4Accepted],
+    [
+      { id: request4Id, publishedAt: request4Accepted.acceptedAt },
+      { id: request1Id, publishedAt: request1Imported.publishedAt },
+      { id: request2Id, publishedAt: request2Published.publishedAt },
+      { id: request3Id, publishedAt: request3Imported.publishedAt },
+    ],
+  ],
+  [
+    'partially categorized',
+    [request1Imported, request2Published, request1Categorized],
+    [{ id: request2Id, publishedAt: request2Published.publishedAt }],
+  ],
+  ['withdrawn', [request1Imported, request2Published, request1Categorized, request1Withdrawn, request2Withdrawn], []],
+])('FindReviewRequestsNeedingCategorization (%s)', (_name, events, expected) => {
+  const actual = _.FindReviewRequestsNeedingCategorization.query(events)
+
+  expect(actual).toStrictEqual(Result.succeed(expected))
+})

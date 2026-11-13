@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import type { CoarNotify } from '../../ExternalApis/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
-import * as ReviewRequests from '../../ReviewRequests/index.ts'
+import * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import type { Temporal, Uuid } from '../../types/index.ts'
 import { ActorToRequester } from './ActorToRequester.ts'
 import * as Errors from './Errors.ts'

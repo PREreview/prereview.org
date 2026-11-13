@@ -5,7 +5,7 @@ import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.t
 import * as _ from '../../../../src/Domain/PreprintReviews/Workflows/NotifyReviewRequestersOfReview.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../../../src/Prereviews/index.ts'
-import * as ReviewRequests from '../../../../src/ReviewRequests/index.ts'
+import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as fc from '../../../fc.ts'
 
 describe('NotifyReviewRequestersOfReview', () => {

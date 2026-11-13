@@ -1,7 +1,7 @@
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import { Preprints, type IndeterminatePreprintId } from '../../../Preprints/index.ts'
-import { ReviewRequestQueries } from '../../../ReviewRequests/index.ts'
+import { ReviewRequestQueries } from '../../../Domain/ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'

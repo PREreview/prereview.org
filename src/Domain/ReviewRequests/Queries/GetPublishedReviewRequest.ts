@@ -1,0 +1,127 @@
+import type { Temporal } from '@js-temporal/polyfill'
+import { Array, Data, Result, Option, pipe, type Types } from 'effect'
+import * as Events from '../../../Events.ts'
+import type * as Preprints from '../../../Preprints/index.ts'
+import * as Queries from '../../../Queries.ts'
+import type { Name, OrcidId, Uuid } from '../../../types/index.ts'
+import * as Errors from '../Errors.ts'
+
+export type PublishedReviewRequest = PublishedPrereviewerReviewRequest | PublishedReceivedReviewRequest
+
+export class PublishedPrereviewerReviewRequest extends Data.TaggedClass('PublishedPrereviewerReviewRequest')<{
+  author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
+  preprintId: Preprints.IndeterminatePreprintId
+  id: Uuid.Uuid
+  published: Temporal.Instant
+}> {}
+
+export class PublishedReceivedReviewRequest extends Data.TaggedClass('PublishedReceivedReviewRequest')<{
+  author: Option.Option<{ name: Name.Name }>
+  preprintId: Preprints.IndeterminatePreprintId
+  id: Uuid.Uuid
+  published: Temporal.Instant
+}> {}
+
+export interface Input {
+  reviewRequestId: Uuid.Uuid
+}
+
+export type Result = Result.Result<PublishedReviewRequest, Errors.UnknownReviewRequest>
+
+const createFilter = ({ reviewRequestId }: Input) =>
+  Events.EventFilter({
+    types: [
+      'ReviewRequestForAPreprintWasStarted',
+      'PersonaForAReviewRequestForAPreprintWasChosen',
+      'ReviewRequestForAPreprintWasPublished',
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestByAPrereviewerWasImported',
+      'ReviewRequestFromAPreprintServerWasImported',
+    ],
+    predicates: { reviewRequestId },
+  })
+
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
+  Result.gen(function* () {
+    const filter = createFilter(input)
+
+    const filteredEvents = Array.filter(events, Events.matches(filter))
+
+    const persona = Array.findLast(filteredEvents, hasTag('PersonaForAReviewRequestForAPreprintWasChosen'))
+
+    if (Option.isSome(persona)) {
+      const started = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasStarted'))
+
+      const published = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasPublished'))
+
+      return yield* Option.match(Option.all([started, published]), {
+        onNone: () => Result.fail(new Errors.UnknownReviewRequest({})),
+        onSome: ([started, published]) =>
+          Result.succeed(
+            new PublishedPrereviewerReviewRequest({
+              author: { orcidId: started.requesterId, persona: persona.value.persona },
+              preprintId: started.preprintId,
+              id: started.reviewRequestId,
+              published: published.publishedAt,
+            }),
+          ),
+      })
+    }
+
+    const received = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))
+
+    const accepted = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))
+
+    return yield* Option.match(Option.all([received, accepted]), {
+      onNone: () =>
+        Result.fromOption(
+          pipe(
+            Array.findLast(filteredEvents, hasTag('ReviewRequestFromAPreprintServerWasImported')),
+            Option.andThen(
+              imported =>
+                new PublishedReceivedReviewRequest({
+                  author: imported.requester,
+                  preprintId: imported.preprintId,
+                  id: imported.reviewRequestId,
+                  published: imported.publishedAt,
+                }),
+            ),
+            Option.orElse(() =>
+              pipe(
+                Array.findLast(filteredEvents, hasTag('ReviewRequestByAPrereviewerWasImported')),
+                Option.andThen(
+                  imported =>
+                    new PublishedPrereviewerReviewRequest({
+                      author: imported.requester,
+                      preprintId: imported.preprintId,
+                      id: imported.reviewRequestId,
+                      published: imported.publishedAt,
+                    }),
+                ),
+              ),
+            ),
+          ),
+          () => new Errors.UnknownReviewRequest({}),
+        ),
+      onSome: ([received, accepted]) =>
+        Result.succeed(
+          new PublishedReceivedReviewRequest({
+            author: received.requester,
+            preprintId: received.preprintId,
+            id: received.reviewRequestId,
+            published: accepted.acceptedAt,
+          }),
+        ),
+    })
+  })
+
+export const GetPublishedReviewRequest = Queries.OnDemandQuery({
+  name: 'ReviewRequestQueries.getPublishedReviewRequest',
+  createFilter,
+  query,
+})
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}

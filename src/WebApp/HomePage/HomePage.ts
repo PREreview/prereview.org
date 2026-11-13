@@ -8,7 +8,7 @@ import assets from '../../manifest.json' with { type: 'json' }
 import * as Preprints from '../../Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
-import type * as ReviewRequests from '../../ReviewRequests/index.ts'
+import type * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import { reviewAPreprintMatch, reviewMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
