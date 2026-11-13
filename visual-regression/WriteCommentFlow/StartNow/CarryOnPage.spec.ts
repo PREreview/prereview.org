@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
-import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
+import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -24,7 +24,7 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const prereview = new Prereviews.Prereview({
+const prereview = new PreprintReviews.Prereview({
   authors: {
     named: [
       { name: Name('James Fraser'), orcid: OrcidId('0000-0002-5080-2859') },

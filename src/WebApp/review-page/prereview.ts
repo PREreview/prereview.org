@@ -1,8 +1,8 @@
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { Prereview } from '../../Domain/Prereviews/index.ts'
+import type { Prereview } from '../../Domain/PreprintReviews/index.ts'
 
-export type { Prereview } from '../../Domain/Prereviews/index.ts'
+export type { Prereview } from '../../Domain/PreprintReviews/index.ts'
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable' | 'not-found' | 'removed', Prereview>

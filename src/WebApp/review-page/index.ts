@@ -11,7 +11,7 @@ import { type GetPrereviewEnv, getPrereview } from './prereview.ts'
 import { removedMessage } from './removed-message.ts'
 import { createPage } from './review-page.ts'
 
-export type { Prereview } from '../../Domain/Prereviews/index.ts'
+export type { Prereview } from '../../Domain/PreprintReviews/index.ts'
 export { CommentsForReview, UnableToInvalidateComments, type Comment, type GetCommentsEnv } from './comments.ts'
 export type { GetPrereviewEnv } from './prereview.ts'
 

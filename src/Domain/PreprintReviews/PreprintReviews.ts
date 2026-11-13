@@ -12,6 +12,7 @@ import * as Prereviews from '../Prereviews/index.ts'
 import * as Queries from '../../Queries.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
+import * as Errors from './Errors.ts'
 import { EnrichPublishedPreprintReview } from './EnrichPublishedPreprintReview.ts'
 import { GetPublishedPreprintReview } from './GetPublishedPreprintReview.ts'
 import * as FormStore from './FormStore.ts'
@@ -24,6 +25,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 import { ImportPreprintReview } from './ImportPreprintReview.ts'
+import type { Prereview } from './Prereview.ts'
 
 export interface RapidPrereview {
   readonly author: Prereviewers.Persona
@@ -39,8 +41,8 @@ export class PreprintReviews extends Context.Service<
     getPreprintReview: (
       id: number,
     ) => Effect.Effect<
-      Prereviews.Prereview,
-      Prereviews.PrereviewIsNotFound | Prereviews.PrereviewIsUnavailable | Prereviews.PrereviewWasRemoved
+      Prereview,
+      Errors.PrereviewIsNotFound | Errors.PrereviewIsUnavailable | Errors.PrereviewWasRemoved
     >
     getRapidPrereviewsForAPreprint: (
       preprintId: IndeterminatePreprintId,
@@ -138,7 +140,7 @@ export const layer = Layer.effect(
         Effect.andThen(EnrichPublishedPreprintReview),
         Effect.catchTag(
           ['ClubNotFound', 'UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
-          error => new Prereviews.PrereviewIsUnavailable({ cause: error }),
+          error => new Errors.PrereviewIsUnavailable({ cause: error }),
         ),
         Effect.provideContext(context),
       )

@@ -3,7 +3,6 @@ import { Effect, Result, Layer, pipe } from 'effect'
 import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/Workflows/NotifyCommunitySlack.ts'
-import * as Prereviews from '../../../../src/Domain/Prereviews/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
 import * as fc from '../../../fc.ts'
 
@@ -53,9 +52,9 @@ describe('NotifyCommunitySlack', () => {
       fc.integer(),
       fc.origin(),
       fc.constantFrom(
-        new Prereviews.PrereviewIsNotFound(),
-        new Prereviews.PrereviewIsUnavailable({}),
-        new Prereviews.PrereviewWasRemoved(),
+        new PreprintReviews.PrereviewIsNotFound(),
+        new PreprintReviews.PrereviewIsUnavailable({}),
+        new PreprintReviews.PrereviewWasRemoved(),
       ),
     ],
     ([preprintReviewId, publicUrl, error]) =>

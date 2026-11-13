@@ -8,7 +8,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import type { Prereview } from '../../Domain/Prereviews/index.ts'
+import type { Prereview } from '../../Domain/PreprintReviews/index.ts'
 import * as Routes from '../../routes.ts'
 import {
   authorInviteDeclineMatch,

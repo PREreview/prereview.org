@@ -5,7 +5,6 @@ import * as FeatureFlags from '../../../../src/FeatureFlags.ts'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/Workflows/NotifyPreprintServer.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
-import * as Prereviews from '../../../../src/Domain/Prereviews/index.ts'
 import * as PublicUrl from '../../../../src/public-url.ts'
 import { Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
@@ -155,9 +154,9 @@ describe('NotifyPreprintServer', () => {
       fc.constantFrom(true, 'sandbox'),
       fc.integer(),
       fc.constantFrom(
-        new Prereviews.PrereviewIsNotFound(),
-        new Prereviews.PrereviewIsUnavailable({}),
-        new Prereviews.PrereviewWasRemoved(),
+        new PreprintReviews.PrereviewIsNotFound(),
+        new PreprintReviews.PrereviewIsUnavailable({}),
+        new PreprintReviews.PrereviewWasRemoved(),
       ),
     ],
     ([publicUrl, sendCoarNotifyMessages, reviewId, error]) =>

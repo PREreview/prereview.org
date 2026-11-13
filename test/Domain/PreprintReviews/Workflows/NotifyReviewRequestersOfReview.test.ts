@@ -4,7 +4,6 @@ import { Email } from '../../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/Workflows/NotifyReviewRequestersOfReview.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
-import * as Prereviews from '../../../../src/Domain/Prereviews/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as fc from '../../../fc.ts'
 
@@ -93,9 +92,9 @@ describe('NotifyReviewRequestersOfReview', () => {
     [
       fc.integer(),
       fc.constantFrom(
-        new Prereviews.PrereviewIsNotFound(),
-        new Prereviews.PrereviewIsUnavailable({}),
-        new Prereviews.PrereviewWasRemoved(),
+        new PreprintReviews.PrereviewIsNotFound(),
+        new PreprintReviews.PrereviewIsUnavailable({}),
+        new PreprintReviews.PrereviewWasRemoved(),
       ),
     ],
     ([reviewId, error]) =>

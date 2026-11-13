@@ -3,7 +3,6 @@ import { Effect, Result, Layer } from 'effect'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
-import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -158,7 +157,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
             Layer.mock(PreprintReviews.PreprintReviews, {
-              getPreprintReview: () => new Prereviews.PrereviewWasRemoved(),
+              getPreprintReview: () => new PreprintReviews.PrereviewWasRemoved(),
             }),
           ),
           Effect.provideService(LoggedInUser, user),
@@ -216,7 +215,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
             Layer.mock(PreprintReviews.PreprintReviews, {
-              getPreprintReview: () => new Prereviews.PrereviewIsNotFound(),
+              getPreprintReview: () => new PreprintReviews.PrereviewIsNotFound(),
             }),
           ),
           Effect.provideService(LoggedInUser, user),
@@ -246,7 +245,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
             Layer.mock(PreprintReviews.PreprintReviews, {
-              getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}),
+              getPreprintReview: () => new PreprintReviews.PrereviewIsUnavailable({}),
             }),
           ),
           Effect.provideService(LoggedInUser, user),
