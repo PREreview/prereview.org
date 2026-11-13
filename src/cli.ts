@@ -9,11 +9,12 @@ import * as ContactEmailAddresses from './Domain/ContactEmailAddresses/index.ts'
 import * as DatasetReviews from './Domain/DatasetReviews/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
-import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
+import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
+import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as Redis from './Redis.ts'
 import * as ReviewRequest from './Domain/ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
@@ -46,6 +47,7 @@ pipe(
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),
+        Layer.mock(Prereviews.WasPrereviewRemoved, {}),
         Layer.provide(
           Layer.mergeAll(AuthorInviteStore.layer, PreprintReviews.FormStore.layer),
           Redis.layerPersistenceFromDataStore,
@@ -78,6 +80,10 @@ pipe(
             origin: Config.withDefault(Config.URL('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
             token: Config.option(Config.Redacted('ORCID_API_READ_PUBLIC_TOKEN')),
           }),
+        ),
+        Layer.effect(
+          Zenodo.ZenodoApi,
+          Config.all({ key: Config.Redacted('ZENODO_API_KEY'), origin: Config.URL('ZENODO_URL') }),
         ),
         PgClient.layerConfig({
           url: Config.Redacted('POSTGRES_URL'),
