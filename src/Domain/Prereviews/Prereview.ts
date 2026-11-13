@@ -3,14 +3,12 @@ import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { ClubName } from '../Clubs/index.ts'
 import type * as Datasets from '../Datasets/index.ts'
-import type { Html } from '../../html.ts'
 import type * as Preprints from '../Preprints/index.ts'
 import type * as Prereviewers from '../Prereviewers/index.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { FieldId } from '../../types/field.ts'
 import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import type { Name } from '../../types/Name.ts'
-import type { OrcidId } from '../../types/OrcidId.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
 
 export interface RecentPrereviews {
@@ -45,17 +43,6 @@ export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrere
   id: Uuid.Uuid
   published: Temporal.PlainDate
 }> {}
-
-export interface PreprintPrereview {
-  authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
-    anonymous: number
-  }
-  club?: ClubName
-  id: number
-  language?: LanguageCode
-  text: Html
-}
 
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
 
