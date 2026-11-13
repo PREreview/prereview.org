@@ -6,7 +6,7 @@ import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../FeatureFlags.ts'
-import type { IndeterminatePreprintId, Preprints } from '../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId, Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Prereviews from '../Prereviews/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -38,6 +38,9 @@ export interface RapidPrereview {
 export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
+    getForPreprint: (
+      id: PreprintId,
+    ) => Effect.Effect<ReadonlyArray<Prereviews.PreprintPrereview>, Prereviews.PrereviewsAreUnavailable>
     getPreprintReview: (
       id: number,
     ) => Effect.Effect<
@@ -75,6 +78,9 @@ export class PreprintReviews extends Context.Service<
     importPreprintReview: Commands.FromCommand<typeof ImportPreprintReview>
   }
 >()('PreprintReviews') {}
+
+export const getForPreprint = (...args: Parameters<(typeof PreprintReviews.Service)['getForPreprint']>) =>
+  PreprintReviews.use(service => service.getForPreprint(...args))
 
 export const getPreprintReview = (...args: Parameters<(typeof PreprintReviews.Service)['getPreprintReview']>) =>
   PreprintReviews.use(service => service.getPreprintReview(...args))
@@ -166,6 +172,22 @@ export const layer = Layer.effect(
     }, Effect.provide(context))
 
     return {
+      getForPreprint: Effect.fn('PreprintReviews.getForPreprint')(
+        function* (id) {
+          yield* Effect.annotateCurrentSpan({ id })
+
+          const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
+            fetch,
+            getClubByName,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
+            ...loggerEnv,
+          })
+        },
+        Effect.mapError(() => new Prereviews.PrereviewsAreUnavailable()),
+      ),
       getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
       getRapidPrereviewsForAPreprint: id =>
         pipe(
