@@ -1,6 +1,6 @@
 import { Array, Effect } from 'effect'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
-import * as Prereviews from '../../../Prereviews/index.ts'
+import * as Prereviews from '../../Prereviews/index.ts'
 import * as PublicUrl from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
 import * as Errors from '../Errors.ts'

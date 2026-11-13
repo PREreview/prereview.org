@@ -8,7 +8,7 @@ import {
   type PrereviewIsUnavailable,
   type PrereviewWasRemoved,
   Prereviews,
-} from '../../../Prereviews/index.ts'
+} from '../../../Domain/Prereviews/index.ts'
 import type { DynamicEmbedder } from '../DynamicEmbedder.ts'
 import { BlockContentToHtml, RequiredJs } from '../RichText.ts'
 import { ContentfulPage } from '../Types.ts'

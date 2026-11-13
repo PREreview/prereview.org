@@ -9,7 +9,7 @@ import {
   PseudonymNotInUse,
 } from '../../../src/Domain/Prereviewers/IsPseudonymInUse.ts'
 import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
-import * as Prereviews from '../../../src/Prereviews/index.ts'
+import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/profile-page/index.ts'
 import { plainText } from '../../../src/html.ts'

@@ -1,4 +1,4 @@
-import { RecentDatasetPrereview, RecentPreprintPrereview } from '../../../src/Prereviews/Prereview.ts'
+import { RecentDatasetPrereview, RecentPreprintPrereview } from '../../../src/Domain/Prereviews/Prereview.ts'
 import type { Prereview } from '../../../src/WebApp/my-prereviews-page/prereviews.ts'
 import * as fc from '../../fc.ts'
 

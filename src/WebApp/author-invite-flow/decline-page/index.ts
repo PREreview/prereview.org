@@ -11,7 +11,7 @@ import {
   saveAuthorInvite,
 } from '../../../author-invite.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import type { Prereview } from '../../../Prereviews/index.ts'
+import type { Prereview } from '../../../Domain/Prereviews/index.ts'
 import { authorInviteDeclineMatch } from '../../../routes.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -24,7 +24,7 @@ import {
 import { declinePage } from './decline-page.ts'
 import { inviteDeclinedPage } from './invite-declined-page.ts'
 
-export type { Prereview } from '../../../Prereviews/index.ts'
+export type { Prereview } from '../../../Domain/Prereviews/index.ts'
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>

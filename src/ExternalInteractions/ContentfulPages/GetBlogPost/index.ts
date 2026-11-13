@@ -6,7 +6,7 @@ import {
   LinkContext,
   UsePreviewApi,
 } from '../../../ExternalApis/Contentful/index.ts'
-import type { Prereviews } from '../../../Prereviews/index.ts'
+import type { Prereviews } from '../../../Domain/Prereviews/index.ts'
 import { UnableToQuery } from '../../../Queries.ts'
 import type { Slug } from '../../../types/Slug.ts'
 import { EntryToContentfulBlogPost } from './EntryToContentfulBlogPost.ts'

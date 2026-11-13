@@ -14,7 +14,7 @@ import type {
   PrereviewIsUnavailable,
   PrereviewWasRemoved,
   Prereviews,
-} from '../../../Prereviews/index.ts'
+} from '../../../Domain/Prereviews/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantFromSelfSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'

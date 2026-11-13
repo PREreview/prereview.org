@@ -1,7 +1,7 @@
 import { Array, Boolean, Effect, Option, pipe } from 'effect'
 import { Email } from '../../../ExternalInteractions/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import * as Prereviews from '../../../Prereviews/index.ts'
+import * as Prereviews from '../../Prereviews/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { Temporal } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'

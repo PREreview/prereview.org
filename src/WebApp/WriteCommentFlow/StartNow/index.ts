@@ -1,7 +1,7 @@
 import { Effect, Match, pipe } from 'effect'
 import * as Comments from '../../../Domain/Comments/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Prereviews from '../../../Prereviews/index.ts'
+import * as Prereviews from '../../../Domain/Prereviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'

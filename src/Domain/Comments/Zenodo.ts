@@ -6,7 +6,7 @@ import * as FetchHttpClient from '../../FetchHttpClient.ts'
 import { html } from '../../html.ts'
 import { DefaultLocale, translate } from '../../locales/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
-import * as Prereviews from '../../Prereviews/index.ts'
+import * as Prereviews from '../Prereviews/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import {

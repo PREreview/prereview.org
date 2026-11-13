@@ -1,7 +1,7 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Locale } from '../../Context.ts'
 import type { Contentful } from '../../ExternalApis/Contentful/index.ts'
-import type { Prereviews } from '../../Prereviews/index.ts'
+import type { Prereviews } from '../../Domain/Prereviews/index.ts'
 import { DynamicEmbedder } from './DynamicEmbedder.ts'
 import { GetBlogPost } from './GetBlogPost/index.ts'
 import { GetPage } from './GetPage/index.ts'

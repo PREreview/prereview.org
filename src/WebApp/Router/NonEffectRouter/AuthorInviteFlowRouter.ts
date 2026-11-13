@@ -7,7 +7,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Prereviews from '../../../Prereviews/index.ts'
+import * as Prereviews from '../../../Domain/Prereviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import {

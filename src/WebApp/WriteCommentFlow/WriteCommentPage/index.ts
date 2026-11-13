@@ -1,6 +1,6 @@
 import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as Prereviews from '../../../Prereviews/index.ts'
+import * as Prereviews from '../../../Domain/Prereviews/index.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'

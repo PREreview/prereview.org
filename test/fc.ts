@@ -122,7 +122,7 @@ import type {
   ResearchInterests,
 } from '../src/Domain/Prereviewers/index.ts'
 import * as Prereviewers from '../src/Domain/Prereviewers/index.ts'
-import { Prereview } from '../src/Prereviews/index.ts'
+import { Prereview } from '../src/Domain/Prereviews/index.ts'
 import * as ReviewRequests from '../src/Domain/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'

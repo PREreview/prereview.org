@@ -1,7 +1,7 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Effect, identity, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
-import * as Prereviews from '../../../src/Prereviews/index.ts'
+import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'

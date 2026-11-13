@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { RecentDatasetPrereview, RecentPreprintPrereview } from '../../Prereviews/index.ts'
+import type { RecentDatasetPrereview, RecentPreprintPrereview } from '../../Domain/Prereviews/index.ts'
 import type { ProfileId } from '../../types/profile-id.ts'
 
 export type Prereviews = ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>
