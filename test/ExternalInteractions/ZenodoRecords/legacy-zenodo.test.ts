@@ -27,6 +27,7 @@ import type { ClubName } from '../../../src/Domain/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
 import type { NewPrereview } from '../../../src/Domain/PreprintReviews/index.ts'
+import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import type * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
@@ -834,7 +835,7 @@ describe('getPrereviewFromZenodo', () => {
 
         expect(actual).toStrictEqual(
           E.right(
-            new Prereviews.Prereview({
+            new PreprintReviews.Prereview({
               addendum: rawHtml('<p>Some note.</p>'),
               authors: { named: [{ name: Name('PREreviewer') }], anonymous: expectedAnonymous },
               club,
@@ -877,7 +878,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
       )
 
-      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewWasRemoved()))
+      expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewWasRemoved()))
     }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
@@ -906,7 +907,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+        expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsNotFound()))
       }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
@@ -975,7 +976,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
+        expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsUnavailable({})))
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
@@ -1000,7 +1001,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
       )
 
-      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
+      expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsUnavailable({})))
       expect(fetch.callHistory.done()).toBeTruthy()
     }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
@@ -1075,8 +1076,8 @@ describe('getPrereviewFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.left(
             error._tag === 'PreprintIsNotFound'
-              ? new Prereviews.PrereviewIsNotFound()
-              : new Prereviews.PrereviewIsUnavailable({}),
+              ? new PreprintReviews.PrereviewIsNotFound()
+              : new PreprintReviews.PrereviewIsUnavailable({}),
           ),
         )
         expect(fetch.callHistory.done()).toBeTruthy()
@@ -1146,7 +1147,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
       )
 
-      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+      expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsNotFound()))
     }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
@@ -1212,7 +1213,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
       )
 
-      expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+      expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsNotFound()))
     }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
@@ -1305,7 +1306,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+        expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsNotFound()))
       }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
@@ -1373,7 +1374,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable({})))
+        expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsUnavailable({})))
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
@@ -1444,7 +1445,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+        expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsNotFound()))
       }).pipe(Effect.provide(Layer.mock(Preprints, {}))),
   )
 
@@ -1517,7 +1518,7 @@ describe('getPrereviewFromZenodo', () => {
           }),
         )
 
-        expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
+        expect(actual).toStrictEqual(E.left(new PreprintReviews.PrereviewIsNotFound()))
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(Effect.provide(Layer.mock(Preprints, { getPreprint: () => Effect.succeed(preprint) }))),
   )
