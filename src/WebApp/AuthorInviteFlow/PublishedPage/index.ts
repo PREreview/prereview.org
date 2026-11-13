@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { AuthorInvites } from '../../../AuthorInvites/index.ts'
+import { AuthorInvites } from '../../../Domain/AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/Uuid.ts'

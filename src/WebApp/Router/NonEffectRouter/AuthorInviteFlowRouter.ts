@@ -22,7 +22,7 @@ import {
 } from '../../author-invite-flow/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
-import { AuthorInvites } from '../../../AuthorInvites/index.ts'
+import { AuthorInvites } from '../../../Domain/AuthorInvites/index.ts'
 import { matchPersona } from '../../../Prereviewers/index.ts'
 
 export const AuthorInviteFlowRouter = pipe(

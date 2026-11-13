@@ -1,6 +1,6 @@
 import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
-import { AuthorInvites } from '../../../AuthorInvites/index.ts'
+import { AuthorInvites } from '../../../Domain/AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'

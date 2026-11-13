@@ -57,7 +57,7 @@ import { DataRouter } from './DataRouter.ts'
 import { withLegacyReadErrors } from './LegacyStoreErrors.ts'
 import { MyDetailsRouter } from './MyDetailsRouter.ts'
 import { WriteReviewRouter } from './WriteReviewRouter.ts'
-import type { AuthorInvites } from '../../../AuthorInvites/index.ts'
+import type { AuthorInvites } from '../../../Domain/AuthorInvites/index.ts'
 
 export const nonEffectRouter: Effect.Effect<
   HttpServerResponse.HttpServerResponse,

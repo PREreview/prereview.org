@@ -1,0 +1,93 @@
+import { expect, test } from '../../vitest.ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { Result, Option } from 'effect'
+import * as _ from '../../../src/Domain/AuthorInvites/AcceptInvite.ts'
+import * as Events from '../../../src/Events.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Uuid } from '../../../src/types/Uuid.ts'
+
+const input = {
+  invitationId: Uuid('4ecba4c3-f0f7-4631-8011-58e7a0a62e6a'),
+  reviewId: Uuid('aa39be59-6e33-4756-a4c9-109a152a6fc5'),
+  orcidId: OrcidId('0000-0002-1825-0097'),
+  acceptedAt: Temporal.Now.instant(),
+} satisfies _.Input
+
+const inputWithDifferentInvitationId = {
+  ...input,
+  invitationId: Uuid('305d1af0-d946-4827-9610-e16d232b4066'),
+} satisfies _.Input
+
+const inputWithDifferentReviewId = {
+  ...input,
+  reviewId: Uuid('d018a230-7b94-49de-9a16-270fe5b22cc7'),
+} satisfies _.Input
+
+const inputWithDifferentOrcidId = {
+  ...input,
+  orcidId: OrcidId('0000-0002-6109-0367'),
+} satisfies _.Input
+
+const authorAdded = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId: input.reviewId,
+  invitationId: input.invitationId,
+  contactDetails: Option.none(),
+})
+
+const authorRemoved = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+  datasetReviewId: input.reviewId,
+  invitationId: input.invitationId,
+})
+
+const inviteAccepted = new Events.AuthorInviteAccepted(input)
+
+const publicationRequested = new Events.PublicationOfDatasetReviewWasRequested({ datasetReviewId: input.reviewId })
+
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
+  ['no events', [], input, Result.fail(new _.InvitationNotFound())],
+  [
+    'author added, publication requested',
+    [authorAdded, publicationRequested],
+    input,
+    Result.succeed(Option.some(new Events.AuthorInviteAccepted(input))),
+  ],
+  [
+    'author added, publication requested, different invitation ID',
+    [authorAdded, publicationRequested],
+    inputWithDifferentInvitationId,
+    Result.fail(new _.InvitationNotFound()),
+  ],
+  [
+    'author added, publication requested, different review ID',
+    [authorAdded, publicationRequested],
+    inputWithDifferentReviewId,
+    Result.fail(new _.InvitationNotFound()),
+  ],
+  [
+    'author added then removed, publication requested',
+    [authorAdded, authorRemoved, publicationRequested],
+    input,
+    Result.fail(new _.InvitationNotFound()),
+  ],
+  ['author added, publication not requested', [authorAdded], input, Result.fail(new _.InvitationNotFound())],
+  [
+    'invite has been accepted',
+    [authorAdded, publicationRequested, inviteAccepted],
+    input,
+    Result.succeed(Option.none()),
+  ],
+  [
+    'invite has been accepted by a different PREreviewer',
+    [authorAdded, publicationRequested, inviteAccepted],
+    inputWithDifferentOrcidId,
+    Result.fail(new _.InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer()),
+  ],
+])('%s', (_name, events, input, expected) => {
+  const { foldState, decide } = _.AcceptInvite
+
+  const state = foldState(events, input)
+
+  const actual = decide(state, input)
+
+  expect(actual).toStrictEqual(expected)
+})

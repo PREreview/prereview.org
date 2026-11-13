@@ -1,4 +1,4 @@
-import type * as AuthorInvites from '../../AuthorInvites/index.ts'
+import type * as AuthorInvites from '../../Domain/AuthorInvites/index.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 

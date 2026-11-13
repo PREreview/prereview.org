@@ -1,0 +1,47 @@
+import { Schema } from 'effect'
+import { OrcidId, Temporal, Uuid } from '../../types/index.ts'
+
+export class EmailToInviteAuthorSent extends Schema.TaggedClass<EmailToInviteAuthorSent>()('EmailToInviteAuthorSent', {
+  invitationId: Uuid.UuidSchema,
+  sentAt: Temporal.InstantSchema,
+}) {}
+
+export class AuthorInviteAccepted extends Schema.TaggedClass<AuthorInviteAccepted>()('AuthorInviteAccepted', {
+  invitationId: Uuid.UuidSchema,
+  reviewId: Uuid.UuidSchema,
+  orcidId: OrcidId.OrcidIdSchema,
+  acceptedAt: Temporal.InstantSchema,
+}) {}
+
+export class PersonaForAReviewChosen extends Schema.TaggedClass<PersonaForAReviewChosen>()('PersonaForAReviewChosen', {
+  reviewId: Uuid.UuidSchema,
+  orcidId: OrcidId.OrcidIdSchema,
+  persona: Schema.Literals(['public', 'pseudonym']),
+}) {}
+
+export class AuthorChoicesForAReviewConfirmed extends Schema.TaggedClass<AuthorChoicesForAReviewConfirmed>()(
+  'AuthorChoicesForAReviewConfirmed',
+  {
+    reviewId: Uuid.UuidSchema,
+    orcidId: OrcidId.OrcidIdSchema,
+    confirmedAt: Temporal.InstantSchema,
+  },
+) {}
+
+export class AuthorChoicesForAReviewImported extends Schema.TaggedClass<AuthorChoicesForAReviewImported>()(
+  'AuthorChoicesForAReviewImported',
+  {
+    reviewId: Schema.Int,
+    orcidId: OrcidId.OrcidIdSchema,
+    persona: Schema.Literals(['public', 'pseudonym']),
+    confirmedAt: Temporal.InstantSchema,
+  },
+) {}
+
+export const AuthorInviteEvent = Schema.Union([
+  EmailToInviteAuthorSent,
+  AuthorInviteAccepted,
+  PersonaForAReviewChosen,
+  AuthorChoicesForAReviewImported,
+  AuthorChoicesForAReviewConfirmed,
+])
