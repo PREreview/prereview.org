@@ -3,7 +3,7 @@ import { Effect, Result } from 'effect'
 import * as FormStore from '../../../src/Domain/PreprintReviews/FormStore.ts'
 import * as _ from '../../../src/Domain/PreprintReviews/GetNextExpectedCommand.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../../src/Domain/PreprintReviews/index.ts'
-import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 

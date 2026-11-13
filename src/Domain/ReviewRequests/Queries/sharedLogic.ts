@@ -1,7 +1,7 @@
 import { Array, HashMap, Match } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../../Events.ts'
-import type * as Preprints from '../../../Preprints/index.ts'
+import type * as Preprints from '../../Preprints/index.ts'
 import type { DomainId } from '../../../types/domain.ts'
 import type { FieldId } from '../../../types/field.ts'
 import type { OrcidId, Temporal, Uuid } from '../../../types/index.ts'

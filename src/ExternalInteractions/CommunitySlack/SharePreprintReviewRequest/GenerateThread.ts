@@ -1,6 +1,6 @@
 import { LanguageModel } from 'effect/ai'
 import { Array, Boolean, Data, Effect, Match, Option, pipe, Schema, Struct } from 'effect'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import { renderDateString } from '../../../time.ts'
 
 import { Doi, type NonEmptyString } from '../../../types/index.ts'

@@ -28,7 +28,7 @@ import {
   type PreprintTitle,
   type Preprints,
   getPreprintTitle,
-} from '../../../Preprints/index.ts'
+} from '../../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'

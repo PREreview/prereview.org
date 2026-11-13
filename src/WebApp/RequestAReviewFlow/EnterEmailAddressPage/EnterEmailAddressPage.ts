@@ -1,7 +1,7 @@
 import { Result, Match, pipe } from 'effect'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId } from '../../../Domain/Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'

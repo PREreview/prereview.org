@@ -1,4 +1,8 @@
-import type { IndeterminatePreprintId, LifecycleJournalPreprintId, PreprintId } from '../../../Preprints/index.ts'
+import type {
+  IndeterminatePreprintId,
+  LifecycleJournalPreprintId,
+  PreprintId,
+} from '../../../Domain/Preprints/index.ts'
 import { Doi } from '../../../types/index.ts'
 
 const crossrefDoiPrefixes = [

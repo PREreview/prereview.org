@@ -1,6 +1,6 @@
 import { Array, Data, Result, HashMap, Match, Option, Schema } from 'effect'
 import * as Events from '../../../Events.ts'
-import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'

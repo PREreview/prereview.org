@@ -1,7 +1,7 @@
 import { Match } from 'effect'
 import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId } from '../../../Domain/Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'

@@ -1,5 +1,5 @@
 import { Array, Record } from 'effect'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import type { Registrant } from '../../types/Doi.ts'
 

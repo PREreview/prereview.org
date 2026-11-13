@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { Doi } from '../../../src/types/Doi.ts'

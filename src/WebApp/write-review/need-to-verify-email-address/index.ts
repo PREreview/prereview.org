@@ -12,7 +12,7 @@ import {
   type IndeterminatePreprintId,
   type Preprints,
   type PreprintTitle,
-} from '../../../Preprints/index.ts'
+} from '../../../Domain/Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,

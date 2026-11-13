@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Tuple } from 'effect'
 import * as Datasets from '../src/Domain/Datasets/index.ts'
 import * as _ from '../src/Events.ts'
-import * as Preprints from '../src/Preprints/index.ts'
+import * as Preprints from '../src/Domain/Preprints/index.ts'
 import { Doi, OrcidId, Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
 

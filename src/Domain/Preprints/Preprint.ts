@@ -1,9 +1,9 @@
 import { type Array, Data, identity, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.ts'
-import type { PartialDate } from '../time.ts'
-import type { Name } from '../types/Name.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
+import type { Html } from '../../html.ts'
+import type { PartialDate } from '../../time.ts'
+import type { Name } from '../../types/Name.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
 import type { PreprintId } from './PreprintId.ts'
 
 export interface Preprint {

@@ -21,7 +21,7 @@ import {
   type PreprintTitle,
   type Preprints,
   getPreprint,
-} from '../../../Preprints/index.ts'
+} from '../../../Domain/Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'

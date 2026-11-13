@@ -2,8 +2,12 @@ import { HttpRouter, HttpServerError, HttpServerRequest } from 'effect/http'
 import { Array, Effect, pipe, Schema, SchemaTransformation } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../Context.ts'
-import * as Preprints from '../../Preprints/index.ts'
-import { ArxivPreprintId, BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
+import {
+  ArxivPreprintId,
+  BiorxivOrMedrxivPreprintId,
+  ZenodoOrAfricarxivPreprintId,
+} from '../../Domain/Preprints/index.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { Doi } from '../../types/Doi.ts'

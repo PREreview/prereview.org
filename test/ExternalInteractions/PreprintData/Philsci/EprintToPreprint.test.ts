@@ -5,7 +5,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Philsci } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Philsci/EprintToPreprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
-import { PhilsciPreprintId, Preprint } from '../../../../src/Preprints/index.ts'
+import { PhilsciPreprintId, Preprint } from '../../../../src/Domain/Preprints/index.ts'
 import { OrcidId } from '../../../../src/types/index.ts'
 import { Name } from '../../../../src/types/Name.ts'
 

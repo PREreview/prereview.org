@@ -1,6 +1,6 @@
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
+import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { publishedPage } from '../../src/WebApp/write-review/published-page/published-page.ts'
 import type { PublishedReview } from '../../src/WebApp/write-review/published-review.ts'

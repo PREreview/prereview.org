@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import { v4 } from 'uuid'
-import { BiorxivPreprintId } from '../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../src/Domain/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { Doi } from '../src/types/Doi.ts'

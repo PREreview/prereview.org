@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/PublishedPage/PublishedPage.ts'
 import { expect, test } from '../../base.ts'

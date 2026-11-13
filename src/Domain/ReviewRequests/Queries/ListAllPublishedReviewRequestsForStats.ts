@@ -1,5 +1,5 @@
 import { Array, Result, flow, HashMap, Schema } from 'effect'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
 import { DomainIdSchema } from '../../../types/domain.ts'
 import { FieldIdSchema } from '../../../types/field.ts'

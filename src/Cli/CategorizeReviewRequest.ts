@@ -1,7 +1,7 @@
 import { Argument, Command, Flag } from 'effect/cli'
 import { Console, Effect, pipe } from 'effect'
 import { OpenAlexWorks } from '../ExternalInteractions/index.ts'
-import * as Preprints from '../Preprints/index.ts'
+import * as Preprints from '../Domain/Preprints/index.ts'
 import * as ReviewRequests from '../Domain/ReviewRequests/index.ts'
 import { Uuid } from '../types/index.ts'
 

@@ -10,7 +10,7 @@ import type { OrcidId } from '../types/OrcidId.ts'
 import { OrderInstant } from '../types/Temporal.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import type { Tokenizer } from '@huggingface/tokenizers'
-import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../Preprints/index.ts'
+import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../Domain/Preprints/index.ts'
 
 export interface WorkWithRequest {
   preprintId: IndeterminatePreprintId

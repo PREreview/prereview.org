@@ -1,7 +1,7 @@
 import { Effect, Layer, Option } from 'effect'
 import * as _ from '../../src/ExternalInteractions/Email/NotifyRequesterOfReview/CreateEmail.ts'
 import { html } from '../../src/html.ts'
-import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../../src/Domain/Preprints/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'

@@ -1,7 +1,7 @@
 import { Result, Option } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import * as UseOfAiForm from '../../../src/WebApp/ReviewAPreprintFlow/UseOfAiPage/UseOfAiForm.ts'

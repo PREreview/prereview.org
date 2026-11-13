@@ -18,7 +18,7 @@ import {
   FormStore,
   type PublishPrereviewEnv,
 } from '../../../src/Domain/PreprintReviews/index.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'

@@ -1,6 +1,6 @@
 import { Array, Data, Effect, Match, pipe, Schema, Filter } from 'effect'
 import { OpenAlex } from '../../../ExternalApis/index.ts'
-import type * as Preprints from '../../../Preprints/index.ts'
+import type * as Preprints from '../../../Domain/Preprints/index.ts'
 import { KeywordIdFromOpenAlexUrlSchema, type KeywordId } from '../../../types/Keyword.ts'
 import { TopicIdFromOpenAlexUrlSchema, type TopicId } from '../../../types/Topic.ts'
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { FormC, formKey, FormStore } from '../../../src/Domain/PreprintReviews/index.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import {
   writeReviewMatch,
   writeReviewPublishMatch,

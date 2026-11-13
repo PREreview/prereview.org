@@ -1,7 +1,7 @@
 import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Result, Layer, pipe } from 'effect'
 import { OpenAlexWorks } from '../../../../src/ExternalInteractions/index.ts'
-import * as Preprints from '../../../../src/Preprints/index.ts'
+import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as Queries from '../../../../src/Queries.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Workflows/CategorizeReviewRequest.ts'

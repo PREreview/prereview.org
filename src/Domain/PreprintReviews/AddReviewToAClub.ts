@@ -1,6 +1,6 @@
 import { Array, Effect, pipe } from 'effect'
 import { UnableToHandleCommand } from '../../Commands.ts'
-import type { PreprintId } from '../../Preprints/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import * as Errors from './Errors.ts'

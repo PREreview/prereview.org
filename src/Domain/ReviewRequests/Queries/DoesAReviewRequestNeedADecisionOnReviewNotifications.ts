@@ -1,6 +1,6 @@
 import { Array, Result, HashMap, HashSet, Match, Schema } from 'effect'
 import * as Events from '../../../Events.ts'
-import { type IndeterminatePreprintId, IndeterminatePreprintIdFromStringSchema } from '../../../Preprints/index.ts'
+import { type IndeterminatePreprintId, IndeterminatePreprintIdFromStringSchema } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Uuid } from '../../../types/Uuid.ts'

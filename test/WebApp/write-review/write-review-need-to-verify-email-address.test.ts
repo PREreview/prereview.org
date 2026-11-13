@@ -7,7 +7,7 @@ import {
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import { FormC, formKey, FormStore } from '../../../src/Domain/PreprintReviews/index.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,

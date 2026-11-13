@@ -14,7 +14,7 @@ import {
   PreprintIsNotFound,
   PreprintIsUnavailable,
   Preprints,
-} from '../../../src/Preprints/index.ts'
+} from '../../../src/Domain/Preprints/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/review-a-preprint-page/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'

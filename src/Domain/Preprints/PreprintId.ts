@@ -19,7 +19,7 @@ import {
 } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import { Doi } from '../types/index.ts'
+import { Doi } from '../../types/index.ts'
 
 const NumberFromStringSchema = Schema.String.pipe(
   Schema.decodeTo(Schema.Number, {

@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
 import { Locale } from '../../Context.ts'
-import { ServerNames } from '../../Preprints/index.ts'
+import { ServerNames } from '../../Domain/Preprints/index.ts'
 import * as Prereviews from '../../Domain/Prereviews/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'

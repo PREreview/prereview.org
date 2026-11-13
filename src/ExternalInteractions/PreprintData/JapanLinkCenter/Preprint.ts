@@ -1,7 +1,7 @@
 import { Array, Result, Option, pipe } from 'effect'
 import type { JapanLinkCenter } from '../../../ExternalApis/index.ts'
 import { html } from '../../../html.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import { Name } from '../../../types/Name.ts'
 import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.ts'
 

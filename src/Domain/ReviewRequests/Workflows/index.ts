@@ -1,6 +1,6 @@
 import { Activity, DurableClock, Workflow } from 'effect/workflow'
 import { Duration, Effect, Inspectable, Layer, pipe, Schema, Struct } from 'effect'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'

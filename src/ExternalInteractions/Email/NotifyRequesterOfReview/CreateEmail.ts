@@ -1,7 +1,7 @@
 import { Effect, Option } from 'effect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
-import type * as Preprints from '../../../Preprints/index.ts'
+import type * as Preprints from '../../../Domain/Preprints/index.ts'
 import { forRoute, type PublicUrl } from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
 import { EmailAddress, type Name } from '../../../types/index.ts'

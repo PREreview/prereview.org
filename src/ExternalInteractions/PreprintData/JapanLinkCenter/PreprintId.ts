@@ -1,4 +1,4 @@
-import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../../Domain/Preprints/index.ts'
 import { Doi } from '../../../types/index.ts'
 
 const japanLinkCenterDoiPrefixes = ['51094'] as const

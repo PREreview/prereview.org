@@ -1,7 +1,7 @@
 import { Result, flow, Function, pipe, Schema, Tuple, SchemaTransformation } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import { type Name, Doi, Temporal } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'

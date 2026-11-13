@@ -13,7 +13,7 @@ import {
   PreprintIsUnavailable,
   Preprints,
   type PreprintTitle,
-} from '../../../../src/Preprints/index.ts'
+} from '../../../../src/Domain/Preprints/index.ts'
 import { UnableToQuery } from '../../../../src/Queries.ts'
 import * as Routes from '../../../../src/routes.ts'
 import { Doi } from '../../../../src/types/Doi.ts'

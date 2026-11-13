@@ -1,6 +1,6 @@
 import { Effect, pipe, flow } from 'effect'
 import { JapanLinkCenter } from '../../../ExternalApis/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import { recordToPreprint } from './Preprint.ts'
 import type { JapanLinkCenterPreprintId } from './PreprintId.ts'
 

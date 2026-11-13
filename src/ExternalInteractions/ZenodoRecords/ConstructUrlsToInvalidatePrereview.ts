@@ -1,7 +1,7 @@
 import { Url, UrlParams } from 'effect/http'
 import { Effect } from 'effect'
 import { Zenodo } from '../../ExternalApis/index.ts'
-import type { PreprintId } from '../../Preprints/index.ts'
+import type { PreprintId } from '../../Domain/Preprints/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import type { OrcidId, Pseudonym } from '../../types/index.ts'
 import { toExternalIdentifier } from './legacy-zenodo.ts'

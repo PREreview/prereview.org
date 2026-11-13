@@ -1,6 +1,6 @@
 import { Array, Schema } from 'effect'
 import { Slack } from '../../ExternalApis/index.ts'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../Preprints/index.ts'
 import { SensitiveData } from '../../SensitiveData.ts'
 import { EmailAddress, Iso639, Name, OrcidId, SciProfilesId, Temporal, Uuid } from '../../types/index.ts'
 import { KeywordIdSchema } from '../../types/Keyword.ts'

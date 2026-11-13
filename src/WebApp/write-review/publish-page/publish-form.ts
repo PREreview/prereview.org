@@ -11,8 +11,8 @@ import {
   getUseOfAi,
   type CompletedForm,
 } from '../../../Domain/PreprintReviews/index.ts'
-import type { PreprintTitle } from '../../../Preprints/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import type { PreprintTitle } from '../../../Domain/Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import {

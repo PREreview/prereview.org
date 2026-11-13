@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
-import * as Preprints from '../../../src/Preprints/index.ts'
+import * as Preprints from '../../../src/Domain/Preprints/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'

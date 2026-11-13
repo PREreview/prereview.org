@@ -9,7 +9,7 @@ import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetBlog
 import { Author, ContentfulBlogPost } from '../../../../src/ExternalInteractions/ContentfulPages/index.ts'
 import { html, rawHtml } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
-import { BiorxivPreprintId } from '../../../../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../../../../src/Domain/Preprints/index.ts'
 import * as Prereviews from '../../../../src/Domain/Prereviews/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'

@@ -6,7 +6,7 @@ import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type * as Prereviews from '../../Domain/Prereviews/index.ts'
 import * as Routes from '../../routes.ts'

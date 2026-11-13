@@ -18,7 +18,7 @@ import {
   PsychArchivesPreprintId,
   RadialPreprintId,
   ZenodoPreprintId,
-} from '../../../../src/Preprints/index.ts'
+} from '../../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'

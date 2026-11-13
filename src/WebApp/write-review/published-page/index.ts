@@ -10,7 +10,7 @@ import {
   type IndeterminatePreprintId,
   type Preprints,
   type PreprintTitle,
-} from '../../../Preprints/index.ts'
+} from '../../../Domain/Preprints/index.ts'
 import { toUrl, type PublicUrlEnv } from '../../../public-url.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { reviewMatch, writeReviewMatch } from '../../../routes.ts'

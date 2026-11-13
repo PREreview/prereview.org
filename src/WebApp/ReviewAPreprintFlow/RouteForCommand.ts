@@ -1,6 +1,6 @@
 import { format, type Match } from 'fp-ts-routing'
 import type * as PreprintReviews from '../../Domain/PreprintReviews/index.ts'
-import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../Domain/Preprints/index.ts'
 import * as Routes from '../../routes.ts'
 
 interface RouteToPreprintReview {

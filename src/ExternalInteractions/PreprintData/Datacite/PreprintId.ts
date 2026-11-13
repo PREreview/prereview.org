@@ -1,4 +1,8 @@
-import type { IndeterminatePreprintId, LifecycleJournalPreprintId, PreprintId } from '../../../Preprints/index.ts'
+import type {
+  IndeterminatePreprintId,
+  LifecycleJournalPreprintId,
+  PreprintId,
+} from '../../../Domain/Preprints/index.ts'
 import { Doi } from '../../../types/index.ts'
 
 const dataciteDoiPrefixes = ['5281', '6084', '17605', '23668', '48550', '57844', '60763', '82153'] as const

@@ -52,7 +52,7 @@ import type { ClubDetails, ClubName } from '../../Domain/Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import type { NewPrereview } from '../../Domain/PreprintReviews/index.ts'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
   type NotAPreprint,
@@ -62,7 +62,7 @@ import {
   type PreprintIsUnavailable,
   fromPreprintDoi,
   fromUrl,
-} from '../../Preprints/index.ts'
+} from '../../Domain/Preprints/index.ts'
 import type * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Prereview from '../../Domain/Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'

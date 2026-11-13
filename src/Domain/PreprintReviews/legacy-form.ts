@@ -6,7 +6,7 @@ import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../../html.ts'
-import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as Routes from '../../routes.ts'
 import {

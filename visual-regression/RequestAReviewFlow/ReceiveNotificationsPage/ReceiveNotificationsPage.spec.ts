@@ -1,6 +1,6 @@
 import { Result } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import * as ReceiveNotificationsForm from '../../../src/WebApp/RequestAReviewFlow/ReceiveNotificationsPage/ReceiveNotificationsForm.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/ReceiveNotificationsPage/ReceiveNotificationsPage.ts'

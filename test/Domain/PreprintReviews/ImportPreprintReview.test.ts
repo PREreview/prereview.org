@@ -7,7 +7,7 @@ import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
 import { Name } from '../../../src/types/Name.ts'
-import { BiorxivOrMedrxivPreprintId, BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { BiorxivOrMedrxivPreprintId, BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { html } from '../../../src/html.ts'
 
 const input = {

@@ -1,7 +1,7 @@
 import { Array, flow } from 'effect'
 import { type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import { ServerNames } from '../../../Preprints/index.ts'
+import { ServerNames } from '../../../Domain/Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'

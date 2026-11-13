@@ -2,7 +2,7 @@ import { Url } from 'effect/http'
 import { Array, Result } from 'effect'
 import type { Philsci } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml } from '../../../html.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import { Name } from '../../../types/Name.ts'
 
 export const EprintToPreprint = (eprint: Philsci.Eprint): Result.Result<Preprints.Preprint, Preprints.NotAPreprint> =>

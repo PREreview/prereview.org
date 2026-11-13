@@ -1,6 +1,6 @@
 import { Effect, Match, Option, pipe, Struct } from 'effect'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import type { Uuid } from '../../../types/index.ts'
 import * as Commands from '../Commands/index.ts'

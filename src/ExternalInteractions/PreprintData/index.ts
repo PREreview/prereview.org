@@ -1,6 +1,6 @@
 import { Array, Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
 import type { Crossref, Datacite, JapanLinkCenter, Philsci } from '../../ExternalApis/index.ts'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import type * as LanguageDetection from '../LanguageDetection/index.ts'
 import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.ts'
 import { getPreprintFromDatacite, isDatacitePreprintId } from './Datacite/index.ts'

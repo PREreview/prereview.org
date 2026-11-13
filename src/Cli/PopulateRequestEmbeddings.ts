@@ -2,7 +2,7 @@ import { Command } from 'effect/cli'
 import { Array, Effect, Console, Option, Filter } from 'effect'
 import { Embeddings } from '../Embeddings/index.ts'
 import { ReviewRequestQueries } from '../Domain/ReviewRequests/index.ts'
-import { Preprints } from '../Preprints/index.ts'
+import { Preprints } from '../Domain/Preprints/index.ts'
 
 const program = Effect.fnUntraced(function* () {
   const reviewRequestQueries = yield* ReviewRequestQueries

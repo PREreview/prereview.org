@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
 import { Crossref } from '../../../ExternalApis/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import type * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { workToPreprint } from './Preprint.ts'
 import type { IndeterminateCrossrefPreprintId } from './PreprintId.ts'

@@ -1,5 +1,5 @@
 import { Effect, Option, pipe, type Result } from 'effect'
-import type { PreprintId } from '../../Preprints/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
 import { UnableToQuery } from '../../Queries.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'

@@ -1,7 +1,7 @@
 import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Result, Layer, pipe } from 'effect'
 import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
-import * as Preprints from '../../../../src/Preprints/index.ts'
+import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import * as Queries from '../../../../src/Queries.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'

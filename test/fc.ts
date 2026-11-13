@@ -113,7 +113,7 @@ import {
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
   isPreprintDoi,
-} from '../src/Preprints/index.ts'
+} from '../src/Domain/Preprints/index.ts'
 import type {
   CareerStage,
   IsOpenForRequests,

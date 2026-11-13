@@ -1,7 +1,7 @@
 import { Array, Boolean, Result, Equal, HashMap, Match, Option, Order, Schema, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../../Events.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
 import { getRegistrant, type Registrant } from '../../../types/Doi.ts'
 import type { FieldId } from '../../../types/field.ts'

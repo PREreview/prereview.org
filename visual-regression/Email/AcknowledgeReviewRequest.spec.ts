@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import * as _ from '../../src/ExternalInteractions/Email/AcknowledgeReviewRequest/CreateEmail.ts'
 import { html } from '../../src/html.ts'
-import { BiorxivPreprintId, type PreprintTitle } from '../../src/Preprints/index.ts'
+import { BiorxivPreprintId, type PreprintTitle } from '../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'

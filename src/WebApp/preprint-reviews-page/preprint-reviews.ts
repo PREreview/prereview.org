@@ -6,7 +6,7 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../htm
 import { languageAttributesFor } from '../../Locales.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { RapidPrereview } from '../../Domain/PreprintReviews/index.ts'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type { PreprintPrereview } from '../../Domain/Prereviews/index.ts'
 import * as Routes from '../../routes.ts'

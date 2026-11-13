@@ -5,7 +5,7 @@ import { match, P } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type { PreprintTitle } from '../../../Preprints/index.ts'
+import type { PreprintTitle } from '../../../Domain/Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import {
   writeReviewAddAuthorsMatch,

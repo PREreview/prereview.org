@@ -5,14 +5,14 @@ import { encode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import type { Datacite } from '../../../ExternalApis/index.ts'
 import { type Html, sanitizeHtml } from '../../../html.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../../Domain/Preprints/index.ts'
 import {
   AfricarxivZenodoPreprintId,
   fromPreprintDoi,
   LifecycleJournalPreprintId,
   OsfPreprintId,
   ZenodoPreprintId,
-} from '../../../Preprints/index.ts'
+} from '../../../Domain/Preprints/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import { Iso639, OrcidId } from '../../../types/index.ts'
 import { Name } from '../../../types/Name.ts'

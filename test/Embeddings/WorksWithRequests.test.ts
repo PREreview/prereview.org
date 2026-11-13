@@ -10,7 +10,7 @@ import {
   BiorxivOrMedrxivPreprintId,
   type IndeterminatePreprintId,
   PhilsciPreprintId,
-} from '../../src/Preprints/index.ts'
+} from '../../src/Domain/Preprints/index.ts'
 import { Temporal } from '@js-temporal/polyfill'
 
 const biorxiv = (doi: `10.1101/${string}`) => new BiorxivOrMedrxivPreprintId({ value: Doi(doi) })

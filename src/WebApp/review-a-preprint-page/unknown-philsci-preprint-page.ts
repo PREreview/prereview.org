@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import type { PhilsciPreprintId } from '../../Preprints/index.ts'
+import type { PhilsciPreprintId } from '../../Domain/Preprints/index.ts'
 import { reviewAPreprintMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'

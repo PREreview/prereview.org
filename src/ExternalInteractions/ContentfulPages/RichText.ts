@@ -38,7 +38,7 @@ import {
 import { type Html, html, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { DefaultLocale, type SupportedLocale, translate } from '../../locales/index.ts'
-import * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../Domain/Prereviews/index.ts'
 import * as Routes from '../../routes.ts'

@@ -1,7 +1,7 @@
 import { expect, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Result, Option } from 'effect'
-import * as Preprints from '../../../../src/Preprints/index.ts'
+import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/GetPersonaChoice.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'

@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { PreprintId } from '../../../Preprints/index.ts'
+import type { PreprintId } from '../../../Domain/Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 

@@ -5,7 +5,7 @@ import { createMatchmakingPage } from './MatchmakingPage.ts'
 import { UrlParams } from 'effect/http'
 import * as Doi from '../../types/Doi.ts'
 import { PlainDate } from '../../types/Temporal.ts'
-import { Preprints } from '../../Preprints/index.ts'
+import { Preprints } from '../../Domain/Preprints/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 

@@ -2,7 +2,7 @@ import { pipe, type Array } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { PreprintTitle } from '../../../Preprints/index.ts'
+import type { PreprintTitle } from '../../../Domain/Preprints/index.ts'
 import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,

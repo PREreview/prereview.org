@@ -1,7 +1,7 @@
 import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
-import { type IndeterminatePreprintId, Preprints } from '../../../Preprints/index.ts'
+import { type IndeterminatePreprintId, Preprints } from '../../../Domain/Preprints/index.ts'
 import { Prereviewers } from '../../../Domain/Prereviewers/index.ts'
 import { ReviewRequestQueries } from '../../../Domain/ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'

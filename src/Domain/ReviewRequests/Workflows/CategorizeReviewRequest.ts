@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import { OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
-import * as Preprints from '../../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import type { Uuid } from '../../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'

@@ -1,7 +1,7 @@
 import { Array, Record, type Types } from 'effect'
-import type { CoarNotify } from '../ExternalApis/index.ts'
+import type { CoarNotify } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
-import { NonEmptyString } from '../types/NonEmptyString.ts'
+import { NonEmptyString } from '../../types/NonEmptyString.ts'
 
 const serverNames: Record<PreprintId['_tag'], NonEmptyString> = Record.map(
   {

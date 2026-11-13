@@ -1,5 +1,5 @@
 import { Effect, pipe, type Result } from 'effect'
-import type { PreprintId } from '../../Preprints/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
 import { UnableToQuery } from '../../Queries.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import * as Errors from './Errors.ts'

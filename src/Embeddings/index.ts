@@ -19,7 +19,7 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { calcFloat32ArrayMean } from './Float32Array.ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { OrcidId } from '../types/OrcidId.ts'
-import type { IndeterminatePreprintId } from '../Preprints/index.ts'
+import type { IndeterminatePreprintId } from '../Domain/Preprints/index.ts'
 import { Tokenizer } from '@huggingface/tokenizers'
 import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
 import tokenizerJson from './model/tokenizer.json' with { type: 'json' }

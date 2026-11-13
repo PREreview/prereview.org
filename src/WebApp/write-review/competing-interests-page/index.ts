@@ -20,7 +20,7 @@ import {
   type PreprintTitle,
   type Preprints,
   getPreprintTitle,
-} from '../../../Preprints/index.ts'
+} from '../../../Domain/Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch } from '../../../routes.ts'
 import { NonEmptyStringC } from '../../../types/NonEmptyString.ts'

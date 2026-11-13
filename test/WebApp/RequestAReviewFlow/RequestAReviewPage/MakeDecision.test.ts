@@ -1,7 +1,7 @@
 import { UrlParams } from 'effect/http'
 import { describe, expect, it, vi } from '../../../vitest.ts'
 import { Array, Effect, Result, Layer, Option, Tuple } from 'effect'
-import * as Preprints from '../../../../src/Preprints/index.ts'
+import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
@@ -14,7 +14,7 @@ import {
   OsfPreprintsPreprintId,
   PreprintIsNotFound,
   PreprintIsUnavailable,
-} from '../../../../src/Preprints/index.ts'
+} from '../../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/MakeDecision.ts'
 import * as RequestAReviewForm from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/RequestAReviewForm.ts'
