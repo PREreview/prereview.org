@@ -7,7 +7,7 @@ import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
-import type { PreprintId, Preprints } from '../Preprints/index.ts'
+import type { Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
@@ -16,7 +16,6 @@ import type { OrcidId, Uuid } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { ProfileId } from '../../types/profile-id.ts'
 import {
-  type PreprintPrereview,
   PrereviewIsNotFound,
   PrereviewIsUnavailable,
   PrereviewsAreUnavailable,
@@ -36,7 +35,6 @@ export class Prereviews extends Context.Service<
     getForClub: (
       id: Uuid.Uuid,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
-    getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
     getForProfile: (
       profile: ProfileId,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
@@ -66,9 +64,6 @@ export const getFiveMostRecent = Prereviews.use(service => service.getFiveMostRe
 
 export const getForClub = (...args: Parameters<(typeof Prereviews.Service)['getForClub']>) =>
   Prereviews.use(service => service.getForClub(...args))
-
-export const getForPreprint = (...args: Parameters<(typeof Prereviews.Service)['getForPreprint']>) =>
-  Prereviews.use(service => service.getForPreprint(...args))
 
 export const getForProfile = (...args: Parameters<(typeof Prereviews.Service)['getForProfile']>) =>
   Prereviews.use(service => service.getForProfile(...args))
@@ -168,22 +163,6 @@ export const layer = Layer.effect(
         Effect.catchTag('ClubNotFound', () => Effect.succeed([])),
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
-      ),
-      getForPreprint: Effect.fn('Prereviews.getForPreprint')(
-        function* (id) {
-          yield* Effect.annotateCurrentSpan({ id })
-
-          const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
-            fetch,
-            getClubByName,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-            ...loggerEnv,
-          })
-        },
-        Effect.mapError(() => new PrereviewsAreUnavailable()),
       ),
       getForProfile: Effect.fn('Prereviews.getForProfile')(
         function* (profile) {
