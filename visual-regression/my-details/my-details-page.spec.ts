@@ -1,5 +1,8 @@
 import { HashSet, Option } from 'effect'
-import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/ContactEmailAddresses/index.ts'
+import {
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
+} from '../../src/Domain/ContactEmailAddresses/index.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'

@@ -1,17 +1,17 @@
-import { expect, test } from '../vitest.ts'
+import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Result, Option } from 'effect'
-import * as Commands from '../../src/Commands.ts'
+import * as Commands from '../../../src/Commands.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
   OnlyCurrentContactAddressCanBeVerified,
-} from '../../src/ContactEmailAddresses/Errors.ts'
-import * as _ from '../../src/ContactEmailAddresses/VerifyContactEmailAddress.ts'
-import * as Events from '../../src/Events.ts'
-import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/Uuid.ts'
+} from '../../../src/Domain/ContactEmailAddresses/Errors.ts'
+import * as _ from '../../../src/Domain/ContactEmailAddresses/VerifyContactEmailAddress.ts'
+import * as Events from '../../../src/Events.ts'
+import { EmailAddress } from '../../../src/types/EmailAddress.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Uuid } from '../../../src/types/Uuid.ts'
 
 const orcidWithVerified = OrcidId('0000-0002-1825-0097')
 const orcidWithUnverified = OrcidId('0000-0002-6109-0367')

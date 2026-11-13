@@ -42,7 +42,7 @@ import {
   type ContactEmailAddress,
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
-} from '../src/ContactEmailAddresses/index.ts'
+} from '../src/Domain/ContactEmailAddresses/index.ts'
 import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as Events from '../src/Events.ts'

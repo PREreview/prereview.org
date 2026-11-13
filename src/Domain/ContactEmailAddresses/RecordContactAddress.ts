@@ -1,9 +1,9 @@
 import { Array, Result, Match, Option } from 'effect'
-import * as Commands from '../Commands.ts'
-import * as Events from '../Events.ts'
-import { EmailAddressEquivalence, type EmailAddress } from '../types/EmailAddress.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
-import type { Uuid } from '../types/Uuid.ts'
+import * as Commands from '../../Commands.ts'
+import * as Events from '../../Events.ts'
+import { EmailAddressEquivalence, type EmailAddress } from '../../types/EmailAddress.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import type { Uuid } from '../../types/Uuid.ts'
 import { ContactAddressIdHasAlreadyBeenUsed, ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 
 export interface Input {

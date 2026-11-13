@@ -1,22 +1,22 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Result, Match, Option, pipe, type Types } from 'effect'
-import * as Commands from '../Commands.ts'
-import * as Events from '../Events.ts'
-import type { EmailAddress } from '../types/EmailAddress.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
-import type { Uuid } from '../types/Uuid.ts'
-import { AcceptedInvitationIsNotFound, ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
+import * as Commands from '../../Commands.ts'
+import * as Events from '../../Events.ts'
+import type { EmailAddress } from '../../types/EmailAddress.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import type { Uuid } from '../../types/Uuid.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
   readonly inviteId: Uuid
+  readonly emailAddress: EmailAddress
   readonly chosenAt: Temporal.Instant
 }
 
-export type Error = ContactEmailAddressHasAlreadyBeenVerified | AcceptedInvitationIsNotFound
+export type Error = ContactEmailAddressHasAlreadyBeenVerified
 
 interface State {
-  invitation?: { emailAddress: EmailAddress; acceptedBy?: OrcidId }
   contactAddress?: {
     emailAddress: EmailAddress
     verificationStatus: 'verified' | 'unverified'
@@ -24,41 +24,18 @@ interface State {
 }
 
 const createFilter = (input: Input) =>
-  Events.EventFilter([
-    {
-      types: ['InvitationToAppearOnADatasetReviewAddedToTheList', 'AuthorInviteAccepted'],
-      predicate: { invitationId: input.inviteId },
-    },
-    {
-      types: [
-        'ContactAddressImported',
-        'ContactAddressRecorded',
-        'ContactAddressVerified',
-        'AuthorInviteEmailAddressChosenAsContactAddress',
-      ],
-      predicates: { orcidId: input.orcidId },
-    },
-  ])
+  Events.EventFilter({
+    types: [
+      'ContactAddressImported',
+      'ContactAddressRecorded',
+      'ContactAddressVerified',
+      'AuthorInviteEmailAddressChosenAsContactAddress',
+    ],
+    predicates: { orcidId: input.orcidId },
+  })
 
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
-
-  const invitation: State['invitation'] = pipe(
-    Array.findLast(filteredEvents, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList')),
-    Option.andThen(added => added.contactDetails),
-    Option.match({
-      onNone: () => undefined,
-      onSome: contactDetails =>
-        Option.match(Array.findLast(filteredEvents, hasTag('AuthorInviteAccepted')), {
-          onNone: () => ({ _tag: 'NotAccepted', emailAddress: contactDetails.emailAddress }),
-          onSome: accepted => ({
-            _tag: 'Accepted',
-            acceptedBy: accepted.orcidId,
-            emailAddress: contactDetails.emailAddress,
-          }),
-        }),
-    }),
-  )
 
   const contactAddress: State['contactAddress'] = pipe(
     Array.findLast(
@@ -106,23 +83,11 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     Option.getOrUndefined,
   )
 
-  return { invitation, contactAddress }
-}
-
-const authorize = (state: State, input: Input): boolean => {
-  if (state.invitation?.acceptedBy && state.invitation.acceptedBy !== input.orcidId) {
-    return false
-  }
-
-  return true
+  return { contactAddress }
 }
 
 const decide = (state: State, input: Input): Result.Result<Option.Option<Events.Event>, Error> =>
   Result.gen(function* () {
-    if (!state.invitation?.acceptedBy) {
-      return yield* Result.fail(new AcceptedInvitationIsNotFound())
-    }
-
     if (state.contactAddress?.verificationStatus === 'verified') {
       return yield* Result.fail(new ContactEmailAddressHasAlreadyBeenVerified())
     }
@@ -131,17 +96,16 @@ const decide = (state: State, input: Input): Result.Result<Option.Option<Events.
       new Events.AuthorInviteEmailAddressChosenAsContactAddress({
         inviteId: input.inviteId,
         orcidId: input.orcidId,
-        emailAddress: Option.some(state.invitation.emailAddress),
+        emailAddress: Option.some(input.emailAddress),
         chosenAt: input.chosenAt,
       }),
     )
   })
 
-export const UseAuthorInviteEmailAddressUsingEvents = Commands.Command<[Input], State, Error, true>({
+export const UseAuthorInviteEmailAddressFromLegacyInvite = Commands.Command({
   name: 'ContactEmailAddresses.useAuthorInviteEmailAddress',
   createFilter,
   foldState,
-  authorize,
   decide,
 })
 

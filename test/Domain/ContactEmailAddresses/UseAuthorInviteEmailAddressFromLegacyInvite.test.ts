@@ -1,13 +1,13 @@
-import { expect, test } from '../vitest.ts'
+import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Result, Option } from 'effect'
-import { ContactEmailAddressHasAlreadyBeenVerified } from '../../src/ContactEmailAddresses/Errors.ts'
-import * as _ from '../../src/ContactEmailAddresses/UseAuthorInviteEmailAddressFromLegacyInvite.ts'
-import * as Events from '../../src/Events.ts'
-import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { Name } from '../../src/types/Name.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/Uuid.ts'
+import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/Domain/ContactEmailAddresses/Errors.ts'
+import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEmailAddressFromLegacyInvite.ts'
+import * as Events from '../../../src/Events.ts'
+import { EmailAddress } from '../../../src/types/EmailAddress.ts'
+import { Name } from '../../../src/types/Name.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Uuid } from '../../../src/types/Uuid.ts'
 
 const inviteId = Uuid('47c7ab91-0935-4b5c-9c50-b260047315b0')
 const emailAddress = EmailAddress('josiah@example.com')

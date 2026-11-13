@@ -2,7 +2,10 @@ import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Result, Layer, pipe } from 'effect'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as _ from '../../../src/Domain/Comments/React.ts'
-import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddresses,
+  ContactEmailAddressIsNotFound,
+} from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'

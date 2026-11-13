@@ -6,7 +6,7 @@ import {
   ContactEmailAddresses,
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
-} from '../../../src/ContactEmailAddresses/index.ts'
+} from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

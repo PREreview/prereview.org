@@ -1,7 +1,7 @@
 import { Context, Data, Effect, Layer, Match, pipe, type Option } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
-import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
+import { ContactEmailAddresses } from '../Domain/ContactEmailAddresses/index.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type EmailAddress, type Name, type OrcidId } from '../types/index.ts'

@@ -1,7 +1,7 @@
 import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
-import type { ContactEmailAddress } from '../../ContactEmailAddresses/index.ts'
+import type { ContactEmailAddress } from '../../Domain/ContactEmailAddresses/index.ts'
 import { html, plainText, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { OrcidToken } from '../../orcid-token.ts'

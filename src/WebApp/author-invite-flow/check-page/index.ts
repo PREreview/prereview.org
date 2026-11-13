@@ -12,7 +12,7 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../../../author-invite.ts'
-import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
+import { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'

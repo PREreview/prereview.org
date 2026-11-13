@@ -1,4 +1,4 @@
-import { UnverifiedContactEmailAddress } from '../../../src/ContactEmailAddresses/index.ts'
+import { UnverifiedContactEmailAddress } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../../src/Preprints/index.ts'

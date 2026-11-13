@@ -1,6 +1,6 @@
 import { Data } from 'effect'
-import type { EmailAddress } from '../types/EmailAddress.ts'
-import type { Uuid } from '../types/Uuid.ts'
+import type { EmailAddress } from '../../types/EmailAddress.ts'
+import type { Uuid } from '../../types/Uuid.ts'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 

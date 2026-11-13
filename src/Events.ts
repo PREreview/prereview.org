@@ -16,7 +16,7 @@ import {
 // oxlint-disable  module-boundaries/use-index
 import * as AuthorInviteEvents from './Domain/AuthorInvites/Events.ts'
 import * as CommentEvents from './Domain/Comments/Events.ts'
-import * as ContactEmailAddressesEvents from './ContactEmailAddresses/Events.ts'
+import * as ContactEmailAddressesEvents from './Domain/ContactEmailAddresses/Events.ts'
 import * as DatasetReviewEvents from './DatasetReviews/Events.ts'
 import * as PreprintReviews from './PreprintReviews/Events.ts'
 import * as PrereviewerEvents from './Prereviewers/Events.ts'
@@ -24,7 +24,7 @@ import * as ReviewRequestsEvents from './ReviewRequests/Events.ts'
 
 export * from './Domain/AuthorInvites/Events.ts'
 export * from './Domain/Comments/Events.ts'
-export * from './ContactEmailAddresses/Events.ts'
+export * from './Domain/ContactEmailAddresses/Events.ts'
 export * from './DatasetReviews/Events.ts'
 export * from './PreprintReviews/Events.ts'
 export * from './Prereviewers/Events.ts'

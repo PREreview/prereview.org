@@ -1,6 +1,6 @@
 import type { UrlParams } from 'effect/http'
 import { Effect, Match } from 'effect'
-import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
+import { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
 import { Preprints, type IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import { ReviewRequestQueries } from '../../../ReviewRequests/index.ts'

@@ -4,7 +4,10 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { merge } from 'ts-deepmerge'
 import { Clubs } from '../../../src/Domain/Clubs/index.ts'
-import { ContactEmailAddresses, ContactEmailAddressIsNotFound } from '../../../src/ContactEmailAddresses/index.ts'
+import {
+  ContactEmailAddresses,
+  ContactEmailAddressIsNotFound,
+} from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
