@@ -23,4 +23,6 @@ export class PrereviewIsUnavailable extends Data.TaggedError('PrereviewIsUnavail
 
 export class PrereviewWasRemoved extends Data.TaggedError('PrereviewWasRemoved') {}
 
+export class PrereviewsAreUnavailable extends Data.TaggedError('PrereviewsAreUnavailable') {}
+
 export class UnknownClub extends Data.TaggedError('UnknownClub') {}

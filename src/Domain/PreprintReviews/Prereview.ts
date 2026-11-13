@@ -31,3 +31,14 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   structured: boolean
   text: Html
 }> {}
+
+export interface PreprintPrereview {
+  authors: {
+    named: Array.NonEmptyReadonlyArray<{ name: Name; orcid?: OrcidId }>
+    anonymous: number
+  }
+  club?: ClubName
+  id: number
+  language?: LanguageCode
+  text: Html
+}
