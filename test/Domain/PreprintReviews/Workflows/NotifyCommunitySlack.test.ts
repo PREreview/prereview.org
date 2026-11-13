@@ -19,7 +19,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => Effect.void }),
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
       ),
@@ -41,7 +41,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => error }),
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
       ),
@@ -66,7 +66,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => error }),
+          Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => error }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
       ),

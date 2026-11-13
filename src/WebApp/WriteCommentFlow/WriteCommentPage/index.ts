@@ -1,6 +1,6 @@
 import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as Prereviews from '../../../Domain/Prereviews/index.ts'
+import * as PreprintReviews from '../../../Domain/PreprintReviews/index.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
@@ -9,7 +9,7 @@ import { WriteCommentPage as MakeResponse } from './WriteCommentPage.ts'
 
 export const WriteCommentPage: (input: {
   id: number
-}) => Effect.Effect<Response.PageResponse, never, Prereviews.Prereviews | Locale> = Effect.fn(
+}) => Effect.Effect<Response.PageResponse, never, PreprintReviews.PreprintReviews | Locale> = Effect.fn(
   'WriteCommentFlow.WriteCommentPage',
 )(
   function* ({ id }) {
@@ -17,7 +17,7 @@ export const WriteCommentPage: (input: {
 
     const locale = yield* Locale
 
-    const prereview = yield* Prereviews.getPreprintReview(id)
+    const prereview = yield* PreprintReviews.getPreprintReview(id)
 
     return MakeResponse({ prereview, locale, isLoggedIn: Option.isSome(user) })
   },

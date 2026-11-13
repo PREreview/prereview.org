@@ -1,6 +1,7 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Effect, identity, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
+import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
 import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -29,7 +30,9 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
+          Effect.provide(
+            Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          ),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -53,7 +56,9 @@ describe('WriteCommentPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
+          Effect.provide(
+            Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          ),
         ),
     )
   })
@@ -76,7 +81,9 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewWasRemoved() }),
+          Layer.mock(PreprintReviews.PreprintReviews, {
+            getPreprintReview: () => new Prereviews.PrereviewWasRemoved(),
+          }),
         ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),
@@ -100,7 +107,9 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsNotFound() }),
+          Layer.mock(PreprintReviews.PreprintReviews, {
+            getPreprintReview: () => new Prereviews.PrereviewIsNotFound(),
+          }),
         ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),
@@ -124,7 +133,9 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provide(
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}) }),
+          Layer.mock(PreprintReviews.PreprintReviews, {
+            getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}),
+          }),
         ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
       ),

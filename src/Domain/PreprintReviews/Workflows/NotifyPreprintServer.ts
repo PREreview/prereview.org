@@ -2,7 +2,7 @@ import { Effect, Match, Option, pipe } from 'effect'
 import { CoarNotify } from '../../../ExternalApis/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import * as Preprints from '../../Preprints/index.ts'
-import * as Prereviews from '../../Prereviews/index.ts'
+import * as PreprintReviews from '../PreprintReviews.ts'
 import * as PublicUrl from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
 import { Doi, Uuid } from '../../../types/index.ts'
@@ -16,7 +16,7 @@ export const NotifyPreprintServer = Effect.fn('PreprintReviews.notifyPreprintSer
       return
     }
 
-    const prereview = yield* Prereviews.getPreprintReview(reviewId)
+    const prereview = yield* PreprintReviews.getPreprintReview(reviewId)
 
     const target = pipe(
       Match.value(sendCoarNotifyMessages),

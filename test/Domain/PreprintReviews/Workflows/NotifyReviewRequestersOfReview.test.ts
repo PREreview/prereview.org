@@ -39,6 +39,7 @@ describe('NotifyReviewRequestersOfReview', () => {
               Effect.provide([
                 Layer.mock(Email.Email, { notifyRequesterOfReview }),
                 Layer.mock(PreprintReviews.PreprintReviews, {
+                  getPreprintReview: () => Effect.succeed(review),
                   hasAPrereviewerBeenNotifiedOfAReview: () => Effect.succeed(false),
                   recordEmailSentToNotifyPrereviewerOfAPrereview,
                 }),
@@ -52,13 +53,12 @@ describe('NotifyReviewRequestersOfReview', () => {
             expect(notifyRequesterOfReview).toHaveBeenCalledTimes(HashSet.size(requesters))
             expect(recordEmailSentToNotifyPrereviewerOfAPrereview).toHaveBeenCalledTimes(HashSet.size(requesters))
           }).pipe(
-            Effect.provide([
-              Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
+            Effect.provide(
               Layer.mock(ReviewRequests.ReviewRequestQueries, {
                 listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
                   Effect.succeed(requesters),
               }),
-            ]),
+            ),
           ),
       )
     })
@@ -75,10 +75,10 @@ describe('NotifyReviewRequestersOfReview', () => {
           Effect.provide([
             Layer.mock(Email.Email, {}),
             Layer.mock(PreprintReviews.PreprintReviews, {
+              getPreprintReview: () => Effect.succeed(review),
               hasAPrereviewerBeenNotifiedOfAReview: () => Effect.succeed(true),
             }),
             Layer.mock(Prereviewers.Prereviewers, {}),
-            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(review) }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
               listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
                 Effect.succeed(requesters),
@@ -106,9 +106,8 @@ describe('NotifyReviewRequestersOfReview', () => {
       }).pipe(
         Effect.provide([
           Layer.mock(Email.Email, {}),
-          Layer.mock(PreprintReviews.PreprintReviews, {}),
+          Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => error }),
           Layer.mock(Prereviewers.Prereviewers, {}),
-          Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => error }),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
         ]),
       ),

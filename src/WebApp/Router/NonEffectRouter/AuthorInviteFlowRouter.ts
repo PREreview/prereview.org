@@ -7,7 +7,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
-import * as Prereviews from '../../../Domain/Prereviews/index.ts'
+import * as PreprintReviews from '../../../Domain/PreprintReviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import {
@@ -143,7 +143,7 @@ export const AuthorInviteFlowRouter = pipe(
         ),
         getPrereview: EffectToFpts.toTaskEitherK(
           flow(
-            Prereviews.getPreprintReview,
+            PreprintReviews.getPreprintReview,
             Effect.catchTag(['PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved'], () =>
               Effect.fail('unavailable' as const),
             ),

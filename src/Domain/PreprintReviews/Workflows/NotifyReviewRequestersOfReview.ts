@@ -1,7 +1,6 @@
 import { Array, Boolean, Effect, Option, pipe } from 'effect'
 import { Email } from '../../../ExternalInteractions/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import * as Prereviews from '../../Prereviews/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { Temporal } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -9,7 +8,7 @@ import * as PreprintReviews from '../PreprintReviews.ts'
 
 export const NotifyReviewRequestersOfReview = Effect.fn('PreprintReviews.notifyReviewRequestersOfReview')(
   function* (reviewId: number) {
-    const prereview = yield* Prereviews.getPreprintReview(reviewId)
+    const prereview = yield* PreprintReviews.getPreprintReview(reviewId)
 
     const requestersNeedingNotification = yield* pipe(
       ReviewRequests.listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications(prereview.preprint.id),

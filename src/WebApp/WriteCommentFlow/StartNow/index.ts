@@ -1,7 +1,7 @@
 import { Effect, Match, pipe } from 'effect'
 import * as Comments from '../../../Domain/Comments/index.ts'
 import { Locale } from '../../../Context.ts'
-import * as Prereviews from '../../../Domain/Prereviews/index.ts'
+import * as PreprintReviews from '../../../Domain/PreprintReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
@@ -17,7 +17,7 @@ export const StartNow: (input: {
   Response.PageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
   | Uuid.GenerateUuid
-  | Prereviews.Prereviews
+  | PreprintReviews.PreprintReviews
   | Comments.HandleCommentCommand
   | Comments.GetNextExpectedCommandForUser
   | Comments.GetNextExpectedCommandForUserOnAComment
@@ -26,7 +26,7 @@ export const StartNow: (input: {
   function* ({ id }) {
     const user = yield* EnsureUserIsLoggedIn
 
-    const prereview = yield* Prereviews.getPreprintReview(id)
+    const prereview = yield* PreprintReviews.getPreprintReview(id)
 
     const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
 

@@ -324,7 +324,7 @@ const routerWithoutHyperTs = pipe(
               getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
               getPrereview: EffectToFpts.toTaskEitherK(
                 flow(
-                  Prereviews.getPreprintReview,
+                  PreprintReviews.getPreprintReview,
                   Effect.catchTags({
                     PrereviewIsNotFound: () => Effect.fail('not-found' as const),
                     PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),

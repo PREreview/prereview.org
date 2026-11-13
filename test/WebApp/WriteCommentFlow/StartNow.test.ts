@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Result, Layer } from 'effect'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
+import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
 import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -57,7 +58,9 @@ describe('StartNow', () => {
             Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
               Effect.succeed(new Comments.ExpectedToStartAComment()),
             ),
-            Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
+            Effect.provide(
+              Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+            ),
             Effect.provideService(LoggedInUser, user),
           ),
       )
@@ -92,7 +95,9 @@ describe('StartNow', () => {
               Effect.succeed(new Comments.ExpectedToStartAComment()),
             ),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-            Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
+            Effect.provide(
+              Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+            ),
             Effect.provideService(LoggedInUser, user),
           ),
       )
@@ -123,7 +128,9 @@ describe('StartNow', () => {
             Effect.succeed(new Comments.ExpectedToEnterAComment({ commentId })),
           ),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
+          Effect.provide(
+            Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          ),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -150,7 +157,9 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
-            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewWasRemoved() }),
+            Layer.mock(PreprintReviews.PreprintReviews, {
+              getPreprintReview: () => new Prereviews.PrereviewWasRemoved(),
+            }),
           ),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -177,7 +186,9 @@ describe('StartNow', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => Effect.succeed(prereview) })),
+          Effect.provide(
+            Layer.mock(PreprintReviews.PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          ),
           Effect.provideService(LoggedInUser, user),
         ),
     )
@@ -204,7 +215,9 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
-            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsNotFound() }),
+            Layer.mock(PreprintReviews.PreprintReviews, {
+              getPreprintReview: () => new Prereviews.PrereviewIsNotFound(),
+            }),
           ),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -232,7 +245,9 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(
-            Layer.mock(Prereviews.Prereviews, { getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}) }),
+            Layer.mock(PreprintReviews.PreprintReviews, {
+              getPreprintReview: () => new Prereviews.PrereviewIsUnavailable({}),
+            }),
           ),
           Effect.provideService(LoggedInUser, user),
         ),
@@ -253,7 +268,7 @@ describe('StartNow', () => {
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-      Effect.provide(Layer.mock(Prereviews.Prereviews, {})),
+      Effect.provide(Layer.mock(PreprintReviews.PreprintReviews, {})),
     ),
   )
 })

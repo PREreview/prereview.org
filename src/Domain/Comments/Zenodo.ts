@@ -6,7 +6,7 @@ import * as FetchHttpClient from '../../FetchHttpClient.ts'
 import { html } from '../../html.ts'
 import { DefaultLocale, translate } from '../../locales/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
-import * as Prereviews from '../Prereviews/index.ts'
+import * as PreprintReviews from '../PreprintReviews/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import {
@@ -20,7 +20,7 @@ const createRecordOnZenodoForComment = Layer.effect(
   CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
     const context = yield* Effect.map(
-      Effect.context<Prereviewers.Prereviewers | Prereviews.Prereviews>(),
+      Effect.context<PreprintReviews.PreprintReviews | Prereviewers.Prereviewers>(),
       Context.omit(Scope.Scope),
     )
     const fetch = yield* FetchHttpClient.Fetch
@@ -36,7 +36,7 @@ const createRecordOnZenodoForComment = Layer.effect(
 
     return Effect.fn('Comments.createRecordOnZenodoForComment')(function* (comment) {
       const prereview = yield* pipe(
-        Prereviews.getPreprintReview(comment.prereviewId),
+        PreprintReviews.getPreprintReview(comment.prereviewId),
         Effect.mapError(
           Match.valueTags({
             PrereviewIsNotFound: error => new UnableToAssignADoi({ cause: error }),
