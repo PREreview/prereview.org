@@ -920,7 +920,7 @@ function recordToPreprintPrereview(
 ): RTE.ReaderTaskEither<
   F.FetchEnv & L.LoggerEnv & GetClubByNameEnv,
   'text-not-found' | 'text-unavailable',
-  Prereview.PreprintPrereview
+  PreprintReview.PreprintPrereview
 > {
   return pipe(
     RTE.fromOption(() => 'text-not-found' as const)(getReviewUrl(record)),

@@ -25,7 +25,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 import { ImportPreprintReview } from './ImportPreprintReview.ts'
-import type { Prereview } from './Prereview.ts'
+import type { PreprintPrereview, Prereview } from './Prereview.ts'
 
 export interface RapidPrereview {
   readonly author: Prereviewers.Persona
@@ -38,9 +38,7 @@ export interface RapidPrereview {
 export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
-    getForPreprint: (
-      id: PreprintId,
-    ) => Effect.Effect<ReadonlyArray<Prereviews.PreprintPrereview>, Prereviews.PrereviewsAreUnavailable>
+    getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, Errors.PrereviewsAreUnavailable>
     getPreprintReview: (
       id: number,
     ) => Effect.Effect<
@@ -186,7 +184,7 @@ export const layer = Layer.effect(
             ...loggerEnv,
           })
         },
-        Effect.mapError(() => new Prereviews.PrereviewsAreUnavailable()),
+        Effect.mapError(() => new Errors.PrereviewsAreUnavailable()),
       ),
       getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
       getRapidPrereviewsForAPreprint: id =>
