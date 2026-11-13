@@ -1,5 +1,4 @@
 import { FetchHttpClient } from 'effect/http'
-import * as Queries from '../../Queries.ts'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
@@ -18,7 +17,6 @@ import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { ProfileId } from '../../types/profile-id.ts'
 import {
   type PreprintPrereview,
-  type Prereview,
   PrereviewIsNotFound,
   PrereviewIsUnavailable,
   PrereviewsAreUnavailable,
@@ -28,9 +26,6 @@ import {
   type RecentPreprintPrereview,
   type RecentPrereviews,
 } from './Prereview.ts'
-import { FeatureFlags } from '../../FeatureFlags.ts'
-import { GetPublishedPreprintReview } from './GetPublishedPreprintReview.ts'
-import { EnrichPublishedPreprintReview } from './EnrichPublishedPreprintReview.ts'
 
 export * from './Prereview.ts'
 
@@ -48,9 +43,6 @@ export class Prereviews extends Context.Service<
     getForUser: (
       user: OrcidId.OrcidId,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
-    getPreprintReview: (
-      id: number,
-    ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
     getPrereviewSummary: (
       id: number | Uuid.Uuid,
     ) => Effect.Effect<
@@ -84,9 +76,6 @@ export const getForProfile = (...args: Parameters<(typeof Prereviews.Service)['g
 export const getForUser = (...args: Parameters<(typeof Prereviews.Service)['getForUser']>) =>
   Prereviews.use(service => service.getForUser(...args))
 
-export const getPreprintReview = (...args: Parameters<(typeof Prereviews.Service)['getPreprintReview']>) =>
-  Prereviews.use(service => service.getPreprintReview(...args))
-
 export const getPrereviewSummary = (...args: Parameters<(typeof Prereviews.Service)['getPrereviewSummary']>) =>
   Prereviews.use(service => service.getPrereviewSummary(...args))
 
@@ -103,7 +92,6 @@ export const layer = Layer.effect(
       Context.omit(Scope.Scope),
     )
     const clubs = yield* Clubs
-    const featureFlags = yield* FeatureFlags
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const publicUrl = yield* PublicUrl
@@ -116,38 +104,6 @@ export const layer = Layer.effect(
         Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
       ),
     )
-
-    const query = yield* Queries.makeOnDemandQuery(GetPublishedPreprintReview([]))
-
-    const getPreprintReview = (reviewId: number) =>
-      pipe(
-        reviewId,
-        query,
-        Effect.andThen(EnrichPublishedPreprintReview),
-        Effect.catchTag(
-          ['ClubNotFound', 'UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
-          error => new PrereviewIsUnavailable({ cause: error }),
-        ),
-        Effect.provideContext(context),
-      )
-
-    const getPreprintReviewFromZenodo = Effect.fn('Prereviews.getPreprintReviewFromZenodo')(function* (id: number) {
-      yield* Effect.annotateCurrentSpan({ id })
-
-      const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-      const runtime = yield* Effect.context<Preprints>()
-
-      return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
-        fetch,
-        getClubByName,
-        runtime,
-        wasPrereviewRemoved,
-        zenodoApiKey: Redacted.value(zenodoApi.key),
-        zenodoUrl: zenodoApi.origin,
-        ...loggerEnv,
-      })
-    }, Effect.provide(context))
 
     return {
       getFiveMostRecent: Effect.gen(function* () {
@@ -294,7 +250,6 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
       getPrereviewSummary: Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
         yield* Effect.annotateCurrentSpan({ id })
 
