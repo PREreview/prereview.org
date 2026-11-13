@@ -1,6 +1,6 @@
 import { Array, Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as DatasetReviews from '../../../Domain/DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'

@@ -1,6 +1,6 @@
 import { Array, Effect, Equal, pipe } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as DatasetReviews from '../../../Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'

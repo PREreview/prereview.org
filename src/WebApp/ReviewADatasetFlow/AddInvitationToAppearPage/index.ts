@@ -1,7 +1,7 @@
 import type { UrlParams } from 'effect/http'
 import { Array, Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as DatasetReviews from '../../../Domain/DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'

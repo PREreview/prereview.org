@@ -1,0 +1,74 @@
+import { Array, Data, Result, Function, Match, Option, type Types } from 'effect'
+import type { Temporal, Uuid } from '../../../types/index.ts'
+import * as Errors from '../Errors.ts'
+import * as Events from '../Events.ts'
+import { FindRequirementsToBePublished, type RequirementToBePublished } from '../RequirementsToBePublished.ts'
+
+export interface Command {
+  readonly datasetReviewId: Uuid.Uuid
+  readonly requestedAt: Temporal.Instant
+}
+
+export type Error =
+  | Errors.DatasetReviewHasNotBeenStarted
+  | Errors.DatasetReviewNotReadyToBePublished
+  | Errors.DatasetReviewIsBeingPublished
+  | Errors.DatasetReviewHasBeenPublished
+
+export type State = NotStarted | NotReady | IsReady | IsBeingPublished | HasBeenPublished
+
+export class NotStarted extends Data.TaggedClass('NotStarted') {}
+
+export class NotReady extends Data.TaggedClass('NotReady')<{
+  missing: Array.NonEmptyReadonlyArray<RequirementToBePublished>
+}> {}
+
+export class IsReady extends Data.TaggedClass('IsReady') {}
+
+export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
+
+export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
+
+export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
+  if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
+    return new NotStarted()
+  }
+
+  if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {
+    return new HasBeenPublished()
+  }
+
+  if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+    return new IsBeingPublished()
+  }
+
+  return Result.match(FindRequirementsToBePublished(events), {
+    onFailure: missing => new NotReady({ missing }),
+    onSuccess: () => new IsReady(),
+  })
+}
+
+export const decide: {
+  (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Result.Result<Option.Option<Events.DatasetReviewEvent>, Error>
+} = Function.dual(2, (state: State, command: Command): Result.Result<Option.Option<Events.DatasetReviewEvent>, Error> =>
+  Match.valueTags(state, {
+    NotStarted: () => Result.fail(new Errors.DatasetReviewHasNotBeenStarted()),
+    NotReady: ({ missing }) => Result.fail(new Errors.DatasetReviewNotReadyToBePublished({ missing })),
+    IsBeingPublished: () => Result.fail(new Errors.DatasetReviewIsBeingPublished()),
+    HasBeenPublished: () => Result.fail(new Errors.DatasetReviewHasBeenPublished()),
+    IsReady: () =>
+      Result.succeed(
+        Option.some(
+          new Events.PublicationOfDatasetReviewWasRequested({
+            datasetReviewId: command.datasetReviewId,
+            requestedAt: command.requestedAt,
+          }),
+        ),
+      ),
+  }),
+)
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}

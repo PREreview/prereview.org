@@ -1,0 +1,33 @@
+import { Array, Result, Option, type Types } from 'effect'
+import * as Queries from '../../../Queries.ts'
+import * as Errors from '../Errors.ts'
+import type * as Events from '../Events.ts'
+
+export const GetZenodoRecordId = (
+  events: ReadonlyArray<Events.DatasetReviewEvent>,
+): Result.Result<number, Errors.DatasetReviewDoesNotHaveAZenodoRecord | Queries.UnexpectedSequenceOfEvents> => {
+  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
+    return Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+  }
+
+  return Option.match(Array.findLast(events, hasTag('ZenodoRecordForDatasetReviewWasCreated')), {
+    onNone: () =>
+      Result.fail(
+        new Errors.DatasetReviewDoesNotHaveAZenodoRecord({
+          cause: 'No ZenodoRecordForDatasetReviewWasCreated event found',
+        }),
+      ),
+    onSome: zenodoRecordForDatasetReviewWasCreated => Result.succeed(zenodoRecordForDatasetReviewWasCreated.recordId),
+  })
+}
+
+function hasEvent(
+  events: ReadonlyArray<Events.DatasetReviewEvent>,
+  tag: Types.Tags<Events.DatasetReviewEvent>,
+): boolean {
+  return Array.some(events, hasTag(tag))
+}
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}

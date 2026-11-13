@@ -1,4 +1,4 @@
-import type * as DatasetReviews from '../../DatasetReviews/index.ts'
+import type * as DatasetReviews from '../../Domain/DatasetReviews/index.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 

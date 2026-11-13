@@ -1,6 +1,6 @@
 import { Effect, Equal } from 'effect'
 import { Locale } from '../../../Context.ts'
-import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as DatasetReviews from '../../../Domain/DatasetReviews/index.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'

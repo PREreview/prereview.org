@@ -1,6 +1,6 @@
 import { Array, flow, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import type * as DatasetReviews from '../../../Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'

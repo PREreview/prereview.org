@@ -1,7 +1,7 @@
 import { Effect, Option } from 'effect'
 import { Clubs } from '../../Domain/Clubs/index.ts'
 import { Locale } from '../../Context.ts'
-import * as DatasetReviews from '../../DatasetReviews/index.ts'
+import * as DatasetReviews from '../../Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'

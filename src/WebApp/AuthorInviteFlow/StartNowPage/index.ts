@@ -1,6 +1,6 @@
 import { Effect, Option } from 'effect'
 import { Locale } from '../../../Context.ts'
-import { DatasetReviewQueries } from '../../../DatasetReviews/index.ts'
+import { DatasetReviewQueries } from '../../../Domain/DatasetReviews/index.ts'
 import { Datasets } from '../../../Datasets/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'

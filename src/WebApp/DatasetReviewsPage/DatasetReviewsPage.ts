@@ -1,7 +1,7 @@
 import { Array, flow, identity, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { ClubName } from '../../Domain/Clubs/index.ts'
-import type * as DatasetReviews from '../../DatasetReviews/index.ts'
+import type * as DatasetReviews from '../../Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'

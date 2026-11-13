@@ -1,0 +1,109 @@
+import { describe, expect, it } from '../../../vitest.ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { type Array, Result, identity, Option, Predicate, Tuple } from 'effect'
+import * as _ from '../../../../src/Domain/DatasetReviews/Queries/GetZenodoRecordId.ts'
+import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
+import * as Datasets from '../../../../src/Datasets/index.ts'
+import * as Queries from '../../../../src/Queries.ts'
+import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
+import * as fc from '../../../fc.ts'
+
+const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
+const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
+const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples =
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+    answer: 'no',
+    detail: Option.none(),
+    datasetReviewId,
+  })
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+  datasetReviewId,
+})
+const recordCreated1 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId: 123, datasetReviewId })
+const recordCreated2 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId: 456, datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
+const recordPublished = new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId })
+
+describe('GetZenodoRecordId', () => {
+  describe('when it has a Zenodo record', () => {
+    it.prop(
+      'returns the record ID',
+      [
+        fc
+          .tuple(fc.datasetReviewWasStarted(), fc.zenodoRecordForDatasetReviewWasCreated())
+          .map(events =>
+            Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, number]>(
+              events,
+              events[1].recordId,
+            ),
+          ),
+      ],
+      ([[events, expected]]) => {
+        const actual = _.GetZenodoRecordId(events)
+
+        expect(actual).toStrictEqual(Result.succeed(expected))
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[[datasetReviewWasStarted, recordCreated1], recordCreated1.recordId]], // single record
+            [[[datasetReviewWasStarted, recordCreated1, recordCreated2], recordCreated2.recordId]], // multiple records
+            [[[datasetReviewWasStarted, recordCreated1, recordPublished], recordCreated1.recordId]], // published record
+            [[[recordPublished, recordCreated1, datasetReviewWasStarted], recordCreated1.recordId]], // different order
+          ],
+        },
+      },
+    )
+  })
+
+  describe("when it doesn't have a Zenodo record", () => {
+    it.prop(
+      'returns an error',
+      [
+        fc
+          .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
+          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+      ],
+      ([events]) => {
+        const actual = _.GetZenodoRecordId(events)
+
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // was published
+            [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
+            [[datasetReviewWasStarted, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
+            [[datasetReviewWasStarted, recordPublished]], // not created
+          ],
+        },
+      },
+    )
+  })
+})
+
+describe('when it has not been started', () => {
+  it.prop(
+    'returns an error',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const actual = _.GetZenodoRecordId(events)
+
+      expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[answeredIfTheDatasetFollowsFairAndCarePrinciples, recordCreated1]], // with events
+        ],
+      },
+    },
+  )
+})

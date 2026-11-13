@@ -1,0 +1,148 @@
+import { describe, expect, it } from '../../../vitest.ts'
+import { Effect, Result, Layer, pipe } from 'effect'
+import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
+import * as _ from '../../../../src/Domain/DatasetReviews/Workflows/NotifyCommunitySlack.ts'
+import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
+import * as Prereviewers from '../../../../src/Prereviewers/index.ts'
+import { PublicUrl } from '../../../../src/public-url.ts'
+import * as Queries from '../../../../src/Queries.ts'
+import * as fc from '../../../fc.ts'
+
+describe('NotifyCommunitySlack', () => {
+  describe('when the Slack can be notified', () => {
+    it.effect.prop(
+      'using a public persona',
+      [
+        fc.uuid(),
+        fc.origin(),
+        fc.publishedDatasetReview({ author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }) }),
+        fc.publicPersona(),
+      ],
+      ([datasetReviewId, publicUrl, publishedReview, publicPersona]) =>
+        Effect.gen(function* () {
+          const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
+
+          expect(actual).toStrictEqual(Result.void)
+        }).pipe(
+          Effect.provide([
+            Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getPublishedReview: () => Effect.succeed(publishedReview),
+            }),
+            Layer.mock(Prereviewers.Prereviewers, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+            Layer.succeed(PublicUrl, publicUrl),
+          ]),
+        ),
+    )
+
+    it.effect.prop(
+      'using a pseudonym persona',
+      [
+        fc.uuid(),
+        fc.origin(),
+        fc.publishedDatasetReview({ author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }) }),
+        fc.pseudonymPersona(),
+      ],
+      ([datasetReviewId, publicUrl, publishedReview, pseudonymPersona]) =>
+        Effect.gen(function* () {
+          const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
+
+          expect(actual).toStrictEqual(Result.void)
+        }).pipe(
+          Effect.provide([
+            Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getPublishedReview: () => Effect.succeed(publishedReview),
+            }),
+            Layer.mock(Prereviewers.Prereviewers, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+            Layer.succeed(PublicUrl, publicUrl),
+          ]),
+        ),
+    )
+  })
+
+  it.effect.prop(
+    "when the Slack can't be notified",
+    [
+      fc.uuid(),
+      fc.origin(),
+      fc.publishedDatasetReview(),
+      fc.anything().map(cause => new CommunitySlack.FailedToShareDatasetReview({ cause })),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
+    ],
+    ([datasetReviewId, publicUrl, publishedReview, error, publicPersona, pseudonymPersona]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
+
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToNotifyCommunitySlack({})))
+      }).pipe(
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => error }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+          Layer.mock(Prereviewers.Prereviewers, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
+      ),
+  )
+
+  it.effect.prop(
+    "when the persona can't be loaded",
+    [fc.uuid(), fc.origin(), fc.publishedDatasetReview(), fc.anything()],
+    ([datasetReviewId, publicUrl, publishedReview, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
+
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToNotifyCommunitySlack({})))
+      }).pipe(
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+          Layer.mock(Prereviewers.Prereviewers, {
+            getPublicPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Prereviewers.UnableToGetPersona({ cause: error }),
+          }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
+      ),
+  )
+
+  it.effect.prop(
+    "when the published review can't be loaded",
+    [
+      fc.uuid(),
+      fc.origin(),
+      fc
+        .anything()
+        .chain(cause =>
+          fc.constantFrom(
+            new DatasetReviews.DatasetReviewHasNotBeenPublished({ cause }),
+            new Queries.UnableToQuery({ cause }),
+            new DatasetReviews.UnknownDatasetReview({ cause }),
+          ),
+        ),
+    ],
+    ([datasetReviewId, publicUrl, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.result)
+
+        expect(actual).toStrictEqual(Result.fail(new DatasetReviews.FailedToNotifyCommunitySlack({})))
+      }).pipe(
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => error,
+          }),
+          Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
+      ),
+  )
+})

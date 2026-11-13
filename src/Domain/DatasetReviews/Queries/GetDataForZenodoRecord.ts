@@ -1,0 +1,261 @@
+import { Array, Result, HashSet, Option, Struct, type Types, Filter } from 'effect'
+import type * as Datasets from '../../../Datasets/index.ts'
+import * as Events from '../../../Events.ts'
+import * as Queries from '../../../Queries.ts'
+import type { OrcidId, Uuid } from '../../../types/index.ts'
+import * as Errors from '../Errors.ts'
+
+export type Input = Uuid.Uuid
+
+export type Result = Result.Result<DataForZenodoRecord, Error>
+
+export interface DataForZenodoRecord {
+  readonly author: { orcidId: OrcidId.OrcidId; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
+  readonly otherAuthors?: ReadonlyArray<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>
+  readonly anonymousAuthors?: number
+  readonly dataset: Datasets.DatasetId
+  readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
+  readonly qualityRating: Option.Option<Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>>
+  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Pick<
+    Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
+    'answer' | 'detail'
+  >
+  readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetHasEnoughMetadata, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetHasTrackedChanges, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsDetailedEnough, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetIsErrorFree: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsErrorFree, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetMattersToItsAudience: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetMattersToItsAudience, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
+  readonly license: 'CC-BY-4.0' | 'CC0-1.0'
+  readonly generativeAiIdeas: Option.Option<
+    Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview['generativeAiIdeas']
+  >
+}
+
+export type Error =
+  | Errors.DatasetReviewIsInProgress
+  | Errors.DatasetReviewHasBeenPublished
+  | Errors.UnknownDatasetReview
+  | Queries.UnexpectedSequenceOfEvents
+
+const createFilter = (datasetReviewId: Input) =>
+  Events.EventFilter({
+    types: Events.DatasetReviewEventTypes,
+    predicates: { datasetReviewId },
+  })
+
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
+  const filter = createFilter(input)
+
+  const filteredEvents = Array.filter(events, Events.matches(filter))
+
+  const started = Option.getOrUndefined(Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')))
+
+  if (!started) {
+    return Result.fail(new Errors.UnknownDatasetReview({ cause: 'No DatasetReviewWasStarted event found' }))
+  }
+
+  if (hasEvent(filteredEvents, 'DatasetReviewWasPublished')) {
+    return Result.fail(new Errors.DatasetReviewHasBeenPublished())
+  }
+
+  if (!hasEvent(filteredEvents, 'PublicationOfDatasetReviewWasRequested')) {
+    return Result.fail(new Errors.DatasetReviewIsInProgress())
+  }
+
+  const chosenPersona = Array.findLast(filteredEvents, hasTag('PersonaForDatasetReviewWasChosen'))
+
+  const qualityRating = Array.findLast(filteredEvents, hasTag('RatedTheQualityOfTheDataset'))
+
+  const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
+  )
+
+  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetHasEnoughMetadata'),
+  )
+
+  const answerToIfTheDatasetHasTrackedChanges = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetHasTrackedChanges'),
+  )
+
+  const answerToIfTheDatasetHasDataCensoredOrDeleted = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted'),
+  )
+
+  const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'),
+  )
+
+  const answerToIfTheDatasetSupportsRelatedConclusions = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions'),
+  )
+
+  const answerToIfTheDatasetIsDetailedEnough = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsDetailedEnough'),
+  )
+
+  const answerToIfTheDatasetIsErrorFree = Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsErrorFree'))
+
+  const answerToIfTheDatasetMattersToItsAudience = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetMattersToItsAudience'),
+  )
+
+  const answerToIfTheDatasetIsReadyToBeShared = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsReadyToBeShared'),
+  )
+
+  const answerToIfTheDatasetIsMissingAnything = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetIsMissingAnything'),
+  )
+
+  const competingInterests = Array.findLast(filteredEvents, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
+
+  const declaredIfAiWasUsedToGenerateNewIdeas = Array.findLast(
+    filteredEvents,
+    hasTag('DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview'),
+  )
+
+  const anonymousAuthors = Option.match(
+    Array.findLast(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')),
+    {
+      onNone: () => undefined,
+      onSome: ({ answer }) => {
+        if (answer === 'no') {
+          return 0
+        }
+
+        const addedInvitations = Array.filter(
+          filteredEvents,
+          hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'),
+        )
+
+        const removedInvitations = HashSet.fromIterable(
+          Array.filterMap(
+            filteredEvents,
+            Filter.fromPredicateOption(event =>
+              event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+                ? Option.some(event.invitationId)
+                : Option.none(),
+            ),
+          ),
+        )
+
+        return Array.length(
+          Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
+        )
+      },
+    },
+  )
+
+  return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
+    onNone: () => Result.fail(new Queries.UnexpectedSequenceOfEvents({})),
+    onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
+      Result.succeed({
+        author: {
+          orcidId: started.authorId,
+          persona: Option.match(chosenPersona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
+        },
+        otherAuthors: typeof anonymousAuthors === 'number' ? [] : undefined,
+        anonymousAuthors,
+        dataset: started.datasetId,
+        competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
+        qualityRating: Option.map(qualityRating, Struct.pick(['rating', 'detail'])),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
+          answerToIfTheDatasetFollowsFairAndCarePrinciples,
+          ['answer', 'detail'],
+        ),
+        answerToIfTheDatasetHasEnoughMetadata: Option.map(
+          answerToIfTheDatasetHasEnoughMetadata,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetHasTrackedChanges: Option.map(
+          answerToIfTheDatasetHasTrackedChanges,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
+          answerToIfTheDatasetHasDataCensoredOrDeleted,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
+          answerToIfTheDatasetSupportsRelatedConclusions,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetIsDetailedEnough: Option.map(
+          answerToIfTheDatasetIsDetailedEnough,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.pick(['answer', 'detail'])),
+        answerToIfTheDatasetMattersToItsAudience: Option.map(
+          answerToIfTheDatasetMattersToItsAudience,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetIsReadyToBeShared: Option.map(
+          answerToIfTheDatasetIsReadyToBeShared,
+          Struct.pick(['answer', 'detail']),
+        ),
+        answerToIfTheDatasetIsMissingAnything: Option.andThen(
+          answerToIfTheDatasetIsMissingAnything,
+          Struct.get('answer'),
+        ),
+        license: Option.match(declaredIfAiWasUsedToGenerateNewIdeas, {
+          onNone: () => 'CC-BY-4.0',
+          onSome: ({ generativeAiIdeas }) => (generativeAiIdeas.answer === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0'),
+        }),
+        generativeAiIdeas: Option.map(declaredIfAiWasUsedToGenerateNewIdeas, Struct.get('generativeAiIdeas')),
+      }),
+  })
+}
+
+export const GetDataForZenodoRecord = Queries.OnDemandQuery({
+  name: 'DatasetReviewQueries.getDataForZenodoRecord',
+  createFilter,
+  query,
+})
+
+function hasEvent(
+  events: ReadonlyArray<Events.DatasetReviewEvent>,
+  tag: Types.Tags<Events.DatasetReviewEvent>,
+): boolean {
+  return Array.some(events, hasTag(tag))
+}
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}

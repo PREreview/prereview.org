@@ -1,0 +1,217 @@
+import { describe, expect, it } from '../../../vitest.ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { Array, Result, Option, Predicate, Tuple } from 'effect'
+import * as _ from '../../../../src/Domain/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.ts'
+import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
+import * as Datasets from '../../../../src/Datasets/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../../src/types/index.ts'
+import * as fc from '../../../fc.ts'
+
+const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
+const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
+const authorId2 = OrcidId.OrcidId('0000-0002-6109-0367')
+const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
+const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answered1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'not-consequential',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answered2 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'very-consequential',
+  detail: NonEmptyString.fromString('Some detail about very-consequential'),
+  datasetReviewId,
+})
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+  datasetReviewId,
+})
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
+
+describe('query', () => {
+  it.prop(
+    'not started',
+    [
+      fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted')))),
+      fc.uuid(),
+      fc.orcidId(),
+    ],
+    ([events, datasetReviewId, userId]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[], datasetReviewId, authorId], // no events
+          [[answered1, datasetReviewWasPublished], datasetReviewId, authorId], // with events
+          [[started], datasetReviewId2, authorId], // with events for other dataset review
+          [[started, datasetReviewWasPublished], datasetReviewId2, authorId], // with multiple events for other dataset review
+        ],
+      },
+    },
+  )
+
+  it.prop(
+    'started by another user',
+    [
+      fc
+        .tuple(fc.datasetReviewWasStarted(), fc.orcidId())
+        .map(([event, userId]) =>
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
+            Array.make(event),
+            event.datasetReviewId,
+            userId,
+          ),
+        ),
+    ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId2]], // no events
+          [[[started, answered1, datasetReviewWasPublished], datasetReviewId, authorId2]], // with events
+        ],
+      },
+    },
+  )
+
+  it.prop(
+    'not answered',
+    [fc.datasetReviewWasStarted().map(event => Tuple.make(Array.make(event), event.datasetReviewId, event.authorId))],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Result.succeed(Option.none()))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId]], // was started
+        ],
+      },
+    },
+  )
+
+  it.prop(
+    'has been answered',
+    [
+      fc
+        .uuid()
+        .chain(datasetReviewId =>
+          fc.tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.answeredIfTheDatasetMattersToItsAudience({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+          ),
+        )
+        .map(([started, answered]) =>
+          Tuple.make(
+            Array.make(started, answered),
+            started.datasetReviewId,
+            started.authorId,
+            answered.answer,
+            answered.detail,
+          ),
+        ),
+    ],
+    ([[events, datasetReviewId, userId, expectedAnswer, expectedDetail]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Result.succeed(Option.some({ answer: expectedAnswer, detail: expectedDetail })))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started, answered1], datasetReviewId, authorId, answered1.answer, answered1.detail]], // one answer
+          [[[started, answered1, answered2], datasetReviewId, authorId, answered2.answer, answered2.detail]], // two answers
+        ],
+      },
+    },
+  )
+
+  it.prop(
+    'is being published',
+    [
+      fc
+        .uuid()
+        .chain(datasetReviewId =>
+          fc.tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
+          ),
+        )
+        .map(events =>
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
+            events,
+            events[0].datasetReviewId,
+            events[0].authorId,
+          ),
+        ),
+    ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewIsBeingPublished()))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
+          [[[started, answered1, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // also answered
+          [[[publicationOfDatasetReviewWasRequested, started, answered1], datasetReviewId, authorId]], // different order
+        ],
+      },
+    },
+  )
+
+  it.prop(
+    'has been published',
+    [
+      fc
+        .uuid()
+        .chain(datasetReviewId =>
+          fc.tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
+          ),
+        )
+        .map(events =>
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
+            events,
+            events[0].datasetReviewId,
+            events[0].authorId,
+          ),
+        ),
+    ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Result.fail(new DatasetReviews.DatasetReviewHasBeenPublished()))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started, answered1, datasetReviewWasPublished], datasetReviewId, authorId]], // was published
+          [
+            [
+              [started, answered1, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // also requested
+          [[[started, datasetReviewWasPublished, answered1], datasetReviewId, authorId]], // different order
+        ],
+      },
+    },
+  )
+})

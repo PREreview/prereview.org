@@ -1,4 +1,4 @@
-import type * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import type * as DatasetReviews from '../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewPublishedPage/ReviewPublishedPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Doi, Uuid } from '../../../src/types/index.ts'
