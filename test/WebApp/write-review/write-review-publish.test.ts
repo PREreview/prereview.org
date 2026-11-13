@@ -19,7 +19,7 @@ import {
   type PublishPrereviewEnv,
 } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
-import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type { IsOpenForRequests } from '../../../Prereviewers/index.ts'
+import type { IsOpenForRequests } from '../../../Domain/Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 

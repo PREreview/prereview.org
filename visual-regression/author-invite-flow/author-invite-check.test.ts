@@ -1,5 +1,5 @@
 import { Option } from 'effect'
-import * as Prereviewers from '../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../src/Domain/Prereviewers/index.ts'
 import { checkPage } from '../../src/WebApp/author-invite-flow/check-page/check-page.ts'
 import { failureMessage } from '../../src/WebApp/author-invite-flow/check-page/failure-message.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'

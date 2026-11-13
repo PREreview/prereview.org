@@ -1,5 +1,5 @@
 import { Option } from 'effect'
-import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/ConfirmAuthorChoicesPage/ConfirmAuthorChoicesPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Name } from '../../../src/types/Name.ts'

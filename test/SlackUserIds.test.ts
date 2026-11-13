@@ -1,7 +1,7 @@
 import { describe, expect, it } from './vitest.ts'
 import { Effect, Layer, Redacted, Result } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
-import { IsOpenForRequestsStore } from '../src/Prereviewers/index.ts'
+import { IsOpenForRequestsStore } from '../src/Domain/Prereviewers/index.ts'
 import * as _ from '../src/SlackUserIds.ts'
 import * as fc from './fc.ts'
 

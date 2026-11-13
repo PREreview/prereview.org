@@ -19,7 +19,7 @@ import { NameSchema } from '../types/Name.ts'
 import * as OrcidId from '../types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../types/Pseudonym.ts'
 import { PreprintReviews } from '../Domain/PreprintReviews/index.ts'
-import { Prereviewers } from '../Prereviewers/index.ts'
+import { Prereviewers } from '../Domain/Prereviewers/index.ts'
 
 const NaiveHtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
   Schema.decodeTo(

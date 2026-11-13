@@ -4,7 +4,7 @@ import type * as Datasets from '../../../Datasets/index.ts'
 import type { Zenodo } from '../../../ExternalApis/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { DefaultLocale, translate } from '../../../locales/index.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
+import type * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'otherAuthors' | 'dataset'> & {
   readonly author: Prereviewers.Persona

@@ -29,7 +29,7 @@ import {
   type Preprints,
   getPreprintTitle,
 } from '../../../Preprints/index.ts'
-import * as Prereviewers from '../../../Prereviewers/index.ts'
+import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'

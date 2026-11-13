@@ -5,7 +5,7 @@ import * as Datasets from '../../../../src/Datasets/index.ts'
 import type { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ZenodoRecords/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
 import { html, plainText } from '../../../../src/html.ts'
-import * as Prereviewers from '../../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import { Doi, Name, NonEmptyString, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
 
 const cases = [

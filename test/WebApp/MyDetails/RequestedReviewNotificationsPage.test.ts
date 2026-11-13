@@ -8,9 +8,9 @@ import {
   HasNotOptedIn,
   HasOptedIn,
   HasOptedOut,
-} from '../../../src/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
-import { Prereviewers } from '../../../src/Prereviewers/index.ts'
-import { UnknownPrereviewer } from '../../../src/Prereviewers/OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+} from '../../../src/Domain/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
+import { UnknownPrereviewer } from '../../../src/Domain/Prereviewers/OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { UnableToQuery } from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

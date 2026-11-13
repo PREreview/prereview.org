@@ -1,5 +1,5 @@
 import { Result, Option } from 'effect'
-import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'

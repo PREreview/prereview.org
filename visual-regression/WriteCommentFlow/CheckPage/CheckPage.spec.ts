@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'

@@ -1,6 +1,6 @@
 import { Option } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as Prereviewers from '../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../src/Domain/Prereviewers/index.ts'
 import { personaForm } from '../../src/WebApp/author-invite-flow/persona-page/persona-form.ts'
 import { missingE } from '../../src/form.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'

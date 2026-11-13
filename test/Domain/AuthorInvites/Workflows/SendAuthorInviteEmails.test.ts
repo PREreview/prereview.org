@@ -5,7 +5,7 @@ import * as _ from '../../../../src/Domain/AuthorInvites/Workflows/SendAuthorInv
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Datasets/index.ts'
 import { Email } from '../../../../src/ExternalInteractions/index.ts'
-import * as Prereviewers from '../../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import * as Queries from '../../../../src/Queries.ts'
 import * as fc from '../../../fc.ts'
 

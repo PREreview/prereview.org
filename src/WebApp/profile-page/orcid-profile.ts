@@ -9,7 +9,7 @@ import {
   maybeGetLocation,
   maybeGetResearchInterests,
   maybeIsOpenForRequests,
-} from '../../Prereviewers/index.ts'
+} from '../../Domain/Prereviewers/index.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { type SlackUser, maybeGetSlackUser } from '../../slack-user.ts'
 import type { Name } from '../../types/Name.ts'

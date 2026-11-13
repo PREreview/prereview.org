@@ -15,7 +15,7 @@ import {
   maybeGetResearchInterests,
   maybeIsOpenForRequests,
   Prereviewers,
-} from '../../Prereviewers/index.ts'
+} from '../../Domain/Prereviewers/index.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { maybeGetSlackUser } from '../../slack-user.ts'

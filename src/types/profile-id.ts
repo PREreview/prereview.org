@@ -1,5 +1,5 @@
 import { Data, Function, Match } from 'effect'
-import type * as Prereviewers from '../Prereviewers/index.ts'
+import type * as Prereviewers from '../Domain/Prereviewers/index.ts'
 import type { OrcidId } from './OrcidId.ts'
 import type { Pseudonym } from './Pseudonym.ts'
 

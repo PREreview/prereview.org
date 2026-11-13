@@ -28,7 +28,7 @@ import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenod
 import { plainText, rawHtml } from '../../../src/html.ts'
 import type { NewPrereview } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
-import type * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import type * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import { reviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

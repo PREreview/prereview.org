@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import type { CareerStage } from '../../../Prereviewers/index.ts'
+import type { CareerStage } from '../../../Domain/Prereviewers/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'

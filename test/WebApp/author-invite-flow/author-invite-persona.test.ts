@@ -3,7 +3,7 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
-import { Prereviewers } from '../../../src/Prereviewers/index.ts'
+import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,

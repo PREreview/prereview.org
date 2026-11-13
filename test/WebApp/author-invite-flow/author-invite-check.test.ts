@@ -7,7 +7,7 @@ import {
   ContactEmailAddresses,
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
-import { Prereviewers } from '../../../src/Prereviewers/index.ts'
+import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,

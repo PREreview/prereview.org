@@ -4,7 +4,7 @@ import { Locale } from '../../../src/Context.ts'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import { html } from '../../../src/html.ts'
 import * as _ from '../../../src/Domain/PreprintReviews/legacy-publish-review.ts'
-import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as fc from '../../WebApp/write-review/fc.ts'
 
 describe('completedFormToNewPrereview', () => {

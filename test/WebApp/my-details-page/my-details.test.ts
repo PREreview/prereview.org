@@ -12,8 +12,8 @@ import {
   HasNotOptedIn,
   HasOptedIn,
   HasOptedOut,
-} from '../../../src/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
-import { Prereviewers } from '../../../src/Prereviewers/index.ts'
+} from '../../../src/Domain/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

@@ -1,7 +1,7 @@
 import { Result, flow, Function, pipe, Schema } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { CareerStage, Location } from '../../Prereviewers/index.ts'
+import type { CareerStage, Location } from '../../Domain/Prereviewers/index.ts'
 import { NonEmptyString, OrcidId, Temporal } from '../../types/index.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'

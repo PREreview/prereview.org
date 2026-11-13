@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import * as Prereviewers from '../../../Prereviewers/index.ts'
+import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'

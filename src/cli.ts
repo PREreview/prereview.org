@@ -13,7 +13,7 @@ import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from '.
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
-import * as Prereviewers from './Prereviewers/index.ts'
+import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as Redis from './Redis.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'

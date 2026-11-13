@@ -1,0 +1,44 @@
+import { expect, test } from '../../vitest.ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { Result } from 'effect'
+import * as Events from '../../../src/Events.ts'
+import * as _ from '../../../src/Domain/Prereviewers/IsRegistered.ts'
+import { OrcidId, Pseudonym } from '../../../src/types/index.ts'
+
+const input = OrcidId.OrcidId('0000-0002-1825-0097')
+
+const imported = new Events.RegisteredPrereviewerImported({
+  orcidId: input,
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+const registered = new Events.PrereviewerRegistered({
+  orcidId: input,
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
+const importedDifferentPrereviewer = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
+  orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+  ['no events', input, [], false],
+  ['imported', input, [imported], true],
+  ['registered', input, [registered], true],
+  ['different PREreviewer imported', input, [importedDifferentPrereviewer], false],
+  ['different PREreviewer registered', input, [registeredDifferentPrereviewer], false],
+])('%s', (_name, input, events, expected) => {
+  const { query } = _.IsRegistered
+
+  const actual = query(events, input)
+
+  expect(actual).toStrictEqual(Result.succeed(expected))
+})

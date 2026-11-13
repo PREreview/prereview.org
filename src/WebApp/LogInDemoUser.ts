@@ -1,7 +1,7 @@
 import { Effect, pipe } from 'effect'
 import type { Locale } from '../Context.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
-import { Prereviewers } from '../Prereviewers/index.ts'
+import { Prereviewers } from '../Domain/Prereviewers/index.ts'
 import { OrcidId } from '../types/index.ts'
 import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 import { PageNotFound } from './PageNotFound/index.ts'

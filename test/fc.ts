@@ -120,8 +120,8 @@ import type {
   Languages,
   Location,
   ResearchInterests,
-} from '../src/Prereviewers/index.ts'
-import * as Prereviewers from '../src/Prereviewers/index.ts'
+} from '../src/Domain/Prereviewers/index.ts'
+import * as Prereviewers from '../src/Domain/Prereviewers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'

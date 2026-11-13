@@ -2,7 +2,7 @@ import { Array, Context, Effect, type Result, Layer, pipe, Struct } from 'effect
 import { Clubs } from '../Clubs/index.ts'
 import * as Commands from '../../Commands.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
-import * as Prereviewers from '../../Prereviewers/index.ts'
+import * as Prereviewers from '../Prereviewers/index.ts'
 import * as Queries from '../../Queries.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as FormStore from './FormStore.ts'

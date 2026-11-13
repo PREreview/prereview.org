@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
-import * as Prereviewers from '../../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { Name } from '../../../src/types/Name.ts'

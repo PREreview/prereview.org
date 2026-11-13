@@ -63,7 +63,7 @@ import {
   fromPreprintDoi,
   fromUrl,
 } from '../../Preprints/index.ts'
-import type * as Prereviewers from '../../Prereviewers/index.ts'
+import type * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Prereview from '../../Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'

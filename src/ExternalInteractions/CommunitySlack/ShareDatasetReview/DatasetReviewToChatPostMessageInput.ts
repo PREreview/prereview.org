@@ -1,6 +1,6 @@
 import { Match, Struct } from 'effect'
 import type { Slack } from '../../../ExternalApis/index.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
+import type * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import type { NonEmptyString } from '../../../types/index.ts'
 
 export interface DatasetReview {

@@ -7,8 +7,8 @@ import {
   PseudonymHasBeenReplaced,
   PseudonymInUse,
   PseudonymNotInUse,
-} from '../../../src/Prereviewers/IsPseudonymInUse.ts'
-import { Prereviewers } from '../../../src/Prereviewers/index.ts'
+} from '../../../src/Domain/Prereviewers/IsPseudonymInUse.ts'
+import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/profile-page/index.ts'

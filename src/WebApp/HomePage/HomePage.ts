@@ -6,7 +6,7 @@ import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
 import * as Preprints from '../../Preprints/index.ts'
-import * as Prereviewers from '../../Prereviewers/index.ts'
+import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'

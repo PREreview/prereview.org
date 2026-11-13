@@ -4,7 +4,7 @@ import {
   VerifiedContactEmailAddress,
 } from '../../src/Domain/ContactEmailAddresses/index.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as Prereviewers from '../../src/Prereviewers/index.ts'
+import * as Prereviewers from '../../src/Domain/Prereviewers/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { Name } from '../../src/types/Name.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'

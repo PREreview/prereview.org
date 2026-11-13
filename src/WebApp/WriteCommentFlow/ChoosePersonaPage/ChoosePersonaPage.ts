@@ -1,7 +1,7 @@
 import { Result, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
+import type * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'

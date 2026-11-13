@@ -1,7 +1,7 @@
 import { Array, Effect, pipe } from 'effect'
 import { Clubs } from '../../Domain/Clubs/index.ts'
 import { Locale } from '../../Context.ts'
-import { Prereviewers } from '../../Prereviewers/index.ts'
+import { Prereviewers } from '../../Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import type { Slug } from '../../types/Slug.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
