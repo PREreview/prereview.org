@@ -12,7 +12,7 @@ import {
 import type { Locale } from '../../../Context.ts'
 import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type FormStore, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
+import { type FormStore, getForm, nextFormPath } from '../../../Domain/PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,

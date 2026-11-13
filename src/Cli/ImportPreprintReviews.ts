@@ -18,7 +18,7 @@ import { Html, HtmlFromSelfSchema } from '../html.ts'
 import { NameSchema } from '../types/Name.ts'
 import * as OrcidId from '../types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../types/Pseudonym.ts'
-import { PreprintReviews } from '../PreprintReviews/index.ts'
+import { PreprintReviews } from '../Domain/PreprintReviews/index.ts'
 import { Prereviewers } from '../Prereviewers/index.ts'
 
 const NaiveHtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(

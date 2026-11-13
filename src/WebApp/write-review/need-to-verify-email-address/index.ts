@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type FormStore, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
+import { type FormStore, getForm, nextFormPath } from '../../../Domain/PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,

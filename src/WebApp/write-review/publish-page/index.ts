@@ -22,7 +22,7 @@ import {
   getForm,
   nextFormPath,
   saveForm,
-} from '../../../PreprintReviews/index.ts'
+} from '../../../Domain/PreprintReviews/index.ts'
 import {
   type IndeterminatePreprintId,
   type PreprintTitle,

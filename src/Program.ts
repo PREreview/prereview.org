@@ -37,7 +37,7 @@ import {
 } from './ExternalInteractions/index.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
-import * as PreprintReviews from './PreprintReviews/index.ts'
+import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'

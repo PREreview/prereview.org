@@ -5,7 +5,12 @@ import type { ClubName } from '../../../Domain/Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { getCompetingInterests, getLicense, getUseOfAi, type CompletedForm } from '../../../PreprintReviews/index.ts'
+import {
+  getCompetingInterests,
+  getLicense,
+  getUseOfAi,
+  type CompletedForm,
+} from '../../../Domain/PreprintReviews/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'

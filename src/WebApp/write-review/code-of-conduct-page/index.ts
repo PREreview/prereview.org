@@ -14,7 +14,7 @@ import {
   nextFormPath,
   saveForm,
   updateForm,
-} from '../../../PreprintReviews/index.ts'
+} from '../../../Domain/PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,

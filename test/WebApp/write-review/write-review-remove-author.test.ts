@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import { FormC, formKey, FormStore } from '../../../src/PreprintReviews/index.ts'
+import { FormC, formKey, FormStore } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewAddAuthorsMatch, writeReviewMatch, writeReviewRemoveAuthorMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

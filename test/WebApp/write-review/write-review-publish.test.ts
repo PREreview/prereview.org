@@ -17,7 +17,7 @@ import {
   formKey,
   FormStore,
   type PublishPrereviewEnv,
-} from '../../../src/PreprintReviews/index.ts'
+} from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Routes from '../../../src/routes.ts'

@@ -6,7 +6,7 @@ import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
 import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
-import * as PreprintReviews from '../../../../src/PreprintReviews/index.ts'
+import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import {
   BiorxivPreprintId,
   PreprintIsNotFound,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Array } from 'effect'
-import { NextExpectedCommand, type Form } from '../../../src/PreprintReviews/index.ts'
+import { NextExpectedCommand, type Form } from '../../../src/Domain/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import * as _ from '../../../src/WebApp/ReviewAPreprintFlow/RouteForCommand.ts'

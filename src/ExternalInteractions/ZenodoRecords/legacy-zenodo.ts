@@ -51,7 +51,7 @@ import {
 import type { ClubDetails, ClubName } from '../../Domain/Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
-import type { NewPrereview } from '../../PreprintReviews/index.ts'
+import type { NewPrereview } from '../../Domain/PreprintReviews/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import {
   type IndeterminatePreprintId,

@@ -4,7 +4,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type Form, type FormStore, getForm, nextFormPath } from '../../../PreprintReviews/index.ts'
+import { type Form, type FormStore, getForm, nextFormPath } from '../../../Domain/PreprintReviews/index.ts'
 import {
   getPreprintTitle,
   type IndeterminatePreprintId,

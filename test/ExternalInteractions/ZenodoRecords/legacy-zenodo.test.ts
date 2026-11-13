@@ -26,7 +26,7 @@ import {
 import type { ClubName } from '../../../src/Domain/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
-import type { NewPrereview } from '../../../src/PreprintReviews/index.ts'
+import type { NewPrereview } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import type * as Prereviewers from '../../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'

@@ -1,7 +1,7 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Layer, Option, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import { CompletedFormC, FormC, formKey, FormStore } from '../../../src/PreprintReviews/index.ts'
+import { CompletedFormC, FormC, formKey, FormStore } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Preprints/index.ts'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
