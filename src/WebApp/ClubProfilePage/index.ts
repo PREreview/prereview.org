@@ -1,5 +1,5 @@
 import { Array, Effect, pipe } from 'effect'
-import { Clubs } from '../../Clubs/index.ts'
+import { Clubs } from '../../Domain/Clubs/index.ts'
 import { Locale } from '../../Context.ts'
 import { Prereviewers } from '../../Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'

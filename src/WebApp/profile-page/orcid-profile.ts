@@ -1,7 +1,7 @@
 import { Effect, flow, identity, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
-import { type ClubName, Clubs } from '../../Clubs/index.ts'
+import { type ClubName, Clubs } from '../../Domain/Clubs/index.ts'
 import {
   maybeGetAvatar,
   maybeGetCareerStage,

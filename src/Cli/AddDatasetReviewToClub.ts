@@ -1,6 +1,6 @@
 import { Argument, Command } from 'effect/cli'
 import { Effect, pipe } from 'effect'
-import { Clubs } from '../Clubs/index.ts'
+import { Clubs } from '../Domain/Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import { Uuid } from '../types/index.ts'
 import { type Slug, SlugSchema } from '../types/Slug.ts'

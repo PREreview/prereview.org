@@ -1,5 +1,5 @@
 import { Array, Context, Data, Effect, type Result, Layer, Option, pipe, Scope, Struct, flow } from 'effect'
-import { Clubs } from '../../Clubs/index.ts'
+import { Clubs } from '../../Domain/Clubs/index.ts'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'

@@ -3,7 +3,7 @@ import type { Result as PublishedPreprintReview } from './GetPublishedPreprintRe
 import { Prereview, PrereviewIsUnavailable } from './Prereview.ts'
 import { Preprints } from '../Preprints/index.ts'
 import { Prereviewers } from '../Prereviewers/index.ts'
-import { Clubs } from '../Clubs/index.ts'
+import { Clubs } from '../Domain/Clubs/index.ts'
 
 export const EnrichPublishedPreprintReview = Effect.fn('Prereviews.enrichPublishedPreprintReview')(function* (
   publishedPreprintReview: PublishedPreprintReview,

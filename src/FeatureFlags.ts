@@ -1,5 +1,5 @@
 import { Config, Context, Data, Effect, Layer } from 'effect'
-import type { Clubs } from './Clubs/index.ts'
+import type { Clubs } from './Domain/Clubs/index.ts'
 import type { User } from './user.ts'
 
 export class FeatureFlags extends Context.Service<

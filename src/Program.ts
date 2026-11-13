@@ -1,7 +1,7 @@
 import { Layer, pipe } from 'effect'
 import * as AuthorInvites from './Domain/AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
-import * as Clubs from './Clubs/index.ts'
+import * as Clubs from './Domain/Clubs/index.ts'
 import * as Comments from './Domain/Comments/index.ts'
 import * as ContactEmailAddresses from './ContactEmailAddresses/index.ts'
 import * as CookieSignature from './CookieSignature.ts'

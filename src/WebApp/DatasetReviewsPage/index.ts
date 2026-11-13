@@ -1,5 +1,5 @@
 import { Effect, Option } from 'effect'
-import { Clubs } from '../../Clubs/index.ts'
+import { Clubs } from '../../Domain/Clubs/index.ts'
 import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'

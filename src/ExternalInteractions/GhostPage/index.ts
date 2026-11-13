@@ -1,5 +1,5 @@
 import { Context, Data, Effect, flow, Layer, Scope } from 'effect'
-import { Clubs } from '../../Clubs/index.ts'
+import { Clubs } from '../../Domain/Clubs/index.ts'
 import type { Locale } from '../../Context.ts'
 import type { Ghost } from '../../ExternalApis/index.ts'
 import type { Html } from '../../html.ts'

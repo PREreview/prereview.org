@@ -1,6 +1,6 @@
 import { Array, flow, Match, pipe, String, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { ClubDetails as BaseClubDetails } from '../../Clubs/index.ts'
+import type { ClubDetails as BaseClubDetails } from '../../Domain/Clubs/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'

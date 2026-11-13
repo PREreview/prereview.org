@@ -23,7 +23,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import type { ClubName } from '../../../src/Clubs/index.ts'
+import type { ClubName } from '../../../src/Domain/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
 import type { NewPrereview } from '../../../src/PreprintReviews/index.ts'

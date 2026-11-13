@@ -1,5 +1,5 @@
 import { Array, Config, Effect, HashSet, Layer, pipe, Redacted, Schema } from 'effect'
-import * as Clubs from './Clubs/index.ts'
+import * as Clubs from './Domain/Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, ScietyListToken, SessionSecret } from './Context.ts'
 import { ContentfulConfig, ContentfulId } from './ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'

@@ -1,5 +1,5 @@
 import { Array, Option, Filter } from 'effect'
-import type { OrcidId } from '../types/OrcidId.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
 import type { ClubDetails, ClubName } from './Clubs.ts'
 
 export type Input = OrcidId

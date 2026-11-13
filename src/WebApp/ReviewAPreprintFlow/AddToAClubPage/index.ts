@@ -1,7 +1,7 @@
 import type { UrlParams } from 'effect/http'
 import { Array, Effect, Match } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Clubs } from '../../../Clubs/index.ts'
+import { Clubs } from '../../../Domain/Clubs/index.ts'
 import { Locale } from '../../../Context.ts'
 import { FeatureFlags } from '../../../FeatureFlags.ts'
 import { PreprintReviews } from '../../../PreprintReviews/index.ts'

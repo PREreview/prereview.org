@@ -1,5 +1,5 @@
 import { Array } from 'effect'
-import type { OrcidId } from '../types/OrcidId.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
 import type { ClubDetails } from './Clubs.ts'
 
 export type Input = OrcidId

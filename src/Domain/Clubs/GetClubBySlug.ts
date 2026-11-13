@@ -1,5 +1,5 @@
 import { Array, Result, Equal, Option } from 'effect'
-import type { Slug } from '../types/Slug.ts'
+import type { Slug } from '../../types/Slug.ts'
 import type { ClubDetails } from './Clubs.ts'
 import { ClubNotFound } from './Errors.ts'
 

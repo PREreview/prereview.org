@@ -35,7 +35,7 @@ import type {
   DeclinedAuthorInvite,
   OpenAuthorInvite,
 } from '../src/author-invite.ts'
-import type * as Clubs from '../src/Clubs/index.ts'
+import type * as Clubs from '../src/Domain/Clubs/index.ts'
 import type { Page } from '../src/CmsContent/index.ts'
 import * as Comments from '../src/Domain/Comments/index.ts'
 import {

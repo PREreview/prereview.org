@@ -1,5 +1,5 @@
 import { type Array, Result } from 'effect'
-import type { ClubName } from '../../../src/Clubs/index.ts'
+import type { ClubName } from '../../../src/Domain/Clubs/index.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'

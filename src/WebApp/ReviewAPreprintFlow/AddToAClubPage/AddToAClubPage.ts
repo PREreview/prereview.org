@@ -1,5 +1,5 @@
 import { Array, Result, Match, pipe, String, Struct } from 'effect'
-import type { ClubName } from '../../../Clubs/index.ts'
+import type { ClubName } from '../../../Domain/Clubs/index.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'

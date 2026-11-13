@@ -35,7 +35,7 @@ import {
 } from 'zenodo-ts'
 import * as AuthorInviteStore from '../src/AuthorInviteStore.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
-import * as Clubs from '../src/Clubs/index.ts'
+import * as Clubs from '../src/Domain/Clubs/index.ts'
 import { AllowSiteCrawlers, EnabledLocales, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { DryadDatasetId } from '../src/Datasets/index.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'

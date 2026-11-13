@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Clubs } from '../../../src/Clubs/index.ts'
+import { Clubs } from '../../../src/Domain/Clubs/index.ts'
 import {
   PseudonymHasBeenReplaced,
   PseudonymInUse,

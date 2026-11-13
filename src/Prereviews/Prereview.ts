@@ -1,7 +1,7 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { ClubName } from '../Clubs/index.ts'
+import type { ClubName } from '../Domain/Clubs/index.ts'
 import type * as Datasets from '../Datasets/index.ts'
 import type { Html } from '../html.ts'
 import type * as Preprints from '../Preprints/index.ts'

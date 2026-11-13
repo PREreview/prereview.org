@@ -1,13 +1,13 @@
-import { expect, it } from '../vitest.ts'
+import { expect, it } from '../../vitest.ts'
 import { type Array, Result } from 'effect'
-import * as _ from '../../src/Clubs/GetClubByName.ts'
-import { type ClubDetails, ClubNotFound } from '../../src/Clubs/index.ts'
-import { html } from '../../src/html.ts'
-import { Name } from '../../src/types/Name.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Slug } from '../../src/types/Slug.ts'
-import { PlainDate } from '../../src/types/Temporal.ts'
-import { Uuid } from '../../src/types/Uuid.ts'
+import * as _ from '../../../src/Domain/Clubs/GetClubByName.ts'
+import { type ClubDetails, ClubNotFound } from '../../../src/Domain/Clubs/index.ts'
+import { html } from '../../../src/html.ts'
+import { Name } from '../../../src/types/Name.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Slug } from '../../../src/types/Slug.ts'
+import { PlainDate } from '../../../src/types/Temporal.ts'
+import { Uuid } from '../../../src/types/Uuid.ts'
 
 const clubName = Name('Superheroes Club')
 const formerName = Name('Bad Guys Club')

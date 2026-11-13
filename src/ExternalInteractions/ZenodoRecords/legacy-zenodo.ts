@@ -48,7 +48,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import type { ClubDetails, ClubName } from '../../Clubs/index.ts'
+import type { ClubDetails, ClubName } from '../../Domain/Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import type { NewPrereview } from '../../PreprintReviews/index.ts'

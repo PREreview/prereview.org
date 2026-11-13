@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Layer, type Array } from 'effect'
-import { html } from '../html.ts'
-import { EmailAddress } from '../types/EmailAddress.ts'
-import { Name } from '../types/Name.ts'
-import { OrcidId } from '../types/OrcidId.ts'
-import { Slug } from '../types/Slug.ts'
-import { Uuid } from '../types/Uuid.ts'
+import { html } from '../../html.ts'
+import { EmailAddress } from '../../types/EmailAddress.ts'
+import { Name } from '../../types/Name.ts'
+import { OrcidId } from '../../types/OrcidId.ts'
+import { Slug } from '../../types/Slug.ts'
+import { Uuid } from '../../types/Uuid.ts'
 import { ClubsData, type ClubDetails } from './Clubs.ts'
 
 export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [

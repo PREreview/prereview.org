@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../vitest.ts'
 import { Effect, Layer } from 'effect'
-import { Clubs } from '../../src/Clubs/index.ts'
+import { Clubs } from '../../src/Domain/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
