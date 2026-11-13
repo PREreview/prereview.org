@@ -1,11 +1,11 @@
-import { describe, test } from '../vitest.ts'
+import { describe, test } from '../../vitest.ts'
 import { Option } from 'effect'
-import * as _ from '../../src/Comments/index.ts'
-import { html } from '../../src/html.ts'
-import { Doi } from '../../src/types/Doi.ts'
-import { NonEmptyString, Uuid } from '../../src/types/index.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { CommandHandlerSpecification } from '../CommandHandlerSpecification.ts'
+import * as _ from '../../../src/Domain/Comments/index.ts'
+import { html } from '../../../src/html.ts'
+import { Doi } from '../../../src/types/Doi.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { CommandHandlerSpecification } from '../../CommandHandlerSpecification.ts'
 
 const given = CommandHandlerSpecification.for({
   decide: _.DecideComment,

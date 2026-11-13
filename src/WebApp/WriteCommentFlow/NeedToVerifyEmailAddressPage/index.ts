@@ -1,5 +1,5 @@
 import { Effect, Equal, Match, pipe } from 'effect'
-import * as Comments from '../../../Comments/index.ts'
+import * as Comments from '../../../Domain/Comments/index.ts'
 import type * as ContactEmailAddress from '../../../ContactEmailAddresses/index.ts'
 import { ContactEmailAddresses } from '../../../ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'

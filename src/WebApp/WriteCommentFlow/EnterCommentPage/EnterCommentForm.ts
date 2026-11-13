@@ -1,6 +1,6 @@
 import { Data, Effect, Result, Match, pipe, Schema, SchemaTransformation } from 'effect'
 import markdownIt from 'markdown-it'
-import type * as Comments from '../../../Comments/index.ts'
+import type * as Comments from '../../../Domain/Comments/index.ts'
 import { type Html, SanitizeHtmlSchema } from '../../../html.ts'
 import { NonEmptyString } from '../../../types/index.ts'
 

@@ -1,5 +1,5 @@
 import { Effect, Equal, Match, pipe } from 'effect'
-import * as Comments from '../../../Comments/index.ts'
+import * as Comments from '../../../Domain/Comments/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'

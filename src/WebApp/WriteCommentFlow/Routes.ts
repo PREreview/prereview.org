@@ -1,5 +1,5 @@
 import { Match, pipe } from 'effect'
-import type * as Comments from '../../Comments/index.ts'
+import type * as Comments from '../../Domain/Comments/index.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 

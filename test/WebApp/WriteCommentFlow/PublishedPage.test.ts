@@ -1,6 +1,6 @@
 import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Equal } from 'effect'
-import * as Comments from '../../../src/Comments/index.ts'
+import * as Comments from '../../../src/Domain/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'

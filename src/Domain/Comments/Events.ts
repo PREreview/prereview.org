@@ -1,6 +1,6 @@
 import { Array, Schema } from 'effect'
-import { HtmlSchema } from '../html.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../types/index.ts'
+import { HtmlSchema } from '../../html.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 
 export class CommentWasStarted extends Schema.TaggedClass<CommentWasStarted>()('CommentWasStarted', {
   prereviewId: Schema.Number,

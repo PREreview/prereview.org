@@ -1,10 +1,10 @@
 import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct, flow } from 'effect'
 import { type Sharding, Singleton } from 'effect/cluster'
-import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
-import * as Events from '../Events.ts'
-import * as EventStore from '../EventStore.ts'
-import { UnableToQuery } from '../Queries.ts'
-import * as ReviewPage from '../WebApp/review-page/index.ts'
+import type { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
+import * as Events from '../../Events.ts'
+import * as EventStore from '../../EventStore.ts'
+import { UnableToQuery } from '../../Queries.ts'
+import * as ReviewPage from '../../WebApp/review-page/index.ts'
 import {
   GetComment,
   GetNextExpectedCommandForUser,

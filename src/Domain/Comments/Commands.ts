@@ -1,8 +1,8 @@
 import { Data, type Option } from 'effect'
-import type { Html } from '../html.ts'
-import type { Doi } from '../types/Doi.ts'
-import type { NonEmptyString, Uuid } from '../types/index.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
+import type { Html } from '../../html.ts'
+import type { Doi } from '../../types/Doi.ts'
+import type { NonEmptyString, Uuid } from '../../types/index.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
 
 export class StartComment extends Data.TaggedClass('StartComment')<{
   prereviewId: number

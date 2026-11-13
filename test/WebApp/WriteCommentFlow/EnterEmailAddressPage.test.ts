@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Result, Equal, Layer } from 'effect'
-import * as Comments from '../../../src/Comments/index.ts'
+import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/ContactEmailAddresses/index.ts'
 import { ContactEmailAddresses } from '../../../src/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../src/Context.ts'

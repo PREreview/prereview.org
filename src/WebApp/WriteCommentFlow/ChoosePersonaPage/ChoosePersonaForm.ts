@@ -1,5 +1,5 @@
 import { Data, Effect, Result, Match, pipe, Schema } from 'effect'
-import type * as Comments from '../../../Comments/index.ts'
+import type * as Comments from '../../../Domain/Comments/index.ts'
 
 export type ChoosePersonaForm = EmptyForm | InvalidForm | CompletedForm
 

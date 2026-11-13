@@ -1,5 +1,5 @@
 import { Data, Effect, Result, Match, pipe, Schema } from 'effect'
-import type * as Comments from '../../../Comments/index.ts'
+import type * as Comments from '../../../Domain/Comments/index.ts'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type CompetingInterestsForm = EmptyForm | InvalidForm | CompletedForm

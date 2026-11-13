@@ -1,13 +1,13 @@
-import { describe, expect, it, test } from '../vitest.ts'
+import { describe, expect, it, test } from '../../vitest.ts'
 import { Array, Result, Option } from 'effect'
-import * as _ from '../../src/Comments/Queries.ts'
-import * as Comments from '../../src/Comments/index.ts'
-import * as Queries from '../../src/Queries.ts'
-import { html } from '../../src/html.ts'
-import { Doi } from '../../src/types/Doi.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/index.ts'
-import * as fc from '../fc.ts'
+import * as _ from '../../../src/Domain/Comments/Queries.ts'
+import * as Comments from '../../../src/Domain/Comments/index.ts'
+import * as Queries from '../../../src/Queries.ts'
+import { html } from '../../../src/html.ts'
+import { Doi } from '../../../src/types/Doi.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Uuid } from '../../../src/types/index.ts'
+import * as fc from '../../fc.ts'
 
 describe('GetPrereviewId', () => {
   const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')

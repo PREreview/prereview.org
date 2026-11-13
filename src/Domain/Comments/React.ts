@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
-import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
-import type { Uuid } from '../types/index.ts'
+import { ContactEmailAddresses } from '../../ContactEmailAddresses/index.ts'
+import type { Uuid } from '../../types/index.ts'
 import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.ts'
 import {
   CreateRecordOnZenodoForComment,
