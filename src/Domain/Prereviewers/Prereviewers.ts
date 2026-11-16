@@ -46,31 +46,97 @@ export class Prereviewers extends Context.Service<
       orcid: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof OptOutOfNotificationsForReviewsPublishedInResponseToRequests>>
   }
->()('Prereviewers') {}
+>()('Prereviewers') {
+  static readonly register = (...args: Parameters<(typeof Prereviewers.Service)['register']>) =>
+    Prereviewers.use(service => service.register(...args))
 
+  static readonly isRegistered = (...args: Parameters<(typeof Prereviewers.Service)['isRegistered']>) =>
+    Prereviewers.use(service => service.isRegistered(...args))
+
+  static readonly getPublicPersona = (...args: Parameters<(typeof Prereviewers.Service)['getPublicPersona']>) =>
+    Prereviewers.use(service => service.getPublicPersona(...args))
+
+  static readonly getPseudonymPersona = (...args: Parameters<(typeof Prereviewers.Service)['getPseudonymPersona']>) =>
+    Prereviewers.use(service => service.getPseudonymPersona(...args))
+
+  static readonly getPersona = pipe(
+    Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),
+    Match.withReturnType<Effect.Effect<Persona, UnableToGetPersona, Prereviewers>>(),
+    Match.when({ persona: 'public' }, ({ orcidId }) => Prereviewers.getPublicPersona(orcidId)),
+    Match.when({ persona: 'pseudonym' }, ({ orcidId }) => Prereviewers.getPseudonymPersona(orcidId)),
+    Match.exhaustive,
+  )
+
+  static readonly getPseudonym = (...args: Parameters<(typeof Prereviewers.Service)['getPseudonym']>) =>
+    Prereviewers.use(service => service.getPseudonym(...args))
+
+  static readonly getOrcidIdFromPseudonym = (
+    ...args: Parameters<(typeof Prereviewers.Service)['getOrcidIdFromPseudonym']>
+  ) => Prereviewers.use(service => service.getOrcidIdFromPseudonym(...args))
+
+  static readonly isPseudonymInUse = (...args: Parameters<(typeof Prereviewers.Service)['isPseudonymInUse']>) =>
+    Prereviewers.use(service => service.isPseudonymInUse(...args))
+
+  static readonly countAvailablePseudonyms = (
+    ...args: Parameters<(typeof Prereviewers.Service)['countAvailablePseudonyms']>
+  ) => Prereviewers.use(service => service.countAvailablePseudonyms(...args))
+
+  static readonly listAllPrereviewersForStats = (
+    ...args: Parameters<(typeof Prereviewers.Service)['listAllPrereviewersForStats']>
+  ) => Prereviewers.use(service => service.listAllPrereviewersForStats(...args))
+
+  static readonly getContactDetails = (...args: Parameters<(typeof Prereviewers.Service)['getContactDetails']>) =>
+    Prereviewers.use(service => service.getContactDetails(...args))
+
+  static readonly hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests = (
+    ...args: Parameters<
+      (typeof Prereviewers.Service)['hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests']
+    >
+  ) =>
+    Prereviewers.use(service =>
+      service.hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(...args),
+    )
+
+  static readonly optInToNotificationsForReviewsPublishedInResponseToRequests = (
+    ...args: Parameters<(typeof Prereviewers.Service)['optInToNotificationsForReviewsPublishedInResponseToRequests']>
+  ) => Prereviewers.use(service => service.optInToNotificationsForReviewsPublishedInResponseToRequests(...args))
+
+  static readonly optOutOfNotificationsForReviewsPublishedInResponseToRequests = (
+    ...args: Parameters<(typeof Prereviewers.Service)['optOutOfNotificationsForReviewsPublishedInResponseToRequests']>
+  ) => Prereviewers.use(service => service.optOutOfNotificationsForReviewsPublishedInResponseToRequests(...args))
+}
+
+/** @deprecated */
 export const countAvailablePseudonyms = (
   ...args: Parameters<(typeof Prereviewers.Service)['countAvailablePseudonyms']>
 ) => Prereviewers.use(service => service.countAvailablePseudonyms(...args))
 
+/** @deprecated */
 export const listAllPrereviewersForStats = (
   ...args: Parameters<(typeof Prereviewers.Service)['listAllPrereviewersForStats']>
 ) => Prereviewers.use(service => service.listAllPrereviewersForStats(...args))
 
+/** @deprecated */
 export const getContactDetails = (...args: Parameters<(typeof Prereviewers.Service)['getContactDetails']>) =>
   Prereviewers.use(service => service.getContactDetails(...args))
 
+/** @deprecated */
 export const isRegistered = (...args: Parameters<(typeof Prereviewers.Service)['isRegistered']>) =>
   Prereviewers.use(service => service.isRegistered(...args))
 
+/** @deprecated */
 export const isPseudonymInUse = (...args: Parameters<(typeof Prereviewers.Service)['isPseudonymInUse']>) =>
   Prereviewers.use(service => service.isPseudonymInUse(...args))
 
+/** @deprecated */
 export const getPublicPersona = (...args: Parameters<(typeof Prereviewers.Service)['getPublicPersona']>) =>
   Prereviewers.use(service => service.getPublicPersona(...args))
 
+/** @deprecated */
 export const getPseudonymPersona = (...args: Parameters<(typeof Prereviewers.Service)['getPseudonymPersona']>) =>
   Prereviewers.use(service => service.getPseudonymPersona(...args))
 
+/** @deprecated */
 export const getPersona = pipe(
   Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),
   Match.withReturnType<Effect.Effect<Persona, UnableToGetPersona, Prereviewers>>(),
