@@ -14,11 +14,10 @@ import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as Errors from './Errors.ts'
 import {
-  Enrich as EnrichPublishedPreprintReview,
-  Query as GetPublishedPreprintReview,
+  GetPublishedPreprintReview,
   type Prereview,
   type PrereviewIsNotFound,
-  PrereviewIsUnavailable,
+  type PrereviewIsUnavailable,
   type PrereviewWasRemoved,
 } from './GetPublishedPreprintReview/index.ts'
 import * as FormStore from './FormStore.ts'
@@ -138,20 +137,7 @@ export const layer = Layer.effect(
       ),
     )
 
-    const getPublishedPreprintReview = yield* Queries.makeOnDemandQuery(GetPublishedPreprintReview([]))
-
-    const getPreprintReview = (reviewId: number) =>
-      pipe(
-        reviewId,
-        getPublishedPreprintReview,
-        Effect.andThen(EnrichPublishedPreprintReview),
-        Effect.catchTag(
-          ['ClubNotFound', 'UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
-          error => new PrereviewIsUnavailable({ cause: error }),
-        ),
-        Effect.provideContext(context),
-        Effect.withSpan('PreprintReviews.getPublishedPreprintReview'),
-      )
+    const getPreprintReview = yield* GetPublishedPreprintReview
 
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
       id: number,
