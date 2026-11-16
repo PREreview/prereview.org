@@ -7,6 +7,7 @@ import {
   type SupportedLocale,
   translate,
 } from '../../locales/index.ts'
+import { Temporal } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { matchPersona } from '../Prereviewers/index.ts'
 import type { PublishedPreprintReview } from './GetPublishedPreprintReview/index.ts'
@@ -37,7 +38,10 @@ export const fromPublishedPreprintReview = (review: PublishedPreprintReview): Pr
     id: review.id,
     language: review.language,
     license: review.license,
-    published: review.published,
+    published:
+      review.published instanceof Temporal.Instant
+        ? review.published.toZonedDateTimeISO('UTC').toPlainDate()
+        : review.published,
     preprint: review.preprint,
     live: review.live,
     requested: review.requested,

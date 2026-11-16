@@ -2,7 +2,6 @@ import { Array, Filter, Match, Option, Result, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
-import { Temporal } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import {
@@ -95,10 +94,7 @@ const query =
         license: imported.license,
         live: imported.live,
         preprintId: imported.preprint,
-        published:
-          imported.published instanceof Temporal.Instant
-            ? imported.published.toZonedDateTimeISO('UTC').toPlainDate()
-            : imported.published,
+        published: imported.published,
         requested: false,
         content,
         useOfAi: imported.useOfAi,

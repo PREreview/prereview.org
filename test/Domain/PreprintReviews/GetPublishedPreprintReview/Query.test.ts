@@ -24,7 +24,7 @@ const prereview = {
   license: 'CC-BY-4.0',
   live: false,
   preprintId: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abcde') }),
-  published: Temporal.PlainDate.from('2026-11-10'),
+  published: Temporal.Instant.from('2026-11-10T14:25:00Z'),
   requested: false,
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
   competingInterests: { _tag: 'No' },
@@ -43,7 +43,7 @@ const reviewImported = new Events.PreprintReviewImported({
   doi: prereview.doi,
   id: prereview.id,
   license: prereview.license,
-  published: prereview.published.toZonedDateTime({ timeZone: 'UTC', plainTime: '14:25' }).toInstant(),
+  published: prereview.published,
   preprint: prereview.preprintId,
   live: prereview.live,
   useOfAi: prereview.useOfAi,
@@ -54,7 +54,7 @@ const reviewImported = new Events.PreprintReviewImported({
 
 const reviewImportedWithPlainDate = new Events.PreprintReviewImported({
   ...reviewImported,
-  published: prereview.published,
+  published: Temporal.PlainDate.from('2026-11-10'),
 })
 
 const authorListChanged = new Events.AuthorChoicesForAReviewImported({
@@ -121,7 +121,12 @@ const pseudonymChosen = new Events.AuthorChoicesForAReviewImported({
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReviewDetails, _.Error>]>([
   ['no events', input, [], Result.fail(new PrereviewIsNotFound())],
   ['review imported', input, [reviewImported], Result.succeed(prereview)],
-  ['review imported with plaindate', input, [reviewImportedWithPlainDate], Result.succeed(prereview)],
+  [
+    'review imported with plaindate',
+    input,
+    [reviewImportedWithPlainDate],
+    Result.succeed({ ...prereview, published: reviewImportedWithPlainDate.published }),
+  ],
   [
     'review imported with competing interests and use of AI',
     input,

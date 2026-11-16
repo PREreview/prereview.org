@@ -61,12 +61,20 @@ test('converts a full review', () => {
       license: review.license,
       live: review.live,
       preprint: review.preprint,
-      published: review.published,
+      published: Temporal.PlainDate.from('2026-11-10'),
       requested: review.requested,
       structured: false,
       text: html`<p>Hello</p>`,
     }),
   )
+})
+
+test('converts when a review was published to a date', () => {
+  const actual = _.fromPublishedPreprintReview(
+    new PublishedPreprintReview({ ...review, published: Temporal.Instant.from('2026-11-10T23:30:00-02:00') }),
+  )
+
+  expect(actual.published).toStrictEqual(Temporal.PlainDate.from('2026-11-11'))
 })
 
 const structuredReview = new PublishedPreprintReview({

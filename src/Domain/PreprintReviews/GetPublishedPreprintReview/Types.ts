@@ -23,7 +23,7 @@ export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprint
   id: number
   language?: LanguageCode
   license: 'CC0-1.0' | 'CC-BY-4.0'
-  published: Temporal.PlainDate
+  published: Temporal.Instant | Temporal.PlainDate
   preprint: {
     id: PreprintId
     language: LanguageCode
