@@ -14,7 +14,7 @@ export type Result = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'au
   clubId?: Uuid
   preprintId: IndeterminatePreprintId
   authors: {
-    named: ReadonlyArray<
+    named: Array.NonEmptyReadonlyArray<
       { orcidId: OrcidId; persona: 'public' } | { orcidId: OrcidId; persona: 'pseudonym'; pseudonym: Pseudonym }
     >
     anonymous: number
@@ -67,10 +67,16 @@ const query =
       const importedAuthors = yield* Result.all(Array.map(imported.authors, toNamedAuthors))
       const chosenAuthors = yield* Result.all(Array.map(authorChoices, toNamedAuthor))
 
+      const namedAuthors = Array.appendAll(Array.flatten(importedAuthors), chosenAuthors)
+
+      if (!Array.isReadonlyArrayNonEmpty(namedAuthors)) {
+        return yield* Result.fail(new PrereviewIsUnavailable({ cause: 'no named authors' }))
+      }
+
       return {
         ...(imported.addendum !== undefined ? { addendum: imported.addendum } : {}),
         authors: {
-          named: Array.appendAll(Array.flatten(importedAuthors), chosenAuthors),
+          named: namedAuthors,
           anonymous:
             imported.otherAuthors +
             Array.length(Array.filter(imported.authors, author => author._tag === 'Unknown')) -

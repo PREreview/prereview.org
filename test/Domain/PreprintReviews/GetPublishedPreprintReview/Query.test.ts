@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
 import * as _ from '../../../../src/Domain/PreprintReviews/GetPublishedPreprintReview/Query.ts'
 import * as Events from '../../../../src/Events.ts'
-import { PrereviewIsNotFound } from '../../../../src/Domain/PreprintReviews/index.ts'
+import { PrereviewIsNotFound, PrereviewIsUnavailable } from '../../../../src/Domain/PreprintReviews/index.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
@@ -34,8 +34,7 @@ const reviewImported = new Events.PreprintReviewImported({
     {
       _tag: 'PublicPersona',
       name: Option.none(),
-      // oxlint-disable-next-line typescript/no-non-null-assertion
-      orcidId: prereview.authors.named[0]!.orcidId,
+      orcidId: prereview.authors.named[0].orcidId,
     },
   ],
   otherAuthors: prereview.authors.anonymous,
@@ -65,15 +64,21 @@ const authorListChanged = new Events.AuthorChoicesForAReviewImported({
 
 const updatedAuthors = {
   named: [
-    { persona: 'public' as const, orcidId: OrcidId('0000-0002-1825-0097') },
-    { persona: 'public' as const, orcidId: OrcidId('0000-0002-6109-0367') },
+    { persona: 'public', orcidId: OrcidId('0000-0002-1825-0097') },
+    { persona: 'public', orcidId: OrcidId('0000-0002-6109-0367') },
   ],
   anonymous: 0,
-}
+} satisfies _.Result['authors']
 
 const reviewWithUnknownAuthorImported = new Events.PreprintReviewImported({
   ...reviewImported,
   authors: [{ _tag: 'Unknown', name: Option.some(Name('Somebody who is not a PREreviewer')) }],
+  otherAuthors: 0,
+})
+
+const reviewWithNamedAndUnknownAuthorsImported = new Events.PreprintReviewImported({
+  ...reviewImported,
+  authors: [...reviewImported.authors, ...reviewWithUnknownAuthorImported.authors],
   otherAuthors: 0,
 })
 
@@ -89,10 +94,16 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result,
     Result.succeed({ ...prereview, authors: updatedAuthors }),
   ],
   [
+    'author list containing a named and an unknown author',
+    input,
+    [reviewWithNamedAndUnknownAuthorsImported],
+    Result.succeed({ ...prereview, authors: { named: prereview.authors.named, anonymous: 1 } }),
+  ],
+  [
     'author list containing single unknown author',
     input,
     [reviewWithUnknownAuthorImported],
-    Result.succeed({ ...prereview, authors: { named: [], anonymous: 1 } }),
+    Result.fail(new PrereviewIsUnavailable({ cause: 'no named authors' })),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.Query([])
