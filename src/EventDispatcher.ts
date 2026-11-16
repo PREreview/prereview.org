@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Option, pipe, PubSub, Ref, Schedule, Semaphore } from 'effect'
+import { Array, Context, Effect, Layer, Option, pipe, PubSub, Ref, Schedule, Semaphore, Stream } from 'effect'
 import * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -40,28 +40,19 @@ const dispatchNewEvents = Effect.gen(function* () {
   const lastKnownPosition = yield* LastKnownPosition
   const subscribers = yield* Subscribers
 
-  const result = yield* Effect.andThen(
-    Ref.get(lastKnownPosition),
-    Option.match({
-      onNone: () => EventStore.all,
-      onSome: EventStore.since,
+  yield* Stream.runForEach(
+    EventStore.streamSince(yield* Ref.get(lastKnownPosition)),
+    Effect.fnUntraced(function* ({ events: newEvents, lastKnownPosition: newLastKnownPosition }) {
+      const allSubscribers = yield* Ref.get(subscribers)
+
+      yield* Ref.set(lastKnownPosition, Option.some(newLastKnownPosition))
+
+      yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), {
+        discard: true,
+        concurrency: 'unbounded',
+      })
     }),
   )
-
-  if (Option.isNone(result)) {
-    return
-  }
-
-  const { events: newEvents, lastKnownPosition: newLastKnownPosition } = result.value
-
-  const allSubscribers = yield* Ref.get(subscribers)
-
-  yield* Ref.set(lastKnownPosition, Option.some(newLastKnownPosition))
-
-  yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), {
-    discard: true,
-    concurrency: 'unbounded',
-  })
 }).pipe(Effect.withSpan('EventDispatcher.dispatchNewEvents'))
 
 export const worker = Layer.effectDiscard(

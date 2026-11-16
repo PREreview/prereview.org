@@ -521,7 +521,7 @@ describe('streamSince', () => {
 
   it.effect.prop(
     'streams many events in pages',
-    [fc.array(fc.commentEvent(), { minLength: 2001, maxLength: 2500 })],
+    [fc.array(fc.commentEvent(), { minLength: 7, maxLength: 9 })],
     ([events]) =>
       Effect.gen(function* () {
         const eventStore = yield* _.make
@@ -530,16 +530,17 @@ describe('streamSince', () => {
 
         const pages = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
 
-        expect(Array.map(pages, page => page.events.length)).toStrictEqual([1000, 1000, events.length - 2000])
+        expect(Array.map(pages, page => page.events.length)).toStrictEqual([3, 3, events.length - 6])
         expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
-        expect(Array.map(pages, page => page.lastKnownPosition)).toStrictEqual([1000, 2000, events.length])
+        expect(Array.map(pages, page => page.lastKnownPosition)).toStrictEqual([3, 6, events.length])
       }).pipe(
+        Effect.provide(Layer.succeed(_.PageSize, 3)),
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
         Effect.provide(TestLibsqlClient),
       ),
-    { fastCheck: { numRuns: 1 }, timeout: Duration.toMillis('60 seconds') },
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
 })
 

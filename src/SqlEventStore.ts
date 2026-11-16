@@ -25,7 +25,7 @@ import { Uuid } from './types/index.ts'
 
 class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
 
-const pageSize = 1000
+export const PageSize = Context.Reference<number>('SqlEventStore/PageSize', { defaultValue: () => 5000 })
 
 export const make: Effect.Effect<
   EventStore.EventStore,
@@ -35,6 +35,7 @@ export const make: Effect.Effect<
   const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
 
   const sql = yield* SqlClient.SqlClient
+  const pageSize = yield* PageSize
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
   const events = yield* Events.Events
 
