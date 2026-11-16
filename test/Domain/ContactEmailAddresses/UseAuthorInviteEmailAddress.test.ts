@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it } from '../../vitest.ts'
-import { Array, Effect, Result, Layer, Option, pipe, Struct, PubSub } from 'effect'
+import { Array, Effect, Result, Layer, pipe, Struct, PubSub, Stream } from 'effect'
 import * as AuthorInviteStore from '../../../src/AuthorInviteStore.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
 import { type Event, Events } from '../../../src/Events.ts'
@@ -91,8 +91,8 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
       _.UseAuthorInviteEmailAddress(input).pipe(Effect.provideService(EventStore, eventStore)),
     )
     const actualEvents = yield* pipe(
-      eventStore.all,
-      Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+      Stream.runCollect(eventStore.all),
+      Effect.map(Array.flatMap(Struct.get('events'))),
       Effect.map(Array.map(event => event._tag)),
     )
 

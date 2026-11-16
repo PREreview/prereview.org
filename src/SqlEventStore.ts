@@ -138,76 +138,6 @@ export const make: Effect.Effect<
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
-  const all: EventStore.EventStore['all'] = pipe(
-    sql`
-      SELECT
-        id,
-        type,
-        payload,
-        position
-      FROM
-        events
-      ORDER BY
-        position ASC
-    `,
-    Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventsTableSelect), { concurrency: 'unbounded' })),
-    Effect.andThen(
-      Array.match({
-        onEmpty: () => Effect.succeedNone,
-        onNonEmpty: rows =>
-          Effect.succeedSome({
-            events: Array.map(rows, Struct.get('event')),
-            lastKnownPosition: Array.lastNonEmpty(rows).position,
-          }),
-      }),
-    ),
-    Effect.tapError(error =>
-      Effect.annotateLogs(Effect.logError('Unable to get all events'), {
-        error,
-      }),
-    ),
-    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-    Effect.provide(context),
-    Effect.withSpan('SqlEventStore.all'),
-  )
-
-  const since: EventStore.EventStore['since'] = Effect.fn('SqlEventStore.since')(
-    function* (lastKnownPosition) {
-      const rows = yield* pipe(
-        sql`
-          SELECT
-            id,
-            type,
-            payload,
-            position
-          FROM
-            events
-          WHERE
-            position > ${lastKnownPosition}
-          ORDER BY
-            position ASC
-        `,
-        Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventsTableSelect), { concurrency: 'unbounded' })),
-      )
-
-      return yield* Array.match(rows, {
-        onEmpty: () => Effect.succeedNone,
-        onNonEmpty: rows =>
-          Effect.succeedSome({
-            events: Array.map(rows, Struct.get('event')),
-            lastKnownPosition: Array.lastNonEmpty(rows).position,
-          }),
-      })
-    },
-    Effect.tapError(error =>
-      Effect.annotateLogs(Effect.logError('Unable to get events'), {
-        error,
-      }),
-    ),
-    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-    Effect.provide(context),
-  )
-
   const decodePage = Effect.fn('SqlEventStore.decodePage')(function* (rows: Array.NonEmptyReadonlyArray<unknown>) {
     const decoded = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(EventsTableSelect), {
       concurrency: 'unbounded',
@@ -219,7 +149,7 @@ export const make: Effect.Effect<
     } satisfies EventStore.Page
   }, Effect.provide(context))
 
-  const getPageSince = Effect.fn('SqlEventStore.streamSince')(
+  const getPageAfter = Effect.fn('SqlEventStore.getPageAfter')(
     function* (after: number) {
       yield* Effect.annotateCurrentSpan({ after })
 
@@ -255,11 +185,11 @@ export const make: Effect.Effect<
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
   )
 
-  const getNextPageSince: (
+  const getNextPageAfter: (
     after: number,
   ) => Effect.Effect<readonly [ReadonlyArray<EventStore.Page>, Option.Option<number>], EventStore.FailedToGetEvents> =
     Effect.fnUntraced(function* (after) {
-      const result = yield* getPageSince(after)
+      const result = yield* getPageAfter(after)
 
       if (Option.isNone(result)) {
         return Tuple.make([], Option.none())
@@ -270,10 +200,8 @@ export const make: Effect.Effect<
       return Tuple.make([page], isLastPage ? Option.none() : Option.some(page.lastKnownPosition))
     })
 
-  const streamSince: EventStore.EventStore['streamSince'] = lastKnownPosition => {
-    const after = Option.getOrElse(lastKnownPosition, () => 0)
-
-    return sql.onDialectOrElse({
+  const streamAfter = (after: number): Stream.Stream<EventStore.Page, EventStore.FailedToGetEvents> =>
+    sql.onDialectOrElse({
       pg: () =>
         pipe(
           sql`
@@ -298,9 +226,15 @@ export const make: Effect.Effect<
           ),
           Stream.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
         ),
-      orElse: () => Stream.paginate(after, getNextPageSince),
+      orElse: () => Stream.paginate(after, getNextPageAfter),
     })
-  }
+
+  const all: EventStore.EventStore['all'] = streamAfter(0)
+
+  const since: EventStore.EventStore['since'] = streamAfter
+
+  const streamSince: EventStore.EventStore['streamSince'] = lastKnownPosition =>
+    streamAfter(Option.getOrElse(lastKnownPosition, () => 0))
 
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)

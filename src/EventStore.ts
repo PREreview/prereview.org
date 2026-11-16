@@ -19,17 +19,9 @@ export interface Page {
 }
 
 export interface EventStore {
-  readonly all: Effect.Effect<
-    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownPosition: Position }>,
-    FailedToGetEvents
-  >
+  readonly all: Stream.Stream<Page, FailedToGetEvents>
 
-  readonly since: (
-    lastKnownPosition: Position,
-  ) => Effect.Effect<
-    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownPosition: Position }>,
-    FailedToGetEvents
-  >
+  readonly since: (lastKnownPosition: Position) => Stream.Stream<Page, FailedToGetEvents>
 
   readonly streamSince: (lastKnownPosition: Option.Option<Position>) => Stream.Stream<Page, FailedToGetEvents>
 
@@ -51,10 +43,10 @@ export interface EventStore {
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
 
-export const all = EventStore.use(service => service.all)
+export const all = Stream.unwrap(EventStore.useSync(service => service.all))
 
 export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
-  EventStore.use(service => service.since(...args))
+  Stream.unwrap(EventStore.useSync(service => service.since(...args)))
 
 export const streamSince = (...args: Parameters<(typeof EventStore.Service)['streamSince']>) =>
   Stream.unwrap(EventStore.useSync(service => service.streamSince(...args)))

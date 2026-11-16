@@ -1,6 +1,6 @@
 import { LibsqlClient } from '@effect/sql-libsql'
 import { expect, it, vi } from '../../vitest.ts'
-import { Array, Effect, Result, Layer, Option, Struct, pipe, PubSub } from 'effect'
+import { Array, Effect, Result, Layer, Option, Struct, pipe, PubSub, Stream } from 'effect'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
 import { Locale } from '../../../src/Context.ts'
@@ -82,7 +82,10 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, boolean, Readonly
       ],
       eventStore.append,
     )
-    const lastKnownPosition = yield* Effect.map(eventStore.all, Option.map(Struct.get('lastKnownPosition')))
+    const lastKnownPosition = yield* Effect.map(
+      Stream.runLast(eventStore.all),
+      Option.map(Struct.get('lastKnownPosition')),
+    )
 
     const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(
       () => Effect.void,
@@ -95,13 +98,8 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, boolean, Readonly
       ]),
     )
     const actualEvents = yield* pipe(
-      Option.match(lastKnownPosition, { onNone: () => eventStore.all, onSome: eventStore.since }),
-      Effect.map(
-        Option.match({
-          onNone: Array.empty,
-          onSome: (result: { readonly events: ReadonlyArray<Event> }) => result.events,
-        }),
-      ),
+      Stream.runCollect(Option.match(lastKnownPosition, { onNone: () => eventStore.all, onSome: eventStore.since })),
+      Effect.map(Array.flatMap(Struct.get('events'))),
       Effect.map(Array.map(event => event._tag)),
     )
 

@@ -1,4 +1,4 @@
-import { FileSystem, Effect, Array, Duration, Layer, Option, PubSub, Stream } from 'effect'
+import { FileSystem, Effect, Array, Duration, Layer, Option, PubSub, Stream, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { describe, expect, it } from './vitest.ts'
@@ -40,10 +40,10 @@ it.effect.prop(
       const eventStore = yield* _.make
 
       const actual = yield* eventStore.query(filter)
-      const all = yield* eventStore.all
+      const all = yield* allEvents(eventStore)
 
       expect(actual).toStrictEqual(Option.none())
-      expect(all).toStrictEqual(Option.none())
+      expect(all).toStrictEqual([])
     }).pipe(
       Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -92,12 +92,10 @@ describe('when the last known position is none', () => {
         yield* eventStore.appendIf(event, { filter, lastKnownPosition: Option.none() })
 
         const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
-        const all = yield* eventStore.all
+        const all = yield* allEvents(eventStore)
 
         expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
-        expect(all).toStrictEqual(
-          Option.some({ events: [...otherEvents, event], lastKnownPosition: expect.anything() }),
-        )
+        expect(all).toStrictEqual([...otherEvents, event])
         expect(yield* PubSub.takeAll(published)).toContainEqual(event)
       }).pipe(
         Effect.provide(Uuid.layer),
@@ -131,11 +129,9 @@ describe('when the last known position has not changed', () => {
           lastKnownPosition: Option.some(lastKnownPosition),
         })
 
-        const all = yield* eventStore.all
+        const all = yield* allEvents(eventStore)
 
-        expect(all).toStrictEqual(
-          Option.some({ events: [...existingEvents, event], lastKnownPosition: expect.anything() }),
-        )
+        expect(all).toStrictEqual([...existingEvents, event])
         expect(yield* PubSub.takeAll(published)).toContainEqual(event)
       }).pipe(
         Effect.provide(Uuid.layer),
@@ -165,14 +161,9 @@ describe('when the last known position has changed', () => {
 
         expect(error).toBeInstanceOf(EventStore.NewEventsFound)
 
-        const all = yield* eventStore.all
+        const all = yield* allEvents(eventStore)
 
-        expect(all).toStrictEqual(
-          Array.match(existingEvents, {
-            onEmpty: Option.none,
-            onNonEmpty: events => Option.some({ events, lastKnownPosition: expect.anything() }),
-          }),
-        )
+        expect(all).toStrictEqual(existingEvents)
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -432,37 +423,12 @@ it.effect.each<[string, Events.EventFilter, Array.NonEmptyReadonlyArray<Events.E
   { timeout: Duration.toMillis('60 seconds') },
 )
 
-it.effect.prop(
-  'lists events since',
-  [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
-  ([existingEvents, newEvents]) =>
-    Effect.gen(function* () {
-      const eventStore = yield* _.make
-
-      yield* Effect.forEach(existingEvents, eventStore.append)
-
-      const { lastKnownPosition } = yield* Effect.flatMap(eventStore.all, Effect.fromOption)
-
-      yield* Effect.forEach(newEvents, eventStore.append)
-
-      const actual = yield* eventStore.since(lastKnownPosition)
-
-      expect(actual).toStrictEqual(Option.some({ events: newEvents, lastKnownPosition: expect.anything() }))
-    }).pipe(
-      Effect.provide(Uuid.layer),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
-    ),
-  { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-)
-
-describe('streamSince', () => {
+describe('all', () => {
   it.effect('streams nothing when there are no events', () =>
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      const actual = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
+      const actual = yield* Stream.runCollect(eventStore.all)
 
       expect(actual).toStrictEqual([])
     }).pipe(
@@ -482,34 +448,9 @@ describe('streamSince', () => {
 
         yield* Effect.forEach(events, eventStore.append)
 
-        const actual = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
+        const actual = yield* Stream.runCollect(eventStore.all)
 
         expect(actual).toStrictEqual([{ events, lastKnownPosition: expect.anything() }])
-      }).pipe(
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
-      ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
-
-  it.effect.prop(
-    'streams events since a position',
-    [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
-    ([existingEvents, newEvents]) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make
-
-        yield* Effect.forEach(existingEvents, eventStore.append)
-
-        const { lastKnownPosition } = yield* Effect.flatMap(eventStore.all, Effect.fromOption)
-
-        yield* Effect.forEach(newEvents, eventStore.append)
-
-        const actual = yield* Stream.runCollect(eventStore.streamSince(Option.some(lastKnownPosition)))
-
-        expect(actual).toStrictEqual([{ events: newEvents, lastKnownPosition: expect.anything() }])
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -528,7 +469,7 @@ describe('streamSince', () => {
 
         yield* Effect.forEach(events, eventStore.append)
 
-        const pages = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
+        const pages = yield* Stream.runCollect(eventStore.all)
 
         expect(Array.map(pages, page => page.events.length)).toStrictEqual([3, 3, events.length - 6])
         expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
@@ -543,6 +484,36 @@ describe('streamSince', () => {
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
 })
+
+describe('since', () => {
+  it.effect.prop(
+    'streams events since a position',
+    [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+    ([existingEvents, newEvents]) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        yield* Effect.forEach(existingEvents, eventStore.append)
+
+        const { lastKnownPosition } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+
+        yield* Effect.forEach(newEvents, eventStore.append)
+
+        const actual = yield* Stream.runCollect(eventStore.since(lastKnownPosition))
+
+        expect(actual).toStrictEqual([{ events: newEvents, lastKnownPosition: expect.anything() }])
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestLibsqlClient),
+      ),
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+  )
+})
+
+const allEvents = (eventStore: EventStore.EventStore) =>
+  Effect.map(Stream.runCollect(eventStore.all), Array.flatMap(Struct.get('events')))
 
 const TestLibsqlClient = Layer.unwrap(
   Effect.gen(function* () {
