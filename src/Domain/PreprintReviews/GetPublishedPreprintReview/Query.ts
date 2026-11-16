@@ -1,4 +1,4 @@
-import { Array, Match, Option, Result, Struct } from 'effect'
+import { Array, Filter, Match, Option, Result, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
@@ -62,7 +62,7 @@ const query =
       })
 
       const namedAuthors = Array.appendAll(
-        Array.flatMap(imported.authors, toNamedAuthors),
+        Array.filterMap(imported.authors, Filter.fromPredicateOption(toNamedAuthor)),
         Array.map(authorChoices, Struct.pick(['orcidId', 'persona'])),
       )
 
@@ -96,19 +96,14 @@ const query =
       }
     })
 
-const toNamedAuthors = (
-  author: Events.PreprintReviewImported['authors'][number],
-): ReadonlyArray<PublishedPreprintReview['authors']['named'][number]> => {
-  if (author._tag === 'Unknown') {
-    return []
-  }
-
-  if (author._tag === 'PseudonymPersona') {
-    return [{ orcidId: author.orcidId, persona: 'pseudonym' }]
-  }
-
-  return [{ orcidId: author.orcidId, persona: 'public' }]
-}
+const toNamedAuthor = Match.typeTags<
+  Events.PreprintReviewImported['authors'][number],
+  Option.Option<PublishedPreprintReview['authors']['named'][number]>
+>()({
+  PublicPersona: ({ orcidId }) => Option.some({ orcidId, persona: 'public' }),
+  PseudonymPersona: ({ orcidId }) => Option.some({ orcidId, persona: 'pseudonym' }),
+  Unknown: () => Option.none(),
+})
 
 export const Query = (removedPreprintReviewIds: ReadonlyArray<number>) =>
   Queries.OnDemandQuery({
