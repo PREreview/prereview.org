@@ -12,26 +12,32 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
   const prereviewers = yield* Prereviewers
   const clubs = yield* Clubs
 
-  const preprint = yield* preprints.getPreprint(publishedPreprintReview.preprintId)
+  const { preprint, namedAuthors, club } = yield* Effect.all(
+    {
+      preprint: preprints.getPreprint(publishedPreprintReview.preprintId),
+      namedAuthors: Effect.forEach(
+        publishedPreprintReview.authors.named,
+        Effect.fnUntraced(function* (author) {
+          if (author.persona === 'pseudonym') {
+            return { name: author.pseudonym }
+          }
 
-  const namedAuthors = yield* Effect.forEach(
-    publishedPreprintReview.authors.named,
-    Effect.fnUntraced(function* (author) {
-      if (author.persona === 'pseudonym') {
-        return { name: author.pseudonym }
-      }
+          const publicPersona = yield* prereviewers.getPublicPersona(author.orcidId)
 
-      const publicPersona = yield* prereviewers.getPublicPersona(author.orcidId)
-
-      return { name: publicPersona.displayName, orcid: author.orcidId }
-    }),
+          return { name: publicPersona.displayName, orcid: author.orcidId }
+        }),
+        { concurrency: 'unbounded' },
+      ),
+      club: publishedPreprintReview.clubId
+        ? clubs.getClubName(publishedPreprintReview.clubId)
+        : Effect.succeed(undefined),
+    },
+    { concurrency: 'unbounded' },
   )
 
   if (!Array.isArrayNonEmpty(namedAuthors)) {
     return yield* new PrereviewIsUnavailable({ cause: 'no named authors' })
   }
-
-  const club = publishedPreprintReview.clubId ? yield* clubs.getClubName(publishedPreprintReview.clubId) : undefined
 
   return new Prereview({
     ...publishedPreprintReview,
