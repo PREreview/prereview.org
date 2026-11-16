@@ -1,4 +1,4 @@
-import { Effect, UndefinedOr } from 'effect'
+import { Effect, Struct, UndefinedOr } from 'effect'
 import type * as Queries from '../../../Queries.ts'
 import type { PublishedPreprintReviewDetails } from './Query.ts'
 import { PublishedPreprintReview } from './Types.ts'
@@ -27,7 +27,7 @@ export const Enrich = (wasAReviewRequested: Queries.FromStatefulQuery<typeof Was
     )
 
     return new PublishedPreprintReview({
-      ...publishedPreprintReview,
+      ...Struct.omit(publishedPreprintReview, ['preprintId', 'clubId']),
       preprint: { id: preprint.id, url: preprint.url, title: preprint.title.text, language: preprint.title.language },
       authors: { named: namedAuthors, anonymous: publishedPreprintReview.authors.anonymous },
       club,
