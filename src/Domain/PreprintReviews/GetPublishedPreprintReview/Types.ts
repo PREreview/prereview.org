@@ -4,10 +4,13 @@ import type { LanguageCode } from 'iso-639-1'
 import type { ClubName } from '../../Clubs/index.ts'
 import type { Html } from '../../../html.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
+import type { Persona } from '../../Prereviewers/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import type { Name } from '../../../types/Name.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
+import type { StructuredPrereviewSchema } from '../Events.ts'
 
+/** @deprecated */
 export class Prereview extends Data.TaggedClass('Prereview')<{
   addendum?: Html
   authors: {
@@ -30,6 +33,31 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   requested: boolean
   structured: boolean
   text: Html
+}> {}
+
+export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprintReview')<{
+  addendum?: Html
+  authors: {
+    named: Array.NonEmptyReadonlyArray<Persona>
+    anonymous: number
+  }
+  club?: ClubName
+  content:
+    | { readonly _tag: 'Full'; readonly text: Html }
+    | { readonly _tag: 'Structured'; readonly questions: typeof StructuredPrereviewSchema.Type }
+  doi: Doi
+  id: number
+  language?: LanguageCode
+  license: 'CC0-1.0' | 'CC-BY-4.0'
+  published: Temporal.PlainDate
+  preprint: {
+    id: PreprintId
+    language: LanguageCode
+    title: Html
+    url: URL
+  }
+  live: boolean
+  requested: boolean
 }> {}
 
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
