@@ -53,7 +53,7 @@ import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import type { NewPrereview } from '../../Domain/PreprintReviews/index.ts'
 import * as PreprintReviewTypes from '../../Domain/PreprintReviews/GetPublishedPreprintReview/Types.ts' // oxlint-disable-line module-boundaries/use-index
-import type * as PreprintReview from '../../Domain/PreprintReviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
+import * as PreprintReview from '../../Domain/PreprintReviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import * as Preprints from '../../Domain/Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
@@ -858,7 +858,7 @@ function recordToPrereview(
   | PreprintIsNotFound
   | 'text-unavailable'
   | 'unknown-license',
-  PreprintReviewTypes.Prereview
+  PreprintReview.Prereview
 > {
   return pipe(
     RTE.Do,
@@ -911,7 +911,7 @@ function recordToPrereview(
         text: getReviewText(reviewTextUrl),
       }),
     ),
-    RTE.map(args => new PreprintReviewTypes.Prereview(args)),
+    RTE.map(args => new PreprintReview.Prereview(args)),
   )
 }
 
@@ -1044,7 +1044,7 @@ const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
   D.map(({ metadata }) => metadata.license.id),
 )
 
-function getAuthors(record: Record | InProgressDeposition): PreprintReviewTypes.Prereview['authors'] {
+function getAuthors(record: Record | InProgressDeposition): PreprintReview.Prereview['authors'] {
   const authors = Array.map(FptsToEffect.array(record.metadata.creators), ({ name, orcid }) => ({
     name: Name(name),
     orcid: orcid ? OrcidId(orcid) : undefined,

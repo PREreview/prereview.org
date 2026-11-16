@@ -15,7 +15,6 @@ import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as Errors from './Errors.ts'
 import {
   GetPublishedPreprintReview,
-  type Prereview,
   type PrereviewIsNotFound,
   type PrereviewIsUnavailable,
   type PrereviewWasRemoved,
@@ -30,7 +29,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 import { ImportPreprintReview } from './ImportPreprintReview.ts'
-import type { PreprintPrereview } from './Prereview.ts'
+import type { PreprintPrereview, Prereview } from './Prereview.ts'
 
 export interface RapidPrereview {
   readonly author: Prereviewers.Persona
