@@ -1,4 +1,18 @@
-import { Array, Data, Effect, identity, Option, pipe, Ref, Struct, type Result } from 'effect'
+import {
+  Array,
+  Data,
+  Effect,
+  identity,
+  Option,
+  pipe,
+  Predicate,
+  Record,
+  Ref,
+  Schema,
+  Struct,
+  Tuple,
+  type Result,
+} from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
@@ -31,6 +45,7 @@ export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequ
 
 export interface OnDemandQuery<Input extends ReadonlyArray<unknown>, Result, Error = never> {
   name: string
+  inputSchema?: Schema.Codec<Input[0], unknown>
   createFilter: (...input: Input) => Events.EventFilter
   query: (
     events: ReadonlyArray<Events.Event>,
@@ -40,6 +55,7 @@ export interface OnDemandQuery<Input extends ReadonlyArray<unknown>, Result, Err
 
 export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown> {
   name: string
+  inputSchema?: Schema.Codec<Input[0], unknown>
   initialState: State
   updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
   query: (state: State, ...input: Input) => Result.Result<Result, Error>
@@ -55,6 +71,7 @@ export const StatefulQuery: <Input extends ReadonlyArray<unknown>, Result, Error
 
 export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never>({
   name,
+  inputSchema,
   createFilter,
   query,
 }: OnDemandQuery<Input, Result, Error>): Effect.Effect<
@@ -67,6 +84,8 @@ export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, 
 
     return Effect.fn(name)(
       function* (...input: Input) {
+        yield* annotateSpanWithInput(inputSchema, input[0])
+
         const filter = createFilter(...input)
 
         const events = yield* pipe(
@@ -85,6 +104,7 @@ export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, 
 
 export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>({
   name,
+  inputSchema,
   initialState,
   updateStateWithEvents,
   query,
@@ -107,11 +127,35 @@ export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, 
     )
 
     return Effect.fn(name)(function* (...input: Input) {
+      yield* annotateSpanWithInput(inputSchema, input[0])
+
       const currentState = yield* Ref.get(state)
 
       return yield* Effect.fromResult(query(currentState, ...input))
     })
   })
+
+const annotateSpanWithInput = <Input>(inputSchema: Schema.Codec<Input, unknown> | undefined, input: Input) =>
+  Option.match(
+    Option.flatMap(Option.fromNullishOr(inputSchema), schema => Schema.encodeOption(schema)(input)),
+    {
+      onNone: () => Effect.void,
+      onSome: encoded => Effect.annotateCurrentSpan(toInputAttributes(encoded)),
+    },
+  )
+
+const toInputAttributes = (encoded: unknown): Record<string, unknown> => {
+  if (!Predicate.isObject(encoded)) {
+    return { input: toAttributeValue(encoded) }
+  }
+
+  return Record.fromEntries(
+    Array.map(Object.entries(encoded), ([key, value]) => Tuple.make(`input.${key}`, toAttributeValue(value))),
+  )
+}
+
+const toAttributeValue = (value: unknown): unknown =>
+  Predicate.isString(value) || Predicate.isNumber(value) || Predicate.isBoolean(value) ? value : JSON.stringify(value)
 
 /** @deprecated */
 export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Error>(
