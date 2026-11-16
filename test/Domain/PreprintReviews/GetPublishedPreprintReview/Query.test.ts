@@ -3,7 +3,11 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
 import * as _ from '../../../../src/Domain/PreprintReviews/GetPublishedPreprintReview/Query.ts'
 import * as Events from '../../../../src/Events.ts'
-import { PrereviewIsNotFound, PrereviewIsUnavailable } from '../../../../src/Domain/PreprintReviews/index.ts'
+import {
+  PrereviewIsNotFound,
+  PrereviewIsUnavailable,
+  PrereviewWasRemoved,
+} from '../../../../src/Domain/PreprintReviews/index.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
@@ -183,9 +187,17 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
     Result.fail(new PrereviewIsUnavailable({ cause: 'no named authors' })),
   ],
 ])('%s', (_name, input, events, expected) => {
-  const { query } = _.Query([])
+  const { query } = _.Query(() => false)
 
   const actual = query(events, input)
 
   expect(actual).toStrictEqual(expected)
+})
+
+test('when the review was removed', () => {
+  const { query } = _.Query(id => id === input)
+
+  const actual = query([reviewImported], input)
+
+  expect(actual).toStrictEqual(Result.fail(new PrereviewWasRemoved()))
 })

@@ -36,10 +36,10 @@ const createFilter = (id: Input) =>
   ])
 
 const query =
-  (removedPreprintReviewIds: ReadonlyArray<number>) =>
+  (wasPrereviewRemoved: (id: number) => boolean) =>
   (events: ReadonlyArray<Events.Event>, input: Input): Result.Result<PublishedPreprintReviewDetails, Error> =>
     Result.gen(function* () {
-      if (Array.contains(removedPreprintReviewIds, input)) {
+      if (wasPrereviewRemoved(input)) {
         return yield* Result.fail(new PrereviewWasRemoved())
       }
 
@@ -111,10 +111,10 @@ const toNamedAuthor = Match.typeTags<
   Unknown: () => Option.none(),
 })
 
-export const Query = (removedPreprintReviewIds: ReadonlyArray<number>) =>
+export const Query = (wasPrereviewRemoved: (id: number) => boolean) =>
   Queries.OnDemandQuery({
     name: 'PreprintReviews.getPublishedPreprintReview.Query',
     inputSchema: Input,
     createFilter,
-    query: query(removedPreprintReviewIds),
+    query: query(wasPrereviewRemoved),
   })

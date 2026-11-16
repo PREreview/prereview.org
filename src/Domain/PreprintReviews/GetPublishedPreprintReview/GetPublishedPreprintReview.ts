@@ -4,6 +4,7 @@ import * as Queries from '../../../Queries.ts'
 import type { Clubs } from '../../Clubs/index.ts'
 import type { Preprints } from '../../Preprints/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
+import { WasPrereviewRemoved } from '../../Prereviews/index.ts'
 import { Enrich } from './Enrich.ts'
 import { Query } from './Query.ts'
 import { WasAReviewRequested } from './WasAReviewRequested.ts'
@@ -22,11 +23,12 @@ export type GetPublishedPreprintReview = (
 export const GetPublishedPreprintReview: Effect.Effect<
   GetPublishedPreprintReview,
   never,
-  Clubs | EventDispatcher | EventStore.EventStore | Preprints | Prereviewers
+  Clubs | EventDispatcher | EventStore.EventStore | Preprints | Prereviewers | WasPrereviewRemoved
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<Clubs | Preprints | Prereviewers>(), Context.omit(Scope.Scope))
 
-  const query = yield* Queries.makeOnDemandQuery(Query([]))
+  const wasPrereviewRemoved = yield* WasPrereviewRemoved
+  const query = yield* Queries.makeOnDemandQuery(Query(wasPrereviewRemoved))
   const wasAReviewRequested = yield* Queries.makeStatefulQuery(WasAReviewRequested)
 
   return (id: number) =>
