@@ -1,12 +1,12 @@
 import { Effect, flow, UndefinedOr } from 'effect'
-import type { PublishedPreprintReview } from './Query.ts'
+import type { PublishedPreprintReviewDetails } from './Query.ts'
 import { Prereview } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import { matchPersona, Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
-  publishedPreprintReview: PublishedPreprintReview,
+  publishedPreprintReview: PublishedPreprintReviewDetails,
 ) {
   const preprints = yield* Preprints
 
@@ -28,7 +28,7 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
 })
 
 const getNamedAuthors: (
-  authors: PublishedPreprintReview['authors']['named'],
+  authors: PublishedPreprintReviewDetails['authors']['named'],
 ) => Effect.Effect<Prereview['authors']['named'], UnableToGetPersona, Prereviewers> = Effect.forEach(
   flow(
     Prereviewers.getPersona,

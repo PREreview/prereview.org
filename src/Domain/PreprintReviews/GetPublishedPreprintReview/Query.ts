@@ -9,7 +9,7 @@ import { type Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewW
 
 export type Input = number
 
-export type PublishedPreprintReview = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'> & {
+export type PublishedPreprintReviewDetails = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'> & {
   clubId?: Uuid
   preprintId: IndeterminatePreprintId
   authors: {
@@ -28,7 +28,7 @@ const createFilter = (id: Input) =>
 
 const query =
   (removedPreprintReviewIds: ReadonlyArray<number>) =>
-  (events: ReadonlyArray<Events.Event>, input: Input): Result.Result<PublishedPreprintReview, Error> =>
+  (events: ReadonlyArray<Events.Event>, input: Input): Result.Result<PublishedPreprintReviewDetails, Error> =>
     Result.gen(function* () {
       if (Array.contains(removedPreprintReviewIds, input)) {
         return yield* Result.fail(new PrereviewWasRemoved())
@@ -98,7 +98,7 @@ const query =
 
 const toNamedAuthor = Match.typeTags<
   Events.PreprintReviewImported['authors'][number],
-  Option.Option<PublishedPreprintReview['authors']['named'][number]>
+  Option.Option<PublishedPreprintReviewDetails['authors']['named'][number]>
 >()({
   PublicPersona: ({ orcidId }) => Option.some({ orcidId, persona: 'public' }),
   PseudonymPersona: ({ orcidId }) => Option.some({ orcidId, persona: 'pseudonym' }),
