@@ -25,7 +25,6 @@ const prereview = {
   live: false,
   preprintId: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abcde') }),
   published: Temporal.Instant.from('2026-11-10T14:25:00Z'),
-  requested: false,
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
   competingInterests: { _tag: 'No' },
   useOfAi: { _tag: 'No' },
@@ -190,93 +189,3 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
 
   expect(actual).toStrictEqual(expected)
 })
-
-/*
-const reviewRequestId = Uuid('f15c2fe6-6021-4c3b-8016-6b4af761263b')
-
-const requested =[
-  new Events.ReviewRequestForAPreprintWasReceived({preprintId: prereview.preprintId, reviewRequestId, requester: Option.none(), receivedFrom: new URL('http://example.com'), receivedAt: Temporal.Now.instant() }),
-  new Events.ReviewRequestForAPreprintWasAccepted({reviewRequestId, acceptedAt: prereview.published.subtract('1d') as never })
-]
-
-test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReviewDetails, _.Error>]>([
-  [
-    'review was requested via COAR notify',
-    input,
-    [...requested, reviewImported],
-    Result.succeed({ ...prereview, requested: true }),
-  ],
-  [
-    'review was requested via COAR notify (import event)',
-    input,
-    [requestImported, reviewImported],
-    Result.succeed({ ...prereview, requested: true }),
-  ],
-  [
-    'review was requested by PREreviewer',
-    input,
-    [requestedByPrereviewer, reviewImported],
-    Result.succeed({ ...prereview, requested: true }),
-  ],
-  [
-    'review was requested by PREreviewer (import event)',
-    input,
-    [requestByPrereviewerImported, reviewImported],
-    Result.succeed({ ...prereview, requested: true }),
-  ],
-  [
-    'review was requested and then withdrawn',
-    input,
-    [requested, requestWithdrawn, reviewImported, ],
-    Result.succeed({ ...prereview, requested: false }),
-  ],
-  [
-    'review was requested and withdrawn after review',
-    input,
-    [requested, requestWithdrawnAfterReview, reviewImported, ],
-    Result.succeed({ ...prereview, requested: true }),
-  ],
-  [
-    'review was requested day after plaindate review',
-    input,
-    [requestedDayAfter, reviewImportedWithPlainDate, ],
-    Result.succeed({ ...prereview, requested: false }),
-  ],
-  [
-    'review was requested same day as plaindate review',
-    input,
-    [requestedSameDay, reviewImportedWithPlainDate ],
-    Result.succeed({ ...prereview, requested: true }),
-  ],
-  [
-    'review was requested after review via COAR notify',
-    input,
-    [requestedAfterReview, reviewImported],
-    Result.succeed({ ...prereview, requested: false }),
-  ],
-  [
-    'review was requested after review via COAR notify (import event)',
-    input,
-    [requestAfterReviewImported, reviewImported],
-    Result.succeed({ ...prereview, requested: false }),
-  ],
-  [
-    'review was requested after review by PREreviewer',
-    input,
-    [requestedAfterReviewByPrereviewer, reviewImported],
-    Result.succeed({ ...prereview, requested: false }),
-  ],
-  [
-    'review was requested after review by PREreviewer (import event)',
-    input,
-    [requestAfterReviewByPrereviewerImported, reviewImported],
-    Result.succeed({ ...prereview, requested: false }),
-  ],
-])('%s', (_name, input, events, expected) => {
-  const { query } = _.Query([])
-
-  const actual = query(events, input)
-
-  expect(actual).toStrictEqual(expected)
-})
-*/

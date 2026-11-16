@@ -15,7 +15,7 @@ export type Input = number
 
 export type PublishedPreprintReviewDetails = Omit<
   PublishedPreprintReview,
-  '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'
+  '_tag' | 'pipe' | 'club' | 'preprint' | 'authors' | 'requested'
 > & {
   clubId?: Uuid
   preprintId: IndeterminatePreprintId
@@ -95,7 +95,6 @@ const query =
         live: imported.live,
         preprintId: imported.preprint,
         published: imported.published,
-        requested: false,
         content,
         useOfAi: imported.useOfAi,
       }

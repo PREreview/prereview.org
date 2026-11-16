@@ -6,12 +6,14 @@ import type { Preprints } from '../../Preprints/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
 import { Enrich } from './Enrich.ts'
 import { Query } from './Query.ts'
+import { WasAReviewRequested } from './WasAReviewRequested.ts'
 import {
   type PrereviewIsNotFound,
   PrereviewIsUnavailable,
   type PrereviewWasRemoved,
   type PublishedPreprintReview,
 } from './Types.ts'
+import type { EventDispatcher } from '../../../EventDispatcher.ts'
 
 export type GetPublishedPreprintReview = (
   id: number,
@@ -20,16 +22,17 @@ export type GetPublishedPreprintReview = (
 export const GetPublishedPreprintReview: Effect.Effect<
   GetPublishedPreprintReview,
   never,
-  Clubs | EventStore.EventStore | Preprints | Prereviewers
+  Clubs | EventDispatcher | EventStore.EventStore | Preprints | Prereviewers
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<Clubs | Preprints | Prereviewers>(), Context.omit(Scope.Scope))
 
   const query = yield* Queries.makeOnDemandQuery(Query([]))
+  const wasAReviewRequested = yield* Queries.makeStatefulQuery(WasAReviewRequested)
 
   return (id: number) =>
     pipe(
       query(id),
-      Effect.andThen(Enrich),
+      Effect.andThen(Enrich(wasAReviewRequested)),
       Effect.catchTag(
         ['ClubNotFound', 'UnableToQuery', 'UnableToGetPersona', 'PreprintIsNotFound', 'PreprintIsUnavailable'],
         error => new PrereviewIsUnavailable({ cause: error }),
