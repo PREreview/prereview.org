@@ -3,21 +3,18 @@ import type { Result as PublishedPreprintReview } from './Query.ts'
 import { Prereview, PrereviewIsUnavailable } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import { Clubs } from '../../Clubs/index.ts'
+import { type ClubNotFound, Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
   publishedPreprintReview: PublishedPreprintReview,
 ) {
   const preprints = yield* Preprints
-  const clubs = yield* Clubs
 
   const { preprint, namedAuthors, club } = yield* Effect.all(
     {
       preprint: preprints.getPreprint(publishedPreprintReview.preprintId),
       namedAuthors: getNamedAuthors(publishedPreprintReview.authors.named),
-      club: publishedPreprintReview.clubId
-        ? clubs.getClubName(publishedPreprintReview.clubId)
-        : Effect.succeed(undefined),
+      club: getClubName(publishedPreprintReview.clubId),
     },
     { concurrency: 'unbounded' },
   )
@@ -52,3 +49,15 @@ const getNamedAuthors: (
   }),
   { concurrency: 'unbounded' },
 )
+
+const getClubName: (
+  clubId: PublishedPreprintReview['clubId'],
+) => Effect.Effect<Prereview['club'], ClubNotFound, Clubs> = Effect.fnUntraced(function* (clubId) {
+  if (clubId === undefined) {
+    return undefined
+  }
+
+  const clubs = yield* Clubs
+
+  return yield* clubs.getClubName(clubId)
+})
