@@ -32,7 +32,9 @@ const getNamedAuthors: (
 ) => Effect.Effect<Prereview['authors']['named'], UnableToGetPersona, Prereviewers> = Effect.forEach(
   Effect.fnUntraced(function* (author) {
     if (author.persona === 'pseudonym') {
-      return { name: author.pseudonym }
+      const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(author.orcidId)
+
+      return { name: pseudonymPersona.pseudonym }
     }
 
     const publicPersona = yield* Prereviewers.getPublicPersona(author.orcidId)

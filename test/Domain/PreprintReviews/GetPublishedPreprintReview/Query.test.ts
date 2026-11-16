@@ -82,6 +82,17 @@ const reviewWithNamedAndUnknownAuthorsImported = new Events.PreprintReviewImport
   otherAuthors: 0,
 })
 
+const reviewWithPseudonymImported = new Events.PreprintReviewImported({
+  ...reviewImported,
+  authors: [{ _tag: 'PseudonymPersona', orcidId: OrcidId('0000-0002-6109-0367') }],
+  otherAuthors: 0,
+})
+
+const pseudonymChosen = new Events.AuthorChoicesForAReviewImported({
+  ...authorListChanged,
+  persona: 'pseudonym',
+})
+
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReview, _.Error>]>([
   ['no events', input, [], Result.fail(new PrereviewIsNotFound())],
   ['review imported', input, [reviewImported], Result.succeed(prereview)],
@@ -100,6 +111,27 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
     Result.succeed({ ...prereview, authors: { named: prereview.authors.named, anonymous: 1 } }),
   ],
   [
+    'author list containing a pseudonym persona',
+    input,
+    [reviewWithPseudonymImported],
+    Result.succeed({
+      ...prereview,
+      authors: { named: [{ orcidId: OrcidId('0000-0002-6109-0367'), persona: 'pseudonym' }], anonymous: 0 },
+    }),
+  ],
+  [
+    'author list changed to a pseudonym persona after import',
+    input,
+    [reviewImported, pseudonymChosen],
+    Result.succeed({
+      ...prereview,
+      authors: {
+        named: [...prereview.authors.named, { orcidId: OrcidId('0000-0002-6109-0367'), persona: 'pseudonym' }],
+        anonymous: 0,
+      },
+    }),
+  ],
+  [
     'author list containing single unknown author',
     input,
     [reviewWithUnknownAuthorImported],
@@ -112,42 +144,6 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
 
   expect(actual).toStrictEqual(expected)
 })
-
-/*
-test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReview, _.Error>]>([
-  [
-    'author list contains pseudonym persona',
-    input,
-    [prereviewerRegistered, reviewWithPseudonymImported],
-    Result.succeed({ ...prereview, authors: withPseudonymAuthor }),
-  ],
-  [
-    'author list contains pseudonym persona (imported pseudonym)',
-    input,
-    [prereviewerImported, reviewWithPseudonymImported],
-    Result.succeed({ ...prereview, authors: withPseudonymAuthor }),
-  ],
-  [
-    'author list contains pseudonym persona (pseudonym replaced)',
-    input,
-    [prereviewerImported, pseudonymReplaced, reviewWithPseudonymImported],
-    Result.succeed({ ...prereview, authors: withReplacedPseudonymAuthor }),
-  ],
-  [
-    "can't resolve pseudonym from events",
-    input,
-    [reviewWithPseudonymImported],
-    Result.fail(new UnexpectedSequenceOfEvents()),
-  ],
-])
-('%s', (_name, input, events, expected) => {
-  const { query } = _.Query([])
-
-  const actual = query(events, input)
-
-  expect(actual).toStrictEqual(expected)
-})
-*/
 
 /*
 const reviewRequestId = Uuid('f15c2fe6-6021-4c3b-8016-6b4af761263b')
@@ -229,18 +225,6 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
     input,
     [requestAfterReviewByPrereviewerImported, reviewImported],
     Result.succeed({ ...prereview, requested: false }),
-  ],
-  [
-    'author list contains pseudonym persona',
-    input,
-    [prereviewerRegistered, reviewWithPseudonymImported],
-    Result.succeed({ ...prereview, authors: withPseudonymAuthor }),
-  ],
-  [
-    'author list contains pseudonym persona (imported pseudonym)',
-    input,
-    [prereviewerImported, reviewWithPseudonymImported],
-    Result.succeed({ ...prereview, authors: withPseudonymAuthor }),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.Query([])
