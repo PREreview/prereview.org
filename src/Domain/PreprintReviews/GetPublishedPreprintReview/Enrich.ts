@@ -1,11 +1,11 @@
 import { Array, Effect } from 'effect'
-import type { Result as PublishedPreprintReview } from './GetPublishedPreprintReview.ts'
+import type { Result as PublishedPreprintReview } from './Query.ts'
 import { Prereview, PrereviewIsUnavailable } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import { Prereviewers } from '../../Prereviewers/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 
-export const EnrichPublishedPreprintReview = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
+export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
   publishedPreprintReview: PublishedPreprintReview,
 ) {
   const preprints = yield* Preprints

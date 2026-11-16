@@ -117,7 +117,7 @@ const toNamedAuthor = (
   return Result.succeed({ orcidId: authorChoice.orcidId, persona: 'public' })
 }
 
-export const GetPublishedPreprintReview = (removedPreprintReviewIds: ReadonlyArray<number>) =>
+export const Query = (removedPreprintReviewIds: ReadonlyArray<number>) =>
   Queries.OnDemandQuery({
     name: 'PreprintReviews.getPublishedPreprintReview.Query',
     createFilter,

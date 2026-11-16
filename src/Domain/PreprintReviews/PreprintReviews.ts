@@ -14,8 +14,8 @@ import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as Errors from './Errors.ts'
 import {
-  EnrichPublishedPreprintReview,
-  GetPublishedPreprintReview,
+  Enrich as EnrichPublishedPreprintReview,
+  Query as GetPublishedPreprintReview,
   type Prereview,
   type PrereviewIsNotFound,
   PrereviewIsUnavailable,

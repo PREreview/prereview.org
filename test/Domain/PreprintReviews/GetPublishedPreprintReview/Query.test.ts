@@ -95,7 +95,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result,
     Result.succeed({ ...prereview, authors: { named: [], anonymous: 1 } }),
   ],
 ])('%s', (_name, input, events, expected) => {
-  const { query } = _.GetPublishedPreprintReview([])
+  const { query } = _.Query([])
 
   const actual = query(events, input)
 
@@ -130,7 +130,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result,
   ],
 ])
 ('%s', (_name, input, events, expected) => {
-  const { query } = _.GetPublishedPreprintReview([])
+  const { query } = _.Query([])
 
   const actual = query(events, input)
 
@@ -232,7 +232,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result,
     Result.succeed({ ...prereview, authors: withPseudonymAuthor }),
   ],
 ])('%s', (_name, input, events, expected) => {
-  const { query } = _.GetPublishedPreprintReview([])
+  const { query } = _.Query([])
 
   const actual = query(events, input)
 
