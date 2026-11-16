@@ -38,6 +38,6 @@ export const GetPublishedPreprintReview: Effect.Effect<
         error => new PrereviewIsUnavailable({ cause: error }),
       ),
       Effect.provideContext(context),
-      Effect.withSpan('PreprintReviews.getPublishedPreprintReview'),
+      Effect.withSpan('PreprintReviews.getPublishedPreprintReview', { attributes: { preprintReviewId: id } }),
     )
 })
