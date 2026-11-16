@@ -1,8 +1,8 @@
-import { Effect, UndefinedOr } from 'effect'
+import { Effect, flow, UndefinedOr } from 'effect'
 import type { PublishedPreprintReview } from './Query.ts'
 import { Prereview } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
-import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
+import { matchPersona, Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
@@ -30,17 +30,15 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
 const getNamedAuthors: (
   authors: PublishedPreprintReview['authors']['named'],
 ) => Effect.Effect<Prereview['authors']['named'], UnableToGetPersona, Prereviewers> = Effect.forEach(
-  Effect.fnUntraced(function* (author) {
-    if (author.persona === 'pseudonym') {
-      const pseudonymPersona = yield* Prereviewers.getPseudonymPersona(author.orcidId)
-
-      return { name: pseudonymPersona.pseudonym }
-    }
-
-    const publicPersona = yield* Prereviewers.getPublicPersona(author.orcidId)
-
-    return { name: publicPersona.displayName, orcid: author.orcidId }
-  }),
+  flow(
+    Prereviewers.getPersona,
+    Effect.map(
+      matchPersona({
+        onPublic: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
+        onPseudonym: persona => ({ name: persona.pseudonym }),
+      }),
+    ),
+  ),
   { concurrency: 'unbounded' },
 )
 
