@@ -27,7 +27,7 @@ const prereview = {
   requested: false,
   structured: false,
   text: html`<p>Hello</p>`,
-} satisfies _.Result
+} satisfies _.PublishedPreprintReview
 
 const reviewImported = new Events.PreprintReviewImported({
   authors: [
@@ -68,7 +68,7 @@ const updatedAuthors = {
     { persona: 'public', orcidId: OrcidId('0000-0002-6109-0367') },
   ],
   anonymous: 0,
-} satisfies _.Result['authors']
+} satisfies _.PublishedPreprintReview['authors']
 
 const reviewWithUnknownAuthorImported = new Events.PreprintReviewImported({
   ...reviewImported,
@@ -82,7 +82,7 @@ const reviewWithNamedAndUnknownAuthorsImported = new Events.PreprintReviewImport
   otherAuthors: 0,
 })
 
-test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result, _.Error>]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReview, _.Error>]>([
   ['no events', input, [], Result.fail(new PrereviewIsNotFound())],
   ['review imported', input, [reviewImported], Result.succeed(prereview)],
   ['review imported with plaindate', input, [reviewImportedWithPlainDate], Result.succeed(prereview)],
@@ -114,7 +114,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result,
 })
 
 /*
-test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result, _.Error>]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReview, _.Error>]>([
   [
     'author list contains pseudonym persona',
     input,
@@ -157,7 +157,7 @@ const requested =[
   new Events.ReviewRequestForAPreprintWasAccepted({reviewRequestId, acceptedAt: prereview.published.subtract('1d') as never })
 ]
 
-test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Result, _.Error>]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReview, _.Error>]>([
   [
     'review was requested via COAR notify',
     input,

@@ -10,7 +10,7 @@ import type { Pseudonym } from '../../../types/Pseudonym.ts'
 
 export type Input = number
 
-export type Result = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'> & {
+export type PublishedPreprintReview = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'> & {
   clubId?: Uuid
   preprintId: IndeterminatePreprintId
   authors: {
@@ -31,7 +31,7 @@ const createFilter = (id: Input) =>
 
 const query =
   (removedPreprintReviewIds: ReadonlyArray<number>) =>
-  (events: ReadonlyArray<Events.Event>, input: Input): Result.Result<Result, Error> =>
+  (events: ReadonlyArray<Events.Event>, input: Input): Result.Result<PublishedPreprintReview, Error> =>
     Result.gen(function* () {
       if (Array.contains(removedPreprintReviewIds, input)) {
         return yield* Result.fail(new PrereviewWasRemoved())
@@ -101,7 +101,7 @@ const query =
 
 const toNamedAuthors = (
   author: Events.PreprintReviewImported['authors'][number],
-): Result.Result<ReadonlyArray<Result['authors']['named'][number]>, PrereviewIsUnavailable> => {
+): Result.Result<ReadonlyArray<PublishedPreprintReview['authors']['named'][number]>, PrereviewIsUnavailable> => {
   if (author._tag === 'Unknown') {
     return Result.succeed([])
   }
@@ -115,7 +115,7 @@ const toNamedAuthors = (
 
 const toNamedAuthor = (
   authorChoice: Events.AuthorChoicesForAReviewImported,
-): Result.Result<Result['authors']['named'][number], PrereviewIsUnavailable> => {
+): Result.Result<PublishedPreprintReview['authors']['named'][number], PrereviewIsUnavailable> => {
   if (authorChoice.persona === 'pseudonym') {
     return Result.fail(new PrereviewIsUnavailable({ cause: 'pseudonym authors not implemented' }))
   }

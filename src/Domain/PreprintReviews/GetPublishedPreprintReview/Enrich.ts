@@ -1,5 +1,5 @@
 import { Effect, UndefinedOr } from 'effect'
-import type { Result as PublishedPreprintReview } from './Query.ts'
+import type { PublishedPreprintReview } from './Query.ts'
 import { Prereview } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
