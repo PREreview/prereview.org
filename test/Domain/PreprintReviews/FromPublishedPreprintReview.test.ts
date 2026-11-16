@@ -23,7 +23,7 @@ const review = new PublishedPreprintReview({
     ],
     anonymous: 1,
   },
-  competingInterests: { _tag: 'No' },
+  competingInterests: { _tag: 'NotAnswered' },
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
   doi: Doi('10.5281/zenodo.12345'),
   id: 12345,
@@ -38,7 +38,7 @@ const review = new PublishedPreprintReview({
   },
   published: Temporal.PlainDate.from('2026-11-10'),
   requested: false,
-  useOfAi: { _tag: 'No' },
+  useOfAi: { _tag: 'NotAnswered' },
 })
 
 test('converts a full review', () => {
@@ -108,4 +108,43 @@ test("falls back to the default locale when a structured review's language isn't
   )
 
   expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'doesIntroductionExplain')())
+})
+
+test('adds competing interests and use of AI', () => {
+  const actual = _.fromPublishedPreprintReview(
+    new PublishedPreprintReview({
+      ...review,
+      competingInterests: { _tag: 'Yes', comment: Option.some(NonEmptyString('A competing interest')) },
+      useOfAi: { _tag: 'Yes', comment: Option.some(NonEmptyString('A use of AI')) },
+    }),
+  )
+
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'competingInterests')())
+  expect(actual.text.toString()).toContain('A competing interest')
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'useOfAi')())
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'aiIdeasAuthorsStatement')())
+  expect(actual.text.toString()).toContain('A use of AI')
+})
+
+test('says when there are no competing interests or use of AI for several authors', () => {
+  const actual = _.fromPublishedPreprintReview(
+    new PublishedPreprintReview({ ...review, competingInterests: { _tag: 'No' }, useOfAi: { _tag: 'No' } }),
+  )
+
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'competingInterestsAuthorsNo')())
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'noAiIdeasAuthorsStatement')())
+})
+
+test('says when there are no competing interests or use of AI for a single author', () => {
+  const actual = _.fromPublishedPreprintReview(
+    new PublishedPreprintReview({
+      ...review,
+      authors: { named: [review.authors.named[0]], anonymous: 0 },
+      competingInterests: { _tag: 'No' },
+      useOfAi: { _tag: 'No' },
+    }),
+  )
+
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'competingInterestsNo')())
+  expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'noAiIdeasStatement')())
 })

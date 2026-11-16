@@ -41,10 +41,50 @@ export const fromPublishedPreprintReview = (review: PublishedPreprintReview): Pr
     preprint: review.preprint,
     live: review.live,
     requested: review.requested,
-    ...Match.valueTags(review.content, {
-      Full: ({ text }) => ({ structured: false, text }),
-      Structured: ({ questions }) => ({ structured: true, text: renderStructuredQuestions(questions, locale) }),
-    }),
+    structured: review.content._tag === 'Structured',
+    text: html`${Match.valueTags(review.content, {
+      Full: ({ text }) => text,
+      Structured: ({ questions }) => renderStructuredQuestions(questions, locale),
+    })}${renderCompetingInterests(review, locale)}${renderUseOfAi(review, locale)}`,
+  })
+}
+
+const hasOtherAuthors = (review: PublishedPreprintReview) => review.authors.named.length + review.authors.anonymous > 1
+
+const renderCompetingInterests = (review: PublishedPreprintReview, locale: SupportedLocale) => {
+  const t = translate(locale, 'write-review')
+
+  return Match.valueTags(review.competingInterests, {
+    Yes: ({ comment }) =>
+      Option.match(comment, {
+        onNone: () => '',
+        onSome: comment => html`
+          <h2>${t('competingInterests')()}</h2>
+          <p>${comment}</p>
+        `,
+      }),
+    No: () => html`
+      <h2>${t('competingInterests')()}</h2>
+      <p>${hasOtherAuthors(review) ? t('competingInterestsAuthorsNo')() : t('competingInterestsNo')()}</p>
+    `,
+    NotAnswered: () => '',
+  })
+}
+
+const renderUseOfAi = (review: PublishedPreprintReview, locale: SupportedLocale) => {
+  const t = translate(locale, 'write-review')
+
+  return Match.valueTags(review.useOfAi, {
+    Yes: ({ comment }) => html`
+      <h2>${t('useOfAi')()}</h2>
+      <p>${hasOtherAuthors(review) ? t('aiIdeasAuthorsStatement')() : t('aiIdeasStatement')()}</p>
+      ${Option.match(comment, { onNone: () => '', onSome: comment => html`<p>${comment}</p>` })}
+    `,
+    No: () => html`
+      <h2>${t('useOfAi')()}</h2>
+      <p>${hasOtherAuthors(review) ? t('noAiIdeasAuthorsStatement')() : t('noAiIdeasStatement')()}</p>
+    `,
+    NotAnswered: () => '',
   })
 }
 
