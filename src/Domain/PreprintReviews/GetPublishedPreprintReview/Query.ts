@@ -1,4 +1,4 @@
-import { Array, Filter, Match, Option, Result, Struct } from 'effect'
+import { Array, Filter, Match, Option, Result, Schema, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
@@ -11,7 +11,9 @@ import {
   type PublishedPreprintReview,
 } from './Types.ts'
 
-export type Input = number
+export type Input = typeof Input.Type
+
+const Input = Schema.Number
 
 export type PublishedPreprintReviewDetails = Omit<
   PublishedPreprintReview,
@@ -112,6 +114,7 @@ const toNamedAuthor = Match.typeTags<
 export const Query = (removedPreprintReviewIds: ReadonlyArray<number>) =>
   Queries.OnDemandQuery({
     name: 'PreprintReviews.getPublishedPreprintReview.Query',
+    inputSchema: Input,
     createFilter,
     query: query(removedPreprintReviewIds),
   })

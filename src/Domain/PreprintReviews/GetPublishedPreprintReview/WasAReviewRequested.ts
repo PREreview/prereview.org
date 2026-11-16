@@ -1,13 +1,16 @@
-import { Array, flow, HashMap, Match, Result } from 'effect'
+import { Array, flow, HashMap, Match, Result, Schema } from 'effect'
 import * as Events from '../../../Events.ts'
 import * as Queries from '../../../Queries.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
+import { InstantSchema, PlainDateSchema } from '../../../types/Temporal.ts'
 import * as Preprints from '../../Preprints/index.ts'
 
-export interface Input {
-  preprintId: Preprints.IndeterminatePreprintId
-  published: Temporal.Instant | Temporal.PlainDate
-}
+export type Input = typeof Input.Type
+
+const Input = Schema.Struct({
+  preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
+  published: Schema.Union([InstantSchema, PlainDateSchema]),
+})
 
 export type Result = boolean
 
@@ -88,6 +91,7 @@ const query = (state: State, input: Input): Result => HashMap.some(state, wasReq
 
 export const WasAReviewRequested = Queries.StatefulQuery({
   name: 'PreprintReviews.getPublishedPreprintReview.WasAReviewRequested',
+  inputSchema: Input,
   initialState: HashMap.empty<Uuid.Uuid, ReviewRequest>(),
   updateStateWithEvents,
   query: flow(query, Result.succeed),
