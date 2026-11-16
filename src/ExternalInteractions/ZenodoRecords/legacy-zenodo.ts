@@ -52,8 +52,8 @@ import type { ClubDetails, ClubName } from '../../Domain/Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import type { NewPrereview } from '../../Domain/PreprintReviews/index.ts'
-import * as PreprintReviewErrors from '../../Domain/PreprintReviews/Errors.ts' // oxlint-disable-line module-boundaries/use-index
-import * as PreprintReview from '../../Domain/PreprintReviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
+import * as PreprintReviewTypes from '../../Domain/PreprintReviews/GetPublishedPreprintReview/Types.ts' // oxlint-disable-line module-boundaries/use-index
+import type * as PreprintReview from '../../Domain/PreprintReviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import * as Preprints from '../../Domain/Preprints/index.ts'
 import {
   type IndeterminatePreprintId,
@@ -321,16 +321,16 @@ export const getPrereviewFromZenodo = (id: number) =>
     ),
     RTE.mapLeft(error =>
       match(error)
-        .with('removed', () => new PreprintReviewErrors.PrereviewWasRemoved())
+        .with('removed', () => new PreprintReviewTypes.PrereviewWasRemoved())
         .with(
           'no reviewed preprint',
           'not-found',
           'text-not-found',
           { _tag: 'PreprintIsNotFound' },
           { status: P.union(StatusCodes.NotFound, StatusCodes.Gone) },
-          () => new PreprintReviewErrors.PrereviewIsNotFound(),
+          () => new PreprintReviewTypes.PrereviewIsNotFound(),
         )
-        .otherwise(error => new PreprintReviewErrors.PrereviewIsUnavailable({ cause: error })),
+        .otherwise(error => new PreprintReviewTypes.PrereviewIsUnavailable({ cause: error })),
     ),
   )
 
@@ -858,7 +858,7 @@ function recordToPrereview(
   | PreprintIsNotFound
   | 'text-unavailable'
   | 'unknown-license',
-  PreprintReview.Prereview
+  PreprintReviewTypes.Prereview
 > {
   return pipe(
     RTE.Do,
@@ -911,7 +911,7 @@ function recordToPrereview(
         text: getReviewText(reviewTextUrl),
       }),
     ),
-    RTE.map(args => new PreprintReview.Prereview(args)),
+    RTE.map(args => new PreprintReviewTypes.Prereview(args)),
   )
 }
 
@@ -1044,7 +1044,7 @@ const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
   D.map(({ metadata }) => metadata.license.id),
 )
 
-function getAuthors(record: Record | InProgressDeposition): PreprintReview.Prereview['authors'] {
+function getAuthors(record: Record | InProgressDeposition): PreprintReviewTypes.Prereview['authors'] {
   const authors = Array.map(FptsToEffect.array(record.metadata.creators), ({ name, orcid }) => ({
     name: Name(name),
     orcid: orcid ? OrcidId(orcid) : undefined,

@@ -5,5 +5,11 @@ export * from './legacy-form.ts'
 export * from './legacy-publish-review.ts'
 export * from './NextExpectedCommand.ts'
 export * from './PreprintReviews.ts'
-export * from './Prereview.ts'
+export type * from './Prereview.ts'
+export {
+  Prereview,
+  PrereviewIsNotFound,
+  PrereviewIsUnavailable,
+  PrereviewWasRemoved,
+} from './GetPublishedPreprintReview/index.ts'
 export * from './Workflows/index.ts'
