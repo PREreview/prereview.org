@@ -4,6 +4,7 @@ import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as _ from '../src/Queries.ts'
+import { Temporal, Uuid } from '../src/types/index.ts'
 
 const recordSpans = () => {
   const spans: Array<Tracer.NativeSpan> = []
@@ -22,6 +23,11 @@ const attributesOf = (spans: ReadonlyArray<Tracer.NativeSpan>, name: string) =>
   Object.fromEntries(
     Array.from(spans.find(span => span.name === name)?.attributes ?? []).filter(([key]) => key.startsWith('input')),
   )
+
+const event = new Events.ReviewRequestForAPreprintWasAccepted({
+  acceptedAt: Temporal.Instant.from('2026-11-10T14:00:00Z'),
+  reviewRequestId: Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753'),
+})
 
 const Input = Schema.Struct({
   id: Schema.NumberFromString,
@@ -104,6 +110,38 @@ describe('makeStatefulQuery', () => {
         'input.tags': '[]',
         'input.flag': false,
       })
+    }),
+  )
+
+  it.effect('records updating its state on a span', () =>
+    Effect.gen(function* () {
+      const { spans, tracer } = recordSpans()
+      const subscribers: Array<Parameters<(typeof EventDispatcher.EventDispatcher.Service)['addSubscriber']>[0]> = []
+
+      yield* pipe(
+        _.makeStatefulQuery(
+          _.StatefulQuery({
+            name: 'Test.statefulQuery',
+            initialState: 0,
+            updateStateWithEvents: (state, events) => state + events.length,
+            query: (state: number) => Result.succeed(state),
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(EventDispatcher.EventDispatcher, {
+            addSubscriber: subscriber => Effect.sync(() => subscribers.push(subscriber)),
+          }),
+        ),
+      )
+
+      yield* pipe(
+        Effect.forEach(subscribers, subscriber => subscriber([event, event, event])),
+        Effect.withTracer(tracer),
+      )
+
+      expect(
+        spans.find(span => span.name === 'Test.statefulQuery.updateStateWithEvents')?.attributes.get('eventCount'),
+      ).toBe(3)
     }),
   )
 })

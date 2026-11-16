@@ -119,10 +119,13 @@ export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, 
     const state = yield* Ref.make(initialState)
 
     yield* eventDispatcher.addSubscriber(events =>
-      Effect.forEach(
-        Array.chunksOf(events, 100),
-        events => Ref.update(state, currentState => updateStateWithEvents(currentState, events)),
-        { discard: true },
+      pipe(
+        Effect.forEach(
+          Array.chunksOf(events, 100),
+          events => Ref.update(state, currentState => updateStateWithEvents(currentState, events)),
+          { discard: true },
+        ),
+        Effect.withSpan(`${name}.updateStateWithEvents`, { attributes: { eventCount: events.length } }),
       ),
     )
 
