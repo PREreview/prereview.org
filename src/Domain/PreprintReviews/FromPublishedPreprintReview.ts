@@ -145,7 +145,10 @@ const renderStructuredQuestions = (questions: StructuredQuestions, locale: Suppo
   </dl>`
 }
 
-const renderQuestion = (question: Html, answer: Html, comment: Option.Option<NonEmptyString>) =>
-  html`<dt>${question}</dt>
+const renderQuestion = (question: Html, answer: Html, comment: Option.Option<NonEmptyString>) => html`
+  <div>
+    <dt>${question}</dt>
     <dd>${answer}</dd>
-    ${Option.match(comment, { onNone: () => '', onSome: comment => html`<dd>${comment}</dd>` })}`
+    ${Option.match(comment, { onNone: () => '', onSome: comment => html`<dd>${comment}</dd>` })}
+  </div>
+`

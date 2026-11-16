@@ -1081,6 +1081,10 @@ dl {
     max-inline-size: 100%;
   }
 
+  &:not(header > &) > div + div {
+    margin-block-start: var(--space-2xs);
+  }
+
   header > & {
     display: flex;
     flex-wrap: wrap;
