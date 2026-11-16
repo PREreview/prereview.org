@@ -1,8 +1,11 @@
 import { Array, Context, Effect, Layer, Scope } from 'effect'
+import type { Clubs } from '../../Clubs/index.ts'
+import type { Datasets } from '../../Datasets/index.ts'
 import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as EventStore from '../../../EventStore.ts'
 import * as Queries from '../../../Queries.ts'
 import type { Uuid } from '../../../types/index.ts'
+import type { Prereviewers } from '../../Prereviewers/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
 import { AreThereMultipleAuthorsOnAReview } from './AreThereMultipleAuthorsOnAReview.ts'
@@ -29,6 +32,7 @@ import { CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList } fro
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.ts'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.ts'
 import { GetAuthor } from './GetAuthor.ts'
+import { GetPublishedDatasetReview } from './GetPublishedDatasetReview/index.ts'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 import { GetDatasetReviewForInvite } from './GetDatasetReviewForInvite.ts'
 import { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
@@ -141,6 +145,7 @@ export class DatasetReviewQueries extends Context.Service<
       Errors.UnknownDatasetReview
     >
     getPublishedReview: Queries.FromOnDemandQuery<typeof GetPublishedReview>
+    getPublishedDatasetReview: GetPublishedDatasetReview
     getPublishedReviewDetails: Queries.Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedReviewDetails>,
       Errors.UnknownDatasetReview
@@ -152,7 +157,11 @@ export class DatasetReviewQueries extends Context.Service<
     >
     getDatasetReviewForInvite: Queries.FromStatefulQuery<typeof GetDatasetReviewForInvite>
   }
->()('DatasetReviewQueries') {}
+>()('DatasetReviewQueries') {
+  static readonly getPublishedDatasetReview = (
+    ...args: Parameters<(typeof DatasetReviewQueries.Service)['getPublishedDatasetReview']>
+  ) => DatasetReviewQueries.use(service => service.getPublishedDatasetReview(...args))
+}
 
 export const checkIfReviewIsBeingPublished = (
   ...args: Parameters<(typeof DatasetReviewQueries.Service)['checkIfReviewIsBeingPublished']>
@@ -305,6 +314,8 @@ export type { DatasetReviewPreview } from './GetPreviewForAReviewReadyToBePublis
 
 export type { PublishedReview } from './GetPublishedReview.ts'
 
+export { DatasetReviewIsUnavailable, PublishedDatasetReview } from './GetPublishedDatasetReview/index.ts'
+
 export type { PublishedReviewDetails } from './GetPublishedReviewDetails.ts'
 
 export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
@@ -316,7 +327,7 @@ export type { UseOfAi } from './CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIde
 const makeDatasetReviewQueries: Effect.Effect<
   typeof DatasetReviewQueries.Service,
   never,
-  EventStore.EventStore | EventDispatcher.EventDispatcher
+  Clubs | Datasets | EventStore.EventStore | EventDispatcher.EventDispatcher | Prereviewers
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
@@ -507,6 +518,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.provide(context),
     ),
     getPublishedReview: yield* Queries.makeOnDemandQuery(GetPublishedReview),
+    getPublishedDatasetReview: yield* GetPublishedDatasetReview,
     getPublishedReviewDetails: Effect.fn('DatasetReviewQueries.getPublishedReviewDetails')(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
