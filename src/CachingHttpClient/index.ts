@@ -111,29 +111,33 @@ const revalidationWorker = Effect.gen(function* () {
   const revalidationQueue = yield* RevalidationQueue
   const httpClient = yield* HttpClient.HttpClient
 
-  return yield* pipe(
-    Queue.take(revalidationQueue),
-    Effect.tap(({ request }) =>
-      Effect.logDebug('Cache revalidating request').pipe(
+  const revalidate = Effect.fn('CachingHttpClient.revalidate')(
+    function* ({
+      request,
+      timeToStale,
+    }: {
+      request: HttpClientRequest.HttpClientRequest
+      timeToStale: Duration.Input
+    }) {
+      yield* Effect.annotateCurrentSpan({ url: request.url })
+      yield* Effect.logDebug('Cache revalidating request').pipe(
         Effect.annotateLogs({ url: request.url, urlParams: request.urlParams }),
-      ),
-    ),
-    Effect.bind('response', ({ request }) => httpClient.execute(request)),
-    Effect.tap(
-      Effect.fnUntraced(function* ({ response, timeToStale }) {
-        const timestamp = yield* DateTime.now
-        return yield* HttpClientResponse.matchStatus(response, {
-          [StatusCodes.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
-          [StatusCodes.NotFound]: response => cache.delete(new URL(response.request.url)),
-          [StatusCodes.Gone]: response => cache.delete(new URL(response.request.url)),
-          orElse: () => Effect.void,
-        })
-      }),
-    ),
+      )
+
+      const response = yield* httpClient.execute(request)
+      const timestamp = yield* DateTime.now
+
+      return yield* HttpClientResponse.matchStatus(response, {
+        [StatusCodes.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+        [StatusCodes.NotFound]: response => cache.delete(new URL(response.request.url)),
+        [StatusCodes.Gone]: response => cache.delete(new URL(response.request.url)),
+        orElse: () => Effect.void,
+      })
+    },
     Effect.tapError(error => Effect.logError('Unable to update cached response').pipe(Effect.annotateLogs({ error }))),
-    Effect.ignore,
-    Effect.forever,
   )
+
+  return yield* pipe(Queue.take(revalidationQueue), Effect.flatMap(revalidate), Effect.ignore, Effect.forever)
 })
 
 export const layerRevalidationWorker = Layer.effectDiscard(
