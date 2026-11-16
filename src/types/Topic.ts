@@ -1,4 +1,4 @@
-import { pipe, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
+import { pipe, Record, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
 import topics from './data/topics.json' with { type: 'json' }
 import type { DomainId } from './domain.ts'
 import type { FieldId } from './field.ts'
@@ -30,5 +30,5 @@ export const getTopicField = (id: TopicId) => topics[id].field as FieldId
 export const getTopicSubfield = (id: TopicId) => topics[id].subfield as SubfieldId
 
 export function isTopicId(value: string): value is TopicId {
-  return (topicIds as ReadonlyArray<string>).includes(value)
+  return Record.has<string, unknown>(topics, value)
 }

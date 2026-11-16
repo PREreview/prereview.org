@@ -1,4 +1,4 @@
-import { pipe, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
+import { pipe, Record, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
 import crypto from 'node:crypto'
 import keywords from './data/keywords.json' with { type: 'json' }
 
@@ -33,5 +33,5 @@ export function getKeywordName(id: KeywordId): string {
 }
 
 export function isKeywordId(value: string): value is KeywordId {
-  return (keywordIds as ReadonlyArray<string>).includes(value)
+  return Record.has<string, unknown>(keywords, value)
 }
