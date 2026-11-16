@@ -7,6 +7,7 @@ import { PrereviewIsNotFound, PrereviewIsUnavailable } from '../../../../src/Dom
 import { BiorxivOrMedrxivPreprintId } from '../../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
+import { NonEmptyString } from '../../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
 import { html } from '../../../../src/html.ts'
 
@@ -26,6 +27,8 @@ const prereview = {
   published: Temporal.PlainDate.from('2026-11-10'),
   requested: false,
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
+  competingInterests: { _tag: 'No' },
+  useOfAi: { _tag: 'No' },
 } satisfies _.PublishedPreprintReviewDetails
 
 const reviewImported = new Events.PreprintReviewImported({
@@ -43,8 +46,8 @@ const reviewImported = new Events.PreprintReviewImported({
   published: prereview.published.toZonedDateTime({ timeZone: 'UTC', plainTime: '14:25' }).toInstant(),
   preprint: prereview.preprintId,
   live: prereview.live,
-  useOfAi: { _tag: 'No' },
-  competingInterests: { _tag: 'No' },
+  useOfAi: prereview.useOfAi,
+  competingInterests: prereview.competingInterests,
   language: prereview.language,
   content: prereview.content,
 })
@@ -81,6 +84,12 @@ const reviewWithNamedAndUnknownAuthorsImported = new Events.PreprintReviewImport
   otherAuthors: 0,
 })
 
+const reviewWithDeclarationsImported = new Events.PreprintReviewImported({
+  ...reviewImported,
+  competingInterests: { _tag: 'Yes', comment: Option.some(NonEmptyString('A competing interest')) },
+  useOfAi: { _tag: 'Yes', comment: Option.some(NonEmptyString('A use of AI')) },
+})
+
 const structuredQuestions = {
   introductionMatches: { answer: 'yes', comment: Option.none() },
   methodsAppropriate: { answer: 'highly-appropriate', comment: Option.none() },
@@ -113,6 +122,16 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
   ['no events', input, [], Result.fail(new PrereviewIsNotFound())],
   ['review imported', input, [reviewImported], Result.succeed(prereview)],
   ['review imported with plaindate', input, [reviewImportedWithPlainDate], Result.succeed(prereview)],
+  [
+    'review imported with competing interests and use of AI',
+    input,
+    [reviewWithDeclarationsImported],
+    Result.succeed({
+      ...prereview,
+      competingInterests: reviewWithDeclarationsImported.competingInterests,
+      useOfAi: reviewWithDeclarationsImported.useOfAi,
+    }),
+  ],
   [
     'structured review imported',
     input,

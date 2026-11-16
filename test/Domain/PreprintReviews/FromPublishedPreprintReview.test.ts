@@ -23,6 +23,7 @@ const review = new PublishedPreprintReview({
     ],
     anonymous: 1,
   },
+  competingInterests: { _tag: 'No' },
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
   doi: Doi('10.5281/zenodo.12345'),
   id: 12345,
@@ -37,6 +38,7 @@ const review = new PublishedPreprintReview({
   },
   published: Temporal.PlainDate.from('2026-11-10'),
   requested: false,
+  useOfAi: { _tag: 'No' },
 })
 
 test('converts a full review', () => {

@@ -88,6 +88,7 @@ const query =
             Array.length(authorChoices),
         },
         ...(imported.club !== undefined ? { clubId: imported.club } : {}),
+        competingInterests: imported.competingInterests,
         doi: imported.doi,
         id: imported.id,
         language: imported.language,
@@ -100,6 +101,7 @@ const query =
             : imported.published,
         requested: false,
         content,
+        useOfAi: imported.useOfAi,
       }
     })
 
