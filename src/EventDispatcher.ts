@@ -62,7 +62,7 @@ const dispatchNewEvents = Effect.gen(function* () {
     discard: true,
     concurrency: 'unbounded',
   })
-})
+}).pipe(Effect.withSpan('EventDispatcher.dispatchNewEvents'))
 
 export const worker = Layer.effectDiscard(
   Effect.acquireRelease(

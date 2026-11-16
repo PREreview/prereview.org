@@ -118,7 +118,7 @@ export const ensureRequestEmbeddingsTable = (sql: SqlClient.SqlClient): Effect.E
       )
     `,
     sql`DROP INDEX IF EXISTS request_embeddings_idx`,
-  ])
+  ]).pipe(Effect.withSpan('Embeddings.ensureRequestEmbeddingsTable'))
 
 export const getMatches =
   (
