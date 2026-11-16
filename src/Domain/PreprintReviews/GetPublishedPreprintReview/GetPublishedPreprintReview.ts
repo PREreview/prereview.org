@@ -8,8 +8,12 @@ import { Enrich } from './Enrich.ts'
 import { Query } from './Query.ts'
 import { type Prereview, type PrereviewIsNotFound, PrereviewIsUnavailable, type PrereviewWasRemoved } from './Types.ts'
 
+export type GetPublishedPreprintReview = (
+  id: number,
+) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
+
 export const GetPublishedPreprintReview: Effect.Effect<
-  (id: number) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>,
+  GetPublishedPreprintReview,
   never,
   Clubs | EventStore.EventStore | Preprints | Prereviewers
 > = Effect.gen(function* () {
