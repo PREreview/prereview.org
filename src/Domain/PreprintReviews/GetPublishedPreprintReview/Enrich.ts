@@ -1,9 +1,9 @@
-import { Array, Effect } from 'effect'
+import { Array, Effect, UndefinedOr } from 'effect'
 import type { Result as PublishedPreprintReview } from './Query.ts'
 import { Prereview, PrereviewIsUnavailable } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import { type ClubNotFound, Clubs } from '../../Clubs/index.ts'
+import { Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
   publishedPreprintReview: PublishedPreprintReview,
@@ -50,14 +50,7 @@ const getNamedAuthors: (
   { concurrency: 'unbounded' },
 )
 
-const getClubName: (
-  clubId: PublishedPreprintReview['clubId'],
-) => Effect.Effect<Prereview['club'], ClubNotFound, Clubs> = Effect.fnUntraced(function* (clubId) {
-  if (clubId === undefined) {
-    return undefined
-  }
-
-  const clubs = yield* Clubs
-
-  return yield* clubs.getClubName(clubId)
+const getClubName = UndefinedOr.match({
+  onUndefined: () => Effect.undefined,
+  onDefined: Clubs.getClubName,
 })
