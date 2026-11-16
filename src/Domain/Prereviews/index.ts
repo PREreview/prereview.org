@@ -2,7 +2,7 @@ import { FetchHttpClient } from 'effect/http'
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { Clubs } from '../Clubs/index.ts'
-import * as DatasetReviews from '../DatasetReviews/index.ts'
+import { DatasetReviewQueries } from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import { Zenodo } from '../../ExternalApis/index.ts'
@@ -78,9 +78,7 @@ export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
     const context = yield* Effect.map(
-      Effect.context<
-        Clubs | DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers | Preprints
-      >(),
+      Effect.context<Clubs | DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers | Preprints>(),
       Context.omit(Scope.Scope),
     )
     const clubs = yield* Clubs
@@ -236,10 +234,7 @@ export const layer = Layer.effect(
               ['UnknownDatasetReview', 'DatasetReviewHasNotBeenPublished'],
               () => new PrereviewIsNotFound(),
             ),
-            Effect.catchTag(
-              ['ClubNotFound', 'DatasetIsNotFound', 'DatasetIsUnavailable', 'UnableToGetPersona', 'UnableToQuery'],
-              error => new PrereviewIsUnavailable({ cause: error }),
-            ),
+            Effect.catchTag('DatasetReviewIsUnavailable', error => new PrereviewIsUnavailable({ cause: error })),
           )
         }
 
@@ -305,31 +300,19 @@ export const layer = Layer.effect(
   }),
 )
 
-const getRecentDatasetPrereview = Effect.fn('Prereviews.getRecentDatasetPrereview')(function* (id: Uuid.Uuid) {
-  const clubs = yield* Clubs
-
-  const datasetReview = yield* DatasetReviews.getPublishedReview(id)
-
-  const { author, otherAuthors, dataset, club } = yield* Effect.all(
-    {
-      author: Prereviewers.getPersona(datasetReview.author),
-      otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Prereviewers.getPersona, {
-        concurrency: 'unbounded',
+const getRecentDatasetPrereview = flow(
+  DatasetReviewQueries.getPublishedDatasetReview,
+  Effect.map(
+    datasetReview =>
+      new RecentDatasetPrereview({
+        author: datasetReview.author,
+        otherAuthors: datasetReview.otherAuthors,
+        anonymousAuthors: datasetReview.anonymousAuthors,
+        club: Option.getOrUndefined(datasetReview.club),
+        dataset: Datasets.DatasetTitle.fromDataset(datasetReview.dataset),
+        doi: datasetReview.doi,
+        id: datasetReview.id,
+        published: datasetReview.published,
       }),
-      dataset: Datasets.getDatasetTitle(datasetReview.dataset),
-      club: Effect.transposeOption(Option.map(datasetReview.clubId, clubs.getClubName)),
-    },
-    { concurrency: 'unbounded' },
-  )
-
-  return new RecentDatasetPrereview({
-    author,
-    otherAuthors,
-    anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
-    club: Option.getOrUndefined(club),
-    dataset,
-    doi: datasetReview.doi,
-    id: datasetReview.id,
-    published: datasetReview.published,
-  })
-})
+  ),
+)
