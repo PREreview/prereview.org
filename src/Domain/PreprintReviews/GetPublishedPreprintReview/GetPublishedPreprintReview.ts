@@ -120,7 +120,7 @@ const toNamedAuthor = (
 
 export const GetPublishedPreprintReview = (removedPreprintReviewIds: ReadonlyArray<number>) =>
   Queries.OnDemandQuery({
-    name: 'PreprintReviews.getPublishedPreprintReview',
+    name: 'PreprintReviews.getPublishedPreprintReview.Query',
     createFilter,
     query: query(removedPreprintReviewIds),
   })

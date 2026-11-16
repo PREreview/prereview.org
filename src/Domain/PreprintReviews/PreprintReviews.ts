@@ -146,6 +146,7 @@ export const layer = Layer.effect(
           error => new Errors.PrereviewIsUnavailable({ cause: error }),
         ),
         Effect.provideContext(context),
+        Effect.withSpan('PreprintReviews.getPublishedPreprintReview'),
       )
 
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (

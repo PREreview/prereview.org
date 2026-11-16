@@ -6,7 +6,7 @@ import { Preprints } from '../../Preprints/index.ts'
 import { Prereviewers } from '../../Prereviewers/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 
-export const EnrichPublishedPreprintReview = Effect.fn('PreprintReviews.enrichPublishedPreprintReview')(function* (
+export const EnrichPublishedPreprintReview = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
   publishedPreprintReview: PublishedPreprintReview,
 ) {
   const preprints = yield* Preprints
