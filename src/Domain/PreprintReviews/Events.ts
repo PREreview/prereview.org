@@ -113,7 +113,7 @@ export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImp
   language: Iso6391Schema,
   content: Schema.TaggedUnion({
     Structured: StructuredPrereviewSchema.fields,
-    FreeText: { text: HtmlSchema },
+    Full: { text: HtmlSchema },
   }),
 }) {}
 

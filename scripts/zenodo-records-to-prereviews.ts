@@ -533,7 +533,7 @@ const getContent = (record: ZenodoRecord, body: ReadonlyArray<Node>, text: strin
     return Effect.fail(new CannotConvertRecord({ reason: 'empty review' }))
   }
 
-  return Effect.succeed({ _tag: 'FreeText' as const, text: new Html({ value: tidied }) })
+  return Effect.succeed({ _tag: 'Full' as const, text: new Html({ value: tidied }) })
 }
 
 const getAuthors = (record: ZenodoRecord) => {

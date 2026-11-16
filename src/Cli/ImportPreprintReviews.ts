@@ -39,7 +39,7 @@ const PrereviewToImportSchema = Schema.Struct({
   ),
   content: Schema.TaggedUnion({
     Structured: StructuredPrereviewSchema.fields,
-    FreeText: { text: NaiveHtmlSchema },
+    Full: { text: NaiveHtmlSchema },
   }),
 })
 

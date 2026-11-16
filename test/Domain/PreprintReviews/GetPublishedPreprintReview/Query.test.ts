@@ -47,7 +47,7 @@ const reviewImported = new Events.PreprintReviewImported({
   useOfAi: { _tag: 'No' },
   competingInterests: { _tag: 'No' },
   language: prereview.language,
-  content: { _tag: 'FreeText', text: prereview.text },
+  content: { _tag: 'Full', text: prereview.text },
 })
 
 const reviewImportedWithPlainDate = new Events.PreprintReviewImported({

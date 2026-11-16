@@ -57,7 +57,7 @@ const query =
       )
 
       const text = yield* Match.valueTags(imported.content, {
-        FreeText: ({ text }) => Result.succeed(text),
+        Full: ({ text }) => Result.succeed(text),
         Structured: () => Result.fail(new PrereviewIsUnavailable({ cause: 'structured review not implemented' })),
       })
 

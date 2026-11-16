@@ -24,7 +24,7 @@ const input = {
   useOfAi: { _tag: 'No' },
   competingInterests: { _tag: 'No' },
   language: 'en',
-  content: { _tag: 'FreeText', text: html`<p>Hello</p>` },
+  content: { _tag: 'Full', text: html`<p>Hello</p>` },
 } satisfies _.Input
 
 const inputWithDifferentClub = {
@@ -57,7 +57,7 @@ const inputWithNewInstances = {
   ],
   published: Temporal.Instant.fromEpochNanoseconds(input.published.epochNanoseconds),
   preprint: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abcde') }),
-  content: { _tag: 'FreeText', text: html`<p>Hello</p>` },
+  content: { _tag: 'Full', text: html`<p>Hello</p>` },
 } satisfies _.Input
 
 const inputWithDifferentPublishedInstant = {
@@ -75,9 +75,9 @@ const inputWithDifferentId = {
   id: 67890,
 } satisfies _.Input
 
-const inputWithDifferentFreeText = {
+const inputWithDifferentFullText = {
   ...input,
-  content: { _tag: 'FreeText', text: html`<p>Goodbye</p>` },
+  content: { _tag: 'Full', text: html`<p>Goodbye</p>` },
 } satisfies _.Input
 
 const inputWithStructuredContent = {
@@ -157,13 +157,13 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Op
     Result.succeedSome(imported),
   ],
   [
-    'already imported with different free text',
+    'already imported with a different full text',
     [imported],
-    inputWithDifferentFreeText,
+    inputWithDifferentFullText,
     Result.fail(new _.UnexpectedPreviousImport({ difference: 'content' })),
   ],
   [
-    'already imported with free text, now structured',
+    'already imported as full, now structured',
     [imported],
     inputWithStructuredContent,
     Result.fail(new _.UnexpectedPreviousImport({ difference: 'content' })),
