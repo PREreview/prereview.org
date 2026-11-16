@@ -1,4 +1,4 @@
-import { type Array, Context, Data, Effect, type Option, Schema, pipe } from 'effect'
+import { type Array, Context, Data, Effect, type Option, Schema, pipe, Stream } from 'effect'
 import type { Event, EventFilter, EventsForFilter } from './Events.ts'
 
 export const EventStore = Context.Service<EventStore>('EventStore')
@@ -13,6 +13,11 @@ export const Position = pipe(Schema.Number, Schema.brand('Position'))
 
 export type Position = typeof Position.Type
 
+export interface Page {
+  readonly events: Array.NonEmptyReadonlyArray<Event>
+  readonly lastKnownPosition: Position
+}
+
 export interface EventStore {
   readonly all: Effect.Effect<
     Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownPosition: Position }>,
@@ -25,6 +30,8 @@ export interface EventStore {
     Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownPosition: Position }>,
     FailedToGetEvents
   >
+
+  readonly streamSince: (lastKnownPosition: Option.Option<Position>) => Stream.Stream<Page, FailedToGetEvents>
 
   readonly query: <Filter extends EventFilter>(
     filter: Filter,
@@ -48,6 +55,9 @@ export const all = EventStore.use(service => service.all)
 
 export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
   EventStore.use(service => service.since(...args))
+
+export const streamSince = (...args: Parameters<(typeof EventStore.Service)['streamSince']>) =>
+  Stream.unwrap(EventStore.useSync(service => service.streamSince(...args)))
 
 export const append = (...args: Parameters<(typeof EventStore.Service)['append']>) =>
   EventStore.use(service => service.append(...args))

@@ -1,4 +1,4 @@
-import { FileSystem, Effect, Array, Duration, Layer, Option, PubSub } from 'effect'
+import { FileSystem, Effect, Array, Duration, Layer, Option, PubSub, Stream } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { describe, expect, it } from './vitest.ts'
@@ -456,6 +456,92 @@ it.effect.prop(
     ),
   { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
+
+describe('streamSince', () => {
+  it.effect('streams nothing when there are no events', () =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
+
+      const actual = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
+
+      expect(actual).toStrictEqual([])
+    }).pipe(
+      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(Layer.mock(Events.Events, {} as never)),
+      Effect.provide(TestLibsqlClient),
+    ),
+  )
+
+  it.effect.prop(
+    'streams every event',
+    [fc.nonEmptyArray(fc.commentEvent())],
+    ([events]) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        yield* Effect.forEach(events, eventStore.append)
+
+        const actual = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
+
+        expect(actual).toStrictEqual([{ events, lastKnownPosition: expect.anything() }])
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestLibsqlClient),
+      ),
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+  )
+
+  it.effect.prop(
+    'streams events since a position',
+    [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+    ([existingEvents, newEvents]) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        yield* Effect.forEach(existingEvents, eventStore.append)
+
+        const { lastKnownPosition } = yield* Effect.flatMap(eventStore.all, Effect.fromOption)
+
+        yield* Effect.forEach(newEvents, eventStore.append)
+
+        const actual = yield* Stream.runCollect(eventStore.streamSince(Option.some(lastKnownPosition)))
+
+        expect(actual).toStrictEqual([{ events: newEvents, lastKnownPosition: expect.anything() }])
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestLibsqlClient),
+      ),
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+  )
+
+  it.effect.prop(
+    'streams many events in pages',
+    [fc.array(fc.commentEvent(), { minLength: 2001, maxLength: 2500 })],
+    ([events]) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        yield* Effect.forEach(events, eventStore.append)
+
+        const pages = yield* Stream.runCollect(eventStore.streamSince(Option.none()))
+
+        expect(Array.map(pages, page => page.events.length)).toStrictEqual([1000, 1000, events.length - 2000])
+        expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
+        expect(Array.map(pages, page => page.lastKnownPosition)).toStrictEqual([1000, 2000, events.length])
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestLibsqlClient),
+      ),
+    { fastCheck: { numRuns: 1 }, timeout: Duration.toMillis('60 seconds') },
+  )
+})
 
 const TestLibsqlClient = Layer.unwrap(
   Effect.gen(function* () {

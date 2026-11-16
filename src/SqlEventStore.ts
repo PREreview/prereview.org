@@ -15,6 +15,8 @@ import {
   Struct,
   SchemaIssue,
   SchemaGetter,
+  Stream,
+  Tuple,
 } from 'effect'
 import * as EventStore from './EventStore.ts'
 import * as Events from './Events.ts'
@@ -22,6 +24,8 @@ import type * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 
 class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
+
+const pageSize = 1000
 
 export const make: Effect.Effect<
   EventStore.EventStore,
@@ -203,6 +207,100 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
+  const decodePage = Effect.fn('SqlEventStore.decodePage')(function* (rows: Array.NonEmptyReadonlyArray<unknown>) {
+    const decoded = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(EventsTableSelect), {
+      concurrency: 'unbounded',
+    })(rows)
+
+    return {
+      events: Array.map(decoded, Struct.get('event')),
+      lastKnownPosition: Array.lastNonEmpty(decoded).position,
+    } satisfies EventStore.Page
+  }, Effect.provide(context))
+
+  const getPageSince = Effect.fn('SqlEventStore.streamSince')(
+    function* (after: number) {
+      yield* Effect.annotateCurrentSpan({ after })
+
+      const rows = yield* sql`
+        SELECT
+          id,
+          type,
+          payload,
+          position
+        FROM
+          events
+        WHERE
+          position > ${after}
+        ORDER BY
+          position ASC
+        LIMIT
+          ${pageSize}
+      `
+
+      if (!Array.isReadonlyArrayNonEmpty(rows)) {
+        return Option.none()
+      }
+
+      const page = yield* decodePage(rows)
+
+      return Option.some({ page, isLastPage: rows.length < pageSize })
+    },
+    Effect.tapError(error =>
+      Effect.annotateLogs(Effect.logError('Unable to get events'), {
+        error,
+      }),
+    ),
+    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+  )
+
+  const getNextPageSince: (
+    after: number,
+  ) => Effect.Effect<readonly [ReadonlyArray<EventStore.Page>, Option.Option<number>], EventStore.FailedToGetEvents> =
+    Effect.fnUntraced(function* (after) {
+      const result = yield* getPageSince(after)
+
+      if (Option.isNone(result)) {
+        return Tuple.make([], Option.none())
+      }
+
+      const { page, isLastPage } = result.value
+
+      return Tuple.make([page], isLastPage ? Option.none() : Option.some(page.lastKnownPosition))
+    })
+
+  const streamSince: EventStore.EventStore['streamSince'] = lastKnownPosition => {
+    const after = Option.getOrElse(lastKnownPosition, () => 0)
+
+    return sql.onDialectOrElse({
+      pg: () =>
+        pipe(
+          sql`
+            SELECT
+              id,
+              type,
+              payload,
+              position
+            FROM
+              events
+            WHERE
+              position > ${after}
+            ORDER BY
+              position ASC
+          `.stream,
+          Stream.grouped(pageSize),
+          Stream.mapEffect(decodePage),
+          Stream.tapError(error =>
+            Effect.annotateLogs(Effect.logError('Unable to get events'), {
+              error,
+            }),
+          ),
+          Stream.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+        ),
+      orElse: () => Stream.paginate(after, getNextPageSince),
+    })
+  }
+
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
@@ -302,7 +400,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, since, query, append, appendIf }
+  return { all, since, streamSince, query, append, appendIf }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)
