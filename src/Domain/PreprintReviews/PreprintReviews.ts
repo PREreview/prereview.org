@@ -137,10 +137,7 @@ export const layer = Layer.effect(
       ),
     )
 
-    const getPreprintReview = flow(
-      yield* GetPublishedPreprintReview,
-      Effect.flatMap(flow(fromPublishedPreprintReview, Effect.fromResult)),
-    )
+    const getPreprintReview = flow(yield* GetPublishedPreprintReview, Effect.map(fromPublishedPreprintReview))
 
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
       id: number,
