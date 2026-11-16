@@ -2,32 +2,19 @@ import { Array, Effect } from 'effect'
 import type { Result as PublishedPreprintReview } from './Query.ts'
 import { Prereview, PrereviewIsUnavailable } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
-import { Prereviewers } from '../../Prereviewers/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
   publishedPreprintReview: PublishedPreprintReview,
 ) {
   const preprints = yield* Preprints
-  const prereviewers = yield* Prereviewers
   const clubs = yield* Clubs
 
   const { preprint, namedAuthors, club } = yield* Effect.all(
     {
       preprint: preprints.getPreprint(publishedPreprintReview.preprintId),
-      namedAuthors: Effect.forEach(
-        publishedPreprintReview.authors.named,
-        Effect.fnUntraced(function* (author) {
-          if (author.persona === 'pseudonym') {
-            return { name: author.pseudonym }
-          }
-
-          const publicPersona = yield* prereviewers.getPublicPersona(author.orcidId)
-
-          return { name: publicPersona.displayName, orcid: author.orcidId }
-        }),
-        { concurrency: 'unbounded' },
-      ),
+      namedAuthors: getNamedAuthors(publishedPreprintReview.authors.named),
       club: publishedPreprintReview.clubId
         ? clubs.getClubName(publishedPreprintReview.clubId)
         : Effect.succeed(undefined),
@@ -35,7 +22,7 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
     { concurrency: 'unbounded' },
   )
 
-  if (!Array.isArrayNonEmpty(namedAuthors)) {
+  if (!Array.isReadonlyArrayNonEmpty(namedAuthors)) {
     return yield* new PrereviewIsUnavailable({ cause: 'no named authors' })
   }
 
@@ -46,3 +33,22 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
     club,
   })
 })
+
+const getNamedAuthors: (
+  authors: PublishedPreprintReview['authors']['named'],
+) => Effect.Effect<
+  ReadonlyArray<Prereview['authors']['named'][number]>,
+  Prereviewers.UnableToGetPersona,
+  Prereviewers.Prereviewers
+> = Effect.forEach(
+  Effect.fnUntraced(function* (author) {
+    if (author.persona === 'pseudonym') {
+      return { name: author.pseudonym }
+    }
+
+    const publicPersona = yield* Prereviewers.getPublicPersona(author.orcidId)
+
+    return { name: publicPersona.displayName, orcid: author.orcidId }
+  }),
+  { concurrency: 'unbounded' },
+)
