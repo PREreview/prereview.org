@@ -25,8 +25,7 @@ const prereview = {
   preprintId: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abcde') }),
   published: Temporal.PlainDate.from('2026-11-10'),
   requested: false,
-  structured: false,
-  text: html`<p>Hello</p>`,
+  content: { _tag: 'Full', text: html`<p>Hello</p>` },
 } satisfies _.PublishedPreprintReviewDetails
 
 const reviewImported = new Events.PreprintReviewImported({
@@ -47,7 +46,7 @@ const reviewImported = new Events.PreprintReviewImported({
   useOfAi: { _tag: 'No' },
   competingInterests: { _tag: 'No' },
   language: prereview.language,
-  content: { _tag: 'Full', text: prereview.text },
+  content: prereview.content,
 })
 
 const reviewImportedWithPlainDate = new Events.PreprintReviewImported({

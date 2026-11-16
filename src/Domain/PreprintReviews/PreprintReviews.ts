@@ -29,6 +29,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 import { ImportPreprintReview } from './ImportPreprintReview.ts'
+import { fromPublishedPreprintReview } from './FromPublishedPreprintReview.ts'
 import type { PreprintPrereview, Prereview } from './Prereview.ts'
 
 export interface RapidPrereview {
@@ -136,7 +137,10 @@ export const layer = Layer.effect(
       ),
     )
 
-    const getPreprintReview = yield* GetPublishedPreprintReview
+    const getPreprintReview = flow(
+      yield* GetPublishedPreprintReview,
+      Effect.flatMap(flow(fromPublishedPreprintReview, Effect.fromResult)),
+    )
 
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
       id: number,

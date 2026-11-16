@@ -5,11 +5,19 @@ import * as Queries from '../../../Queries.ts'
 import { Temporal } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
-import { type Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from './Types.ts'
+import {
+  PrereviewIsNotFound,
+  PrereviewIsUnavailable,
+  PrereviewWasRemoved,
+  type PublishedPreprintReview,
+} from './Types.ts'
 
 export type Input = number
 
-export type PublishedPreprintReviewDetails = Omit<Prereview, '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'> & {
+export type PublishedPreprintReviewDetails = Omit<
+  PublishedPreprintReview,
+  '_tag' | 'pipe' | 'club' | 'preprint' | 'authors'
+> & {
   clubId?: Uuid
   preprintId: IndeterminatePreprintId
   authors: {
@@ -56,8 +64,8 @@ const query =
         () => new PrereviewIsNotFound(),
       )
 
-      const text = yield* Match.valueTags(imported.content, {
-        Full: ({ text }) => Result.succeed(text),
+      const content = yield* Match.valueTags(imported.content, {
+        Full: ({ text }) => Result.succeed({ _tag: 'Full' as const, text }),
         Structured: () => Result.fail(new PrereviewIsUnavailable({ cause: 'structured review not implemented' })),
       })
 
@@ -91,8 +99,7 @@ const query =
             ? imported.published.toZonedDateTimeISO('UTC').toPlainDate()
             : imported.published,
         requested: false,
-        structured: false,
-        text,
+        content,
       }
     })
 

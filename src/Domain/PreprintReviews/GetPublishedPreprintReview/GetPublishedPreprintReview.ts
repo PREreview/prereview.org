@@ -6,11 +6,16 @@ import type { Preprints } from '../../Preprints/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
 import { Enrich } from './Enrich.ts'
 import { Query } from './Query.ts'
-import { type Prereview, type PrereviewIsNotFound, PrereviewIsUnavailable, type PrereviewWasRemoved } from './Types.ts'
+import {
+  type PrereviewIsNotFound,
+  PrereviewIsUnavailable,
+  type PrereviewWasRemoved,
+  type PublishedPreprintReview,
+} from './Types.ts'
 
 export type GetPublishedPreprintReview = (
   id: number,
-) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
+) => Effect.Effect<PublishedPreprintReview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
 
 export const GetPublishedPreprintReview: Effect.Effect<
   GetPublishedPreprintReview,

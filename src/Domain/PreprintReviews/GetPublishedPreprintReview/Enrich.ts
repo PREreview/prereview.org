@@ -1,8 +1,8 @@
-import { Effect, flow, UndefinedOr } from 'effect'
+import { Effect, UndefinedOr } from 'effect'
 import type { PublishedPreprintReviewDetails } from './Query.ts'
-import { Prereview } from './Types.ts'
+import { PublishedPreprintReview } from './Types.ts'
 import { Preprints } from '../../Preprints/index.ts'
-import { matchPersona, Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
+import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (
@@ -19,7 +19,7 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
     { concurrency: 'unbounded' },
   )
 
-  return new Prereview({
+  return new PublishedPreprintReview({
     ...publishedPreprintReview,
     preprint: { id: preprint.id, url: preprint.url, title: preprint.title.text, language: preprint.title.language },
     authors: { named: namedAuthors, anonymous: publishedPreprintReview.authors.anonymous },
@@ -29,16 +29,8 @@ export const Enrich = Effect.fn('PreprintReviews.getPublishedPreprintReview.Enri
 
 const getNamedAuthors: (
   authors: PublishedPreprintReviewDetails['authors']['named'],
-) => Effect.Effect<Prereview['authors']['named'], UnableToGetPersona, Prereviewers> = Effect.forEach(
-  flow(
-    Prereviewers.getPersona,
-    Effect.map(
-      matchPersona({
-        onPublic: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
-        onPseudonym: persona => ({ name: persona.pseudonym }),
-      }),
-    ),
-  ),
+) => Effect.Effect<PublishedPreprintReview['authors']['named'], UnableToGetPersona, Prereviewers> = Effect.forEach(
+  Prereviewers.getPersona,
   { concurrency: 'unbounded' },
 )
 
