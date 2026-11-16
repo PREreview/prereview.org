@@ -51,7 +51,28 @@ export class Clubs extends Context.Service<
     getClubsThatAPrereviewerLeads: (orcidId: OrcidId) => Effect.Effect<ReadonlyArray<ClubName>>
     isPrereviewerAClubLead: (orcidId: OrcidId) => Effect.Effect<boolean>
   }
->()('Clubs') {}
+>()('Clubs') {
+  static readonly listClubs = Clubs.use(service => service.listClubs)
+
+  static readonly getClubDetails = (...args: Parameters<(typeof Clubs.Service)['getClubDetails']>) =>
+    Clubs.use(service => service.getClubDetails(...args))
+
+  static readonly getClubName = (...args: Parameters<(typeof Clubs.Service)['getClubName']>) =>
+    Clubs.use(service => service.getClubName(...args))
+
+  static readonly getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>
+    Clubs.use(service => service.getClubByName(...args))
+
+  static readonly getClubBySlug = (...args: Parameters<(typeof Clubs.Service)['getClubBySlug']>) =>
+    Clubs.use(service => service.getClubBySlug(...args))
+
+  static readonly getClubsThatAPrereviewerLeads = (
+    ...args: Parameters<(typeof Clubs.Service)['getClubsThatAPrereviewerLeads']>
+  ) => Clubs.use(service => service.getClubsThatAPrereviewerLeads(...args))
+
+  static readonly isPrereviewerAClubLead = (...args: Parameters<(typeof Clubs.Service)['isPrereviewerAClubLead']>) =>
+    Clubs.use(service => service.isPrereviewerAClubLead(...args))
+}
 
 export class ClubsData extends Context.Service<ClubsData, Array.NonEmptyReadonlyArray<ClubDetails>>()('ClubsData') {}
 
