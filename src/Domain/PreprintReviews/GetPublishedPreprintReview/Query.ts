@@ -1,4 +1,4 @@
-import { Array, Match, Option, Result } from 'effect'
+import { Array, Match, Option, Result, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
@@ -63,7 +63,7 @@ const query =
 
       const namedAuthors = Array.appendAll(
         Array.flatMap(imported.authors, toNamedAuthors),
-        Array.map(authorChoices, toNamedAuthor),
+        Array.map(authorChoices, Struct.pick(['orcidId', 'persona'])),
       )
 
       if (!Array.isReadonlyArrayNonEmpty(namedAuthors)) {
@@ -109,13 +109,6 @@ const toNamedAuthors = (
 
   return [{ orcidId: author.orcidId, persona: 'public' }]
 }
-
-const toNamedAuthor = (
-  authorChoice: Events.AuthorChoicesForAReviewImported,
-): PublishedPreprintReview['authors']['named'][number] => ({
-  orcidId: authorChoice.orcidId,
-  persona: authorChoice.persona,
-})
 
 export const Query = (removedPreprintReviewIds: ReadonlyArray<number>) =>
   Queries.OnDemandQuery({
