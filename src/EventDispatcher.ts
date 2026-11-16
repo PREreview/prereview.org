@@ -41,7 +41,10 @@ const dispatchNewEvents = Effect.gen(function* () {
   const subscribers = yield* Subscribers
 
   yield* Stream.runForEach(
-    EventStore.streamSince(yield* Ref.get(lastKnownPosition)),
+    Option.match(yield* Ref.get(lastKnownPosition), {
+      onNone: () => EventStore.all,
+      onSome: EventStore.since,
+    }),
     Effect.fnUntraced(function* ({ events: newEvents, lastKnownPosition: newLastKnownPosition }) {
       const allSubscribers = yield* Ref.get(subscribers)
 
