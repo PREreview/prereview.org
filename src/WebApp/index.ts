@@ -1,5 +1,5 @@
-import { HttpServer, Multipart } from 'effect/http'
-import { ByteSize, Effect, flow, Layer, pipe } from 'effect'
+import { HttpMiddleware as EffectHttpMiddleware, HttpServer, HttpServerRequest, Multipart } from 'effect/http'
+import { ByteSize, Effect, flow, Layer, Option, pipe } from 'effect'
 import { CmsContent } from '../CmsContent/index.ts'
 import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
@@ -8,6 +8,12 @@ import { Router } from './Router/index.ts'
 import * as TemplatePage from './TemplatePage.ts'
 
 export { optionsLayer, optionsLayerConfig, TemplatePageOptions } from './TemplatePage.ts'
+
+const spanName = (request: HttpServerRequest.HttpServerRequest) =>
+  Option.match(HttpServerRequest.toURL(request), {
+    onNone: () => request.method,
+    onSome: url => `${request.method} ${url.pathname}`,
+  })
 
 export const layer = pipe(
   Layer.unwrap(
@@ -31,6 +37,7 @@ export const layer = pipe(
     ),
   ),
   HttpServer.withLogAddress,
+  Layer.provide(Layer.succeed(EffectHttpMiddleware.SpanNameGenerator, spanName)),
   Layer.provide(HttpMiddleware.logStopped),
   Layer.provide([TemplatePage.layer, CmsContent.layer, SpotlightBanners.layer]),
   Layer.provide(ContentfulPages.layer),
