@@ -233,9 +233,6 @@ export const make: Effect.Effect<
 
   const since: EventStore.EventStore['since'] = streamAfter
 
-  const streamSince: EventStore.EventStore['streamSince'] = lastKnownPosition =>
-    streamAfter(Option.getOrElse(lastKnownPosition, () => 0))
-
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
@@ -335,7 +332,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, since, streamSince, query, append, appendIf }
+  return { all, since, query, append, appendIf }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)
