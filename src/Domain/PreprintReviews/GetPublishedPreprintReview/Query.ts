@@ -64,9 +64,9 @@ const query =
         () => new PrereviewIsNotFound(),
       )
 
-      const content = yield* Match.valueTags(imported.content, {
-        Full: ({ text }) => Result.succeed({ _tag: 'Full' as const, text }),
-        Structured: () => Result.fail(new PrereviewIsUnavailable({ cause: 'structured review not implemented' })),
+      const content = Match.valueTags(imported.content, {
+        Full: ({ text }) => ({ _tag: 'Full' as const, text }),
+        Structured: content => ({ _tag: 'Structured' as const, questions: Struct.omit(content, ['_tag']) }),
       })
 
       const namedAuthors = Array.appendAll(

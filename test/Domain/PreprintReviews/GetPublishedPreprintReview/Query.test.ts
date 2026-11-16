@@ -81,6 +81,23 @@ const reviewWithNamedAndUnknownAuthorsImported = new Events.PreprintReviewImport
   otherAuthors: 0,
 })
 
+const structuredQuestions = {
+  introductionMatches: { answer: 'yes', comment: Option.none() },
+  methodsAppropriate: { answer: 'highly-appropriate', comment: Option.none() },
+  conclusionsSupported: { answer: 'highly-supported', comment: Option.none() },
+  dataPresentation: { answer: 'highly-appropriate-and-clear', comment: Option.none() },
+  findingsNextSteps: { answer: 'very-clearly', comment: Option.none() },
+  advancingKnowledge: { answer: 'highly', comment: Option.none() },
+  languageEditing: { answer: 'no', comment: Option.none() },
+  wouldRecommend: { answer: 'yes', comment: Option.none() },
+  readyForAttention: { answer: 'yes-as-is', comment: Option.none() },
+} satisfies Extract<_.PublishedPreprintReviewDetails['content'], { _tag: 'Structured' }>['questions']
+
+const structuredReviewImported = new Events.PreprintReviewImported({
+  ...reviewImported,
+  content: { _tag: 'Structured', ...structuredQuestions },
+})
+
 const reviewWithPseudonymImported = new Events.PreprintReviewImported({
   ...reviewImported,
   authors: [{ _tag: 'PseudonymPersona', orcidId: OrcidId('0000-0002-6109-0367') }],
@@ -96,6 +113,12 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
   ['no events', input, [], Result.fail(new PrereviewIsNotFound())],
   ['review imported', input, [reviewImported], Result.succeed(prereview)],
   ['review imported with plaindate', input, [reviewImportedWithPlainDate], Result.succeed(prereview)],
+  [
+    'structured review imported',
+    input,
+    [structuredReviewImported],
+    Result.succeed({ ...prereview, content: { _tag: 'Structured', questions: structuredQuestions } }),
+  ],
   ['author list changed prior to import', input, [authorListChanged, reviewImported], Result.succeed(prereview)],
   [
     'author list changed after import',
