@@ -1,7 +1,7 @@
 import { expect, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
-import * as _ from '../../../../src/Domain/PreprintReviews/GetPublishedPreprintReview/index.ts'
+import * as _ from '../../../../src/Domain/PreprintReviews/GetPublishedPreprintReview/Query.ts'
 import * as Events from '../../../../src/Events.ts'
 import { PrereviewIsNotFound } from '../../../../src/Domain/PreprintReviews/index.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../../../src/Domain/Preprints/index.ts'
