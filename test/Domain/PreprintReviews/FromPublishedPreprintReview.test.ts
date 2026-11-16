@@ -156,3 +156,21 @@ test('says when there are no competing interests or use of AI for a single autho
   expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'competingInterestsNo')())
   expect(actual.text.toString()).toContain(translate('en-US', 'write-review', 'noAiIdeasStatement')())
 })
+
+test('converts a review for a list of reviews of a preprint', () => {
+  const actual = _.toPreprintPrereview(review)
+
+  expect(actual).toStrictEqual({
+    authors: {
+      named: [
+        { name: Name('Josiah Carberry'), orcid: OrcidId('0000-0002-1825-0097') },
+        { name: Pseudonym('Orange Panda') },
+      ],
+      anonymous: 1,
+    },
+    club: undefined,
+    id: review.id,
+    language: review.language,
+    text: html`<p>Hello</p>`,
+  })
+})

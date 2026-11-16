@@ -1,4 +1,4 @@
-import { Array, Match, Option } from 'effect'
+import { Array, flow, Match, Option, Struct } from 'effect'
 import { type Html, html } from '../../html.ts'
 import {
   DefaultLocale,
@@ -11,7 +11,7 @@ import { Temporal } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { matchPersona } from '../Prereviewers/index.ts'
 import type { PublishedPreprintReview } from './GetPublishedPreprintReview/index.ts'
-import { Prereview } from './Prereview.ts'
+import { type PreprintPrereview, Prereview } from './Prereview.ts'
 
 type StructuredQuestions = Extract<PublishedPreprintReview['content'], { _tag: 'Structured' }>['questions']
 
@@ -52,6 +52,11 @@ export const fromPublishedPreprintReview = (review: PublishedPreprintReview): Pr
     })}${renderCompetingInterests(review, locale)}${renderUseOfAi(review, locale)}`,
   })
 }
+
+export const toPreprintPrereview: (review: PublishedPreprintReview) => PreprintPrereview = flow(
+  fromPublishedPreprintReview,
+  Struct.pick(['authors', 'club', 'id', 'language', 'text']),
+)
 
 const hasOtherAuthors = (review: PublishedPreprintReview) => review.authors.named.length + review.authors.anonymous > 1
 

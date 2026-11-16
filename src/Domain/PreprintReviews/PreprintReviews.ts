@@ -19,6 +19,7 @@ import {
   type PrereviewIsUnavailable,
   type PrereviewWasRemoved,
 } from './GetPublishedPreprintReview/index.ts'
+import { GetPublishedPreprintReviewsForAPreprint } from './GetPublishedPreprintReviewsForAPreprint/index.ts'
 import * as FormStore from './FormStore.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { DeclareUseOfAi } from './DeclareUseOfAi.ts'
@@ -29,7 +30,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 import { ImportPreprintReview } from './ImportPreprintReview.ts'
-import { fromPublishedPreprintReview } from './FromPublishedPreprintReview.ts'
+import { fromPublishedPreprintReview, toPreprintPrereview } from './FromPublishedPreprintReview.ts'
 import type { PreprintPrereview, Prereview } from './Prereview.ts'
 
 export interface RapidPrereview {
@@ -137,7 +138,14 @@ export const layer = Layer.effect(
       ),
     )
 
-    const getPreprintReview = flow(yield* GetPublishedPreprintReview, Effect.map(fromPublishedPreprintReview))
+    const getPublishedPreprintReview = yield* GetPublishedPreprintReview
+
+    const getPreprintReview = flow(getPublishedPreprintReview, Effect.map(fromPublishedPreprintReview))
+
+    const getForPreprint = flow(
+      yield* GetPublishedPreprintReviewsForAPreprint(getPublishedPreprintReview),
+      Effect.map(Array.map(toPreprintPrereview)),
+    )
 
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
       id: number,
@@ -159,23 +167,25 @@ export const layer = Layer.effect(
       })
     }, Effect.provide(context))
 
+    const getForPreprintFromZenodo = Effect.fn('PreprintReviews.getForPreprint')(
+      function* (id: PreprintId) {
+        yield* Effect.annotateCurrentSpan({ id })
+
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
+
+        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
+          fetch,
+          getClubByName,
+          zenodoApiKey: Redacted.value(zenodoApi.key),
+          zenodoUrl: zenodoApi.origin,
+          ...loggerEnv,
+        })
+      },
+      Effect.mapError(() => new Errors.PrereviewsAreUnavailable()),
+    )
+
     return {
-      getForPreprint: Effect.fn('PreprintReviews.getForPreprint')(
-        function* (id) {
-          yield* Effect.annotateCurrentSpan({ id })
-
-          const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
-            fetch,
-            getClubByName,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-            ...loggerEnv,
-          })
-        },
-        Effect.mapError(() => new Errors.PrereviewsAreUnavailable()),
-      ),
+      getForPreprint: featureFlags.useEventsForPreprintReviews ? getForPreprint : getForPreprintFromZenodo,
       getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
       getRapidPrereviewsForAPreprint: id =>
         pipe(
