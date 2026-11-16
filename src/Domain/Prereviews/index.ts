@@ -9,6 +9,7 @@ import { Zenodo } from '../../ExternalApis/index.ts'
 import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import type { Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
+import { WasPrereviewRemoved } from '../PreprintReviews/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import type { FieldId } from '../../types/field.ts'
@@ -55,10 +56,6 @@ export class Prereviews extends Context.Service<
     }) => Effect.Effect<RecentPrereviews, PrereviewsAreUnavailable | PrereviewsPageNotFound>
   }
 >()('Prereviews') {}
-
-export class WasPrereviewRemoved extends Context.Service<WasPrereviewRemoved, (id: number) => boolean>()(
-  'WasPrereviewRemoved',
-) {}
 
 export const getFiveMostRecent = Prereviews.use(service => service.getFiveMostRecent)
 

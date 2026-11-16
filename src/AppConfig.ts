@@ -7,7 +7,7 @@ import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { UserSelectableLocales } from './locales/index.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
-import * as Prereviews from './Domain/Prereviews/index.ts'
+import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import { PublicUrl } from './public-url.ts'
 import * as SlackOauth from './SlackOauth.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
@@ -114,10 +114,12 @@ export const layer = Layer.mergeAll(
     ),
   ),
   Layer.effect(
-    Prereviews.WasPrereviewRemoved,
+    PreprintReviews.WasPrereviewRemoved,
     pipe(
       Config.withDefault(Config.Array(Schema.Int, 'REMOVED_PREREVIEWS'), []),
-      Config.map(removedPrereviews => Prereviews.WasPrereviewRemoved.of(id => Array.contains(removedPrereviews, id))),
+      Config.map(removedPrereviews =>
+        PreprintReviews.WasPrereviewRemoved.of(id => Array.contains(removedPrereviews, id)),
+      ),
     ),
   ),
   Layer.effect(PublicUrl, Config.URL('PUBLIC_URL')),

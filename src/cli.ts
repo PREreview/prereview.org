@@ -14,7 +14,6 @@ import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } f
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
-import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as Redis from './Redis.ts'
 import * as ReviewRequest from './Domain/ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
@@ -47,7 +46,7 @@ pipe(
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),
-        Layer.mock(Prereviews.WasPrereviewRemoved, {}),
+        Layer.mock(PreprintReviews.WasPrereviewRemoved, {}),
         Layer.provide(
           Layer.mergeAll(AuthorInviteStore.layer, PreprintReviews.FormStore.layer),
           Redis.layerPersistenceFromDataStore,

@@ -52,7 +52,6 @@ import * as OrcidTokens from '../src/OrcidTokens.ts'
 import * as PreprintReviews from '../src/Domain/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../src/Domain/Prereviewers/index.ts'
-import * as Prereviews from '../src/Domain/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import * as SessionStore from '../src/SessionStore.ts'
@@ -88,7 +87,7 @@ interface AppFixtures {
   formStore: typeof PreprintReviews.FormStore.Store.Service
   clubs: typeof Clubs.ClubsData.Service
   isUserBlocked: typeof IsUserBlocked.Service
-  wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
+  wasPrereviewRemoved: typeof PreprintReviews.WasPrereviewRemoved.Service
   userOnboardingStore: typeof UserOnboardingStore.Store.Service
   authorInviteStore: typeof AuthorInviteStore.Store.Service
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
@@ -2461,7 +2460,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Layer.succeed(Clubs.ClubsData, clubs),
           Layer.succeed(AllowSiteCrawlers, true),
           Layer.succeed(EnabledLocales, UserSelectableLocales),
-          Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
+          Layer.succeed(PreprintReviews.WasPrereviewRemoved, wasPrereviewRemoved),
           CachingHttpClient.layerInMemory(),
           CommunitySlack.layerChannelIds({
             requestAReview: Slack.ChannelId.make('C05N0JHBC1Y'),

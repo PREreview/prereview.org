@@ -8,7 +8,6 @@ import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../FeatureFlags.ts'
 import type { IndeterminatePreprintId, PreprintId, Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
-import * as Prereviews from '../Prereviews/index.ts'
 import * as Queries from '../../Queries.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
@@ -30,6 +29,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 import { ImportPreprintReview } from './ImportPreprintReview.ts'
+import { WasPrereviewRemoved } from './WasPrereviewRemoved.ts'
 import { fromPublishedPreprintReview, toPreprintPrereview } from './FromPublishedPreprintReview.ts'
 import type { PreprintPrereview, Prereview } from './Prereview.ts'
 
@@ -126,7 +126,7 @@ export const layer = Layer.effect(
       Context.omit(Scope.Scope),
     )
     const featureFlags = yield* FeatureFlags
-    const wasPrereviewRemoved = yield* Prereviews.WasPrereviewRemoved
+    const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const zenodoApi = yield* Zenodo.ZenodoApi
 
