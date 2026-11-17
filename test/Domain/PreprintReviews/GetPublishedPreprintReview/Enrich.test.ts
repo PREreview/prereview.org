@@ -27,6 +27,7 @@ const details = {
   live: false,
   preprintId: new BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/abcde') }),
   published: Temporal.Instant.from('2026-11-10T14:00:00Z'),
+  topics: ['11251', '12030'],
   useOfAi: { _tag: 'No' },
 } satisfies PublishedPreprintReviewDetails
 
@@ -65,6 +66,7 @@ it.effect.prop(
           },
           published: details.published,
           requested,
+          topics: details.topics,
           useOfAi: details.useOfAi,
         }),
       )

@@ -31,6 +31,7 @@ const prereview = {
   published: Temporal.Instant.from('2026-11-10T14:25:00Z'),
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
   competingInterests: { _tag: 'No' },
+  topics: ['11251', '12030'],
   useOfAi: { _tag: 'No' },
 } satisfies _.PublishedPreprintReviewDetails
 
@@ -53,7 +54,7 @@ const reviewImported = new Events.PreprintReviewImported({
   competingInterests: prereview.competingInterests,
   language: prereview.language,
   content: prereview.content,
-  topics: [],
+  topics: prereview.topics,
 })
 
 const reviewImportedWithPlainDate = new Events.PreprintReviewImported({

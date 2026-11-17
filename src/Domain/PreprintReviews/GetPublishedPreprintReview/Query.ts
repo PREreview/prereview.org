@@ -98,6 +98,7 @@ const query =
         preprintId: imported.preprint,
         published: imported.published,
         content,
+        topics: imported.topics,
         useOfAi: imported.useOfAi,
       }
     })

@@ -6,6 +6,7 @@ import type { Html } from '../../../html.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import type { Persona } from '../../Prereviewers/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
+import type { TopicId } from '../../../types/Topic.ts'
 import type { PreprintReviewImported, StructuredPrereviewSchema } from '../Events.ts'
 
 export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprintReview')<{
@@ -32,6 +33,7 @@ export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprint
   }
   live: boolean
   requested: boolean
+  topics: ReadonlyArray<TopicId>
   useOfAi: (typeof PreprintReviewImported.Type)['useOfAi']
 }> {}
 

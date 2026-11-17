@@ -38,6 +38,7 @@ const review = new PublishedPreprintReview({
   },
   published: Temporal.PlainDate.from('2026-11-10'),
   requested: false,
+  topics: [],
   useOfAi: { _tag: 'NotAnswered' },
 })
 
