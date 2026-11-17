@@ -89,7 +89,11 @@ const ExternalApis = Layer.mergeAll(
   Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
   Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
   Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
-  pipe(Orcid.layer, Layer.provide(CachingHttpClient.layer('1 day')), Layer.provide(Orcid.layerRateLimitedHttpClient)),
+  pipe(
+    Orcid.layer,
+    Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
+    Layer.provide(Orcid.layerRateLimitedHttpClient),
+  ),
   Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
   Slack.layer,
   Zenodo.layer,

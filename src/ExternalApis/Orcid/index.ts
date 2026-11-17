@@ -44,6 +44,7 @@ export const layerRateLimitedHttpClient = Layer.effect(
     const api = yield* OrcidApi
 
     return httpClient.pipe(
+      HttpClient.timeout('2 seconds'),
       HttpClient.withRateLimiter({
         limiter,
         key: 'orcid',
