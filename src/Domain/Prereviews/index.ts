@@ -28,6 +28,7 @@ import {
   type RecentPrereviews,
 } from './Prereview.ts'
 import { GetFiveMostRecentPrereviews } from './GetFiveMostRecentPrereviews/index.ts'
+import { SearchPrereviews } from './SearchPrereviews/index.ts'
 
 export * from './Prereview.ts'
 
@@ -91,6 +92,7 @@ export const layer = Layer.effect(
     const featureFlags = yield* FeatureFlags
 
     const getFiveMostRecent = yield* GetFiveMostRecentPrereviews
+    const searchPrereviews = yield* SearchPrereviews
 
     const getClubByName = yield* EffectToFpts.makeTaskK(
       flow(
@@ -259,50 +261,52 @@ export const layer = Layer.effect(
           ...loggerEnv,
         })
       }, Effect.provide(context)),
-      search: Effect.fn('Prereviews.search')(
-        function* (args) {
-          yield* Effect.annotateCurrentSpan({ args })
+      search: featureFlags.useEventsForPreprintReviews
+        ? searchPrereviews
+        : Effect.fn('Prereviews.search')(
+            function* (args) {
+              yield* Effect.annotateCurrentSpan({ args })
 
-          const loggerEnv = yield* MakeDeprecatedLoggerEnv
+              const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          const runtime = yield* Effect.context<Preprints>()
+              const runtime = yield* Effect.context<Preprints>()
 
-          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
-            fetch,
-            getClubByName,
-            ...loggerEnv,
-            publicUrl,
-            runtime,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-          })
-        },
-        Effect.andThen(({ recentPrereviews, ...results }) =>
-          pipe(
-            Effect.succeed(results),
-            Effect.bind('recentPrereviews', () =>
-              Effect.forEach(
-                recentPrereviews,
-                Match.valueTags({
-                  RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                  DatasetReview: ({ id }) =>
-                    Effect.mapError(getRecentDatasetPrereview(id), () => 'unavailable' as const),
-                }),
-                { concurrency: 'unbounded' },
+              return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
+                fetch,
+                getClubByName,
+                ...loggerEnv,
+                publicUrl,
+                runtime,
+                zenodoApiKey: Redacted.value(zenodoApi.key),
+                zenodoUrl: zenodoApi.origin,
+              })
+            },
+            Effect.andThen(({ recentPrereviews, ...results }) =>
+              pipe(
+                Effect.succeed(results),
+                Effect.bind('recentPrereviews', () =>
+                  Effect.forEach(
+                    recentPrereviews,
+                    Match.valueTags({
+                      RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+                      DatasetReview: ({ id }) =>
+                        Effect.mapError(getRecentDatasetPrereview(id), () => 'unavailable' as const),
+                    }),
+                    { concurrency: 'unbounded' },
+                  ),
+                ),
               ),
             ),
+            Effect.mapError(
+              flow(
+                Match.value,
+                Match.when('not-found', () => new PrereviewsPageNotFound()),
+                Match.when('unavailable', () => new PrereviewsAreUnavailable()),
+                Match.exhaustive,
+              ),
+            ),
+            Effect.provide(context),
           ),
-        ),
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('not-found', () => new PrereviewsPageNotFound()),
-            Match.when('unavailable', () => new PrereviewsAreUnavailable()),
-            Match.exhaustive,
-          ),
-        ),
-        Effect.provide(context),
-      ),
     }
   }),
 )
