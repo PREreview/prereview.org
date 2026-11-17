@@ -92,6 +92,7 @@ const ExternalApis = Layer.mergeAll(
   pipe(
     Orcid.layer,
     Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
+    Layer.provide(Layer.fresh(RequestCollapsingHttpClient.layer)),
     Layer.provide(Orcid.layerRateLimitedHttpClient),
   ),
   Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
