@@ -21,18 +21,14 @@
       "id": "https://openalex.org/S4210172589",
       "display_name": "SSRN Electronic Journal",
       "issn_l": "1556-5068",
-      "issn": [
-        "1556-5068"
-      ],
+      "issn": ["1556-5068"],
       "is_oa": true,
       "is_in_doaj": false,
       "is_core": false,
       "listed_in": [],
       "host_organization": "https://openalex.org/I1318003438",
       "host_organization_name": "RELX Group (Netherlands)",
-      "host_organization_lineage": [
-        "https://openalex.org/I1318003438"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I1318003438"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -45,15 +41,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W7125831433"
-  ],
+  "lineage": ["https://openalex.org/W7125831433"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -93,9 +85,7 @@
   "institutions": [],
   "countries_distinct_count": 0,
   "institutions_distinct_count": 0,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5124027938"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5124027938"],
   "corresponding_institution_ids": [],
   "apc_list": null,
   "apc_paid": null,
@@ -348,18 +338,14 @@
         "id": "https://openalex.org/S4210172589",
         "display_name": "SSRN Electronic Journal",
         "issn_l": "1556-5068",
-        "issn": [
-          "1556-5068"
-        ],
+        "issn": ["1556-5068"],
         "is_oa": true,
         "is_in_doaj": false,
         "is_core": false,
         "listed_in": [],
         "host_organization": "https://openalex.org/I1318003438",
         "host_organization_name": "RELX Group (Netherlands)",
-        "host_organization_lineage": [
-          "https://openalex.org/I1318003438"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1318003438"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },

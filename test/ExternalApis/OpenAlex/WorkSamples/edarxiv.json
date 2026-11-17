@@ -28,9 +28,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -43,15 +41,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W7171729290"
-  ],
+  "lineage": ["https://openalex.org/W7171729290"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": false,
     "oa_status": "closed",
@@ -65,9 +59,7 @@
         "id": "https://openalex.org/A5140723189",
         "display_name": "MD ISLAM",
         "orcid": "https://orcid.org/0009-0006-8813-6317",
-        "observed_orcids": [
-          "https://orcid.org/0009-0006-8813-6317"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0006-8813-6317"]
       },
       "institutions": [],
       "countries": [],
@@ -81,9 +73,7 @@
   "institutions": [],
   "countries_distinct_count": 0,
   "institutions_distinct_count": 0,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5140723189"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5140723189"],
   "corresponding_institution_ids": [],
   "apc_list": null,
   "apc_paid": null,
@@ -452,9 +442,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -483,9 +471,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -534,674 +520,210 @@
     "https://openalex.org/W7158388059"
   ],
   "abstract_inverted_index": {
-    "Predictive": [
-      0
-    ],
-    "models": [
-      1
-    ],
-    "are": [
-      2,
-      92
-    ],
-    "now": [
-      3
-    ],
-    "embedded": [
-      4
-    ],
-    "across": [
-      5,
-      249
-    ],
-    "education,": [
-      6
-    ],
-    "flagging": [
-      7
-    ],
-    "at-risk": [
-      8
-    ],
-    "students": [
-      9
-    ],
-    "and": [
-      10,
-      26,
-      50,
-      69,
-      128,
-      169,
-      174,
-      181
-    ],
-    "shaping": [
-      11
-    ],
-    "the": [
-      12,
-      23,
-      38,
-      73,
-      98,
-      138,
-      154,
-      166,
-      209
-    ],
-    "support": [
-      13
-    ],
-    "they": [
-      14
-    ],
-    "receive.": [
-      15
-    ],
-    "Most": [
-      16
-    ],
-    "fairness": [
-      17,
-      124,
-      243
-    ],
-    "audits": [
-      18
-    ],
-    "measure": [
-      19
-    ],
-    "group": [
-      20
-    ],
-    "disparity": [
-      21,
-      61,
-      157
-    ],
-    "in": [
-      22,
-      165
-    ],
-    "final": [
-      24
-    ],
-    "prediction": [
-      25
-    ],
-    "then": [
-      27
-    ],
-    "apply": [
-      28
-    ],
-    "a": [
-      29,
-      53,
-      56,
-      63,
-      66,
-      70,
-      109,
-      118,
-      132,
-      147,
-      254
-    ],
-    "fix,": [
-      30
-    ],
-    "but": [
-      31
-    ],
-    "this": [
-      32
-    ],
-    "end-of-pipeline": [
-      33
-    ],
-    "view": [
-      34
-    ],
-    "cannot": [
-      35
-    ],
-    "say": [
-      36
-    ],
-    "where": [
-      37,
-      123,
-      253
-    ],
-    "unfairness": [
-      39
-    ],
-    "originated": [
-      40
-    ],
-    "or": [
-      41
-    ],
-    "how": [
-      42
-    ],
-    "far": [
-      43
-    ],
-    "it": [
-      44,
-      162,
-      183
-    ],
-    "travelled.": [
-      45
-    ],
-    "We": [
-      46
-    ],
-    "introduce": [
-      47
-    ],
-    "Bias": [
-      48
-    ],
-    "Provenance": [
-      49
-    ],
-    "Propagation": [
-      51
-    ],
-    "(BPP),": [
-      52
-    ],
-    "measurement": [
-      54
-    ],
-    "framework—not": [
-      55
-    ],
-    "new": [
-      57
-    ],
-    "mitigation": [
-      58
-    ],
-    "method—that": [
-      59
-    ],
-    "treats": [
-      60
-    ],
-    "as": [
-      62,
-      233,
-      245
-    ],
-    "quantity": [
-      64
-    ],
-    "with": [
-      65,
-      131
-    ],
-    "source": [
-      67
-    ],
-    "stage": [
-      68,
-      199
-    ],
-    "path": [
-      71
-    ],
-    "through": [
-      72,
-      108
-    ],
-    "machine-learning": [
-      74
-    ],
-    "pipeline.": [
-      75
-    ],
-    "Five": [
-      76
-    ],
-    "stages": [
-      77
-    ],
-    "(sampling,": [
-      78
-    ],
-    "preprocessing,": [
-      79
-    ],
-    "feature": [
-      80,
-      187
-    ],
-    "engineering,": [
-      81
-    ],
-    "model": [
-      82
-    ],
-    "training,": [
-      83
-    ],
-    "evaluation)": [
-      84
-    ],
-    "plus": [
-      85
-    ],
-    "an": [
-      86,
-      246
-    ],
-    "exploratory": [
-      87
-    ],
-    "simulation": [
-      88
-    ],
-    "of": [
-      89,
-      156,
-      227
-    ],
-    "distribution": [
-      90
-    ],
-    "shift": [
-      91
-    ],
-    "placed": [
-      93
-    ],
-    "on": [
-      94,
-      146
-    ],
-    "one": [
-      95
-    ],
-    "threshold-independent": [
-      96
-    ],
-    "scale,": [
-      97
-    ],
-    "Absolute": [
-      99
-    ],
-    "Between-ROC": [
-      100
-    ],
-    "Area": [
-      101
-    ],
-    "(ABROCA),": [
-      102
-    ],
-    "by": [
-      103
-    ],
-    "projecting": [
-      104
-    ],
-    "each": [
-      105,
-      130
-    ],
-    "stage's": [
-      106
-    ],
-    "information": [
-      107
-    ],
-    "single": [
-      110
-    ],
-    "frozen": [
-      111
-    ],
-    "reference": [
-      112
-    ],
-    "model.": [
-      113
-    ],
-    "Two": [
-      114
-    ],
-    "derived": [
-      115
-    ],
-    "measures": [
-      116
-    ],
-    "form": [
-      117
-    ],
-    "bias": [
-      119
-    ],
-    "ledger": [
-      120
-    ],
-    "that": [
-      121,
-      153
-    ],
-    "records": [
-      122
-    ],
-    "debt": [
-      125
-    ],
-    "is": [
-      126,
-      158,
-      163,
-      184
-    ],
-    "incurred": [
-      127
-    ],
-    "repaid,": [
-      129
-    ],
-    "bootstrap": [
-      133
-    ],
-    "confidence": [
-      134
-    ],
-    "interval.": [
-      135
-    ],
-    "Applied": [
-      136
-    ],
-    "to": [
-      137
-    ],
-    "Open": [
-      139
-    ],
-    "University": [
-      140
-    ],
-    "Learning": [
-      141
-    ],
-    "Analytics": [
-      142
-    ],
-    "Dataset": [
-      143
-    ],
-    "(32,593": [
-      144
-    ],
-    "records)": [
-      145
-    ],
-    "leakage-free": [
-      148
-    ],
-    "early-warning": [
-      149
-    ],
-    "task,": [
-      150
-    ],
-    "BPP": [
-      151,
-      241
-    ],
-    "shows": [
-      152
-    ],
-    "origin": [
-      155,
-      198
-    ],
-    "attribute-specific:": [
-      159
-    ],
-    "for": [
-      160,
-      179
-    ],
-    "disability": [
-      161
-    ],
-    "present": [
-      164
-    ],
-    "raw": [
-      167
-    ],
-    "data": [
-      168
-    ],
-    "attenuates": [
-      170
-    ],
-    "once": [
-      171
-    ],
-    "early": [
-      172
-    ],
-    "assessment": [
-      173
-    ],
-    "registration": [
-      175
-    ],
-    "features": [
-      176
-    ],
-    "enter,": [
-      177
-    ],
-    "whereas": [
-      178
-    ],
-    "sex/gender": [
-      180
-    ],
-    "deprivation": [
-      182
-    ],
-    "introduced": [
-      185
-    ],
-    "at": [
-      186
-    ],
-    "engineering.": [
-      188
-    ],
-    "Several": [
-      189
-    ],
-    "pre-specified": [
-      190,
-      223
-    ],
-    "hypotheses": [
-      191
-    ],
-    "were": [
-      192,
-      219
-    ],
-    "not": [
-      193
-    ],
-    "supported—in": [
-      194
-    ],
-    "particular,": [
-      195
-    ],
-    "no": [
-      196
-    ],
-    "universal": [
-      197
-    ],
-    "exists": [
-      200
-    ],
-    "(Kendall's": [
-      201
-    ],
-    "W": [
-      202
-    ],
-    "=": [
-      203
-    ],
-    "0.11)—and,": [
-      204
-    ],
-    "tellingly,": [
-      205
-    ],
-    "output-only": [
-      206
-    ],
-    "post-processing": [
-      207
-    ],
-    "reduces": [
-      208
-    ],
-    "operating-point": [
-      210
-    ],
-    "gap": [
-      211
-    ],
-    "while": [
-      212
-    ],
-    "leaving": [
-      213
-    ],
-    "ABROCA": [
-      214
-    ],
-    "untouched.": [
-      215
-    ],
-    "All": [
-      216
-    ],
-    "observed": [
-      217
-    ],
-    "disparities": [
-      218
-    ],
-    "modest,": [
-      220
-    ],
-    "below": [
-      221
-    ],
-    "our": [
-      222
-    ],
-    "0.08": [
-      224
-    ],
-    "minimum": [
-      225
-    ],
-    "effect": [
-      226
-    ],
-    "interest,": [
-      228
-    ],
-    "so": [
-      229
-    ],
-    "we": [
-      230
-    ],
-    "frame": [
-      231
-    ],
-    "them": [
-      232
-    ],
-    "consistent,": [
-      234
-    ],
-    "stage-localised": [
-      235
-    ],
-    "patterns": [
-      236
-    ],
-    "rather": [
-      237
-    ],
-    "than": [
-      238
-    ],
-    "confirmed": [
-      239
-    ],
-    "effects.": [
-      240
-    ],
-    "reframes": [
-      242
-    ],
-    "auditing": [
-      244
-    ],
-    "accounting": [
-      247
-    ],
-    "problem": [
-      248
-    ],
-    "stages,": [
-      250
-    ],
-    "showing": [
-      251
-    ],
-    "practitioners": [
-      252
-    ],
-    "fix": [
-      255
-    ],
-    "will": [
-      256
-    ],
-    "actually": [
-      257
-    ],
-    "pay": [
-      258
-    ],
-    "off.": [
-      259
-    ]
+    "Predictive": [0],
+    "models": [1],
+    "are": [2, 92],
+    "now": [3],
+    "embedded": [4],
+    "across": [5, 249],
+    "education,": [6],
+    "flagging": [7],
+    "at-risk": [8],
+    "students": [9],
+    "and": [10, 26, 50, 69, 128, 169, 174, 181],
+    "shaping": [11],
+    "the": [12, 23, 38, 73, 98, 138, 154, 166, 209],
+    "support": [13],
+    "they": [14],
+    "receive.": [15],
+    "Most": [16],
+    "fairness": [17, 124, 243],
+    "audits": [18],
+    "measure": [19],
+    "group": [20],
+    "disparity": [21, 61, 157],
+    "in": [22, 165],
+    "final": [24],
+    "prediction": [25],
+    "then": [27],
+    "apply": [28],
+    "a": [29, 53, 56, 63, 66, 70, 109, 118, 132, 147, 254],
+    "fix,": [30],
+    "but": [31],
+    "this": [32],
+    "end-of-pipeline": [33],
+    "view": [34],
+    "cannot": [35],
+    "say": [36],
+    "where": [37, 123, 253],
+    "unfairness": [39],
+    "originated": [40],
+    "or": [41],
+    "how": [42],
+    "far": [43],
+    "it": [44, 162, 183],
+    "travelled.": [45],
+    "We": [46],
+    "introduce": [47],
+    "Bias": [48],
+    "Provenance": [49],
+    "Propagation": [51],
+    "(BPP),": [52],
+    "measurement": [54],
+    "framework—not": [55],
+    "new": [57],
+    "mitigation": [58],
+    "method—that": [59],
+    "treats": [60],
+    "as": [62, 233, 245],
+    "quantity": [64],
+    "with": [65, 131],
+    "source": [67],
+    "stage": [68, 199],
+    "path": [71],
+    "through": [72, 108],
+    "machine-learning": [74],
+    "pipeline.": [75],
+    "Five": [76],
+    "stages": [77],
+    "(sampling,": [78],
+    "preprocessing,": [79],
+    "feature": [80, 187],
+    "engineering,": [81],
+    "model": [82],
+    "training,": [83],
+    "evaluation)": [84],
+    "plus": [85],
+    "an": [86, 246],
+    "exploratory": [87],
+    "simulation": [88],
+    "of": [89, 156, 227],
+    "distribution": [90],
+    "shift": [91],
+    "placed": [93],
+    "on": [94, 146],
+    "one": [95],
+    "threshold-independent": [96],
+    "scale,": [97],
+    "Absolute": [99],
+    "Between-ROC": [100],
+    "Area": [101],
+    "(ABROCA),": [102],
+    "by": [103],
+    "projecting": [104],
+    "each": [105, 130],
+    "stage's": [106],
+    "information": [107],
+    "single": [110],
+    "frozen": [111],
+    "reference": [112],
+    "model.": [113],
+    "Two": [114],
+    "derived": [115],
+    "measures": [116],
+    "form": [117],
+    "bias": [119],
+    "ledger": [120],
+    "that": [121, 153],
+    "records": [122],
+    "debt": [125],
+    "is": [126, 158, 163, 184],
+    "incurred": [127],
+    "repaid,": [129],
+    "bootstrap": [133],
+    "confidence": [134],
+    "interval.": [135],
+    "Applied": [136],
+    "to": [137],
+    "Open": [139],
+    "University": [140],
+    "Learning": [141],
+    "Analytics": [142],
+    "Dataset": [143],
+    "(32,593": [144],
+    "records)": [145],
+    "leakage-free": [148],
+    "early-warning": [149],
+    "task,": [150],
+    "BPP": [151, 241],
+    "shows": [152],
+    "origin": [155, 198],
+    "attribute-specific:": [159],
+    "for": [160, 179],
+    "disability": [161],
+    "present": [164],
+    "raw": [167],
+    "data": [168],
+    "attenuates": [170],
+    "once": [171],
+    "early": [172],
+    "assessment": [173],
+    "registration": [175],
+    "features": [176],
+    "enter,": [177],
+    "whereas": [178],
+    "sex/gender": [180],
+    "deprivation": [182],
+    "introduced": [185],
+    "at": [186],
+    "engineering.": [188],
+    "Several": [189],
+    "pre-specified": [190, 223],
+    "hypotheses": [191],
+    "were": [192, 219],
+    "not": [193],
+    "supported—in": [194],
+    "particular,": [195],
+    "no": [196],
+    "universal": [197],
+    "exists": [200],
+    "(Kendall's": [201],
+    "W": [202],
+    "=": [203],
+    "0.11)—and,": [204],
+    "tellingly,": [205],
+    "output-only": [206],
+    "post-processing": [207],
+    "reduces": [208],
+    "operating-point": [210],
+    "gap": [211],
+    "while": [212],
+    "leaving": [213],
+    "ABROCA": [214],
+    "untouched.": [215],
+    "All": [216],
+    "observed": [217],
+    "disparities": [218],
+    "modest,": [220],
+    "below": [221],
+    "our": [222],
+    "0.08": [224],
+    "minimum": [225],
+    "effect": [226],
+    "interest,": [228],
+    "so": [229],
+    "we": [230],
+    "frame": [231],
+    "them": [232],
+    "consistent,": [234],
+    "stage-localised": [235],
+    "patterns": [236],
+    "rather": [237],
+    "than": [238],
+    "confirmed": [239],
+    "effects.": [240],
+    "reframes": [242],
+    "auditing": [244],
+    "accounting": [247],
+    "problem": [248],
+    "stages,": [250],
+    "showing": [251],
+    "practitioners": [252],
+    "fix": [255],
+    "will": [256],
+    "actually": [257],
+    "pay": [258],
+    "off.": [259]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7171729290",
   "counts_by_year": [],

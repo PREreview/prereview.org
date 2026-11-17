@@ -22,9 +22,7 @@
       "id": "https://openalex.org/S4393918830",
       "display_name": "ChemRxiv",
       "issn_l": "2573-2293",
-      "issn": [
-        "2573-2293"
-      ],
+      "issn": ["2573-2293"],
       "is_oa": false,
       "is_in_doaj": false,
       "is_core": false,
@@ -44,15 +42,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W3090735635"
-  ],
+  "lineage": ["https://openalex.org/W3090735635"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -66,9 +60,7 @@
         "id": "https://openalex.org/A5069868466",
         "display_name": "Sohini Chakraborti",
         "orcid": "https://orcid.org/0000-0002-4591-2658",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-4591-2658"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-4591-2658"]
       },
       "institutions": [
         {
@@ -77,26 +69,18 @@
           "ror": "https://ror.org/04dese585",
           "country_code": "IN",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I59270414"
-          ]
+          "lineage": ["https://openalex.org/I59270414"]
         }
       ],
-      "countries": [
-        "IN"
-      ],
+      "countries": ["IN"],
       "is_corresponding": false,
       "raw_author_name": "Sohini Chakraborti",
-      "raw_affiliation_strings": [
-        "Indian Institute of Science"
-      ],
+      "raw_affiliation_strings": ["Indian Institute of Science"],
       "raw_orcid": "https://orcid.org/0000-0002-4591-2658",
       "affiliations": [
         {
           "raw_affiliation_string": "Indian Institute of Science",
-          "institution_ids": [
-            "https://openalex.org/I59270414"
-          ]
+          "institution_ids": ["https://openalex.org/I59270414"]
         }
       ]
     },
@@ -106,9 +90,7 @@
         "id": "https://openalex.org/A5076920718",
         "display_name": "Narayanaswamy Srinivasan",
         "orcid": "https://orcid.org/0000-0002-6566-6239",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-6566-6239"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-6566-6239"]
       },
       "institutions": [
         {
@@ -117,26 +99,18 @@
           "ror": "https://ror.org/04dese585",
           "country_code": "IN",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I59270414"
-          ]
+          "lineage": ["https://openalex.org/I59270414"]
         }
       ],
-      "countries": [
-        "IN"
-      ],
+      "countries": ["IN"],
       "is_corresponding": false,
       "raw_author_name": "Narayanaswamy Srinivasan",
-      "raw_affiliation_strings": [
-        "Molecular Biophysics Unit, Indian Institute of Science, Bengaluru 560012, India"
-      ],
+      "raw_affiliation_strings": ["Molecular Biophysics Unit, Indian Institute of Science, Bengaluru 560012, India"],
       "raw_orcid": null,
       "affiliations": [
         {
           "raw_affiliation_string": "Molecular Biophysics Unit, Indian Institute of Science, Bengaluru 560012, India",
-          "institution_ids": [
-            "https://openalex.org/I59270414"
-          ]
+          "institution_ids": ["https://openalex.org/I59270414"]
         }
       ]
     }
@@ -145,9 +119,7 @@
   "countries_distinct_count": 1,
   "institutions_distinct_count": 1,
   "corresponding_author_ids": [],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I59270414"
-  ],
+  "corresponding_institution_ids": ["https://openalex.org/I59270414"],
   "apc_list": null,
   "apc_paid": null,
   "fwci": null,
@@ -219,7 +191,7 @@
     {
       "id": "https://openalex.org/T12576",
       "display_name": "vaccines and immunoinformatics approaches",
-      "score": 9.999999747378752e-05,
+      "score": 9.999999747378752e-5,
       "subfield": {
         "id": "https://openalex.org/subfields/1312",
         "display_name": "Molecular Biology"
@@ -420,9 +392,7 @@
         "id": "https://openalex.org/S4393918830",
         "display_name": "ChemRxiv",
         "issn_l": "2573-2293",
-        "issn": [
-          "2573-2293"
-        ],
+        "issn": ["2573-2293"],
         "is_oa": false,
         "is_in_doaj": false,
         "is_core": false,
@@ -452,9 +422,7 @@
       "id": "https://openalex.org/S4393918830",
       "display_name": "ChemRxiv",
       "issn_l": "2573-2293",
-      "issn": [
-        "2573-2293"
-      ],
+      "issn": ["2573-2293"],
       "is_oa": false,
       "is_in_doaj": false,
       "is_core": false,
@@ -584,695 +552,202 @@
     "https://openalex.org/W4248789776"
   ],
   "abstract_inverted_index": {
-    "The": [
-      0,
-      219
-    ],
-    "current": [
-      1
-    ],
-    "global": [
-      2
-    ],
-    "crisis": [
-      3
-    ],
-    "due": [
-      4
-    ],
-    "to": [
-      5,
-      12,
-      34,
-      69,
-      75,
-      146,
-      155,
-      194,
-      196,
-      229,
-      240,
-      252
-    ],
-    "COVID-19": [
-      6
-    ],
-    "has": [
-      7,
-      44
-    ],
-    "almost": [
-      8
-    ],
-    "brought": [
-      9
-    ],
-    "normal": [
-      10
-    ],
-    "life": [
-      11
-    ],
-    "standstill": [
-      13
-    ],
-    "in": [
-      14,
-      53,
-      55,
-      81,
-      91,
-      244
-    ],
-    "most": [
-      15
-    ],
-    "parts": [
-      16
-    ],
-    "of": [
-      17,
-      48,
-      88,
-      99,
-      149,
-      199,
-      222,
-      256
-    ],
-    "the": [
-      18,
-      36,
-      40,
-      86,
-      120,
-      150,
-      192,
-      213,
-      230,
-      234,
-      250,
-      254,
-      288
-    ],
-    "world.": [
-      19
-    ],
-    "With": [
-      20
-    ],
-    "our": [
-      21,
-      70,
-      125,
-      172,
-      204,
-      242
-    ],
-    "research": [
-      22,
-      269
-    ],
-    "interest": [
-      23
-    ],
-    "on": [
-      24,
-      39,
-      85,
-      124,
-      203
-    ],
-    "repurposing": [
-      25
-    ],
-    "known": [
-      26,
-      136
-    ],
-    "drugs/drug": [
-      27,
-      109,
-      137
-    ],
-    "candidates": [
-      28,
-      110,
-      138
-    ],
-    "targeting": [
-      29
-    ],
-    "various": [
-      30
-    ],
-    "diseases,": [
-      31
-    ],
-    "we": [
-      32,
-      65,
-      105,
-      128,
-      210,
-      215,
-      272
-    ],
-    "decided": [
-      33
-    ],
-    "analyse": [
-      35
-    ],
-    "available": [
-      37,
-      228
-    ],
-    "data": [
-      38
-    ],
-    "deadly": [
-      41
-    ],
-    "pathogen": [
-      42
-    ],
-    "that": [
-      43,
-      176,
-      275
-    ],
-    "already": [
-      45
-    ],
-    "taken": [
-      46
-    ],
-    "thousands": [
-      47
-    ],
-    "lives": [
-      49
-    ],
-    "since": [
-      50
-    ],
-    "its": [
-      51,
-      189
-    ],
-    "outbreak": [
-      52
-    ],
-    "China": [
-      54
-    ],
-    "December": [
-      56
-    ],
-    "2019.": [
-      57
-    ],
-    "Our": [
-      58,
-      262
-    ],
-    "host": [
-      59
-    ],
-    "institute": [
-      60
-    ],
-    "is": [
-      61,
-      232
-    ],
-    "now": [
-      62
-    ],
-    "shutdown": [
-      63
-    ],
-    "and": [
-      64,
-      95,
-      101,
-      184,
-      188,
-      237,
-      248,
-      271
-    ],
-    "are": [
-      66,
-      206,
-      211
-    ],
-    "confining": [
-      67
-    ],
-    "ourselves": [
-      68
-    ],
-    "homes": [
-      71
-    ],
-    "with": [
-      72
-    ],
-    "limited": [
-      73
-    ],
-    "access": [
-      74
-    ],
-    "computational": [
-      76
-    ],
-    "resources.": [
-      77
-    ],
-    "Using": [
-      78
-    ],
-    "a": [
-      79
-    ],
-    "simple": [
-      80
-    ],
-    "silico": [
-      82
-    ],
-    "approach": [
-      83
-    ],
-    "based": [
-      84
-    ],
-    "principle": [
-      87
-    ],
-    "‘neighbourhood": [
-      89
-    ],
-    "behaviour’": [
-      90
-    ],
-    "three-dimensional": [
-      92
-    ],
-    "(3D)": [
-      93
-    ],
-    "space": [
-      94,
-      98
-    ],
-    "two-dimensional": [
-      96
-    ],
-    "(2D)": [
-      97
-    ],
-    "protein": [
-      100,
-      116
-    ],
-    "small": [
-      102
-    ],
-    "molecules": [
-      103
-    ],
-    "respectively,": [
-      104
-    ],
-    "have": [
-      106,
-      129,
-      191
-    ],
-    "identified": [
-      107
-    ],
-    "potential": [
-      108,
-      193,
-      255
-    ],
-    "which": [
-      111,
-      139
-    ],
-    "can": [
-      112
-    ],
-    "be": [
-      113,
-      266
-    ],
-    "repurposed": [
-      114
-    ],
-    "against": [
-      115
-    ],
-    "targets": [
-      117
-    ],
-    "encoded": [
-      118
-    ],
-    "by": [
-      119,
-      144
-    ],
-    "SARS-CoV-2": [
-      121
-    ],
-    "genome.": [
-      122
-    ],
-    "Based": [
-      123
-    ],
-    "preliminary": [
-      126,
-      225
-    ],
-    "analysis,": [
-      127
-    ],
-    "so": [
-      130,
-      217
-    ],
-    "far": [
-      131
-    ],
-    "prioritized": [
-      132
-    ],
-    "more": [
-      133
-    ],
-    "than": [
-      134
-    ],
-    "20": [
-      135
-    ],
-    "might": [
-      140
-    ],
-    "elucidate": [
-      141
-    ],
-    "anti-coronavirus": [
-      142
-    ],
-    "properties": [
-      143
-    ],
-    "binding": [
-      145
-    ],
-    "main": [
-      147,
-      197
-    ],
-    "protease": [
-      148,
-      198
-    ],
-    "pathogen.": [
-      151
-    ],
-    "These": [
-      152
-    ],
-    "drugs": [
-      153
-    ],
-    "belong": [
-      154
-    ],
-    "diverse": [
-      156
-    ],
-    "therapeutic": [
-      157
-    ],
-    "areas": [
-      158
-    ],
-    "such": [
-      159
-    ],
-    "as": [
-      160
-    ],
-    "antiviral,": [
-      161
-    ],
-    "anticancer,": [
-      162
-    ],
-    "antibacterial": [
-      163
-    ],
-    "agents": [
-      164
-    ],
-    "etc.": [
-      165
-    ],
-    "Notably,": [
-      166
-    ],
-    "apart": [
-      167
-    ],
-    "from": [
-      168,
-      179,
-      291
-    ],
-    "many": [
-      169
-    ],
-    "synthetic": [
-      170
-    ],
-    "molecules,": [
-      171
-    ],
-    "analysis": [
-      173
-    ],
-    "also": [
-      174
-    ],
-    "hints": [
-      175
-    ],
-    "phytochemicals": [
-      177
-    ],
-    "obtained": [
-      178,
-      216
-    ],
-    "vinca": [
-      180
-    ],
-    "plant": [
-      181
-    ],
-    "(vinca": [
-      182
-    ],
-    "alkaloids)": [
-      183
-    ],
-    "camptotheca": [
-      185
-    ],
-    "tree": [
-      186
-    ],
-    "(camptothecin": [
-      187
-    ],
-    "derivatives)": [
-      190
-    ],
-    "bind": [
-      195
-    ],
-    "SARS-CoV-2.": [
-      200
-    ],
-    "In-depth": [
-      201
-    ],
-    "investigation": [
-      202
-    ],
-    "findings": [
-      205,
-      226,
-      258,
-      263,
-      281
-    ],
-    "currently": [
-      207
-    ],
-    "on-going.": [
-      208
-    ],
-    "Here": [
-      209
-    ],
-    "presenting": [
-      212
-    ],
-    "results": [
-      214
-    ],
-    "far.": [
-      218
-    ],
-    "sole": [
-      220
-    ],
-    "purpose": [
-      221
-    ],
-    "making": [
-      223
-    ],
-    "these": [
-      224,
-      257,
-      280
-    ],
-    "openly": [
-      227
-    ],
-    "community": [
-      231
-    ],
-    "for": [
-      233,
-      249,
-      259,
-      268,
-      282
-    ],
-    "experimental": [
-      235,
-      245
-    ],
-    "biologists": [
-      236
-    ],
-    "biomedical": [
-      238
-    ],
-    "researchers": [
-      239
-    ],
-    "investigate": [
-      241
-    ],
-    "predictions": [
-      243
-    ],
-    "set": [
-      246
-    ],
-    "ups": [
-      247
-    ],
-    "clinicians": [
-      251
-    ],
-    "evaluate": [
-      253
-    ],
-    "anti-COVID-19": [
-      260
-    ],
-    "treatment.": [
-      261
-    ],
-    "should": [
-      264,
-      278
-    ],
-    "only": [
-      265
-    ],
-    "used": [
-      267
-    ],
-    "purposes": [
-      270
-    ],
-    "strongly": [
-      273
-    ],
-    "urge": [
-      274
-    ],
-    "no": [
-      276
-    ],
-    "individual": [
-      277
-    ],
-    "interpret": [
-      279
-    ],
-    "any": [
-      283
-    ],
-    "self-diagnosis": [
-      284
-    ],
-    "or": [
-      285
-    ],
-    "self-medication": [
-      286
-    ],
-    "without": [
-      287
-    ],
-    "prior": [
-      289
-    ],
-    "approval": [
-      290
-    ],
-    "competent": [
-      292
-    ],
-    "international": [
-      293
-    ],
-    "health/medical": [
-      294
-    ],
-    "regulatory": [
-      295
-    ],
-    "agencies.": [
-      296
-    ]
+    "The": [0, 219],
+    "current": [1],
+    "global": [2],
+    "crisis": [3],
+    "due": [4],
+    "to": [5, 12, 34, 69, 75, 146, 155, 194, 196, 229, 240, 252],
+    "COVID-19": [6],
+    "has": [7, 44],
+    "almost": [8],
+    "brought": [9],
+    "normal": [10],
+    "life": [11],
+    "standstill": [13],
+    "in": [14, 53, 55, 81, 91, 244],
+    "most": [15],
+    "parts": [16],
+    "of": [17, 48, 88, 99, 149, 199, 222, 256],
+    "the": [18, 36, 40, 86, 120, 150, 192, 213, 230, 234, 250, 254, 288],
+    "world.": [19],
+    "With": [20],
+    "our": [21, 70, 125, 172, 204, 242],
+    "research": [22, 269],
+    "interest": [23],
+    "on": [24, 39, 85, 124, 203],
+    "repurposing": [25],
+    "known": [26, 136],
+    "drugs/drug": [27, 109, 137],
+    "candidates": [28, 110, 138],
+    "targeting": [29],
+    "various": [30],
+    "diseases,": [31],
+    "we": [32, 65, 105, 128, 210, 215, 272],
+    "decided": [33],
+    "analyse": [35],
+    "available": [37, 228],
+    "data": [38],
+    "deadly": [41],
+    "pathogen": [42],
+    "that": [43, 176, 275],
+    "already": [45],
+    "taken": [46],
+    "thousands": [47],
+    "lives": [49],
+    "since": [50],
+    "its": [51, 189],
+    "outbreak": [52],
+    "China": [54],
+    "December": [56],
+    "2019.": [57],
+    "Our": [58, 262],
+    "host": [59],
+    "institute": [60],
+    "is": [61, 232],
+    "now": [62],
+    "shutdown": [63],
+    "and": [64, 95, 101, 184, 188, 237, 248, 271],
+    "are": [66, 206, 211],
+    "confining": [67],
+    "ourselves": [68],
+    "homes": [71],
+    "with": [72],
+    "limited": [73],
+    "access": [74],
+    "computational": [76],
+    "resources.": [77],
+    "Using": [78],
+    "a": [79],
+    "simple": [80],
+    "silico": [82],
+    "approach": [83],
+    "based": [84],
+    "principle": [87],
+    "‘neighbourhood": [89],
+    "behaviour’": [90],
+    "three-dimensional": [92],
+    "(3D)": [93],
+    "space": [94, 98],
+    "two-dimensional": [96],
+    "(2D)": [97],
+    "protein": [100, 116],
+    "small": [102],
+    "molecules": [103],
+    "respectively,": [104],
+    "have": [106, 129, 191],
+    "identified": [107],
+    "potential": [108, 193, 255],
+    "which": [111, 139],
+    "can": [112],
+    "be": [113, 266],
+    "repurposed": [114],
+    "against": [115],
+    "targets": [117],
+    "encoded": [118],
+    "by": [119, 144],
+    "SARS-CoV-2": [121],
+    "genome.": [122],
+    "Based": [123],
+    "preliminary": [126, 225],
+    "analysis,": [127],
+    "so": [130, 217],
+    "far": [131],
+    "prioritized": [132],
+    "more": [133],
+    "than": [134],
+    "20": [135],
+    "might": [140],
+    "elucidate": [141],
+    "anti-coronavirus": [142],
+    "properties": [143],
+    "binding": [145],
+    "main": [147, 197],
+    "protease": [148, 198],
+    "pathogen.": [151],
+    "These": [152],
+    "drugs": [153],
+    "belong": [154],
+    "diverse": [156],
+    "therapeutic": [157],
+    "areas": [158],
+    "such": [159],
+    "as": [160],
+    "antiviral,": [161],
+    "anticancer,": [162],
+    "antibacterial": [163],
+    "agents": [164],
+    "etc.": [165],
+    "Notably,": [166],
+    "apart": [167],
+    "from": [168, 179, 291],
+    "many": [169],
+    "synthetic": [170],
+    "molecules,": [171],
+    "analysis": [173],
+    "also": [174],
+    "hints": [175],
+    "phytochemicals": [177],
+    "obtained": [178, 216],
+    "vinca": [180],
+    "plant": [181],
+    "(vinca": [182],
+    "alkaloids)": [183],
+    "camptotheca": [185],
+    "tree": [186],
+    "(camptothecin": [187],
+    "derivatives)": [190],
+    "bind": [195],
+    "SARS-CoV-2.": [200],
+    "In-depth": [201],
+    "investigation": [202],
+    "findings": [205, 226, 258, 263, 281],
+    "currently": [207],
+    "on-going.": [208],
+    "Here": [209],
+    "presenting": [212],
+    "results": [214],
+    "far.": [218],
+    "sole": [220],
+    "purpose": [221],
+    "making": [223],
+    "these": [224, 257, 280],
+    "openly": [227],
+    "community": [231],
+    "for": [233, 249, 259, 268, 282],
+    "experimental": [235, 245],
+    "biologists": [236],
+    "biomedical": [238],
+    "researchers": [239],
+    "investigate": [241],
+    "predictions": [243],
+    "set": [246],
+    "ups": [247],
+    "clinicians": [251],
+    "evaluate": [253],
+    "anti-COVID-19": [260],
+    "treatment.": [261],
+    "should": [264, 278],
+    "only": [265],
+    "used": [267],
+    "purposes": [270],
+    "strongly": [273],
+    "urge": [274],
+    "no": [276],
+    "individual": [277],
+    "interpret": [279],
+    "any": [283],
+    "self-diagnosis": [284],
+    "or": [285],
+    "self-medication": [286],
+    "without": [287],
+    "prior": [289],
+    "approval": [290],
+    "competent": [292],
+    "international": [293],
+    "health/medical": [294],
+    "regulatory": [295],
+    "agencies.": [296]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W3090735635",
   "counts_by_year": [

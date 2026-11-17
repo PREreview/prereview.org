@@ -28,9 +28,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -43,15 +41,11 @@
     "raw_type": "Project"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W6925166193"
-  ],
+  "lineage": ["https://openalex.org/W6925166193"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "datacite"
-  ],
+  "indexed_in": ["datacite"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -65,10 +59,7 @@
         "id": "https://openalex.org/A5008886006",
         "display_name": "Lori L. Holt",
         "orcid": "https://orcid.org/0000-0002-8732-4977",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-8732-4977",
-          "https://orcid.org/0000-0002-2215-8533"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-8732-4977", "https://orcid.org/0000-0002-2215-8533"]
       },
       "institutions": [],
       "countries": [],
@@ -84,9 +75,7 @@
         "id": "https://openalex.org/A5011688244",
         "display_name": "Emily E. Harford",
         "orcid": "https://orcid.org/0000-0001-8769-2238",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-8769-2238"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-8769-2238"]
       },
       "institutions": [],
       "countries": [],
@@ -328,9 +317,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -359,9 +346,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -391,9 +376,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -429,28 +412,13 @@
     "https://openalex.org/W3105756469"
   ],
   "abstract_inverted_index": {
-    "Review": [
-      0
-    ],
-    "of": [
-      1,
-      4
-    ],
-    "the": [
-      2
-    ],
-    "development": [
-      3
-    ],
-    "human": [
-      5
-    ],
-    "voice": [
-      6
-    ],
-    "perception": [
-      7
-    ]
+    "Review": [0],
+    "of": [1, 4],
+    "the": [2],
+    "development": [3],
+    "human": [5],
+    "voice": [6],
+    "perception": [7]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W6925166193",
   "counts_by_year": [],

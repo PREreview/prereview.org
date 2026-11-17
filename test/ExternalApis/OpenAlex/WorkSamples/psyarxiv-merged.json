@@ -21,10 +21,7 @@
       "id": "https://openalex.org/S2764473005",
       "display_name": "Evolutionary Behavioral Sciences",
       "issn_l": "2330-2925",
-      "issn": [
-        "2330-2925",
-        "2330-2933"
-      ],
+      "issn": ["2330-2925", "2330-2933"],
       "is_oa": false,
       "is_in_doaj": false,
       "is_core": true,
@@ -40,12 +37,8 @@
       ],
       "host_organization": "https://openalex.org/P4310320262",
       "host_organization_name": "American Psychological Association",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310320262"
-      ],
-      "host_organization_lineage_names": [
-        "American Psychological Association"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310320262"],
+      "host_organization_lineage_names": ["American Psychological Association"],
       "type": "journal"
     },
     "license": null,
@@ -57,15 +50,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4283014727"
-  ],
+  "lineage": ["https://openalex.org/W4283014727"],
   "child_works_count": 0,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -79,9 +68,7 @@
         "id": "https://openalex.org/A5081187638",
         "display_name": "Jessica Daphne Ayers",
         "orcid": "https://orcid.org/0000-0001-7722-0376",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-7722-0376"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-7722-0376"]
       },
       "institutions": [],
       "countries": [],
@@ -97,9 +84,7 @@
         "id": "https://openalex.org/A5005199666",
         "display_name": "Daniel Sznycer",
         "orcid": "https://orcid.org/0000-0002-6510-3313",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-6510-3313"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-6510-3313"]
       },
       "institutions": [],
       "countries": [],
@@ -115,9 +100,7 @@
         "id": "https://openalex.org/A5021617351",
         "display_name": "Daniel Sullivan",
         "orcid": "https://orcid.org/0000-0002-0380-7681",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0380-7681"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0380-7681"]
       },
       "institutions": [],
       "countries": [],
@@ -133,9 +116,7 @@
         "id": "https://openalex.org/A5030470163",
         "display_name": "Diego Guevara Beltrán",
         "orcid": "https://orcid.org/0000-0002-3667-052X",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-3667-052X"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-3667-052X"]
       },
       "institutions": [],
       "countries": [],
@@ -151,9 +132,7 @@
         "id": "https://openalex.org/A5041334894",
         "display_name": "Olmo Robin van den Akker",
         "orcid": "https://orcid.org/0000-0002-0712-3746",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0712-3746"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0712-3746"]
       },
       "institutions": [],
       "countries": [],
@@ -185,9 +164,7 @@
         "id": "https://openalex.org/A5054543322",
         "display_name": "Daniel J. Hruschka",
         "orcid": "https://orcid.org/0000-0003-2188-7782",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-2188-7782"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-2188-7782"]
       },
       "institutions": [],
       "countries": [],
@@ -203,9 +180,7 @@
         "id": "https://openalex.org/A5040627704",
         "display_name": "Lee Cronk",
         "orcid": "https://orcid.org/0000-0002-7583-7417",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-7583-7417"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-7583-7417"]
       },
       "institutions": [],
       "countries": [],
@@ -221,9 +196,7 @@
         "id": "https://openalex.org/A5011848108",
         "display_name": "Athena Aktipis",
         "orcid": "https://orcid.org/0000-0002-7128-670X",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-7128-670X"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-7128-670X"]
       },
       "institutions": [],
       "countries": [],
@@ -464,10 +437,7 @@
         "id": "https://openalex.org/S2764473005",
         "display_name": "Evolutionary Behavioral Sciences",
         "issn_l": "2330-2925",
-        "issn": [
-          "2330-2925",
-          "2330-2933"
-        ],
+        "issn": ["2330-2925", "2330-2933"],
         "is_oa": false,
         "is_in_doaj": false,
         "is_core": true,
@@ -483,12 +453,8 @@
         ],
         "host_organization": "https://openalex.org/P4310320262",
         "host_organization_name": "American Psychological Association",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310320262"
-        ],
-        "host_organization_lineage_names": [
-          "American Psychological Association"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310320262"],
+        "host_organization_lineage_names": ["American Psychological Association"],
         "type": "journal"
       },
       "license": null,
@@ -516,9 +482,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -547,9 +511,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -578,9 +540,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -610,9 +570,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -648,395 +606,120 @@
     "https://openalex.org/W2489098644"
   ],
   "abstract_inverted_index": {
-    "Assessing": [
-      0
-    ],
-    "interdependence": [
-      1
-    ],
-    "between": [
-      2
-    ],
-    "self": [
-      3
-    ],
-    "and": [
-      4,
-      26,
-      47,
-      69,
-      79,
-      98,
-      128,
-      147,
-      155
-    ],
-    "specific": [
-      5
-    ],
-    "others": [
-      6
-    ],
-    "has": [
-      7,
-      40,
-      54,
-      93
-    ],
-    "a": [
-      8,
-      17,
-      52,
-      107,
-      120
-    ],
-    "rich": [
-      9
-    ],
-    "history": [
-      10
-    ],
-    "in": [
-      11
-    ],
-    "psychological": [
-      12
-    ],
-    "science.": [
-      13
-    ],
-    "Here,": [
-      14
-    ],
-    "we": [
-      15
-    ],
-    "report": [
-      16
-    ],
-    "novel": [
-      18
-    ],
-    "scale": [
-      19,
-      39,
-      92,
-      118
-    ],
-    "to": [
-      20,
-      61,
-      67,
-      73
-    ],
-    "measure": [
-      21
-    ],
-    "Shared": [
-      22,
-      37,
-      90,
-      116
-    ],
-    "Fate.": [
-      23
-    ],
-    "Studies": [
-      24,
-      77
-    ],
-    "1": [
-      25
-    ],
-    "2": [
-      27
-    ],
-    "(N1": [
-      28
-    ],
-    "=": [
-      29,
-      32,
-      59,
-      65,
-      82,
-      85
-    ],
-    "198,": [
-      30
-    ],
-    "N2": [
-      31
-    ],
-    "216)": [
-      33
-    ],
-    "show": [
-      34
-    ],
-    "that": [
-      35,
-      88,
-      115
-    ],
-    "the": [
-      36,
-      89,
-      139
-    ],
-    "Fate": [
-      38,
-      91,
-      117
-    ],
-    "two": [
-      41
-    ],
-    "factors": [
-      42
-    ],
-    "assessing": [
-      43
-    ],
-    "perceived": [
-      44
-    ],
-    "shared": [
-      45,
-      49,
-      145,
-      149
-    ],
-    "fate": [
-      46,
-      50,
-      146,
-      150
-    ],
-    "emotional": [
-      48
-    ],
-    "with": [
-      51,
-      152
-    ],
-    "target,": [
-      53
-    ],
-    "good": [
-      55,
-      94
-    ],
-    "reliability": [
-      56,
-      105
-    ],
-    "(Cronbach’s": [
-      57
-    ],
-    "alpha": [
-      58
-    ],
-    "0.81": [
-      60
-    ],
-    "0.91;": [
-      62
-    ],
-    "McDonald’s": [
-      63
-    ],
-    "omega": [
-      64
-    ],
-    "0.89": [
-      66
-    ],
-    "0.96),": [
-      68
-    ],
-    "predicts": [
-      70
-    ],
-    "participants’": [
-      71
-    ],
-    "willingness": [
-      72
-    ],
-    "help": [
-      74
-    ],
-    "interdependent": [
-      75
-    ],
-    "others.": [
-      76
-    ],
-    "3": [
-      78
-    ],
-    "4": [
-      80
-    ],
-    "(N3": [
-      81
-    ],
-    "695,": [
-      83
-    ],
-    "N4": [
-      84
-    ],
-    "629)": [
-      86
-    ],
-    "indicate": [
-      87
-    ],
-    "discriminant,": [
-      95
-    ],
-    "convergent,": [
-      96
-    ],
-    "concurrent,": [
-      97
-    ],
-    "predictive": [
-      99
-    ],
-    "validity": [
-      100
-    ],
-    "as": [
-      101,
-      103
-    ],
-    "well": [
-      102
-    ],
-    "test-retest": [
-      104
-    ],
-    "across": [
-      106
-    ],
-    "14-day": [
-      108
-    ],
-    "period.": [
-      109
-    ],
-    "Taken": [
-      110
-    ],
-    "together,": [
-      111
-    ],
-    "our": [
-      112
-    ],
-    "results": [
-      113
-    ],
-    "suggest": [
-      114
-    ],
-    "is": [
-      119
-    ],
-    "useful": [
-      121
-    ],
-    "instrument": [
-      122
-    ],
-    "for": [
-      123
-    ],
-    "work": [
-      124
-    ],
-    "on": [
-      125
-    ],
-    "cooperation,": [
-      126
-    ],
-    "interdependence,": [
-      127
-    ],
-    "social": [
-      129
-    ],
-    "behavior.": [
-      130
-    ],
-    "However,": [
-      131
-    ],
-    "there": [
-      132
-    ],
-    "are": [
-      133
-    ],
-    "still": [
-      134
-    ],
-    "many": [
-      135
-    ],
-    "open": [
-      136
-    ],
-    "questions": [
-      137
-    ],
-    "about": [
-      138
-    ],
-    "cognitive": [
-      140
-    ],
-    "architecture": [
-      141
-    ],
-    "underlying": [
-      142
-    ],
-    "perceptions": [
-      143
-    ],
-    "of": [
-      144,
-      158
-    ],
-    "how": [
-      148
-    ],
-    "interacts": [
-      151
-    ],
-    "genetic": [
-      153
-    ],
-    "relatedness": [
-      154
-    ],
-    "other": [
-      156
-    ],
-    "sources": [
-      157
-    ],
-    "fitness": [
-      159
-    ],
-    "interdependence.": [
-      160
-    ]
+    "Assessing": [0],
+    "interdependence": [1],
+    "between": [2],
+    "self": [3],
+    "and": [4, 26, 47, 69, 79, 98, 128, 147, 155],
+    "specific": [5],
+    "others": [6],
+    "has": [7, 40, 54, 93],
+    "a": [8, 17, 52, 107, 120],
+    "rich": [9],
+    "history": [10],
+    "in": [11],
+    "psychological": [12],
+    "science.": [13],
+    "Here,": [14],
+    "we": [15],
+    "report": [16],
+    "novel": [18],
+    "scale": [19, 39, 92, 118],
+    "to": [20, 61, 67, 73],
+    "measure": [21],
+    "Shared": [22, 37, 90, 116],
+    "Fate.": [23],
+    "Studies": [24, 77],
+    "1": [25],
+    "2": [27],
+    "(N1": [28],
+    "=": [29, 32, 59, 65, 82, 85],
+    "198,": [30],
+    "N2": [31],
+    "216)": [33],
+    "show": [34],
+    "that": [35, 88, 115],
+    "the": [36, 89, 139],
+    "Fate": [38, 91, 117],
+    "two": [41],
+    "factors": [42],
+    "assessing": [43],
+    "perceived": [44],
+    "shared": [45, 49, 145, 149],
+    "fate": [46, 50, 146, 150],
+    "emotional": [48],
+    "with": [51, 152],
+    "target,": [53],
+    "good": [55, 94],
+    "reliability": [56, 105],
+    "(Cronbach’s": [57],
+    "alpha": [58],
+    "0.81": [60],
+    "0.91;": [62],
+    "McDonald’s": [63],
+    "omega": [64],
+    "0.89": [66],
+    "0.96),": [68],
+    "predicts": [70],
+    "participants’": [71],
+    "willingness": [72],
+    "help": [74],
+    "interdependent": [75],
+    "others.": [76],
+    "3": [78],
+    "4": [80],
+    "(N3": [81],
+    "695,": [83],
+    "N4": [84],
+    "629)": [86],
+    "indicate": [87],
+    "discriminant,": [95],
+    "convergent,": [96],
+    "concurrent,": [97],
+    "predictive": [99],
+    "validity": [100],
+    "as": [101, 103],
+    "well": [102],
+    "test-retest": [104],
+    "across": [106],
+    "14-day": [108],
+    "period.": [109],
+    "Taken": [110],
+    "together,": [111],
+    "our": [112],
+    "results": [113],
+    "suggest": [114],
+    "is": [119],
+    "useful": [121],
+    "instrument": [122],
+    "for": [123],
+    "work": [124],
+    "on": [125],
+    "cooperation,": [126],
+    "interdependence,": [127],
+    "social": [129],
+    "behavior.": [130],
+    "However,": [131],
+    "there": [132],
+    "are": [133],
+    "still": [134],
+    "many": [135],
+    "open": [136],
+    "questions": [137],
+    "about": [138],
+    "cognitive": [140],
+    "architecture": [141],
+    "underlying": [142],
+    "perceptions": [143],
+    "of": [144, 158],
+    "how": [148],
+    "interacts": [151],
+    "genetic": [153],
+    "relatedness": [154],
+    "other": [156],
+    "sources": [157],
+    "fitness": [159],
+    "interdependence.": [160]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4283014727",
   "counts_by_year": [

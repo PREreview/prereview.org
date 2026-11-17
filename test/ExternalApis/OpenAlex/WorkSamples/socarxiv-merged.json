@@ -21,10 +21,7 @@
       "id": "https://openalex.org/S4210197613",
       "display_name": "Journal of the Association for Information Science and Technology",
       "issn_l": "2330-1635",
-      "issn": [
-        "2330-1635",
-        "2330-1643"
-      ],
+      "issn": ["2330-1635", "2330-1643"],
       "is_oa": false,
       "is_in_doaj": false,
       "is_core": true,
@@ -45,12 +42,8 @@
       ],
       "host_organization": "https://openalex.org/P4310320595",
       "host_organization_name": "Wiley",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310320595"
-      ],
-      "host_organization_lineage_names": [
-        "Wiley"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310320595"],
+      "host_organization_lineage_names": ["Wiley"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -62,15 +55,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4392753125"
-  ],
+  "lineage": ["https://openalex.org/W4392753125"],
   "child_works_count": 0,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "hybrid",
@@ -84,9 +73,7 @@
         "id": "https://openalex.org/A5012702412",
         "display_name": "Rong Ni",
         "orcid": "https://orcid.org/0000-0003-2455-4545",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-2455-4545"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-2455-4545"]
       },
       "institutions": [
         {
@@ -95,9 +82,7 @@
           "ror": "https://ror.org/027bh9e22",
           "country_code": "NL",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I121797337"
-          ]
+          "lineage": ["https://openalex.org/I121797337"]
         },
         {
           "id": "https://openalex.org/I172675005",
@@ -105,9 +90,7 @@
           "ror": "https://ror.org/02e7b5302",
           "country_code": "SG",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I172675005"
-          ]
+          "lineage": ["https://openalex.org/I172675005"]
         },
         {
           "id": "https://openalex.org/I4405278159",
@@ -115,15 +98,10 @@
           "ror": "https://ror.org/055nr9x19",
           "country_code": "SG",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I4405278159"
-          ]
+          "lineage": ["https://openalex.org/I4405278159"]
         }
       ],
-      "countries": [
-        "NL",
-        "SG"
-      ],
+      "countries": ["NL", "SG"],
       "is_corresponding": true,
       "raw_author_name": "Rong Ni",
       "raw_affiliation_strings": [
@@ -134,16 +112,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Centre for Science and Technology Studies (CWTS), Leiden University, Leiden, The Netherlands",
-          "institution_ids": [
-            "https://openalex.org/I121797337"
-          ]
+          "institution_ids": ["https://openalex.org/I121797337"]
         },
         {
           "raw_affiliation_string": "Nanyang Centre for Public Administration (NCPA), Nanyang Technological University, Singapore",
-          "institution_ids": [
-            "https://openalex.org/I172675005",
-            "https://openalex.org/I4405278159"
-          ]
+          "institution_ids": ["https://openalex.org/I172675005", "https://openalex.org/I4405278159"]
         }
       ]
     },
@@ -153,9 +126,7 @@
         "id": "https://openalex.org/A5027467000",
         "display_name": "Ludo Waltman",
         "orcid": "https://orcid.org/0000-0001-8249-1752",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-8249-1752"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-8249-1752"]
       },
       "institutions": [
         {
@@ -164,14 +135,10 @@
           "ror": "https://ror.org/027bh9e22",
           "country_code": "NL",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I121797337"
-          ]
+          "lineage": ["https://openalex.org/I121797337"]
         }
       ],
-      "countries": [
-        "NL"
-      ],
+      "countries": ["NL"],
       "is_corresponding": true,
       "raw_author_name": "Ludo Waltman",
       "raw_affiliation_strings": [
@@ -181,9 +148,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Centre for Science and Technology Studies (CWTS), Leiden University, Leiden, The Netherlands",
-          "institution_ids": [
-            "https://openalex.org/I121797337"
-          ]
+          "institution_ids": ["https://openalex.org/I121797337"]
         }
       ]
     }
@@ -191,10 +156,7 @@
   "institutions": [],
   "countries_distinct_count": 2,
   "institutions_distinct_count": 3,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5012702412",
-    "https://openalex.org/A5027467000"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5012702412", "https://openalex.org/A5027467000"],
   "corresponding_institution_ids": [
     "https://openalex.org/I121797337",
     "https://openalex.org/I172675005",
@@ -286,7 +248,7 @@
     {
       "id": "https://openalex.org/T10102",
       "display_name": "scientometrics and bibliometrics research",
-      "score": 9.999999747378752e-05,
+      "score": 9.999999747378752e-5,
       "subfield": {
         "id": "https://openalex.org/subfields/3309",
         "display_name": "Library and Information Sciences"
@@ -472,10 +434,7 @@
         "id": "https://openalex.org/S4210197613",
         "display_name": "Journal of the Association for Information Science and Technology",
         "issn_l": "2330-1635",
-        "issn": [
-          "2330-1635",
-          "2330-1643"
-        ],
+        "issn": ["2330-1635", "2330-1643"],
         "is_oa": false,
         "is_in_doaj": false,
         "is_core": true,
@@ -496,12 +455,8 @@
         ],
         "host_organization": "https://openalex.org/P4310320595",
         "host_organization_name": "Wiley",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310320595"
-        ],
-        "host_organization_lineage_names": [
-          "Wiley"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310320595"],
+        "host_organization_lineage_names": ["Wiley"],
         "type": "journal"
       },
       "license": "cc-by",
@@ -529,9 +484,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -560,9 +513,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I172675005",
         "host_organization_name": "Nanyang Technological University",
-        "host_organization_lineage": [
-          "https://openalex.org/I172675005"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I172675005"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -591,9 +542,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -622,9 +571,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -647,10 +594,7 @@
       "id": "https://openalex.org/S4210197613",
       "display_name": "Journal of the Association for Information Science and Technology",
       "issn_l": "2330-1635",
-      "issn": [
-        "2330-1635",
-        "2330-1643"
-      ],
+      "issn": ["2330-1635", "2330-1643"],
       "is_oa": false,
       "is_in_doaj": false,
       "is_core": true,
@@ -671,12 +615,8 @@
       ],
       "host_organization": "https://openalex.org/P4310320595",
       "host_organization_name": "Wiley",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310320595"
-      ],
-      "host_organization_lineage_names": [
-        "Wiley"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310320595"],
+      "host_organization_lineage_names": ["Wiley"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -759,435 +699,126 @@
     "https://openalex.org/W3097880317"
   ],
   "abstract_inverted_index": {
-    "Abstract": [
-      0
-    ],
-    "Open": [
-      1
-    ],
-    "science": [
-      2,
-      17,
-      109
-    ],
-    "is": [
-      3,
-      96
-    ],
-    "receiving": [
-      4
-    ],
-    "widespread": [
-      5
-    ],
-    "attention": [
-      6
-    ],
-    "globally,": [
-      7
-    ],
-    "and": [
-      8,
-      31,
-      47,
-      58,
-      71,
-      79,
-      101,
-      107,
-      121,
-      135,
-      144,
-      163,
-      183
-    ],
-    "preprinting": [
-      9,
-      84,
-      95,
-      175,
-      178
-    ],
-    "offers": [
-      10
-    ],
-    "an": [
-      11
-    ],
-    "important": [
-      12,
-      129
-    ],
-    "way": [
-      13,
-      62
-    ],
-    "to": [
-      14,
-      83,
-      167,
-      173
-    ],
-    "implement": [
-      15
-    ],
-    "open": [
-      16
-    ],
-    "practices": [
-      18
-    ],
-    "in": [
-      19,
-      45,
-      63,
-      89,
-      99,
-      111,
-      156,
-      160
-    ],
-    "scholarly": [
-      20
-    ],
-    "publishing.": [
-      21
-    ],
-    "To": [
-      22
-    ],
-    "develop": [
-      23
-    ],
-    "a": [
-      24,
-      37,
-      75,
-      80
-    ],
-    "systematic": [
-      25
-    ],
-    "understanding": [
-      26
-    ],
-    "of": [
-      27,
-      30,
-      39,
-      41,
-      66,
-      94,
-      119,
-      123,
-      131,
-      137
-    ],
-    "researchers'": [
-      28
-    ],
-    "adoption": [
-      29,
-      65,
-      93
-    ],
-    "attitudes": [
-      32
-    ],
-    "toward": [
-      33
-    ],
-    "preprinting,": [
-      34,
-      154
-    ],
-    "we": [
-      35
-    ],
-    "conducted": [
-      36
-    ],
-    "survey": [
-      38,
-      51
-    ],
-    "authors": [
-      40
-    ],
-    "research": [
-      42,
-      113,
-      124
-    ],
-    "papers": [
-      43
-    ],
-    "published": [
-      44
-    ],
-    "2021": [
-      46
-    ],
-    "early": [
-      48
-    ],
-    "2022.": [
-      49
-    ],
-    "Our": [
-      50
-    ],
-    "results": [
-      52,
-      140
-    ],
-    "show": [
-      53
-    ],
-    "that": [
-      54
-    ],
-    "the": [
-      55,
-      61,
-      64,
-      90,
-      127,
-      149,
-      161,
-      169
-    ],
-    "United": [
-      56,
-      69
-    ],
-    "States": [
-      57,
-      70
-    ],
-    "Europe": [
-      59
-    ],
-    "led": [
-      60
-    ],
-    "preprinting.": [
-      67,
-      132
-    ],
-    "The": [
-      68,
-      92
-    ],
-    "European": [
-      72
-    ],
-    "respondents": [
-      73,
-      159
-    ],
-    "reported": [
-      74
-    ],
-    "higher": [
-      76
-    ],
-    "familiarity": [
-      77
-    ],
-    "with": [
-      78
-    ],
-    "stronger": [
-      81,
-      98
-    ],
-    "commitment": [
-      82
-    ],
-    "than": [
-      85,
-      110
-    ],
-    "their": [
-      86
-    ],
-    "colleagues": [
-      87
-    ],
-    "elsewhere": [
-      88
-    ],
-    "world.": [
-      91
-    ],
-    "much": [
-      97
-    ],
-    "physics": [
-      100
-    ],
-    "astronomy": [
-      102
-    ],
-    "as": [
-      103,
-      105,
-      126
-    ],
-    "well": [
-      104
-    ],
-    "mathematics": [
-      106
-    ],
-    "computer": [
-      108
-    ],
-    "other": [
-      112
-    ],
-    "areas.": [
-      114
-    ],
-    "Respondents": [
-      115
-    ],
-    "identified": [
-      116
-    ],
-    "free": [
-      117
-    ],
-    "accessibility": [
-      118
-    ],
-    "preprints": [
-      120
-    ],
-    "acceleration": [
-      122
-    ],
-    "communication": [
-      125
-    ],
-    "most": [
-      128,
-      150,
-      170
-    ],
-    "benefits": [
-      130
-    ],
-    "Low": [
-      133
-    ],
-    "reliability": [
-      134
-    ],
-    "credibility": [
-      136
-    ],
-    "preprints,": [
-      138
-    ],
-    "sharing": [
-      139
-    ],
-    "before": [
-      141
-    ],
-    "peer": [
-      142
-    ],
-    "review": [
-      143
-    ],
-    "premature": [
-      145
-    ],
-    "media": [
-      146
-    ],
-    "coverage": [
-      147
-    ],
-    "are": [
-      148,
-      176
-    ],
-    "significant": [
-      151
-    ],
-    "concerns": [
-      152
-    ],
-    "about": [
-      153
-    ],
-    "emphasized": [
-      155
-    ],
-    "particular": [
-      157
-    ],
-    "by": [
-      158
-    ],
-    "life": [
-      162
-    ],
-    "health": [
-      164
-    ],
-    "sciences.": [
-      165
-    ],
-    "According": [
-      166
-    ],
-    "respondents,": [
-      168
-    ],
-    "crucial": [
-      171
-    ],
-    "strategies": [
-      172
-    ],
-    "encourage": [
-      174
-    ],
-    "integrating": [
-      177
-    ],
-    "into": [
-      179
-    ],
-    "journal": [
-      180
-    ],
-    "submission": [
-      181
-    ],
-    "workflows": [
-      182
-    ],
-    "providing": [
-      184
-    ],
-    "recognition": [
-      185
-    ],
-    "for": [
-      186
-    ],
-    "posting": [
-      187
-    ],
-    "preprints.": [
-      188
-    ]
+    "Abstract": [0],
+    "Open": [1],
+    "science": [2, 17, 109],
+    "is": [3, 96],
+    "receiving": [4],
+    "widespread": [5],
+    "attention": [6],
+    "globally,": [7],
+    "and": [8, 31, 47, 58, 71, 79, 101, 107, 121, 135, 144, 163, 183],
+    "preprinting": [9, 84, 95, 175, 178],
+    "offers": [10],
+    "an": [11],
+    "important": [12, 129],
+    "way": [13, 62],
+    "to": [14, 83, 167, 173],
+    "implement": [15],
+    "open": [16],
+    "practices": [18],
+    "in": [19, 45, 63, 89, 99, 111, 156, 160],
+    "scholarly": [20],
+    "publishing.": [21],
+    "To": [22],
+    "develop": [23],
+    "a": [24, 37, 75, 80],
+    "systematic": [25],
+    "understanding": [26],
+    "of": [27, 30, 39, 41, 66, 94, 119, 123, 131, 137],
+    "researchers'": [28],
+    "adoption": [29, 65, 93],
+    "attitudes": [32],
+    "toward": [33],
+    "preprinting,": [34, 154],
+    "we": [35],
+    "conducted": [36],
+    "survey": [38, 51],
+    "authors": [40],
+    "research": [42, 113, 124],
+    "papers": [43],
+    "published": [44],
+    "2021": [46],
+    "early": [48],
+    "2022.": [49],
+    "Our": [50],
+    "results": [52, 140],
+    "show": [53],
+    "that": [54],
+    "the": [55, 61, 64, 90, 127, 149, 161, 169],
+    "United": [56, 69],
+    "States": [57, 70],
+    "Europe": [59],
+    "led": [60],
+    "preprinting.": [67, 132],
+    "The": [68, 92],
+    "European": [72],
+    "respondents": [73, 159],
+    "reported": [74],
+    "higher": [76],
+    "familiarity": [77],
+    "with": [78],
+    "stronger": [81, 98],
+    "commitment": [82],
+    "than": [85, 110],
+    "their": [86],
+    "colleagues": [87],
+    "elsewhere": [88],
+    "world.": [91],
+    "much": [97],
+    "physics": [100],
+    "astronomy": [102],
+    "as": [103, 105, 126],
+    "well": [104],
+    "mathematics": [106],
+    "computer": [108],
+    "other": [112],
+    "areas.": [114],
+    "Respondents": [115],
+    "identified": [116],
+    "free": [117],
+    "accessibility": [118],
+    "preprints": [120],
+    "acceleration": [122],
+    "communication": [125],
+    "most": [128, 150, 170],
+    "benefits": [130],
+    "Low": [133],
+    "reliability": [134],
+    "credibility": [136],
+    "preprints,": [138],
+    "sharing": [139],
+    "before": [141],
+    "peer": [142],
+    "review": [143],
+    "premature": [145],
+    "media": [146],
+    "coverage": [147],
+    "are": [148, 176],
+    "significant": [151],
+    "concerns": [152],
+    "about": [153],
+    "emphasized": [155],
+    "particular": [157],
+    "by": [158],
+    "life": [162],
+    "health": [164],
+    "sciences.": [165],
+    "According": [166],
+    "respondents,": [168],
+    "crucial": [171],
+    "strategies": [172],
+    "encourage": [174],
+    "integrating": [177],
+    "into": [179],
+    "journal": [180],
+    "submission": [181],
+    "workflows": [182],
+    "providing": [184],
+    "recognition": [185],
+    "for": [186],
+    "posting": [187],
+    "preprints.": [188]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4392753125",
   "counts_by_year": [

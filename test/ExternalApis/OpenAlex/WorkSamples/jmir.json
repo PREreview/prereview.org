@@ -27,15 +27,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W7161267424"
-  ],
+  "lineage": ["https://openalex.org/W7161267424"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -49,9 +45,7 @@
         "id": "https://openalex.org/A5136200986",
         "display_name": "Abenezer Feleke Kebede",
         "orcid": "https://orcid.org/0009-0002-4319-9921",
-        "observed_orcids": [
-          "https://orcid.org/0009-0002-4319-9921"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0002-4319-9921"]
       },
       "institutions": [],
       "countries": [],
@@ -67,9 +61,7 @@
         "id": "https://openalex.org/A5135377979",
         "display_name": "Ziad Chemaly",
         "orcid": "https://orcid.org/0009-0007-1894-3954",
-        "observed_orcids": [
-          "https://orcid.org/0009-0007-1894-3954"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0007-1894-3954"]
       },
       "institutions": [],
       "countries": [],
@@ -562,738 +554,216 @@
     "https://openalex.org/W4353048338"
   ],
   "abstract_inverted_index": {
-    "BACKGROUND": [
-      0
-    ],
-    "Wearable": [
-      1,
-      247
-    ],
-    "biosensors,": [
-      2,
-      137
-    ],
-    "remote": [
-      3,
-      138,
-      203,
-      290
-    ],
-    "physiologic": [
-      4
-    ],
-    "monitoring,": [
-      5,
-      139,
-      287
-    ],
-    "and": [
-      6,
-      41,
-      46,
-      63,
-      70,
-      83,
-      97,
-      106,
-      134,
-      205,
-      221,
-      230,
-      249,
-      274,
-      293,
-      308
-    ],
-    "patient-generated": [
-      7,
-      64,
-      250
-    ],
-    "digital": [
-      8,
-      65,
-      152,
-      195,
-      251
-    ],
-    "data": [
-      9,
-      30,
-      66,
-      153,
-      252,
-      268
-    ],
-    "are": [
-      10,
-      253
-    ],
-    "increasingly": [
-      11
-    ],
-    "visible": [
-      12
-    ],
-    "in": [
-      13,
-      67,
-      217,
-      257,
-      282
-    ],
-    "pediatric": [
-      14,
-      68,
-      155,
-      222,
-      258,
-      302
-    ],
-    "cardiology,": [
-      15
-    ],
-    "but": [
-      16,
-      296
-    ],
-    "their": [
-      17
-    ],
-    "clinical": [
-      18,
-      36,
-      77,
-      212,
-      265
-    ],
-    "use": [
-      19,
-      281
-    ],
-    "remains": [
-      20
-    ],
-    "uneven.": [
-      21
-    ],
-    "Pediatric": [
-      22
-    ],
-    "cardiology": [
-      23,
-      69,
-      156,
-      259
-    ],
-    "clinics": [
-      24
-    ],
-    "need": [
-      25
-    ],
-    "practical": [
-      26
-    ],
-    "guidance": [
-      27
-    ],
-    "on": [
-      28,
-      60,
-      76,
-      111
-    ],
-    "which": [
-      29
-    ],
-    "streams": [
-      31
-    ],
-    "have": [
-      32
-    ],
-    "been": [
-      33
-    ],
-    "studied,": [
-      34
-    ],
-    "what": [
-      35,
-      42
-    ],
-    "decisions": [
-      37
-    ],
-    "they": [
-      38
-    ],
-    "can": [
-      39
-    ],
-    "support,": [
-      40
-    ],
-    "safety,": [
-      43,
-      82
-    ],
-    "workflow,": [
-      44
-    ],
-    "validation,": [
-      45,
-      81,
-      303
-    ],
-    "equity": [
-      47
-    ],
-    "barriers": [
-      48
-    ],
-    "must": [
-      49
-    ],
-    "be": [
-      50
-    ],
-    "addressed": [
-      51
-    ],
-    "before": [
-      52
-    ],
-    "routine": [
-      53,
-      297
-    ],
-    "integration.": [
-      54
-    ],
-    "OBJECTIVE": [
-      55
-    ],
-    "To": [
-      56
-    ],
-    "map": [
-      57
-    ],
-    "the": [
-      58,
-      94
-    ],
-    "literature": [
-      59
-    ],
-    "wearable": [
-      61,
-      136,
-      207
-    ],
-    "biosensors": [
-      62,
-      248
-    ],
-    "congenital": [
-      71,
-      130,
-      187,
-      284
-    ],
-    "heart": [
-      72,
-      131,
-      188,
-      285
-    ],
-    "disease,": [
-      73
-    ],
-    "with": [
-      74,
-      115,
-      173
-    ],
-    "emphasis": [
-      75
-    ],
-    "applications,": [
-      78
-    ],
-    "implementation": [
-      79,
-      310
-    ],
-    "pathways,": [
-      80
-    ],
-    "evidence": [
-      84,
-      214,
-      278
-    ],
-    "gaps.": [
-      85
-    ],
-    "METHODS": [
-      86
-    ],
-    "A": [
-      87
-    ],
-    "scoping": [
-      88
-    ],
-    "review": [
-      89
-    ],
-    "protocol": [
-      90
-    ],
-    "was": [
-      91,
-      215
-    ],
-    "developed": [
-      92
-    ],
-    "using": [
-      93
-    ],
-    "Population-Concept-Context": [
-      95
-    ],
-    "framework": [
-      96
-    ],
-    "PRISMA-ScR": [
-      98
-    ],
-    "reporting": [
-      99
-    ],
-    "principles.": [
-      100
-    ],
-    "Publicly": [
-      101
-    ],
-    "accessible": [
-      102
-    ],
-    "PubMed/MEDLINE,": [
-      103
-    ],
-    "PubMed": [
-      104
-    ],
-    "Central,": [
-      105
-    ],
-    "web-indexed": [
-      107
-    ],
-    "searches": [
-      108
-    ],
-    "were": [
-      109,
-      163,
-      171
-    ],
-    "performed": [
-      110
-    ],
-    "May": [
-      112
-    ],
-    "3,": [
-      113
-    ],
-    "2026,": [
-      114
-    ],
-    "citation": [
-      116
-    ],
-    "chasing": [
-      117
-    ],
-    "of": [
-      118,
-      151
-    ],
-    "key": [
-      119
-    ],
-    "background": [
-      120,
-      176
-    ],
-    "sources.": [
-      121
-    ],
-    "Eligible": [
-      122
-    ],
-    "records": [
-      123,
-      162,
-      170
-    ],
-    "involved": [
-      124
-    ],
-    "children,": [
-      125
-    ],
-    "adolescents,": [
-      126
-    ],
-    "young": [
-      127
-    ],
-    "adults,": [
-      128
-    ],
-    "or": [
-      129,
-      144,
-      148,
-      167,
-      177,
-      232,
-      244
-    ],
-    "disease": [
-      132,
-      189,
-      286
-    ],
-    "populations": [
-      133
-    ],
-    "evaluated": [
-      135
-    ],
-    "mobile": [
-      140,
-      190
-    ],
-    "health": [
-      141,
-      146,
-      191
-    ],
-    "tools,": [
-      142
-    ],
-    "patient-": [
-      143
-    ],
-    "family-generated": [
-      145
-    ],
-    "data,": [
-      147
-    ],
-    "clinician-facing": [
-      149
-    ],
-    "integration": [
-      150,
-      213
-    ],
-    "into": [
-      154,
-      182
-    ],
-    "workflows.": [
-      157
-    ],
-    "RESULTS": [
-      158
-    ],
-    "Thirty-five": [
-      159
-    ],
-    "unique": [
-      160
-    ],
-    "candidate": [
-      161
-    ],
-    "screened.": [
-      164
-    ],
-    "Twenty-two": [
-      165
-    ],
-    "primary": [
-      166
-    ],
-    "clinically": [
-      168,
-      255
-    ],
-    "extractable": [
-      169
-    ],
-    "mapped,": [
-      172
-    ],
-    "11": [
-      174
-    ],
-    "additional": [
-      175
-    ],
-    "source-mining": [
-      178
-    ],
-    "records.": [
-      179
-    ],
-    "Evidence": [
-      180
-    ],
-    "clustered": [
-      181
-    ],
-    "single-ventricle": [
-      183,
-      219
-    ],
-    "interstage/home": [
-      184
-    ],
-    "monitoring;": [
-      185,
-      194,
-      204
-    ],
-    "high-risk": [
-      186
-    ],
-    "programs;": [
-      192
-    ],
-    "telemedicine-linked": [
-      193
-    ],
-    "stethoscopes;": [
-      196
-    ],
-    "smartwatch/mobile": [
-      197
-    ],
-    "electrocardiography;": [
-      198
-    ],
-    "cardiac": [
-      199
-    ],
-    "implantable": [
-      200
-    ],
-    "electronic": [
-      201
-    ],
-    "device": [
-      202,
-      291
-    ],
-    "advanced": [
-      206
-    ],
-    "biomarker": [
-      208
-    ],
-    "validation.": [
-      209
-    ],
-    "The": [
-      210
-    ],
-    "strongest": [
-      211
-    ],
-    "found": [
-      216
-    ],
-    "interstage": [
-      218,
-      283
-    ],
-    "monitoring": [
-      220
-    ],
-    "rhythm": [
-      223
-    ],
-    "evaluation.": [
-      224
-    ],
-    "Across": [
-      225
-    ],
-    "categories,": [
-      226
-    ],
-    "studies": [
-      227
-    ],
-    "emphasized": [
-      228
-    ],
-    "feasibility": [
-      229
-    ],
-    "diagnostic": [
-      231
-    ],
-    "workflow": [
-      233,
-      304
-    ],
-    "utility": [
-      234
-    ],
-    "more": [
-      235
-    ],
-    "often": [
-      236
-    ],
-    "than": [
-      237
-    ],
-    "long-term": [
-      238
-    ],
-    "outcome": [
-      239
-    ],
-    "effects,": [
-      240
-    ],
-    "cost-effectiveness,": [
-      241
-    ],
-    "interoperability,": [
-      242
-    ],
-    "privacy,": [
-      243
-    ],
-    "equity.": [
-      245
-    ],
-    "CONCLUSIONS": [
-      246
-    ],
-    "most": [
-      254
-    ],
-    "actionable": [
-      256
-    ],
-    "when": [
-      260
-    ],
-    "linked": [
-      261
-    ],
-    "to": [
-      262
-    ],
-    "a": [
-      263
-    ],
-    "predefined": [
-      264
-    ],
-    "question,": [
-      266
-    ],
-    "validated": [
-      267
-    ],
-    "stream,": [
-      269
-    ],
-    "responsible": [
-      270
-    ],
-    "reviewer,": [
-      271
-    ],
-    "escalation": [
-      272
-    ],
-    "threshold,": [
-      273
-    ],
-    "documentation": [
-      275
-    ],
-    "pathway.": [
-      276
-    ],
-    "Current": [
-      277
-    ],
-    "supports": [
-      279
-    ],
-    "selective": [
-      280
-    ],
-    "arrhythmia": [
-      288
-    ],
-    "capture,": [
-      289
-    ],
-    "surveillance,": [
-      292
-    ],
-    "telecardiology": [
-      294
-    ],
-    "adjuncts,": [
-      295
-    ],
-    "broad": [
-      298
-    ],
-    "deployment": [
-      299
-    ],
-    "requires": [
-      300
-    ],
-    "stronger": [
-      301
-    ],
-    "design,": [
-      305
-    ],
-    "safety": [
-      306
-    ],
-    "standards,": [
-      307
-    ],
-    "equity-focused": [
-      309
-    ],
-    "research.": [
-      311
-    ]
+    "BACKGROUND": [0],
+    "Wearable": [1, 247],
+    "biosensors,": [2, 137],
+    "remote": [3, 138, 203, 290],
+    "physiologic": [4],
+    "monitoring,": [5, 139, 287],
+    "and": [6, 41, 46, 63, 70, 83, 97, 106, 134, 205, 221, 230, 249, 274, 293, 308],
+    "patient-generated": [7, 64, 250],
+    "digital": [8, 65, 152, 195, 251],
+    "data": [9, 30, 66, 153, 252, 268],
+    "are": [10, 253],
+    "increasingly": [11],
+    "visible": [12],
+    "in": [13, 67, 217, 257, 282],
+    "pediatric": [14, 68, 155, 222, 258, 302],
+    "cardiology,": [15],
+    "but": [16, 296],
+    "their": [17],
+    "clinical": [18, 36, 77, 212, 265],
+    "use": [19, 281],
+    "remains": [20],
+    "uneven.": [21],
+    "Pediatric": [22],
+    "cardiology": [23, 69, 156, 259],
+    "clinics": [24],
+    "need": [25],
+    "practical": [26],
+    "guidance": [27],
+    "on": [28, 60, 76, 111],
+    "which": [29],
+    "streams": [31],
+    "have": [32],
+    "been": [33],
+    "studied,": [34],
+    "what": [35, 42],
+    "decisions": [37],
+    "they": [38],
+    "can": [39],
+    "support,": [40],
+    "safety,": [43, 82],
+    "workflow,": [44],
+    "validation,": [45, 81, 303],
+    "equity": [47],
+    "barriers": [48],
+    "must": [49],
+    "be": [50],
+    "addressed": [51],
+    "before": [52],
+    "routine": [53, 297],
+    "integration.": [54],
+    "OBJECTIVE": [55],
+    "To": [56],
+    "map": [57],
+    "the": [58, 94],
+    "literature": [59],
+    "wearable": [61, 136, 207],
+    "biosensors": [62, 248],
+    "congenital": [71, 130, 187, 284],
+    "heart": [72, 131, 188, 285],
+    "disease,": [73],
+    "with": [74, 115, 173],
+    "emphasis": [75],
+    "applications,": [78],
+    "implementation": [79, 310],
+    "pathways,": [80],
+    "evidence": [84, 214, 278],
+    "gaps.": [85],
+    "METHODS": [86],
+    "A": [87],
+    "scoping": [88],
+    "review": [89],
+    "protocol": [90],
+    "was": [91, 215],
+    "developed": [92],
+    "using": [93],
+    "Population-Concept-Context": [95],
+    "framework": [96],
+    "PRISMA-ScR": [98],
+    "reporting": [99],
+    "principles.": [100],
+    "Publicly": [101],
+    "accessible": [102],
+    "PubMed/MEDLINE,": [103],
+    "PubMed": [104],
+    "Central,": [105],
+    "web-indexed": [107],
+    "searches": [108],
+    "were": [109, 163, 171],
+    "performed": [110],
+    "May": [112],
+    "3,": [113],
+    "2026,": [114],
+    "citation": [116],
+    "chasing": [117],
+    "of": [118, 151],
+    "key": [119],
+    "background": [120, 176],
+    "sources.": [121],
+    "Eligible": [122],
+    "records": [123, 162, 170],
+    "involved": [124],
+    "children,": [125],
+    "adolescents,": [126],
+    "young": [127],
+    "adults,": [128],
+    "or": [129, 144, 148, 167, 177, 232, 244],
+    "disease": [132, 189, 286],
+    "populations": [133],
+    "evaluated": [135],
+    "mobile": [140, 190],
+    "health": [141, 146, 191],
+    "tools,": [142],
+    "patient-": [143],
+    "family-generated": [145],
+    "data,": [147],
+    "clinician-facing": [149],
+    "integration": [150, 213],
+    "into": [154, 182],
+    "workflows.": [157],
+    "RESULTS": [158],
+    "Thirty-five": [159],
+    "unique": [160],
+    "candidate": [161],
+    "screened.": [164],
+    "Twenty-two": [165],
+    "primary": [166],
+    "clinically": [168, 255],
+    "extractable": [169],
+    "mapped,": [172],
+    "11": [174],
+    "additional": [175],
+    "source-mining": [178],
+    "records.": [179],
+    "Evidence": [180],
+    "clustered": [181],
+    "single-ventricle": [183, 219],
+    "interstage/home": [184],
+    "monitoring;": [185, 194, 204],
+    "high-risk": [186],
+    "programs;": [192],
+    "telemedicine-linked": [193],
+    "stethoscopes;": [196],
+    "smartwatch/mobile": [197],
+    "electrocardiography;": [198],
+    "cardiac": [199],
+    "implantable": [200],
+    "electronic": [201],
+    "device": [202, 291],
+    "advanced": [206],
+    "biomarker": [208],
+    "validation.": [209],
+    "The": [210],
+    "strongest": [211],
+    "found": [216],
+    "interstage": [218, 283],
+    "monitoring": [220],
+    "rhythm": [223],
+    "evaluation.": [224],
+    "Across": [225],
+    "categories,": [226],
+    "studies": [227],
+    "emphasized": [228],
+    "feasibility": [229],
+    "diagnostic": [231],
+    "workflow": [233, 304],
+    "utility": [234],
+    "more": [235],
+    "often": [236],
+    "than": [237],
+    "long-term": [238],
+    "outcome": [239],
+    "effects,": [240],
+    "cost-effectiveness,": [241],
+    "interoperability,": [242],
+    "privacy,": [243],
+    "equity.": [245],
+    "CONCLUSIONS": [246],
+    "most": [254],
+    "actionable": [256],
+    "when": [260],
+    "linked": [261],
+    "to": [262],
+    "a": [263],
+    "predefined": [264],
+    "question,": [266],
+    "validated": [267],
+    "stream,": [269],
+    "responsible": [270],
+    "reviewer,": [271],
+    "escalation": [272],
+    "threshold,": [273],
+    "documentation": [275],
+    "pathway.": [276],
+    "Current": [277],
+    "supports": [279],
+    "selective": [280],
+    "arrhythmia": [288],
+    "capture,": [289],
+    "surveillance,": [292],
+    "telecardiology": [294],
+    "adjuncts,": [295],
+    "broad": [298],
+    "deployment": [299],
+    "requires": [300],
+    "stronger": [301],
+    "design,": [305],
+    "safety": [306],
+    "standards,": [307],
+    "equity-focused": [309],
+    "research.": [311]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7161267424",
   "counts_by_year": [],

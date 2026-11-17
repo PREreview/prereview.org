@@ -23,9 +23,7 @@
       "id": "https://openalex.org/S2607323502",
       "display_name": "Scientific Data",
       "issn_l": "2052-4463",
-      "issn": [
-        "2052-4463"
-      ],
+      "issn": ["2052-4463"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -45,14 +43,8 @@
       ],
       "host_organization": "https://openalex.org/P4310319908",
       "host_organization_name": "Nature Portfolio",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310319908",
-        "https://openalex.org/P4310319965"
-      ],
-      "host_organization_lineage_names": [
-        "Nature Portfolio",
-        "Springer Nature"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310319908", "https://openalex.org/P4310319965"],
+      "host_organization_lineage_names": ["Nature Portfolio", "Springer Nature"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -64,19 +56,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4396804163"
-  ],
+  "lineage": ["https://openalex.org/W4396804163"],
   "child_works_count": 0,
   "type": "data-paper",
   "is_traditional": true,
-  "indexed_in": [
-    "arxiv",
-    "crossref",
-    "datacite",
-    "doaj",
-    "pubmed"
-  ],
+  "indexed_in": ["arxiv", "crossref", "datacite", "doaj", "pubmed"],
   "open_access": {
     "is_oa": true,
     "oa_status": "gold",
@@ -90,9 +74,7 @@
         "id": "https://openalex.org/A5082377531",
         "display_name": "Óscar Corcho",
         "orcid": "https://orcid.org/0000-0002-9260-0753",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-9260-0753"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-9260-0753"]
       },
       "institutions": [
         {
@@ -101,14 +83,10 @@
           "ror": "https://ror.org/03n6nwv02",
           "country_code": "ES",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I88060688"
-          ]
+          "lineage": ["https://openalex.org/I88060688"]
         }
       ],
-      "countries": [
-        "ES"
-      ],
+      "countries": ["ES"],
       "is_corresponding": false,
       "raw_author_name": "Oscar Corcho",
       "raw_affiliation_strings": [
@@ -118,9 +96,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Ontology Engineering Group (OEG), Computer Science School, Universidad Politécnica de Madrid, Madrid, Spain",
-          "institution_ids": [
-            "https://openalex.org/I88060688"
-          ]
+          "institution_ids": ["https://openalex.org/I88060688"]
         }
       ]
     },
@@ -130,9 +106,7 @@
         "id": "https://openalex.org/A5012198006",
         "display_name": "Fajar J. Ekaputra",
         "orcid": "https://orcid.org/0000-0003-4569-2496",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-4569-2496"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-4569-2496"]
       },
       "institutions": [
         {
@@ -141,9 +115,7 @@
           "ror": "https://ror.org/03yn8s215",
           "country_code": "AT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I102248843"
-          ]
+          "lineage": ["https://openalex.org/I102248843"]
         },
         {
           "id": "https://openalex.org/I145847075",
@@ -151,14 +123,10 @@
           "ror": "https://ror.org/04d836q62",
           "country_code": "AT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I145847075"
-          ]
+          "lineage": ["https://openalex.org/I145847075"]
         }
       ],
-      "countries": [
-        "AT"
-      ],
+      "countries": ["AT"],
       "is_corresponding": false,
       "raw_author_name": "Fajar J. Ekaputra",
       "raw_affiliation_strings": [
@@ -169,15 +137,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "DPKM, Vienna University of Economic and Business (WU), Vienna, Austria",
-          "institution_ids": [
-            "https://openalex.org/I102248843"
-          ]
+          "institution_ids": ["https://openalex.org/I102248843"]
         },
         {
           "raw_affiliation_string": "Data Science Research Unit, TU Wien, Vienna, Austria",
-          "institution_ids": [
-            "https://openalex.org/I145847075"
-          ]
+          "institution_ids": ["https://openalex.org/I145847075"]
         }
       ]
     },
@@ -187,9 +151,7 @@
         "id": "https://openalex.org/A5006728922",
         "display_name": "Ivan Heibi",
         "orcid": "https://orcid.org/0000-0001-5366-5194",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-5366-5194"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-5366-5194"]
       },
       "institutions": [
         {
@@ -198,14 +160,10 @@
           "ror": "https://ror.org/01111rn36",
           "country_code": "IT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I9360294"
-          ]
+          "lineage": ["https://openalex.org/I9360294"]
         }
       ],
-      "countries": [
-        "IT"
-      ],
+      "countries": ["IT"],
       "is_corresponding": false,
       "raw_author_name": "Ivan Heibi",
       "raw_affiliation_strings": [
@@ -216,15 +174,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
-          "institution_ids": [
-            "https://openalex.org/I9360294"
-          ]
+          "institution_ids": ["https://openalex.org/I9360294"]
         },
         {
           "raw_affiliation_string": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
-          "institution_ids": [
-            "https://openalex.org/I9360294"
-          ]
+          "institution_ids": ["https://openalex.org/I9360294"]
         }
       ]
     },
@@ -234,9 +188,7 @@
         "id": "https://openalex.org/A5064022148",
         "display_name": "Clément Jonquet",
         "orcid": "https://orcid.org/0000-0002-2404-1582",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-2404-1582"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-2404-1582"]
       },
       "institutions": [
         {
@@ -245,9 +197,7 @@
           "ror": "https://ror.org/02feahw73",
           "country_code": "FR",
           "type": "government",
-          "lineage": [
-            "https://openalex.org/I1294671590"
-          ]
+          "lineage": ["https://openalex.org/I1294671590"]
         },
         {
           "id": "https://openalex.org/I19894307",
@@ -255,9 +205,7 @@
           "ror": "https://ror.org/051escj72",
           "country_code": "FR",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I19894307"
-          ]
+          "lineage": ["https://openalex.org/I19894307"]
         },
         {
           "id": "https://openalex.org/I24906876",
@@ -277,9 +225,7 @@
           "ror": "https://ror.org/003vg9w96",
           "country_code": "FR",
           "type": "government",
-          "lineage": [
-            "https://openalex.org/I4210088668"
-          ]
+          "lineage": ["https://openalex.org/I4210088668"]
         },
         {
           "id": "https://openalex.org/I4210101743",
@@ -311,9 +257,7 @@
           ]
         }
       ],
-      "countries": [
-        "FR"
-      ],
+      "countries": ["FR"],
       "is_corresponding": false,
       "raw_author_name": "Clement Jonquet",
       "raw_affiliation_strings": [
@@ -347,9 +291,7 @@
         "id": "https://openalex.org/A5036918970",
         "display_name": "András Micsik",
         "orcid": "https://orcid.org/0000-0001-9859-9186",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-9859-9186"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-9859-9186"]
       },
       "institutions": [
         {
@@ -358,10 +300,7 @@
           "ror": "https://ror.org/0249v7n71",
           "country_code": "HU",
           "type": "facility",
-          "lineage": [
-            "https://openalex.org/I4210117195",
-            "https://openalex.org/I4387152226"
-          ]
+          "lineage": ["https://openalex.org/I4210117195", "https://openalex.org/I4387152226"]
         },
         {
           "id": "https://openalex.org/I4387152226",
@@ -369,14 +308,10 @@
           "ror": "https://ror.org/04w6pnc49",
           "country_code": "HU",
           "type": "other",
-          "lineage": [
-            "https://openalex.org/I4387152226"
-          ]
+          "lineage": ["https://openalex.org/I4387152226"]
         }
       ],
-      "countries": [
-        "HU"
-      ],
+      "countries": ["HU"],
       "is_corresponding": false,
       "raw_author_name": "Andras Micsik",
       "raw_affiliation_strings": [
@@ -386,10 +321,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Distributed Systems (DSD), Institute for Computer Science and Control (SZTAKI), Hungarian Research Network (HUN-REN), Budapest, Hungary",
-          "institution_ids": [
-            "https://openalex.org/I4210117195",
-            "https://openalex.org/I4387152226"
-          ]
+          "institution_ids": ["https://openalex.org/I4210117195", "https://openalex.org/I4387152226"]
         }
       ]
     },
@@ -399,9 +331,7 @@
         "id": "https://openalex.org/A5031461768",
         "display_name": "Silvio Peroni",
         "orcid": "https://orcid.org/0000-0003-0530-4305",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-0530-4305"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-0530-4305"]
       },
       "institutions": [
         {
@@ -410,14 +340,10 @@
           "ror": "https://ror.org/01111rn36",
           "country_code": "IT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I9360294"
-          ]
+          "lineage": ["https://openalex.org/I9360294"]
         }
       ],
-      "countries": [
-        "IT"
-      ],
+      "countries": ["IT"],
       "is_corresponding": true,
       "raw_author_name": "Silvio Peroni",
       "raw_affiliation_strings": [
@@ -430,27 +356,19 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy. silvio.peroni@unibo.it",
-          "institution_ids": [
-            "https://openalex.org/I9360294"
-          ]
+          "institution_ids": ["https://openalex.org/I9360294"]
         },
         {
           "raw_affiliation_string": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy. silvio.peroni@unibo.it",
-          "institution_ids": [
-            "https://openalex.org/I9360294"
-          ]
+          "institution_ids": ["https://openalex.org/I9360294"]
         },
         {
           "raw_affiliation_string": "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
-          "institution_ids": [
-            "https://openalex.org/I9360294"
-          ]
+          "institution_ids": ["https://openalex.org/I9360294"]
         },
         {
           "raw_affiliation_string": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
-          "institution_ids": [
-            "https://openalex.org/I9360294"
-          ]
+          "institution_ids": ["https://openalex.org/I9360294"]
         }
       ]
     },
@@ -460,9 +378,7 @@
         "id": "https://openalex.org/A5064905000",
         "display_name": "Emanuele Storti",
         "orcid": "https://orcid.org/0000-0001-5966-6921",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-5966-6921"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-5966-6921"]
       },
       "institutions": [
         {
@@ -471,14 +387,10 @@
           "ror": "https://ror.org/00x69rs40",
           "country_code": "IT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I122534668"
-          ]
+          "lineage": ["https://openalex.org/I122534668"]
         }
       ],
-      "countries": [
-        "IT"
-      ],
+      "countries": ["IT"],
       "is_corresponding": false,
       "raw_author_name": "Emanuele Storti",
       "raw_affiliation_strings": [
@@ -489,9 +401,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Information Engineering, Polytechnic University of Marche, Ancona, Italy",
-          "institution_ids": [
-            "https://openalex.org/I122534668"
-          ]
+          "institution_ids": ["https://openalex.org/I122534668"]
         },
         {
           "raw_affiliation_string": "European Council of Doctoral Candidates and Junior Researchers (Eurodoc), Brussels, Belgium",
@@ -503,12 +413,8 @@
   "institutions": [],
   "countries_distinct_count": 5,
   "institutions_distinct_count": 13,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5031461768"
-  ],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I9360294"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5031461768"],
+  "corresponding_institution_ids": ["https://openalex.org/I9360294"],
   "apc_list": {
     "value": 2290,
     "currency": "USD",
@@ -707,9 +613,7 @@
         "id": "https://openalex.org/S2607323502",
         "display_name": "Scientific Data",
         "issn_l": "2052-4463",
-        "issn": [
-          "2052-4463"
-        ],
+        "issn": ["2052-4463"],
         "is_oa": true,
         "is_in_doaj": true,
         "is_core": true,
@@ -729,14 +633,8 @@
         ],
         "host_organization": "https://openalex.org/P4310319908",
         "host_organization_name": "Nature Portfolio",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310319908",
-          "https://openalex.org/P4310319965"
-        ],
-        "host_organization_lineage_names": [
-          "Nature Portfolio",
-          "Springer Nature"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310319908", "https://openalex.org/P4310319965"],
+        "host_organization_lineage_names": ["Nature Portfolio", "Springer Nature"],
         "type": "journal"
       },
       "license": "cc-by",
@@ -764,9 +662,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I1299303238",
         "host_organization_name": "National Institutes of Health",
-        "host_organization_lineage": [
-          "https://openalex.org/I1299303238"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1299303238"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -795,9 +691,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I1299303238",
         "host_organization_name": "National Institutes of Health",
-        "host_organization_lineage": [
-          "https://openalex.org/I1299303238"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1299303238"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -848,18 +742,14 @@
         "id": "https://openalex.org/S4306400194",
         "display_name": "arXiv (Cornell University)",
         "issn_l": "2331-8422",
-        "issn": [
-          "2331-8422"
-        ],
+        "issn": ["2331-8422"],
         "is_oa": true,
         "is_in_doaj": false,
         "is_core": false,
         "listed_in": [],
         "host_organization": "https://openalex.org/I205783295",
         "host_organization_name": "Cornell University",
-        "host_organization_lineage": [
-          "https://openalex.org/I205783295"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I205783295"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -888,9 +778,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I4405252976",
         "host_organization_name": "Centre pour la Communication Scientifique Directe",
-        "host_organization_lineage": [
-          "https://openalex.org/I4405252976"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I4405252976"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -919,9 +807,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I4210117483",
         "host_organization_name": "Istituto di Ematologia di Bologna",
-        "host_organization_lineage": [
-          "https://openalex.org/I4210117483"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I4210117483"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -950,9 +836,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I7597260",
         "host_organization_name": "Hungarian Academy of Sciences",
-        "host_organization_lineage": [
-          "https://openalex.org/I7597260"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I7597260"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -981,9 +865,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I122534668",
         "host_organization_name": "Marche Polytechnic University",
-        "host_organization_lineage": [
-          "https://openalex.org/I122534668"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I122534668"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1063,18 +945,14 @@
         "id": "https://openalex.org/S4306400194",
         "display_name": "arXiv (Cornell University)",
         "issn_l": "2331-8422",
-        "issn": [
-          "2331-8422"
-        ],
+        "issn": ["2331-8422"],
         "is_oa": true,
         "is_in_doaj": false,
         "is_core": false,
         "listed_in": [],
         "host_organization": "https://openalex.org/I205783295",
         "host_organization_name": "Cornell University",
-        "host_organization_lineage": [
-          "https://openalex.org/I205783295"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I205783295"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1097,9 +975,7 @@
       "id": "https://openalex.org/S2607323502",
       "display_name": "Scientific Data",
       "issn_l": "2052-4463",
-      "issn": [
-        "2052-4463"
-      ],
+      "issn": ["2052-4463"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -1119,14 +995,8 @@
       ],
       "host_organization": "https://openalex.org/P4310319908",
       "host_organization_name": "Nature Portfolio",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310319908",
-        "https://openalex.org/P4310319965"
-      ],
-      "host_organization_lineage_names": [
-        "Nature Portfolio",
-        "Springer Nature"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310319908", "https://openalex.org/P4310319965"],
+      "host_organization_lineage_names": ["Nature Portfolio", "Springer Nature"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -1269,286 +1139,86 @@
     "https://openalex.org/W6968366539"
   ],
   "abstract_inverted_index": {
-    "This": [
-      0
-    ],
-    "work": [
-      1
-    ],
-    "presents": [
-      2
-    ],
-    "a": [
-      3,
-      93
-    ],
-    "maturity": [
-      4,
-      33,
-      62,
-      94
-    ],
-    "model": [
-      5,
-      34,
-      95
-    ],
-    "for": [
-      6,
-      105,
-      109
-    ],
-    "assessing": [
-      7
-    ],
-    "catalogues": [
-      8,
-      42,
-      55
-    ],
-    "of": [
-      9,
-      13,
-      20,
-      43,
-      60,
-      98
-    ],
-    "semantic": [
-      10,
-      18,
-      44,
-      113
-    ],
-    "artefacts,": [
-      11
-    ],
-    "one": [
-      12,
-      97
-    ],
-    "the": [
-      14,
-      24,
-      32,
-      37,
-      58,
-      61,
-      99
-    ],
-    "keystones": [
-      15
-    ],
-    "that": [
-      16
-    ],
-    "permit": [
-      17
-    ],
-    "interoperability": [
-      19,
-      118
-    ],
-    "systems.": [
-      21
-    ],
-    "We": [
-      22
-    ],
-    "defined": [
-      23
-    ],
-    "dimensions": [
-      25,
-      68
-    ],
-    "and": [
-      26,
-      40,
-      80,
-      82,
-      107,
-      111,
-      115
-    ],
-    "related": [
-      27,
-      84
-    ],
-    "features": [
-      28,
-      85
-    ],
-    "to": [
-      29,
-      56,
-      102
-    ],
-    "include": [
-      30
-    ],
-    "in": [
-      31
-    ],
-    "by": [
-      35,
-      47
-    ],
-    "analysing": [
-      36
-    ],
-    "current": [
-      38
-    ],
-    "literature": [
-      39
-    ],
-    "existing": [
-      41
-    ],
-    "artefacts": [
-      45,
-      114
-    ],
-    "provided": [
-      46
-    ],
-    "experts.": [
-      48
-    ],
-    "In": [
-      49
-    ],
-    "addition,": [
-      50
-    ],
-    "we": [
-      51
-    ],
-    "assessed": [
-      52
-    ],
-    "26": [
-      53
-    ],
-    "different": [
-      54,
-      67
-    ],
-    "demonstrate": [
-      57
-    ],
-    "effectiveness": [
-      59
-    ],
-    "model,": [
-      63
-    ],
-    "which": [
-      64
-    ],
-    "includes": [
-      65
-    ],
-    "12": [
-      66
-    ],
-    "(Metadata,": [
-      69
-    ],
-    "Openness,": [
-      70
-    ],
-    "Quality,": [
-      71
-    ],
-    "Availability,": [
-      72
-    ],
-    "Statistics,": [
-      73
-    ],
-    "PID,": [
-      74
-    ],
-    "Governance,": [
-      75
-    ],
-    "Community,": [
-      76
-    ],
-    "Sustainability,": [
-      77
-    ],
-    "Technology,": [
-      78
-    ],
-    "Transparency,": [
-      79
-    ],
-    "Assessment)": [
-      81
-    ],
-    "43": [
-      83
-    ],
-    "(or": [
-      86
-    ],
-    "sub-criteria)": [
-      87
-    ],
-    "associated": [
-      88
-    ],
-    "with": [
-      89
-    ],
-    "these": [
-      90
-    ],
-    "dimensions.": [
-      91
-    ],
-    "Such": [
-      92
-    ],
-    "is": [
-      96
-    ],
-    "first": [
-      100
-    ],
-    "attempts": [
-      101
-    ],
-    "provide": [
-      103
-    ],
-    "recommendations": [
-      104
-    ],
-    "governance": [
-      106
-    ],
-    "processes": [
-      108
-    ],
-    "preserving": [
-      110
-    ],
-    "maintaining": [
-      112
-    ],
-    "helps": [
-      116
-    ],
-    "assess/address": [
-      117
-    ],
-    "challenges.": [
-      119
-    ]
+    "This": [0],
+    "work": [1],
+    "presents": [2],
+    "a": [3, 93],
+    "maturity": [4, 33, 62, 94],
+    "model": [5, 34, 95],
+    "for": [6, 105, 109],
+    "assessing": [7],
+    "catalogues": [8, 42, 55],
+    "of": [9, 13, 20, 43, 60, 98],
+    "semantic": [10, 18, 44, 113],
+    "artefacts,": [11],
+    "one": [12, 97],
+    "the": [14, 24, 32, 37, 58, 61, 99],
+    "keystones": [15],
+    "that": [16],
+    "permit": [17],
+    "interoperability": [19, 118],
+    "systems.": [21],
+    "We": [22],
+    "defined": [23],
+    "dimensions": [25, 68],
+    "and": [26, 40, 80, 82, 107, 111, 115],
+    "related": [27, 84],
+    "features": [28, 85],
+    "to": [29, 56, 102],
+    "include": [30],
+    "in": [31],
+    "by": [35, 47],
+    "analysing": [36],
+    "current": [38],
+    "literature": [39],
+    "existing": [41],
+    "artefacts": [45, 114],
+    "provided": [46],
+    "experts.": [48],
+    "In": [49],
+    "addition,": [50],
+    "we": [51],
+    "assessed": [52],
+    "26": [53],
+    "different": [54, 67],
+    "demonstrate": [57],
+    "effectiveness": [59],
+    "model,": [63],
+    "which": [64],
+    "includes": [65],
+    "12": [66],
+    "(Metadata,": [69],
+    "Openness,": [70],
+    "Quality,": [71],
+    "Availability,": [72],
+    "Statistics,": [73],
+    "PID,": [74],
+    "Governance,": [75],
+    "Community,": [76],
+    "Sustainability,": [77],
+    "Technology,": [78],
+    "Transparency,": [79],
+    "Assessment)": [81],
+    "43": [83],
+    "(or": [86],
+    "sub-criteria)": [87],
+    "associated": [88],
+    "with": [89],
+    "these": [90],
+    "dimensions.": [91],
+    "Such": [92],
+    "is": [96],
+    "first": [100],
+    "attempts": [101],
+    "provide": [103],
+    "recommendations": [104],
+    "governance": [106],
+    "processes": [108],
+    "preserving": [110],
+    "maintaining": [112],
+    "helps": [116],
+    "assess/address": [117],
+    "challenges.": [119]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4396804163",
   "counts_by_year": [

@@ -21,9 +21,7 @@
       "id": "https://openalex.org/S64187185",
       "display_name": "Nature Communications",
       "issn_l": "2041-1723",
-      "issn": [
-        "2041-1723"
-      ],
+      "issn": ["2041-1723"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -45,14 +43,8 @@
       ],
       "host_organization": "https://openalex.org/P4310319908",
       "host_organization_name": "Nature Portfolio",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310319908",
-        "https://openalex.org/P4310319965"
-      ],
-      "host_organization_lineage_names": [
-        "Nature Portfolio",
-        "Springer Nature"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310319908", "https://openalex.org/P4310319965"],
+      "host_organization_lineage_names": ["Nature Portfolio", "Springer Nature"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -64,15 +56,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W7222580070"
-  ],
+  "lineage": ["https://openalex.org/W7222580070"],
   "child_works_count": 0,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "gold",
@@ -86,9 +74,7 @@
         "id": "https://openalex.org/A5123837610",
         "display_name": "Rugile Puteikiene",
         "orcid": "https://orcid.org/0009-0003-7181-4896",
-        "observed_orcids": [
-          "https://orcid.org/0009-0003-7181-4896"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0003-7181-4896"]
       },
       "institutions": [
         {
@@ -97,14 +83,10 @@
           "ror": "https://ror.org/03nadee84",
           "country_code": "LT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I173212132"
-          ]
+          "lineage": ["https://openalex.org/I173212132"]
         }
       ],
-      "countries": [
-        "LT"
-      ],
+      "countries": ["LT"],
       "is_corresponding": false,
       "raw_author_name": "Rugile Puteikiene",
       "raw_affiliation_strings": [
@@ -114,9 +96,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
-          "institution_ids": [
-            "https://openalex.org/I173212132"
-          ]
+          "institution_ids": ["https://openalex.org/I173212132"]
         }
       ]
     },
@@ -126,9 +106,7 @@
         "id": "https://openalex.org/A5065970875",
         "display_name": "Christopher N. Vassallo",
         "orcid": "https://orcid.org/0000-0001-6992-5894",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-6992-5894"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-6992-5894"]
       },
       "institutions": [
         {
@@ -137,26 +115,18 @@
           "ror": "https://ror.org/042nb2s44",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I63966007"
-          ]
+          "lineage": ["https://openalex.org/I63966007"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Christopher N. Vassallo",
-      "raw_affiliation_strings": [
-        "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA"
-      ],
+      "raw_affiliation_strings": ["Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA"],
       "raw_orcid": "https://orcid.org/0000-0001-6992-5894",
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA",
-          "institution_ids": [
-            "https://openalex.org/I63966007"
-          ]
+          "institution_ids": ["https://openalex.org/I63966007"]
         }
       ]
     },
@@ -166,9 +136,7 @@
         "id": "https://openalex.org/A5081047429",
         "display_name": "Arūnas Šilanskas",
         "orcid": "https://orcid.org/0000-0002-6385-6928",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-6385-6928"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-6385-6928"]
       },
       "institutions": [
         {
@@ -177,14 +145,10 @@
           "ror": "https://ror.org/03nadee84",
           "country_code": "LT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I173212132"
-          ]
+          "lineage": ["https://openalex.org/I173212132"]
         }
       ],
-      "countries": [
-        "LT"
-      ],
+      "countries": ["LT"],
       "is_corresponding": false,
       "raw_author_name": "Arunas Silanskas",
       "raw_affiliation_strings": [
@@ -194,9 +158,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
-          "institution_ids": [
-            "https://openalex.org/I173212132"
-          ]
+          "institution_ids": ["https://openalex.org/I173212132"]
         }
       ]
     },
@@ -206,9 +168,7 @@
         "id": "https://openalex.org/A5028236880",
         "display_name": "J. Juozapaitis",
         "orcid": "https://orcid.org/0000-0003-0114-3663",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-0114-3663"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-0114-3663"]
       },
       "institutions": [
         {
@@ -217,14 +177,10 @@
           "ror": "https://ror.org/03nadee84",
           "country_code": "LT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I173212132"
-          ]
+          "lineage": ["https://openalex.org/I173212132"]
         }
       ],
-      "countries": [
-        "LT"
-      ],
+      "countries": ["LT"],
       "is_corresponding": false,
       "raw_author_name": "Jonas Juozapaitis",
       "raw_affiliation_strings": [
@@ -234,9 +190,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
-          "institution_ids": [
-            "https://openalex.org/I173212132"
-          ]
+          "institution_ids": ["https://openalex.org/I173212132"]
         }
       ]
     },
@@ -246,9 +200,7 @@
         "id": "https://openalex.org/A5015834333",
         "display_name": "Inga Songailienė",
         "orcid": "https://orcid.org/0000-0003-2188-0556",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-2188-0556"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-2188-0556"]
       },
       "institutions": [
         {
@@ -257,14 +209,10 @@
           "ror": "https://ror.org/03nadee84",
           "country_code": "LT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I173212132"
-          ]
+          "lineage": ["https://openalex.org/I173212132"]
         }
       ],
-      "countries": [
-        "LT"
-      ],
+      "countries": ["LT"],
       "is_corresponding": false,
       "raw_author_name": "Inga Songailiene",
       "raw_affiliation_strings": [
@@ -274,9 +222,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
-          "institution_ids": [
-            "https://openalex.org/I173212132"
-          ]
+          "institution_ids": ["https://openalex.org/I173212132"]
         }
       ]
     },
@@ -286,9 +232,7 @@
         "id": "https://openalex.org/A5061582937",
         "display_name": "Michael T. Laub",
         "orcid": "https://orcid.org/0000-0002-8288-7607",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-8288-7607"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-8288-7607"]
       },
       "institutions": [
         {
@@ -297,9 +241,7 @@
           "ror": "https://ror.org/006w34k90",
           "country_code": "US",
           "type": "facility",
-          "lineage": [
-            "https://openalex.org/I1344073410"
-          ]
+          "lineage": ["https://openalex.org/I1344073410"]
         },
         {
           "id": "https://openalex.org/I63966007",
@@ -307,14 +249,10 @@
           "ror": "https://ror.org/042nb2s44",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I63966007"
-          ]
+          "lineage": ["https://openalex.org/I63966007"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": true,
       "raw_author_name": "Michael T. Laub",
       "raw_affiliation_strings": [
@@ -325,16 +263,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA",
-          "institution_ids": [
-            "https://openalex.org/I63966007"
-          ]
+          "institution_ids": ["https://openalex.org/I63966007"]
         },
         {
           "raw_affiliation_string": "Howard Hughes Medical Institute, Massachusetts Institute of Technology, Cambridge, MA, USA",
-          "institution_ids": [
-            "https://openalex.org/I1344073410",
-            "https://openalex.org/I63966007"
-          ]
+          "institution_ids": ["https://openalex.org/I1344073410", "https://openalex.org/I63966007"]
         }
       ]
     },
@@ -344,9 +277,7 @@
         "id": "https://openalex.org/A5012785162",
         "display_name": "Giedrius Sasnauskas",
         "orcid": "https://orcid.org/0000-0002-3185-2682",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-3185-2682"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-3185-2682"]
       },
       "institutions": [
         {
@@ -355,14 +286,10 @@
           "ror": "https://ror.org/03nadee84",
           "country_code": "LT",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I173212132"
-          ]
+          "lineage": ["https://openalex.org/I173212132"]
         }
       ],
-      "countries": [
-        "LT"
-      ],
+      "countries": ["LT"],
       "is_corresponding": true,
       "raw_author_name": "Giedrius Sasnauskas",
       "raw_affiliation_strings": [
@@ -372,9 +299,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
-          "institution_ids": [
-            "https://openalex.org/I173212132"
-          ]
+          "institution_ids": ["https://openalex.org/I173212132"]
         }
       ]
     }
@@ -382,10 +307,7 @@
   "institutions": [],
   "countries_distinct_count": 2,
   "institutions_distinct_count": 3,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5012785162",
-    "https://openalex.org/A5061582937"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5012785162", "https://openalex.org/A5061582937"],
   "corresponding_institution_ids": [
     "https://openalex.org/I1344073410",
     "https://openalex.org/I173212132",
@@ -737,9 +659,7 @@
         "id": "https://openalex.org/S64187185",
         "display_name": "Nature Communications",
         "issn_l": "2041-1723",
-        "issn": [
-          "2041-1723"
-        ],
+        "issn": ["2041-1723"],
         "is_oa": true,
         "is_in_doaj": true,
         "is_core": true,
@@ -761,14 +681,8 @@
         ],
         "host_organization": "https://openalex.org/P4310319908",
         "host_organization_name": "Nature Portfolio",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310319908",
-          "https://openalex.org/P4310319965"
-        ],
-        "host_organization_lineage_names": [
-          "Nature Portfolio",
-          "Springer Nature"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310319908", "https://openalex.org/P4310319965"],
+        "host_organization_lineage_names": ["Nature Portfolio", "Springer Nature"],
         "type": "journal"
       },
       "license": "cc-by",
@@ -796,9 +710,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2750212522",
         "host_organization_name": "Cold Spring Harbor Laboratory",
-        "host_organization_lineage": [
-          "https://openalex.org/I2750212522"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2750212522"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -821,9 +733,7 @@
       "id": "https://openalex.org/S64187185",
       "display_name": "Nature Communications",
       "issn_l": "2041-1723",
-      "issn": [
-        "2041-1723"
-      ],
+      "issn": ["2041-1723"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -845,14 +755,8 @@
       ],
       "host_organization": "https://openalex.org/P4310319908",
       "host_organization_name": "Nature Portfolio",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310319908",
-        "https://openalex.org/P4310319965"
-      ],
-      "host_organization_lineage_names": [
-        "Nature Portfolio",
-        "Springer Nature"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310319908", "https://openalex.org/P4310319965"],
+      "host_organization_lineage_names": ["Nature Portfolio", "Springer Nature"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -981,331 +885,105 @@
     "https://openalex.org/W4283024284"
   ],
   "abstract_inverted_index": {
-    "Abstract": [
-      0
-    ],
-    "To": [
-      1
-    ],
-    "protect": [
-      2
-    ],
-    "themselves": [
-      3
-    ],
-    "against": [
-      4
-    ],
-    "phage": [
-      5,
-      54,
-      74,
-      90
-    ],
-    "infection,": [
-      6
-    ],
-    "bacteria": [
-      7
-    ],
-    "employ": [
-      8
-    ],
-    "diverse": [
-      9
-    ],
-    "defense": [
-      10,
-      60
-    ],
-    "systems": [
-      11,
-      31
-    ],
-    "that": [
-      12,
-      38,
-      73,
-      112
-    ],
-    "are": [
-      13
-    ],
-    "typically": [
-      14
-    ],
-    "activated": [
-      15,
-      84
-    ],
-    "specifically": [
-      16
-    ],
-    "upon": [
-      17
-    ],
-    "infection.": [
-      18
-    ],
-    "However,": [
-      19
-    ],
-    "the": [
-      20,
-      39,
-      64,
-      95
-    ],
-    "mechanisms": [
-      21
-    ],
-    "of": [
-      22,
-      49,
-      100,
-      122
-    ],
-    "activation": [
-      23
-    ],
-    "and": [
-      24,
-      116
-    ],
-    "self": [
-      25
-    ],
-    "versus": [
-      26
-    ],
-    "non-self": [
-      27
-    ],
-    "discrimination": [
-      28
-    ],
-    "for": [
-      29
-    ],
-    "most": [
-      30
-    ],
-    "remain": [
-      32
-    ],
-    "poorly": [
-      33
-    ],
-    "understood.": [
-      34
-    ],
-    "Here,": [
-      35
-    ],
-    "we": [
-      36,
-      71
-    ],
-    "show": [
-      37
-    ],
-    "bacterial": [
-      40
-    ],
-    "immunity": [
-      41
-    ],
-    "protein": [
-      42,
-      69,
-      110
-    ],
-    "DARNA,": [
-      43
-    ],
-    "once": [
-      44
-    ],
-    "activated,": [
-      45
-    ],
-    "cleaves": [
-      46
-    ],
-    "a": [
-      47,
-      108,
-      119
-    ],
-    "subset": [
-      48
-    ],
-    "host": [
-      50,
-      96
-    ],
-    "tRNAs,": [
-      51
-    ],
-    "thereby": [
-      52
-    ],
-    "inhibiting": [
-      53
-    ],
-    "propagation.": [
-      55
-    ],
-    "Although": [
-      56
-    ],
-    "phages": [
-      57
-    ],
-    "escape": [
-      58
-    ],
-    "DARNA-mediated": [
-      59
-    ],
-    "through": [
-      61
-    ],
-    "mutations": [
-      62
-    ],
-    "in": [
-      63
-    ],
-    "gene": [
-      65
-    ],
-    "encoding": [
-      66
-    ],
-    "single-stranded": [
-      67,
-      86
-    ],
-    "DNA-binding": [
-      68
-    ],
-    "(SSB),": [
-      70
-    ],
-    "find": [
-      72
-    ],
-    "SSBs": [
-      75
-    ],
-    "do": [
-      76
-    ],
-    "not": [
-      77,
-      93
-    ],
-    "directly": [
-      78
-    ],
-    "stimulate": [
-      79
-    ],
-    "DARNA.": [
-      80
-    ],
-    "Instead,": [
-      81
-    ],
-    "DARNA": [
-      82,
-      113
-    ],
-    "is": [
-      83
-    ],
-    "by": [
-      85,
-      89,
-      94,
-      107
-    ],
-    "DNA": [
-      87
-    ],
-    "presented": [
-      88
-    ],
-    "SSB,": [
-      91
-    ],
-    "but": [
-      92
-    ],
-    "SSB.": [
-      97
-    ],
-    "The": [
-      98
-    ],
-    "recognition": [
-      99
-    ],
-    "an": [
-      101
-    ],
-    "endogenous": [
-      102
-    ],
-    "nucleic": [
-      103
-    ],
-    "acid": [
-      104
-    ],
-    "signal": [
-      105
-    ],
-    "promoted": [
-      106
-    ],
-    "viral": [
-      109
-    ],
-    "ensures": [
-      111
-    ],
-    "can": [
-      114
-    ],
-    "detect": [
-      115
-    ],
-    "respond": [
-      117
-    ],
-    "to": [
-      118
-    ],
-    "broad": [
-      120
-    ],
-    "range": [
-      121
-    ],
-    "viruses": [
-      123
-    ],
-    "while": [
-      124
-    ],
-    "avoiding": [
-      125
-    ],
-    "autoimmunity.": [
-      126
-    ]
+    "Abstract": [0],
+    "To": [1],
+    "protect": [2],
+    "themselves": [3],
+    "against": [4],
+    "phage": [5, 54, 74, 90],
+    "infection,": [6],
+    "bacteria": [7],
+    "employ": [8],
+    "diverse": [9],
+    "defense": [10, 60],
+    "systems": [11, 31],
+    "that": [12, 38, 73, 112],
+    "are": [13],
+    "typically": [14],
+    "activated": [15, 84],
+    "specifically": [16],
+    "upon": [17],
+    "infection.": [18],
+    "However,": [19],
+    "the": [20, 39, 64, 95],
+    "mechanisms": [21],
+    "of": [22, 49, 100, 122],
+    "activation": [23],
+    "and": [24, 116],
+    "self": [25],
+    "versus": [26],
+    "non-self": [27],
+    "discrimination": [28],
+    "for": [29],
+    "most": [30],
+    "remain": [32],
+    "poorly": [33],
+    "understood.": [34],
+    "Here,": [35],
+    "we": [36, 71],
+    "show": [37],
+    "bacterial": [40],
+    "immunity": [41],
+    "protein": [42, 69, 110],
+    "DARNA,": [43],
+    "once": [44],
+    "activated,": [45],
+    "cleaves": [46],
+    "a": [47, 108, 119],
+    "subset": [48],
+    "host": [50, 96],
+    "tRNAs,": [51],
+    "thereby": [52],
+    "inhibiting": [53],
+    "propagation.": [55],
+    "Although": [56],
+    "phages": [57],
+    "escape": [58],
+    "DARNA-mediated": [59],
+    "through": [61],
+    "mutations": [62],
+    "in": [63],
+    "gene": [65],
+    "encoding": [66],
+    "single-stranded": [67, 86],
+    "DNA-binding": [68],
+    "(SSB),": [70],
+    "find": [72],
+    "SSBs": [75],
+    "do": [76],
+    "not": [77, 93],
+    "directly": [78],
+    "stimulate": [79],
+    "DARNA.": [80],
+    "Instead,": [81],
+    "DARNA": [82, 113],
+    "is": [83],
+    "by": [85, 89, 94, 107],
+    "DNA": [87],
+    "presented": [88],
+    "SSB,": [91],
+    "but": [92],
+    "SSB.": [97],
+    "The": [98],
+    "recognition": [99],
+    "an": [101],
+    "endogenous": [102],
+    "nucleic": [103],
+    "acid": [104],
+    "signal": [105],
+    "promoted": [106],
+    "viral": [109],
+    "ensures": [111],
+    "can": [114],
+    "detect": [115],
+    "respond": [117],
+    "to": [118],
+    "broad": [120],
+    "range": [121],
+    "viruses": [123],
+    "while": [124],
+    "avoiding": [125],
+    "autoimmunity.": [126]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7222580070",
   "counts_by_year": [

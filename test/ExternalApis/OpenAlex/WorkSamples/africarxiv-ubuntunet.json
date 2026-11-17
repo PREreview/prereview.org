@@ -28,9 +28,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -43,15 +41,11 @@
     "raw_type": "article-journal"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W6920769110"
-  ],
+  "lineage": ["https://openalex.org/W6920769110"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "datacite"
-  ],
+  "indexed_in": ["datacite"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -349,9 +343,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -381,9 +373,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -435,569 +425,162 @@
     "https://openalex.org/W4394828088"
   ],
   "abstract_inverted_index": {
-    "This": [
-      0
-    ],
-    "article": [
-      1
-    ],
-    "comes": [
-      2
-    ],
-    "from": [
-      3,
-      43,
-      201
-    ],
+    "This": [0],
+    "article": [1],
+    "comes": [2],
+    "from": [3, 43, 201],
     "the": [
-      4,
-      15,
-      19,
-      24,
-      29,
-      35,
-      39,
-      51,
-      57,
-      64,
-      72,
-      81,
-      85,
-      97,
-      107,
-      113,
-      118,
-      123,
-      134,
-      138,
-      142,
-      145,
-      159,
-      163,
-      171,
-      228,
+      4, 15, 19, 24, 29, 35, 39, 51, 57, 64, 72, 81, 85, 97, 107, 113, 118, 123, 134, 138, 142, 145, 159, 163, 171, 228,
       254
     ],
-    "research": [
-      5,
-      164
-    ],
-    "project": [
-      6,
-      165
-    ],
-    "\"Transmission": [
-      7
-    ],
+    "research": [5, 164],
+    "project": [6, 165],
+    "\"Transmission": [7],
     "of": [
-      8,
-      14,
-      18,
-      21,
-      26,
-      31,
-      38,
-      53,
-      56,
-      66,
-      71,
-      80,
-      84,
-      96,
-      106,
-      120,
-      133,
-      144,
-      150,
-      162,
-      170,
-      179,
-      198,
-      232,
-      247
-    ],
-    "Covid": [
-      9,
-      114
-    ],
-    "19": [
-      10,
-      115
-    ],
-    "in": [
-      11,
-      23,
-      63,
-      75,
-      117,
-      148,
-      245,
-      250
-    ],
-    "Senegal:": [
-      12
-    ],
-    "analysis": [
-      13
-    ],
-    "socio-spatial": [
-      16
-    ],
-    "dynamics": [
-      17,
-      109
-    ],
-    "factors": [
-      20,
-      73
-    ],
-    "propagation": [
-      22
-    ],
-    "region": [
-      25
-    ],
-    "Dakar": [
-      27
-    ],
-    "and": [
-      28,
-      60,
-      78,
-      83,
-      91,
-      136,
-      152,
-      190,
-      219,
-      239,
-      258
-    ],
-    "town": [
-      30,
-      65
-    ],
-    "Touba\",": [
-      32
-    ],
-    "implemented": [
-      33
-    ],
-    "by": [
-      34
-    ],
-    "LEIDI": [
-      36
-    ],
-    "Laboratory": [
-      37
-    ],
-    "Gaston": [
-      40
-    ],
-    "Berger": [
-      41
-    ],
-    "University": [
-      42
-    ],
-    "2021": [
-      44
-    ],
-    "to": [
-      45,
-      77,
-      100,
-      102,
-      126,
-      182,
-      215,
-      227,
-      241,
-      253
-    ],
-    "2022": [
-      46
-    ],
-    "(02": [
-      47
-    ],
-    "years).": [
-      48
-    ],
-    "It": [
-      49,
-      68
-    ],
-    "analyses": [
-      50
-    ],
-    "problem": [
-      52
-    ],
-    "community": [
-      54,
-      108,
-      128
-    ],
-    "perception": [
-      55,
-      132
-    ],
-    "COVID-19": [
-      58
-    ],
-    "pandemic": [
-      59,
-      116
-    ],
-    "its": [
-      61
-    ],
-    "evolution": [
-      62
-    ],
-    "Touba.": [
-      67,
-      121
-    ],
-    "takes": [
-      69
-    ],
-    "stock": [
-      70
-    ],
-    "involved": [
-      74
-    ],
-    "resistance": [
-      76
-    ],
-    "denial": [
-      79
-    ],
-    "disease,": [
-      82,
-      135
-    ],
-    "occupational": [
-      86
-    ],
-    "categories": [
-      87
-    ],
-    "most": [
-      88
-    ],
-    "affected": [
-      89
-    ],
-    "(commerce": [
-      90
-    ],
-    "transport).": [
-      92
-    ],
-    "The": [
-      93,
-      154,
-      168,
-      205
-    ],
-    "overall": [
-      94,
-      160
-    ],
-    "aim": [
-      95,
-      124
-    ],
-    "study": [
-      98
-    ],
-    "is": [
-      99,
-      125,
-      156,
-      224,
-      236
-    ],
-    "contribute": [
-      101
-    ],
-    "a": [
-      103,
-      196,
-      233
-    ],
-    "better": [
-      104
-    ],
-    "understanding": [
-      105
-    ],
-    "that": [
-      110,
-      140,
-      209,
-      235
-    ],
-    "prevailed": [
-      111
-    ],
-    "during": [
-      112
-    ],
-    "city": [
-      119
-    ],
-    "Specifically,": [
-      122
-    ],
-    "question": [
-      127
-    ],
-    "players": [
-      129
-    ],
-    "about": [
-      130
-    ],
-    "their": [
-      131,
-      180
-    ],
-    "then": [
-      137
-    ],
-    "characteristics": [
-      139
-    ],
-    "explain": [
-      141
-    ],
-    "spread": [
-      143
-    ],
-    "pandemic,": [
-      146
-    ],
-    "particularly": [
-      147
-    ],
-    "terms": [
-      149
-    ],
-    "trade": [
-      151
-    ],
-    "transport.": [
-      153
-    ],
-    "methodology": [
-      155,
-      161
-    ],
-    "based": [
-      157
-    ],
-    "on": [
-      158
-    ],
-    "mentioned": [
-      166
-    ],
-    "above.": [
-      167
-    ],
-    "tools": [
-      169
-    ],
-    "Active": [
-      172
-    ],
-    "Participatory": [
-      173
-    ],
-    "Research": [
-      174
-    ],
-    "Method": [
-      175
-    ],
-    "were": [
-      176
-    ],
-    "favoured": [
-      177,
-      214
-    ],
-    "because": [
-      178
-    ],
-    "ability": [
-      181
-    ],
-    "capture": [
-      183
-    ],
-    "socio-economic": [
-      184
-    ],
-    "realities": [
-      185
-    ],
-    "through": [
-      186
-    ],
-    "focus": [
-      187
-    ],
-    "groups,": [
-      188
-    ],
-    "interviews": [
-      189
-    ],
-    "testimonials,": [
-      191
-    ],
-    "which": [
-      192
-    ],
-    "we": [
-      193
-    ],
-    "combined": [
-      194
-    ],
-    "with": [
-      195,
-      217
-    ],
-    "survey": [
-      197
-    ],
-    "500": [
-      199
-    ],
-    "individuals": [
-      200
-    ],
-    "different": [
-      202
-    ],
-    "socio-professional": [
-      203
-    ],
-    "categories.": [
-      204
-    ],
-    "main": [
-      206
-    ],
-    "findings": [
-      207
-    ],
-    "are": [
-      208
-    ],
-    "community-based": [
-      210
-    ],
-    "approaches": [
-      211
-    ],
-    "should": [
-      212
-    ],
-    "be": [
-      213
-    ],
-    "deal": [
-      216
-    ],
-    "pandemics": [
-      218
-    ],
-    "future": [
-      220
-    ],
-    "epidemics.": [
-      221
-    ],
-    "Community": [
-      222
-    ],
-    "transmission": [
-      223
-    ],
-    "generally": [
-      225
-    ],
-    "linked": [
-      226
-    ],
-    "precarious": [
-      229
-    ],
-    "living": [
-      230
-    ],
-    "conditions": [
-      231
-    ],
-    "population": [
-      234
-    ],
-    "often": [
-      237
-    ],
-    "hard-working": [
-      238
-    ],
-    "obliged": [
-      240
-    ],
-    "travel": [
-      242
-    ],
-    "every": [
-      243
-    ],
-    "day": [
-      244
-    ],
-    "search": [
-      246
-    ],
-    "daily": [
-      248
-    ],
-    "expenses": [
-      249
-    ],
-    "places": [
-      251
-    ],
-    "open": [
-      252
-    ],
-    "public,": [
-      255
-    ],
-    "notably": [
-      256
-    ],
-    "markets": [
-      257
-    ],
-    "bus": [
-      259
-    ],
-    "stations.": [
-      260
-    ]
+      8, 14, 18, 21, 26, 31, 38, 53, 56, 66, 71, 80, 84, 96, 106, 120, 133, 144, 150, 162, 170, 179, 198, 232, 247
+    ],
+    "Covid": [9, 114],
+    "19": [10, 115],
+    "in": [11, 23, 63, 75, 117, 148, 245, 250],
+    "Senegal:": [12],
+    "analysis": [13],
+    "socio-spatial": [16],
+    "dynamics": [17, 109],
+    "factors": [20, 73],
+    "propagation": [22],
+    "region": [25],
+    "Dakar": [27],
+    "and": [28, 60, 78, 83, 91, 136, 152, 190, 219, 239, 258],
+    "town": [30, 65],
+    "Touba\",": [32],
+    "implemented": [33],
+    "by": [34],
+    "LEIDI": [36],
+    "Laboratory": [37],
+    "Gaston": [40],
+    "Berger": [41],
+    "University": [42],
+    "2021": [44],
+    "to": [45, 77, 100, 102, 126, 182, 215, 227, 241, 253],
+    "2022": [46],
+    "(02": [47],
+    "years).": [48],
+    "It": [49, 68],
+    "analyses": [50],
+    "problem": [52],
+    "community": [54, 108, 128],
+    "perception": [55, 132],
+    "COVID-19": [58],
+    "pandemic": [59, 116],
+    "its": [61],
+    "evolution": [62],
+    "Touba.": [67, 121],
+    "takes": [69],
+    "stock": [70],
+    "involved": [74],
+    "resistance": [76],
+    "denial": [79],
+    "disease,": [82, 135],
+    "occupational": [86],
+    "categories": [87],
+    "most": [88],
+    "affected": [89],
+    "(commerce": [90],
+    "transport).": [92],
+    "The": [93, 154, 168, 205],
+    "overall": [94, 160],
+    "aim": [95, 124],
+    "study": [98],
+    "is": [99, 125, 156, 224, 236],
+    "contribute": [101],
+    "a": [103, 196, 233],
+    "better": [104],
+    "understanding": [105],
+    "that": [110, 140, 209, 235],
+    "prevailed": [111],
+    "during": [112],
+    "city": [119],
+    "Specifically,": [122],
+    "question": [127],
+    "players": [129],
+    "about": [130],
+    "their": [131, 180],
+    "then": [137],
+    "characteristics": [139],
+    "explain": [141],
+    "spread": [143],
+    "pandemic,": [146],
+    "particularly": [147],
+    "terms": [149],
+    "trade": [151],
+    "transport.": [153],
+    "methodology": [155, 161],
+    "based": [157],
+    "on": [158],
+    "mentioned": [166],
+    "above.": [167],
+    "tools": [169],
+    "Active": [172],
+    "Participatory": [173],
+    "Research": [174],
+    "Method": [175],
+    "were": [176],
+    "favoured": [177, 214],
+    "because": [178],
+    "ability": [181],
+    "capture": [183],
+    "socio-economic": [184],
+    "realities": [185],
+    "through": [186],
+    "focus": [187],
+    "groups,": [188],
+    "interviews": [189],
+    "testimonials,": [191],
+    "which": [192],
+    "we": [193],
+    "combined": [194],
+    "with": [195, 217],
+    "survey": [197],
+    "500": [199],
+    "individuals": [200],
+    "different": [202],
+    "socio-professional": [203],
+    "categories.": [204],
+    "main": [206],
+    "findings": [207],
+    "are": [208],
+    "community-based": [210],
+    "approaches": [211],
+    "should": [212],
+    "be": [213],
+    "deal": [216],
+    "pandemics": [218],
+    "future": [220],
+    "epidemics.": [221],
+    "Community": [222],
+    "transmission": [223],
+    "generally": [225],
+    "linked": [226],
+    "precarious": [229],
+    "living": [230],
+    "conditions": [231],
+    "population": [234],
+    "often": [237],
+    "hard-working": [238],
+    "obliged": [240],
+    "travel": [242],
+    "every": [243],
+    "day": [244],
+    "search": [246],
+    "daily": [248],
+    "expenses": [249],
+    "places": [251],
+    "open": [252],
+    "public,": [255],
+    "notably": [256],
+    "markets": [257],
+    "bus": [259],
+    "stations.": [260]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W6920769110",
   "counts_by_year": [],

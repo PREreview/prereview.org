@@ -27,15 +27,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4383265365"
-  ],
+  "lineage": ["https://openalex.org/W4383265365"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -49,9 +45,7 @@
         "id": "https://openalex.org/A5048613409",
         "display_name": "Alessia Rodrigues Moura",
         "orcid": "https://orcid.org/0000-0002-7859-9389",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-7859-9389"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-7859-9389"]
       },
       "institutions": [
         {
@@ -60,26 +54,18 @@
           "ror": "https://ror.org/02842cb31",
           "country_code": "BR",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I123001628"
-          ]
+          "lineage": ["https://openalex.org/I123001628"]
         }
       ],
-      "countries": [
-        "BR"
-      ],
+      "countries": ["BR"],
       "is_corresponding": false,
       "raw_author_name": "Alessia Rodrigues Moura",
-      "raw_affiliation_strings": [
-        "Federal University of Rondônia image/svg+xml"
-      ],
+      "raw_affiliation_strings": ["Federal University of Rondônia image/svg+xml"],
       "raw_orcid": "https://orcid.org/0000-0002-7859-9389",
       "affiliations": [
         {
           "raw_affiliation_string": "Federal University of Rondônia image/svg+xml",
-          "institution_ids": [
-            "https://openalex.org/I123001628"
-          ]
+          "institution_ids": ["https://openalex.org/I123001628"]
         }
       ]
     },
@@ -89,9 +75,7 @@
         "id": "https://openalex.org/A5009325460",
         "display_name": "Marlí Lúcia Tonatto Zibetti",
         "orcid": "https://orcid.org/0000-0003-3939-5663",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-3939-5663"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-3939-5663"]
       },
       "institutions": [
         {
@@ -100,26 +84,18 @@
           "ror": "https://ror.org/02842cb31",
           "country_code": "BR",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I123001628"
-          ]
+          "lineage": ["https://openalex.org/I123001628"]
         }
       ],
-      "countries": [
-        "BR"
-      ],
+      "countries": ["BR"],
       "is_corresponding": false,
       "raw_author_name": "Marli Lúcia Tonatto Zibetti",
-      "raw_affiliation_strings": [
-        "Federal University of Rondônia image/svg+xml"
-      ],
+      "raw_affiliation_strings": ["Federal University of Rondônia image/svg+xml"],
       "raw_orcid": "https://orcid.org/0000-0003-3939-5663",
       "affiliations": [
         {
           "raw_affiliation_string": "Federal University of Rondônia image/svg+xml",
-          "institution_ids": [
-            "https://openalex.org/I123001628"
-          ]
+          "institution_ids": ["https://openalex.org/I123001628"]
         }
       ]
     }
@@ -128,9 +104,7 @@
   "countries_distinct_count": 1,
   "institutions_distinct_count": 1,
   "corresponding_author_ids": [],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I123001628"
-  ],
+  "corresponding_institution_ids": ["https://openalex.org/I123001628"],
   "apc_list": null,
   "apc_paid": null,
   "fwci": null,
@@ -376,380 +350,116 @@
     "https://openalex.org/W3126237580"
   ],
   "abstract_inverted_index": {
-    "RESUMO:": [
-      0
-    ],
-    "O": [
-      1
-    ],
-    "presente": [
-      2
-    ],
-    "estudo": [
-      3,
-      84
-    ],
-    "é": [
-      4
-    ],
-    "uma": [
-      5
-    ],
-    "revisão": [
-      6
-    ],
-    "de": [
-      7,
-      13,
-      17,
-      25,
-      31,
-      35,
-      37,
-      39,
-      61,
-      83,
-      101,
-      118,
-      121,
-      134,
-      138,
-      144
-    ],
-    "literatura": [
-      8
-    ],
-    "sobre": [
-      9,
-      136
-    ],
-    "o": [
-      10,
-      53,
-      123
-    ],
-    "tema": [
-      11
-    ],
-    "escolarização": [
-      12,
-      137
-    ],
-    "pessoas": [
-      14,
-      119,
-      139
-    ],
-    "trans.": [
-      15
-    ],
-    "Trata-se": [
-      16
-    ],
-    "um": [
-      18,
-      115
-    ],
-    "levantamento": [
-      19
-    ],
-    "das": [
-      20,
-      105
-    ],
-    "produções": [
-      21,
-      135
-    ],
-    "publicadas": [
-      22
-    ],
-    "no": [
-      23,
-      29,
-      59,
-      132
-    ],
-    "período": [
-      24
-    ],
-    "2015": [
-      26
-    ],
-    "a": [
-      27,
-      76,
-      94,
-      99
-    ],
-    "2020": [
-      28
-    ],
-    "Portal": [
-      30
-    ],
-    "Periódicos": [
-      32
-    ],
-    "da": [
-      33,
-      78,
-      89,
-      147,
-      152
-    ],
-    "Coordenação": [
-      34
-    ],
-    "Aperfeiçoamento": [
-      36
-    ],
-    "Pessoal": [
-      38
-    ],
-    "Nível": [
-      40
-    ],
-    "Superior": [
-      41
-    ],
-    "(CAPES)": [
-      42
-    ],
-    "e": [
-      43,
-      66,
-      71,
-      103
-    ],
-    "na": [
-      44,
-      73,
-      150
-    ],
-    "Scientific": [
-      45
-    ],
-    "Electronic": [
-      46
-    ],
-    "Library": [
-      47
-    ],
-    "Online": [
-      48
-    ],
-    "-": [
-      49
-    ],
-    "(SciELO).": [
-      50
-    ],
-    "Foi": [
-      51
-    ],
-    "utilizado": [
-      52,
-      86
-    ],
-    "rigor": [
-      54
-    ],
-    "técnico": [
-      55
-    ],
-    "do": [
-      56,
-      63,
-      129
-    ],
-    "protocolo": [
-      57
-    ],
-    "Prisma": [
-      58
-    ],
-    "processo": [
-      60
-    ],
-    "seleção": [
-      62
-    ],
-    "material": [
-      64
-    ],
-    "analisado": [
-      65
-    ],
-    "28": [
-      67
-    ],
-    "artigos": [
-      68
-    ],
-    "foram": [
-      69
-    ],
-    "selecionados": [
-      70
-    ],
-    "estudados": [
-      72
-    ],
-    "íntegra.": [
-      74
-    ],
-    "Verifica-se": [
-      75
-    ],
-    "prevalência": [
-      77
-    ],
-    "abordagem": [
-      79
-    ],
-    "qualitativa": [
-      80
-    ],
-    "como": [
-      81
-    ],
-    "método": [
-      82
-    ],
-    "mais": [
-      85
-    ],
-    "pelos": [
-      87
-    ],
-    "investigadores": [
-      88
-    ],
-    "temática.": [
-      90
-    ],
-    "Os": [
-      91
-    ],
-    "resultados": [
-      92
-    ],
-    "explicitam": [
-      93
-    ],
-    "preocupação": [
-      95
-    ],
-    "dos": [
-      96
-    ],
-    "pesquisadores": [
-      97
-    ],
-    "com": [
-      98
-    ],
-    "falta": [
-      100
-    ],
-    "ações": [
-      102
-    ],
-    "efetividade": [
-      104
-    ],
-    "políticas": [
-      106
-    ],
-    "públicas": [
-      107
-    ],
-    "em": [
-      108
-    ],
-    "fazer": [
-      109
-    ],
-    "frente": [
-      110
-    ],
-    "às": [
-      111
-    ],
-    "violências": [
-      112
-    ],
-    "que": [
-      113
-    ],
-    "impedem": [
-      114
-    ],
-    "altíssimo": [
-      116
-    ],
-    "número": [
-      117,
-      133
-    ],
-    "trans": [
-      120
-    ],
-    "concluírem": [
-      122
-    ],
-    "percurso": [
-      124
-    ],
-    "escolar.": [
-      125
-    ],
-    "Além": [
-      126
-    ],
-    "disso,": [
-      127
-    ],
-    "apesar": [
-      128
-    ],
-    "significativo": [
-      130
-    ],
-    "aumento": [
-      131
-    ],
-    "trans,": [
-      140
-    ],
-    "ainda": [
-      141
-    ],
-    "há": [
-      142
-    ],
-    "carência": [
-      143
-    ],
-    "produção": [
-      145
-    ],
-    "acerca": [
-      146
-    ],
-    "temática,": [
-      148
-    ],
-    "sobretudo": [
-      149
-    ],
-    "área": [
-      151
-    ],
-    "psicologia.": [
-      153
-    ]
+    "RESUMO:": [0],
+    "O": [1],
+    "presente": [2],
+    "estudo": [3, 84],
+    "é": [4],
+    "uma": [5],
+    "revisão": [6],
+    "de": [7, 13, 17, 25, 31, 35, 37, 39, 61, 83, 101, 118, 121, 134, 138, 144],
+    "literatura": [8],
+    "sobre": [9, 136],
+    "o": [10, 53, 123],
+    "tema": [11],
+    "escolarização": [12, 137],
+    "pessoas": [14, 119, 139],
+    "trans.": [15],
+    "Trata-se": [16],
+    "um": [18, 115],
+    "levantamento": [19],
+    "das": [20, 105],
+    "produções": [21, 135],
+    "publicadas": [22],
+    "no": [23, 29, 59, 132],
+    "período": [24],
+    "2015": [26],
+    "a": [27, 76, 94, 99],
+    "2020": [28],
+    "Portal": [30],
+    "Periódicos": [32],
+    "da": [33, 78, 89, 147, 152],
+    "Coordenação": [34],
+    "Aperfeiçoamento": [36],
+    "Pessoal": [38],
+    "Nível": [40],
+    "Superior": [41],
+    "(CAPES)": [42],
+    "e": [43, 66, 71, 103],
+    "na": [44, 73, 150],
+    "Scientific": [45],
+    "Electronic": [46],
+    "Library": [47],
+    "Online": [48],
+    "-": [49],
+    "(SciELO).": [50],
+    "Foi": [51],
+    "utilizado": [52, 86],
+    "rigor": [54],
+    "técnico": [55],
+    "do": [56, 63, 129],
+    "protocolo": [57],
+    "Prisma": [58],
+    "processo": [60],
+    "seleção": [62],
+    "material": [64],
+    "analisado": [65],
+    "28": [67],
+    "artigos": [68],
+    "foram": [69],
+    "selecionados": [70],
+    "estudados": [72],
+    "íntegra.": [74],
+    "Verifica-se": [75],
+    "prevalência": [77],
+    "abordagem": [79],
+    "qualitativa": [80],
+    "como": [81],
+    "método": [82],
+    "mais": [85],
+    "pelos": [87],
+    "investigadores": [88],
+    "temática.": [90],
+    "Os": [91],
+    "resultados": [92],
+    "explicitam": [93],
+    "preocupação": [95],
+    "dos": [96],
+    "pesquisadores": [97],
+    "com": [98],
+    "falta": [100],
+    "ações": [102],
+    "efetividade": [104],
+    "políticas": [106],
+    "públicas": [107],
+    "em": [108],
+    "fazer": [109],
+    "frente": [110],
+    "às": [111],
+    "violências": [112],
+    "que": [113],
+    "impedem": [114],
+    "altíssimo": [116],
+    "número": [117, 133],
+    "trans": [120],
+    "concluírem": [122],
+    "percurso": [124],
+    "escolar.": [125],
+    "Além": [126],
+    "disso,": [127],
+    "apesar": [128],
+    "significativo": [130],
+    "aumento": [131],
+    "trans,": [140],
+    "ainda": [141],
+    "há": [142],
+    "carência": [143],
+    "produção": [145],
+    "acerca": [146],
+    "temática,": [148],
+    "sobretudo": [149],
+    "área": [151],
+    "psicologia.": [153]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4383265365",
   "counts_by_year": [

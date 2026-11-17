@@ -42,15 +42,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W3163010169"
-  ],
+  "lineage": ["https://openalex.org/W3163010169"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -64,9 +60,7 @@
         "id": "https://openalex.org/A5072575304",
         "display_name": "Manolo Fernández‐Díaz",
         "orcid": "https://orcid.org/0000-0001-6289-0270",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-6289-0270"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-6289-0270"]
       },
       "institutions": [
         {
@@ -75,9 +69,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -85,15 +77,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Manolo Fernandez Díaz",
       "raw_affiliation_strings": [
@@ -104,15 +91,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -122,9 +105,7 @@
         "id": "https://openalex.org/A5018105427",
         "display_name": "Katherine I. Calderón",
         "orcid": "https://orcid.org/0000-0002-7461-8335",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-7461-8335"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-7461-8335"]
       },
       "institutions": [
         {
@@ -133,9 +114,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -143,15 +122,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Katherine Calderón",
       "raw_affiliation_strings": [
@@ -162,15 +136,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -180,9 +150,7 @@
         "id": "https://openalex.org/A5052348347",
         "display_name": "Aldo Rojas-Neyra",
         "orcid": "https://orcid.org/0000-0002-0053-9458",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0053-9458"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0053-9458"]
       },
       "institutions": [
         {
@@ -191,9 +159,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -201,15 +167,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Aldo Rojas-Neyra",
       "raw_affiliation_strings": [
@@ -220,15 +181,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -238,9 +195,7 @@
         "id": "https://openalex.org/A5001263266",
         "display_name": "Vikram N. Vakharia",
         "orcid": "https://orcid.org/0000-0002-0955-3010",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0955-3010"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0955-3010"]
       },
       "institutions": [
         {
@@ -249,9 +204,7 @@
           "ror": "https://ror.org/05431kn12",
           "country_code": "US",
           "type": "facility",
-          "lineage": [
-            "https://openalex.org/I4405261322"
-          ]
+          "lineage": ["https://openalex.org/I4405261322"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -259,14 +212,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Vikram N. Vakharia",
       "raw_affiliation_strings": [
@@ -277,16 +226,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         },
         {
           "raw_affiliation_string": "Institute of Marine and Environmental Technology, University of Maryland Baltimore County, Baltimore, USA",
-          "institution_ids": [
-            "https://openalex.org/I4405261322",
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I4405261322", "https://openalex.org/I79272384"]
         }
       ]
     },
@@ -296,9 +240,7 @@
         "id": "https://openalex.org/A5048528196",
         "display_name": "Ricardo Choque-Guevara",
         "orcid": "https://orcid.org/0000-0002-5926-1526",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-5926-1526"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-5926-1526"]
       },
       "institutions": [
         {
@@ -307,9 +249,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -317,15 +257,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Ricardo Choque-Guevara",
       "raw_affiliation_strings": [
@@ -336,15 +271,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -354,10 +285,7 @@
         "id": "https://openalex.org/A5086816293",
         "display_name": "Ángela Montalván-Ávalos",
         "orcid": "https://orcid.org/0000-0001-6590-835X",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-6590-835X",
-          "https://orcid.org/0000-0002-1695-981X"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-6590-835X", "https://orcid.org/0000-0002-1695-981X"]
       },
       "institutions": [
         {
@@ -366,9 +294,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -376,15 +302,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Angela Montalvan",
       "raw_affiliation_strings": [
@@ -395,15 +316,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -413,9 +330,7 @@
         "id": "https://openalex.org/A5013413476",
         "display_name": "Astrid Poma-Acevedo",
         "orcid": "https://orcid.org/0000-0002-9814-3821",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-9814-3821"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-9814-3821"]
       },
       "institutions": [
         {
@@ -424,9 +339,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -434,15 +347,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Astrid Poma-Acevedo",
       "raw_affiliation_strings": [
@@ -453,15 +361,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -471,9 +375,7 @@
         "id": "https://openalex.org/A5085419227",
         "display_name": "Dora Ríos-Matos",
         "orcid": "https://orcid.org/0000-0002-9665-1515",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-9665-1515"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-9665-1515"]
       },
       "institutions": [
         {
@@ -482,9 +384,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -492,15 +392,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Dora Rios-Matos",
       "raw_affiliation_strings": [
@@ -511,15 +406,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -529,9 +420,7 @@
         "id": "https://openalex.org/A5079424920",
         "display_name": "Andrés Agurto-Arteaga",
         "orcid": "https://orcid.org/0000-0002-6881-8234",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-6881-8234"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-6881-8234"]
       },
       "institutions": [
         {
@@ -540,9 +429,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -550,15 +437,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Andres Agurto- Arteaga",
       "raw_affiliation_strings": [
@@ -569,15 +451,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -587,9 +465,7 @@
         "id": "https://openalex.org/A5058843084",
         "display_name": "Maria De Grecia Cauti Mendoza",
         "orcid": "https://orcid.org/0000-0003-1982-2592",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-1982-2592"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-1982-2592"]
       },
       "institutions": [
         {
@@ -598,9 +474,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -608,15 +482,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Maria de Grecia Cauti-Mendoza",
       "raw_affiliation_strings": [
@@ -627,15 +496,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -654,9 +519,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -664,15 +527,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Norma Perez-Martinez",
       "raw_affiliation_strings": [
@@ -683,15 +541,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -701,9 +555,7 @@
         "id": "https://openalex.org/A5045777969",
         "display_name": "Gisela Isasi-Rivas",
         "orcid": "https://orcid.org/0000-0002-8417-7860",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-8417-7860"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-8417-7860"]
       },
       "institutions": [
         {
@@ -712,9 +564,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -722,15 +572,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Gisela Isasi-Rivas",
       "raw_affiliation_strings": [
@@ -741,15 +586,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -759,9 +600,7 @@
         "id": "https://openalex.org/A5014728374",
         "display_name": "Luis Tataje‐Lavanda",
         "orcid": "https://orcid.org/0000-0003-4177-3125",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-4177-3125"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-4177-3125"]
       },
       "institutions": [
         {
@@ -770,9 +609,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -780,15 +617,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Luis Tataje-Lavanda",
       "raw_affiliation_strings": [
@@ -799,15 +631,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -826,9 +654,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -836,15 +662,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Yacory Sernaque-Aguilar",
       "raw_affiliation_strings": [
@@ -855,15 +676,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -873,9 +690,7 @@
         "id": "https://openalex.org/A5077043606",
         "display_name": "Freddy Ygnacio",
         "orcid": "https://orcid.org/0000-0003-2305-6130",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-2305-6130"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-2305-6130"]
       },
       "institutions": [
         {
@@ -884,9 +699,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -894,15 +707,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Freddy Ygnacio-Aguirre",
       "raw_affiliation_strings": [
@@ -913,15 +721,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -931,9 +735,7 @@
         "id": "https://openalex.org/A5080645530",
         "display_name": "Manuel Criollo-Orozco",
         "orcid": "https://orcid.org/0000-0001-6228-0405",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-6228-0405"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-6228-0405"]
       },
       "institutions": [
         {
@@ -942,9 +744,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -952,15 +752,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Manuel Criollo-Orozco",
       "raw_affiliation_strings": [
@@ -971,15 +766,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -998,9 +789,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1008,15 +797,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Edison Huaccachi-Gonzalez",
       "raw_affiliation_strings": [
@@ -1027,15 +811,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1054,9 +834,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1064,15 +842,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Elmer Delgado-Ccancce",
       "raw_affiliation_strings": [
@@ -1083,15 +856,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1101,9 +870,7 @@
         "id": "https://openalex.org/A5085828340",
         "display_name": "Doris Villanueva-Pérez",
         "orcid": "https://orcid.org/0000-0001-8763-0379",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-8763-0379"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-8763-0379"]
       },
       "institutions": [
         {
@@ -1112,9 +879,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1122,15 +887,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Doris Villanueva-Pérez",
       "raw_affiliation_strings": [
@@ -1141,15 +901,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1159,9 +915,7 @@
         "id": "https://openalex.org/A5016629322",
         "display_name": "Ricardo Montesinos",
         "orcid": "https://orcid.org/0000-0001-8747-7458",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-8747-7458"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-8747-7458"]
       },
       "institutions": [
         {
@@ -1170,9 +924,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1180,15 +932,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Ricardo Montesinos-Millan",
       "raw_affiliation_strings": [
@@ -1199,15 +946,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1226,9 +969,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1236,15 +977,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Kristel Gutiérrez-Manchay",
       "raw_affiliation_strings": [
@@ -1255,15 +991,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1282,9 +1014,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1292,15 +1022,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Katherine Pauyac-Antezana",
       "raw_affiliation_strings": [
@@ -1311,15 +1036,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1338,9 +1059,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1348,15 +1067,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Ingrid Ramirez-Ortiz",
       "raw_affiliation_strings": [
@@ -1367,15 +1081,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1385,9 +1095,7 @@
         "id": "https://openalex.org/A5026503702",
         "display_name": "Stefany Quiñones-García",
         "orcid": "https://orcid.org/0000-0002-1266-1725",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-1266-1725"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-1266-1725"]
       },
       "institutions": [
         {
@@ -1396,9 +1104,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1406,15 +1112,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Stefany Quiñones-Garcia",
       "raw_affiliation_strings": [
@@ -1425,15 +1126,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1443,9 +1140,7 @@
         "id": "https://openalex.org/A5062082876",
         "display_name": "Yudith Cauna-Orocollo",
         "orcid": "https://orcid.org/0000-0002-4998-7171",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-4998-7171"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-4998-7171"]
       },
       "institutions": [
         {
@@ -1454,9 +1149,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1464,15 +1157,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Yudith Cauna-Orocollo",
       "raw_affiliation_strings": [
@@ -1483,15 +1171,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1501,9 +1185,7 @@
         "id": "https://openalex.org/A5086591612",
         "display_name": "Katherine Vallejos-Sánchez",
         "orcid": "https://orcid.org/0000-0002-2434-5244",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-2434-5244"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-2434-5244"]
       },
       "institutions": [
         {
@@ -1512,9 +1194,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1522,15 +1202,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Katherine Vallejos-Sánchez",
       "raw_affiliation_strings": [
@@ -1541,15 +1216,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1559,9 +1230,7 @@
         "id": "https://openalex.org/A5107977511",
         "display_name": "Angela A. Rios-Angulo",
         "orcid": "https://orcid.org/0000-0002-3025-543X",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-3025-543X"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-3025-543X"]
       },
       "institutions": [
         {
@@ -1570,9 +1239,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1580,15 +1247,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Angela Rios-Angulo",
       "raw_affiliation_strings": [
@@ -1599,15 +1261,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1617,9 +1275,7 @@
         "id": "https://openalex.org/A5066004172",
         "display_name": "Dennis Fernandez",
         "orcid": "https://orcid.org/0000-0001-5574-6967",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-5574-6967"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-5574-6967"]
       },
       "institutions": [
         {
@@ -1628,9 +1284,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1638,15 +1292,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Dennis Núñez-Fernández",
       "raw_affiliation_strings": [
@@ -1657,15 +1306,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1675,9 +1320,7 @@
         "id": "https://openalex.org/A5029714789",
         "display_name": "Mario I. Salguedo-Bohorquez",
         "orcid": "https://orcid.org/0000-0003-4989-6680",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-4989-6680"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-4989-6680"]
       },
       "institutions": [
         {
@@ -1686,9 +1329,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1696,15 +1337,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Mario I. Salguedo-Bohorquez",
       "raw_affiliation_strings": [
@@ -1715,15 +1351,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1742,9 +1374,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1752,15 +1382,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Julio Ticona",
       "raw_affiliation_strings": [
@@ -1771,15 +1396,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1789,9 +1410,7 @@
         "id": "https://openalex.org/A5010008025",
         "display_name": "Manolo Fernández-Sánchez",
         "orcid": "https://orcid.org/0000-0001-7216-0669",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-7216-0669"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-7216-0669"]
       },
       "institutions": [
         {
@@ -1800,9 +1419,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1810,15 +1427,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Manolo Fernández-Sánchez",
       "raw_affiliation_strings": [
@@ -1829,15 +1441,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1856,9 +1464,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1866,15 +1472,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Eliana Icochea",
       "raw_affiliation_strings": [
@@ -1885,15 +1486,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1912,9 +1509,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1922,15 +1517,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": false,
       "raw_author_name": "Luis Guevara-Sarmiento",
       "raw_affiliation_strings": [
@@ -1941,15 +1531,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -1959,9 +1545,7 @@
         "id": "https://openalex.org/A5084039227",
         "display_name": "Mirko Zimic",
         "orcid": "https://orcid.org/0000-0002-7203-8847",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-7203-8847"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-7203-8847"]
       },
       "institutions": [
         {
@@ -1970,9 +1554,7 @@
           "ror": "https://ror.org/008p13e68",
           "country_code": "PE",
           "type": "company",
-          "lineage": [
-            "https://openalex.org/I4210089798"
-          ]
+          "lineage": ["https://openalex.org/I4210089798"]
         },
         {
           "id": "https://openalex.org/I79272384",
@@ -1980,15 +1562,10 @@
           "ror": "https://ror.org/02qskvh78",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I79272384"
-          ]
+          "lineage": ["https://openalex.org/I79272384"]
         }
       ],
-      "countries": [
-        "PE",
-        "US"
-      ],
+      "countries": ["PE", "US"],
       "is_corresponding": true,
       "raw_author_name": "Mirko Zimic",
       "raw_affiliation_strings": [
@@ -1999,15 +1576,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Farmacologicos Veterinarios S.A.C. FARVET",
-          "institution_ids": [
-            "https://openalex.org/I4210089798"
-          ]
+          "institution_ids": ["https://openalex.org/I4210089798"]
         },
         {
           "raw_affiliation_string": "University of Maryland Baltimore County",
-          "institution_ids": [
-            "https://openalex.org/I79272384"
-          ]
+          "institution_ids": ["https://openalex.org/I79272384"]
         }
       ]
     },
@@ -2031,13 +1604,8 @@
   "institutions": [],
   "countries_distinct_count": 2,
   "institutions_distinct_count": 3,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5084039227"
-  ],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I4210089798",
-    "https://openalex.org/I79272384"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5084039227"],
+  "corresponding_institution_ids": ["https://openalex.org/I4210089798", "https://openalex.org/I79272384"],
   "apc_list": null,
   "apc_paid": null,
   "fwci": null,
@@ -2424,347 +1992,107 @@
     "https://openalex.org/W2120169284"
   ],
   "abstract_inverted_index": {
-    "Abstract": [
-      0
-    ],
-    "The": [
-      1
-    ],
-    "COVID-19": [
-      2
-    ],
-    "pandemic": [
-      3
-    ],
-    "has": [
-      4,
-      67
-    ],
-    "claimed": [
-      5
-    ],
-    "the": [
-      6,
-      18,
-      23,
-      135
-    ],
-    "lives": [
-      7
-    ],
-    "of": [
-      8,
-      10,
-      20,
-      26,
-      37,
-      77,
-      94
-    ],
-    "millions": [
-      9
-    ],
-    "people.": [
-      11
-    ],
-    "Vaccination": [
-      12
-    ],
-    "is": [
-      13,
-      41
-    ],
-    "a": [
-      14,
-      35,
-      85,
-      115,
-      122,
-      131
-    ],
-    "critical": [
-      15
-    ],
-    "tool": [
-      16,
-      133
-    ],
-    "for": [
-      17,
-      62
-    ],
-    "control": [
-      19
-    ],
-    "transmission;": [
-      21
-    ],
-    "however,": [
-      22
-    ],
-    "recent": [
-      24
-    ],
-    "emergence": [
-      25
-    ],
-    "potentially": [
-      27
-    ],
-    "vaccine-resistant": [
-      28
-    ],
-    "variants": [
-      29
-    ],
-    "renders": [
-      30
-    ],
-    "it": [
-      31
-    ],
-    "important": [
-      32
-    ],
-    "to": [
-      33,
-      49,
-      55
-    ],
-    "have": [
-      34
-    ],
-    "range": [
-      36
-    ],
-    "vaccines": [
-      38,
-      44
-    ],
-    "types.": [
-      39
-    ],
-    "It": [
-      40
-    ],
-    "desirable": [
-      42
-    ],
-    "that": [
-      43
-    ],
-    "are": [
-      45
-    ],
-    "safe,": [
-      46
-    ],
-    "effective,": [
-      47
-    ],
-    "easy": [
-      48
-    ],
-    "administer": [
-      50
-    ],
-    "and": [
-      51,
-      53,
-      81,
-      100,
-      104,
-      118
-    ],
-    "store,": [
-      52
-    ],
-    "inexpensive": [
-      54
-    ],
-    "produce.": [
-      56
-    ],
-    "Newcastle": [
-      57
-    ],
-    "disease": [
-      58,
-      64
-    ],
-    "virus": [
-      59
-    ],
-    "(NDV),": [
-      60
-    ],
-    "responsible": [
-      61
-    ],
-    "respiratory": [
-      63
-    ],
-    "in": [
-      65,
-      71,
-      84,
-      88,
-      92,
-      114,
-      121,
-      134
-    ],
-    "chickens,": [
-      66
-    ],
-    "no": [
-      68
-    ],
-    "pathogenic": [
-      69
-    ],
-    "homologue": [
-      70
-    ],
-    "humans.": [
-      72
-    ],
-    "We": [
-      73
-    ],
-    "developed": [
-      74
-    ],
-    "two": [
-      75
-    ],
-    "types": [
-      76
-    ],
-    "NDV-vectored": [
-      78
-    ],
-    "candidate": [
-      79,
-      111,
-      129
-    ],
-    "vaccines,": [
-      80
-    ],
-    "evaluated": [
-      82
-    ],
-    "them": [
-      83
-    ],
-    "SARS-CoV-2": [
-      86,
-      116
-    ],
-    "challenge": [
-      87,
-      117
-    ],
-    "hamsters.": [
-      89
-    ],
-    "Vaccinations": [
-      90
-    ],
-    "resulted": [
-      91
-    ],
-    "generation": [
-      93
-    ],
-    "neutralizing": [
-      95
-    ],
-    "antibodies,": [
-      96
-    ],
-    "prevented": [
-      97
-    ],
-    "lung": [
-      98
-    ],
-    "damage,": [
-      99
-    ],
-    "reduced": [
-      101
-    ],
-    "viral": [
-      102
-    ],
-    "load": [
-      103
-    ],
-    "viability.": [
-      105
-    ],
-    "In": [
-      106
-    ],
-    "conclusion,": [
-      107
-    ],
-    "our": [
-      108
-    ],
-    "NDV-based": [
-      109
-    ],
-    "vaccine": [
-      110
-    ],
-    "performed": [
-      112
-    ],
-    "well": [
-      113
-    ],
-    "warrants": [
-      119
-    ],
-    "evaluation": [
-      120
-    ],
-    "Phase": [
-      123
-    ],
-    "I": [
-      124
-    ],
-    "human": [
-      125
-    ],
-    "clinical": [
-      126
-    ],
-    "trial.": [
-      127
-    ],
-    "This": [
-      128
-    ],
-    "represents": [
-      130
-    ],
-    "promising": [
-      132
-    ],
-    "fight": [
-      136
-    ],
-    "against": [
-      137
-    ],
-    "COVID-19.": [
-      138
-    ]
+    "Abstract": [0],
+    "The": [1],
+    "COVID-19": [2],
+    "pandemic": [3],
+    "has": [4, 67],
+    "claimed": [5],
+    "the": [6, 18, 23, 135],
+    "lives": [7],
+    "of": [8, 10, 20, 26, 37, 77, 94],
+    "millions": [9],
+    "people.": [11],
+    "Vaccination": [12],
+    "is": [13, 41],
+    "a": [14, 35, 85, 115, 122, 131],
+    "critical": [15],
+    "tool": [16, 133],
+    "for": [17, 62],
+    "control": [19],
+    "transmission;": [21],
+    "however,": [22],
+    "recent": [24],
+    "emergence": [25],
+    "potentially": [27],
+    "vaccine-resistant": [28],
+    "variants": [29],
+    "renders": [30],
+    "it": [31],
+    "important": [32],
+    "to": [33, 49, 55],
+    "have": [34],
+    "range": [36],
+    "vaccines": [38, 44],
+    "types.": [39],
+    "It": [40],
+    "desirable": [42],
+    "that": [43],
+    "are": [45],
+    "safe,": [46],
+    "effective,": [47],
+    "easy": [48],
+    "administer": [50],
+    "and": [51, 53, 81, 100, 104, 118],
+    "store,": [52],
+    "inexpensive": [54],
+    "produce.": [56],
+    "Newcastle": [57],
+    "disease": [58, 64],
+    "virus": [59],
+    "(NDV),": [60],
+    "responsible": [61],
+    "respiratory": [63],
+    "in": [65, 71, 84, 88, 92, 114, 121, 134],
+    "chickens,": [66],
+    "no": [68],
+    "pathogenic": [69],
+    "homologue": [70],
+    "humans.": [72],
+    "We": [73],
+    "developed": [74],
+    "two": [75],
+    "types": [76],
+    "NDV-vectored": [78],
+    "candidate": [79, 111, 129],
+    "vaccines,": [80],
+    "evaluated": [82],
+    "them": [83],
+    "SARS-CoV-2": [86, 116],
+    "challenge": [87, 117],
+    "hamsters.": [89],
+    "Vaccinations": [90],
+    "resulted": [91],
+    "generation": [93],
+    "neutralizing": [95],
+    "antibodies,": [96],
+    "prevented": [97],
+    "lung": [98],
+    "damage,": [99],
+    "reduced": [101],
+    "viral": [102],
+    "load": [103],
+    "viability.": [105],
+    "In": [106],
+    "conclusion,": [107],
+    "our": [108],
+    "NDV-based": [109],
+    "vaccine": [110],
+    "performed": [112],
+    "well": [113],
+    "warrants": [119],
+    "evaluation": [120],
+    "Phase": [123],
+    "I": [124],
+    "human": [125],
+    "clinical": [126],
+    "trial.": [127],
+    "This": [128],
+    "represents": [130],
+    "promising": [132],
+    "fight": [136],
+    "against": [137],
+    "COVID-19.": [138]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W3163010169",
   "counts_by_year": [],

@@ -21,29 +21,15 @@
       "id": "https://openalex.org/S4210236455",
       "display_name": "Technology Mind and Behavior",
       "issn_l": "2689-0208",
-      "issn": [
-        "2689-0208"
-      ],
+      "issn": ["2689-0208"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
-      "listed_in": [
-        "cwts-core",
-        "doaj",
-        "dongbi-b",
-        "jufo-1",
-        "norway-1",
-        "oarl",
-        "vabb-shw"
-      ],
+      "listed_in": ["cwts-core", "doaj", "dongbi-b", "jufo-1", "norway-1", "oarl", "vabb-shw"],
       "host_organization": "https://openalex.org/P4310320262",
       "host_organization_name": "American Psychological Association",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310320262"
-      ],
-      "host_organization_lineage_names": [
-        "American Psychological Association"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310320262"],
+      "host_organization_lineage_names": ["American Psychological Association"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -55,16 +41,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W7169754321"
-  ],
+  "lineage": ["https://openalex.org/W7169754321"],
   "child_works_count": 0,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref",
-    "datacite"
-  ],
+  "indexed_in": ["crossref", "datacite"],
   "open_access": {
     "is_oa": true,
     "oa_status": "gold",
@@ -78,9 +59,7 @@
         "id": "https://openalex.org/A5141208249",
         "display_name": "Guiying Liu",
         "orcid": "https://orcid.org/0009-0001-2415-5926",
-        "observed_orcids": [
-          "https://orcid.org/0009-0001-2415-5926"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0001-2415-5926"]
       },
       "institutions": [
         {
@@ -89,26 +68,18 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Guiying Liu",
-      "raw_affiliation_strings": [
-        "Department of Psychology , University of Tübingen"
-      ],
+      "raw_affiliation_strings": ["Department of Psychology , University of Tübingen"],
       "raw_orcid": "https://orcid.org/0009-0001-2415-5926",
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         }
       ]
     },
@@ -127,26 +98,18 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Tatjana Korbanka",
-      "raw_affiliation_strings": [
-        "Department of Psychology , University of Tübingen"
-      ],
+      "raw_affiliation_strings": ["Department of Psychology , University of Tübingen"],
       "raw_orcid": null,
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         }
       ]
     },
@@ -165,26 +128,18 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Jasmin Timm",
-      "raw_affiliation_strings": [
-        "Department of Psychology , University of Tübingen"
-      ],
+      "raw_affiliation_strings": ["Department of Psychology , University of Tübingen"],
       "raw_orcid": null,
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         }
       ]
     },
@@ -203,26 +158,18 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Naomi Oetelshofen",
-      "raw_affiliation_strings": [
-        "Department of Psychology , University of Tübingen"
-      ],
+      "raw_affiliation_strings": ["Department of Psychology , University of Tübingen"],
       "raw_orcid": null,
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         }
       ]
     },
@@ -241,14 +188,10 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Laura Maier",
       "raw_affiliation_strings": [
@@ -259,15 +202,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         },
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen , Schleichstraße 4 , D-72076 Tübingen , Germany",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         }
       ]
     },
@@ -277,9 +216,7 @@
         "id": "https://openalex.org/A5045305880",
         "display_name": "Markus Huff",
         "orcid": "https://orcid.org/0000-0002-1433-4656",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-1433-4656"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-1433-4656"]
       },
       "institutions": [
         {
@@ -288,10 +225,7 @@
           "ror": "https://ror.org/03hv28176",
           "country_code": "DE",
           "type": "facility",
-          "lineage": [
-            "https://openalex.org/I315704651",
-            "https://openalex.org/I4210136238"
-          ]
+          "lineage": ["https://openalex.org/I315704651", "https://openalex.org/I4210136238"]
         },
         {
           "id": "https://openalex.org/I8087733",
@@ -299,14 +233,10 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Markus Huff",
       "raw_affiliation_strings": [
@@ -317,15 +247,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         },
         {
           "raw_affiliation_string": "Leibniz-Institut für Wissensmedien , Tübingen , Germany",
-          "institution_ids": [
-            "https://openalex.org/I4210136238"
-          ]
+          "institution_ids": ["https://openalex.org/I4210136238"]
         }
       ]
     },
@@ -335,9 +261,7 @@
         "id": "https://openalex.org/A5005291932",
         "display_name": "Frank Papenmeier",
         "orcid": "https://orcid.org/0000-0001-5566-9658",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-5566-9658"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-5566-9658"]
       },
       "institutions": [
         {
@@ -346,26 +270,18 @@
           "ror": "https://ror.org/03a1kwz48",
           "country_code": "DE",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I8087733"
-          ]
+          "lineage": ["https://openalex.org/I8087733"]
         }
       ],
-      "countries": [
-        "DE"
-      ],
+      "countries": ["DE"],
       "is_corresponding": false,
       "raw_author_name": "Frank Papenmeier",
-      "raw_affiliation_strings": [
-        "Department of Psychology , University of Tübingen"
-      ],
+      "raw_affiliation_strings": ["Department of Psychology , University of Tübingen"],
       "raw_orcid": "https://orcid.org/0000-0001-5566-9658",
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Psychology , University of Tübingen",
-          "institution_ids": [
-            "https://openalex.org/I8087733"
-          ]
+          "institution_ids": ["https://openalex.org/I8087733"]
         }
       ]
     }
@@ -444,7 +360,7 @@
     {
       "id": "https://openalex.org/T13841",
       "display_name": "Psychology of Social Influence",
-      "score": 9.999999747378752e-05,
+      "score": 9.999999747378752e-5,
       "subfield": {
         "id": "https://openalex.org/subfields/3207",
         "display_name": "Social Psychology"
@@ -635,29 +551,15 @@
         "id": "https://openalex.org/S4210236455",
         "display_name": "Technology Mind and Behavior",
         "issn_l": "2689-0208",
-        "issn": [
-          "2689-0208"
-        ],
+        "issn": ["2689-0208"],
         "is_oa": true,
         "is_in_doaj": true,
         "is_core": true,
-        "listed_in": [
-          "cwts-core",
-          "doaj",
-          "dongbi-b",
-          "jufo-1",
-          "norway-1",
-          "oarl",
-          "vabb-shw"
-        ],
+        "listed_in": ["cwts-core", "doaj", "dongbi-b", "jufo-1", "norway-1", "oarl", "vabb-shw"],
         "host_organization": "https://openalex.org/P4310320262",
         "host_organization_name": "American Psychological Association",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310320262"
-        ],
-        "host_organization_lineage_names": [
-          "American Psychological Association"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310320262"],
+        "host_organization_lineage_names": ["American Psychological Association"],
         "type": "journal"
       },
       "license": "cc-by",
@@ -700,9 +602,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2801974073",
         "host_organization_name": "Leibniz Institute for Psychology (ZPID)",
-        "host_organization_lineage": [
-          "https://openalex.org/I2801974073"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2801974073"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -725,29 +625,15 @@
       "id": "https://openalex.org/S4210236455",
       "display_name": "Technology Mind and Behavior",
       "issn_l": "2689-0208",
-      "issn": [
-        "2689-0208"
-      ],
+      "issn": ["2689-0208"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
-      "listed_in": [
-        "cwts-core",
-        "doaj",
-        "dongbi-b",
-        "jufo-1",
-        "norway-1",
-        "oarl",
-        "vabb-shw"
-      ],
+      "listed_in": ["cwts-core", "doaj", "dongbi-b", "jufo-1", "norway-1", "oarl", "vabb-shw"],
       "host_organization": "https://openalex.org/P4310320262",
       "host_organization_name": "American Psychological Association",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310320262"
-      ],
-      "host_organization_lineage_names": [
-        "American Psychological Association"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310320262"],
+      "host_organization_lineage_names": ["American Psychological Association"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -848,457 +734,133 @@
     "https://openalex.org/W4394692535"
   ],
   "abstract_inverted_index": {
-    "As": [
-      0
-    ],
-    "humans": [
-      1
-    ],
-    "and": [
-      2,
-      31,
-      106,
-      118,
-      151,
-      185
-    ],
-    "social": [
-      3,
-      13,
-      75
-    ],
-    "robots": [
-      4,
-      47,
-      190
-    ],
-    "increasingly": [
-      5
-    ],
-    "coexist,": [
-      6
-    ],
-    "a": [
-      7,
-      74,
-      86,
-      108,
-      112
-    ],
-    "crucial": [
-      8
-    ],
-    "question": [
-      9
-    ],
-    "remains:": [
-      10
-    ],
-    "Do": [
-      11
-    ],
-    "established": [
-      12
-    ],
-    "heuristics": [
-      14
-    ],
-    "(such": [
-      15
-    ],
-    "as": [
-      16,
-      111
-    ],
-    "the": [
-      17,
-      38,
-      123,
-      134,
-      140,
-      143,
-      156,
-      161,
-      165,
-      179
-    ],
-    "bystander": [
-      18,
-      144,
-      162,
-      180
-    ],
-    "effect)": [
-      19
-    ],
-    "govern": [
-      20
-    ],
-    "human": [
-      21,
-      109,
-      137,
-      150,
-      195
-    ],
-    "behavior": [
-      22
-    ],
-    "toward": [
-      23,
-      46
-    ],
-    "robots?Through": [
-      24
-    ],
-    "two": [
-      25
-    ],
-    "preregistered": [
-      26
-    ],
-    "experiments": [
-      27
-    ],
-    "(N": [
-      28
-    ],
-    "=": [
-      29,
-      33
-    ],
-    "401": [
-      30
-    ],
-    "N": [
-      32
-    ],
-    "616),": [
-      34
-    ],
-    "we": [
-      35,
-      59,
-      98
-    ],
-    "demonstrate": [
-      36
-    ],
-    "that": [
-      37,
-      61,
-      81,
-      160,
-      191
-    ],
-    "presence": [
-      39,
-      124
-    ],
-    "of": [
-      40,
-      91,
-      125,
-      132,
-      142
-    ],
-    "bystanders": [
-      41,
-      63,
-      126
-    ],
-    "consistently": [
-      42
-    ],
-    "inhibits": [
-      43
-    ],
-    "helping": [
-      44,
-      129
-    ],
-    "intentions": [
-      45,
-      130
-    ],
-    "in": [
-      48,
-      54,
-      77,
-      171,
-      182
-    ],
-    "human-robot": [
-      49,
-      172,
-      183
-    ],
-    "interaction,": [
-      50
-    ],
-    "mirroring": [
-      51
-    ],
-    "classic": [
-      52
-    ],
-    "findings": [
-      53,
-      154
-    ],
-    "human-human": [
-      55
-    ],
-    "interaction.In": [
-      56
-    ],
-    "Experiment": [
-      57,
-      96
-    ],
-    "1,": [
-      58
-    ],
-    "found": [
-      60
-    ],
-    "when": [
-      62,
-      94
-    ],
-    "were": [
-      64,
-      67
-    ],
-    "present,": [
-      65
-    ],
-    "individuals": [
-      66
-    ],
-    "less": [
-      68
-    ],
-    "likely": [
-      69
-    ],
-    "to": [
-      70,
-      72,
-      84
-    ],
-    "intend": [
-      71
-    ],
-    "help": [
-      73
-    ],
-    "robot": [
-      76,
-      152
-    ],
-    "need": [
-      78
-    ],
-    "(e.g.,": [
-      79
-    ],
-    "one": [
-      80
-    ],
-    "was": [
-      82,
-      89,
-      136
-    ],
-    "unable": [
-      83
-    ],
-    "open": [
-      85
-    ],
-    "door": [
-      87
-    ],
-    "or": [
-      88,
-      138
-    ],
-    "out": [
-      90
-    ],
-    "battery)": [
-      92
-    ],
-    "than": [
-      93
-    ],
-    "alone.In": [
-      95
-    ],
-    "2,": [
-      97
-    ],
-    "used": [
-      99
-    ],
-    "video": [
-      100
-    ],
-    "stimuli": [
-      101
-    ],
-    "with": [
-      102
-    ],
-    "higher": [
-      103
-    ],
-    "ecological": [
-      104
-    ],
-    "validity": [
-      105
-    ],
-    "incorporated": [
-      107
-    ],
-    "victim": [
-      110,
-      135
-    ],
-    "control": [
-      113
-    ],
-    "group,": [
-      114
-    ],
-    "generalizing": [
-      115
-    ],
-    "this": [
-      116
-    ],
-    "effect": [
-      117,
-      145,
-      163,
-      181
-    ],
-    "revealing": [
-      119
-    ],
-    "its": [
-      120
-    ],
-    "robust": [
-      121
-    ],
-    "stability.While": [
-      122
-    ],
-    "generally": [
-      127
-    ],
-    "inhibited": [
-      128
-    ],
-    "(regardless": [
-      131
-    ],
-    "whether": [
-      133
-    ],
-    "robot),": [
-      139
-    ],
-    "strength": [
-      141
-    ],
-    "did": [
-      146
-    ],
-    "not": [
-      147
-    ],
-    "differ": [
-      148
-    ],
-    "between": [
-      149
-    ],
-    "victims.These": [
-      153
-    ],
-    "provide": [
-      155
-    ],
-    "first": [
-      157
-    ],
-    "empirical": [
-      158
-    ],
-    "evidence": [
-      159,
-      177
-    ],
-    "at": [
-      164
-    ],
-    "intention": [
-      166
-    ],
-    "level": [
-      167
-    ],
-    "can": [
-      168,
-      192
-    ],
-    "be": [
-      169
-    ],
-    "replicated": [
-      170
-    ],
-    "interaction.Our": [
-      173
-    ],
-    "work": [
-      174
-    ],
-    "provides": [
-      175
-    ],
-    "foundational": [
-      176
-    ],
-    "for": [
-      178,
-      188
-    ],
-    "interaction": [
-      184
-    ],
-    "has": [
-      186
-    ],
-    "implications": [
-      187
-    ],
-    "designing": [
-      189
-    ],
-    "effectively": [
-      193
-    ],
-    "elicit": [
-      194
-    ],
-    "assistance.": [
-      196
-    ]
+    "As": [0],
+    "humans": [1],
+    "and": [2, 31, 106, 118, 151, 185],
+    "social": [3, 13, 75],
+    "robots": [4, 47, 190],
+    "increasingly": [5],
+    "coexist,": [6],
+    "a": [7, 74, 86, 108, 112],
+    "crucial": [8],
+    "question": [9],
+    "remains:": [10],
+    "Do": [11],
+    "established": [12],
+    "heuristics": [14],
+    "(such": [15],
+    "as": [16, 111],
+    "the": [17, 38, 123, 134, 140, 143, 156, 161, 165, 179],
+    "bystander": [18, 144, 162, 180],
+    "effect)": [19],
+    "govern": [20],
+    "human": [21, 109, 137, 150, 195],
+    "behavior": [22],
+    "toward": [23, 46],
+    "robots?Through": [24],
+    "two": [25],
+    "preregistered": [26],
+    "experiments": [27],
+    "(N": [28],
+    "=": [29, 33],
+    "401": [30],
+    "N": [32],
+    "616),": [34],
+    "we": [35, 59, 98],
+    "demonstrate": [36],
+    "that": [37, 61, 81, 160, 191],
+    "presence": [39, 124],
+    "of": [40, 91, 125, 132, 142],
+    "bystanders": [41, 63, 126],
+    "consistently": [42],
+    "inhibits": [43],
+    "helping": [44, 129],
+    "intentions": [45, 130],
+    "in": [48, 54, 77, 171, 182],
+    "human-robot": [49, 172, 183],
+    "interaction,": [50],
+    "mirroring": [51],
+    "classic": [52],
+    "findings": [53, 154],
+    "human-human": [55],
+    "interaction.In": [56],
+    "Experiment": [57, 96],
+    "1,": [58],
+    "found": [60],
+    "when": [62, 94],
+    "were": [64, 67],
+    "present,": [65],
+    "individuals": [66],
+    "less": [68],
+    "likely": [69],
+    "to": [70, 72, 84],
+    "intend": [71],
+    "help": [73],
+    "robot": [76, 152],
+    "need": [78],
+    "(e.g.,": [79],
+    "one": [80],
+    "was": [82, 89, 136],
+    "unable": [83],
+    "open": [85],
+    "door": [87],
+    "or": [88, 138],
+    "out": [90],
+    "battery)": [92],
+    "than": [93],
+    "alone.In": [95],
+    "2,": [97],
+    "used": [99],
+    "video": [100],
+    "stimuli": [101],
+    "with": [102],
+    "higher": [103],
+    "ecological": [104],
+    "validity": [105],
+    "incorporated": [107],
+    "victim": [110, 135],
+    "control": [113],
+    "group,": [114],
+    "generalizing": [115],
+    "this": [116],
+    "effect": [117, 145, 163, 181],
+    "revealing": [119],
+    "its": [120],
+    "robust": [121],
+    "stability.While": [122],
+    "generally": [127],
+    "inhibited": [128],
+    "(regardless": [131],
+    "whether": [133],
+    "robot),": [139],
+    "strength": [141],
+    "did": [146],
+    "not": [147],
+    "differ": [148],
+    "between": [149],
+    "victims.These": [153],
+    "provide": [155],
+    "first": [157],
+    "empirical": [158],
+    "evidence": [159, 177],
+    "at": [164],
+    "intention": [166],
+    "level": [167],
+    "can": [168, 192],
+    "be": [169],
+    "replicated": [170],
+    "interaction.Our": [173],
+    "work": [174],
+    "provides": [175],
+    "foundational": [176],
+    "for": [178, 188],
+    "interaction": [184],
+    "has": [186],
+    "implications": [187],
+    "designing": [189],
+    "effectively": [193],
+    "elicit": [194],
+    "assistance.": [196]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7169754321",
   "counts_by_year": [

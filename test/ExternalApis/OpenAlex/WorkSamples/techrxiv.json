@@ -27,15 +27,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W7128694182"
-  ],
+  "lineage": ["https://openalex.org/W7128694182"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -55,9 +51,7 @@
       "countries": [],
       "is_corresponding": false,
       "raw_author_name": "Vidyasaraswathi H. N",
-      "raw_affiliation_strings": [
-        "Bangalore Institute of Technology"
-      ],
+      "raw_affiliation_strings": ["Bangalore Institute of Technology"],
       "raw_orcid": null,
       "affiliations": [
         {
@@ -88,9 +82,7 @@
         "id": "https://openalex.org/A5125740211",
         "display_name": "Kruthika D. S.",
         "orcid": "https://orcid.org/0009-0006-0773-8341",
-        "observed_orcids": [
-          "https://orcid.org/0009-0006-0773-8341"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0006-0773-8341"]
       },
       "institutions": [],
       "countries": [],
@@ -120,9 +112,7 @@
   "institutions": [],
   "countries_distinct_count": 0,
   "institutions_distinct_count": 0,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5125740211"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5125740211"],
   "corresponding_institution_ids": [],
   "apc_list": null,
   "apc_paid": null,
@@ -571,393 +561,127 @@
     "https://openalex.org/W4410639434"
   ],
   "abstract_inverted_index": {
-    "The": [
-      0,
-      116
-    ],
-    "increasing": [
-      1
-    ],
-    "reliance": [
-      2
-    ],
-    "on": [
-      3
-    ],
-    "lithium-ion": [
-      4
-    ],
-    "batteries": [
-      5,
-      110
-    ],
-    "in": [
-      6,
-      137
-    ],
-    "Electric": [
-      7
-    ],
-    "Vehicles": [
-      8
-    ],
-    "(EVs)": [
-      9
-    ],
-    "and": [
-      10,
-      23,
-      36,
-      48,
-      64,
-      108,
-      124,
-      140
-    ],
-    "energy": [
-      11,
-      142
-    ],
-    "storage": [
-      12,
-      143
-    ],
-    "systems": [
-      13
-    ],
-    "demands": [
-      14
-    ],
-    "accurate,": [
-      15
-    ],
-    "real-time": [
-      16,
-      132
-    ],
-    "estimation": [
-      17,
-      30,
-      58
-    ],
-    "of": [
-      18,
-      20,
-      25
-    ],
-    "State": [
-      19,
-      24
-    ],
-    "Charge": [
-      21
-    ],
-    "(SOC)": [
-      22
-    ],
-    "Health": [
-      26
-    ],
-    "(SOH).": [
-      27
-    ],
-    "Conventional": [
-      28
-    ],
-    "digital": [
-      29
-    ],
-    "methods": [
-      31
-    ],
-    "such": [
-      32
-    ],
-    "as": [
-      33
-    ],
-    "Kalman": [
-      34
-    ],
-    "Filters": [
-      35
-    ],
-    "machine-learning": [
-      37
-    ],
-    "models": [
-      38
-    ],
-    "provide": [
-      39
-    ],
-    "high": [
-      40,
-      49
-    ],
-    "accuracy": [
-      41
-    ],
-    "but": [
-      42
-    ],
-    "require": [
-      43
-    ],
-    "complex": [
-      44
-    ],
-    "computation,": [
-      45
-    ],
-    "expensive": [
-      46
-    ],
-    "microcontrollers,": [
-      47
-    ],
-    "power": [
-      50
-    ],
-    "consumption.": [
-      51
-    ],
-    "This": [
-      52
-    ],
-    "project": [
-      53
-    ],
-    "presents": [
-      54
-    ],
-    "a": [
-      55,
-      86
-    ],
-    "hardware-efficient,": [
-      56
-    ],
-    "analog-centric": [
-      57
-    ],
-    "system": [
-      59,
-      121
-    ],
-    "that": [
-      60
-    ],
-    "performs": [
-      61
-    ],
-    "both": [
-      62
-    ],
-    "SOC": [
-      63,
-      83
-    ],
-    "SOH": [
-      65,
-      96
-    ],
-    "analysis": [
-      66
-    ],
-    "using": [
-      67
-    ],
-    "low-power": [
-      68
-    ],
-    "operational": [
-      69
-    ],
-    "amplifier": [
-      70
-    ],
-    "circuits.": [
-      71
-    ],
-    "A": [
-      72
-    ],
-    "Hybrid": [
-      73
-    ],
-    "Coulomb": [
-      74
-    ],
-    "Counting": [
-      75
-    ],
-    "technique,": [
-      76
-    ],
-    "combined": [
-      77
-    ],
-    "with": [
-      78
-    ],
-    "voltage-based": [
-      79
-    ],
-    "correction,": [
-      80
-    ],
-    "enables": [
-      81
-    ],
-    "driftfree": [
-      82
-    ],
-    "tracking,": [
-      84
-    ],
-    "while": [
-      85
-    ],
-    "pulse-based": [
-      87
-    ],
-    "internal": [
-      88
-    ],
-    "resistance": [
-      89
-    ],
-    "measurement": [
-      90
-    ],
-    "accurately": [
-      91
-    ],
-    "detects": [
-      92
-    ],
-    "battery": [
-      93
-    ],
-    "degradation": [
-      94
-    ],
-    "for": [
-      95,
-      130
-    ],
-    "estimation.": [
-      97
-    ],
-    "Cadence": [
-      98
-    ],
-    "Virtuoso": [
-      99
-    ],
-    "simulations": [
-      100
-    ],
-    "validate": [
-      101
-    ],
-    "the": [
-      102
-    ],
-    "design's": [
-      103
-    ],
-    "ability": [
-      104
-    ],
-    "to": [
-      105
-    ],
-    "distinguish": [
-      106
-    ],
-    "healthy": [
-      107
-    ],
-    "degraded": [
-      109
-    ],
-    "through": [
-      111
-    ],
-    "measurable": [
-      112
-    ],
-    "voltage": [
-      113
-    ],
-    "sag": [
-      114
-    ],
-    "characteristics.": [
-      115
-    ],
-    "proposed": [
-      117
-    ],
-    "approach": [
-      118
-    ],
-    "significantly": [
-      119
-    ],
-    "reduces": [
-      120
-    ],
-    "complexity,": [
-      122
-    ],
-    "cost,": [
-      123
-    ],
-    "computational": [
-      125
-    ],
-    "load,": [
-      126
-    ],
-    "making": [
-      127
-    ],
-    "it": [
-      128
-    ],
-    "suitable": [
-      129
-    ],
-    "compact,": [
-      131
-    ],
-    "Battery": [
-      133
-    ],
-    "Management": [
-      134
-    ],
-    "Systems": [
-      135
-    ],
-    "(BMS)": [
-      136
-    ],
-    "low-cost": [
-      138
-    ],
-    "EVs": [
-      139
-    ],
-    "stationary": [
-      141
-    ],
-    "applications.": [
-      144
-    ]
+    "The": [0, 116],
+    "increasing": [1],
+    "reliance": [2],
+    "on": [3],
+    "lithium-ion": [4],
+    "batteries": [5, 110],
+    "in": [6, 137],
+    "Electric": [7],
+    "Vehicles": [8],
+    "(EVs)": [9],
+    "and": [10, 23, 36, 48, 64, 108, 124, 140],
+    "energy": [11, 142],
+    "storage": [12, 143],
+    "systems": [13],
+    "demands": [14],
+    "accurate,": [15],
+    "real-time": [16, 132],
+    "estimation": [17, 30, 58],
+    "of": [18, 20, 25],
+    "State": [19, 24],
+    "Charge": [21],
+    "(SOC)": [22],
+    "Health": [26],
+    "(SOH).": [27],
+    "Conventional": [28],
+    "digital": [29],
+    "methods": [31],
+    "such": [32],
+    "as": [33],
+    "Kalman": [34],
+    "Filters": [35],
+    "machine-learning": [37],
+    "models": [38],
+    "provide": [39],
+    "high": [40, 49],
+    "accuracy": [41],
+    "but": [42],
+    "require": [43],
+    "complex": [44],
+    "computation,": [45],
+    "expensive": [46],
+    "microcontrollers,": [47],
+    "power": [50],
+    "consumption.": [51],
+    "This": [52],
+    "project": [53],
+    "presents": [54],
+    "a": [55, 86],
+    "hardware-efficient,": [56],
+    "analog-centric": [57],
+    "system": [59, 121],
+    "that": [60],
+    "performs": [61],
+    "both": [62],
+    "SOC": [63, 83],
+    "SOH": [65, 96],
+    "analysis": [66],
+    "using": [67],
+    "low-power": [68],
+    "operational": [69],
+    "amplifier": [70],
+    "circuits.": [71],
+    "A": [72],
+    "Hybrid": [73],
+    "Coulomb": [74],
+    "Counting": [75],
+    "technique,": [76],
+    "combined": [77],
+    "with": [78],
+    "voltage-based": [79],
+    "correction,": [80],
+    "enables": [81],
+    "driftfree": [82],
+    "tracking,": [84],
+    "while": [85],
+    "pulse-based": [87],
+    "internal": [88],
+    "resistance": [89],
+    "measurement": [90],
+    "accurately": [91],
+    "detects": [92],
+    "battery": [93],
+    "degradation": [94],
+    "for": [95, 130],
+    "estimation.": [97],
+    "Cadence": [98],
+    "Virtuoso": [99],
+    "simulations": [100],
+    "validate": [101],
+    "the": [102],
+    "design's": [103],
+    "ability": [104],
+    "to": [105],
+    "distinguish": [106],
+    "healthy": [107],
+    "degraded": [109],
+    "through": [111],
+    "measurable": [112],
+    "voltage": [113],
+    "sag": [114],
+    "characteristics.": [115],
+    "proposed": [117],
+    "approach": [118],
+    "significantly": [119],
+    "reduces": [120],
+    "complexity,": [122],
+    "cost,": [123],
+    "computational": [125],
+    "load,": [126],
+    "making": [127],
+    "it": [128],
+    "suitable": [129],
+    "compact,": [131],
+    "Battery": [133],
+    "Management": [134],
+    "Systems": [135],
+    "(BMS)": [136],
+    "low-cost": [138],
+    "EVs": [139],
+    "stationary": [141],
+    "applications.": [144]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7128694182",
   "counts_by_year": [

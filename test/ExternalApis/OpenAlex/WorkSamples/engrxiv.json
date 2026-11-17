@@ -27,15 +27,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4402215482"
-  ],
+  "lineage": ["https://openalex.org/W4402215482"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -58,27 +54,18 @@
           "ror": "https://ror.org/04c4dkn09",
           "country_code": "CN",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I126520041",
-            "https://openalex.org/I19820366"
-          ]
+          "lineage": ["https://openalex.org/I126520041", "https://openalex.org/I19820366"]
         }
       ],
-      "countries": [
-        "CN"
-      ],
+      "countries": ["CN"],
       "is_corresponding": false,
       "raw_author_name": "Mirza Abdul Aleem Baig",
-      "raw_affiliation_strings": [
-        "University of Science and Technology of China"
-      ],
+      "raw_affiliation_strings": ["University of Science and Technology of China"],
       "raw_orcid": null,
       "affiliations": [
         {
           "raw_affiliation_string": "University of Science and Technology of China",
-          "institution_ids": [
-            "https://openalex.org/I126520041"
-          ]
+          "institution_ids": ["https://openalex.org/I126520041"]
         }
       ]
     },
@@ -97,14 +84,10 @@
           "ror": "https://ror.org/00a2xv884",
           "country_code": "CN",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I76130692"
-          ]
+          "lineage": ["https://openalex.org/I76130692"]
         }
       ],
-      "countries": [
-        "CN"
-      ],
+      "countries": ["CN"],
       "is_corresponding": false,
       "raw_author_name": "Jingchen Huang",
       "raw_affiliation_strings": [
@@ -114,9 +97,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": ". School of International Studies , Zhejiang University , Hangzhou , Zhejiang , P.R. China",
-          "institution_ids": [
-            "https://openalex.org/I76130692"
-          ]
+          "institution_ids": ["https://openalex.org/I76130692"]
         }
       ]
     },
@@ -126,9 +107,7 @@
         "id": "https://openalex.org/A5100575396",
         "display_name": "Jingzehua Xu",
         "orcid": "https://orcid.org/0009-0007-2860-5203",
-        "observed_orcids": [
-          "https://orcid.org/0009-0007-2860-5203"
-        ]
+        "observed_orcids": ["https://orcid.org/0009-0007-2860-5203"]
       },
       "institutions": [
         {
@@ -137,10 +116,7 @@
           "ror": "https://ror.org/01vceef04",
           "country_code": "CN",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I4405263052",
-            "https://openalex.org/I99065089"
-          ]
+          "lineage": ["https://openalex.org/I4405263052", "https://openalex.org/I99065089"]
         },
         {
           "id": "https://openalex.org/I99065089",
@@ -148,14 +124,10 @@
           "ror": "https://ror.org/03cve4549",
           "country_code": "CN",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I99065089"
-          ]
+          "lineage": ["https://openalex.org/I99065089"]
         }
       ],
-      "countries": [
-        "CN"
-      ],
+      "countries": ["CN"],
       "is_corresponding": false,
       "raw_author_name": "Jingzehua Xu",
       "raw_affiliation_strings": [
@@ -165,10 +137,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": ". Tsinghua Shenzhen International Graduate School , Tsinghua University , Shenzhen , Guangdong , P.R. China",
-          "institution_ids": [
-            "https://openalex.org/I4405263052",
-            "https://openalex.org/I99065089"
-          ]
+          "institution_ids": ["https://openalex.org/I4405263052", "https://openalex.org/I99065089"]
         }
       ]
     }
@@ -592,485 +561,147 @@
     "https://openalex.org/W4413475428"
   ],
   "abstract_inverted_index": {
-    "The": [
-      0,
-      51,
-      86
-    ],
-    "UN": [
-      1
-    ],
-    "2030": [
-      2
-    ],
-    "Agenda": [
-      3
-    ],
-    "for": [
-      4,
-      177,
-      190
-    ],
-    "Sustainable": [
-      5
-    ],
-    "Development": [
-      6
-    ],
-    "(SDGs)": [
-      7
-    ],
-    "emphasizes": [
-      8
-    ],
-    "addressing": [
-      9
-    ],
-    "poverty,": [
-      10
-    ],
-    "inequality,": [
-      11
-    ],
-    "environmental": [
-      12,
-      61
-    ],
-    "sustainability,": [
-      13
-    ],
-    "and": [
-      14,
-      44,
-      65,
-      80,
-      97,
-      106,
-      114,
-      133,
-      163,
-      194
-    ],
-    "economic": [
-      15,
-      63
-    ],
-    "growth.": [
-      16
-    ],
-    "Artificial": [
-      17
-    ],
-    "Intelligence": [
-      18
-    ],
-    "(AI)": [
-      19
-    ],
-    "has": [
-      20
-    ],
-    "emerged": [
-      21
-    ],
-    "as": [
-      22,
-      100
-    ],
-    "a": [
-      23,
-      143,
-      173,
-      191
-    ],
-    "pivotal": [
-      24
-    ],
-    "technology": [
-      25
-    ],
-    "capable": [
-      26
-    ],
-    "of": [
-      27,
-      38,
-      83,
-      124,
-      184
-    ],
-    "accelerating": [
-      28
-    ],
-    "progress": [
-      29
-    ],
-    "towards": [
-      30
-    ],
-    "these": [
-      31,
-      112
-    ],
-    "goals.": [
-      32
-    ],
-    "This": [
-      33
-    ],
-    "perspective": [
-      34,
-      87
-    ],
-    "explores": [
-      35
-    ],
-    "the": [
-      36,
-      49,
-      81,
-      90,
-      119,
-      122,
-      138,
-      156,
-      182,
-      185,
-      188
-    ],
-    "potential": [
-      37,
-      107
-    ],
-    "AI": [
-      39,
-      55,
-      95,
-      141,
-      153,
-      161,
-      168
-    ],
-    "to": [
-      40,
-      48,
-      165
-    ],
-    "address": [
-      41
-    ],
-    "environmental,": [
-      42
-    ],
-    "social,": [
-      43
-    ],
-    "ethical": [
-      45,
-      91,
-      145,
-      166,
-      175
-    ],
-    "challenges": [
-      46
-    ],
-    "related": [
-      47
-    ],
-    "SDGs.": [
-      50
-    ],
-    "verdicts": [
-      52
-    ],
-    "indicate": [
-      53
-    ],
-    "that": [
-      54,
-      147,
-      170
-    ],
-    "can": [
-      56,
-      179
-    ],
-    "significantly": [
-      57,
-      180
-    ],
-    "enhance": [
-      58
-    ],
-    "healthcare,": [
-      59
-    ],
-    "education,": [
-      60,
-      79
-    ],
-    "protection,": [
-      62
-    ],
-    "growth,": [
-      64
-    ],
-    "gender": [
-      66,
-      84
-    ],
-    "equality.": [
-      67,
-      85
-    ],
-    "Specific": [
-      68
-    ],
-    "applications": [
-      69
-    ],
-    "include": [
-      70
-    ],
-    "renewable": [
-      71
-    ],
-    "energy": [
-      72
-    ],
-    "optimization,": [
-      73
-    ],
-    "waste": [
-      74
-    ],
-    "management,": [
-      75
-    ],
-    "disease": [
-      76
-    ],
-    "detection,": [
-      77
-    ],
-    "personalized": [
-      78
-    ],
-    "promotion": [
-      82
-    ],
-    "also": [
-      88
-    ],
-    "highlights": [
-      89
-    ],
-    "concerns": [
-      92
-    ],
-    "associated": [
-      93
-    ],
-    "with": [
-      94,
-      172
-    ],
-    "development": [
-      96
-    ],
-    "deployment,": [
-      98
-    ],
-    "such": [
-      99
-    ],
-    "algorithmic": [
-      101
-    ],
-    "bias,": [
-      102
-    ],
-    "data": [
-      103
-    ],
-    "privacy": [
-      104
-    ],
-    "breaches,": [
-      105
-    ],
-    "job": [
-      108
-    ],
-    "displacement.": [
-      109
-    ],
-    "To": [
-      110
-    ],
-    "mitigate": [
-      111
-    ],
-    "risks": [
-      113
-    ],
-    "fully": [
-      115
-    ],
-    "harness": [
-      116
-    ],
-    "AI’s": [
-      117
-    ],
-    "potential,": [
-      118
-    ],
-    "judgment": [
-      120
-    ],
-    "recommends": [
-      121
-    ],
-    "implementation": [
-      123
-    ],
-    "intelligent": [
-      125
-    ],
-    "automation": [
-      126
-    ],
-    "governance": [
-      127
-    ],
-    "systems,": [
-      128
-    ],
-    "professional": [
-      129
-    ],
-    "engagement,": [
-      130
-    ],
-    "educational": [
-      131
-    ],
-    "initiatives,": [
-      132
-    ],
-    "stringent": [
-      134
-    ],
-    "regulatory": [
-      135
-    ],
-    "frameworks.": [
-      136
-    ],
-    "Achieving": [
-      137
-    ],
-    "SDGs": [
-      139
-    ],
-    "through": [
-      140
-    ],
-    "necessitates": [
-      142
-    ],
-    "comprehensive,": [
-      144
-    ],
-    "approach": [
-      146
-    ],
-    "fosters": [
-      148
-    ],
-    "interdisciplinary": [
-      149
-    ],
-    "research,": [
-      150
-    ],
-    "public-private": [
-      151
-    ],
-    "partnerships,": [
-      152
-    ],
-    "literacy": [
-      154
-    ],
-    "among": [
-      155
-    ],
-    "general": [
-      157
-    ],
-    "populace,": [
-      158
-    ],
-    "environmentally": [
-      159
-    ],
-    "sustainable": [
-      160
-    ],
-    "policies,": [
-      162
-    ],
-    "adherence": [
-      164
-    ],
-    "standards.": [
-      167
-    ],
-    "advancements": [
-      169
-    ],
-    "align": [
-      171
-    ],
-    "people-centered,": [
-      174
-    ],
-    "framework": [
-      176
-    ],
-    "sustainability": [
-      178
-    ],
-    "accelerate": [
-      181
-    ],
-    "achievement": [
-      183
-    ],
-    "SDGs,": [
-      186
-    ],
-    "paving": [
-      187
-    ],
-    "way": [
-      189
-    ],
-    "more": [
-      192
-    ],
-    "inclusive": [
-      193
-    ],
-    "equitable": [
-      195
-    ],
-    "future.": [
-      196
-    ]
+    "The": [0, 51, 86],
+    "UN": [1],
+    "2030": [2],
+    "Agenda": [3],
+    "for": [4, 177, 190],
+    "Sustainable": [5],
+    "Development": [6],
+    "(SDGs)": [7],
+    "emphasizes": [8],
+    "addressing": [9],
+    "poverty,": [10],
+    "inequality,": [11],
+    "environmental": [12, 61],
+    "sustainability,": [13],
+    "and": [14, 44, 65, 80, 97, 106, 114, 133, 163, 194],
+    "economic": [15, 63],
+    "growth.": [16],
+    "Artificial": [17],
+    "Intelligence": [18],
+    "(AI)": [19],
+    "has": [20],
+    "emerged": [21],
+    "as": [22, 100],
+    "a": [23, 143, 173, 191],
+    "pivotal": [24],
+    "technology": [25],
+    "capable": [26],
+    "of": [27, 38, 83, 124, 184],
+    "accelerating": [28],
+    "progress": [29],
+    "towards": [30],
+    "these": [31, 112],
+    "goals.": [32],
+    "This": [33],
+    "perspective": [34, 87],
+    "explores": [35],
+    "the": [36, 49, 81, 90, 119, 122, 138, 156, 182, 185, 188],
+    "potential": [37, 107],
+    "AI": [39, 55, 95, 141, 153, 161, 168],
+    "to": [40, 48, 165],
+    "address": [41],
+    "environmental,": [42],
+    "social,": [43],
+    "ethical": [45, 91, 145, 166, 175],
+    "challenges": [46],
+    "related": [47],
+    "SDGs.": [50],
+    "verdicts": [52],
+    "indicate": [53],
+    "that": [54, 147, 170],
+    "can": [56, 179],
+    "significantly": [57, 180],
+    "enhance": [58],
+    "healthcare,": [59],
+    "education,": [60, 79],
+    "protection,": [62],
+    "growth,": [64],
+    "gender": [66, 84],
+    "equality.": [67, 85],
+    "Specific": [68],
+    "applications": [69],
+    "include": [70],
+    "renewable": [71],
+    "energy": [72],
+    "optimization,": [73],
+    "waste": [74],
+    "management,": [75],
+    "disease": [76],
+    "detection,": [77],
+    "personalized": [78],
+    "promotion": [82],
+    "also": [88],
+    "highlights": [89],
+    "concerns": [92],
+    "associated": [93],
+    "with": [94, 172],
+    "development": [96],
+    "deployment,": [98],
+    "such": [99],
+    "algorithmic": [101],
+    "bias,": [102],
+    "data": [103],
+    "privacy": [104],
+    "breaches,": [105],
+    "job": [108],
+    "displacement.": [109],
+    "To": [110],
+    "mitigate": [111],
+    "risks": [113],
+    "fully": [115],
+    "harness": [116],
+    "AI’s": [117],
+    "potential,": [118],
+    "judgment": [120],
+    "recommends": [121],
+    "implementation": [123],
+    "intelligent": [125],
+    "automation": [126],
+    "governance": [127],
+    "systems,": [128],
+    "professional": [129],
+    "engagement,": [130],
+    "educational": [131],
+    "initiatives,": [132],
+    "stringent": [134],
+    "regulatory": [135],
+    "frameworks.": [136],
+    "Achieving": [137],
+    "SDGs": [139],
+    "through": [140],
+    "necessitates": [142],
+    "comprehensive,": [144],
+    "approach": [146],
+    "fosters": [148],
+    "interdisciplinary": [149],
+    "research,": [150],
+    "public-private": [151],
+    "partnerships,": [152],
+    "literacy": [154],
+    "among": [155],
+    "general": [157],
+    "populace,": [158],
+    "environmentally": [159],
+    "sustainable": [160],
+    "policies,": [162],
+    "adherence": [164],
+    "standards.": [167],
+    "advancements": [169],
+    "align": [171],
+    "people-centered,": [174],
+    "framework": [176],
+    "sustainability": [178],
+    "accelerate": [181],
+    "achievement": [183],
+    "SDGs,": [186],
+    "paving": [187],
+    "way": [189],
+    "more": [192],
+    "inclusive": [193],
+    "equitable": [195],
+    "future.": [196]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4402215482",
   "counts_by_year": [

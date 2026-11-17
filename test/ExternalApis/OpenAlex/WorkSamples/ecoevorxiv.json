@@ -27,15 +27,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4307490037"
-  ],
+  "lineage": ["https://openalex.org/W4307490037"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -49,9 +45,7 @@
         "id": "https://openalex.org/A5033074892",
         "display_name": "Joan Fibla",
         "orcid": "https://orcid.org/0000-0002-3255-2227",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-3255-2227"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-3255-2227"]
       },
       "institutions": [
         {
@@ -60,14 +54,10 @@
           "ror": "https://ror.org/01an7q238",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I95457486"
-          ]
+          "lineage": ["https://openalex.org/I95457486"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": true,
       "raw_author_name": "Joan Fibla",
       "raw_affiliation_strings": [
@@ -77,9 +67,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Environmental, Science, Policy, and Management, University of California Berkeley, 137 Mulford #3114, Berkeley, CA, 94720, USA",
-          "institution_ids": [
-            "https://openalex.org/I95457486"
-          ]
+          "institution_ids": ["https://openalex.org/I95457486"]
         }
       ]
     }
@@ -87,12 +75,8 @@
   "institutions": [],
   "countries_distinct_count": 1,
   "institutions_distinct_count": 1,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5033074892"
-  ],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I95457486"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5033074892"],
+  "corresponding_institution_ids": ["https://openalex.org/I95457486"],
   "apc_list": null,
   "apc_paid": null,
   "fwci": null,
@@ -361,9 +345,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -466,97 +448,36 @@
     "https://openalex.org/W7199511564"
   ],
   "abstract_inverted_index": {
-    "Background:": [
-      0
-    ],
-    "Population": [
-      1
-    ],
-    "structure": [
-      2
-    ],
-    "and": [
-      3,
-      27
-    ],
-    "ancestry": [
-      4
-    ],
-    "inference": [
-      5
-    ],
-    "are": [
-      6
-    ],
-    "routine": [
-      7
-    ],
-    "in": [
-      8
-    ],
-    "human": [
-      9
-    ],
-    "genetics,": [
-      10
-    ],
-    "yet": [
-      11
-    ],
-    "remain": [
-      12
-    ],
-    "inconvenient": [
-      13
-    ],
-    "for": [
-      14
-    ],
-    "non": [
-      15
-    ],
-    "experts": [
-      16
-    ],
-    "because": [
-      17
-    ],
-    "canonical": [
-      18
-    ],
-    "tools": [
-      19
-    ],
-    "(PLINK,": [
-      20
-    ],
-    "GCTA,": [
-      21
-    ],
-    "ADMIXTURE)": [
-      22
-    ],
-    "require": [
-      23
-    ],
-    "command": [
-      24
-    ],
-    "line": [
-      25
-    ],
-    "expertise": [
-      26
-    ],
-    "careful": [
-      28
-    ],
-    "data": [
-      29
-    ],
-    "management.": [
-      30
-    ]
+    "Background:": [0],
+    "Population": [1],
+    "structure": [2],
+    "and": [3, 27],
+    "ancestry": [4],
+    "inference": [5],
+    "are": [6],
+    "routine": [7],
+    "in": [8],
+    "human": [9],
+    "genetics,": [10],
+    "yet": [11],
+    "remain": [12],
+    "inconvenient": [13],
+    "for": [14],
+    "non": [15],
+    "experts": [16],
+    "because": [17],
+    "canonical": [18],
+    "tools": [19],
+    "(PLINK,": [20],
+    "GCTA,": [21],
+    "ADMIXTURE)": [22],
+    "require": [23],
+    "command": [24],
+    "line": [25],
+    "expertise": [26],
+    "careful": [28],
+    "data": [29],
+    "management.": [30]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4307490037",
   "counts_by_year": [],

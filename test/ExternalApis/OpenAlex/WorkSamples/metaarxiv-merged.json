@@ -23,9 +23,7 @@
       "id": "https://openalex.org/S202381698",
       "display_name": "PLoS ONE",
       "issn_l": "1932-6203",
-      "issn": [
-        "1932-6203"
-      ],
+      "issn": ["1932-6203"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -47,12 +45,8 @@
       ],
       "host_organization": "https://openalex.org/P4310315706",
       "host_organization_name": "Public Library of Science",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310315706"
-      ],
-      "host_organization_lineage_names": [
-        "Public Library of Science"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310315706"],
+      "host_organization_lineage_names": ["Public Library of Science"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -64,17 +58,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4225289914"
-  ],
+  "lineage": ["https://openalex.org/W4225289914"],
   "child_works_count": 7,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref",
-    "doaj",
-    "pubmed"
-  ],
+  "indexed_in": ["crossref", "doaj", "pubmed"],
   "open_access": {
     "is_oa": true,
     "oa_status": "gold",
@@ -88,9 +76,7 @@
         "id": "https://openalex.org/A5022629702",
         "display_name": "Michele Avissar-Whiting",
         "orcid": "https://orcid.org/0000-0003-0030-3135",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-0030-3135"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-0030-3135"]
       },
       "institutions": [
         {
@@ -106,21 +92,15 @@
           ]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": true,
       "raw_author_name": "Michele Avissar-Whiting",
-      "raw_affiliation_strings": [
-        "Research Square Company, Durham, North Carolina, United States of America"
-      ],
+      "raw_affiliation_strings": ["Research Square Company, Durham, North Carolina, United States of America"],
       "raw_orcid": "https://orcid.org/0000-0003-0030-3135",
       "affiliations": [
         {
           "raw_affiliation_string": "Research Square Company, Durham, North Carolina, United States of America",
-          "institution_ids": [
-            "https://openalex.org/I4210096694"
-          ]
+          "institution_ids": ["https://openalex.org/I4210096694"]
         }
       ]
     }
@@ -128,12 +108,8 @@
   "institutions": [],
   "countries_distinct_count": 1,
   "institutions_distinct_count": 1,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5022629702"
-  ],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I4210096694"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5022629702"],
+  "corresponding_institution_ids": ["https://openalex.org/I4210096694"],
   "apc_list": {
     "value": 1805,
     "currency": "USD",
@@ -389,9 +365,7 @@
         "id": "https://openalex.org/S202381698",
         "display_name": "PLoS ONE",
         "issn_l": "1932-6203",
-        "issn": [
-          "1932-6203"
-        ],
+        "issn": ["1932-6203"],
         "is_oa": true,
         "is_in_doaj": true,
         "is_core": true,
@@ -413,12 +387,8 @@
         ],
         "host_organization": "https://openalex.org/P4310315706",
         "host_organization_name": "Public Library of Science",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310315706"
-        ],
-        "host_organization_lineage_names": [
-          "Public Library of Science"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310315706"],
+        "host_organization_lineage_names": ["Public Library of Science"],
         "type": "journal"
       },
       "license": "cc-by",
@@ -446,9 +416,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -477,9 +445,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I1299303238",
         "host_organization_name": "National Institutes of Health",
-        "host_organization_lineage": [
-          "https://openalex.org/I1299303238"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1299303238"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -537,9 +503,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I1299303238",
         "host_organization_name": "National Institutes of Health",
-        "host_organization_lineage": [
-          "https://openalex.org/I1299303238"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1299303238"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -568,9 +532,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -628,9 +590,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -653,9 +613,7 @@
       "id": "https://openalex.org/S202381698",
       "display_name": "PLoS ONE",
       "issn_l": "1932-6203",
-      "issn": [
-        "1932-6203"
-      ],
+      "issn": ["1932-6203"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -677,12 +635,8 @@
       ],
       "host_organization": "https://openalex.org/P4310315706",
       "host_organization_name": "Public Library of Science",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310315706"
-      ],
-      "host_organization_lineage_names": [
-        "Public Library of Science"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310315706"],
+      "host_organization_lineage_names": ["Public Library of Science"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -740,726 +694,207 @@
     "https://openalex.org/W4200394820"
   ],
   "abstract_inverted_index": {
-    "Retractions": [
-      0
-    ],
-    "have": [
-      1
-    ],
-    "been": [
-      2,
-      40
-    ],
-    "on": [
-      3,
-      29,
-      103,
-      191,
-      303
-    ],
+    "Retractions": [0],
+    "have": [1],
+    "been": [2, 40],
+    "on": [3, 29, 103, 191, 303],
     "the": [
-      4,
-      7,
-      13,
-      30,
-      47,
-      62,
-      104,
-      115,
-      129,
-      140,
-      159,
-      162,
-      173,
-      202,
-      206,
-      215,
-      233,
-      261,
-      264,
-      268,
-      276,
-      284,
-      293,
-      308
-    ],
-    "rise": [
-      5
-    ],
-    "in": [
-      6,
-      12,
-      46,
-      53,
-      133,
-      149,
-      172,
-      218,
-      251
-    ],
-    "life": [
-      8,
-      286
-    ],
-    "and": [
-      9,
-      26,
-      67,
-      99,
-      157,
-      296,
-      307
-    ],
-    "clinical": [
-      10
-    ],
-    "sciences": [
-      11
-    ],
-    "last": [
-      14
-    ],
-    "decade,": [
-      15
-    ],
-    "likely": [
-      16
-    ],
-    "due": [
-      17
-    ],
-    "to": [
-      18,
-      73,
-      83,
-      113,
-      128,
-      166,
-      170,
-      225,
-      292,
-      297,
-      313
-    ],
-    "both": [
-      19
-    ],
-    "broader": [
-      20
-    ],
-    "accessibility": [
-      21
-    ],
-    "of": [
-      22,
-      32,
-      49,
-      64,
-      91,
-      97,
-      109,
-      117,
-      139,
-      143,
-      146,
-      161,
-      179,
-      187,
-      208,
-      242,
-      246,
-      259,
-      263,
-      278,
-      280
-    ],
-    "published": [
-      23,
-      132
-    ],
-    "scientific": [
-      24,
-      298
-    ],
-    "research": [
-      25,
-      65
-    ],
-    "increased": [
-      27
-    ],
-    "vigilance": [
-      28
-    ],
-    "part": [
-      31
-    ],
-    "publishers.": [
-      33
-    ],
-    "In": [
-      34,
-      240,
-      257
-    ],
-    "this": [
-      35,
-      57,
-      110,
-      118
-    ],
-    "same": [
-      36
-    ],
-    "period,": [
-      37
-    ],
-    "there": [
-      38
-    ],
-    "has": [
-      39,
-      59,
-      68,
-      77
-    ],
-    "a": [
-      41,
-      137,
-      209,
-      290
-    ],
-    "greater": [
-      42
-    ],
-    "than": [
-      43,
-      232
-    ],
-    "ten-fold": [
-      44
-    ],
-    "increase": [
-      45
-    ],
-    "posting": [
-      48
-    ],
-    "preprints": [
-      50,
-      127,
-      167,
-      247
-    ],
-    "by": [
-      51,
-      201,
-      214
-    ],
-    "researchers": [
-      52,
-      71
-    ],
-    "these": [
-      54,
-      192,
-      315
-    ],
-    "fields.": [
-      55
-    ],
-    "While": [
-      56
-    ],
-    "development": [
-      58
-    ],
-    "significantly": [
-      60
-    ],
-    "accelerated": [
-      61
-    ],
-    "rate": [
-      63
-    ],
-    "dissemination": [
-      66
-    ],
-    "benefited": [
-      69
-    ],
-    "early-career": [
-      70
-    ],
-    "eager": [
-      72
-    ],
-    "show": [
-      74
-    ],
-    "productivity,": [
-      75
-    ],
-    "it": [
-      76
-    ],
-    "also": [
-      78
-    ],
-    "introduced": [
-      79
-    ],
-    "challenges": [
-      80
-    ],
-    "with": [
-      81
-    ],
-    "respect": [
-      82
-    ],
-    "provenance": [
-      84
-    ],
-    "tracking,": [
-      85
-    ],
-    "version": [
-      86
-    ],
-    "linking,": [
-      87
-    ],
-    "and,": [
-      88
-    ],
-    "ultimately,": [
-      89
-    ],
-    "back-propagation": [
-      90
-    ],
-    "events": [
-      92
-    ],
-    "such": [
-      93
-    ],
-    "as": [
-      94
-    ],
-    "corrigenda,": [
-      95
-    ],
-    "expressions": [
-      96
-    ],
-    "concern,": [
-      98
-    ],
-    "retractions": [
-      100,
-      145,
-      181,
-      197,
-      244
-    ],
-    "that": [
-      101,
-      123,
-      267,
-      310
-    ],
-    "occur": [
-      102
-    ],
-    "journal-published": [
-      105,
-      163
-    ],
-    "version.": [
-      106
-    ],
-    "The": [
-      107,
-      221
-    ],
-    "aim": [
-      108
-    ],
-    "study": [
-      111
-    ],
-    "was": [
-      112,
-      211
-    ],
-    "understand": [
-      114
-    ],
-    "extent": [
-      116
-    ],
-    "problem": [
-      119
-    ],
-    "among": [
-      120
-    ],
-    "preprint": [
-      121,
-      152,
-      203,
-      210,
-      304
-    ],
-    "servers": [
-      122,
-      153
-    ],
-    "routinely": [
-      124
-    ],
-    "link": [
-      125
-    ],
-    "their": [
-      126,
-      318
-    ],
-    "corollary": [
-      130
-    ],
-    "versions": [
-      131,
-      164
-    ],
-    "journals.": [
-      134
-    ],
-    "To": [
-      135
-    ],
-    "present": [
-      136
-    ],
-    "snapshot": [
-      138
-    ],
-    "current": [
-      141
-    ],
-    "state": [
-      142
-    ],
-    "downstream": [
-      144,
-      245
-    ],
-    "articles": [
-      147,
-      236
-    ],
-    "preprinted": [
-      148
-    ],
-    "three": [
-      150
-    ],
-    "large": [
-      151
-    ],
-    "(Research": [
-      154
-    ],
-    "Square,": [
-      155
-    ],
-    "bioRxiv,": [
-      156
-    ],
-    "medRxiv),": [
-      158
-    ],
-    "DOIs": [
-      160
-    ],
-    "linked": [
-      165
-    ],
-    "were": [
-      168,
-      182,
-      198,
-      248,
-      270
-    ],
-    "matched": [
-      169
-    ],
-    "entries": [
-      171
-    ],
-    "Retraction": [
-      174
-    ],
-    "Watch": [
-      175
-    ],
-    "database.": [
-      176
-    ],
-    "A": [
-      177
-    ],
-    "total": [
-      178
-    ],
-    "30": [
-      180
-    ],
-    "identified,": [
-      183
-    ],
-    "representing": [
-      184
-    ],
-    "only": [
-      185,
-      212
-    ],
-    "0.01%": [
-      186
-    ],
-    "all": [
-      188
-    ],
-    "content": [
-      189
-    ],
-    "posted": [
-      190
-    ],
-    "servers.": [
-      193
-    ],
-    "Of": [
-      194
-    ],
-    "these,": [
-      195
-    ],
-    "11": [
-      196
-    ],
-    "clearly": [
-      199
-    ],
-    "noted": [
-      200
-    ],
-    "servers;": [
-      204
-    ],
-    "however,": [
-      205
-    ],
-    "existence": [
-      207
-    ],
-    "acknowledged": [
-      213
-    ],
-    "retracting": [
-      216
-    ],
-    "journal": [
-      217
-    ],
-    "one": [
-      219
-    ],
-    "case.": [
-      220
-    ],
-    "time": [
-      222
-    ],
-    "from": [
-      223
-    ],
-    "publication": [
-      224,
-      285
-    ],
-    "retraction": [
-      226,
-      265
-    ],
-    "averaged": [
-      227
-    ],
-    "278": [
-      228
-    ],
-    "days,": [
-      229
-    ],
-    "notably": [
-      230
-    ],
-    "lower": [
-      231
-    ],
-    "average": [
-      234
-    ],
-    "for": [
-      235
-    ],
-    "overall": [
-      237
-    ],
-    "(839": [
-      238
-    ],
-    "days).": [
-      239
-    ],
-    "70%": [
-      241
-    ],
-    "cases,": [
-      243,
-      260
-    ],
-    "due-at": [
-      249
-    ],
-    "least": [
-      250
-    ],
-    "part-to": [
-      252
-    ],
-    "ethical": [
-      253
-    ],
-    "or": [
-      254
-    ],
-    "procedural": [
-      255
-    ],
-    "misconduct.": [
-      256
-    ],
-    "63%": [
-      258
-    ],
-    "nature": [
-      262
-    ],
-    "suggested": [
-      266
-    ],
-    "conclusions": [
-      269
-    ],
-    "no": [
-      271
-    ],
-    "longer": [
-      272
-    ],
-    "reliable.": [
-      273
-    ],
-    "Over": [
-      274
-    ],
-    "time,": [
-      275
-    ],
-    "lack": [
-      277
-    ],
-    "propagation": [
-      279
-    ],
-    "critical": [
-      281
-    ],
-    "information": [
-      282
-    ],
-    "across": [
-      283
-    ],
-    "cycle": [
-      287
-    ],
-    "will": [
-      288
-    ],
-    "pose": [
-      289
-    ],
-    "threat": [
-      291
-    ],
-    "scholarly": [
-      294
-    ],
-    "record": [
-      295
-    ],
-    "integrity.": [
-      299
-    ],
-    "It": [
-      300
-    ],
-    "is": [
-      301
-    ],
-    "incumbent": [
-      302
-    ],
-    "servers,": [
-      305
-    ],
-    "publishers,": [
-      306
-    ],
-    "systems": [
-      309
-    ],
-    "connect": [
-      311
-    ],
-    "them": [
-      312
-    ],
-    "address": [
-      314
-    ],
-    "issues": [
-      316
-    ],
-    "before": [
-      317
-    ],
-    "scale": [
-      319
-    ],
-    "becomes": [
-      320
-    ],
-    "untenable.": [
-      321
-    ]
+      4, 7, 13, 30, 47, 62, 104, 115, 129, 140, 159, 162, 173, 202, 206, 215, 233, 261, 264, 268, 276, 284, 293, 308
+    ],
+    "rise": [5],
+    "in": [6, 12, 46, 53, 133, 149, 172, 218, 251],
+    "life": [8, 286],
+    "and": [9, 26, 67, 99, 157, 296, 307],
+    "clinical": [10],
+    "sciences": [11],
+    "last": [14],
+    "decade,": [15],
+    "likely": [16],
+    "due": [17],
+    "to": [18, 73, 83, 113, 128, 166, 170, 225, 292, 297, 313],
+    "both": [19],
+    "broader": [20],
+    "accessibility": [21],
+    "of": [22, 32, 49, 64, 91, 97, 109, 117, 139, 143, 146, 161, 179, 187, 208, 242, 246, 259, 263, 278, 280],
+    "published": [23, 132],
+    "scientific": [24, 298],
+    "research": [25, 65],
+    "increased": [27],
+    "vigilance": [28],
+    "part": [31],
+    "publishers.": [33],
+    "In": [34, 240, 257],
+    "this": [35, 57, 110, 118],
+    "same": [36],
+    "period,": [37],
+    "there": [38],
+    "has": [39, 59, 68, 77],
+    "a": [41, 137, 209, 290],
+    "greater": [42],
+    "than": [43, 232],
+    "ten-fold": [44],
+    "increase": [45],
+    "posting": [48],
+    "preprints": [50, 127, 167, 247],
+    "by": [51, 201, 214],
+    "researchers": [52, 71],
+    "these": [54, 192, 315],
+    "fields.": [55],
+    "While": [56],
+    "development": [58],
+    "significantly": [60],
+    "accelerated": [61],
+    "rate": [63],
+    "dissemination": [66],
+    "benefited": [69],
+    "early-career": [70],
+    "eager": [72],
+    "show": [74],
+    "productivity,": [75],
+    "it": [76],
+    "also": [78],
+    "introduced": [79],
+    "challenges": [80],
+    "with": [81],
+    "respect": [82],
+    "provenance": [84],
+    "tracking,": [85],
+    "version": [86],
+    "linking,": [87],
+    "and,": [88],
+    "ultimately,": [89],
+    "back-propagation": [90],
+    "events": [92],
+    "such": [93],
+    "as": [94],
+    "corrigenda,": [95],
+    "expressions": [96],
+    "concern,": [98],
+    "retractions": [100, 145, 181, 197, 244],
+    "that": [101, 123, 267, 310],
+    "occur": [102],
+    "journal-published": [105, 163],
+    "version.": [106],
+    "The": [107, 221],
+    "aim": [108],
+    "study": [111],
+    "was": [112, 211],
+    "understand": [114],
+    "extent": [116],
+    "problem": [119],
+    "among": [120],
+    "preprint": [121, 152, 203, 210, 304],
+    "servers": [122, 153],
+    "routinely": [124],
+    "link": [125],
+    "their": [126, 318],
+    "corollary": [130],
+    "versions": [131, 164],
+    "journals.": [134],
+    "To": [135],
+    "present": [136],
+    "snapshot": [138],
+    "current": [141],
+    "state": [142],
+    "downstream": [144, 245],
+    "articles": [147, 236],
+    "preprinted": [148],
+    "three": [150],
+    "large": [151],
+    "(Research": [154],
+    "Square,": [155],
+    "bioRxiv,": [156],
+    "medRxiv),": [158],
+    "DOIs": [160],
+    "linked": [165],
+    "were": [168, 182, 198, 248, 270],
+    "matched": [169],
+    "entries": [171],
+    "Retraction": [174],
+    "Watch": [175],
+    "database.": [176],
+    "A": [177],
+    "total": [178],
+    "30": [180],
+    "identified,": [183],
+    "representing": [184],
+    "only": [185, 212],
+    "0.01%": [186],
+    "all": [188],
+    "content": [189],
+    "posted": [190],
+    "servers.": [193],
+    "Of": [194],
+    "these,": [195],
+    "11": [196],
+    "clearly": [199],
+    "noted": [200],
+    "servers;": [204],
+    "however,": [205],
+    "existence": [207],
+    "acknowledged": [213],
+    "retracting": [216],
+    "journal": [217],
+    "one": [219],
+    "case.": [220],
+    "time": [222],
+    "from": [223],
+    "publication": [224, 285],
+    "retraction": [226, 265],
+    "averaged": [227],
+    "278": [228],
+    "days,": [229],
+    "notably": [230],
+    "lower": [231],
+    "average": [234],
+    "for": [235],
+    "overall": [237],
+    "(839": [238],
+    "days).": [239],
+    "70%": [241],
+    "cases,": [243, 260],
+    "due-at": [249],
+    "least": [250],
+    "part-to": [252],
+    "ethical": [253],
+    "or": [254],
+    "procedural": [255],
+    "misconduct.": [256],
+    "63%": [258],
+    "nature": [262],
+    "suggested": [266],
+    "conclusions": [269],
+    "no": [271],
+    "longer": [272],
+    "reliable.": [273],
+    "Over": [274],
+    "time,": [275],
+    "lack": [277],
+    "propagation": [279],
+    "critical": [281],
+    "information": [282],
+    "across": [283],
+    "cycle": [287],
+    "will": [288],
+    "pose": [289],
+    "threat": [291],
+    "scholarly": [294],
+    "record": [295],
+    "integrity.": [299],
+    "It": [300],
+    "is": [301],
+    "incumbent": [302],
+    "servers,": [305],
+    "publishers,": [306],
+    "systems": [309],
+    "connect": [311],
+    "them": [312],
+    "address": [314],
+    "issues": [316],
+    "before": [317],
+    "scale": [319],
+    "becomes": [320],
+    "untenable.": [321]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4225289914",
   "counts_by_year": [

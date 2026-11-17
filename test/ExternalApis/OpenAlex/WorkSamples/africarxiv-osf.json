@@ -28,9 +28,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -43,16 +41,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4231730068"
-  ],
+  "lineage": ["https://openalex.org/W4231730068"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref",
-    "datacite"
-  ],
+  "indexed_in": ["crossref", "datacite"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -66,9 +59,7 @@
         "id": "https://openalex.org/A5015576282",
         "display_name": "Yann Ruffieux",
         "orcid": "https://orcid.org/0000-0002-0891-2448",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0891-2448"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0891-2448"]
       },
       "institutions": [],
       "countries": [],
@@ -84,9 +75,7 @@
         "id": "https://openalex.org/A5035834215",
         "display_name": "Tafadzwa Dhokotera",
         "orcid": "https://orcid.org/0000-0002-4353-0787",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-4353-0787"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-4353-0787"]
       },
       "institutions": [],
       "countries": [],
@@ -118,9 +107,7 @@
         "id": "https://openalex.org/A5082360661",
         "display_name": "Lina Bartels",
         "orcid": "https://orcid.org/0000-0003-1330-5885",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-1330-5885"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-1330-5885"]
       },
       "institutions": [],
       "countries": [],
@@ -136,9 +123,7 @@
         "id": "https://openalex.org/A5037134838",
         "display_name": "Victor Olago",
         "orcid": "https://orcid.org/0000-0002-0154-0688",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0154-0688"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0154-0688"]
       },
       "institutions": [],
       "countries": [],
@@ -154,9 +139,7 @@
         "id": "https://openalex.org/A5086157308",
         "display_name": "Julia Bohlius",
         "orcid": "https://orcid.org/0000-0003-1955-1585",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-1955-1585"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-1955-1585"]
       },
       "institutions": [],
       "countries": [],
@@ -172,9 +155,7 @@
         "id": "https://openalex.org/A5071570450",
         "display_name": "Elvira Singh",
         "orcid": "https://orcid.org/0000-0003-1259-2122",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-1259-2122"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-1259-2122"]
       },
       "institutions": [],
       "countries": [],
@@ -190,9 +171,7 @@
         "id": "https://openalex.org/A5077161809",
         "display_name": "Matthias Egger",
         "orcid": "https://orcid.org/0000-0001-7462-5132",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-7462-5132"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-7462-5132"]
       },
       "institutions": [],
       "countries": [],
@@ -208,9 +187,7 @@
         "id": "https://openalex.org/A5032868808",
         "display_name": "Eliane Rohner",
         "orcid": "https://orcid.org/0000-0002-0554-2875",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-0554-2875"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-0554-2875"]
       },
       "institutions": [],
       "countries": [],
@@ -522,9 +499,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -553,9 +528,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -584,9 +557,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -615,9 +586,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -647,9 +616,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I2799848540",
       "host_organization_name": "Center for Open Science",
-      "host_organization_lineage": [
-        "https://openalex.org/I2799848540"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I2799848540"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -695,563 +662,161 @@
     "https://openalex.org/W4234795319"
   ],
   "abstract_inverted_index": {
-    "Background:": [
-      0
-    ],
-    "We": [
-      1,
-      31,
-      71,
-      80,
-      103
-    ],
-    "studied": [
-      2
-    ],
-    "the": [
-      3,
-      40,
-      59,
-      67,
-      76,
-      139,
-      145,
-      213
-    ],
-    "incidence": [
-      4,
-      73
-    ],
-    "of": [
-      5,
-      12,
-      162,
-      201,
-      225,
-      239,
-      244
-    ],
-    "and": [
-      6,
-      16,
-      28,
-      64,
-      86,
-      91,
-      98,
-      130,
-      183,
-      207,
-      242
-    ],
-    "risk": [
-      7
-    ],
-    "factors": [
-      8
-    ],
-    "for": [
-      9,
-      75
-    ],
-    "various": [
-      10
-    ],
-    "types": [
-      11,
-      217
-    ],
-    "cancers": [
-      13,
-      85,
-      211,
-      227
-    ],
-    "in": [
-      14,
-      23,
-      138,
-      220
-    ],
-    "adolescents": [
-      15
-    ],
-    "young": [
-      17
-    ],
-    "adults": [
-      18
-    ],
-    "living": [
-      19
-    ],
-    "with": [
-      20,
-      159,
-      198
-    ],
-    "HIV": [
-      21,
-      43,
-      235
-    ],
-    "(AYALWH)": [
-      22
-    ],
-    "South": [
-      24,
-      41,
-      221
-    ],
-    "Africa": [
-      25
-    ],
-    "between": [
-      26,
-      54,
-      83
-    ],
-    "2004": [
-      27
-    ],
-    "2014.": [
-      29
-    ],
-    "Methods:": [
-      30
-    ],
-    "included": [
-      32,
-      104
-    ],
-    "individuals": [
-      33
-    ],
-    "aged": [
-      34
-    ],
-    "15": [
-      35
-    ],
-    "to": [
-      36
-    ],
-    "24": [
-      37
-    ],
-    "years": [
-      38
-    ],
-    "from": [
-      39,
-      51,
-      58,
-      66
-    ],
-    "African": [
-      42
-    ],
-    "Cancer": [
-      44,
-      69
-    ],
-    "Match": [
-      45
-    ],
-    "study,": [
-      46
-    ],
-    "a": [
-      47,
-      52
-    ],
-    "large": [
-      48
-    ],
-    "cohort": [
-      49
-    ],
-    "resulting": [
-      50
-    ],
-    "linkage": [
-      53
-    ],
-    "HIV-related": [
-      55
-    ],
-    "laboratory": [
-      56
-    ],
-    "measurements": [
-      57
-    ],
-    "National": [
-      60,
-      68
-    ],
-    "Health": [
-      61
-    ],
-    "Laboratory": [
-      62
-    ],
-    "Services": [
-      63
-    ],
-    "records": [
-      65
-    ],
-    "Registry.": [
-      70
-    ],
-    "computed": [
-      72
-    ],
-    "rates": [
-      74,
-      161,
-      200
-    ],
-    "most": [
-      77,
-      214
-    ],
-    "common": [
-      78,
-      137,
-      215
-    ],
-    "cancers.": [
-      79
-    ],
-    "assessed": [
-      81
-    ],
-    "associations": [
-      82
-    ],
-    "these": [
-      84,
-      226
-    ],
-    "sex,": [
-      87
-    ],
-    "age,": [
-      88
-    ],
-    "calendar": [
-      89
-    ],
-    "year,": [
-      90
-    ],
-    "CD4": [
-      92,
-      191
-    ],
-    "cell": [
-      93,
-      192
-    ],
-    "count": [
-      94
-    ],
-    "using": [
-      95
-    ],
-    "Cox": [
-      96
-    ],
-    "models": [
-      97
-    ],
-    "adjusted": [
-      99
-    ],
-    "hazard": [
-      100
-    ],
-    "ratios": [
-      101
-    ],
-    "(aHR).Findings:": [
-      102
-    ],
-    "782,454": [
-      105
-    ],
-    "AYALWH": [
-      106,
-      219
-    ],
-    "(89%": [
-      107
-    ],
-    "female).": [
-      108
-    ],
-    "Of": [
-      109
-    ],
-    "those,": [
-      110
-    ],
-    "867": [
-      111
-    ],
-    "developed": [
-      112,
-      118
-    ],
-    "incident": [
-      113
-    ],
-    "cancer": [
-      114,
-      216
-    ],
-    "including": [
-      115
-    ],
-    "429": [
-      116
-    ],
-    "who": [
-      117
-    ],
-    "Kaposi": [
-      119,
-      133,
-      163,
-      202
-    ],
-    "sarcoma,": [
-      120,
-      203
-    ],
-    "107": [
-      121
-    ],
-    "non-Hodgkin": [
-      122,
-      170,
-      206
-    ],
-    "lymphoma,": [
-      123,
-      126
-    ],
-    "48": [
-      124
-    ],
-    "Hodgkin": [
-      125,
-      177,
-      208
-    ],
-    "45": [
-      127
-    ],
-    "cervical": [
-      128,
-      204
-    ],
-    "cancer,": [
-      129,
-      205
-    ],
-    "32": [
-      131
-    ],
-    "leukaemia.": [
-      132
-    ],
-    "sarcoma": [
-      134,
-      164
-    ],
-    "was": [
-      135,
-      157
-    ],
-    "more": [
-      136
-    ],
-    "20-24": [
-      140
-    ],
-    "year": [
-      141,
-      147
-    ],
-    "age": [
-      142,
-      148
-    ],
-    "group": [
-      143,
-      149
-    ],
-    "than": [
-      144
-    ],
-    "15-19": [
-      146
-    ],
-    "(aHR": [
-      150,
-      165,
-      172,
-      179,
-      185
-    ],
-    "1.39,": [
-      151
-    ],
-    "95%": [
-      152,
-      167,
-      174,
-      181,
-      187
-    ],
-    "CI": [
-      153,
-      168,
-      175,
-      188
-    ],
-    "1.03-1.86).": [
-      154
-    ],
-    "Male": [
-      155
-    ],
-    "sex": [
-      156
-    ],
-    "associated": [
-      158,
-      197
-    ],
-    "higher": [
-      160,
-      199
-    ],
-    "2.06,": [
-      166
-    ],
-    "1.61-2.63),": [
-      169
-    ],
-    "lymphoma": [
-      171,
-      178
-    ],
-    "3.17,": [
-      173
-    ],
-    "2.06-4.89),": [
-      176
-    ],
-    "4.83,": [
-      180
-    ],
-    "2.61-8.93),": [
-      182
-    ],
-    "leukaemia": [
-      184
-    ],
-    "5.90,": [
-      186
-    ],
-    "2.87-12.1).": [
-      189
-    ],
-    "Lower": [
-      190
-    ],
-    "counts": [
-      193
-    ],
-    "at": [
-      194
-    ],
-    "baseline": [
-      195
-    ],
-    "were": [
-      196
-    ],
-    "lymphoma.Interpretation:": [
-      209
-    ],
-    "Infection-related": [
-      210
-    ],
-    "are": [
-      212
-    ],
-    "among": [
-      218
-    ],
-    "Africa.": [
-      222
-    ],
-    "The": [
-      223
-    ],
-    "burden": [
-      224
-    ],
-    "may": [
-      228
-    ],
-    "be": [
-      229
-    ],
-    "reduced": [
-      230
-    ],
-    "through": [
-      231
-    ],
-    "HPV": [
-      232
-    ],
-    "vaccination,": [
-      233
-    ],
-    "targeted": [
-      234
-    ],
-    "testing,": [
-      236
-    ],
-    "early": [
-      237
-    ],
-    "initiation": [
-      238
-    ],
-    "antiretroviral": [
-      240
-    ],
-    "therapy,": [
-      241
-    ],
-    "improvement": [
-      243
-    ],
-    "treatment": [
-      245
-    ],
-    "adherence.": [
-      246
-    ]
+    "Background:": [0],
+    "We": [1, 31, 71, 80, 103],
+    "studied": [2],
+    "the": [3, 40, 59, 67, 76, 139, 145, 213],
+    "incidence": [4, 73],
+    "of": [5, 12, 162, 201, 225, 239, 244],
+    "and": [6, 16, 28, 64, 86, 91, 98, 130, 183, 207, 242],
+    "risk": [7],
+    "factors": [8],
+    "for": [9, 75],
+    "various": [10],
+    "types": [11, 217],
+    "cancers": [13, 85, 211, 227],
+    "in": [14, 23, 138, 220],
+    "adolescents": [15],
+    "young": [17],
+    "adults": [18],
+    "living": [19],
+    "with": [20, 159, 198],
+    "HIV": [21, 43, 235],
+    "(AYALWH)": [22],
+    "South": [24, 41, 221],
+    "Africa": [25],
+    "between": [26, 54, 83],
+    "2004": [27],
+    "2014.": [29],
+    "Methods:": [30],
+    "included": [32, 104],
+    "individuals": [33],
+    "aged": [34],
+    "15": [35],
+    "to": [36],
+    "24": [37],
+    "years": [38],
+    "from": [39, 51, 58, 66],
+    "African": [42],
+    "Cancer": [44, 69],
+    "Match": [45],
+    "study,": [46],
+    "a": [47, 52],
+    "large": [48],
+    "cohort": [49],
+    "resulting": [50],
+    "linkage": [53],
+    "HIV-related": [55],
+    "laboratory": [56],
+    "measurements": [57],
+    "National": [60, 68],
+    "Health": [61],
+    "Laboratory": [62],
+    "Services": [63],
+    "records": [65],
+    "Registry.": [70],
+    "computed": [72],
+    "rates": [74, 161, 200],
+    "most": [77, 214],
+    "common": [78, 137, 215],
+    "cancers.": [79],
+    "assessed": [81],
+    "associations": [82],
+    "these": [84, 226],
+    "sex,": [87],
+    "age,": [88],
+    "calendar": [89],
+    "year,": [90],
+    "CD4": [92, 191],
+    "cell": [93, 192],
+    "count": [94],
+    "using": [95],
+    "Cox": [96],
+    "models": [97],
+    "adjusted": [99],
+    "hazard": [100],
+    "ratios": [101],
+    "(aHR).Findings:": [102],
+    "782,454": [105],
+    "AYALWH": [106, 219],
+    "(89%": [107],
+    "female).": [108],
+    "Of": [109],
+    "those,": [110],
+    "867": [111],
+    "developed": [112, 118],
+    "incident": [113],
+    "cancer": [114, 216],
+    "including": [115],
+    "429": [116],
+    "who": [117],
+    "Kaposi": [119, 133, 163, 202],
+    "sarcoma,": [120, 203],
+    "107": [121],
+    "non-Hodgkin": [122, 170, 206],
+    "lymphoma,": [123, 126],
+    "48": [124],
+    "Hodgkin": [125, 177, 208],
+    "45": [127],
+    "cervical": [128, 204],
+    "cancer,": [129, 205],
+    "32": [131],
+    "leukaemia.": [132],
+    "sarcoma": [134, 164],
+    "was": [135, 157],
+    "more": [136],
+    "20-24": [140],
+    "year": [141, 147],
+    "age": [142, 148],
+    "group": [143, 149],
+    "than": [144],
+    "15-19": [146],
+    "(aHR": [150, 165, 172, 179, 185],
+    "1.39,": [151],
+    "95%": [152, 167, 174, 181, 187],
+    "CI": [153, 168, 175, 188],
+    "1.03-1.86).": [154],
+    "Male": [155],
+    "sex": [156],
+    "associated": [158, 197],
+    "higher": [160, 199],
+    "2.06,": [166],
+    "1.61-2.63),": [169],
+    "lymphoma": [171, 178],
+    "3.17,": [173],
+    "2.06-4.89),": [176],
+    "4.83,": [180],
+    "2.61-8.93),": [182],
+    "leukaemia": [184],
+    "5.90,": [186],
+    "2.87-12.1).": [189],
+    "Lower": [190],
+    "counts": [193],
+    "at": [194],
+    "baseline": [195],
+    "were": [196],
+    "lymphoma.Interpretation:": [209],
+    "Infection-related": [210],
+    "are": [212],
+    "among": [218],
+    "Africa.": [222],
+    "The": [223],
+    "burden": [224],
+    "may": [228],
+    "be": [229],
+    "reduced": [230],
+    "through": [231],
+    "HPV": [232],
+    "vaccination,": [233],
+    "targeted": [234],
+    "testing,": [236],
+    "early": [237],
+    "initiation": [238],
+    "antiretroviral": [240],
+    "therapy,": [241],
+    "improvement": [243],
+    "treatment": [245],
+    "adherence.": [246]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4231730068",
   "counts_by_year": [],

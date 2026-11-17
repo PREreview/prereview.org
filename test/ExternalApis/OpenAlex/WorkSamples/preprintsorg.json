@@ -28,12 +28,8 @@
       "listed_in": [],
       "host_organization": null,
       "host_organization_name": null,
-      "host_organization_lineage": [
-        "https://openalex.org/P4310310987"
-      ],
-      "host_organization_lineage_names": [
-        "Multidisciplinary Digital Publishing Institute"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310310987"],
+      "host_organization_lineage_names": ["Multidisciplinary Digital Publishing Institute"],
       "type": "repository"
     },
     "license": "cc-by",
@@ -45,15 +41,11 @@
     "raw_type": "posted-content"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4362237175"
-  ],
+  "lineage": ["https://openalex.org/W4362237175"],
   "child_works_count": 0,
   "type": "preprint",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref"
-  ],
+  "indexed_in": ["crossref"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -67,9 +59,7 @@
         "id": "https://openalex.org/A5084291488",
         "display_name": "Gamal Sayed",
         "orcid": "https://orcid.org/0000-0001-7313-4518",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-7313-4518"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-7313-4518"]
       },
       "institutions": [
         {
@@ -78,14 +68,10 @@
           "ror": "https://ror.org/02zwb6n98",
           "country_code": "QA",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I49828101"
-          ]
+          "lineage": ["https://openalex.org/I49828101"]
         }
       ],
-      "countries": [
-        "QA"
-      ],
+      "countries": ["QA"],
       "is_corresponding": false,
       "raw_author_name": "Gamal Sayed",
       "raw_affiliation_strings": [
@@ -95,9 +81,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Neonatology, Women's wellness and research Centre Hamad Medical corporation (Qatar",
-          "institution_ids": [
-            "https://openalex.org/I49828101"
-          ]
+          "institution_ids": ["https://openalex.org/I49828101"]
         }
       ]
     },
@@ -107,9 +91,7 @@
         "id": "https://openalex.org/A5014446885",
         "display_name": "Husam Salama",
         "orcid": "https://orcid.org/0000-0002-6595-5022",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-6595-5022"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-6595-5022"]
       },
       "institutions": [
         {
@@ -118,14 +100,10 @@
           "ror": "https://ror.org/02zwb6n98",
           "country_code": "QA",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I49828101"
-          ]
+          "lineage": ["https://openalex.org/I49828101"]
         }
       ],
-      "countries": [
-        "QA"
-      ],
+      "countries": ["QA"],
       "is_corresponding": true,
       "raw_author_name": "Husam Salama",
       "raw_affiliation_strings": [
@@ -135,9 +113,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Neonatology, Women's wellness and research Centre Hamad Medical corporation (Qatar",
-          "institution_ids": [
-            "https://openalex.org/I49828101"
-          ]
+          "institution_ids": ["https://openalex.org/I49828101"]
         }
       ]
     },
@@ -156,14 +132,10 @@
           "ror": "https://ror.org/02zwb6n98",
           "country_code": "QA",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I49828101"
-          ]
+          "lineage": ["https://openalex.org/I49828101"]
         }
       ],
-      "countries": [
-        "QA"
-      ],
+      "countries": ["QA"],
       "is_corresponding": false,
       "raw_author_name": "Lina Abdullah",
       "raw_affiliation_strings": [
@@ -173,9 +145,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Neonatology, Women's wellness and research Centre Hamad Medical corporation (Qatar",
-          "institution_ids": [
-            "https://openalex.org/I49828101"
-          ]
+          "institution_ids": ["https://openalex.org/I49828101"]
         }
       ]
     },
@@ -185,9 +155,7 @@
         "id": "https://openalex.org/A5083427677",
         "display_name": "Sawsan Al-Obaidly",
         "orcid": "https://orcid.org/0000-0001-6058-3437",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-6058-3437"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-6058-3437"]
       },
       "institutions": [
         {
@@ -196,14 +164,10 @@
           "ror": "https://ror.org/02zwb6n98",
           "country_code": "QA",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I49828101"
-          ]
+          "lineage": ["https://openalex.org/I49828101"]
         }
       ],
-      "countries": [
-        "QA"
-      ],
+      "countries": ["QA"],
       "is_corresponding": false,
       "raw_author_name": "Sawsan Al-Obaidly",
       "raw_affiliation_strings": [
@@ -213,9 +177,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Neonatology, Women's wellness and research Centre Hamad Medical corporation (Qatar",
-          "institution_ids": [
-            "https://openalex.org/I49828101"
-          ]
+          "institution_ids": ["https://openalex.org/I49828101"]
         }
       ]
     },
@@ -234,14 +196,10 @@
           "ror": "https://ror.org/02zwb6n98",
           "country_code": "QA",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I49828101"
-          ]
+          "lineage": ["https://openalex.org/I49828101"]
         }
       ],
-      "countries": [
-        "QA"
-      ],
+      "countries": ["QA"],
       "is_corresponding": false,
       "raw_author_name": "Mai Al-Qubaisi",
       "raw_affiliation_strings": [
@@ -251,9 +209,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Neonatology, Women's wellness and research Centre Hamad Medical corporation (Qatar",
-          "institution_ids": [
-            "https://openalex.org/I49828101"
-          ]
+          "institution_ids": ["https://openalex.org/I49828101"]
         }
       ]
     },
@@ -263,9 +219,7 @@
         "id": "https://openalex.org/A5102964670",
         "display_name": "Ashraf Mansour",
         "orcid": "https://orcid.org/0000-0002-8765-0051",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-8765-0051"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-8765-0051"]
       },
       "institutions": [
         {
@@ -274,14 +228,10 @@
           "ror": "https://ror.org/02zwb6n98",
           "country_code": "QA",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I49828101"
-          ]
+          "lineage": ["https://openalex.org/I49828101"]
         }
       ],
-      "countries": [
-        "QA"
-      ],
+      "countries": ["QA"],
       "is_corresponding": false,
       "raw_author_name": "Ashraf Mansour",
       "raw_affiliation_strings": [
@@ -291,9 +241,7 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Neonatology, Women's wellness and research Centre Hamad Medical corporation (Qatar",
-          "institution_ids": [
-            "https://openalex.org/I49828101"
-          ]
+          "institution_ids": ["https://openalex.org/I49828101"]
         }
       ]
     }
@@ -301,12 +249,8 @@
   "institutions": [],
   "countries_distinct_count": 1,
   "institutions_distinct_count": 1,
-  "corresponding_author_ids": [
-    "https://openalex.org/A5014446885"
-  ],
-  "corresponding_institution_ids": [
-    "https://openalex.org/I49828101"
-  ],
+  "corresponding_author_ids": ["https://openalex.org/A5014446885"],
+  "corresponding_institution_ids": ["https://openalex.org/I49828101"],
   "apc_list": null,
   "apc_paid": null,
   "fwci": null,
@@ -611,12 +555,8 @@
         "listed_in": [],
         "host_organization": null,
         "host_organization_name": null,
-        "host_organization_lineage": [
-          "https://openalex.org/P4310310987"
-        ],
-        "host_organization_lineage_names": [
-          "Multidisciplinary Digital Publishing Institute"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310310987"],
+        "host_organization_lineage_names": ["Multidisciplinary Digital Publishing Institute"],
         "type": "repository"
       },
       "license": "cc-by",
@@ -645,12 +585,8 @@
       "listed_in": [],
       "host_organization": null,
       "host_organization_name": null,
-      "host_organization_lineage": [
-        "https://openalex.org/P4310310987"
-      ],
-      "host_organization_lineage_names": [
-        "Multidisciplinary Digital Publishing Institute"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310310987"],
+      "host_organization_lineage_names": ["Multidisciplinary Digital Publishing Institute"],
       "type": "repository"
     },
     "license": "cc-by",
@@ -720,569 +656,165 @@
     "https://openalex.org/W2075167668"
   ],
   "abstract_inverted_index": {
-    "Background": [
-      0
-    ],
-    "Obesity": [
-      1,
-      234
-    ],
-    "compromises": [
-      2
-    ],
-    "the": [
-      3,
-      23,
-      26,
-      69,
-      102,
-      140,
-      144,
-      147,
-      154,
-      160,
-      166,
-      205,
-      211,
-      214,
-      230
-    ],
-    "health": [
-      4
-    ],
-    "of": [
-      5,
-      32,
-      57,
-      101,
-      128,
-      149,
-      187,
-      196,
-      198,
-      220,
-      232
-    ],
-    "a": [
-      6
-    ],
-    "woman's": [
-      7
-    ],
-    "pregnancy": [
-      8,
-      18,
-      236
-    ],
-    "and": [
-      9,
-      19,
-      25,
-      54,
-      65,
-      85,
-      95,
-      114,
-      116,
-      122,
-      135,
-      164,
-      185,
-      242
-    ],
-    "her": [
-      10
-    ],
-    "newborn.": [
-      11
-    ],
-    "Aim:": [
-      12
-    ],
-    "To": [
-      13
-    ],
-    "describe": [
-      14
-    ],
-    "weight-gaining": [
-      15
-    ],
-    "changes": [
-      16
-    ],
-    "throughout": [
-      17
-    ],
-    "evaluating": [
-      20
-    ],
-    "outcomes": [
-      21
-    ],
-    "for": [
-      22
-    ],
-    "mother": [
-      24
-    ],
-    "baby.": [
-      27
-    ],
-    "Methods": [
-      28
-    ],
-    "A": [
-      29,
-      217
-    ],
-    "retrospective": [
-      30
-    ],
-    "review": [
-      31
-    ],
-    "women": [
-      33,
-      179,
-      183,
-      189,
-      197,
-      222
-    ],
-    "who": [
-      34
-    ],
-    "delivered": [
-      35
-    ],
-    "singletons": [
-      36
-    ],
-    "using": [
-      37
-    ],
-    "Large": [
-      38
-    ],
-    "Perinatal": [
-      39
-    ],
-    "Registry.": [
-      40
-    ],
-    "According": [
-      41
-    ],
-    "to": [
-      42,
-      193
-    ],
-    "their": [
-      43
-    ],
-    "BMI,": [
-      44
-    ],
-    "patients": [
-      45
-    ],
-    "were": [
-      46,
-      68,
-      78,
-      105,
-      110,
-      118,
-      172
-    ],
-    "categorized": [
-      47
-    ],
-    "into": [
-      48
-    ],
-    "four": [
-      49
-    ],
-    "categories:": [
-      50
-    ],
-    "underweight,": [
-      51
-    ],
-    "normal,": [
-      52
-    ],
-    "overweight,": [
-      53
-    ],
-    "obese.": [
-      55
-    ],
-    "Mode": [
-      56
-    ],
-    "delivery,": [
-      58
-    ],
-    "gestational": [
-      59
-    ],
-    "diabetes,": [
-      60,
-      132
-    ],
-    "hypertensive": [
-      61
-    ],
-    "diseases,": [
-      62
-    ],
-    "obstetric": [
-      63,
-      130
-    ],
-    "cholestasis,": [
-      64,
-      131
-    ],
-    "postpartum": [
-      66,
-      133
-    ],
-    "hemorrhage": [
-      67
-    ],
-    "main": [
-      70
-    ],
-    "maternal": [
-      71,
-      241
-    ],
-    "outcome": [
-      72,
-      76
-    ],
-    "measures.": [
-      73
-    ],
-    "The": [
-      74,
-      88,
-      99,
-      126,
-      201
-    ],
-    "newborn": [
-      75
-    ],
-    "indicators": [
-      77
-    ],
-    "birth": [
-      79
-    ],
-    "weight,": [
-      80
-    ],
-    "NICU": [
-      81
-    ],
-    "hospitalization,": [
-      82
-    ],
-    "premature": [
-      83
-    ],
-    "birth,": [
-      84
-    ],
-    "stillbirth.": [
-      86
-    ],
-    "Results": [
-      87
-    ],
-    "study": [
-      89
-    ],
-    "sample": [
-      90,
-      103,
-      225
-    ],
-    "included": [
-      91
-    ],
-    "2,352": [
-      92
-    ],
-    "natives": [
-      93
-    ],
-    "(25%)": [
-      94
-    ],
-    "7,058": [
-      96
-    ],
-    "expatriates": [
-      97
-    ],
-    "(75%).": [
-      98
-    ],
-    "majority": [
-      100
-    ],
-    "(4726)": [
-      104
-    ],
-    "aged": [
-      106,
-      111,
-      119
-    ],
-    "20-29": [
-      107
-    ],
-    "years,": [
-      108,
-      113
-    ],
-    "43.6%": [
-      109
-    ],
-    "30-39": [
-      112
-    ],
-    "2.1%": [
-      115
-    ],
-    "3.9%": [
-      117
-    ],
-    "19": [
-      120
-    ],
-    "years": [
-      121,
-      124
-    ],
-    "40": [
-      123
-    ],
-    "respectively.": [
-      125
-    ],
-    "incidence": [
-      127,
-      148
-    ],
-    "hypertension,": [
-      129
-    ],
-    "hemorrhage,": [
-      134
-    ],
-    "cesarean": [
-      136
-    ],
-    "section": [
-      137
-    ],
-    "varied": [
-      138
-    ],
-    "among": [
-      139
-    ],
-    "entire": [
-      141
-    ],
-    "sample.": [
-      142
-    ],
-    "In": [
-      143
-    ],
-    "underweight": [
-      145,
-      202
-    ],
-    "group,": [
-      146
-    ],
-    "CS": [
-      150
-    ],
-    "was": [
-      151
-    ],
-    "15.7%,": [
-      152
-    ],
-    "in": [
-      153,
-      159,
-      165,
-      177,
-      181,
-      223
-    ],
-    "normal": [
-      155,
-      199
-    ],
-    "weight": [
-      156,
-      207
-    ],
-    "group": [
-      157,
-      162,
-      168
-    ],
-    "(24.9%),": [
-      158
-    ],
-    "overweight": [
-      161
-    ],
-    "(31.3%),": [
-      163
-    ],
-    "obese": [
-      167,
-      178,
-      188,
-      212,
-      228
-    ],
-    "(41%).": [
-      169
-    ],
-    "Hypertensive": [
-      170
-    ],
-    "disorders": [
-      171
-    ],
-    "3": [
-      173
-    ],
-    "times": [
-      174
-    ],
-    "more": [
-      175
-    ],
-    "prevalent": [
-      176
-    ],
-    "than": [
-      180
-    ],
-    "normal-weight": [
-      182
-    ],
-    "(2%),": [
-      184
-    ],
-    "5.3%": [
-      186
-    ],
-    "had": [
-      190
-    ],
-    "PPH": [
-      191
-    ],
-    "compared": [
-      192
-    ],
-    "5.": [
-      194
-    ],
-    "6%": [
-      195
-    ],
-    "weight.": [
-      200
-    ],
-    "groups": [
-      203
-    ],
-    "gained": [
-      204,
-      213
-    ],
-    "most": [
-      206
-    ],
-    "during": [
-      208,
-      235
-    ],
-    "pregnancy,": [
-      209
-    ],
-    "whereas": [
-      210
-    ],
-    "least.": [
-      215
-    ],
-    "Conclusions": [
-      216
-    ],
-    "significant": [
-      218
-    ],
-    "proportion": [
-      219
-    ],
-    "pregnant": [
-      221
-    ],
-    "our": [
-      224
-    ],
-    "will": [
-      226
-    ],
-    "become": [
-      227
-    ],
-    "by": [
-      229
-    ],
-    "time": [
-      231
-    ],
-    "delivery.": [
-      233
-    ],
-    "is": [
-      237
-    ],
-    "associated": [
-      238
-    ],
-    "with": [
-      239
-    ],
-    "negative": [
-      240
-    ],
-    "fetal": [
-      243
-    ],
-    "outcomes.": [
-      244
-    ]
+    "Background": [0],
+    "Obesity": [1, 234],
+    "compromises": [2],
+    "the": [3, 23, 26, 69, 102, 140, 144, 147, 154, 160, 166, 205, 211, 214, 230],
+    "health": [4],
+    "of": [5, 32, 57, 101, 128, 149, 187, 196, 198, 220, 232],
+    "a": [6],
+    "woman's": [7],
+    "pregnancy": [8, 18, 236],
+    "and": [9, 19, 25, 54, 65, 85, 95, 114, 116, 122, 135, 164, 185, 242],
+    "her": [10],
+    "newborn.": [11],
+    "Aim:": [12],
+    "To": [13],
+    "describe": [14],
+    "weight-gaining": [15],
+    "changes": [16],
+    "throughout": [17],
+    "evaluating": [20],
+    "outcomes": [21],
+    "for": [22],
+    "mother": [24],
+    "baby.": [27],
+    "Methods": [28],
+    "A": [29, 217],
+    "retrospective": [30],
+    "review": [31],
+    "women": [33, 179, 183, 189, 197, 222],
+    "who": [34],
+    "delivered": [35],
+    "singletons": [36],
+    "using": [37],
+    "Large": [38],
+    "Perinatal": [39],
+    "Registry.": [40],
+    "According": [41],
+    "to": [42, 193],
+    "their": [43],
+    "BMI,": [44],
+    "patients": [45],
+    "were": [46, 68, 78, 105, 110, 118, 172],
+    "categorized": [47],
+    "into": [48],
+    "four": [49],
+    "categories:": [50],
+    "underweight,": [51],
+    "normal,": [52],
+    "overweight,": [53],
+    "obese.": [55],
+    "Mode": [56],
+    "delivery,": [58],
+    "gestational": [59],
+    "diabetes,": [60, 132],
+    "hypertensive": [61],
+    "diseases,": [62],
+    "obstetric": [63, 130],
+    "cholestasis,": [64, 131],
+    "postpartum": [66, 133],
+    "hemorrhage": [67],
+    "main": [70],
+    "maternal": [71, 241],
+    "outcome": [72, 76],
+    "measures.": [73],
+    "The": [74, 88, 99, 126, 201],
+    "newborn": [75],
+    "indicators": [77],
+    "birth": [79],
+    "weight,": [80],
+    "NICU": [81],
+    "hospitalization,": [82],
+    "premature": [83],
+    "birth,": [84],
+    "stillbirth.": [86],
+    "Results": [87],
+    "study": [89],
+    "sample": [90, 103, 225],
+    "included": [91],
+    "2,352": [92],
+    "natives": [93],
+    "(25%)": [94],
+    "7,058": [96],
+    "expatriates": [97],
+    "(75%).": [98],
+    "majority": [100],
+    "(4726)": [104],
+    "aged": [106, 111, 119],
+    "20-29": [107],
+    "years,": [108, 113],
+    "43.6%": [109],
+    "30-39": [112],
+    "2.1%": [115],
+    "3.9%": [117],
+    "19": [120],
+    "years": [121, 124],
+    "40": [123],
+    "respectively.": [125],
+    "incidence": [127, 148],
+    "hypertension,": [129],
+    "hemorrhage,": [134],
+    "cesarean": [136],
+    "section": [137],
+    "varied": [138],
+    "among": [139],
+    "entire": [141],
+    "sample.": [142],
+    "In": [143],
+    "underweight": [145, 202],
+    "group,": [146],
+    "CS": [150],
+    "was": [151],
+    "15.7%,": [152],
+    "in": [153, 159, 165, 177, 181, 223],
+    "normal": [155, 199],
+    "weight": [156, 207],
+    "group": [157, 162, 168],
+    "(24.9%),": [158],
+    "overweight": [161],
+    "(31.3%),": [163],
+    "obese": [167, 178, 188, 212, 228],
+    "(41%).": [169],
+    "Hypertensive": [170],
+    "disorders": [171],
+    "3": [173],
+    "times": [174],
+    "more": [175],
+    "prevalent": [176],
+    "than": [180],
+    "normal-weight": [182],
+    "(2%),": [184],
+    "5.3%": [186],
+    "had": [190],
+    "PPH": [191],
+    "compared": [192],
+    "5.": [194],
+    "6%": [195],
+    "weight.": [200],
+    "groups": [203],
+    "gained": [204, 213],
+    "most": [206],
+    "during": [208, 235],
+    "pregnancy,": [209],
+    "whereas": [210],
+    "least.": [215],
+    "Conclusions": [216],
+    "significant": [218],
+    "proportion": [219],
+    "pregnant": [221],
+    "our": [224],
+    "will": [226],
+    "become": [227],
+    "by": [229],
+    "time": [231],
+    "delivery.": [233],
+    "is": [237],
+    "associated": [238],
+    "with": [239],
+    "negative": [240],
+    "fetal": [243],
+    "outcomes.": [244]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4362237175",
   "counts_by_year": [

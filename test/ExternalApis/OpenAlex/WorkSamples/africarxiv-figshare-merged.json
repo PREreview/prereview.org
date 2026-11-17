@@ -28,9 +28,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I4210132348",
       "host_organization_name": "Figshare (United Kingdom)",
-      "host_organization_lineage": [
-        "https://openalex.org/I4210132348"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I4210132348"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -43,15 +41,11 @@
     "raw_type": "Text"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W6920782462"
-  ],
+  "lineage": ["https://openalex.org/W6920782462"],
   "child_works_count": 0,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "datacite"
-  ],
+  "indexed_in": ["datacite"],
   "open_access": {
     "is_oa": true,
     "oa_status": "green",
@@ -81,9 +75,7 @@
         "id": "https://openalex.org/A5027580470",
         "display_name": "Lamis Yahia Mohamed Elkheir",
         "orcid": "https://orcid.org/0000-0002-3516-334X",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-3516-334X"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-3516-334X"]
       },
       "institutions": [],
       "countries": [],
@@ -99,9 +91,7 @@
         "id": null,
         "display_name": "Raimi, Morufu Olalekan",
         "orcid": "https://orcid.org/0000-0001-5042-6729",
-        "observed_orcids": [
-          "https://orcid.org/0000-0001-5042-6729"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0001-5042-6729"]
       },
       "institutions": [
         {
@@ -110,26 +100,18 @@
           "ror": "https://ror.org/0029f7m05",
           "country_code": "US",
           "type": "nonprofit",
-          "lineage": [
-            "https://openalex.org/I250102252"
-          ]
+          "lineage": ["https://openalex.org/I250102252"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Raimi, Morufu Olalekan",
-      "raw_affiliation_strings": [
-        "Geological Society of America"
-      ],
+      "raw_affiliation_strings": ["Geological Society of America"],
       "raw_orcid": "https://orcid.org/0000-0001-5042-6729",
       "affiliations": [
         {
           "raw_affiliation_string": "Geological Society of America",
-          "institution_ids": [
-            "https://openalex.org/I250102252"
-          ]
+          "institution_ids": ["https://openalex.org/I250102252"]
         }
       ]
     },
@@ -187,9 +169,7 @@
         "id": "https://openalex.org/A5092074031",
         "display_name": "Femi Qudus Arogundade",
         "orcid": "https://orcid.org/0000-0002-9222-1817",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-9222-1817"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-9222-1817"]
       },
       "institutions": [],
       "countries": [],
@@ -205,9 +185,7 @@
         "id": "https://openalex.org/A5059687245",
         "display_name": "Elizabeth A. Ochola",
         "orcid": "https://orcid.org/0000-0002-8435-3115",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-8435-3115"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-8435-3115"]
       },
       "institutions": [],
       "countries": [],
@@ -522,9 +500,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I4210132348",
         "host_organization_name": "Figshare (United Kingdom)",
-        "host_organization_lineage": [
-          "https://openalex.org/I4210132348"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I4210132348"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -553,9 +529,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I4210132348",
         "host_organization_name": "Figshare (United Kingdom)",
-        "host_organization_lineage": [
-          "https://openalex.org/I4210132348"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I4210132348"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -584,9 +558,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I4210132348",
         "host_organization_name": "Figshare (United Kingdom)",
-        "host_organization_lineage": [
-          "https://openalex.org/I4210132348"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I4210132348"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -616,9 +588,7 @@
       "listed_in": [],
       "host_organization": "https://openalex.org/I4210132348",
       "host_organization_name": "Figshare (United Kingdom)",
-      "host_organization_lineage": [
-        "https://openalex.org/I4210132348"
-      ],
+      "host_organization_lineage": ["https://openalex.org/I4210132348"],
       "host_organization_lineage_names": [],
       "type": "repository"
     },
@@ -660,80 +630,30 @@
     "https://openalex.org/W2955386582"
   ],
   "abstract_inverted_index": {
-    "This": [
-      0
-    ],
-    "manuscrip": [
-      1
-    ],
-    "presents": [
-      2
-    ],
-    "10": [
-      3
-    ],
-    "practical": [
-      4
-    ],
-    "and": [
-      5,
-      11,
-      21
-    ],
-    "sustainable": [
-      6
-    ],
-    "steps": [
-      7
-    ],
-    "that": [
-      8
-    ],
-    "if": [
-      9
-    ],
-    "followed": [
-      10
-    ],
-    "built": [
-      12
-    ],
-    "upon": [
-      13
-    ],
-    "will": [
-      14
-    ],
-    "enhance": [
-      15
-    ],
-    "successful": [
-      16
-    ],
-    "collaboration": [
-      17
-    ],
-    "between": [
-      18
-    ],
-    "African": [
-      19
-    ],
-    "researchers": [
-      20
-    ],
-    "the": [
-      22
-    ],
-    "international": [
-      23
-    ],
-    "research": [
-      24
-    ],
-    "community.": [
-      25
-    ]
+    "This": [0],
+    "manuscrip": [1],
+    "presents": [2],
+    "10": [3],
+    "practical": [4],
+    "and": [5, 11, 21],
+    "sustainable": [6],
+    "steps": [7],
+    "that": [8],
+    "if": [9],
+    "followed": [10],
+    "built": [12],
+    "upon": [13],
+    "will": [14],
+    "enhance": [15],
+    "successful": [16],
+    "collaboration": [17],
+    "between": [18],
+    "African": [19],
+    "researchers": [20],
+    "the": [22],
+    "international": [23],
+    "research": [24],
+    "community.": [25]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W6920782462",
   "counts_by_year": [],

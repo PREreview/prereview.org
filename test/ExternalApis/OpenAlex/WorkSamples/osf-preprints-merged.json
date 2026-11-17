@@ -23,9 +23,7 @@
       "id": "https://openalex.org/S1336409049",
       "display_name": "eLife",
       "issn_l": "2050-084X",
-      "issn": [
-        "2050-084X"
-      ],
+      "issn": ["2050-084X"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -45,12 +43,8 @@
       ],
       "host_organization": "https://openalex.org/P4310311710",
       "host_organization_name": "eLife Sciences Publications Ltd",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310311710"
-      ],
-      "host_organization_lineage_names": [
-        "eLife Sciences Publications Ltd"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310311710"],
+      "host_organization_lineage_names": ["eLife Sciences Publications Ltd"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -62,17 +56,11 @@
     "raw_type": "journal-article"
   },
   "parent_works": [],
-  "lineage": [
-    "https://openalex.org/W4310113674"
-  ],
+  "lineage": ["https://openalex.org/W4310113674"],
   "child_works_count": 0,
   "type": "article",
   "is_traditional": true,
-  "indexed_in": [
-    "crossref",
-    "doaj",
-    "pubmed"
-  ],
+  "indexed_in": ["crossref", "doaj", "pubmed"],
   "open_access": {
     "is_oa": true,
     "oa_status": "gold",
@@ -86,9 +74,7 @@
         "id": "https://openalex.org/A5070189524",
         "display_name": "Christine Yifeng Chen",
         "orcid": "https://orcid.org/0000-0002-9580-6925",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-9580-6925"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-9580-6925"]
       },
       "institutions": [
         {
@@ -110,14 +96,10 @@
           "ror": "https://ror.org/046rm7j60",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I161318765"
-          ]
+          "lineage": ["https://openalex.org/I161318765"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Christine Y Chen",
       "raw_affiliation_strings": [
@@ -130,28 +112,19 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Center for Diverse Leadership in Science , University of California , Los Angeles ; Los Angeles , CA , USA",
-          "institution_ids": [
-            "https://openalex.org/I161318765"
-          ]
+          "institution_ids": ["https://openalex.org/I161318765"]
         },
         {
           "raw_affiliation_string": "Chemical and Isotopic Signatures Group , Division of Nuclear and Chemical Sciences , Lawrence Livermore National Laboratory ; Livermore , CA , USA",
-          "institution_ids": [
-            "https://openalex.org/I1282311441"
-          ]
+          "institution_ids": ["https://openalex.org/I1282311441"]
         },
         {
           "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles",
-          "institution_ids": [
-            "https://openalex.org/I161318765"
-          ]
+          "institution_ids": ["https://openalex.org/I161318765"]
         },
         {
           "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles; Chemical and Isotopic Signatures Group, Division of Nuclear and Chemical Sciences, Lawrence Livermore National Laboratory",
-          "institution_ids": [
-            "https://openalex.org/I1282311441",
-            "https://openalex.org/I161318765"
-          ]
+          "institution_ids": ["https://openalex.org/I1282311441", "https://openalex.org/I161318765"]
         }
       ]
     },
@@ -161,9 +134,7 @@
         "id": "https://openalex.org/A5014895892",
         "display_name": "Sara S. Kahanamoku",
         "orcid": "https://orcid.org/0000-0003-4157-4791",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-4157-4791"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-4157-4791"]
       },
       "institutions": [
         {
@@ -172,14 +143,10 @@
           "ror": "https://ror.org/01an7q238",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I95457486"
-          ]
+          "lineage": ["https://openalex.org/I95457486"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Sara S. Kahanamoku",
       "raw_affiliation_strings": [
@@ -190,15 +157,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Integrative Biology and Museum of Paleontology , University of California , Berkeley ; Berkeley , CA , USA",
-          "institution_ids": [
-            "https://openalex.org/I95457486"
-          ]
+          "institution_ids": ["https://openalex.org/I95457486"]
         },
         {
           "raw_affiliation_string": "Department of Integrative Biology and Museum of Paleontology, University of California, Berkeley",
-          "institution_ids": [
-            "https://openalex.org/I95457486"
-          ]
+          "institution_ids": ["https://openalex.org/I95457486"]
         }
       ]
     },
@@ -208,9 +171,7 @@
         "id": "https://openalex.org/A5000983151",
         "display_name": "Aradhna Tripati",
         "orcid": "https://orcid.org/0000-0002-1695-1754",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-1695-1754"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-1695-1754"]
       },
       "institutions": [
         {
@@ -219,9 +180,7 @@
           "ror": "https://ror.org/046rm7j60",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I161318765"
-          ]
+          "lineage": ["https://openalex.org/I161318765"]
         },
         {
           "id": "https://openalex.org/I36234482",
@@ -229,15 +188,10 @@
           "ror": "https://ror.org/0524sp257",
           "country_code": "GB",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I36234482"
-          ]
+          "lineage": ["https://openalex.org/I36234482"]
         }
       ],
-      "countries": [
-        "GB",
-        "US"
-      ],
+      "countries": ["GB", "US"],
       "is_corresponding": false,
       "raw_author_name": "Aradhna Tripati",
       "raw_affiliation_strings": [
@@ -249,22 +203,15 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles; Department of Earth Sciences, University of Bristol; Department of Earth, Planetary, and Space Sciences, Department of Atmospheric and Oceanic Sciences, Institute of the Environment and Sustainability, and American Indian Studies Center, University of California, Los Angeles",
-          "institution_ids": [
-            "https://openalex.org/I161318765",
-            "https://openalex.org/I36234482"
-          ]
+          "institution_ids": ["https://openalex.org/I161318765", "https://openalex.org/I36234482"]
         },
         {
           "raw_affiliation_string": "Department of Earth Sciences, University of Bristol",
-          "institution_ids": [
-            "https://openalex.org/I36234482"
-          ]
+          "institution_ids": ["https://openalex.org/I36234482"]
         },
         {
           "raw_affiliation_string": "Department of Earth, Planetary, and Space Sciences, Department of Atmospheric and Oceanic Sciences, Institute of the Environment and Sustainability, and American Indian Studies Center, University of California, Los Angeles",
-          "institution_ids": [
-            "https://openalex.org/I161318765"
-          ]
+          "institution_ids": ["https://openalex.org/I161318765"]
         }
       ]
     },
@@ -274,9 +221,7 @@
         "id": "https://openalex.org/A5016090464",
         "display_name": "Rosanna ʻAnolani Alegado",
         "orcid": "https://orcid.org/0000-0003-3615-5613",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-3615-5613"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-3615-5613"]
       },
       "institutions": [
         {
@@ -285,9 +230,7 @@
           "ror": "https://ror.org/01wspgy28",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I117965899"
-          ]
+          "lineage": ["https://openalex.org/I117965899"]
         },
         {
           "id": "https://openalex.org/I4210154776",
@@ -305,9 +248,7 @@
           ]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Rosanna A. Alegado",
       "raw_affiliation_strings": [
@@ -318,16 +259,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of Oceanography and Sea Grant College Program , Daniel K. Inouye Center for Microbial Oceanogra- phy: Research and Education , University of Hawaiʻi at Mānoa ; Honolulu , HI , USA",
-          "institution_ids": [
-            "https://openalex.org/I117965899",
-            "https://openalex.org/I4210154776"
-          ]
+          "institution_ids": ["https://openalex.org/I117965899", "https://openalex.org/I4210154776"]
         },
         {
           "raw_affiliation_string": "Department of Oceanography and Sea Grant College Program, Daniel K Inouye Center for Microbial Oceanography: Research and Education, University of Hawaiʻi at Mānoa",
-          "institution_ids": [
-            "https://openalex.org/I117965899"
-          ]
+          "institution_ids": ["https://openalex.org/I117965899"]
         }
       ]
     },
@@ -337,9 +273,7 @@
         "id": "https://openalex.org/A5032466196",
         "display_name": "Vernon R. Morris",
         "orcid": "https://orcid.org/0000-0002-6828-4017",
-        "observed_orcids": [
-          "https://orcid.org/0000-0002-6828-4017"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0002-6828-4017"]
       },
       "institutions": [
         {
@@ -348,14 +282,10 @@
           "ror": "https://ror.org/03efmqc40",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I55732556"
-          ]
+          "lineage": ["https://openalex.org/I55732556"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Vernon R. Morris",
       "raw_affiliation_strings": [
@@ -366,15 +296,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "School of Mathematical and Natural Sciences , New College of Interdisciplinary Arts and Sciences , Arizona State University ; Phoenix , AZ , USA",
-          "institution_ids": [
-            "https://openalex.org/I55732556"
-          ]
+          "institution_ids": ["https://openalex.org/I55732556"]
         },
         {
           "raw_affiliation_string": "School of Mathematical and Natural Sciences, New College of Interdisciplinary Arts and Sciences, Arizona State University",
-          "institution_ids": [
-            "https://openalex.org/I55732556"
-          ]
+          "institution_ids": ["https://openalex.org/I55732556"]
         }
       ]
     },
@@ -393,14 +319,10 @@
           "ror": "https://ror.org/046rm7j60",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I161318765"
-          ]
+          "lineage": ["https://openalex.org/I161318765"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Karen Andrade",
       "raw_affiliation_strings": [
@@ -411,15 +333,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Center for Diverse Leadership in Science , University of California , Los Angeles ; Los Angeles , CA , USA",
-          "institution_ids": [
-            "https://openalex.org/I161318765"
-          ]
+          "institution_ids": ["https://openalex.org/I161318765"]
         },
         {
           "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles",
-          "institution_ids": [
-            "https://openalex.org/I161318765"
-          ]
+          "institution_ids": ["https://openalex.org/I161318765"]
         }
       ]
     },
@@ -429,9 +347,7 @@
         "id": "https://openalex.org/A5054351690",
         "display_name": "Justin Hosbey",
         "orcid": "https://orcid.org/0000-0003-0947-4002",
-        "observed_orcids": [
-          "https://orcid.org/0000-0003-0947-4002"
-        ]
+        "observed_orcids": ["https://orcid.org/0000-0003-0947-4002"]
       },
       "institutions": [
         {
@@ -440,14 +356,10 @@
           "ror": "https://ror.org/01an7q238",
           "country_code": "US",
           "type": "education",
-          "lineage": [
-            "https://openalex.org/I95457486"
-          ]
+          "lineage": ["https://openalex.org/I95457486"]
         }
       ],
-      "countries": [
-        "US"
-      ],
+      "countries": ["US"],
       "is_corresponding": false,
       "raw_author_name": "Justin Hosbey",
       "raw_affiliation_strings": [
@@ -458,15 +370,11 @@
       "affiliations": [
         {
           "raw_affiliation_string": "Department of City and Regional Planning , College of Environmental Design , University of California , Berkeley ; Berkeley , CA , USA",
-          "institution_ids": [
-            "https://openalex.org/I95457486"
-          ]
+          "institution_ids": ["https://openalex.org/I95457486"]
         },
         {
           "raw_affiliation_string": "Department of City and Regional Planning, College of Environmental Design, University of California, Berkeley",
-          "institution_ids": [
-            "https://openalex.org/I95457486"
-          ]
+          "institution_ids": ["https://openalex.org/I95457486"]
         }
       ]
     }
@@ -752,9 +660,7 @@
         "id": "https://openalex.org/S1336409049",
         "display_name": "eLife",
         "issn_l": "2050-084X",
-        "issn": [
-          "2050-084X"
-        ],
+        "issn": ["2050-084X"],
         "is_oa": true,
         "is_in_doaj": true,
         "is_core": true,
@@ -774,12 +680,8 @@
         ],
         "host_organization": "https://openalex.org/P4310311710",
         "host_organization_name": "eLife Sciences Publications Ltd",
-        "host_organization_lineage": [
-          "https://openalex.org/P4310311710"
-        ],
-        "host_organization_lineage_names": [
-          "eLife Sciences Publications Ltd"
-        ],
+        "host_organization_lineage": ["https://openalex.org/P4310311710"],
+        "host_organization_lineage_names": ["eLife Sciences Publications Ltd"],
         "type": "journal"
       },
       "license": "cc-by",
@@ -807,9 +709,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -838,9 +738,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I1299303238",
         "host_organization_name": "National Institutes of Health",
-        "host_organization_lineage": [
-          "https://openalex.org/I1299303238"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1299303238"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -869,9 +767,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I1299303238",
         "host_organization_name": "National Institutes of Health",
-        "host_organization_lineage": [
-          "https://openalex.org/I1299303238"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I1299303238"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -929,9 +825,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2801248553",
         "host_organization_name": "California Digital Library",
-        "host_organization_lineage": [
-          "https://openalex.org/I2801248553"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2801248553"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -989,9 +883,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I139351228",
         "host_organization_name": "Office of Scientific and Technical Information",
-        "host_organization_lineage": [
-          "https://openalex.org/I139351228"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I139351228"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1020,9 +912,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I139351228",
         "host_organization_name": "Office of Scientific and Technical Information",
-        "host_organization_lineage": [
-          "https://openalex.org/I139351228"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I139351228"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1051,9 +941,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I139351228",
         "host_organization_name": "Office of Scientific and Technical Information",
-        "host_organization_lineage": [
-          "https://openalex.org/I139351228"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I139351228"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1082,9 +970,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1113,9 +999,7 @@
         "listed_in": [],
         "host_organization": "https://openalex.org/I2799848540",
         "host_organization_name": "Center for Open Science",
-        "host_organization_lineage": [
-          "https://openalex.org/I2799848540"
-        ],
+        "host_organization_lineage": ["https://openalex.org/I2799848540"],
         "host_organization_lineage_names": [],
         "type": "repository"
       },
@@ -1138,9 +1022,7 @@
       "id": "https://openalex.org/S1336409049",
       "display_name": "eLife",
       "issn_l": "2050-084X",
-      "issn": [
-        "2050-084X"
-      ],
+      "issn": ["2050-084X"],
       "is_oa": true,
       "is_in_doaj": true,
       "is_core": true,
@@ -1160,12 +1042,8 @@
       ],
       "host_organization": "https://openalex.org/P4310311710",
       "host_organization_name": "eLife Sciences Publications Ltd",
-      "host_organization_lineage": [
-        "https://openalex.org/P4310311710"
-      ],
-      "host_organization_lineage_names": [
-        "eLife Sciences Publications Ltd"
-      ],
+      "host_organization_lineage": ["https://openalex.org/P4310311710"],
+      "host_organization_lineage_names": ["eLife Sciences Publications Ltd"],
       "type": "journal"
     },
     "license": "cc-by",
@@ -1454,371 +1332,114 @@
     "https://openalex.org/W3091326690"
   ],
   "abstract_inverted_index": {
-    "Concerns": [
-      0
-    ],
-    "about": [
-      1
-    ],
-    "systemic": [
-      2
-    ],
-    "racism": [
-      3
-    ],
-    "at": [
-      4,
-      50
-    ],
-    "academic": [
-      5
-    ],
-    "and": [
-      6,
-      34,
-      83,
-      122,
-      147
-    ],
-    "research": [
-      7,
-      29,
-      87,
-      111
-    ],
-    "institutions": [
-      8
-    ],
-    "have": [
-      9,
-      62,
-      106,
-      130
-    ],
-    "increased": [
-      10
-    ],
-    "over": [
-      11
-    ],
-    "the": [
-      12,
-      20,
-      31,
-      81
-    ],
-    "past": [
-      13
-    ],
-    "decade.": [
-      14
-    ],
-    "Here,": [
-      15
-    ],
-    "we": [
-      16
-    ],
-    "investigate": [
-      17
-    ],
-    "data": [
-      18
-    ],
-    "from": [
-      19
-    ],
-    "National": [
-      21
-    ],
-    "Science": [
-      22
-    ],
-    "Foundation": [
-      23
-    ],
-    "(NSF),": [
-      24
-    ],
-    "a": [
-      25,
-      135
-    ],
-    "major": [
-      26
-    ],
-    "funder": [
-      27
-    ],
-    "of": [
-      28,
-      91,
-      124,
-      143
-    ],
-    "in": [
-      30,
-      109,
-      128
-    ],
-    "United": [
-      32
-    ],
-    "States,": [
-      33
-    ],
-    "find": [
-      35
-    ],
-    "evidence": [
-      36
-    ],
-    "for": [
-      37,
-      59,
-      86
-    ],
-    "pervasive": [
-      38
-    ],
-    "racial": [
-      39,
-      116,
-      126
-    ],
-    "disparities.": [
-      40
-    ],
-    "In": [
-      41
-    ],
-    "particular,": [
-      42
-    ],
-    "white": [
-      43,
-      60,
-      139
-    ],
-    "principal": [
-      44
-    ],
-    "investigators": [
-      45
-    ],
-    "(PIs)": [
-      46
-    ],
-    "are": [
-      47,
-      84,
-      118
-    ],
-    "consistently": [
-      48
-    ],
-    "funded": [
-      49
-    ],
-    "higher": [
-      51
-    ],
-    "rates": [
-      52,
-      58,
-      70
-    ],
-    "than": [
-      53
-    ],
-    "most": [
-      54
-    ],
-    "non-white": [
-      55
-    ],
-    "PIs.": [
-      56
-    ],
-    "Funding": [
-      57
-    ],
-    "PIs": [
-      61,
-      140
-    ],
-    "also": [
-      63,
-      96
-    ],
-    "been": [
-      64,
-      107
-    ],
-    "increasing": [
-      65
-    ],
-    "relative": [
-      66
-    ],
-    "to": [
-      67,
-      138
-    ],
-    "annual": [
-      68
-    ],
-    "overall": [
-      69
-    ],
-    "with": [
-      71
-    ],
-    "time.": [
-      72
-    ],
-    "Moreover,": [
-      73
-    ],
-    "disparities": [
-      74,
-      117,
-      127
-    ],
-    "occur": [
-      75
-    ],
-    "across": [
-      76,
-      141
-    ],
-    "all": [
-      77,
-      142
-    ],
-    "disciplinary": [
-      78
-    ],
-    "directorates": [
-      79
-    ],
-    "within": [
-      80
-    ],
-    "NSF": [
-      82
-    ],
-    "greater": [
-      85
-    ],
-    "proposals.": [
-      88
-    ],
-    "The": [
-      89,
-      120
-    ],
-    "distributions": [
-      90
-    ],
-    "average": [
-      92
-    ],
-    "external": [
-      93
-    ],
-    "review": [
-      94
-    ],
-    "scores": [
-      95
-    ],
-    "exhibit": [
-      97
-    ],
-    "systematic": [
-      98
-    ],
-    "offsets": [
-      99
-    ],
-    "based": [
-      100
-    ],
-    "on": [
-      101
-    ],
-    "PI": [
-      102
-    ],
-    "race.": [
-      103
-    ],
-    "Similar": [
-      104
-    ],
-    "patterns": [
-      105
-    ],
-    "described": [
-      108
-    ],
-    "other": [
-      110
-    ],
-    "funding": [
-      112,
-      129
-    ],
-    "bodies,": [
-      113
-    ],
-    "suggesting": [
-      114
-    ],
-    "that": [
-      115,
-      133
-    ],
-    "widespread.": [
-      119
-    ],
-    "prevalence": [
-      121
-    ],
-    "persistence": [
-      123
-    ],
-    "these": [
-      125
-    ],
-    "cascading": [
-      131
-    ],
-    "impacts": [
-      132
-    ],
-    "perpetuate": [
-      134
-    ],
-    "cumulative": [
-      136
-    ],
-    "advantage": [
-      137
-    ],
-    "science,": [
-      144
-    ],
-    "technology,": [
-      145
-    ],
-    "engineering,": [
-      146
-    ],
-    "mathematics.": [
-      148
-    ]
+    "Concerns": [0],
+    "about": [1],
+    "systemic": [2],
+    "racism": [3],
+    "at": [4, 50],
+    "academic": [5],
+    "and": [6, 34, 83, 122, 147],
+    "research": [7, 29, 87, 111],
+    "institutions": [8],
+    "have": [9, 62, 106, 130],
+    "increased": [10],
+    "over": [11],
+    "the": [12, 20, 31, 81],
+    "past": [13],
+    "decade.": [14],
+    "Here,": [15],
+    "we": [16],
+    "investigate": [17],
+    "data": [18],
+    "from": [19],
+    "National": [21],
+    "Science": [22],
+    "Foundation": [23],
+    "(NSF),": [24],
+    "a": [25, 135],
+    "major": [26],
+    "funder": [27],
+    "of": [28, 91, 124, 143],
+    "in": [30, 109, 128],
+    "United": [32],
+    "States,": [33],
+    "find": [35],
+    "evidence": [36],
+    "for": [37, 59, 86],
+    "pervasive": [38],
+    "racial": [39, 116, 126],
+    "disparities.": [40],
+    "In": [41],
+    "particular,": [42],
+    "white": [43, 60, 139],
+    "principal": [44],
+    "investigators": [45],
+    "(PIs)": [46],
+    "are": [47, 84, 118],
+    "consistently": [48],
+    "funded": [49],
+    "higher": [51],
+    "rates": [52, 58, 70],
+    "than": [53],
+    "most": [54],
+    "non-white": [55],
+    "PIs.": [56],
+    "Funding": [57],
+    "PIs": [61, 140],
+    "also": [63, 96],
+    "been": [64, 107],
+    "increasing": [65],
+    "relative": [66],
+    "to": [67, 138],
+    "annual": [68],
+    "overall": [69],
+    "with": [71],
+    "time.": [72],
+    "Moreover,": [73],
+    "disparities": [74, 117, 127],
+    "occur": [75],
+    "across": [76, 141],
+    "all": [77, 142],
+    "disciplinary": [78],
+    "directorates": [79],
+    "within": [80],
+    "NSF": [82],
+    "greater": [85],
+    "proposals.": [88],
+    "The": [89, 120],
+    "distributions": [90],
+    "average": [92],
+    "external": [93],
+    "review": [94],
+    "scores": [95],
+    "exhibit": [97],
+    "systematic": [98],
+    "offsets": [99],
+    "based": [100],
+    "on": [101],
+    "PI": [102],
+    "race.": [103],
+    "Similar": [104],
+    "patterns": [105],
+    "described": [108],
+    "other": [110],
+    "funding": [112, 129],
+    "bodies,": [113],
+    "suggesting": [114],
+    "that": [115, 133],
+    "widespread.": [119],
+    "prevalence": [121],
+    "persistence": [123],
+    "these": [125],
+    "cascading": [131],
+    "impacts": [132],
+    "perpetuate": [134],
+    "cumulative": [136],
+    "advantage": [137],
+    "science,": [144],
+    "technology,": [145],
+    "engineering,": [146],
+    "mathematics.": [148]
   },
   "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4310113674",
   "counts_by_year": [
