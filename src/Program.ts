@@ -58,10 +58,8 @@ const Workers = Layer.mergeAll(
 
 const Domain = pipe(
   PreprintReviews.workflowsLayer,
-  Layer.provideMerge(
-    Layer.mergeAll(AuthorInvites.layer, Comments.layer, PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer),
-  ),
-  Layer.provideMerge(DatasetReviews.layer),
+  Layer.provideMerge(Layer.mergeAll(AuthorInvites.layer, Comments.layer, Prereviews.layer, ReviewRequests.layer)),
+  Layer.provideMerge(Layer.mergeAll(DatasetReviews.layer, PreprintReviews.layer)),
   Layer.provideMerge(Prereviewers.layer),
   Layer.provideMerge(ContactEmailAddresses.layer),
 )
