@@ -43,12 +43,13 @@ export const requestCollapsingHttpClient = Effect.gen(function* () {
 
       openRequests.set(key, deferred)
 
-      return yield* pipe(
+      yield* pipe(
         Deferred.complete(deferred, httpClient.execute(request)),
-        Effect.uninterruptible,
-        Effect.andThen(Deferred.await(deferred)),
         Effect.ensuring(Effect.sync(() => openRequests.delete(key))),
+        Effect.forkDetach,
       )
+
+      return yield* Deferred.await(deferred)
     }),
     Effect.succeed,
   )

@@ -1,6 +1,6 @@
 import { HttpClient, type HttpClientError, HttpClientResponse } from 'effect/http'
 import { describe, expect, it } from './vitest.ts'
-import { type Duration, Effect, Exit, Fiber, pipe } from 'effect'
+import { Cause, type Duration, Effect, Exit, Fiber, pipe } from 'effect'
 import { TestClock } from 'effect/testing'
 import * as _ from '../src/RequestCollapsingHttpClient.ts'
 
@@ -58,6 +58,25 @@ describe('requestCollapsingHttpClient', () => {
 
       expect(Exit.hasInterrupts(actual1)).toBeTruthy()
       expect(Exit.isSuccess(actual2)).toBeTruthy()
+    }),
+  )
+
+  it.effect("doesn't wait for the response when interrupted", () =>
+    Effect.gen(function* () {
+      const client = yield* pipe(
+        _.requestCollapsingHttpClient,
+        Effect.provideService(
+          HttpClient.HttpClient,
+          stubbedClient(() => new Response(), '30 seconds'),
+        ),
+      )
+
+      const response = yield* Effect.forkChild(Effect.timeout(client.get('http://example.com'), '2 seconds'))
+      yield* TestClock.adjust('2 seconds')
+
+      const actual = yield* Fiber.await(response)
+
+      expect(actual).toStrictEqual(Exit.fail(new Cause.TimeoutError("Operation timed out after '2s'")))
     }),
   )
 
