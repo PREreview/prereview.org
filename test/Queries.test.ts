@@ -68,6 +68,17 @@ describe('makeOnDemandQuery', () => {
     }),
   )
 
+  it.effect('leaves out fields without a value', () =>
+    Effect.gen(function* () {
+      const spans = yield* run(
+        query(Schema.Struct({ id: Schema.NumberFromString, tag: Schema.optional(Schema.String) })),
+        { id: 123, tag: undefined },
+      )
+
+      expect(Object.keys(attributesOf(spans, 'Test.onDemandQuery'))).toStrictEqual(['input.id'])
+    }),
+  )
+
   it.effect('records a single encoded value on the span', () =>
     Effect.gen(function* () {
       const spans = yield* run(query(Schema.NumberFromString), 123)

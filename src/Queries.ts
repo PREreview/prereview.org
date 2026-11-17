@@ -10,8 +10,9 @@ import {
   Ref,
   Schema,
   Struct,
-  Tuple,
-  type Result,
+  Result,
+  Filter,
+  flow,
 } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
@@ -152,8 +153,12 @@ const toInputAttributes = (encoded: unknown): Record<string, unknown> => {
     return { input: toAttributeValue(encoded) }
   }
 
-  return Record.fromEntries(
-    Array.map(Object.entries(encoded), ([key, value]) => Tuple.make(`input.${key}`, toAttributeValue(value))),
+  return pipe(
+    encoded,
+    Record.filterMap(
+      pipe(Filter.fromPredicate(Predicate.isNotUndefined), Filter.compose(flow(toAttributeValue, Result.succeed))),
+    ),
+    Record.mapKeys(key => `input.${key}`),
   )
 }
 
