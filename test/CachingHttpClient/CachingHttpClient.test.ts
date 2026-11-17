@@ -58,6 +58,33 @@ describe('there is no cache entry', () => {
     )
 
     it.effect.prop(
+      'the caller stops waiting',
+      [
+        fc.httpClientResponse({
+          request: fc.httpClientRequest({ method: fc.constant('GET') }),
+          status: fc.constant(StatusCodes.OK),
+        }),
+        fc.durationInput(),
+      ],
+      ([response, timeToStale]) =>
+        Effect.gen(function* () {
+          const cache = new Map()
+          const client = yield* pipe(
+            _.CachingHttpClient(timeToStale),
+            Effect.provideService(HttpClient.HttpClient, stubbedClient(response, '1 second')),
+            Effect.provide(_.layerInMemory(cache)),
+          )
+
+          const fiber = yield* Effect.forkChild(client.execute(response.request))
+          yield* TestClock.adjust('500 millis')
+          yield* Fiber.interrupt(fiber)
+          yield* TestClock.adjust('500 millis')
+
+          expect(cache.size).toBe(1)
+        }).pipe(Effect.provide(emptyQueue)),
+    )
+
+    it.effect.prop(
       'not able to cache it',
       [fc.httpClientResponse(), fc.error(), fc.durationInput()],
       ([response, error, timeToStale]) =>

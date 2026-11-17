@@ -6,7 +6,20 @@ import {
   UrlParams,
   type HttpClientRequest,
 } from 'effect/http'
-import { Context, DateTime, Effect, Equal, flow, Function, Layer, Option, pipe, Queue, type Duration } from 'effect'
+import {
+  Context,
+  DateTime,
+  Effect,
+  Equal,
+  Fiber,
+  flow,
+  Function,
+  Layer,
+  Option,
+  pipe,
+  Queue,
+  type Duration,
+} from 'effect'
 import * as StatusCodes from '../StatusCodes.ts'
 import * as HttpCache from './HttpCache.ts'
 
@@ -97,6 +110,8 @@ export const CachingHttpClient: (
             orElse: () => Effect.void,
           }),
         ),
+        Effect.forkDetach,
+        Effect.flatMap(Fiber.join),
       )
     })
 
