@@ -9,6 +9,7 @@ import {
   type Prereview,
   WasPrereviewRemoved,
 } from '../../PreprintReviews/index.ts'
+import { getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { RecentDatasetPrereview, RecentPreprintPrereview } from '../Prereview.ts'
 import { ListRecentPrereviewIds, RecentPrereviewId } from './ListRecentPrereviewIds.ts'
 
@@ -52,8 +53,8 @@ const getRecentPreprintPrereview = flow(
           anonymous: prereview.authors.anonymous,
         },
         published: prereview.published,
-        fields: [],
-        subfields: [],
+        fields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicField)),
+        subfields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicSubfield)),
         preprint: {
           id: prereview.preprint.id,
           language: prereview.preprint.language,
