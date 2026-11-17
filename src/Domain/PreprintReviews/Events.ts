@@ -8,7 +8,7 @@ import { IndeterminatePreprintId } from '../Preprints/index.ts'
 import { Iso6391Schema } from '../../types/iso639.ts'
 import { InstantSchema, PlainDateSchema } from '../../types/Temporal.ts'
 import { NameSchema } from '../../types/Name.ts'
-import { SensitiveData } from '../../SensitiveData.ts'
+import { LazySensitiveData } from '../../SensitiveData.ts'
 import { TopicIdSchema } from '../../types/Topic.ts'
 
 export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImported>()('RapidPrereviewImported', {
@@ -88,9 +88,9 @@ export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImp
   addendum: Schema.optional(HtmlSchema),
   authors: Schema.NonEmptyArray(
     Schema.TaggedUnion({
-      PublicPersona: { name: SensitiveData(NameSchema), orcidId: OrcidId.OrcidIdSchema },
+      PublicPersona: { name: LazySensitiveData(NameSchema), orcidId: OrcidId.OrcidIdSchema },
       PseudonymPersona: { orcidId: OrcidId.OrcidIdSchema },
-      Unknown: { name: SensitiveData(NameSchema) },
+      Unknown: { name: LazySensitiveData(NameSchema) },
     }),
   ),
   otherAuthors: Schema.Int,

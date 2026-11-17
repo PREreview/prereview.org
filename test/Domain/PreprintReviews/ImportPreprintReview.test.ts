@@ -9,6 +9,7 @@ import { Uuid } from '../../../src/types/Uuid.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { BiorxivOrMedrxivPreprintId, BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { html } from '../../../src/html.ts'
+import { SensitiveDataReference } from '../../../src/SensitiveData.ts'
 
 const input = {
   authors: [
@@ -108,7 +109,25 @@ const inputWithDifferentPreprint = {
   preprint: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/fghij') }),
 } satisfies _.Input
 
+const inputWithDifferentAuthorOrcidId = {
+  ...input,
+  authors: [
+    { _tag: 'PublicPersona', name: Option.some(Name('Josiah Carberry')), orcidId: OrcidId('0000-0002-6109-0367') },
+  ],
+} satisfies _.Input
+
 const imported = new Events.PreprintReviewImported(input)
+
+const importedAndStored = new Events.PreprintReviewImported({
+  ...input,
+  authors: [
+    {
+      _tag: 'PublicPersona',
+      name: new SensitiveDataReference({ id: Uuid('c5f8a6a4-4a3e-4f3e-9a31-6f0b1b3f1f2c') }),
+      orcidId: OrcidId('0000-0002-1825-0097'),
+    },
+  ],
+})
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Result.succeedSome(imported)],
@@ -119,6 +138,13 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Op
     Result.succeedSome(imported),
   ],
   ['already import with same data', [imported], input, Result.succeedNone],
+  ['already imported and read back from the store', [importedAndStored], input, Result.succeedNone],
+  [
+    'already imported and read back from the store, with a different author',
+    [importedAndStored],
+    inputWithDifferentAuthorOrcidId,
+    Result.fail(new _.UnexpectedPreviousImport({ difference: 'authors' })),
+  ],
   [
     'already imported with different club',
     [imported],

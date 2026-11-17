@@ -2,6 +2,7 @@ import { Array, Data, Equal, type Equivalence, Match, Option, Result, Struct } f
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../Preprints/index.ts'
+import { SensitiveDataReference } from '../../SensitiveData.ts'
 import { Temporal } from '../../types/index.ts'
 
 export type Input = Omit<typeof Events.PreprintReviewImported.Type, '_tag'>
@@ -56,11 +57,31 @@ const findDifference = (
   previous: Events.PreprintReviewImported,
   current: Events.PreprintReviewImported,
 ): Option.Option<keyof Input> =>
-  Array.findFirst(Struct.keys(Struct.omit(Events.PreprintReviewImported.fields, ['_tag'])), key =>
-    key === 'published'
-      ? !PublishedEquivalence(previous.published, current.published)
-      : !Equal.equals(previous[key], current[key]),
-  )
+  Array.findFirst(Struct.keys(Struct.omit(Events.PreprintReviewImported.fields, ['_tag'])), key => {
+    if (key === 'published') {
+      return !PublishedEquivalence(previous.published, current.published)
+    }
+
+    if (key === 'authors') {
+      return !AuthorsEquivalence(previous.authors, current.authors)
+    }
+
+    return !Equal.equals(previous[key], current[key])
+  })
+
+const AuthorEquivalence: Equivalence.Equivalence<Input['authors'][number]> = (a, b) => {
+  if (
+    'name' in a &&
+    'name' in b &&
+    (a.name instanceof SensitiveDataReference || b.name instanceof SensitiveDataReference)
+  ) {
+    return Equal.equals(Struct.omit(a, ['name']), Struct.omit(b, ['name']))
+  }
+
+  return Equal.equals(a, b)
+}
+
+const AuthorsEquivalence = Array.makeEquivalence(AuthorEquivalence)
 
 const PublishedEquivalence: Equivalence.Equivalence<Input['published']> = (a, b) => {
   if (a instanceof Temporal.Instant && b instanceof Temporal.Instant) {
