@@ -18,6 +18,7 @@ import {
   type PrereviewIsUnavailable,
   type PrereviewWasRemoved,
 } from './GetPublishedPreprintReview/index.ts'
+import { GetAllPublishedPreprintReviews } from './GetAllPublishedPreprintReviews/index.ts'
 import { GetPublishedPreprintReviewsForAPreprint } from './GetPublishedPreprintReviewsForAPreprint/index.ts'
 import * as FormStore from './FormStore.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
@@ -44,6 +45,7 @@ export interface RapidPrereview {
 export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
+    getAllPublishedPreprintReviews: Effect.Effect<ReadonlyArray<Prereview>, Errors.PrereviewsAreUnavailable>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, Errors.PrereviewsAreUnavailable>
     getPreprintReview: (
       id: number,
@@ -78,7 +80,11 @@ export class PreprintReviews extends Context.Service<
     declareUseOfAi: ReturnType<typeof DeclareUseOfAi>
     importPreprintReview: Commands.FromCommand<typeof ImportPreprintReview>
   }
->()('PreprintReviews') {}
+>()('PreprintReviews') {
+  static readonly getAllPublishedPreprintReviews = Effect.suspend(() =>
+    PreprintReviews.use(service => service.getAllPublishedPreprintReviews),
+  )
+}
 
 export const getForPreprint = (...args: Parameters<(typeof PreprintReviews.Service)['getForPreprint']>) =>
   PreprintReviews.use(service => service.getForPreprint(...args))
@@ -147,6 +153,11 @@ export const layer = Layer.effect(
       Effect.map(Array.map(toPreprintPrereview)),
     )
 
+    const getAllPublishedPreprintReviews = Effect.map(
+      yield* GetAllPublishedPreprintReviews(getPublishedPreprintReview),
+      Array.map(fromPublishedPreprintReview),
+    )
+
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
       id: number,
     ) {
@@ -185,6 +196,9 @@ export const layer = Layer.effect(
     )
 
     return {
+      getAllPublishedPreprintReviews: featureFlags.useEventsForPreprintReviews
+        ? getAllPublishedPreprintReviews
+        : Effect.die('Not implemented with Zenodo'),
       getForPreprint: featureFlags.useEventsForPreprintReviews ? getForPreprint : getForPreprintFromZenodo,
       getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
       getRapidPrereviewsForAPreprint: id =>
