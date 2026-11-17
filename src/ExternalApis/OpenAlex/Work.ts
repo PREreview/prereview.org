@@ -11,6 +11,7 @@ export const WorkSchema = Schema.Struct({
   primary_location: Schema.OptionFromNullOr(
     Schema.Struct({
       landing_page_url: Schema.OptionFromNullOr(Schema.URLFromString),
+      source: Schema.OptionFromNullOr(Schema.Struct({ display_name: Schema.String })),
     }),
   ),
   abstract_inverted_index: Schema.OptionFromNullOr(Schema.Record(Schema.String, Schema.Array(Schema.Int))),
