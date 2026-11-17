@@ -50,6 +50,7 @@ export const fromPublishedPreprintReview = (review: PublishedPreprintReview): Pr
       Full: ({ text }) => text,
       Structured: ({ questions }) => renderStructuredQuestions(questions, locale),
     })}${renderCompetingInterests(review, locale)}${renderUseOfAi(review, locale)}`,
+    topics: review.topics,
   })
 }
 

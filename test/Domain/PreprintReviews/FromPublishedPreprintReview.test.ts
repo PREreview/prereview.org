@@ -38,7 +38,7 @@ const review = new PublishedPreprintReview({
   },
   published: Temporal.PlainDate.from('2026-11-10'),
   requested: false,
-  topics: [],
+  topics: ['11251', '12030'],
   useOfAi: { _tag: 'NotAnswered' },
 })
 
@@ -66,6 +66,7 @@ test('converts a full review', () => {
       requested: review.requested,
       structured: false,
       text: html`<p>Hello</p>`,
+      topics: review.topics,
     }),
   )
 })

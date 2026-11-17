@@ -7,6 +7,7 @@ import type { PreprintId } from '../Preprints/index.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
+import type { TopicId } from '../../types/Topic.ts'
 
 export class Prereview extends Data.TaggedClass('Prereview')<{
   addendum?: Html
@@ -30,6 +31,7 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   requested: boolean
   structured: boolean
   text: Html
+  topics?: ReadonlyArray<TopicId>
 }> {}
 
 export interface PreprintPrereview {
