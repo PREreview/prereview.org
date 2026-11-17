@@ -452,7 +452,7 @@ const UpdateTopics = pipe(GetTopics, Effect.tap(TopicsToTypesFile))
 const UpdateKeywords = pipe(GetKeywords, Effect.tap(KeywordsToTypesFile))
 
 void pipe(
-  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics]),
+  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics, UpdateKeywords]),
   Effect.provide(
     pipe(
       Layer.effect(
