@@ -66,7 +66,11 @@ const OpenTelemetry = Layer.unwrap(
     Boolean.match({
       onTrue: () =>
         Layer.mergeAll(
-          OtlpTracer.layer({ url: 'http://localhost:4318/v1/traces', resource: { serviceName: 'prereview' } }),
+          OtlpTracer.layer({
+            url: 'http://localhost:4318/v1/traces',
+            resource: { serviceName: 'prereview' },
+            exportInterval: '1 second',
+          }),
           OtlpLogger.layer({ url: 'http://localhost:4318/v1/logs', resource: { serviceName: 'prereview' } }),
         ).pipe(Layer.provide(OtlpSerialization.layerJson), Layer.provide(FetchHttpClient.layer)),
       onFalse: () => Layer.empty,
