@@ -82,6 +82,62 @@ describe('reviewsPage', () => {
   )
 
   it.effect.prop(
+    "when text search isn't available",
+    [
+      fc.supportedLocale(),
+      fc.integer(),
+      fc.option(fc.fieldId(), { nil: undefined }),
+      fc.nonEmptyString(),
+      fc.record({
+        currentPage: fc.integer(),
+        totalPages: fc.integer(),
+        field: fc.option(fc.fieldId(), { nil: undefined }),
+        recentPrereviews: fc.nonEmptyArray(
+          fc
+            .record({
+              id: fc.integer(),
+              reviewers: fc.record({
+                named: fc.nonEmptyArray(fc.name()),
+                anonymous: fc.integer({ min: 0 }),
+              }),
+              published: fc.plainDate(),
+              fields: fc.array(fc.fieldId()),
+              subfields: fc.array(fc.subfieldId()),
+              preprint: fc.preprintTitle(),
+            })
+            .map(args => new Prereviews.RecentPreprintPrereview(args)),
+        ),
+      }),
+    ],
+    ([locale, page, field, query, recentPrereviews]) =>
+      Effect.gen(function* () {
+        const getRecentPrereviews = vi.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(() =>
+          TE.right(recentPrereviews),
+        )
+
+        const actual = yield* Effect.promise(
+          _.reviewsPage({ canSearchByText: false, field, locale, page, query })({ getRecentPrereviews }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(reviewsMatch.formatter, {
+            page: recentPrereviews.currentPage,
+            field: recentPrereviews.field,
+          }),
+          current: 'reviews',
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          extraSkipLink: [expect.anything(), '#results'],
+          js: [],
+        })
+        expect(getRecentPrereviews).toHaveBeenCalledWith({ field, page, query: undefined })
+      }),
+  )
+
+  it.effect.prop(
     'when there are no reviews',
     [
       fc.supportedLocale(),

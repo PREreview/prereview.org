@@ -15,28 +15,35 @@ import { createPage, emptyPage } from './reviews-page.ts'
 export type { GetRecentPrereviewsEnv } from './recent-prereviews.ts'
 
 export const reviewsPage = ({
+  canSearchByText = true,
   field,
   language,
   locale,
   page,
-  query,
+  query: requestedQuery,
 }: {
+  canSearchByText?: boolean
   field?: FieldId
   language?: LanguageCode
   locale: SupportedLocale
   page: number
   query?: NonEmptyString
-}): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> =>
-  pipe(
+}): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> => {
+  const query = canSearchByText ? requestedQuery : undefined
+
+  return pipe(
     String(query).includes('%')
       ? RTE.left('not-found' as const)
       : getRecentPrereviews({ field, language, page, query }),
     RTE.matchW(
       error =>
         match(error)
-          .with('not-found', () => (page === 1 ? emptyPage({ field, language, query }, locale) : pageNotFound(locale)))
+          .with('not-found', () =>
+            page === 1 ? emptyPage({ field, language, query }, locale, { canSearchByText }) : pageNotFound(locale),
+          )
           .with('unavailable', () => failureMessage(locale))
           .exhaustive(),
-      prereviews => createPage(prereviews, locale),
+      prereviews => createPage(prereviews, locale, { canSearchByText }),
     ),
   )
+}

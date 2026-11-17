@@ -19,6 +19,7 @@ import { PageResponse } from '../Response/index.ts'
 export const createPage = (
   { currentPage, field, language, query, totalPages, recentPrereviews }: Prereviews.RecentPrereviews,
   locale: SupportedLocale,
+  { canSearchByText = true }: { canSearchByText?: boolean } = {},
 ) =>
   PageResponse({
     title: title({ currentPage, field, language, locale, query }),
@@ -26,7 +27,7 @@ export const createPage = (
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ field, language, locale, query })}
+      ${form({ canSearchByText, field, language, locale, query })}
 
       <ol class="cards" id="results">
         ${Array.map(
@@ -184,6 +185,7 @@ export const createPage = (
 export const emptyPage = (
   { field, language, query }: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString },
   locale: SupportedLocale,
+  { canSearchByText = true }: { canSearchByText?: boolean } = {},
 ) =>
   PageResponse({
     title: title({ currentPage: 1, field, language, locale, query }),
@@ -191,7 +193,7 @@ export const emptyPage = (
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ field, language, locale, query })}
+      ${form({ canSearchByText, field, language, locale, query })}
 
       <div class="inset" id="results">
         <p>${translate(locale, 'reviews-page', 'noResults')()}</p>
@@ -229,11 +231,13 @@ const title = ({
 }
 
 const form = ({
+  canSearchByText,
   field,
   language,
   locale,
   query,
 }: Pick<Prereviews.RecentPrereviews, 'field' | 'language' | 'query'> & {
+  canSearchByText: boolean
   locale: SupportedLocale
 }) => html`
   <form
@@ -245,17 +249,23 @@ const form = ({
   >
     <h2 class="visually-hidden" id="filter-label">${translate(locale, 'reviews-page', 'filterTitle')()}</h2>
     <input type="hidden" name="page" value="1" />
-    <div>
-      <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
-      <input
-        type="text"
-        placeholder=" "
-        dir="auto"
-        name="query"
-        id="query"
-        ${query === undefined ? '' : html`value="${query}"`}
-      />
-    </div>
+    ${
+      canSearchByText
+        ? html`
+            <div>
+              <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
+              <input
+                type="text"
+                placeholder=" "
+                dir="auto"
+                name="query"
+                id="query"
+                ${query === undefined ? '' : html`value="${query}"`}
+              />
+            </div>
+          `
+        : ''
+    }
     <div>
       <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>
       <div class="select">

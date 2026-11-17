@@ -341,7 +341,14 @@ const routerWithoutHyperTs = pipe(
       P.map(
         ({ field, language, page, query }) =>
           (env: Env) =>
-            reviewsPage({ field, language, locale: env.locale, page: page ?? 1, query })({
+            reviewsPage({
+              canSearchByText: !env.featureFlags.useEventsForPreprintReviews,
+              field,
+              language,
+              locale: env.locale,
+              page: page ?? 1,
+              query,
+            })({
               getRecentPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
                   Prereviews.search,
