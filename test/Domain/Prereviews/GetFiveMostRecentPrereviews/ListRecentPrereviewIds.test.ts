@@ -21,6 +21,7 @@ const preprintReviewImported = (id: number, published: Temporal.Instant | Tempor
     competingInterests: { _tag: 'No' },
     language: 'en',
     content: { _tag: 'Full', text: html`<p>Hello</p>` },
+    topics: [],
   })
 
 const datasetReviewWasPublished = (

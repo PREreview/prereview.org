@@ -9,6 +9,7 @@ import { Iso6391Schema } from '../../types/iso639.ts'
 import { InstantSchema, PlainDateSchema } from '../../types/Temporal.ts'
 import { NameSchema } from '../../types/Name.ts'
 import { SensitiveData } from '../../SensitiveData.ts'
+import { TopicIdSchema } from '../../types/Topic.ts'
 
 export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImported>()('RapidPrereviewImported', {
   author: Schema.Struct({
@@ -115,6 +116,7 @@ export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImp
     Structured: StructuredPrereviewSchema.fields,
     Full: { text: HtmlSchema },
   }),
+  topics: Schema.Array(TopicIdSchema),
 }) {}
 
 export class EmailToNotifyPrereviewerOfAPrereviewWasSent extends Schema.TaggedClass<EmailToNotifyPrereviewerOfAPrereviewWasSent>()(

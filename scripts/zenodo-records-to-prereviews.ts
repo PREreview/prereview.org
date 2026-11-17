@@ -30,7 +30,7 @@ import { Doi, OrcidId } from '../src/types/index.ts'
 import { iso6393To1, iso6393Validate } from '../src/types/iso639.ts'
 import { Name, NameSchema } from '../src/types/Name.ts'
 import { isPseudonym, Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
-import { TopicIdFromOpenAlexUrlSchema, TopicIdSchema } from '../src/types/Topic.ts'
+import { TopicIdFromOpenAlexUrlSchema } from '../src/types/Topic.ts'
 
 const inputDirectory = path.resolve(import.meta.dirname, '..', '.cache', 'zenodo-records')
 const outputFile = path.resolve(import.meta.dirname, '..', '.cache', 'prereviews-to-import.json')
@@ -78,7 +78,6 @@ const PrereviewToImportSchema = Schema.Struct({
       Unknown: { name: NameSchema },
     }),
   ),
-  topics: Schema.Array(TopicIdSchema),
 })
 
 class CannotConvertRecord extends Data.TaggedError('CannotConvertRecord')<{ reason: string; detail?: unknown }> {}

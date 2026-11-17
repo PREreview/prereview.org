@@ -34,6 +34,7 @@ const reviewImported = ({
     competingInterests: { _tag: 'No' },
     language: 'en',
     content: { _tag: 'Full', text: html`<p>Hello</p>` },
+    topics: [],
   })
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([

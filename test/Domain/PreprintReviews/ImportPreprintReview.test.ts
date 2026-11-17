@@ -25,6 +25,7 @@ const input = {
   competingInterests: { _tag: 'No' },
   language: 'en',
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
+  topics: ['11251', '12030'],
 } satisfies _.Input
 
 const inputWithDifferentClub = {
@@ -58,6 +59,7 @@ const inputWithNewInstances = {
   published: Temporal.Instant.fromEpochNanoseconds(input.published.epochNanoseconds),
   preprint: new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abcde') }),
   content: { _tag: 'Full', text: html`<p>Hello</p>` },
+  topics: ['11251', '12030'],
 } satisfies _.Input
 
 const inputWithDifferentPublishedInstant = {
@@ -94,6 +96,11 @@ const inputWithStructuredContent = {
     wouldRecommend: { answer: 'yes', comment: Option.none() },
     readyForAttention: { answer: 'yes-as-is', comment: Option.none() },
   },
+} satisfies _.Input
+
+const inputWithDifferentTopics = {
+  ...input,
+  topics: ['11251'],
 } satisfies _.Input
 
 const inputWithDifferentPreprint = {
@@ -179,6 +186,12 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Result.Result<Option.Op
     [new Events.PreprintReviewImported(inputWithDifferentAddendum)],
     input,
     Result.fail(new _.UnexpectedPreviousImport({ difference: 'addendum' })),
+  ],
+  [
+    'already imported with different topics',
+    [imported],
+    inputWithDifferentTopics,
+    Result.fail(new _.UnexpectedPreviousImport({ difference: 'topics' })),
   ],
   [
     'already imported with different preprint',

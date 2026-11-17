@@ -53,6 +53,7 @@ const reviewImported = new Events.PreprintReviewImported({
   competingInterests: prereview.competingInterests,
   language: prereview.language,
   content: prereview.content,
+  topics: [],
 })
 
 const reviewImportedWithPlainDate = new Events.PreprintReviewImported({
