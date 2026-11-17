@@ -28,6 +28,7 @@ import {
   type RecentPrereviews,
 } from './Prereview.ts'
 import { GetFiveMostRecentPrereviews } from './GetFiveMostRecentPrereviews/index.ts'
+import { GetPrereviewSummary } from './GetPrereviewSummary/index.ts'
 import { SearchPrereviews } from './SearchPrereviews/index.ts'
 
 export * from './Prereview.ts'
@@ -92,6 +93,7 @@ export const layer = Layer.effect(
     const featureFlags = yield* FeatureFlags
 
     const getFiveMostRecent = yield* GetFiveMostRecentPrereviews
+    const getPrereviewSummary = yield* GetPrereviewSummary
     const searchPrereviews = yield* SearchPrereviews
 
     const getClubByName = yield* EffectToFpts.makeTaskK(
@@ -233,34 +235,36 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getPrereviewSummary: Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
-        yield* Effect.annotateCurrentSpan({ id })
+      getPrereviewSummary: featureFlags.useEventsForPreprintReviews
+        ? getPrereviewSummary
+        : Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
+            yield* Effect.annotateCurrentSpan({ id })
 
-        if (typeof id !== 'number') {
-          return yield* pipe(
-            getRecentDatasetPrereview(id),
-            Effect.catchTag(
-              ['UnknownDatasetReview', 'DatasetReviewHasNotBeenPublished'],
-              () => new PrereviewIsNotFound(),
-            ),
-            Effect.catchTag('DatasetReviewIsUnavailable', error => new PrereviewIsUnavailable({ cause: error })),
-          )
-        }
+            if (typeof id !== 'number') {
+              return yield* pipe(
+                getRecentDatasetPrereview(id),
+                Effect.catchTag(
+                  ['UnknownDatasetReview', 'DatasetReviewHasNotBeenPublished'],
+                  () => new PrereviewIsNotFound(),
+                ),
+                Effect.catchTag('DatasetReviewIsUnavailable', error => new PrereviewIsUnavailable({ cause: error })),
+              )
+            }
 
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
+            const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        const runtime = yield* Effect.context<Preprints>()
+            const runtime = yield* Effect.context<Preprints>()
 
-        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewSummaryFromZenodo(id), {
-          fetch,
-          getClubByName,
-          runtime,
-          wasPrereviewRemoved,
-          zenodoApiKey: Redacted.value(zenodoApi.key),
-          zenodoUrl: zenodoApi.origin,
-          ...loggerEnv,
-        })
-      }, Effect.provide(context)),
+            return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewSummaryFromZenodo(id), {
+              fetch,
+              getClubByName,
+              runtime,
+              wasPrereviewRemoved,
+              zenodoApiKey: Redacted.value(zenodoApi.key),
+              zenodoUrl: zenodoApi.origin,
+              ...loggerEnv,
+            })
+          }, Effect.provide(context)),
       search: featureFlags.useEventsForPreprintReviews
         ? searchPrereviews
         : Effect.fn('Prereviews.search')(
