@@ -479,6 +479,7 @@ void pipe(
                 }),
               ),
             ),
+            HttpClient.filterStatusOk,
           )
         }),
       ),
