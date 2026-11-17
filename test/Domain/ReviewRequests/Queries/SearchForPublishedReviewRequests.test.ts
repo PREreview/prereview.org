@@ -60,13 +60,11 @@ const request1Published2 = new ReviewRequests.ReviewRequestForAPreprintWasPublis
 })
 const request1Categorized1 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
-  keywords: ['bc372b08bff50a48358e', 'd164de1eaf4ecfbd8833'],
   topics: ['13741', '12422'],
   reviewRequestId: request1Id,
 })
 const request1Categorized2 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'pt',
-  keywords: ['fffb69d173e337ffae7f'],
   topics: ['13499'],
   reviewRequestId: request1Id,
 })
@@ -87,7 +85,6 @@ const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request2Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'pt',
-  keywords: ['c987684a37236009cfa7'],
   topics: ['14362'],
   reviewRequestId: request2Id,
 })
@@ -104,7 +101,6 @@ const request3Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request3Id,
 })
@@ -121,7 +117,6 @@ const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request4Id,
 })
@@ -138,7 +133,6 @@ const request5Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request5Id,
 })
@@ -155,7 +149,6 @@ const request6Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request6Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request6Id,
 })
@@ -172,7 +165,6 @@ const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request7Id,
 })
@@ -184,7 +176,6 @@ const request8Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImport
 })
 const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request8Id,
 })
@@ -197,7 +188,6 @@ const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasI
 })
 const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
-  keywords: [],
   topics: [],
   reviewRequestId: request9Id,
 })

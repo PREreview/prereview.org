@@ -20,7 +20,6 @@ export const CategorizeReviewRequest = Effect.fn('ReviewRequests.categorizeRevie
 
     yield* Commands.categorizeReviewRequest({
       language: preprint.language,
-      keywords: categories.keywords,
       topics: categories.topics,
       reviewRequestId: reviewRequest.id,
     })

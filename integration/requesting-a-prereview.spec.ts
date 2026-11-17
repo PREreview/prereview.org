@@ -555,7 +555,6 @@ test.extend(
     new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
       reviewRequestId: reviewRequestId2,
       language: 'en',
-      keywords: [],
       topics: [],
     }),
   ),
@@ -602,7 +601,6 @@ test.extend(
     new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
       reviewRequestId: reviewRequestId1,
       language: 'en',
-      keywords: [],
       topics: ['12104', '12763', '12387'],
     }),
     new ReviewRequests.ReviewRequestForAPreprintWasReceived({

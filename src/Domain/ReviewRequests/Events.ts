@@ -3,7 +3,6 @@ import { Slack } from '../../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { SensitiveData } from '../../SensitiveData.ts'
 import { EmailAddress, Iso639, Name, OrcidId, SciProfilesId, Temporal, Uuid } from '../../types/index.ts'
-import { KeywordIdSchema } from '../../types/Keyword.ts'
 import { TopicIdSchema } from '../../types/Topic.ts'
 
 export type ReviewRequestEvent = typeof ReviewRequestEvent.Type
@@ -118,7 +117,6 @@ export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<
   {
     reviewRequestId: Uuid.UuidSchema,
     language: Iso639.Iso6391Schema,
-    keywords: Schema.Array(KeywordIdSchema),
     topics: Schema.Array(TopicIdSchema),
   },
 ) {}
@@ -128,7 +126,6 @@ export class ReviewRequestForAPreprintWasRecategorized extends Schema.TaggedClas
   {
     reviewRequestId: Uuid.UuidSchema,
     language: Schema.optional(Iso639.Iso6391Schema),
-    keywords: Schema.optional(Schema.Array(KeywordIdSchema)),
     topics: Schema.optional(Schema.Array(TopicIdSchema)),
   },
 ) {}

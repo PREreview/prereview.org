@@ -2667,7 +2667,6 @@ export const reviewRequestForAPreprintWasCategorized = ({
       reviewRequestId: reviewRequestId ?? uuid(),
       language: languageCode(),
       topics: fc.array(topicId()),
-      keywords: fc.array(keywordId()),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasCategorized(data))
 
@@ -2682,7 +2681,6 @@ export const reviewRequestForAPreprintWasRecategorized = ({
         reviewRequestId: reviewRequestId ?? uuid(),
         language: languageCode(),
         topics: fc.array(topicId()),
-        keywords: fc.array(keywordId()),
       },
       { requiredKeys: ['reviewRequestId'] },
     )

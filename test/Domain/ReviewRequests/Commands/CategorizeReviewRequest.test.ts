@@ -14,13 +14,11 @@ const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestFor
 })
 const reviewRequestForAPreprintWasCategorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
-  keywords: ['00010eef0ca8e2970fbb', '76f6c5435743d1f766a5'],
   topics: ['12520', '13393'],
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasCategorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'pt',
-  keywords: ['dac659f275925e65e3c7'],
   topics: ['14113'],
   reviewRequestId: otherReviewRequestId,
 })
@@ -28,7 +26,6 @@ const otherReviewRequestForAPreprintWasCategorized = new ReviewRequests.ReviewRe
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     language: fc.languageCode(),
-    keywords: fc.array(fc.keywordId()),
     topics: fc.array(fc.topicId()),
     reviewRequestId: fc.uuid(),
   })
@@ -75,7 +72,6 @@ describe('foldState', () => {
       expect(state).toStrictEqual(
         new _.HasBeenCategorized({
           language: categorized.language,
-          keywords: categorized.keywords,
           topics: categorized.topics,
         }),
       )
@@ -106,16 +102,11 @@ describe('foldState', () => {
   describe('recategorized', () => {
     const categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
       language: 'es',
-      keywords: ['00010eef0ca8e2970fbb', '76f6c5435743d1f766a5'],
       topics: ['12520', '13393'],
       reviewRequestId,
     })
     const recategorizedWithLanguage = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
       language: 'pt',
-      reviewRequestId,
-    })
-    const recategorizedWithKeywords = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
-      keywords: ['8e37b00f1a9ba4ac51ef'],
       reviewRequestId,
     })
     const recategorizedWithTopics = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
@@ -131,21 +122,6 @@ describe('foldState', () => {
       expect(state).toStrictEqual(
         new _.HasBeenCategorized({
           language: recategorizedWithLanguage.language!,
-          keywords: categorized.keywords,
-          topics: categorized.topics,
-        }),
-      )
-    })
-
-    test('with keywords', () => {
-      const events = [categorized, recategorizedWithKeywords]
-
-      const state = _.foldState(events, reviewRequestId)
-
-      expect(state).toStrictEqual(
-        new _.HasBeenCategorized({
-          language: categorized.language,
-          keywords: recategorizedWithKeywords.keywords!,
           topics: categorized.topics,
         }),
       )
@@ -159,7 +135,6 @@ describe('foldState', () => {
       expect(state).toStrictEqual(
         new _.HasBeenCategorized({
           language: categorized.language,
-          keywords: categorized.keywords,
           topics: recategorizedWithTopics.topics!,
         }),
       )
@@ -176,7 +151,6 @@ describe('decide', () => {
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
             language: command.language,
-            keywords: command.keywords,
             topics: command.topics,
             reviewRequestId: command.reviewRequestId,
           }),
@@ -187,10 +161,7 @@ describe('decide', () => {
 
   describe('has already been categorized', () => {
     it.prop('with the details', [command()], ([command]) => {
-      const result = _.decide(
-        new _.HasBeenCategorized({ language: command.language, keywords: command.keywords, topics: command.topics }),
-        command,
-      )
+      const result = _.decide(new _.HasBeenCategorized({ language: command.language, topics: command.topics }), command)
 
       expect(result).toStrictEqual(Result.succeed(Option.none()))
     })
@@ -203,10 +174,7 @@ describe('decide', () => {
           .filter(([command, language]) => !Equal.equals(command.language, language)),
       ],
       ([[command, language]]) => {
-        const result = _.decide(
-          new _.HasBeenCategorized({ language, keywords: command.keywords, topics: command.topics }),
-          command,
-        )
+        const result = _.decide(new _.HasBeenCategorized({ language, topics: command.topics }), command)
 
         expect(result).toStrictEqual(
           Result.succeed(
@@ -221,45 +189,7 @@ describe('decide', () => {
       },
       {
         fastCheck: {
-          examples: [[[{ language: 'en', keywords: [], topics: [], reviewRequestId }, 'de']]],
-        },
-      },
-    )
-
-    it.prop(
-      'with different keywords',
-      [
-        fc
-          .tuple(command(), fc.array(fc.keywordId()))
-          .filter(([command, keywords]) => !Equal.equals(command.keywords, keywords)),
-      ],
-      ([[command, keywords]]) => {
-        const result = _.decide(
-          new _.HasBeenCategorized({ language: command.language, keywords, topics: command.topics }),
-          command,
-        )
-
-        expect(result).toStrictEqual(
-          Result.succeed(
-            Option.some(
-              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
-                reviewRequestId: command.reviewRequestId,
-                keywords: command.keywords,
-              }),
-            ),
-          ),
-        )
-      },
-      {
-        fastCheck: {
-          examples: [
-            [
-              [
-                { language: 'en', keywords: ['0002c27aea4747f32cb5'], topics: [], reviewRequestId },
-                ['051301983f5df5f40ef4'],
-              ],
-            ],
-          ],
+          examples: [[[{ language: 'en', topics: [], reviewRequestId }, 'de']]],
         },
       },
     )
@@ -272,10 +202,7 @@ describe('decide', () => {
           .filter(([command, topics]) => !Equal.equals(command.topics, topics)),
       ],
       ([[command, topics]]) => {
-        const result = _.decide(
-          new _.HasBeenCategorized({ language: command.language, keywords: command.keywords, topics }),
-          command,
-        )
+        const result = _.decide(new _.HasBeenCategorized({ language: command.language, topics }), command)
 
         expect(result).toStrictEqual(
           Result.succeed(
@@ -290,7 +217,7 @@ describe('decide', () => {
       },
       {
         fastCheck: {
-          examples: [[[{ language: 'en', keywords: [], topics: ['10001'], reviewRequestId }, ['10202']]]],
+          examples: [[[{ language: 'en', topics: ['10001'], reviewRequestId }, ['10202']]]],
         },
       },
     )
@@ -299,16 +226,14 @@ describe('decide', () => {
       'with all different',
       [
         fc
-          .tuple(command(), fc.languageCode(), fc.array(fc.keywordId()), fc.array(fc.topicId()))
+          .tuple(command(), fc.languageCode(), fc.array(fc.topicId()))
           .filter(
-            ([command, language, keywords, topics]) =>
-              !Equal.equals(command.language, language) &&
-              !Equal.equals(command.keywords, keywords) &&
-              !Equal.equals(command.topics, topics),
+            ([command, language, topics]) =>
+              !Equal.equals(command.language, language) && !Equal.equals(command.topics, topics),
           ),
       ],
-      ([[command, language, keywords, topics]]) => {
-        const result = _.decide(new _.HasBeenCategorized({ language, keywords, topics }), command)
+      ([[command, language, topics]]) => {
+        const result = _.decide(new _.HasBeenCategorized({ language, topics }), command)
 
         expect(result).toStrictEqual(
           Result.succeed(
@@ -316,7 +241,6 @@ describe('decide', () => {
               new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
                 language: command.language,
-                keywords: command.keywords,
                 topics: command.topics,
               }),
             ),
@@ -325,16 +249,7 @@ describe('decide', () => {
       },
       {
         fastCheck: {
-          examples: [
-            [
-              [
-                { language: 'en', keywords: ['000093b5c386a313390a'], topics: ['10264'], reviewRequestId },
-                'de',
-                ['f61c4022cf9f517ca412'],
-                ['13152'],
-              ],
-            ],
-          ],
+          examples: [[[{ language: 'en', topics: ['10264'], reviewRequestId }, 'de', ['13152']]]],
         },
       },
     )

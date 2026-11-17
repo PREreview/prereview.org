@@ -27,7 +27,6 @@ const request1Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasI
 })
 const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
-  keywords: ['bc372b08bff50a48358e', 'd164de1eaf4ecfbd8833'],
   topics: ['13741', '12422'],
   reviewRequestId: request1Id,
 })

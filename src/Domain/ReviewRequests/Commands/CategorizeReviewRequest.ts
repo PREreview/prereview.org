@@ -2,13 +2,11 @@ import { Array, Boolean, Data, Result, Equal, Function, Match, Option } from 'ef
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../../Events.ts'
 import type { Uuid } from '../../../types/index.ts'
-import type { KeywordId } from '../../../types/Keyword.ts'
 import type { TopicId } from '../../../types/Topic.ts'
 import type * as Errors from '../Errors.ts'
 
 export interface Command {
   readonly language: LanguageCode
-  readonly keywords: ReadonlyArray<KeywordId>
   readonly topics: ReadonlyArray<TopicId>
   readonly reviewRequestId: Uuid.Uuid
 }
@@ -21,7 +19,6 @@ export class NotCategorized extends Data.TaggedClass('NotCategorized') {}
 
 export class HasBeenCategorized extends Data.TaggedClass('HasBeenCategorized')<{
   language: LanguageCode
-  keywords: ReadonlyArray<KeywordId>
   topics: ReadonlyArray<TopicId>
 }> {}
 
@@ -47,7 +44,6 @@ const foldStateWithPertinentEvent = (
         NotCategorized: () =>
           new HasBeenCategorized({
             language: event.language,
-            keywords: event.keywords,
             topics: event.topics,
           }),
         HasBeenCategorized: state => state,
@@ -58,7 +54,6 @@ const foldStateWithPertinentEvent = (
         HasBeenCategorized: state =>
           new HasBeenCategorized({
             language: event.language ?? state.language,
-            keywords: event.keywords ?? state.keywords,
             topics: event.topics ?? state.topics,
           }),
       }),
@@ -74,7 +69,6 @@ export const decide: {
         Option.some(
           new Events.ReviewRequestForAPreprintWasCategorized({
             language: command.language,
-            keywords: command.keywords,
             topics: command.topics,
             reviewRequestId: command.reviewRequestId,
           }),
@@ -82,11 +76,7 @@ export const decide: {
       ),
     HasBeenCategorized: state =>
       Boolean.match(
-        Boolean.every([
-          Equal.equals(command.language, state.language),
-          Equal.equals(command.keywords, state.keywords),
-          Equal.equals(command.topics, state.topics),
-        ]),
+        Boolean.every([Equal.equals(command.language, state.language), Equal.equals(command.topics, state.topics)]),
         {
           onTrue: () => Result.succeed(Option.none()),
           onFalse: () => Result.succeed(Option.some(constructRecategorizationEvent(state, command))),
@@ -100,13 +90,11 @@ const constructRecategorizationEvent = (
   command: Command,
 ): Events.ReviewRequestForAPreprintWasRecategorized => {
   const language = Equal.equals(command.language, state.language) ? undefined : command.language
-  const keywords = Equal.equals(command.keywords, state.keywords) ? undefined : command.keywords
   const topics = Equal.equals(command.topics, state.topics) ? undefined : command.topics
 
   return new Events.ReviewRequestForAPreprintWasRecategorized({
     reviewRequestId: command.reviewRequestId,
     language,
-    keywords,
     topics,
   })
 }

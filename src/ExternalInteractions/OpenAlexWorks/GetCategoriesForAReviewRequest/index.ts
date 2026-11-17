@@ -1,12 +1,10 @@
 import { Array, Data, Effect, Match, pipe, Schema, Filter } from 'effect'
 import { OpenAlex } from '../../../ExternalApis/index.ts'
 import type * as Preprints from '../../../Domain/Preprints/index.ts'
-import { KeywordIdFromOpenAlexUrlSchema, type KeywordId } from '../../../types/Keyword.ts'
 import { TopicIdFromOpenAlexUrlSchema, type TopicId } from '../../../types/Topic.ts'
 
 export interface CategoriesForAReviewRequest {
   readonly topics: ReadonlyArray<TopicId>
-  readonly keywords: ReadonlyArray<KeywordId>
 }
 
 export class CategoriesAreNotAvailable extends Data.TaggedError('CategoriesAreNotAvailable')<{
@@ -24,10 +22,6 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
           topics: Array.filterMap(
             work.topics,
             Filter.fromPredicateOption(({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
-          ),
-          keywords: Array.filterMap(
-            work.keywords,
-            Filter.fromPredicateOption(({ id }) => Schema.decodeOption(KeywordIdFromOpenAlexUrlSchema)(id)),
           ),
         }) satisfies CategoriesForAReviewRequest,
     ),

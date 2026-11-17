@@ -29,7 +29,6 @@ const program = Effect.fnUntraced(function* ({
   if (dryRun) {
     yield* Console.log({
       language: preprint.language,
-      keywords: categories.keywords,
       topics: categories.topics,
       reviewRequestId: reviewRequest.id,
     })
@@ -39,7 +38,6 @@ const program = Effect.fnUntraced(function* ({
 
   yield* ReviewRequests.categorizeReviewRequest({
     language: preprint.language,
-    keywords: categories.keywords,
     topics: categories.topics,
     reviewRequestId: reviewRequest.id,
   })

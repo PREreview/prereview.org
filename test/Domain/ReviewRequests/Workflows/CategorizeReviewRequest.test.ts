@@ -17,7 +17,6 @@ describe('CategorizeReviewRequest', () => {
         fc.preprintTitle(),
         fc.record({
           language: fc.some(fc.languageCode()),
-          keywords: fc.array(fc.keywordId()),
           topics: fc.array(fc.topicId()),
         }),
       ],
@@ -49,7 +48,6 @@ describe('CategorizeReviewRequest', () => {
         fc.preprintTitle(),
         fc.record({
           language: fc.some(fc.languageCode()),
-          keywords: fc.array(fc.keywordId()),
           topics: fc.array(fc.topicId()),
         }),
         fc
@@ -92,7 +90,6 @@ describe('CategorizeReviewRequest', () => {
       fc.publishedReviewRequest(),
       fc.record({
         language: fc.some(fc.languageCode()),
-        keywords: fc.array(fc.keywordId()),
         topics: fc.array(fc.topicId()),
       }),
       fc
