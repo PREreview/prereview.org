@@ -10,6 +10,7 @@ import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import type { Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import { WasPrereviewRemoved } from '../PreprintReviews/index.ts'
+import { FeatureFlags } from '../../FeatureFlags.ts'
 import { PublicUrl } from '../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import type { FieldId } from '../../types/field.ts'
@@ -26,6 +27,7 @@ import {
   type RecentPreprintPrereview,
   type RecentPrereviews,
 } from './Prereview.ts'
+import { GetFiveMostRecentPrereviews } from './GetFiveMostRecentPrereviews/index.ts'
 
 export * from './Prereview.ts'
 
@@ -86,6 +88,9 @@ export const layer = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
+    const featureFlags = yield* FeatureFlags
+
+    const getFiveMostRecent = yield* GetFiveMostRecentPrereviews
 
     const getClubByName = yield* EffectToFpts.makeTaskK(
       flow(
@@ -96,36 +101,38 @@ export const layer = Layer.effect(
     )
 
     return {
-      getFiveMostRecent: Effect.gen(function* () {
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
+      getFiveMostRecent: featureFlags.useEventsForPreprintReviews
+        ? getFiveMostRecent
+        : Effect.gen(function* () {
+            const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        const runtime = yield* Effect.context<Preprints>()
+            const runtime = yield* Effect.context<Preprints>()
 
-        return yield* pipe(
-          FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
-            fetch,
-            getClubByName,
-            ...loggerEnv,
-            publicUrl,
-            runtime,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-          }),
-          Effect.map(Struct.get('recentPrereviews')),
-          Effect.andThen(
-            Effect.partition(
-              Match.valueTags({
-                RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
+            return yield* pipe(
+              FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
+                fetch,
+                getClubByName,
+                ...loggerEnv,
+                publicUrl,
+                runtime,
+                zenodoApiKey: Redacted.value(zenodoApi.key),
+                zenodoUrl: zenodoApi.origin,
               }),
-              { concurrency: 'unbounded' },
-            ),
-          ),
-          Effect.map(Tuple.get(0)),
-          Effect.orElseSucceed(Array.empty),
-          Effect.withSpan('Prereviews.getFiveMostRecent'),
-        )
-      }).pipe(Effect.provide(context)),
+              Effect.map(Struct.get('recentPrereviews')),
+              Effect.andThen(
+                Effect.partition(
+                  Match.valueTags({
+                    RecentPreprintPrereview: prereview => Effect.succeed(prereview),
+                    DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
+                  }),
+                  { concurrency: 'unbounded' },
+                ),
+              ),
+              Effect.map(Tuple.get(0)),
+              Effect.orElseSucceed(Array.empty),
+              Effect.withSpan('Prereviews.getFiveMostRecent'),
+            )
+          }).pipe(Effect.provide(context)),
       getForClub: Effect.fn('Prereviews.getForClub')(
         function* (id) {
           yield* Effect.annotateCurrentSpan({ id })
