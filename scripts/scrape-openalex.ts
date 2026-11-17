@@ -5,6 +5,7 @@ import {
   SchemaTransformation,
   Effect,
   Chunk,
+  Config,
   flow,
   identity,
   Layer,
@@ -451,18 +452,24 @@ const UpdateTopics = pipe(GetTopics, Effect.tap(TopicsToTypesFile))
 const UpdateKeywords = pipe(GetKeywords, Effect.tap(KeywordsToTypesFile))
 
 void pipe(
-  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics, UpdateKeywords]),
+  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics]),
   Effect.provide(
     pipe(
       Layer.effect(
         HttpClient.HttpClient,
-        Effect.map(
-          HttpClient.HttpClient,
-          flow(
+        Effect.gen(function* () {
+          const apiKey = yield* Config.Redacted('OPENALEX_API_KEY')
+          const httpClient = yield* HttpClient.HttpClient
+
+          return pipe(
+            httpClient,
             HttpClient.mapRequest(
-              HttpClientRequest.setHeaders({
-                'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
-              }),
+              flow(
+                HttpClientRequest.setHeaders({
+                  'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
+                }),
+                HttpClientRequest.bearerToken(apiKey),
+              ),
             ),
             HttpClient.tapRequest(request =>
               Effect.logDebug('Sending HTTP request').pipe(
@@ -472,8 +479,8 @@ void pipe(
                 }),
               ),
             ),
-          ),
-        ),
+          )
+        }),
       ),
       Layer.provideMerge(Layer.mergeAll(NodeHttpClient.layerNodeHttp, NodeFileSystem.layer)),
       Layer.provideMerge(Logger.layer([Logger.consolePretty(), Logger.tracerLogger])),
