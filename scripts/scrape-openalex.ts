@@ -13,7 +13,6 @@ import {
   Order,
   References,
   pipe,
-  Record,
   Schema,
   Stream,
   String,
@@ -22,7 +21,6 @@ import {
 } from 'effect'
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
-import crypto from 'node:crypto'
 import path from 'node:path'
 
 const NumberFromStringSchema = Schema.String.pipe(
@@ -126,21 +124,6 @@ const TopicIdFromUrlSchema = Schema.URLFromString.pipe(
   }),
 )
 
-const KeywordIdSchema = pipe(Schema.String, Schema.brand('KeywordId'))
-
-const KeywordIdFromUrlSchema = Schema.URLFromString.pipe(
-  Schema.decodeTo(KeywordIdSchema, {
-    decode: SchemaGetter.transformEffect(url =>
-      url.origin === 'https://openalex.org' && url.pathname.startsWith('/keywords/')
-        ? Effect.succeed(decodeURIComponent(url.pathname.slice(10)))
-        : Effect.fail(new SchemaIssue.InvalidValue(undefined, url)),
-    ),
-    encode: SchemaGetter.transformEffect(keywordId =>
-      Effect.succeed(new URL(`https://openalex.org/keywords/${encodeURIComponent(keywordId)}`)),
-    ),
-  }),
-)
-
 const DomainSchema = Schema.Struct({
   id: DomainIdFromUrlSchema,
   display_name: TextSchema,
@@ -169,11 +152,6 @@ const TopicSchema = Schema.Struct({
   domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
   field: Schema.Struct({ id: FieldIdFromUrlSchema }),
   subfield: Schema.Struct({ id: SubfieldIdFromUrlSchema }),
-})
-
-const KeywordSchema = Schema.Struct({
-  id: KeywordIdFromUrlSchema,
-  display_name: TextSchema,
 })
 
 const LocaleFileSchema = Schema.Record(
@@ -215,13 +193,6 @@ const TopicTypesFileSchema = Schema.Record(
     domain: DomainIdSchema,
     field: FieldIdSchema,
     subfield: SubfieldIdSchema,
-  }),
-)
-
-const KeywordTypesFileSchema = Schema.Record(
-  Schema.String,
-  Schema.Struct({
-    name: TextSchema,
   }),
 )
 
@@ -311,28 +282,6 @@ const GetTopics: Effect.Effect<
   Stream.runCollect,
   Effect.map(Chunk.fromIterable),
   Effect.map(Chunk.sortWith(topic => topic.id, Order.Number)),
-)
-
-const GetKeywords: Effect.Effect<
-  Chunk.Chunk<typeof KeywordSchema.Type>,
-  HttpClientError.HttpClientError | Schema.SchemaError,
-  HttpClient.HttpClient
-> = pipe(
-  Stream.paginate(
-    '*',
-    flow(
-      cursor =>
-        HttpClient.get('https://api.openalex.org/keywords', {
-          urlParams: { select: Object.keys(KeywordSchema.fields).join(','), 'per-page': 200, cursor },
-        }),
-      Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(KeywordSchema))),
-      Effect.scoped,
-      Effect.map(response => [response.results, response.meta.next_cursor]),
-    ),
-  ),
-  Stream.runCollect,
-  Effect.map(Chunk.fromIterable),
-  Effect.map(Chunk.sortWith(keyword => keyword.id, Order.String)),
 )
 
 const WriteToFile = (filePath: string) => (content: string) =>
@@ -430,17 +379,6 @@ const TopicsToTypesFile = flow(
   Effect.andThen(WriteToFile('src/types/data/topics.json')),
 )
 
-const KeywordsToTypesFile = flow(
-  Chunk.map<Chunk.Chunk<typeof KeywordSchema.Type>, [string, typeof KeywordTypesFileSchema.value.Type]>(keyword => [
-    crypto.createHash('shake256', { outputLength: 10 }).update(keyword.id).digest('hex'),
-    { name: keyword.display_name },
-  ]),
-  Record.fromEntries,
-  Schema.encodeEffect(Schema.fromJsonString(KeywordTypesFileSchema, { space: 2 })),
-  Effect.map(String.concat('\n')),
-  Effect.andThen(WriteToFile('src/types/data/keywords.json')),
-)
-
 const UpdateDomains = pipe(GetDomains, Effect.tap(DomainsToTypesFile))
 
 const UpdateFields = pipe(GetFields, Effect.tap(FieldsToLocaleFile), Effect.tap(FieldsToTypesFile))
@@ -449,10 +387,8 @@ const UpdateSubfields = pipe(GetSubfields, Effect.tap(SubfieldsToLocaleFile), Ef
 
 const UpdateTopics = pipe(GetTopics, Effect.tap(TopicsToTypesFile))
 
-const UpdateKeywords = pipe(GetKeywords, Effect.tap(KeywordsToTypesFile))
-
 void pipe(
-  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics, UpdateKeywords]),
+  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics]),
   Effect.provide(
     pipe(
       Layer.effect(

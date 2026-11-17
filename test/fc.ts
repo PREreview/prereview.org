@@ -131,7 +131,6 @@ import { Doi, hasRegistrant, isDoi } from '../src/types/Doi.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
-import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type Name, NameSchema } from '../src/types/Name.ts'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
@@ -1322,8 +1321,6 @@ export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 export const subfieldId = (): fc.Arbitrary<SubfieldId> => fc.constantFrom(...subfieldIds)
 
 export const topicId = (): fc.Arbitrary<TopicId> => fc.constantFrom(...topicIds)
-
-export const keywordId = (): fc.Arbitrary<KeywordId> => fc.constantFrom(...keywordIds)
 
 export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
   fc.oneof(openAuthorInvite(), declinedAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
