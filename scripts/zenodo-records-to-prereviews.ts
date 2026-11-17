@@ -6,6 +6,7 @@ import {
   Data,
   Effect,
   FileSystem,
+  Filter,
   flow,
   Logger,
   Option,
@@ -29,6 +30,7 @@ import { Doi, OrcidId } from '../src/types/index.ts'
 import { iso6393To1, iso6393Validate } from '../src/types/iso639.ts'
 import { Name, NameSchema } from '../src/types/Name.ts'
 import { isPseudonym, Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
+import { TopicIdFromOpenAlexUrlSchema, TopicIdSchema } from '../src/types/Topic.ts'
 
 const inputDirectory = path.resolve(import.meta.dirname, '..', '.cache', 'zenodo-records')
 const outputFile = path.resolve(import.meta.dirname, '..', '.cache', 'prereviews-to-import.json')
@@ -44,6 +46,9 @@ const ZenodoRecordSchema = Schema.Struct({
     ),
     contributors: Schema.optional(Schema.Array(Schema.Struct({ name: Schema.String }))),
     keywords: Schema.optional(Schema.Array(Schema.String)),
+    subjects: Schema.Array(Schema.Struct({ identifier: Schema.URLFromString })).pipe(
+      Schema.withDecodingDefaultType(Effect.sync(Array.empty)),
+    ),
     language: Schema.optional(Schema.String),
     license: Schema.Struct({ id: Schema.String }),
     notes: Schema.optional(Schema.String),
@@ -73,6 +78,7 @@ const PrereviewToImportSchema = Schema.Struct({
       Unknown: { name: NameSchema },
     }),
   ),
+  topics: Schema.Array(TopicIdSchema),
 })
 
 class CannotConvertRecord extends Data.TaggedError('CannotConvertRecord')<{ reason: string; detail?: unknown }> {}
@@ -647,6 +653,12 @@ const getPublished = (record: ZenodoRecord) => {
   return created
 }
 
+const getTopics = (record: ZenodoRecord) =>
+  Array.filterMap(
+    record.metadata.subjects,
+    Filter.fromPredicateOption(flow(Struct.get('identifier'), Schema.decodeOption(TopicIdFromOpenAlexUrlSchema))),
+  )
+
 const convertRecord = ({ record, html }: typeof InputFileSchema.Type) =>
   Effect.gen(function* () {
     const { body, bodyHtml, sections } = splitTrailingSections(html)
@@ -672,6 +684,7 @@ const convertRecord = ({ record, html }: typeof InputFileSchema.Type) =>
       competingInterests: yield* getCompetingInterests(sections),
       language: yield* getLanguage(record),
       content: yield* getContent(record, body, bodyHtml),
+      topics: getTopics(record),
     }
   })
 
